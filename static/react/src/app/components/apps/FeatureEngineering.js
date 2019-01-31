@@ -23,41 +23,31 @@ import { Transform } from "./Transform";
 return {
 
   login_response: store.login.login_response,
-
-    dataPreview: store.datasets.dataPreview,
-
-    datasets: store.datasets,
-
-    binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
-
-    transferColumnShowModal: store.datasets.transferColumnShowModal,
-
-    selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
-    selectedItem: store.datasets.selectedItem,
-    apps_regression_modelName:store.apps.apps_regression_modelName,
-    currentAppDetails:store.apps.currentAppDetails,
-    featureEngineering:store.datasets.featureEngineering
+  dataPreview: store.datasets.dataPreview,
+  datasets: store.datasets,
+  binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
+  transferColumnShowModal: store.datasets.transferColumnShowModal,
+  selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
+  selectedItem: store.datasets.selectedItem,
+  apps_regression_modelName:store.apps.apps_regression_modelName,
+  currentAppDetails:store.apps.currentAppDetails,
+  featureEngineering:store.datasets.featureEngineering
   };
-
 })
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
-  super(props);
-  console.log("FeatureEngineering constructor method is called...");
-  console.log(props);
-
-  this.buttons = {};
-  this.state = {};
-  this.state.topLevelRadioButton = "false";
-  this.prevState = this.state;
-  this.pickValue = this.pickValue.bind(this);
-  this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
-  this.updateLevelsData = this.updateLevelsData.bind(this);
-
-}
-
-
+    super(props);
+    console.log("FeatureEngineering constructor method is called...");
+    console.log(props);
+    this.buttons = {};
+    this.state = {};
+    this.state.topLevelRadioButton = "false";
+    this.prevState = this.state;
+    this.pickValue = this.pickValue.bind(this);
+    this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
+    this.updateLevelsData = this.updateLevelsData.bind(this);
+  }
 
   componentWillMount() {
     // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
@@ -65,11 +55,10 @@ export class FeatureEngineering extends React.Component {
     //     }
     //set state with data from store always
     this.setState({featureEngineering:this.props.featureEngineering});
-    //debugger;
     if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
-console.log("FeatureEngineering componentWillMount method is called...");
+    console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
@@ -127,9 +116,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
     //debugger;
     if(actionType == "binData"){
       this.validateBinData(actionType);
-
     }else if (actionType == "levelData"){
-
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
@@ -141,10 +128,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-
     }
-
-
   }
 
   validateBinData(actionType){

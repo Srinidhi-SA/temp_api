@@ -172,17 +172,11 @@ export class Transform extends React.Component {
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-4">
-<<<<<<< HEAD
-                      <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
-                        <option>Min-Max Scaling</option>
-                        <option>Standard deviation</option>
-                        <option selected >None</option>
-=======
+
                       <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" defaultValue={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
                         <option value="None" selected> None</option>
-                        <option value="min_max_scaling">Min-Max Scaling</option>
-                        <option value="standard_deviation">Standard deviation</option>
->>>>>>> 3120f29cd2e8fa4f4d192868729723402261dcb4
+                        <option value="normalization">Normalization</option>
+                        <option value="standardization">Standardization</option>
                       </select>
                     </div>
                   </div>
@@ -195,10 +189,10 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-3">
                       <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
-                        <option >Log</option>
-                        <option>Square root</option>
-                        <option>Cube root</option>
-                        <option>Modulus</option>
+                        <option value="log_transform">Log</option>
+                        <option value="square_root_transform">Square root</option>
+                        <option value="cube_root_transform">Cube root</option>
+                        <option value="modulus_transform">Modulus</option>
                         <option selected >None</option>
                       </select>
                     </div>
@@ -287,9 +281,9 @@ export class Transform extends React.Component {
                   </div>
                   <div class="col-md-4 col-sm-3">
                     <select class="form-control" name="extract_time_feature_select" value={this.getTranformDataValue("extract_time_feature_select")} onChange={this.pickValue}>
-                      <option>Day of week</option>
-                      <option>Month of Year</option>
-                      <option selected >None</option>
+                      <option value="day_of_week">Day of week</option>
+                      <option value="month_of_year">Month of Year</option>
+                      <option selected value="">None</option>
                     </select>
                   </div>
                 </div>
