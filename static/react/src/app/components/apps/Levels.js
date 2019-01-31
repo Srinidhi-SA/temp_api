@@ -153,13 +153,13 @@ export class Levels extends React.Component {
           </div>
           </div>
           <div className="form-group">
-          &nbsp;<button className="btn btn-warning b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
         </div>
 
         ))}
         <button className="btn btn-primary b-inline" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i></button>
-		
+
       </div>
     )
 

@@ -57,6 +57,10 @@ export class Bins extends React.Component {
     }
     this.props.clearBinsAndIntervals(event);
     this.pickValue(event);
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 3120f29cd2e8fa4f4d192868729723402261dcb4
   }
 
   pickValue(event){

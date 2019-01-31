@@ -264,7 +264,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           <div class="panel box-shadow xs-m-0">
             <div class="panel-body no-border xs-p-20">
               <div class="form-group">
-                <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
