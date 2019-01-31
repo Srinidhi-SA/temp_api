@@ -129,9 +129,9 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-4">
                       <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" defaultValue={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
-                        <option value="None" selected> None</option>
-                        <option value="min_max_scaling">Min-Max Scaling</option>
-                        <option value="standard_deviation">Standard deviation</option>
+                        <option value="None"> None</option>
+                        <option value="normalization">Normalization</option>
+                        <option value="standardization">Standardization</option>
                       </select>
                     </div>
                   </div>
@@ -143,12 +143,12 @@ export class Transform extends React.Component {
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-3">
-                      <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
-                      <option value="None" selected> None</option>
-                        <option value="log"> Log</option>
-                        <option value="square_root">Square root</option>
-                        <option value="cube_root">Cube root</option>
-                        <option value="modulus" > Modulus</option>
+                      <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" defaultValue={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
+                      <option value="None"> None</option>
+                        <option value="log_transform"> Log</option>
+                        <option value="square_root_transform">Square root</option>
+                        <option value="cube_root_transform">Cube root</option>
+                        <option value="modulus_transform" > Modulus</option>
                       </select>
                     </div>
                   </div>
