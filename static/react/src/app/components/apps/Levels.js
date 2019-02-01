@@ -27,10 +27,8 @@ export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-
     this.state = { levelsArray: this.props.levelsData ,}
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
-
   }
   getAllOptions(){
     // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
@@ -51,7 +49,6 @@ export class Levels extends React.Component {
     });
     return allSelectedItems;
   }
-
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
     this.addNewLevel();
@@ -59,9 +56,7 @@ export class Levels extends React.Component {
   componentWillUpdate(){
     this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
-
   handleLevelSubmit = evt => {
-
   };
 
   addNewLevel(){
@@ -81,11 +76,10 @@ export class Levels extends React.Component {
   getLevelData(){
     var levelData = {};
     if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
-    var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
+      var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
       if(slugData != undefined){
         levelData = slugData.levelData;
       }
-
     }
     return levelData;
   }
@@ -103,63 +97,56 @@ export class Levels extends React.Component {
     var checkedAttr = event.target.name;
     console.log("checkedval:", checkedValue, "checkedAttr:", checkedAttr);
     if (checkedValue) {
-        this.state.statesArray.filter(item => item.name == checkedAttr);
-    } else {
-        var obj = { name: checkedAttr };
-        if (this.state.statesArray[checkedAttr] != undefined) {
-          this.state.statesArray.push(obj);
-        }
+      this.state.statesArray.filter(item => item.name == checkedAttr);
+    }else{
+      var obj = { name: checkedAttr };
+      if (this.state.statesArray[checkedAttr] != undefined) {
+        this.state.statesArray.push(obj);
       }
     }
+  }
 
-    inputOnChangeHandler(idx, event){
-      var newArray = this.state.levelsArray;
-      newArray[idx]["inputValue"] = event.target.value;
-      this.setState({
-        levelsArray: newArray
-      });
-    }
+  inputOnChangeHandler(idx, event){
+    var newArray = this.state.levelsArray;
+    newArray[idx]["inputValue"] = event.target.value;
+    this.setState({
+      levelsArray: newArray
+    });
+  }
 
-    multiSelectOnChangeHandler(idx,event){
-      var newArray = this.state.levelsArray;
-      newArray[idx]["multiselectValue"] = event.target.value;
-      this.setState({
-        levelsArray: newArray
-      });
-
-    }
+  multiSelectOnChangeHandler(idx,event){
+    var newArray = this.state.levelsArray;
+    newArray[idx]["multiselectValue"] = event.target.value;
+    this.setState({
+      levelsArray: newArray
+    });
+  }
 
   render() {
     console.log("Levels render method is called...");
-
     var levelData = this.getLevelData();
-
     var levels = "";
     levels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
-          <div className="form-group">
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level ${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <div className="form-group">
+              <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level ${idx + 1} Name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            </div>
+            <div className="form-group">
+              <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
+            </div>
+            <div className="form-group">
+              <div className="content-section implementation multiselect-demo">
+                <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)} style={{minWidth:'12em'}} filter={true} placeholder="choose" />
+              </div>
+            </div>
+            <div className="form-group">
+              &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+            </div>
           </div>
-          <div className="form-group">
-            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
-          </div>
-          <div className="form-group">
-
-          <div className="content-section implementation multiselect-demo">
-          <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
-                            style={{minWidth:'12em'}} filter={true} placeholder="choose" />
-          </div>
-          </div>
-          <div className="form-group">
-          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
-          </div>
-        </div>
-
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i> Add</button>
-
       </div>
     )
 
@@ -175,6 +162,4 @@ export class Levels extends React.Component {
       </div>
     );
   }
-
-
 }
