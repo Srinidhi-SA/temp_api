@@ -159,6 +159,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
 			$("select[name='selectBinType']").focus();
             return;
         }else{
+			$("select[name='selectBinType']").css("border-color","#e0e0e0");
           if(binData.selectBinType == "create_equal_sized_bins"){
 
             if(binData.numberofbins == undefined || binData.numberofbins == null|| binData.numberofbins == "" ){
@@ -169,6 +170,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                 return;
             }
             else if(parseInt(binData.numberofbins) <= 0){
+			  
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Please enter number greater than zero");
 			  $("input[name='numberofbins']").css("border-color","red");
@@ -177,8 +179,9 @@ console.log("FeatureEngineering componentWillMount method is called...");
             }			
 			
           }else if(binData.selectBinType == "create_custom_bins"){
-
+			
             if(binData.specifyintervals == undefined|| binData.specifyintervals == null|| binData.specifyintervals == "" ){
+				$("input[name='numberofbins']").css("border-color","#e0e0e0");
               $("#fileErrorMsg").removeClass("visibilityHidden");
                 $("#fileErrorMsg").html("Please enter 'Specify Intervals' field");
 				$("input[name='specifyintervals']").css("border-color","red");
@@ -190,6 +193,8 @@ console.log("FeatureEngineering componentWillMount method is called...");
         }
 
         if(binData.newcolumnname == undefined || binData.newcolumnname == null|| binData.newcolumnname == "" ){
+			$("input[name='numberofbins']").css("border-color","#e0e0e0");
+			$("input[name='specifyintervals']").css("border-color","#e0e0e0");
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please enter the new column name");
 			$("input[name='newcolumnname']").focus();
@@ -202,14 +207,11 @@ console.log("FeatureEngineering componentWillMount method is called...");
       }else{
         $("#fileErrorMsg").removeClass("visibilityHidden");
 		$("select[name='selectBinType']").css("border-color","red");
-		$("input[name='numberofbins']").css("border-color","red");		
+		//$("input[name='numberofbins']").css("border-color","red");		
 		$("input[name='newcolumnname']").css("border-color","red");
-		
         $("#fileErrorMsg").html("Please enter Mandatory fields * ");
-		
-		
-		
       }
+	  
 
   }
 
@@ -391,8 +393,8 @@ console.log("FeatureEngineering componentWillMount method is called...");
                   <table className="table table-striped table-bordered break-if-longText">
                     <thead>
                       <tr key="trKey">
-                        <th>Variable name</th>
-                        <th>Data type</th>
+                        <th class="text-left"><b>Variable name</b></th>
+                        <th><b>Data type</b></th>
                         <th></th>
                         <th></th>
                       </tr>
