@@ -871,8 +871,12 @@ class Trainer(models.Model):
         try:
             configUI = self.get_config()
             if 'featureEngineering' in configUI:
-                for colName in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                    colName['selected'] = False
+                for colSlug in self.collect_column_slugs_which_all_got_transformations:
+                        for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                if i['slug'] == colSlug:
+                                    print(colSlug)
+                                    i['selected'] = False
+                                    break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
         except:
             pass
@@ -1053,16 +1057,18 @@ class Trainer(models.Model):
         column_data = self.convert_variable_selection_config_into_dict(data=variable_selection)
 
         self.add_newly_generated_column_names = []
+        self.collect_column_slugs_which_all_got_transformations = []
         if 'dataCleansing' in config:
             data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'featureEngineering' in config:
             feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
 
-        print(self.add_newly_generated_column_names)
+        self.collect_column_slugs_which_all_got_transformations = list(set(self.collect_column_slugs_which_all_got_transformations ))
         return {
             'DATA_CLEANSING': data_cleansing_config,
             'FEATURE_ENGINEERING': feature_engineering_config
         }
+
 
     def data_cleansing_adaptor_for_ml(self, data_cleansing_config_ui, column_data):
         '''
@@ -1198,11 +1204,13 @@ class Trainer(models.Model):
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                 for col in column_data:
                     if column_data[col]['columnType'] == 'measure':
+                        self.collect_column_slugs_which_all_got_transformations.append(col)
                         self.generate_new_column_name_based_on_transformation(
                             column_data[col],
                             'binning_all_measures',
                             overall_data['numberOfBins']
                         )
+        self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
             columns_wise_data_f = columns_wise_data[slug]
@@ -1524,6 +1532,7 @@ class Trainer(models.Model):
                     columnType=name_mapping[function_name]['type'],
                     variable_selection_column_data=variable_selection_column_data
                     )
+
         return new_name
 
     def add_newly_generated_column_names_into_column_settings(self,
