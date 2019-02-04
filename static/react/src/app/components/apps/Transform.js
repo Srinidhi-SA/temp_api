@@ -58,6 +58,8 @@ export class Transform extends React.Component {
   }
 
   onchangeInput(event){
+    //disable CREATEMODEL
+    debugger;
     return event.target.value;
   }
 
@@ -225,6 +227,7 @@ export class Transform extends React.Component {
                     </select>
                   </div>
                 </div>
+<<<<<<< HEAD
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
@@ -235,6 +238,22 @@ export class Transform extends React.Component {
                   <div class="col-md-3 col-sm-3">
                     <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
+=======
+              </div>
+              <div class="col-md-4 col-sm-3">
+                <select class="form-control" name="extract_time_feature_select" defaultValue={this.getTranformDataValue("extract_time_feature_select")} onChange={this.pickValue}>
+                  <option value="day_of_week">Day of week</option>
+                  <option value="month_of_year">Month of Year</option>
+                  <option selected value="">None</option>
+                </select>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-5 col-sm-5">
+                <div class="ma-checkbox inline">
+                  <input id="time_since" name="time_since" type="checkbox" defaultChecked={this.getTranformDataValue("time_since")} class="needsclick" onChange={this.pickValue}/>
+                  <label for="time_since">Time Since Some Event:</label>
+>>>>>>> 17fe73d6a3072222783aeb824e17249a7153c1e3
                 </div>
               </form>
             </div>

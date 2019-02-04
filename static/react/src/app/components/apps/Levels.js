@@ -34,7 +34,9 @@ export class Levels extends React.Component {
   }
   getAllOptions(){
     // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
-    return this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
+    let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
+    levelOptions.sort();
+    return levelOptions
   }
   getMultiSelectOptions(idx){
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);

@@ -64,8 +64,13 @@ export class DataCleansing extends React.Component {
       value1: null,
       value2: null
     };
+<<<<<<< HEAD
     // this.state.topLevelRadioButton = "false";
    }
+=======
+  }
+
+>>>>>>> 17fe73d6a3072222783aeb824e17249a7153c1e3
   componentWillMount() {
     if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
@@ -191,11 +196,18 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
     const options = [
+<<<<<<< HEAD
             {label: 'Yes', value: 'True'},
             {label: 'No', value: 'False'},
         ];
 
       var cleansingHtml = <span>"Loading ... "</span>;
+=======
+      {label: 'Yes', value: 'true'},
+      {label: 'No', value: 'false'},
+    ];
+    var cleansingHtml = <span>"Loading ... "</span>;
+>>>>>>> 17fe73d6a3072222783aeb824e17249a7153c1e3
     if(this.props.dataPreview!=null)
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
