@@ -64,7 +64,7 @@ export class DataCleansing extends React.Component {
       value1: null,
       value2: null
     };
-    this.state.topLevelRadioButton = "false";
+    // this.state.topLevelRadioButton = "false";
    }
 
 
@@ -195,8 +195,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
     const options = [
-            {label: 'Yes', value: 'Yes'},
-            {label: 'No', value: 'No'},
+            {label: 'Yes', value: 'True'},
+            {label: 'No', value: 'False'},
         ];
 
       var cleansingHtml = <span>"Loading ... "</span>;

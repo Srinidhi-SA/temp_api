@@ -105,8 +105,8 @@ export class Transform extends React.Component {
                  <div class="row form-group">
                     <div class="col-md-5 col-sm-5">
                       <div class="ma-checkbox inline">
-                        <input id="perform_standardization" name="perform_standardization" type="checkbox" defaultChecked={this.getTranformDataValue("perform_standardization")} class="needsclick" onChange={this.pickValue}/>
-                        <label for="perform_standardization">Perform Standardization:</label>
+                        <input id="feature_scaling" name="feature_scaling" type="checkbox" defaultChecked={this.getTranformDataValue("feature_scaling")} class="needsclick" onChange={this.pickValue}/>
+                        <label for="feature_scaling">Feature Scaling:</label>
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-4">
