@@ -64,7 +64,6 @@ export class DataCleansing extends React.Component {
       value1: null,
       value2: null
     };
-    this.state.topLevelRadioButton = "false";
   }
 
   componentWillMount() {
@@ -173,8 +172,8 @@ export class DataCleansing extends React.Component {
 
   render() {
     const options = [
-      {label: 'Yes', value: 'Yes'},
-      {label: 'No', value: 'No'},
+      {label: 'Yes', value: 'true'},
+      {label: 'No', value: 'false'},
     ];
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)

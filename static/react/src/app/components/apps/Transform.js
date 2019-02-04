@@ -57,6 +57,8 @@ export class Transform extends React.Component {
   }
 
   onchangeInput(event){
+    //disable CREATEMODEL
+    debugger;
     return event.target.value;
   }
 
@@ -75,21 +77,6 @@ export class Transform extends React.Component {
 
   render() {
     console.log("Transforms render method is called...");
-    // var transformHtml = this.props.dataPreview.meta_data.uiMetaData.fe_config.fe;
-    // var mtransform = transformHtml.measure.transformation_settings.operations.map(item => {
-    //   if(item.display){
-    //     return (
-    //       <div class="ma-checkbox inline">
-    //         <input id={item.name} name={item.name} type="checkbox" class="needsclick" onInput={this.pickValue} onChange={this.pickValue}/>
-    //         <label for={item.name}>{item.name}:</label>
-    //       </div>
-    //
-    //     );
-    //   }
-    //   else{
-    //     return "";
-    //   }
-    // })
     if(this.props.selectedItem.columnType == "measure"){
       return (
         <div class="modal-body">
@@ -103,7 +90,7 @@ export class Transform extends React.Component {
               <div class="col-md-5 col-sm-5">
                 <div class="ma-checkbox inline">
                   <input id="replace_values_with" name="replace_values_with" defaultChecked={this.getTranformDataValue("replace_values_with")} type="checkbox" class="needsclick" onChange={this.pickValue}/>
-                  <label for="replace_values_with">Replace Values With:</label>
+                  <label for="replace_values_with">Replace Values:</label>
                 </div>
               </div>
               <div class="col-md-3 col-sm-3">
@@ -167,7 +154,7 @@ export class Transform extends React.Component {
               <div class="col-md-5 col-sm-5">
                 <div class="ma-checkbox inline">
                   <input id="perform_standardization" name="perform_standardization" type="checkbox" defaultChecked={this.getTranformDataValue("perform_standardization")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="perform_standardization">Perform Standardization:</label>
+                  <label for="perform_standardization">Feature Scaling:</label>
                 </div>
               </div>
               <div class="col-md-4 col-sm-4">
@@ -277,7 +264,7 @@ export class Transform extends React.Component {
                 </div>
               </div>
               <div class="col-md-4 col-sm-3">
-                <select class="form-control" name="extract_time_feature_select" value={this.getTranformDataValue("extract_time_feature_select")} onChange={this.pickValue}>
+                <select class="form-control" name="extract_time_feature_select" defaultValue={this.getTranformDataValue("extract_time_feature_select")} onChange={this.pickValue}>
                   <option value="day_of_week">Day of week</option>
                   <option value="month_of_year">Month of Year</option>
                   <option selected value="">None</option>

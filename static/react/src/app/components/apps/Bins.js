@@ -82,7 +82,7 @@ export class Bins extends React.Component {
             </div>
           </div>
           <div className="row form-group">
-            <label for="sel_tobg" className="col-sm-4 control-label">{"Type of binning"} <span className="text-danger">*</span></label>
+            <label for="sel_tobg" className="col-sm-4 control-label">Type of binning<span className="text-danger">*</span></label>
             <div className="col-sm-8">
               {this.getbinningOptions()}
             </div>

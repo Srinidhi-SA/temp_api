@@ -358,7 +358,7 @@ export class FeatureEngineering extends React.Component {
     this.props.dispatch(openBinsOrLevelsModalAction(item));
   }
   closeBinsOrLevelsModal(event) {
-    console.log("closeddddd ---closeBinsOrLevelsModal");
+    console.log("closed ---closeBinsOrLevelsModal");
     console.log(".... ",);
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
