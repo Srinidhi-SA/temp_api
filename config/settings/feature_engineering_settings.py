@@ -206,7 +206,8 @@ column_format = {
                 }
 
 overall_settings_data_cleasing_ui_ml_mapping = {
-    'remove_duplicate_observations': 'duplicate_row'
+    'remove_duplicate_observations': 'duplicate_row',
+    'remove_duplicate_attributes': 'duplicate_column'
 }
 
 data_cleansing_final_config_format = {

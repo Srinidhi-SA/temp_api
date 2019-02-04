@@ -1124,7 +1124,8 @@ class Trainer(models.Model):
             for d in overall_data:
                 for i in overall_settings:
                     if i['name'] == overall_settings_ui_ml_name_mapping[d]:
-                        i['selected'] = True
+                        if overall_settings_ui_ml_name_mapping[d] == True:
+                            i['selected'] = True
 
         name_mapping = {
             'missingValueTreatment': 'missing_value_treatment',
