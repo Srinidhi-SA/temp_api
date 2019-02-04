@@ -12,9 +12,7 @@ import {
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-
 import { getDataSetPreview } from "../../actions/dataActions";
-
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Transform } from "./Transform";

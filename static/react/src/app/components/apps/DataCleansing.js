@@ -66,10 +66,6 @@ export class DataCleansing extends React.Component {
     };
     // this.state.topLevelRadioButton = "false";
    }
-
-
-
-
   componentWillMount() {
     if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
