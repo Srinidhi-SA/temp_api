@@ -894,7 +894,6 @@ Note: It looks into CustomApps table for apps.
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         from api.models import CustomAppsUserMapping
-        # import pdb;pdb.set_trace()
         user_app_list = CustomAppsUserMapping.objects.filter(
             user=self.request.user,
             active=True
@@ -5240,7 +5239,6 @@ def return_crawled_json_data(stockDataType, stockName, slug):
         "concepts": "concepts"
     }
     crawled_data = json.loads(sdd.crawled_data)
-    # import pdb;pdb.set_trace()
     from django.http import HttpResponse
     if stockDataType in ["bluemix", "historical"]:
         file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
@@ -5463,7 +5461,6 @@ def updateFromNifi(request):
 
 
 # def some_random_things(request):
-#     import pdb;pdb.set_trace()
 #     from django.contrib.auth.models import User
 #     user = User.objects.all().first()
 #     request.user = user

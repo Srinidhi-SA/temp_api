@@ -876,7 +876,6 @@ class Trainer(models.Model):
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
         except:
             pass
-        import pdb;pdb.set_trace()
         # first UI config was saved <-> this is ML config got saved in place of UI config
         self.config = json.dumps(config)
         self.save()
