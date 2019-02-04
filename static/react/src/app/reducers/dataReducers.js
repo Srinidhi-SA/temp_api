@@ -668,8 +668,7 @@ export default function reducer(state = {
       var curRemoveDuplicateAttributes = state.removeDuplicateAttributes;
       curRemoveDuplicateAttributes[action.duplicate_removal_name] = action.yesOrNo;
       return {
-        ...state,
-        removeDuplicate : curRemoveDuplicateAttributes
+        ...state
       }
     }
     break;
@@ -679,8 +678,8 @@ export default function reducer(state = {
       var curremoveDuplicateObservations = state.removeDuplicateObservations;
       curremoveDuplicateObservations[action.duplicate_removal_name] = action.yesOrNo;
       return {
-        ...state,
-        removeDuplicates : curremoveDuplicateObservations
+        ...state
+        // removeDuplicates : curremoveDuplicateObservations
       }
     }
     break;
