@@ -1162,7 +1162,7 @@ class Trainer(models.Model):
 
         return new_dict
 
-    def feature_engineering_config_for_ml(self, feature_engineering_config, column_data):
+    def feature_engineering_config_for_ml(self, feature_engineering_config_ui, column_data):
         from config.settings import feature_engineering_settings
         import copy
         feature_engineering_ml_config = copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
@@ -1171,12 +1171,14 @@ class Trainer(models.Model):
         transformation_settings = columns_wise_settings['transformation_settings']
         level_creation_settings = columns_wise_settings['level_creation_settings']
 
-        columns_wise_data = feature_engineering_config['columnsSettings']
-        overall_data = feature_engineering_config['overallSettings']
+        columns_wise_data = feature_engineering_config_ui['columnsSettings']
 
-        if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
-            overall_settings[0]['selected'] = True
-            overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
+        if 'overallSettings' in feature_engineering_config_ui:
+            overall_data = feature_engineering_config_ui['overallSettings']
+
+            if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+                overall_settings[0]['selected'] = True
+                overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
 
 
         for slug in columns_wise_data:
