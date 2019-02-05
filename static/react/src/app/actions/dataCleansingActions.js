@@ -29,19 +29,19 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
 }
 
 
-export function removeDuplicateAttributesAction(duplicate_removal_name, yesOrNo, dispatch){
+export function removeDuplicateAttributesAction(duplicate_attribute_removal, yesOrNo, dispatch){
      return {
 		type: "REMOVE_DUPLICATE_ATTRIBUTES",
     yesOrNo,
-    duplicate_removal_name
+    duplicate_attribute_removal
 	}
 }
 
-export function removeDuplicateObservationsAction(duplicate_removal_name, yesOrNo, dispatch){
+export function removeDuplicateObservationsAction(duplicate_observation_removal, yesOrNo, dispatch){
      return {
 		type: "REMOVE_DUPLICATE_OBSERVATIONS",
     yesOrNo,
-    duplicate_removal_name
+    duplicate_observation_removal
 	}
 }
 

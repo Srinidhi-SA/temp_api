@@ -665,21 +665,18 @@ export default function reducer(state = {
 
     case "REMOVE_DUPLICATE_ATTRIBUTES":
     {
-      var curRemoveDuplicateAttributes = state.removeDuplicateAttributes;
-      curRemoveDuplicateAttributes[action.duplicate_removal_name] = action.yesOrNo;
       return {
-        ...state
+        ...state,
+        removeDuplicateAttributes : action.yesOrNo
       }
     }
     break;
 
     case "REMOVE_DUPLICATE_OBSERVATIONS":
     {
-      var curremoveDuplicateObservations = state.removeDuplicateObservations;
-      curremoveDuplicateObservations[action.duplicate_removal_name] = action.yesOrNo;
       return {
-        ...state
-        // removeDuplicates : curremoveDuplicateObservations
+        ...state,
+        removeDuplicateObservations : action.yesOrNo
       }
     }
     break;

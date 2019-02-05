@@ -173,15 +173,18 @@ export function createModel(modelName, targetVariable, targetLevel) {
                                     "missingValueTreatment" :store.getState().datasets.missingValueTreatment,
                                     "outlierRemoval" : store.getState().datasets.outlierRemoval,
                                      },
-                                   "overallSettings" : store.getState().datasets.removeDuplicates,
-                                  }
+                                     "overallSettings" : {
+                                       "remove_duplicate_attributes" :store.getState().datasets.removeDuplicateAttributes,
+                                       "remove_duplicate_observations" :store.getState().datasets.removeDuplicateObservations,
+                                     },
+                                }
 
             var details = {
                 "ALGORITHM_SETTING":AlgorithmSettings,
                 "validationTechnique":validationTechnique,
                 "targetLevel":targetLevel,
                 "dataCleansing" : dataCleansing,
-                "featureEngineering" : {"columnsSettings" :store.getState().datasets.featureEngineering,
+                "featureEngineering" : {"columnsSettings" : store.getState().datasets.featureEngineering,
                                        "overallSettings" :  store.getState().datasets.topLevelData,
                                           },
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
