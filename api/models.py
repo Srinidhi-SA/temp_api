@@ -1291,8 +1291,8 @@ class Trainer(models.Model):
             # Measures Transformations
             if key == "replace_values_with":
                 colStructure = {
-                    "replace_by": uiJson.get("replace_values_with_input", 0),
-                    "replace_value": uiJson.get("replace_values_with_selected", "Mean")
+                    "replace_by": uiJson.get("replace_values_with_selected", "Mean"),
+                    "replace_value": uiJson.get("replace_values_with_input", 0)
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                                                         variable_selection_column_data,
