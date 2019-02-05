@@ -236,7 +236,9 @@ validateTransformdata(){
             }
             else
             {
-              binOrLevels=""
+              // binOrLevels=""
+              binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
+              binOrLevelData="levelData";
             }
 
 
