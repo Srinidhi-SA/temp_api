@@ -1130,7 +1130,7 @@ class Trainer(models.Model):
             for d in overall_data:
                 for i in overall_settings:
                     if i['name'] == overall_settings_ui_ml_name_mapping[d]:
-                        if overall_settings_ui_ml_name_mapping[d] == 'true':
+                        if overall_data[d] == 'true':
                             i['selected'] = True
 
         name_mapping = {
@@ -1195,6 +1195,7 @@ class Trainer(models.Model):
         columns_wise_data = feature_engineering_config_ui['columnsSettings']
 
         if 'overallSettings' in feature_engineering_config_ui:
+
             overall_data = feature_engineering_config_ui['overallSettings']
 
 	
