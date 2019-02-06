@@ -246,7 +246,7 @@ validateTransformdata(){
   binsOrLevelsPopup =
       (
         <div class="col-md-3 xs-mb-15 list-boxes" >
-            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
+            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header modal-lg">
               <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header" style={{overflow: 'inherit' }} >
                 <Modal.Header closeButton>
                   <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
@@ -268,7 +268,7 @@ validateTransformdata(){
       )
     transformColumnPopup = (
       <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
+        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header modal-lg">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
               <h3 className="modal-title">Transform column</h3>
@@ -328,8 +328,8 @@ validateTransformdata(){
           <table className="table table-striped table-bordered break-if-longText">
             <thead>
               <tr key="trKey">
-                <th>Variable name</th>
-                <th>Data type</th>
+                <th className="text-left"><b>Variable name</b></th>
+                <th ><b>Data type</b></th>
                 <th></th>
                 <th></th>
               </tr>
