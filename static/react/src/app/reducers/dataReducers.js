@@ -54,11 +54,11 @@ export default function reducer(state = {
   advancedAnalysisPerformance:true,
   createScoreShowVariables:false,
   missingValueTreatment:{},
-  outlierRemoval:{},
   featureEngineering:{},
   selectedVariables : {},
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
+  olUpperRange : {},
   binsOrLevelsShowModal:false,
   transferColumnShowModal:false,
   selectedBinsOrLevelsTab:"Bins",
@@ -680,6 +680,14 @@ export default function reducer(state = {
       }
     }
     break;
+
+    case "OUTLIER_UR":
+    {
+      return{
+        ...state,
+        olUpperRange : action.value
+      }
+    }
 
     case "DATACLEANSING_DATA_TYPE_CHANGE":
     {

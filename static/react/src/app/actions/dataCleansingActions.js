@@ -11,15 +11,6 @@ export function missingValueTreatmentSelectedAction(colName,colType,colSlug, tre
     treatment
 	}
 }
-export function outlierRemovalSelectedAction(colName,colType,colSlug, treatment, dispatch){
-  return {
-		type: "OUTLIER_REMOVAL",
-		colName,
-    colType,
-    colSlug,
-    treatment
-	}
-}
 export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
   return {
 		type: "VARIABLE_SELECTED",
@@ -44,6 +35,14 @@ export function removeDuplicateObservationsAction(duplicate_observation_removal,
     duplicate_observation_removal
 	}
 }
+
+  export function outlierRangeAction(name,value,dispatch){
+    return{
+      type: "OUTLIER_UR",
+      name,
+      value
+    }
+  }
 
 export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
     return {
