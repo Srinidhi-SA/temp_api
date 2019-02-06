@@ -173,11 +173,10 @@ export function createModel(modelName, targetVariable, targetLevel) {
                                     "missingValueTreatment" :store.getState().datasets.missingValueTreatment,
                                     "outlierRemoval" : store.getState().datasets.outlierRemoval,
                                      },
-                                     "overallSettings" : {
-                                       "remove_duplicate_attributes" :store.getState().datasets.removeDuplicateAttributes,
-                                       "remove_duplicate_observations" :store.getState().datasets.removeDuplicateObservations,
-                                     },
-                                }
+                                   "overallSettings" :{"remove_duplicate_attributes":store.getState().datasets.removeDuplicateAttributes,
+                                                      "remove_duplicate_observations":store.getState().datasets.removeDuplicateObservations,
+                                   },
+                                  }
 
             var details = {
                 "ALGORITHM_SETTING":AlgorithmSettings,
