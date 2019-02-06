@@ -74,84 +74,34 @@ export class Transform extends React.Component {
 
   render() {
     console.log("Transforms render method is called...");
-    if(this.props.selectedItem.columnType == "measure"){
-      return (
-        <div class="modal-body">
-          <h4>What would you like to do with {this.props.selectedItem.name} column?</h4>
-          <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
-            Each option will create an additional feature derived out of the original column.</p>
-          <hr/>
-          {/* <!-- content goes here --> */}
-          <form class="form_withrowlabels">
-            <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="replace_values_with" name="replace_values_with" defaultChecked={this.getTranformDataValue("replace_values_with")} type="checkbox" class="needsclick" onChange={this.pickValue}/>
-                  <label for="replace_values_with">Replace Values:</label>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-3">
-                <input type="number" name="replace_values_with_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("replace_values_with_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-              </div>
-              <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
-              <div class="col-md-3 col-sm-3">
-                <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" defaultValue={this.getTranformDataValue("replace_values_with_selected")}    onChange={this.pickValue}>
-                  <option value="none" > None</option>
-                  <option value="mean">Mean</option>
-                  <option value="median">Median</option>
-                  <option value="mode" >Mode</option>
-                </select>
-              </div>
-            </div>
-            {/* <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="add_specific_value" name="add_specific_value" type="checkbox"  defaultChecked={this.getTranformDataValue("add_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="add_specific_value">Add Specific value:</label>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-3">
-                <input type="text" name="add_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("add_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="subtract_specific_value" name="subtract_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("subtract_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="subtract_specific_value">Subtract Specific value:</label>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-3">
-                <input type="text" name="subtract_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("subtract_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="multiply_specific_value" name="multiply_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("multiply_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="multiply_specific_value">Multiply Specific value:</label>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-3">
-                <input type="text" name="multiply_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("multiply_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="divide_specific_value" name="divide_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("divide_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="divide_specific_value">Divide Specific value:</label>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-3">
-                <input type="text" name="divide_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("divide_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-              </div>
-            </div> */}
-            <div class="row form-group">
-              <div class="col-md-5 col-sm-5">
-                <div class="ma-checkbox inline">
-                  <input id="perform_standardization" name="perform_standardization" type="checkbox" defaultChecked={this.getTranformDataValue("perform_standardization")} class="needsclick" onChange={this.pickValue}/>
-                  <label for="perform_standardization">Feature Scaling:</label>
+       if(this.props.selectedItem.columnType == "measure"){
+          return (
+            <div class="modal-body">
+              <h4>What would you like to do with {this.props.selectedItem.name} column?</h4>
+              <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
+                Each option will create an additional feature derived out of the original column.</p>
+              <hr/>
+              {/* <!-- content goes here --> */}
+              <form class="form_withrowlabels">
+                <div class="row form-group">
+                  <div class="col-md-5 col-sm-5">
+                    <div class="ma-checkbox inline">
+                      <input id="replace_values_with" name="replace_values_with" defaultChecked={this.getTranformDataValue("replace_values_with")} type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <label for="replace_values_with">Replace Values:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <input type="number" name="replace_values_with_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("replace_values_with_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                  </div>
+                  <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
+                  <div class="col-md-3 col-sm-3">
+                    <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" defaultValue={this.getTranformDataValue("replace_values_with_selected")}    onChange={this.pickValue}>
+                      <option value="none" > None</option>
+                      <option value="mean">Mean</option>
+                      <option value="median">Median</option>
+                      <option value="mode" >Mode</option>
+                    </select>
+                  </div>
                 </div>
                  <div class="row form-group">
                     <div class="col-md-5 col-sm-5">

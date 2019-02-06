@@ -31,7 +31,6 @@ import {
   variableSelectedAction,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
-  outlierRangeAction,
   dataCleansingDataTypeChange
 } from "../../actions/dataCleansingActions";
 
@@ -101,6 +100,7 @@ onchangeMissingValueTreatment(event, variable_name){
 
 }
 
+
 missingValueTreatmentOnChange(event){
 
   console.log(event.target.dataset);
@@ -157,25 +157,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
                         <option value={item.name} selected >{item.displayName}</option>))
 
-<<<<<<< HEAD
-    getOutlierRangeOptions(name, value){
-      this.props.dispatch(outlierRangeAction( event.target.name, event.target.value));
-    }
-
-  getOutlierRemovalOptions(dataType, colName, colSlug){
-    var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
-      var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-      var selectedValue = "none";
-      if(colSlug in this.props.datasets.outlierRemoval){
-        selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
-      }
-      return (<select className="form-control" data-colName={colName}  data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
-=======
     var selectedValue = "none";
     if(colSlug  in this.props.datasets.outlierRemoval){
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
->>>>>>> a6579e1ec38eb6fa4dc133dd083cc1fa8e8f2382
     }
 
 
@@ -190,18 +174,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
                     <option value={item.name} selected >{item.displayName}</option>))
 
-<<<<<<< HEAD
-  getMissingValueTreatmentOptions(dataType, colName, colSlug){
-    var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
-      var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
-        <option value={item.name} selected >{item.displayName}</option>))
-      var selectedValue = "none";
-      if(colSlug in this.props.datasets.missingValueTreatment){
-=======
     var selectedValue = "none";
     if(colSlug  in this.props.datasets.missingValueTreatment){
->>>>>>> a6579e1ec38eb6fa4dc133dd083cc1fa8e8f2382
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
     }
 
@@ -238,34 +212,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div></td> */}
-<<<<<<< HEAD
-            <td className="text-left">{item.name}</td>
-            <td>  {this.getUpdatedDataType(item.slug)} </td>
-            {/* using filter and map to retrive data from array inside array*/}
-            <td> {item.columnStats.filter(function(items){
-              return  items.name == "numberOfUniqueValues" }).map((option)=>{
-                return(<span>{option.value}</span>);
-              })}
-            </td>
-            <td>{item.columnStats.filter(function(items){
-             return  items.name == "Outliers" }).map((option)=>{
-               return(<span>{option.value}</span>);
-             })}
-           </td>
-           <td>{item.columnStats.filter(function(items){
-             return  items.name == "PercentageMissingValue" }).map((option)=>{
-               return(<span>{option.value}</span>);
-             })}
-           </td>
-           <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td>
-           <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)}</td>
-           <span style={{visibility:"hidden"}}>{item.columnStats.filter(function(items){
-             return  items.name == "PercentageMissingValue" }).map((option)=>{
-               return(<span>{option.value}</span>);
-             })}
-           </span>
-         </tr>
-=======
 
           <td className="text-left">{item.name}</td>
           <td>  {this.getUpdatedDataType(item.slug)}</td>
@@ -300,7 +246,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
          </td>
 
           </tr>
->>>>>>> a6579e1ec38eb6fa4dc133dd083cc1fa8e8f2382
         );
       })
     }
