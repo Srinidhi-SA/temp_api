@@ -1095,7 +1095,7 @@ select[multiple].input-lg, textarea.input-lg {
 .form-horizontal .control-label {
 	text-align: right;
 	margin-bottom: 0;
-	padding-top: 9px
+	padding-top: 4px
 }
 .form-horizontal .form-group-lg .control-label {
 	padding-top: 13px;
@@ -2643,6 +2643,9 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 	color: #e6e6e6
 }
 .cst-fSize { font-size:18px; }
+.control-label.cst-fSize {
+    padding-top: 5px;
+}
  @-webkit-keyframes progress-bar-stripes {
  from {
  background-position: 40px 0
@@ -15229,7 +15232,16 @@ blockquote p:after {
 .form_withrowlabels .form-group { margin-bottom: 10px;}
 input#flight_number { display: inherit; width: inherit; }
 .mProcess { min-height:80px; }
-button.btn.btn-primary.b-inline.addn { position: absolute; right: 15px; top: 12px; }
+button.btn.btn-primary.b-inline.addn { position: absolute; right: 25px; top: 12px; }
+form .col-sm-4.control-label { 
+    margin: 6px 0 0 0;
+}
+.form_withrowlabels .form-group label {
+    /* padding: 0; */
+    margin: 0;
+}
+.content-section.implementation.multiselect-demo { height: 32px;}
+
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
