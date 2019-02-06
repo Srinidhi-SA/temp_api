@@ -31,6 +31,7 @@ import {
   variableSelectedAction,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
+  outlierRangeAction,
   dataCleansingDataTypeChange
 } from "../../actions/dataCleansingActions";
 
@@ -100,6 +101,7 @@ export class DataCleansing extends React.Component {
     this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
   }
   outlierRemovalOnChange(event){
+
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
   }
 
@@ -142,16 +144,19 @@ export class DataCleansing extends React.Component {
     this.props.history.push(proccedUrl);
   }
 
+    getOutlierRangeOptions(name, value){
+      this.props.dispatch(outlierRangeAction( event.target.name, event.target.value));
+    }
+
   getOutlierRemovalOptions(dataType, colName, colSlug){
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
-      var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
-        <option value={item.name} selected >{item.displayName}</option>))
+      var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
-      if(colSlug  in this.props.datasets.outlierRemoval){
+      if(colSlug in this.props.datasets.outlierRemoval){
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
       }
-      return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+      return (<select className="form-control" data-colName={colName}  data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
     }
     else { return "";}
   }
@@ -162,7 +167,7 @@ export class DataCleansing extends React.Component {
       var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
         <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
-      if(colSlug  in this.props.datasets.missingValueTreatment){
+      if(colSlug in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (<select className="form-control" data-coltype={dataType}  data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
@@ -207,7 +212,12 @@ export class DataCleansing extends React.Component {
              })}
            </td>
            <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td>
-           <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td>
+           <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)}</td>
+           <span style={{visibility:"hidden"}}>{item.columnStats.filter(function(items){
+             return  items.name == "PercentageMissingValue" }).map((option)=>{
+               return(<span>{option.value}</span>);
+             })}
+           </span>
          </tr>
         );
       })

@@ -101,9 +101,9 @@ export class Transform extends React.Component {
               <div class="col-md-3 col-sm-3">
                 <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" defaultValue={this.getTranformDataValue("replace_values_with_selected")}    onChange={this.pickValue}>
                   <option value="None" > None</option>
-                  <option value="Mean">Mean</option>
-                  <option value="Median">Median</option>
-                  <option value="Mode" >Mode</option>
+                  <option value="mean">Mean</option>
+                  <option value="median">Median</option>
+                  <option value="mode" >Mode</option>
                 </select>
               </div>
             </div>
