@@ -176,7 +176,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                     <option value={item.name} selected >{item.displayName}</option>))
 
     var selectedValue = "none";
-    if(colSlug  in this.props.datasets.missingValueTreatment){
+    if(colSlug in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
     }
 
@@ -234,7 +234,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
          </td>
          <td>
              {item.columnStats.filter(function(items){
-                 return  items.name == "PercentageMissingValue" }).map((option)=>{
+                 return  items.name == "numberOfNulls" }).map((option)=>{
                    return(<span>{option.value}</span>);
                }
                )}
@@ -307,7 +307,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                             <th><b>Data type</b></th>
                             <th><b>No of unique values</b></th>
                             <th><b>No of outliers</b></th>
-                            <th><b>% of missing values</b></th>
+                            <th><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
