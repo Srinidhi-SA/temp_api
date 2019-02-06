@@ -32,12 +32,20 @@ export class Levels extends React.Component {
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
 
   }
+  // getAllOptions(){
+  //   // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
+  //   let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
+  //   levelOptions.sort();
+  //   return levelOptions
+  // }
+
+
   getAllOptions(){
-    // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
-    let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
+    let levelOptions = Object.keys(this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "LevelCount"))[0].value)
     levelOptions.sort();
     return levelOptions
   }
+
   getMultiSelectOptions(idx){
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
       return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function(elem) {
@@ -57,6 +65,7 @@ export class Levels extends React.Component {
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
     this.addNewLevel();
+
   }
   componentWillUpdate(){
     this.props.parentUpdateLevelsData(this.state.levelsArray);
@@ -66,12 +75,6 @@ export class Levels extends React.Component {
 
   };
 
-  // addtdNewLevel(){
-  //   var newObj = {"inputValue":"", "multiselectValue":""};
-  //   this.setState({
-  //     levelsArray: this.state.levelsArray.concat([newObj,])
-  //   });
-  // };
 
 
 
@@ -182,6 +185,8 @@ export class Levels extends React.Component {
 
 
 
+
+
  var dtlevels="";
     dtlevels = (
       <div>
@@ -195,22 +200,13 @@ export class Levels extends React.Component {
           </div> */}
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="text" id="txt_sPeriod1" className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="text" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>
 
           <div class="form-group">
             <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-            <input type="text" id="txt_ePeriod1" class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
+            <input type="text" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
           </div>
-
-
-          {/* <div className="form-group">
-
-          <div className="content-section implementation multiselect-demo">
-          <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
-                            style={{minWidth:'12em'}} filter={true} placeholder="choose" />
-          </div>
-          </div> */}
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>

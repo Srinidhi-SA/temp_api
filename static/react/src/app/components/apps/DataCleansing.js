@@ -163,7 +163,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
     }
 
 
-    return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+    return (<select className="form-control" data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -202,6 +202,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         // console.log(item);
+        //
+        //
         if(removedVariables.indexOf(item.name)!= -1 ) return "";
 
         return (

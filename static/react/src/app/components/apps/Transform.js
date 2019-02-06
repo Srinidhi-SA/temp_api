@@ -59,7 +59,6 @@ export class Transform extends React.Component {
 
   onchangeInput(event){
     //disable CREATEMODEL
-    debugger;
     return event.target.value;
   }
 
