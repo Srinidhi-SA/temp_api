@@ -245,10 +245,10 @@ validateTransformdata(){
 
   binsOrLevelsPopup =
       (
-        <div class="col-md-3 xs-mb-15 list-boxes" >
+        // <div class="col-md-3 xs-mb-15 list-boxes" >
 
-            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header modal-lg">
-              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-lg" style={{overflow: 'inherit' }} >
+            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
+              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header" style={{overflow: 'inherit' }} >
 
                 <Modal.Header closeButton>
                   <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
@@ -266,11 +266,11 @@ validateTransformdata(){
               </Modal.Footer>
             </Modal>
           </div>
-        </div>
+        // </div>
       )
     transformColumnPopup = (
       <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header modal-lg">
+        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
               <h3 className="modal-title">Transform column</h3>
