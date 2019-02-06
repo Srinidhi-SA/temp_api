@@ -15232,7 +15232,7 @@ blockquote p:after {
 .form_withrowlabels .form-group { margin-bottom: 10px;}
 input#flight_number { display: inherit; width: inherit; }
 .mProcess { min-height:80px; }
-button.btn.btn-primary.b-inline.addn { position: absolute; right: 15px; top: 12px; }
+button.btn.btn-primary.b-inline.addn { position: absolute; right: 25px; top: 12px; }
 form .col-sm-4.control-label { 
     margin: 6px 0 0 0;
 }
@@ -15241,6 +15241,7 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
+
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
