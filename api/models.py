@@ -1209,7 +1209,7 @@ class Trainer(models.Model):
                         self.generate_new_column_name_based_on_transformation(
                             column_data[col],
                             'binning_all_measures',
-                            overall_data['numberOfBins']
+                            # overall_data['numberOfBins']
                         )
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
