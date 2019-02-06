@@ -1298,7 +1298,7 @@ class Trainer(models.Model):
                                                         variable_selection_column_data,
                                                         key,
                                                         str(uiJson.get("replace_values_with_input", 0)),
-                                                        uiJson.get("replace_values_with_selected", "Mean")
+                                                        uiJson.get("replace_values_with_selected", "mean")
                                                     )
             if key == "add_specific_value":
                 colStructure = {
@@ -1344,19 +1344,30 @@ class Trainer(models.Model):
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
+
+                name_mapping = {
+                    'standardization': 'standardized',
+                    'normalization': 'normalized'
+                }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                                         variable_selection_column_data,
                                         key,
-                                        str(uiJson.get("perform_standardization_select", "min_max_scaling"))
+                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
                                     )
             if key == "variable_transformation":
                 colStructure = {
                     "transformation_type": uiJson.get("variable_transformation_select", "log_transformation"),
                 }
+                name_mapping = {
+                    'log_transform': 'log_transformed',
+                    'modulus_transform': 'modulus_transformed',
+                    'cube_root_transform': 'cuberoot_transformed',
+                    'square_root_transform': 'squareroot_transformed'
+                }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                                         variable_selection_column_data,
                                         key,
-                                        str(uiJson.get("variable_transformation_select", "log_transformation"))
+                                        name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
                                     )
             # Dimensioins Transformations
             if key == "return_character_count":
@@ -1369,10 +1380,14 @@ class Trainer(models.Model):
                 colStructure = {
                     "encoding_type": uiJson.get("encoding_type", "one_hot_encoding"),
                 }
+                name_mapping = {
+                    'one_hot_encoding': 'one_hot_encoded',
+                    'label_encoding': 'label_encoded'
+                }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                                         variable_selection_column_data,
                                         key,
-                                        str(uiJson.get("encoding_type", "one_hot_encoding"))
+                                        name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
                                     )
             if key == "is_custom_string_in":
                 colStructure = {
