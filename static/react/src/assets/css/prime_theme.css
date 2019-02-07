@@ -1,24 +1,24 @@
 @charset "UTF-8";
 /* open-sans-300 - latin */
- 
- 
- 
+
+
+
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
-body .p-component { 
+body .p-component {
   font-size: 14px;
   text-decoration: none; }
- 
- 
+
+
 body .p-disabled, body .p-component:disabled {
   opacity: 0.5;
   filter: alpha(opacity=50); }
 body .pi {
   font-size: 1em; }
 
- 
+
   body .p-inputtext {
     font-size: 14px;
     color: #333333;
@@ -162,13 +162,13 @@ body .pi {
     body .p-inputswitch.p-inputswitch-focus .p-inputswitch-slider {
       background: #b7b7b7; }
     body .p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider {
-      background-color: #b7b7b7; }
+      background-color: #2e8679; }
     body .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
-      background-color: #007ad9; }
+      background-color: #00998c; }
     body .p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider {
-      background-color: #116fbf; }
+      background-color: #2e8679; }
     body .p-inputswitch.p-inputswitch-checked.p-inputswitch-focus .p-inputswitch-slider {
-      background: #2e8679; }
+      background: #00998c; }
   body .p-autocomplete .p-autocomplete-input {
     padding: 0.429em; }
   body .p-autocomplete.p-autocomplete-multiple .p-autocomplete-multiple-container {
@@ -328,7 +328,7 @@ body .pi {
     -o-transition: border-color 0.2s;
     -webkit-transition: border-color 0.2s;
     transition: border-color 0.2s;
-    border-radius: 0;	
+    border-radius: 0;
     }
 	.form_withrowlabels .p-multiselect {width: 205px;}
     body .p-multiselect:not(.p-disabled):hover {
