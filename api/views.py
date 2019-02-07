@@ -310,7 +310,7 @@ class TrainerView(viewsets.ModelViewSet):
             else:
                 message = ""
 
-
+        proceedFlag = True
         return JsonResponse({
             'proceed': proceedFlag,
             'message': message
