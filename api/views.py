@@ -1272,7 +1272,7 @@ def home(request):
     host = request.get_host()
 
     APP_BASE_URL = ""
-    protocol = "http"
+    protocol = "https"
     if request.is_secure():
         protocol = "https"
 
