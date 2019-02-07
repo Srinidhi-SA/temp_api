@@ -248,7 +248,7 @@ validateTransformdata(){
         // <div class="col-md-3 xs-mb-15 list-boxes" >
 
             <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
-              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header" style={{overflow: 'inherit' }} >
+              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{overflow: 'inherit' }} >
 
                 <Modal.Header closeButton>
                   <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
