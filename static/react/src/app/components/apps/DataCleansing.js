@@ -193,17 +193,13 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        // console.log(item);
-        //
-        //
-        if(removedVariables.indexOf(item.name)!= -1 ) return "";
-
+        if(removedVariables.indexOf(item.name)!= -1 || item.ignoreSuggestionFlag) return "";
         return (
           <tr>
-            {/* <td><div class="ma-checkbox inline">
+            <td><div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
-              </div></td> */}
+              </div></td>
 
           <td className="text-left">{item.name}</td>
           <td>  {this.getUpdatedDataType(item.slug)}</td>
@@ -260,9 +256,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div className="col-sm-7">
                   <div className="content-section implementation">
-                    {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
                      <InputSwitch id="rd1" onLabel="Yes" offLabel="No"  checked={this.state.value1}  name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-
                   </div>
                   </div>
               </div>
@@ -272,8 +266,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <div className="col-sm-7">
                   <div className="content-section implementation">
                     <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
-
-                    {/* <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} /> */}
                   </div>
                 </div>
               </div>
@@ -285,11 +277,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                   <table className="table table-striped table-bordered break-if-longText">
                     <thead>
                       <tr>
-                        {/* <th> <div class="ma-checkbox inline">
-                            <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
+                        <th> <div class="ma-checkbox inline">
+                            {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
                             <label for="checkAll">All</label>
                           </div>
-                        </th> */}
+                        </th>
                         <th className="text-left"><b>Variable name</b></th>
                         <th><b>Data type</b></th>
                         <th><b>No of unique values</b></th>
