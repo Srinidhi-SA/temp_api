@@ -205,7 +205,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         // console.log(item);
         //
         //
-        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
 
         return (
           <tr>

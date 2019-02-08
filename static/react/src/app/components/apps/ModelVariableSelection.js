@@ -138,8 +138,9 @@ export class ModelVariableSelection extends React.Component {
                        modelValidation = <div className="col-lg-8">
                             <h4>Model Validation</h4>
                             <div class="xs-pb-10">
+                              <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "trainTestValidation"}/><label for="trainTestValidation">Train Test Validation</label></div>
+
                             <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="crossValidation" value="crossValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "crossValidation"}/><label for="crossValidation">Cross Validation</label></div>
-                                <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "trainTestValidation"}/><label for="trainTestValidation">Train Test Validation</label></div>
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
