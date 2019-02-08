@@ -23,25 +23,16 @@ import {
     featureEngineering:store.datasets.featureEngineering,
   };
 })
+
 export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-
     this.state = { levelsArray: this.props.levelsData ,}
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
-
   }
-  // getAllOptions(){
-  //   // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
-  //   let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
-  //   levelOptions.sort();
-  //   return levelOptions
-  // }
-
 
   getAllOptions(){
-    // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
     let levelOptions = Object.keys(this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(items => items.name == "LevelCount" )[0].value);
     levelOptions.sort();
     return levelOptions
@@ -53,6 +44,7 @@ export class Levels extends React.Component {
         return {"label": elem, "value" : elem };
       });
   }
+
   getAllSelectedOptionsExceptCurrent(idx){
     var allSelectedItems = new Set();
     this.state.levelsArray.map(function(elem,elemIdx){
@@ -76,10 +68,6 @@ export class Levels extends React.Component {
 
   };
 
-
-
-
-
   addNewLevel(){
     var newObj = {"inputValue":"", "multiselectValue":""};
     this.setState({
@@ -101,7 +89,6 @@ export class Levels extends React.Component {
       if(slugData != undefined){
         levelData = slugData.levelData;
       }
-
     }
     return levelData;
   }
@@ -129,7 +116,6 @@ export class Levels extends React.Component {
     }
 
     inputOnChangeHandler(idx, event){
-
       var newArray = this.state.levelsArray;
       newArray[idx]["inputValue"] = event.target.value;
       this.setState({
@@ -143,90 +129,70 @@ export class Levels extends React.Component {
       this.setState({
         levelsArray: newArray
       });
-
     }
 
-  render() {
-    console.log("Levels render method is called...");
+    inputOnChangeHandler(idx, event){
+      var newArray = this.state.levelsArray;
+      newArray[idx]["inputValue"] = event.target.value;
+      this.setState({
+        levelsArray: newArray
+      });
+    }
 
-    var levelData = this.getLevelData();
-
-    var levels = "";
-    levels = (
-      <div>
-        {this.state.levelsArray.map((level, idx) => (
-          <div className="form_withrowlabels form-inline" key={idx} >
-          <div className="form-group">
-            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
-          </div>
-          <div className="form-group">
-            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
-          </div>
-          <div className="form-group">
-
-          <div className="content-section implementation multiselect-demo">
-          <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
-                            style={{minWidth:'12em'}} filter={true} placeholder="choose" />
-          </div>
-          </div>
-          <div className="form-group">
-          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
-          </div>
-        </div>
-
-        ))}
+    render() {
+      console.log("Levels render method is called...");
+      var levelData = this.getLevelData();
+      var levels = "";
+      levels = (
+        <div>
+          {this.state.levelsArray.map((level, idx) => (
+            <div className="form_withrowlabels form-inline" key={idx} >
+              <div className="form-group">
+                <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+                <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+              </div>
+              <div className="form-group">
+                <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
+              </div>
+              <div className="form-group">
+                <div className="content-section implementation multiselect-demo">
+                  <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)} style={{minWidth:'12em'}} filter={true} placeholder="choose" />
+                </div>
+              </div>
+              <div className="form-group">&nbsp;
+                <button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+              </div>
+            </div>
+          ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
-
       </div>
     )
 
-
-
-
-
-
-
- var dtlevels="";
+    var dtlevels="";
     dtlevels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
-          <div className="form-group">
-            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" id="txt_lName1"  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <div className="form-group">
+              <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+              <input type="text" id="txt_lName1"  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            </div>
+            <div class="form-group">
+              <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
+              <input type="date" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" defaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            </div>
+            <div class="form-group">
+              <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
+              <input type="date" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  defaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
+            </div>
+            <div className="form-group">&nbsp;
+              <button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+            </div>
           </div>
-            {/* <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
-          </div> */}
-          <div class="form-group">
-            <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="text" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
-          </div>
-
-          <div class="form-group">
-            <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-            <input type="text" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
-          </div>
-          <div className="form-group">
-          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
-          </div>
-        </div>
-
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
-
       </div>
     )
-
-
-
-
-
-
-
-
-
 
     return (
       <div>
@@ -241,6 +207,4 @@ export class Levels extends React.Component {
       </div>
     );
   }
-
-
 }
