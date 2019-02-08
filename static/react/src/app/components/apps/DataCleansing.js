@@ -6,11 +6,6 @@ import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-<<<<<<< HEAD
-// import {SelectButton} from 'primereact/selectbutton';
-=======
-import {SelectButton} from 'primereact/selectbutton';
->>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
 import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
@@ -66,19 +61,9 @@ export class DataCleansing extends React.Component {
     super(props);
     this.buttons = {};
     this.state = {
-<<<<<<< HEAD
             value1: false,
             value2: false
         };
-    // this.state = {
-    //   value1: null,
-    //   value2: null
-    // }  ;
-=======
-      value1: null,
-      value2: null,
-    };
->>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
   }
 
   componentWillMount() {
@@ -202,17 +187,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
   render() {
-<<<<<<< HEAD
-=======
-
-
-
-    // const options = [
-    //
-    //   {label: 'Yes', value: 'true'},
-    //   {label: 'No', value: 'false'},
-    // ];
->>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -251,11 +225,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
          </td>
          <td>
              {item.columnStats.filter(function(items){
-<<<<<<< HEAD
                  return  items.name == "numberOfNulls" }).map((option)=>{
-=======
-                   return  items.name == "numberOfNulls" }).map((option)=>{
->>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
                    return(<span>{option.value}</span>);
                }
                )}
