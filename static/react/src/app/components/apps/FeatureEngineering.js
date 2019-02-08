@@ -220,8 +220,8 @@ validateTransformdata(){
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">CREATE BINS OR LEVELS</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">TRANSFORM</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="default">CREATE BINS OR LEVELS</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="default">TRANSFORM</Button></td>
                </tr>  );
               })
             }
