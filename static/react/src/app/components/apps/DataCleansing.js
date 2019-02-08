@@ -6,7 +6,11 @@ import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
+<<<<<<< HEAD
 // import {SelectButton} from 'primereact/selectbutton';
+=======
+import {SelectButton} from 'primereact/selectbutton';
+>>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
 import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
@@ -62,6 +66,7 @@ export class DataCleansing extends React.Component {
     super(props);
     this.buttons = {};
     this.state = {
+<<<<<<< HEAD
             value1: false,
             value2: false
         };
@@ -69,6 +74,11 @@ export class DataCleansing extends React.Component {
     //   value1: null,
     //   value2: null
     // }  ;
+=======
+      value1: null,
+      value2: null,
+    };
+>>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
   }
 
   componentWillMount() {
@@ -192,6 +202,17 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
   render() {
+<<<<<<< HEAD
+=======
+
+
+
+    // const options = [
+    //
+    //   {label: 'Yes', value: 'true'},
+    //   {label: 'No', value: 'false'},
+    // ];
+>>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -230,7 +251,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
          </td>
          <td>
              {item.columnStats.filter(function(items){
+<<<<<<< HEAD
                  return  items.name == "numberOfNulls" }).map((option)=>{
+=======
+                   return  items.name == "numberOfNulls" }).map((option)=>{
+>>>>>>> 7e989fddb924c376a828965769217300dd3e7cc9
                    return(<span>{option.value}</span>);
                }
                )}
@@ -265,16 +290,20 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div className="col-sm-7">
                   <div className="content-section implementation">
-                    <InputSwitch onLabel="Yes" offLabel="No" checked={this.state.value1} onChange={this.handleDuplicateAttributesOnChange.bind(this)}/>
+                    {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
+                     <InputSwitch id="rd1" onLabel="Yes" offLabel="No"  checked={this.state.value1}  name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
+
                   </div>
-                </div>
+                  </div>
               </div>
               <div className="clearfix xs-mb-5"></div>
               <div className="form-group">
                 <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
                 <div className="col-sm-7">
                   <div className="content-section implementation">
-                    <InputSwitch checked={this.state.value2} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)}/>
+                    <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+
+                    {/* <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} /> */}
                   </div>
                 </div>
               </div>

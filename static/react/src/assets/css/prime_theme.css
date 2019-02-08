@@ -70,8 +70,8 @@ body .pi {
           background-color: #3b9a8c;
           color: #ffffff; }
         body .p-checkbox .p-checkbox-box.p-highlight.p-focus {
-          border-color: #005b9f;
-          background-color: #005b9f;
+          border-color: #2e8679;
+          background-color: #2e8679;
           color: #ffffff; }
       body .p-checkbox .p-checkbox-box .p-checkbox-icon {
         overflow: hidden;
@@ -111,12 +111,12 @@ body .pi {
         body .p-radiobutton .p-radiobutton-box.p-highlight .p-radiobutton-icon {
           background-color: #ffffff; }
         body .p-radiobutton .p-radiobutton-box.p-highlight:not(.p-disabled):hover {
-          border-color: #005b9f;
-          background-color: #005b9f;
+          border-color: #2e8679;
+          background-color: #2e8679;
           color: #ffffff; }
         body .p-radiobutton .p-radiobutton-box.p-highlight.p-focus {
-          border-color: #005b9f;
-          background-color: #005b9f;
+          border-color: #2e8679;
+          background-color: #2e8679;
           color: #ffffff; }
       body .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
         background: transparent;
@@ -162,14 +162,13 @@ body .pi {
     body .p-inputswitch.p-inputswitch-focus .p-inputswitch-slider {
       background: #b7b7b7; }
     body .p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider {
-      content:"Off";
       background-color: #5cb5aa; }
     body .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
       background-color: #30afa0; }
     body .p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider {
       background-color: #30afa0; }
     body .p-inputswitch.p-inputswitch-checked.p-inputswitch-focus .p-inputswitch-slider {
-      background: ##30afa0; }
+      background: ##00998c; }
   body .p-autocomplete .p-autocomplete-input {
     padding: 0.429em; }
   body .p-autocomplete.p-autocomplete-multiple .p-autocomplete-multiple-container {
@@ -710,9 +709,9 @@ body .pi {
     color: #ffffff;
     border-color: #116fbf; }
   body .p-fileupload-choose:not(.p-disabled):active {
-    background-color: #005b9f;
+    background-color: #2e8679;
     color: #ffffff;
-    border-color: #005b9f; }
+    border-color: #2e8679; }
   body .p-fileupload-choose.p-focus {
     outline: 0 none;
     outline-offset: 0px; }
@@ -858,8 +857,8 @@ body .p-togglebutton {
       body .p-togglebutton.p-highlight:hover .p-button-icon-left {
         color: #ffffff; }
     body .p-togglebutton.p-highlight.p-focus {
-      background-color: #005b9f;
-      border-color: #005b9f;
+      background-color: #2e8679;
+      border-color: #2e8679;
       color: #ffffff; }
       body .p-togglebutton.p-highlight.p-focus .p-button-icon-left {
         color: #ffffff; }
@@ -947,9 +946,9 @@ body .p-button.p-button-info, body .p-buttonset.p-button-info > .p-button {
   body .p-button.p-button-info:enabled:focus, body .p-buttonset.p-button-info > .p-button:enabled:focus {
     background-color: #0088f3; }
   body .p-button.p-button-info:enabled:active, body .p-buttonset.p-button-info > .p-button:enabled:active {
-    background-color: #005b9f;
+    background-color: #2e8679;
     color: #ffffff;
-    border-color: #005b9f; }
+    border-color: #2e8679; }
 body .p-button.p-button-success, body .p-buttonset.p-button-success > .p-button {
   color: #ffffff;
   background-color: #34A835;
@@ -1092,8 +1091,8 @@ body .p-accordion .p-accordion-header {
     body .p-accordion .p-accordion-header:not(.p-disabled).p-highlight a .p-accordion-toggle-icon {
       color: #ffffff; }
   body .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover a {
-    border: 1px solid #005b9f;
-    background-color: #005b9f;
+    border: 1px solid #2e8679;
+    background-color: #2e8679;
     color: #ffffff; }
     body .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover a .p-accordion-toggle-icon {
       color: #ffffff; }
@@ -1143,8 +1142,8 @@ body .p-tabview.p-tabview-top, body .p-tabview.p-tabview-bottom, body .p-tabview
         body .p-tabview.p-tabview-top .p-tabview-nav li.p-highlight .p-tabview-close, body .p-tabview.p-tabview-bottom .p-tabview-nav li.p-highlight .p-tabview-close, body .p-tabview.p-tabview-left .p-tabview-nav li.p-highlight .p-tabview-close, body .p-tabview.p-tabview-right .p-tabview-nav li.p-highlight .p-tabview-close {
           color: #ffffff; }
         body .p-tabview.p-tabview-top .p-tabview-nav li.p-highlight:hover, body .p-tabview.p-tabview-bottom .p-tabview-nav li.p-highlight:hover, body .p-tabview.p-tabview-left .p-tabview-nav li.p-highlight:hover, body .p-tabview.p-tabview-right .p-tabview-nav li.p-highlight:hover {
-          border: 1px solid #005b9f;
-          background-color: #005b9f; }
+          border: 1px solid #2e8679;
+          background-color: #2e8679; }
           body .p-tabview.p-tabview-top .p-tabview-nav li.p-highlight:hover a, body .p-tabview.p-tabview-bottom .p-tabview-nav li.p-highlight:hover a, body .p-tabview.p-tabview-left .p-tabview-nav li.p-highlight:hover a, body .p-tabview.p-tabview-right .p-tabview-nav li.p-highlight:hover a {
             color: #ffffff; }
             body .p-tabview.p-tabview-top .p-tabview-nav li.p-highlight:hover a .p-tabview-left-icon, body .p-tabview.p-tabview-top .p-tabview-nav li.p-highlight:hover a .p-tabview-right-icon, body .p-tabview.p-tabview-bottom .p-tabview-nav li.p-highlight:hover a .p-tabview-left-icon, body .p-tabview.p-tabview-bottom .p-tabview-nav li.p-highlight:hover a .p-tabview-right-icon, body .p-tabview.p-tabview-left .p-tabview-nav li.p-highlight:hover a .p-tabview-left-icon, body .p-tabview.p-tabview-left .p-tabview-nav li.p-highlight:hover a .p-tabview-right-icon, body .p-tabview.p-tabview-right .p-tabview-nav li.p-highlight:hover a .p-tabview-left-icon, body .p-tabview.p-tabview-right .p-tabview-nav li.p-highlight:hover a .p-tabview-right-icon {
@@ -1968,7 +1967,7 @@ body .p-overlaypanel {
     -webkit-transition: background-color 0.2s;
     transition: background-color 0.2s; }
     body .p-overlaypanel .p-overlaypanel-close:hover {
-      background-color: #005b9f;
+      background-color: #2e8679;
       color: #ffffff; }
     body .p-overlaypanel .p-overlaypanel-close > span {
       line-height: inherit; }
@@ -2444,8 +2443,8 @@ body .p-panelmenu .p-panelmenu-header {
       color: #ffffff; }
     body .p-panelmenu .p-panelmenu-header.p-highlight > a:hover {
       outline: 0 none;
-      border: 1px solid #005b9f;
-      background-color: #005b9f;
+      border: 1px solid #2e8679;
+      background-color: #2e8679;
       color: #ffffff; }
       body .p-panelmenu .p-panelmenu-header.p-highlight > a:hover .p-panelmenu-icon {
         color: #ffffff; }

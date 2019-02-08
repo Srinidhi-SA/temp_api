@@ -131,14 +131,6 @@ export class Levels extends React.Component {
       });
     }
 
-    inputOnChangeHandler(idx, event){
-      var newArray = this.state.levelsArray;
-      newArray[idx]["inputValue"] = event.target.value;
-      this.setState({
-        levelsArray: newArray
-      });
-    }
-
     render() {
       console.log("Levels render method is called...");
       var levelData = this.getLevelData();

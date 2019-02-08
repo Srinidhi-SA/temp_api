@@ -219,7 +219,7 @@ validateTransformdata(){
        return (
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
-                  <td> {item.columnType}</td>
+                  <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
                   <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create Bins or Levels</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                </tr>  );
@@ -245,9 +245,11 @@ validateTransformdata(){
 
   binsOrLevelsPopup =
       (
-        <div class="col-md-3 xs-mb-15 list-boxes" >
-            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header modal-lg">
-              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header" style={{overflow: 'inherit' }} >
+        // <div class="col-md-3 xs-mb-15 list-boxes" >
+
+            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
+              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{overflow: 'inherit' }} >
+
                 <Modal.Header closeButton>
                   <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
                 </Modal.Header>
@@ -264,11 +266,11 @@ validateTransformdata(){
               </Modal.Footer>
             </Modal>
           </div>
-        </div>
+        // </div>
       )
     transformColumnPopup = (
       <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header modal-lg">
+        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
               <h3 className="modal-title">Transform column</h3>
