@@ -15241,7 +15241,8 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-
+.algSelection .bg-highlight-parent { min-height: 260px;  border: 1px solid #ededed;}
+div.algSelection .checkbox .ma-checkbox.inline label { font-size: 15px; text-transform: uppercase; font-weight:500;  }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
