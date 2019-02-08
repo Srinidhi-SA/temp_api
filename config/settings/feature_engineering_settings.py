@@ -66,11 +66,11 @@ data_cleansing_static = {
         'name': 'median_imputation',
         'selected': False,
         'slug': 'ToO7vD2uKTyHMBjLs26dgU'},
-    {   'columns': [],
-        'displayName': 'Remove Observations',
-        'name': 'remove_observations',
-        'selected': False,
-        'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
+    # {   'columns': [],
+    #     'displayName': 'Remove Observations',
+    #     'name': 'remove_observations',
+    #     'selected': False,
+    #     'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
@@ -97,11 +97,11 @@ data_cleansing_static = {
         'name': 'replace_with_median',
         'selected': False,
         'slug': '2MWuRulQahdbkD66y3R0b0'},
-      {'columns': [],
-       'displayName': 'Remove Observations',
-       'name': 'remove_observations',
-       'selected': False,
-       'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
+      # {'columns': [],
+      #  'displayName': 'Remove Observations',
+      #  'name': 'remove_observations',
+      #  'selected': False,
+      #  'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
@@ -145,13 +145,13 @@ data_cleansing_static = {
         'name': 'knn_imputation',
         'selected': False,
         'slug': 'x5FU8rJgsgrJDNPsZUaQ7F'},
-    {
-            'columns': [],
-        'displayName': 'Remove Observations',
-        'name': 'remove_observations',
-        'selected': False,
-        'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
-        },
+    # {
+    #         'columns': [],
+    #     'displayName': 'Remove Observations',
+    #     'name': 'remove_observations',
+    #     'selected': False,
+    #     'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
+    #     },
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
@@ -204,6 +204,11 @@ column_format = {
                     "ol_lower_value": 0,
                     "ol_upper_value": 0
                 }
+
+overall_settings_data_cleasing_ui_ml_mapping = {
+    'remove_duplicate_observations': 'duplicate_row',
+    'remove_duplicate_attributes': 'duplicate_column'
+}
 
 data_cleansing_final_config_format = {
       "name": "data_cleansing",
@@ -293,15 +298,15 @@ data_cleansing_final_config_format = {
     'selected': False,
     'slug': 'Tm4E16v15xUF7BZznuYpOs'
   },
-  {
-    'columns': [
-
-    ],
-    'displayName': 'Remove Observations',
-    'name': 'remove_observations',
-    'selected': False,
-    'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
-  },
+  # {
+  #   'columns': [
+  #
+  #   ],
+  #   'displayName': 'Remove Observations',
+  #   'name': 'remove_observations',
+  #   'selected': False,
+  #   'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
+  # },
   {
     'columns': [
 
@@ -536,6 +541,16 @@ feture_engineering_static = {
             "selected": True,
             "display": True,
             "operations": [
+                {
+                    "name": "none",
+                    "displayName": "None",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "columns_structure": {
+
+                    }
+                },
                 {
                     "name": "create_equal_sized_bins",
                     "displayName": "Create Equal Sized Bins",
@@ -1208,7 +1223,7 @@ feature_engineering_ml_settings = {
         {
           "name": "binning_all_measures",
           "displayName": "Bin all Measures",
-          "selected": True,
+          "selected": False,
           "number_of_bins": 10,
           "slug": "",
         }],

@@ -271,38 +271,37 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
               </div>
             </div>
           </div>
-            <div className="panel box-shadow ">
-              <div className="panel-body no-border xs-p-20">
-                <div className="table-responsive ">
-                  <table className="table table-striped table-bordered break-if-longText">
-                    <thead>
-                      <tr>
-                        <th> <div class="ma-checkbox inline">
-                            {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
-                            <label for="checkAll">All</label>
-                          </div>
-                        </th>
-                        <th className="text-left"><b>Variable name</b></th>
-                        <th><b>Data type</b></th>
-                        <th><b>No of unique values</b></th>
-                        <th><b>No of outliers</b></th>
-                        <th><b>No of missing values</b></th>
-                        <th><b>Missing value treatment</b></th>
-                        <th><b>Outlier removal</b></th>
-                      </tr>
-                    </thead>
-                    <tbody className="no-border-x">
-                      {cleansingHtml}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="buttonRow text-right">
-                  <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
-                </div>
-              </div>
-            </div>
-            <div className="xs-p-30"></div>
-          </div>
+                <div className="panel box-shadow ">
+                    <div class="panel-body no-border xs-p-20">
+                  <div className="table-responsive ">
+                      <table className="table table-striped table-bordered break-if-longText">
+                        <thead>
+                          <tr>
+                            {/* <th> <div class="ma-checkbox inline">
+                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
+                                <label for="checkAll">All</label>
+                              </div>
+                            </th> */}
+
+                            <th className="text-left"><b>Variable name</b></th>
+                            <th><b>Data type</b></th>
+                            <th><b>No of unique values</b></th>
+                            <th><b>No of outliers</b></th>
+                            <th><b>No of missing values</b></th>
+                            <th><b>Missing value treatment</b></th>
+                            <th><b>Outlier removal</b></th>
+                            </tr>
+                        </thead>
+                        <tbody className="no-border-x">
+                          {cleansingHtml}
+                        </tbody>
+                      </table>
+
+                  </div>
+  <div class="buttonRow text-right">
+     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
+   </div>
+ </div>
         </div>
       </div>
       {/* <!--End of Page Content Area --> */}

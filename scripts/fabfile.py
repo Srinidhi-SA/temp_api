@@ -116,6 +116,11 @@ def change_config_file(branch='dev'):
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
+
+        # unecessary lock file
+        if os.path.exists(BASE_DIR + '/static/react/package-lock.json'):
+            local('git checkout {0}'.format(BASE_DIR + '/static/react/package-lock.json'))
+
         if os.path.exists(config_file_path) is True:
             local('git add {0}'.format(config_file_path))
 

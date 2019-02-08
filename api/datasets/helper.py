@@ -741,6 +741,7 @@ def add_columnData_to_ui_metatdata(meta_data):
             colDataUI["dateSuggestionFlag"] = head["dateSuggestionFlag"]
             colDataUI["ignoreSuggestionFlag"] = head["ignoreSuggestionFlag"]
             colDataUI["ignoreSuggestionMsg"] = head["ignoreSuggestionMsg"]
+            colDataUI["columnStats"] = head["columnStats"]
             if "actualColumnType" in head:
                 colDataUI["actualColumnType"] = head["actualColumnType"]
             else:

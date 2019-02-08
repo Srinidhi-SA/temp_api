@@ -864,8 +864,23 @@ class Trainer(models.Model):
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
+        # this part is related to FS
         config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
+        # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
+        try:
+            configUI = self.get_config()
+            if 'featureEngineering' in configUI:
+                for colSlug in self.collect_column_slugs_which_all_got_transformations:
+                        for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                if i['slug'] == colSlug:
+                                    print(colSlug)
+                                    i['selected'] = False
+                                    break
+                config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
+        except:
+            pass
+        # first UI config was saved <-> this is ML config got saved in place of UI config
         self.config = json.dumps(config)
         self.save()
         return config
@@ -1041,15 +1056,19 @@ class Trainer(models.Model):
         variable_selection = config['variablesSelection']
         column_data = self.convert_variable_selection_config_into_dict(data=variable_selection)
 
+        self.add_newly_generated_column_names = []
+        self.collect_column_slugs_which_all_got_transformations = []
         if 'dataCleansing' in config:
             data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'featureEngineering' in config:
             feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
 
+        self.collect_column_slugs_which_all_got_transformations = list(set(self.collect_column_slugs_which_all_got_transformations ))
         return {
             'DATA_CLEANSING': data_cleansing_config,
             'FEATURE_ENGINEERING': feature_engineering_config
         }
+
 
     def data_cleansing_adaptor_for_ml(self, data_cleansing_config_ui, column_data):
         '''
@@ -1107,10 +1126,12 @@ class Trainer(models.Model):
         # overall_settings
         if 'overallSettings' in data_cleansing_config_ui:
             overall_data = data_cleansing_config_ui['overallSettings']
+            overall_settings_ui_ml_name_mapping = feature_engineering_settings.overall_settings_data_cleasing_ui_ml_mapping
             for d in overall_data:
                 for i in overall_settings:
-                    if i['name'] == d:
-                        i['selected'] = True
+                    if i['name'] == overall_settings_ui_ml_name_mapping[d]:
+                        if overall_data[d] == 'true':
+                            i['selected'] = True
 
         name_mapping = {
             'missingValueTreatment': 'missing_value_treatment',
@@ -1174,12 +1195,23 @@ class Trainer(models.Model):
         columns_wise_data = feature_engineering_config_ui['columnsSettings']
 
         if 'overallSettings' in feature_engineering_config_ui:
+
             overall_data = feature_engineering_config_ui['overallSettings']
 
-            if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+	
+            if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
+            #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 overall_settings[0]['selected'] = True
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
-
+                for col in column_data:
+                    if column_data[col]['columnType'] == 'measure':
+                        self.collect_column_slugs_which_all_got_transformations.append(col)
+                        self.generate_new_column_name_based_on_transformation(
+                            column_data[col],
+                            'binning_all_measures',
+                            # overall_data['numberOfBins']
+                        )
+        self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
             columns_wise_data_f = columns_wise_data[slug]
@@ -1189,21 +1221,19 @@ class Trainer(models.Model):
 
                 if fkey == 'transformationData':
                     mlJson = self.transformationUiJsonToMLJsonAdapter(uiJson=uiJson,
-                                                             columnName=column_data[slug]['name'],
-                                                             columnType=column_data[slug]['columnType']
+                                                                      variable_selection_column_data=column_data[slug]
                                                              )
                     self.add_to_feature_engineering_transformation_settings(transformation_settings, mlJson)
+
                 if fkey == 'binData':
                     mlJson = self.binningAdapter(uiJson=uiJson,
-                                                 columnName=column_data[slug]['name'],
-                                                 columnType=column_data[slug]['columnType']
+                                                 variable_selection_column_data=column_data[slug]
                                                  )
                     self.add_to_feature_engineering_bin_creation_settings(level_creation_settings, mlJson)
                 elif fkey == 'levelData':
                     mlJson = self.levelsAdapter(uiJson=uiJson,
-                                                 columnName=column_data[slug]['name'],
-                                                 columnType=column_data[slug]['columnType']
-                                                 )
+                                                variable_selection_column_data=column_data[slug]
+                                                )
                     self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
 
         return feature_engineering_ml_config
@@ -1230,7 +1260,6 @@ class Trainer(models.Model):
         except:
             pass
 
-
     def add_to_feature_engineering_level_creation_settings(self, level_creation_settings, mlJson):
 
         try:
@@ -1242,7 +1271,7 @@ class Trainer(models.Model):
         except:
             pass
 
-    def transformationUiJsonToMLJsonAdapter(self, uiJson, columnName, columnType):
+    def transformationUiJsonToMLJsonAdapter(self, uiJson, variable_selection_column_data):
         mlJson = {}
         list_of_transformations = [
             # Measure Transformations
@@ -1258,98 +1287,290 @@ class Trainer(models.Model):
                 continue
 
             colStructure = {}
-
+            user_given_name = ''
             # Measures Transformations
             if key == "replace_values_with":
                 colStructure = {
-                    "replace_by": uiJson.get("replace_values_with_input", 0),
-                    "replace_value": uiJson.get("replace_values_with_selected", "Mean")
+                    "replace_by": uiJson.get("replace_values_with_selected", "Mean"),
+                    "replace_value": uiJson.get("replace_values_with_input", 0)
                 }
-
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                                        variable_selection_column_data,
+                                                        key,
+                                                        str(uiJson.get("replace_values_with_input", 0)),
+                                                        uiJson.get("replace_values_with_selected", "mean")
+                                                    )
             if key == "add_specific_value":
                 colStructure = {
                     "value_to_be_added": uiJson.get("add_specific_value_input", 0),
                 }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                                        variable_selection_column_data,
+                                                        key,
+                                                        str(uiJson.get("add_specific_value_input", 0))
+                                                    )
             if key == "subtract_specific_value":
                 colStructure = {
                     "value_to_be_subtracted": uiJson.get("subtract_specific_value_input", 0),
                 }
+
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                                        variable_selection_column_data,
+                                                        key,
+                                                        str(uiJson.get("subtract_specific_value_input", 0))
+                                                    )
             if key == "multiply_specific_value":
                 colStructure = {
                     "value_to_be_multiplied": uiJson.get("multiply_specific_value_input", 1),
                 }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                                        variable_selection_column_data,
+                                                        key,
+                                                        str(uiJson.get("multiply_specific_value_input", 1))
+                                                    )
 
             if key == "divide_specific_value":
                 colStructure = {
                     "value_to_be_divided": uiJson.get("divide_specific_value_input", 1),
                 }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                                        variable_selection_column_data,
+                                                        key,
+                                                        str(uiJson.get("divide_specific_value_input", 1))
+                                                    )
 
             if key == "perform_standardization":
 
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
+
+                name_mapping = {
+                    'standardization': 'standardized',
+                    'normalization': 'normalized'
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                                    )
             if key == "variable_transformation":
                 colStructure = {
                     "transformation_type": uiJson.get("variable_transformation_select", "log_transformation"),
                 }
+                name_mapping = {
+                    'log_transform': 'log_transformed',
+                    'modulus_transform': 'modulus_transformed',
+                    'cube_root_transform': 'cuberoot_transformed',
+                    'square_root_transform': 'squareroot_transformed'
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
+                                    )
             # Dimensioins Transformations
             if key == "return_character_count":
                 colStructure = {}
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key
+                                    )
             if key == "encoding_dimensions":
                 colStructure = {
                     "encoding_type": uiJson.get("encoding_type", "one_hot_encoding"),
                 }
+                name_mapping = {
+                    'one_hot_encoding': 'one_hot_encoded',
+                    'label_encoding': 'label_encoded'
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
+                                    )
             if key == "is_custom_string_in":
                 colStructure = {
                     "user_given_string": uiJson.get("is_custom_string_in_input", "error"),
                 }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        str(uiJson.get("is_custom_string_in_input", "error"))
+                                    )
 
-            colStructure["name"] = columnName
-            colStructure["user_given_name"] = columnName + "__" + key
-            colStructure["datatype"] = columnType
-
+            colStructure["name"] = variable_selection_column_data['name']
+            colStructure["user_given_name"] = user_given_name
+            colStructure["datatype"] = variable_selection_column_data['columnType']
             mlJson[key] = colStructure
         return mlJson
 
-    def binningAdapter(self, uiJson, columnName, columnType):
+    def binningAdapter(self, uiJson, variable_selection_column_data):
+        '''
+        columnName=column_data[slug]['name'],
+        columnType=column_data[slug]['columnType']
+        :param uiJson:
+        :param columnName:
+        :param columnType:
+        :return:
+        '''
         mlJson = {}
 
         if uiJson and "selectBinType" in uiJson:
 
             colStructure = {}
-            colStructure["name"] = columnName
-            colStructure["datatype"] = columnType
+            colStructure["name"] = variable_selection_column_data['name']
+            colStructure["datatype"] = variable_selection_column_data['columnType']
             mlJson['selectBinType'] = uiJson["selectBinType"]
+            user_given_name = ""
             # Measures Transformations
             if uiJson["selectBinType"] == "create_equal_sized_bins":
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        uiJson["selectBinType"]
+                                    )
                 colStructure.update({
                     "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
-                    "user_given_name": uiJson.get("newcolumnname", "Binned_" + columnName)
+                    "user_given_name": user_given_name
                 })
                 mlJson["colStructure"] = colStructure
 
             if uiJson["selectBinType"] == "create_custom_bins":
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        uiJson["selectBinType"]
+                                    )
                 colStructure.update({
                     "list_of_intervals": [int(token.strip()) for token in
                                           uiJson.get("specifyintervals", "").split(",")],
-                    "user_given_name": uiJson.get("newcolumnname", "Custom_Binned_" + columnName)
+                    "user_given_name": user_given_name
                 })
                 mlJson["colStructure"] = colStructure
 
         return mlJson
 
-    def levelsAdapter(self, uiJson, columnName, columnType):
+    def levelsAdapter(self, uiJson, variable_selection_column_data):
+
+        user_given_name = self.generate_new_column_name_based_on_transformation(
+            variable_selection_column_data,
+            'create_new_levels'
+        )
         mlJson = {
-            "name": columnName,
-            "datatype": columnType,
-            "user_given_name": columnName + "__" + "Levels",
+            "name": variable_selection_column_data['name'],
+            "datatype": variable_selection_column_data['columnType'],
+            "user_given_name": user_given_name,
             "mapping_dict": {}
         }
         for item in uiJson:
             if "inputValue" in item and "multiselectValue" in item:
                 mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
         return mlJson
+
+    def generate_new_column_name_based_on_transformation(self, variable_selection_column_data, function_name, *args):
+
+        name_mapping = {
+            'create_equal_sized_bins': {
+                'name': 'bin',
+                'type': 'dimension'
+            },
+            'create_custom_bins': {
+                'name': 'c_bin',
+                'type': 'dimension'
+            },
+            'create_new_levels': {
+                'name': 'level',
+                'type': 'dimension'
+            },
+            'create_new_datetime_levels': {
+                'name': 't_level',
+                'type': 'dimension'
+            },
+            'replace_values_with': {
+                'name': 'treated',
+                'type': 'measure'
+            },
+            'variable_transformation': {
+                'name': 'vt',
+                'type': 'measure'
+            },
+            'label_encoding': {
+                'name': 'le',
+                'type': 'dimension'
+            },
+            'onehot_encoding': {
+                'name': 'onehot_encoded',
+                'type': 'dimension'
+            },
+            'return_character_count': {
+                'name': 'character_count',
+                'type': 'measure'
+            },
+            'is_custom_string_in': {
+                'name': 'contains',
+                'type': 'dimension'
+            },
+            'is_date_weekend': {
+                'name': 'is_w',
+                'type': 'boolean'
+            },
+            'extract_time_feature': {
+                'name': 'e_t_f',
+                'type': 'dimension'
+            },
+            'standardization': {
+                'name': 'fs',
+                'type': 'measure'
+            },
+            'normalization': {
+                'name': 'normalized',
+                'type': 'measure'
+            },
+            'encoding_dimensions': {
+                'name': 'ed',
+                'type': 'measure'
+            },
+            'binning_all_measures': {
+                'name': 'bin',
+                'type': 'dimension'
+            },
+            'perform_standardization': {
+                'name': 'fs',
+                'type': 'measure'
+            }
+        }
+        original_col_nam = variable_selection_column_data['name']
+        if function_name in name_mapping:
+            new_name = "_".join([original_col_nam, name_mapping[function_name]['name']] + list(args))
+        else:
+            new_name = "_".join([original_col_nam, function_name] + list(args))
+        self.add_newly_generated_column_names_into_column_settings(
+                    newly_generated_column_name=new_name,
+                    columnType=name_mapping[function_name]['type'],
+                    variable_selection_column_data=variable_selection_column_data
+                    )
+
+        return new_name
+
+    def add_newly_generated_column_names_into_column_settings(self,
+                                                              newly_generated_column_name,
+                                                              columnType,
+                                                              variable_selection_column_data
+                                                              ):
+        remove_these = ['name', 'columnType', 'actualColumnType', 'selected']
+        temp = copy.deepcopy(variable_selection_column_data)
+        for i in remove_these:
+            del temp[i]
+        slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+        custom_dict = {
+            'columnType': columnType,
+            'actualColumnType': columnType,
+            'name': newly_generated_column_name,
+            'selected': True,
+            'slug': slug
+        }
+        custom_dict.update(temp)
+        self.add_newly_generated_column_names.append(custom_dict)
 
 
 # TODO: Add generate config
@@ -1427,6 +1648,7 @@ class Score(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+        config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
 
         self.config = json.dumps(config)
         self.save()
@@ -1542,6 +1764,12 @@ class Score(models.Model):
         ret.update(meta_data_related_config)
 
         return ret
+
+    def get_trainer_feature_settings(self):
+        model_config = json.loads(self.trainer.config)
+        model_config_feature_settings = model_config['config']['FEATURE_SETTINGS']
+        return model_config_feature_settings
+
 
     def get_local_file_path(self):
         return '/tmp/' + self.slug
