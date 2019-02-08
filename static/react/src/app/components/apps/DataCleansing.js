@@ -6,7 +6,8 @@ import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {SelectButton} from 'primereact/selectbutton';
+// import {SelectButton} from 'primereact/selectbutton';
+import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
@@ -61,9 +62,13 @@ export class DataCleansing extends React.Component {
     super(props);
     this.buttons = {};
     this.state = {
-      value1: null,
-      value2: null
-    };
+            value1: false,
+            value2: false
+        };
+    // this.state = {
+    //   value1: null,
+    //   value2: null
+    // }  ;
   }
 
   componentWillMount() {
@@ -158,7 +163,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                         <option value={item.name} selected >{item.displayName}</option>))
 
     var selectedValue = "none";
-    if(colSlug  in this.props.datasets.outlierRemoval){
+    if(colSlug in this.props.datasets.outlierRemoval){
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
     }
 
@@ -187,14 +192,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
   render() {
-
-
-
-    const options = [
-
-      {label: 'Yes', value: 'true'},
-      {label: 'No', value: 'false'},
-    ];
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -254,85 +251,72 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         // <!-- Main Content starts with side-body -->
        <div className="side-body">
         {/* <!-- Page Title and Breadcrumbs -->*/}
-        <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
+        <div className="page-head">
+          <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
         </div>
         {/*<!-- /.Page Title and Breadcrumbs -->*/}
         {/*<!-- Page Content Area -->*/}
          <div className="main-content">
-         <div class="row">
-          <div class="col-md-12">
-          <div class="panel box-shadow xs-m-0">
-            <div class="panel-body no-border xs-p-20">
-              <div class="form-group">
+         <div className="row">
+          <div className="col-md-12">
+          <div className="panel box-shadow xs-m-0">
+            <div className="panel-body no-border xs-p-20">
+              <div className="form-group">
                 <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
-                <div class="col-sm-7">
+                <div className="col-sm-7">
                   <div className="content-section implementation">
-                    <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-                    {/* <p>Selected Value: {this.state.value1}</p> */}
+                    <InputSwitch onLabel="Yes" offLabel="No" checked={this.state.value1} onChange={this.handleDuplicateAttributesOnChange.bind(this)}/>
                   </div>
-                  {/* <SelectButton value={this.state.value1} options={options}  onChange={(e) => this.setState({value1: e.value})} />
-                    <p>Selected Value: {this.state.value1}</p> */}
-
                 </div>
               </div>
-
-              <div class="clearfix xs-mb-5"></div>
-
-              <div class="form-group">
+              <div className="clearfix xs-mb-5"></div>
+              <div className="form-group">
                 <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
-                <div class="col-sm-7">
+                <div className="col-sm-7">
                   <div className="content-section implementation">
-                    <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
-                    {/* <p>Selected Value: {this.state.value2}</p> */}
+                    <InputSwitch checked={this.state.value2} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)}/>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-                <div className="panel box-shadow ">
-                    <div class="panel-body no-border xs-p-20">
-                  <div className="table-responsive ">
-                      <table className="table table-striped table-bordered break-if-longText">
-                        <thead>
-                          <tr>
-                            {/* <th> <div class="ma-checkbox inline">
-                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
-                                <label for="checkAll">All</label>
-                              </div>
-                            </th> */}
-
-                            <th className="text-left"><b>Variable name</b></th>
-                            <th><b>Data type</b></th>
-                            <th><b>No of unique values</b></th>
-                            <th><b>No of outliers</b></th>
-                            <th><b>No of missing values</b></th>
-                            <th><b>Missing value treatment</b></th>
-                            <th><b>Outlier removal</b></th>
-                            </tr>
-                        </thead>
-                        <tbody className="no-border-x">
-                          {cleansingHtml}
-                        </tbody>
-                      </table>
-
-                  </div>
-  <div class="buttonRow text-right">
-     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
-   </div>
- </div>
+            <div className="panel box-shadow ">
+              <div className="panel-body no-border xs-p-20">
+                <div className="table-responsive ">
+                  <table className="table table-striped table-bordered break-if-longText">
+                    <thead>
+                      <tr>
+                        {/* <th> <div class="ma-checkbox inline">
+                            <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
+                            <label for="checkAll">All</label>
+                          </div>
+                        </th> */}
+                        <th className="text-left"><b>Variable name</b></th>
+                        <th><b>Data type</b></th>
+                        <th><b>No of unique values</b></th>
+                        <th><b>No of outliers</b></th>
+                        <th><b>No of missing values</b></th>
+                        <th><b>Missing value treatment</b></th>
+                        <th><b>Outlier removal</b></th>
+                      </tr>
+                    </thead>
+                    <tbody className="no-border-x">
+                      {cleansingHtml}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="buttonRow text-right">
+                  <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
+                </div>
+              </div>
+            </div>
+            <div className="xs-p-30"></div>
+          </div>
         </div>
-        <div class="xs-p-30"></div>
       </div>
+      {/* <!--End of Page Content Area --> */}
     </div>
-
-
-  </div>
-  {/*<!--End of Page Content Area -->*/}
-</div>
-// <!-- /. Main Content ends with side-body -->
-
-
-      );
-    }
+    // <!-- /. Main Content ends with side-body -->
+    );
+  }
 }
