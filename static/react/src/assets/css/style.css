@@ -15241,8 +15241,9 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-.algSelection .bg-highlight-parent { min-height: 260px;  border: 1px solid #ededed;}
-div.algSelection .checkbox .ma-checkbox.inline label { font-size: 15px; text-transform: uppercase; font-weight:500;  }
+.algSelection .bg-highlight-parent { padding: 10px 15px; height: 280px; border: 1px solid #ededed; }
+div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: uppercase; padding: 10px; }
+.algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

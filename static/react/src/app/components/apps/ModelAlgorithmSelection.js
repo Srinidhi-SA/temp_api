@@ -113,10 +113,9 @@ export class ModelAlgorithmSelection extends React.Component {
                         <div className="col-md-3">
 						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
-                            <div className="ma-checkbox inline">
-                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId} className="text-primary"> {data.algorithmName}</label>
-                            </div>
-							<hr />
+                            <div className="ma-checkbox">
+                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}> {data.algorithmName}</label>
+                            </div>							
 							<div className="xs-mt-5"><p>{data.description}</p></div>
                         </div>
 						</div>
