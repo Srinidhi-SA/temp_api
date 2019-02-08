@@ -212,8 +212,8 @@ validateTransformdata(){
     var numberOfSelectedDimensions = 0;
 
         if (this.props.dataPreview != null) {
-          feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1 || item.ignoreSuggestionFlag) return "";
+            feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+            if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
         if(item.columnType == "measure") numberOfSelectedMeasures +=1;
         else numberOfSelectedDimensions +=1;
        return (
@@ -238,7 +238,7 @@ validateTransformdata(){
             {
               // binOrLevels=""
               binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-              binOrLevelData="levelData";
+              binOrLevelData="levelDaata";
             }
 
 

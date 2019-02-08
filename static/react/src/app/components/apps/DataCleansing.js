@@ -193,7 +193,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1 || item.ignoreSuggestionFlag) return "";
+        // console.log(item);
+        //
+        //
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
+
         return (
           <tr>
             <td><div class="ma-checkbox inline">
