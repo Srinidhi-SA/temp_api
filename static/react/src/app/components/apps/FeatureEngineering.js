@@ -213,15 +213,15 @@ validateTransformdata(){
 
         if (this.props.dataPreview != null) {
             feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+            if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
         if(item.columnType == "measure") numberOfSelectedMeasures +=1;
         else numberOfSelectedDimensions +=1;
        return (
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
-                  <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">CREATE BINS OR LEVELS</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">TRANSFORM</Button></td>
+                  <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create Bins or Levels</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                </tr>  );
               })
             }
@@ -238,7 +238,7 @@ validateTransformdata(){
             {
               // binOrLevels=""
               binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-              binOrLevelData="levelData";
+              binOrLevelData="levelDaata";
             }
 
 
@@ -248,7 +248,7 @@ validateTransformdata(){
         // <div class="col-md-3 xs-mb-15 list-boxes" >
 
             <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
-              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header" style={{overflow: 'inherit' }} >
+              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{overflow: 'inherit' }} >
 
                 <Modal.Header closeButton>
                   <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>

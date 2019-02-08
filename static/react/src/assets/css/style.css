@@ -6883,7 +6883,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', end
 	font-size: 11px;
 	font-weight: 600;
 	z-index: 0;
-	content: "OFF";
+	content: "No";
 	right: 0;
 	display: block;
 	width: 100%;
@@ -6913,7 +6913,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', end
 	font-size: 11px;
 	font-weight: 600;
 	z-index: 0;
-	content: "ON";
+	content: "Yes";
 	color: #fff;
 	left: 0;
 	text-align: left;

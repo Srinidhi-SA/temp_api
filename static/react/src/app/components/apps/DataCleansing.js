@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {SelectButton} from 'primereact/selectbutton';
+import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
@@ -63,7 +64,7 @@ export class DataCleansing extends React.Component {
     this.buttons = {};
     this.state = {
       value1: null,
-      value2: null
+      value2: null,
     };
   }
 
@@ -191,11 +192,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
 
-    const options = [
-
-      {label: 'Yes', value: 'true'},
-      {label: 'No', value: 'false'},
-    ];
+    // const options = [
+    //
+    //   {label: 'Yes', value: 'true'},
+    //   {label: 'No', value: 'false'},
+    // ];
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -205,7 +206,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         // console.log(item);
         //
         //
-        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
 
         return (
           <tr>
@@ -269,13 +270,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
-                    <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-                    {/* <p>Selected Value: {this.state.value1}</p> */}
-                  </div>
-                  {/* <SelectButton value={this.state.value1} options={options}  onChange={(e) => this.setState({value1: e.value})} />
-                    <p>Selected Value: {this.state.value1}</p> */}
+                    {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
+                     <InputSwitch id="rd1" onLabel="Yes" offLabel="No"  checked={this.state.value1}  name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
 
-                </div>
+                  </div>
+                  </div>
               </div>
 
               <div class="clearfix xs-mb-5"></div>
@@ -284,8 +283,9 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
-                    <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
-                    {/* <p>Selected Value: {this.state.value2}</p> */}
+                    <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+
+                    {/* <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} /> */}
                   </div>
                 </div>
               </div>
