@@ -15233,7 +15233,7 @@ blockquote p:after {
 input#flight_number { display: inherit; width: inherit; }
 .mProcess { min-height:80px; }
 button.btn.btn-primary.b-inline.addn { position: absolute; right: 25px; top: 12px; }
-form .col-sm-4.control-label { 
+form .col-sm-4.control-label {
     margin: 6px 0 0 0;
 }
 .form_withrowlabels .form-group label {
@@ -15243,9 +15243,10 @@ form .col-sm-4.control-label {
 .content-section.implementation.multiselect-demo { height: 32px;}
 
 /**************** Css realated to developers, keep the source down ***/
+.binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
 	    width: 40%;
-    margin: 15px 0px 0px 0px;
+    margin: 15px 0px 0px 0px
 }
 
 progress {

@@ -226,7 +226,7 @@ validateTransformdata(){
               })
             }
             if(this.props.selectedItem.columnType == "measure"){
-              binOrLevels= <Bins parentPickValue={this.pickValue}   clearBinsAndIntervals={this.clearBinsAndIntervals} />
+              binOrLevels=   <Bins parentPickValue={this.pickValue}   clearBinsAndIntervals={this.clearBinsAndIntervals} />
               binOrLevelData="binData";
             }
             else if(this.props.selectedItem.columnType == "dimension")
@@ -238,7 +238,7 @@ validateTransformdata(){
             {
               // binOrLevels=""
               binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-              binOrLevelData="levelDaata";
+              binOrLevelData="levelData";
             }
 
 
