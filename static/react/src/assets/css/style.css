@@ -9769,8 +9769,8 @@ pre {
 	border-color: #c5c5c5
 }
 .btn-default.disabled, .btn-default.disabled.active, .btn-default.disabled.focus, .btn-default.disabled:active, .btn-default.disabled:focus, .btn-default.disabled:hover, .btn-default[disabled], .btn-default[disabled].active, .btn-default[disabled].focus, .btn-default[disabled]:active, .btn-default[disabled]:focus, .btn-default[disabled]:hover, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default.active, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:hover {
-	background-color: #fff;
-	border-color: #dedede
+    background-color: #e5e5e5;
+    border-color: #dfdfdf;
 }
 .btn-default .badge {
 	color: #fff;
@@ -15241,7 +15241,9 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-
+.algSelection .bg-highlight-parent { padding: 10px 15px; height: 280px; border: 1px solid #ededed; }
+div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: uppercase; padding: 10px; }
+.algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
