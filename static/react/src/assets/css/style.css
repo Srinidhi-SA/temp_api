@@ -9769,8 +9769,8 @@ pre {
 	border-color: #c5c5c5
 }
 .btn-default.disabled, .btn-default.disabled.active, .btn-default.disabled.focus, .btn-default.disabled:active, .btn-default.disabled:focus, .btn-default.disabled:hover, .btn-default[disabled], .btn-default[disabled].active, .btn-default[disabled].focus, .btn-default[disabled]:active, .btn-default[disabled]:focus, .btn-default[disabled]:hover, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default.active, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:hover {
-	background-color: #fff;
-	border-color: #dedede
+    background-color: #e5e5e5;
+    border-color: #dfdfdf;
 }
 .btn-default .badge {
 	color: #fff;
