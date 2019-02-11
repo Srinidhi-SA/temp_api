@@ -32,7 +32,7 @@ export class Levels extends React.Component {
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
 
   }
-  // getAllOptions(){
+  // getAllOptions(levelssssss){
   //   // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
   //   let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
   //   levelOptions.sort();
@@ -80,7 +80,7 @@ export class Levels extends React.Component {
 
 
   addNewLevel(){
-    var newObj = {"inputValue":"", "multiselectValue":""};
+    var newObj = {"inputValue":"", "multiselectValue":"","startDate":"", "endDate":""};
     this.setState({
       levelsArray: this.state.levelsArray.concat([newObj,])
     });
@@ -127,10 +127,9 @@ export class Levels extends React.Component {
       }
     }
 
-    inputOnChangeHandler(idx, event){
-
+    inputOnChangeHandler(idx, valueToChange, event){
       var newArray = this.state.levelsArray;
-      newArray[idx]["inputValue"] = event.target.value;
+      newArray[idx][valueToChange] = event.target.value;
       this.setState({
         levelsArray: newArray
       });
@@ -156,8 +155,9 @@ export class Levels extends React.Component {
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
-            <label for="txt_lName1">{`${idx + 1}`}.&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+
+            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
@@ -193,18 +193,18 @@ export class Levels extends React.Component {
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" id="txt_lName1"  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="text" id="txt_lName1" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />
           </div>
             {/* <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div> */}
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="text" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="date" id="txt_sPeriod1" value={level.startDate} className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
           </div>
 
           <div class="form-group">
             <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-            <input type="text" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
+            <input type="date" id="txt_ePeriod1" value={level.endDate} class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
           </div>
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
@@ -228,7 +228,7 @@ export class Levels extends React.Component {
 
     return (
       <div className="binsLevelsHeight">
-        <Tab.Container id="left-tabs-example" >
+        <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
               {/* <Tab.Content animation>{levels}</Tab.Content> */}
