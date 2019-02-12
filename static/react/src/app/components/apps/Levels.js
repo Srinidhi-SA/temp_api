@@ -208,12 +208,12 @@ console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
           </div> */}
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="date" id="txt_sPeriod1" value={level.startDate} min={startDate} defaultValue={startDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
+            <input type="date" id="txt_sPeriod1" value={level.startDate} min={startDate} max={endDate}  defaultValue={startDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
           </div>
 
           <div class="form-group">
             <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-            <input type="date" id="txt_ePeriod1" value={level.endDate} max={endDate} defaultValue={endDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
+            <input type="date" id="txt_ePeriod1" value={level.endDate} min={startDate} max={endDate} defaultValue={endDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
           </div>
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
