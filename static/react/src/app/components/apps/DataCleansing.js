@@ -21,6 +21,8 @@ import {
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
+
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -168,7 +170,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   }
   else { return "";}
 }
-
+handelSort(variableType,sortOrder){
+  this.props.dispatch(handelSort(variableType,sortOrder))
+}
 getMissingValueTreatmentOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
@@ -302,8 +306,20 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                               </div>
                             </th> */}
 
-                            <th className="text-left"><b>Variable name</b></th>
+                            <th className="text-left"><b>Variable name</b>
+                            {/* <div class="btn-group">
+                                                       <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                       <ul role="menu" className="dropdown-menu dropdown-menu-right">
+                                                           <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
+                                                           <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                       </ul>
+                                                   </div> */}
+                                                 </th>
                             <th><b>Data type</b></th>
+
+
+
+
                             <th><b>No of unique values</b></th>
                             <th><b>No of outliers</b></th>
                             <th><b>No of missing values</b></th>

@@ -157,7 +157,7 @@ export class Levels extends React.Component {
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
 
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
+            <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
