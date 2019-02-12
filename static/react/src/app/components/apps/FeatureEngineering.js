@@ -53,7 +53,7 @@ export class FeatureEngineering extends React.Component {
     if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
-	console.log("FeatureEngineering componentWillMount method is called...");
+console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
@@ -172,10 +172,9 @@ export class FeatureEngineering extends React.Component {
 		$("select[name='selectBinType']").css("border-color","red");
 		$("input[name='numberofbins']").css("border-color","red");
 		$("input[name='newcolumnname']").css("border-color","red");
-		$("#fileErrorMsg").html("Please enter Mandatory fields * ");
-	}
+    $("#fileErrorMsg").html("Please enter Mandatory fields * ");
   }
- 
+  }
 
   validateLevelData(actionType){
     console.log('level validation starts');
@@ -193,7 +192,7 @@ export class FeatureEngineering extends React.Component {
           console.log('dates are undefined');
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Start Date should be before End Date");
-
+return;
     }else{
      if ((Date.parse(startDate) > Date.parse(endDate))) {
        console.log('starte date is greater');
@@ -215,7 +214,7 @@ export class FeatureEngineering extends React.Component {
       }
   }
 
- 
+
 validateTransformdata(){
 }
 
@@ -260,9 +259,11 @@ validateTransformdata(){
        return (
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
+
                   <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button"> Create Bins or Levels</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="cst_button">Transform</Button></td>
+
                </tr>  );
               })
             }
@@ -429,3 +430,4 @@ validateTransformdata(){
     }
 
 }
+
