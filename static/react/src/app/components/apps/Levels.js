@@ -12,8 +12,6 @@ import {
 } from "../../actions/dataActions";
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 
-
-
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -134,16 +132,15 @@ export class Levels extends React.Component {
       });
     }
 
-    handleEvent(event, picker) {
+  handleEvent(event, picker) {
+
     console.log(picker.startDate._d);
     console.log(picker.endDate._d);
   }
 
   render() {
     console.log("Levels render method is called...");
-
     var levelData = this.getLevelData();
-
     var levels = "";
     levels = (
       <div>
@@ -151,7 +148,6 @@ export class Levels extends React.Component {
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-
             <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
@@ -184,12 +180,11 @@ export class Levels extends React.Component {
             <input type="text" id="txt_lName1" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
           </div>
           <div class="form-group">
-            <input type="text" name="DateRangePicker" value={this.props.picker} />
+            <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
+            <input type="DateRangePicker" id="txt_sPeriod1" value={level.startDate} className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
             <DateRangePicker startDate="1/1/2014" endDate="3/1/2014" onEvent={this.handleEvent}> &nbsp;&nbsp;&nbsp;
               <button>Calender</button>
             </DateRangePicker>
-            {/* <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="date" id="txt_sPeriod1" value={level.startDate} className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} /> */}
           </div>
 
           {/* <div class="form-group">
@@ -197,15 +192,10 @@ export class Levels extends React.Component {
             <input type="date" id="txt_ePeriod1" value={level.endDate} class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
           </div> */}
 
-
-
-
-
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
         </div>
-
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
       </div>
