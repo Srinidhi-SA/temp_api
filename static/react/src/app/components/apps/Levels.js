@@ -67,9 +67,15 @@ export class Levels extends React.Component {
 
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
-    this.addNewLevel();
-
+    this.addNewLevel();	
   }
+  
+ componentDidMount() {
+	if ($('#dimSEdate').hasClass('wide-modal')) {			
+		$('.modal-colored-header').addClass('modal-lg-dimSEdate');
+	}
+ }
+  
   componentWillUpdate(){
     this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
@@ -197,7 +203,7 @@ console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
  var dtlevels="";
     dtlevels = (
-      <div>
+      <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">

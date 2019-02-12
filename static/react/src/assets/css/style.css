@@ -15244,6 +15244,17 @@ form .col-sm-4.control-label {
 .algSelection .bg-highlight-parent { padding: 10px 15px; height: 280px; border: 1px solid #ededed; }
 div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: uppercase; padding: 10px; }
 .algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
+.modal-lg-dimSEdate { width:805px; }
+.modal-lg-dimSEdate .modal-content { max-width:inherit; }
+button.btn.btn-cst_button { border: none; background: transparent; color: #0000ff; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
+    -moz-transition:opacity .5s ease;
+    transition:opacity .5s ease; }
+button.btn.btn-cst_button:hover { background:#f3f3f3; color:#00998c; 
+		-webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1); }
+button.btn.btn-cst_button[disabled] { background-color: #cccccc; color: #666666;  }
+button.btn.btn-cst_button[disabled]:hover { background-color: #cccccc; color: #666666; -webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
