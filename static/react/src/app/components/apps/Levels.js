@@ -150,13 +150,9 @@ export class Levels extends React.Component {
   render() {
     console.log("Levels render method is called...");
 
-    var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value;
-console.log(startDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
-var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value;
-console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-
-
+if(this.props.selectedItem.columnType == "dimension")
+{
     var levelData = this.getLevelData();
         var levels = "";
     levels = (
@@ -191,11 +187,13 @@ console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
 
 
-
-
+}
+else{
 
 
  var dtlevels="";
+ var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
+ var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
@@ -228,7 +226,7 @@ console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
 
 
-
+}
 
 
 
