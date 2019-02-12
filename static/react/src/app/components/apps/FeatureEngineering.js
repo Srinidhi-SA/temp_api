@@ -219,14 +219,16 @@ validateTransformdata(){
        return (
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
+
                   <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create Bins or Levels</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="default"><i className="fa fa-file-text-o"></i> Create Bins or Levels</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="default"><i className="fa fa-file-text-o"></i> Transform</Button></td>
+
                </tr>  );
               })
             }
             if(this.props.selectedItem.columnType == "measure"){
-              binOrLevels= <Bins parentPickValue={this.pickValue}   clearBinsAndIntervals={this.clearBinsAndIntervals} />
+              binOrLevels=   <Bins parentPickValue={this.pickValue}   clearBinsAndIntervals={this.clearBinsAndIntervals} />
               binOrLevelData="binData";
             }
             else if(this.props.selectedItem.columnType == "dimension")
@@ -238,7 +240,7 @@ validateTransformdata(){
             {
               // binOrLevels=""
               binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-              binOrLevelData="levelDaata";
+              binOrLevelData="levelData";
             }
 
 

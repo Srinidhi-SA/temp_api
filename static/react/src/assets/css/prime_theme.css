@@ -330,7 +330,7 @@ body .pi {
     transition: border-color 0.2s;
     border-radius: 0;
     }
-	.form_withrowlabels .p-multiselect {width: 205px;}
+	.form_withrowlabels .p-multiselect {width: 160px;}
     body .p-multiselect:not(.p-disabled):hover {
       border-color: #e0e0e0; }
     body .p-multiselect:not(.p-disabled):focus {
