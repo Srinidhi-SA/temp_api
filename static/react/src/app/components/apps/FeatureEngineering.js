@@ -104,10 +104,10 @@ console.log("FeatureEngineering componentWillMount method is called...");
     if(actionType == "binData"){
       this.validateBinData(actionType);
   }else if (actionType == "levelData"){
-     var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.closeBinsOrLevelsModal();
-      this.closeTransformColumnModal();
+
+    this.validateLevelData(actionType);
+
+
   }else if(actionType == "transformationData"){
      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
@@ -175,6 +175,46 @@ console.log("FeatureEngineering componentWillMount method is called...");
     $("#fileErrorMsg").html("Please enter Mandatory fields * ");
   }
   }
+
+  validateLevelData(actionType){
+    console.log('level validation starts');
+    var slugData = this.state[this.props.selectedItem.slug];
+      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+        var levelData = this.state[this.props.selectedItem.slug][actionType];
+
+        for (var i = 0; i < levelData.length; i++) {
+
+    var startDate = levelData[i].startDate;
+    var endDate = levelData[i].endDate;
+
+    if((startDate==undefined || startDate == null || startDate =="") ||
+        (endDate==undefined || endDate == null || endDate =="")  ){
+          console.log('dates are undefined');
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Start Date should be before End Date");
+
+    }else{
+     if ((Date.parse(startDate) > Date.parse(endDate))) {
+       console.log('starte date is greater');
+       $("#fileErrorMsg").removeClass("visibilityHidden");
+       $("#fileErrorMsg").html("Start Date should be before End Date");
+     }
+   }
+
+   var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+    this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+    this.closeBinsOrLevelsModal();
+    this.closeTransformColumnModal();
+
+
+}
+
+
+
+      }
+  }
+
+
 validateTransformdata(){
 }
 
@@ -221,8 +261,8 @@ validateTransformdata(){
                   <td className="text-left"> {item.name}</td>
 
                   <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="default"><i className="fa fa-file-text-o"></i> Create Bins or Levels</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="default"><i className="fa fa-file-text-o"></i> Transform</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="default">CREATE BINS OR LEVELS</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="default">TRANSFORM</Button></td>
 
                </tr>  );
               })

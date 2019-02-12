@@ -10,6 +10,9 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import DateRangePicker from 'react-bootstrap-daterangepicker';
+
+
 
 @connect((store) => {
   return {
@@ -69,7 +72,7 @@ export class Levels extends React.Component {
   };
 
   addNewLevel(){
-    var newObj = {"inputValue":"", "multiselectValue":""};
+    var newObj = {"inputValue":"", "multiselectValue":"","startDate":"", "endDate":""};
     this.setState({
       levelsArray: this.state.levelsArray.concat([newObj,])
     });
@@ -115,9 +118,9 @@ export class Levels extends React.Component {
       }
     }
 
-    inputOnChangeHandler(idx, event){
+    inputOnChangeHandler(idx, valueToChange, event){
       var newArray = this.state.levelsArray;
-      newArray[idx]["inputValue"] = event.target.value;
+      newArray[idx][valueToChange] = event.target.value;
       this.setState({
         levelsArray: newArray
       });
@@ -131,6 +134,11 @@ export class Levels extends React.Component {
       });
     }
 
+    handleEvent(event, picker) {
+    console.log(picker.startDate._d);
+    console.log(picker.endDate._d);
+  }
+
   render() {
     console.log("Levels render method is called...");
 
@@ -142,8 +150,9 @@ export class Levels extends React.Component {
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
-            <label for="txt_lName1">{`${idx + 1}`}.&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+
+            <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
@@ -170,22 +179,33 @@ export class Levels extends React.Component {
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
-            <div className="form-group">
-              <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-              <input type="text" id="txt_lName1"  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
-            </div>
-            <div class="form-group">
-              <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-              <input type="date" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" defaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
-            </div>
-            <div class="form-group">
-              <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-              <input type="date" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  defaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
-            </div>
-            <div className="form-group">&nbsp;
-              <button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
-            </div>
+          <div className="form-group">
+            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+            <input type="text" id="txt_lName1" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
           </div>
+          <div class="form-group">
+            <input type="text" name="DateRangePicker" value={this.props.picker} />
+            <DateRangePicker startDate="1/1/2014" endDate="3/1/2014" onEvent={this.handleEvent}> &nbsp;&nbsp;&nbsp;
+              <button>Calender</button>
+            </DateRangePicker>
+            {/* <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
+            <input type="date" id="txt_sPeriod1" value={level.startDate} className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} /> */}
+          </div>
+
+          {/* <div class="form-group">
+            <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
+            <input type="date" id="txt_ePeriod1" value={level.endDate} class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
+          </div> */}
+
+
+
+
+
+          <div className="form-group">
+          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+          </div>
+        </div>
+
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
       </div>
@@ -193,7 +213,7 @@ export class Levels extends React.Component {
 
     return (
       <div className="binsLevelsHeight">
-        <Tab.Container id="left-tabs-example" >
+        <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
               {/* <Tab.Content animation>{levels}</Tab.Content> */}

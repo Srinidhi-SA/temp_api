@@ -22,14 +22,18 @@
   "license": "Private",
   "dependencies": {
     "bootbox": "^4.4.0",
+    "bootstrap-daterangepicker": "^3.0.3",
     "bootstrap-multiselect": "^0.9.13-1",
     "dateformat": "^2.0.0",
+    "moment": "^2.24.0",
     "primeicons": "^1.0.0",
     "primereact": "^3.0.0",
-    "react": "^15.6.1",
+    "prop-types": "^15.7.1",
+    "react": "^15.6.2",
     "react-addons-shallow-compare": "^15.6.2",
     "react-bootstrap": "^0.31.2",
     "react-bootstrap-date-picker": "^5.1.0",
+    "react-bootstrap-daterangepicker": "^4.1.0",
     "react-bootstrap-dialog": "^0.9.1",
     "react-bootstrap-slider": "^2.0.1",
     "react-bootstrap-toggle": "^2.2.3",
@@ -66,10 +70,6 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "jquery": "^3.2.1",
-    "redux-logger": "^3.0.6",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1",
     "d3-array": "1.2.0",
     "d3-axis": "1.0.8",
     "d3-brush": "1.0.4",
@@ -99,6 +99,10 @@
     "d3-timer": "1.0.7",
     "d3-transition": "1.1.0",
     "d3-voronoi": "1.1.2",
-    "d3-zoom": "1.5.0"
+    "d3-zoom": "1.5.0",
+    "jquery": "^3.3.1",
+    "redux-logger": "^3.0.6",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
   }
 }

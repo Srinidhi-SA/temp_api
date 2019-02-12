@@ -20,6 +20,8 @@ import {
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
+
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -160,11 +162,15 @@ export class DataCleansing extends React.Component {
     }
     else return ""
   }
+handelSort(variableType,sortOrder){
+  this.props.dispatch(handelSort(variableType,sortOrder))
+}
+getMissingValueTreatmentOptions(dataType, colName, colSlug){
+  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+  if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
+    var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
+                    <option value={item.name} selected >{item.displayName}</option>))
 
-  getMissingValueTreatmentOptions(dataType, colName, colSlug){
-    var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
-      var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if(colSlug in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
@@ -233,62 +239,90 @@ export class DataCleansing extends React.Component {
          {/*<!-- /.Page Title and Breadcrumbs -->*/}
          {/*<!-- Page Content Area -->*/}
          <div className="main-content">
-           <div className="row">
-             <div className="col-md-12">
-               <div className="panel box-shadow xs-m-0">
-                 <div className="panel-body no-border xs-p-20">
-                   <div className="form-group">
-                     <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
-                     <div className="col-sm-7">
-                       <div className="content-section implementation">
-                         <InputSwitch id="rd1" onLabel="Yes" offLabel="No"  checked={this.state.value1}  name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-                       </div>
-                     </div>
-                   </div>
-                   <div className="clearfix xs-mb-5"></div>
-                   <div className="form-group">
-                      <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
-                      <div className="col-sm-7">
-                        <div className="content-section implementation">
-                          <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
-                        </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <div className="panel box-shadow ">
-                 <div class="panel-body no-border xs-p-20">
-                   <div className="table-responsive ">
-                     <table className="table table-striped table-bordered break-if-longText">
-                       <thead>
-                         <tr>
-                           {/* <th>
-                             <div class="ma-checkbox inline">
-                               <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
-                               <label for="checkAll">All</label>
-                             </div>
-                           </th> */}
-                           <th className="text-left"><b>Variable name</b></th>
-                           <th><b>Data type</b></th>
-                           <th><b>No of unique values</b></th>
-                           <th><b>No of outliers</b></th>
-                           <th><b>No of missing values</b></th>
-                           <th><b>Missing value treatment</b></th>
-                           <th><b>Outlier removal</b></th>
-                         </tr>
-                       </thead>
-                       <tbody className="no-border-x"> {cleansingHtml} </tbody>
-                     </table>
-                   </div>
-                   <div class="buttonRow text-right"><Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button></div>
-                 </div>
-               </div>
-             </div>
-           </div>
-           {/* <!-- /. Main Content ends with side-body --> */}
-         </div>
-         {/* <!--End of Page Content Area --> */}
-       </div>
-     );
-   }
- }
+         <div class="row">
+          <div class="col-md-12">
+          <div class="panel box-shadow xs-m-0">
+            <div class="panel-body no-border xs-p-20">
+              <div class="form-group">
+                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <div class="col-sm-7">
+                  <div className="content-section implementation">
+                    {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
+                     <InputSwitch id="rd1" onLabel="Yes" offLabel="No"  checked={this.state.value1}  name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
+
+                  </div>
+                  </div>
+              </div>
+
+              <div class="clearfix xs-mb-5"></div>
+
+              <div class="form-group">
+                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
+                <div class="col-sm-7">
+                  <div className="content-section implementation">
+                    <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+
+                    {/* <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} /> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                <div className="panel box-shadow ">
+                    <div class="panel-body no-border xs-p-20">
+                  <div className="table-responsive ">
+                      <table className="table table-striped table-bordered break-if-longText">
+                        <thead>
+                          <tr>
+                            {/* <th> <div class="ma-checkbox inline">
+                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
+                                <label for="checkAll">All</label>
+                              </div>
+                            </th> */}
+
+                            <th className="text-left"><b>Variable name</b>
+                            {/* <div class="btn-group">
+                                                       <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
+                                                       <ul role="menu" className="dropdown-menu dropdown-menu-right">
+                                                           <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
+                                                           <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
+                                                       </ul>
+                                                   </div> */}
+                                                 </th>
+                            <th><b>Data type</b></th>
+
+
+
+
+                            <th><b>No of unique values</b></th>
+                            <th><b>No of outliers</b></th>
+                            <th><b>No of missing values</b></th>
+                            <th><b>Missing value treatment</b></th>
+                            <th><b>Outlier removal</b></th>
+                            </tr>
+                        </thead>
+                        <tbody className="no-border-x">
+                          {cleansingHtml}
+                        </tbody>
+                      </table>
+
+                  </div>
+  <div class="buttonRow text-right">
+     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
+   </div>
+ </div>
+        </div>
+        <div class="xs-p-30"></div>
+      </div>
+    </div>
+
+
+  </div>
+  {/*<!--End of Page Content Area -->*/}
+</div>
+// <!-- /. Main Content ends with side-body -->
+
+
+      );
+    }
+}
