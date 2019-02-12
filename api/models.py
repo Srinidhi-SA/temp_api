@@ -1130,7 +1130,7 @@ class Trainer(models.Model):
             for d in overall_data:
                 for i in overall_settings:
                     if i['name'] == overall_settings_ui_ml_name_mapping[d]:
-                        if overall_data[d] == 'true':
+                        if overall_data[d] == 'true' or overall_data[d] == True:
                             i['selected'] = True
 
         name_mapping = {
