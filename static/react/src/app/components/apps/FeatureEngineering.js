@@ -192,7 +192,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
           console.log('dates are undefined');
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Start Date should be before End Date");
-
+return;
     }else{
      if ((Date.parse(startDate) > Date.parse(endDate))) {
        console.log('starte date is greater');
@@ -261,8 +261,8 @@ validateTransformdata(){
                   <td className="text-left"> {item.name}</td>
 
                   <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="default">CREATE BINS OR LEVELS</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="default">TRANSFORM</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="cst_button">Transform</Button></td>
 
                </tr>  );
               })
@@ -430,3 +430,4 @@ validateTransformdata(){
     }
 
 }
+

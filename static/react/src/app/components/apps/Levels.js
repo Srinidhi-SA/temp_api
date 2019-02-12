@@ -74,6 +74,12 @@ export class Levels extends React.Component {
     this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
 
+   componentDidMount() {
+	if ($('#dimSEdate').hasClass('wide-modal')) {
+		$('.modal-colored-header').addClass('modal-lg-dimSEdate');
+	}
+ }
+
   handleLevelSubmit = evt => {
 
   };
@@ -195,7 +201,7 @@ else{
  var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
  var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
-      <div>
+      <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
