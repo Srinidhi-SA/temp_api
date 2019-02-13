@@ -30,7 +30,7 @@ export class Levels extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
     this.state = { levelsArray: this.props.levelsData ,}
-    
+
 
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
   }
@@ -143,14 +143,12 @@ export class Levels extends React.Component {
       });
     }
 
-  handleEvent(event, picker) {
-
-    console.log(picker.startDate._d);
-    console.log(picker.endDate._d);
-  }
-
   render() {
     console.log("Levels render method is called...");
+
+
+if(this.props.selectedItem.columnType == "dimension")
+{
     var levelData = this.getLevelData();
         var levels = "";
     levels = (
@@ -181,7 +179,15 @@ export class Levels extends React.Component {
       </div>
     )
 
-    var dtlevels="";
+
+
+}
+else{
+
+
+ var dtlevels="";
+ var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
+ var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
       <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
@@ -207,6 +213,7 @@ export class Levels extends React.Component {
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
       </div>
     )
+}
 
     return (
       <div className="binsLevelsHeight">
