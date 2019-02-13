@@ -152,12 +152,14 @@ if(this.props.selectedItem.columnType == "dimension")
     var levelData = this.getLevelData();
         var levels = "";
     levels = (
+      <Tab.Pane>
+        <form id="binsForm">
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
+            <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} name="newcolumnname" className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
@@ -172,11 +174,20 @@ if(this.props.selectedItem.columnType == "dimension")
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
+
         </div>
 
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
+
       </div>
+      <div className="row form-group">
+        <div className="col-sm-12 text-center">
+          <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+        </div>
+      </div>
+    </form>
+  </Tab.Pane>
     )
 
 
@@ -189,12 +200,14 @@ else{
  var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
  var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
+      <Tab.Pane>
+        <form id="binsForm">
       <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" id="txt_lName1" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
+            <input type="text" id="txt_lName1" value={level.inputValue} name="inputVal" defaultValue={level.newcolumnname} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
           </div>
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
@@ -212,6 +225,13 @@ else{
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
       </div>
+      <div className="row form-group">
+        <div className="col-sm-12 text-center">
+          <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+        </div>
+      </div>
+    </form>
+  </Tab.Pane>
     )
 }
 

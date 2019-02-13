@@ -105,6 +105,8 @@ export class FeatureEngineering extends React.Component {
     }else if (actionType == "levelData"){
       this.validateLevelData(actionType);
     }else if(actionType == "transformationData"){
+      this.validateTransformdata(actionType);
+    }else{
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
@@ -167,35 +169,130 @@ export class FeatureEngineering extends React.Component {
     }
   }
 
+  // else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+  //   $("#fileErrorMsg").removeClass("visibilityHidden");
+  //   $("#fileErrorMsg").html("Please enter the new column name");
+  //   $("input[name='inputValue']").focus();
+  //   return;
+  // }
+
   validateLevelData(actionType){
     console.log('level validation starts');
-    debugger;
     var slugData = this.state[this.props.selectedItem.slug];
     if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
       var levelData = this.state[this.props.selectedItem.slug][actionType];
       for (var i = 0; i < levelData.length; i++) {
         var startDate = levelData[i].startDate;
         var endDate = levelData[i].endDate;
-        if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")  ){
-          console.log('dates are undefined');
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Start Date should be before End Date");
-          return;
+        var inputValue = levelData[i].inputValue;
+        var multiselect = levelData[i].multiselectValue;
+
+        if(multiselect != undefined || multiselect != null|| multiselect != ""){
+          for (var i = 0; i < multiselect.length; i++){
+            if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Please enter the new column name");
+              $("input[name='inputValue']").focus();
+              return;
+            }
+          }
         }else{
-          if ((Date.parse(startDate) > Date.parse(endDate))) {
+          if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")){
+            console.log('dates are undefined');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Enter Start Date & End Date");
+            return;
+          }
+          else if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('starte date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
+            return;
+          }
+          else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter the new column name");
+            $("input[name='inputValue']").focus();
+            return;
           }
         }
+      }
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeBinsOrLevelsModal();
+      this.closeTransformColumnModal();
+    }else{
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
+    }
+  }
+
+  validateTransformdata(actionType){
+      console.log('transform validation starts');
+      var slugData = this.state[this.props.selectedItem.slug];
+      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+        var transformationData = this.state[this.props.selectedItem.slug][actionType];
+        if(transformationData.replace_values_with == true){
+          if(transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null|| transformationData.replace_values_with_input == "" ){
+            console.log('replace value input field is empty');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Enter value");
+            $("input[name='replace_values_with_input']").focus();
+            return;
+          }
+          else if(transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null|| transformationData.replace_values_with_selected == "" ){
+            console.log('dates are undefined');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Select value to replace with");
+            $("input[name='replace_values_with_selected']").focus();
+            return;
+          }
+        }else if(transformationData.feature_scaling == true){
+          if(transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null|| transformationData.perform_standardization_select == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Select value for feature scaling");
+            return;
+          }
+        }else if(transformationData.variable_transformation == true){
+          if(transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null|| transformationData.variable_transformation_select == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Select value for variable transformation");
+            return;
+          }
+        }else if(transformationData.extract_time_feature == true){
+          if(transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null|| transformationData.extract_time_feature_select == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Select value for time feature");
+            return;
+          }
+        }else if(transformationData.time_since == true){
+          if(transformationData.time_since_input == undefined || transformationData.time_since_input == null|| transformationData.time_since_input == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Enter value for Time Since");
+            return;
+          }
+        }else if(transformationData.is_custom_string_in == true){
+          if(transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null|| transformationData.is_custom_string_in_input == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Enter value for custom String");
+            return;
+          }
+        }else if(transformationData.encoding_dimensions == true){
+          if(transformationData.encoding_type == undefined || transformationData.encoding_type == null|| transformationData.encoding_type == ""){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Select Encoding Type");
+            return;
+          }
+        }encoding_dimensions
         var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
         this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
         this.closeBinsOrLevelsModal();
         this.closeTransformColumnModal();
+      }else{
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("No fields Selected");
       }
     }
-  }
-  validateTransformdata(){ }
 
   handleTopLevelRadioButtonOnchange(event){
     this.state.topLevelRadioButton = event.target.value;
