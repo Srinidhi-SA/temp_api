@@ -30,6 +30,8 @@ export class Levels extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
     this.state = { levelsArray: this.props.levelsData ,}
+    
+
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
   }
 
@@ -149,14 +151,6 @@ export class Levels extends React.Component {
 
   render() {
     console.log("Levels render method is called...");
-
-    var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value;
-console.log(startDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-
-var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value;
-console.log(endDate+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-
-
     var levelData = this.getLevelData();
         var levels = "";
     levels = (

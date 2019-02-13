@@ -12,9 +12,7 @@ import {
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-
 import { getDataSetPreview } from "../../actions/dataActions";
-
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Transform } from "./Transform";
@@ -32,43 +30,44 @@ return {
   currentAppDetails:store.apps.currentAppDetails,
   featureEngineering:store.datasets.featureEngineering
   };
-
 })
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
-  super(props);
-  console.log("FeatureEngineering constructor method is called...");
-  console.log(props);
-  this.buttons = {};
-  this.state = {};
-  this.state.topLevelRadioButton = "false";
-  this.prevState = this.state;
-  this.pickValue = this.pickValue.bind(this);
-  this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
-  this.updateLevelsData = this.updateLevelsData.bind(this);
-}
+    super(props);
+    console.log("FeatureEngineering constructor method is called...");
+    console.log(props);
+    this.buttons = {};
+    this.state = {};
+    this.state.topLevelRadioButton = "false";
+    this.prevState = this.state;
+    this.pickValue = this.pickValue.bind(this);
+    this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
+    this.updateLevelsData = this.updateLevelsData.bind(this);
+  }
+
   componentWillMount(){
     this.setState({featureEngineering:this.props.featureEngineering});
     if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
-console.log("FeatureEngineering componentWillMount method is called...");
+    console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
     };
   }
-  pickValuesAndStoreLocally(slug, inputId, event){
-  }
+
+  // pickValuesAndStoreLocally(slug, inputId, event){ }
+
   clearBinsAndIntervals(event){
-    debugger;
     if(this.state[this.props.selectedItem.slug] != undefined  && this.state[this.props.selectedItem.slug]["binData"] != undefined){
       this.state[this.props.selectedItem.slug]["binData"]["numberofbins"] = ""
       this.state[this.props.selectedItem.slug]["binData"]["specifyintervals"] = ""
       this.setState({ state: this.state });
     }
   }
+
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
       this.state[this.props.selectedItem.slug] = {}
@@ -103,103 +102,92 @@ console.log("FeatureEngineering componentWillMount method is called...");
   handleCreateClicked(actionType, event){
     if(actionType == "binData"){
       this.validateBinData(actionType);
-  }else if (actionType == "levelData"){
-
-    this.validateLevelData(actionType);
-
-
-  }else if(actionType == "transformationData"){
-     var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+    }else if (actionType == "levelData"){
+      this.validateLevelData(actionType);
+    }else if(actionType == "transformationData"){
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-
     }
-}
+  }
+
   validateBinData(actionType){
     var slugData = this.state[this.props.selectedItem.slug];
-      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
-        var binData = this.state[this.props.selectedItem.slug][actionType];
-        if(binData.selectBinType == undefined || binData.selectBinType == "none"){
+    if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+      var binData = this.state[this.props.selectedItem.slug][actionType];
+      if(binData.selectBinType == undefined || binData.selectBinType == "none"){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please select type of binning");
+        $("select[name='selectBinType']").css("border-color","red");
+        $("select[name='selectBinType']").focus();
+        return;
+      }else{
+        if(binData.selectBinType == "create_equal_sized_bins"){
+          if(binData.numberofbins == undefined || binData.numberofbins == null|| binData.numberofbins == "" ){
             $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please select type of binning");
-			$("select[name='selectBinType']").css("border-color","red");
-			$("select[name='selectBinType']").focus();
+            $("#fileErrorMsg").html("Please enter number of bins");
+            $("input[name='numberofbins']").css("border-color","red");
+            $("input[name='numberofbins']").focus();
             return;
-        }else{
-          if(binData.selectBinType == "create_equal_sized_bins"){
-
-            if(binData.numberofbins == undefined || binData.numberofbins == null|| binData.numberofbins == "" ){
-                $("#fileErrorMsg").removeClass("visibilityHidden");
-                $("#fileErrorMsg").html("Please enter number of bins");
-				$("input[name='numberofbins']").css("border-color","red");
-				$("input[name='numberofbins']").focus();
-                return;
-            }
-            else if(parseInt(binData.numberofbins) <= 0){
-              $("#fileErrorMsg").removeClass("visibilityHidden");
-              $("#fileErrorMsg").html("Please enter number greater than zero");
-			  $("input[name='numberofbins']").css("border-color","red");
-			  $("input[name='numberofbins']").focus();
-              return;
-            }
-
-          }else if(binData.selectBinType == "create_custom_bins"){
-
-            if(binData.specifyintervals == undefined|| binData.specifyintervals == null|| binData.specifyintervals == "" ){
-              $("#fileErrorMsg").removeClass("visibilityHidden");
-                $("#fileErrorMsg").html("Please enter 'Specify Intervals' field");
-				$("input[name='specifyintervals']").css("border-color","red");
-				$("input[name='specifyintervals']").focus();
-                return;
-              }
-
+          }
+          else if(parseInt(binData.numberofbins) <= 0){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter number greater than zero");
+            $("input[name='numberofbins']").css("border-color","red");
+            $("input[name='numberofbins']").focus();
+            return;
+          }
+        }else if(binData.selectBinType == "create_custom_bins"){
+          if(binData.specifyintervals == undefined|| binData.specifyintervals == null|| binData.specifyintervals == "" ){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter 'Specify Intervals' field");
+            $("input[name='specifyintervals']").css("border-color","red");
+            $("input[name='specifyintervals']").focus();
+            return;
           }
         }
-
-        if(binData.newcolumnname == undefined || binData.newcolumnname == null|| binData.newcolumnname == "" ){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please enter the new column name");
-			$("input[name='newcolumnname']").focus();
-            return;
-        }
-        var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-        this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-        this.closeBinsOrLevelsModal();
-        this.closeTransformColumnModal();
-      }else{
+      }
+      if(binData.newcolumnname == undefined || binData.newcolumnname == null|| binData.newcolumnname == "" ){
         $("#fileErrorMsg").removeClass("visibilityHidden");
-		$("select[name='selectBinType']").css("border-color","red");
-		$("input[name='numberofbins']").css("border-color","red");
-		$("input[name='newcolumnname']").css("border-color","red");
-    $("#fileErrorMsg").html("Please enter Mandatory fields * ");
-  }
+        $("#fileErrorMsg").html("Please enter the new column name");
+        $("input[name='newcolumnname']").focus();
+        return;
+      }
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeBinsOrLevelsModal();
+      this.closeTransformColumnModal();
+    }else{
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("select[name='selectBinType']").css("border-color","red");
+		  $("input[name='numberofbins']").css("border-color","red");
+		  $("input[name='newcolumnname']").css("border-color","red");
+      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
+    }
   }
 
   validateLevelData(actionType){
     console.log('level validation starts');
+    debugger;
     var slugData = this.state[this.props.selectedItem.slug];
-      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
-        var levelData = this.state[this.props.selectedItem.slug][actionType];
-
-        for (var i = 0; i < levelData.length; i++) {
-
-    var startDate = levelData[i].startDate;
-    var endDate = levelData[i].endDate;
-
-    if((startDate==undefined || startDate == null || startDate =="") ||
-        (endDate==undefined || endDate == null || endDate =="")  ){
+    if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+      var levelData = this.state[this.props.selectedItem.slug][actionType];
+      for (var i = 0; i < levelData.length; i++) {
+        var startDate = levelData[i].startDate;
+        var endDate = levelData[i].endDate;
+        if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")  ){
           console.log('dates are undefined');
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Start Date should be before End Date");
-return;
-    }else{
-     if ((Date.parse(startDate) > Date.parse(endDate))) {
-       console.log('starte date is greater');
-       $("#fileErrorMsg").removeClass("visibilityHidden");
-       $("#fileErrorMsg").html("Start Date should be before End Date");
-     }
-   }
+          return;
+        }else{
+          if ((Date.parse(startDate) > Date.parse(endDate))) {
+            console.log('starte date is greater');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Start Date should be before End Date");
+          }
+        }
 
    var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
     this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
@@ -430,4 +418,3 @@ validateTransformdata(){
     }
 
 }
-
