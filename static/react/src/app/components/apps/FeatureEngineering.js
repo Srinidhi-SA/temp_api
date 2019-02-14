@@ -169,13 +169,6 @@ export class FeatureEngineering extends React.Component {
     }
   }
 
-  // else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-  //   $("#fileErrorMsg").removeClass("visibilityHidden");
-  //   $("#fileErrorMsg").html("Please enter the new column name");
-  //   $("input[name='inputValue']").focus();
-  //   return;
-  // }
-
   validateLevelData(actionType){
     console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
@@ -187,24 +180,13 @@ export class FeatureEngineering extends React.Component {
         var inputValue = levelData[i].inputValue;
         var multiselect = levelData[i].multiselectValue;
 
-        if(multiselect != undefined || multiselect != null|| multiselect != ""){
-          for (var i = 0; i < multiselect.length; i++){
-            if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-              $("#fileErrorMsg").removeClass("visibilityHidden");
-              $("#fileErrorMsg").html("Please enter the new column name");
-              $("input[name='inputValue']").focus();
-              return;
-            }
-          }
-        }else{
-          if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")){
-            console.log('dates are undefined');
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Enter Start Date & End Date");
-            return;
-          }
-          else if ((Date.parse(startDate) > Date.parse(endDate))) {
-            console.log('starte date is greater');
+        if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")){
+          console.log('dates are undefined');
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter Start Date & End Date");
+          return;
+        }else if ((Date.parse(startDate) > Date.parse(endDate))) {
+            console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
             return;
@@ -216,16 +198,29 @@ export class FeatureEngineering extends React.Component {
             return;
           }
         }
-      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-    }else{
-      $("#fileErrorMsg").removeClass("visibilityHidden");
-      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
+      }else{
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter new level ");
+      }
     }
-  }
+
+
+  //       var multiselect = levelData[i].multiselectValue;
+  //       if(multiselect != undefined || multiselect != null|| multiselect != ""){
+  //         for (var i = 0; i < multiselect.length; i++){
+  //           if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+  //             $("#fileErrorMsg").removeClass("visibilityHidden");
+  //             $("#fileErrorMsg").html("Please enter the new column name");
+  //             $("input[name='inputValue']").focus();
+  //             return;
+  //           }
+  //         }
+  //       }
+
 
   validateTransformdata(actionType){
       console.log('transform validation starts');
