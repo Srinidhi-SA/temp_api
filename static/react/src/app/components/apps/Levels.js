@@ -10,7 +10,6 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
-import DateRangePicker from 'react-bootstrap-daterangepicker';
 
 @connect((store) => {
   return {
