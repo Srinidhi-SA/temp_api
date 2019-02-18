@@ -182,7 +182,24 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     else { return "";}
   }
 
+  callSubsetTableSorter() {
+    $(function() {
+      $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {
+            sorter: false
+          }
+        }
+      });
+      // $("#dim").click();
+    });
+  }
   render() {
+
+    console.log("subsetting is called####$$$$!!");
+    console.log(this.props)
+    this.callSubsetTableSorter()
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -271,7 +288,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
                   <div className="table-responsive ">
-                      <table className="table table-striped table-bordered break-if-longText">
+                      <table  id="subset" className="sortable table-striped table-bordered break-if-longText">
                         <thead>
                           <tr>
                             {/* <th> <div class="ma-checkbox inline">
@@ -280,7 +297,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                               </div>
                             </th> */}
 
-                            <th className="text-left"><b>Variable name</b>
+                            <th><b>Variable name</b>
                             {/* <div class="btn-group">
                                                        <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
                                                        <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -289,7 +306,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                                                        </ul>
                                                    </div> */}
                                                  </th>
-                            <th><b>Data type</b></th>
+                            <th ><b>Data type</b></th>
 
 
 
