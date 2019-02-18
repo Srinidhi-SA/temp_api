@@ -185,7 +185,7 @@ if(this.props.selectedItem.columnType == "dimension")
           <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
         </div>
       </div>
-  
+
   </Tab.Pane>
     )
 
@@ -204,8 +204,8 @@ else{
  var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
       <Tab.Pane>
-
-        <p>*The column <b> {cname} </b> contains date ranges from "<i>{startDate}</i>" to "<i>{endDate}</i>". </p>
+<p>Please create new levels based on <b>{cname}</b> column by selecting start and end between {startDate} and {endDate}.”</p>
+        {/* <p>*The column <b> {cname} </b> contains date ranges from "<i>{startDate}</i>" to "<i>{endDate}</i>". </p> */}
       <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
