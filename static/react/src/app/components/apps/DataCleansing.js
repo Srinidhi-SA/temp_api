@@ -334,9 +334,9 @@ $.tablesorter.filter.types.end = function( config, data ) {
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
                               <div class="row xs-mb-10">
-                                <div class="col-md-3 col-md-offset-9">
+                                <div class="col-md-3 col-md-offset-100">
                                   <div class="form-inline" >
-                                    <div class="form-group pull-right">
+                                    <div class="form-group pull-left">
                                       <button type="button" className="btn btn-default btn-md reset ">Reset filter</button>
 
                                       {/* <label class="col-sm-3 xs-pt-5">	Search</label> */}
