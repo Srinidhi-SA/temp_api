@@ -59,6 +59,22 @@ console.log("FeatureEngineering componentWillMount method is called...");
       text: "Proceed"
     };
   }
+ 
+ componentDidMount() {
+  	$('#search').on('keyup', function() {
+	  var value = $(this).val();
+	  var patt = new RegExp(value, "i");
+
+	  $('#feng_table').find('tr').each(function() {
+		if (!($(this).find('td').text().search(patt) >= 0)) {
+		  $(this).not('.myHead').hide();
+		}
+		if (($(this).find('td').text().search(patt) >= 0)) {
+		  $(this).show();
+		}
+	  });
+});
+  }
   pickValuesAndStoreLocally(slug, inputId, event){
   }
   clearBinsAndIntervals(event){
@@ -237,6 +253,18 @@ validateTransformdata(){
   isBinningOrLevelsDisabled(item){
       return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
   }
+  
+  callfeTableSorter() {
+    $(function() {
+      $('#feng_table').tablesorter({
+        theme: 'ice',
+        headers: {
+          2: { sorter: false },
+		  3: { sorter: false }
+        }		
+      });	  
+    });
+  }
 
  render() {
     console.log("FeatureEngineering render method is called...");
@@ -250,7 +278,10 @@ validateTransformdata(){
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
-
+	
+	this.callfeTableSorter()
+	
+	
         if (this.props.dataPreview != null) {
             feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
             if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
@@ -368,10 +399,21 @@ validateTransformdata(){
 
         <div className="panel box-shadow ">
         <div class="panel-body no-border xs-p-20">
-         <div className="table-responsive ">
-          <table className="table table-striped table-bordered break-if-longText">
+		
+		<div class="row xs-mb-10">
+			<div class="col-md-3 col-md-offset-9">
+			<div class="form-inline" >
+			<div class="form-group pull-right">
+			<label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+			</div>
+			</div>
+			</div>
+		</div>
+		
+         <div className="table-responsive ">		 
+          <table id="feng_table" className="tablesorter table table-striped table-bordered break-if-longText">
             <thead>
-              <tr key="trKey">
+              <tr key="trKey" className="myHead">
                 <th className="text-left"><b>Variable name</b></th>
                 <th ><b>Data type</b></th>
                 <th></th>
