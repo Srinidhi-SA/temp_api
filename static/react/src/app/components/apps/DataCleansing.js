@@ -201,25 +201,25 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   }
 
   dcTableSorter() {
-//     $.tablesorter.filter.types.start = function( config, data ) {
-//   if ( /^\^/.test( data.iFilter ) ) {
-//     return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
-//   }
-//   return null;
-// };
+    $.tablesorter.filter.types.start = function( config, data ) {
+  if ( /^\^/.test( data.iFilter ) ) {
+    return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
+  }
+  return null;
+};
 
 // search for a match at the end of a string
 // "a$" matches "Llama" but not "aardvark"
-// $.tablesorter.filter.types.end = function( config, data ) {
-//   if ( /\$$/.test( data.iFilter ) ) {
-//     var filter = data.iFilter,
-//       filterLength = filter.length - 1,
-//       removedSymbol = filter.substring(0, filterLength),
-//       exactLength = data.iExact.length;
-//     return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
-//   }
-//   return null;
-// };
+$.tablesorter.filter.types.end = function( config, data ) {
+  if ( /\$$/.test( data.iFilter ) ) {
+    var filter = data.iFilter,
+      filterLength = filter.length - 1,
+      removedSymbol = filter.substring(0, filterLength),
+      exactLength = data.iExact.length;
+    return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
+  }
+  return null;
+};
 
 
     $(function() {
@@ -227,15 +227,17 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         theme: 'ice',
         headers: {
           0: {sorter: false,filter:false},
-          2: {sorter: false ,filter:false},
+          2: {sorter: false , filter:false},
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
-        }
-        // widgets: ['zebra', 'filter'],
-        // widgetOptions: {
-        //
-        //     filter_reset: '.reset'
-        //     }
+        },
+        widgets: [ 'filter'],
+        widgetOptions: {
+              filter_reset : 'button.reset',
+            // filter_reset: '.reset'
+
+
+            }
       });
       // $("#dim").click();
     });
@@ -335,7 +337,10 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                                 <div class="col-md-3 col-md-offset-9">
                                   <div class="form-inline" >
                                     <div class="form-group pull-right">
-                                      <label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+                                      <button type="button" className="btn btn-default btn-md reset ">Reset filter</button>
+
+                                      {/* <label class="col-sm-3 xs-pt-5">	Search</label> */}
+                                       {/* <input type="text" id="search" className="form-control" placeholder="Search..."></input> */}
                                     </div>
                                   </div>
                                 	</div>
@@ -351,11 +356,11 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th><b>Variable name</b></th>
-                            <th ><b>Data type</b></th>
-                            <th><b>No of unique values</b></th>
-                            <th><b>No of outliers</b></th>
-                            <th><b>No of missing values</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>Variable name</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>Data type</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>No of outliers</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
