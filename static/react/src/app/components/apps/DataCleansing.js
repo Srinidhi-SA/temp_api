@@ -87,8 +87,26 @@ export class DataCleansing extends React.Component {
     }
   }
 
+  // componentDidMount() {
+  // }
+
   componentDidMount() {
-  }
+ $('#search').on('keyup', function() {
+   var value = $(this).val();
+   var patt = new RegExp(value, "i");
+   $('#dctable').find('tr').each(function() {
+	if (!($(this).find('td').text().search(patt) >= 0)) {
+ 		  $(this).not('.myHead').hide();
+	}
+	if (($(this).find('td').text().search(patt) >= 0)) {
+  $(this).show();
+	}
+ });
+});
+   }
+
+
+
 
   componentWillUpdate() {
   }
@@ -183,23 +201,46 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   }
 
   dcTableSorter() {
+//     $.tablesorter.filter.types.start = function( config, data ) {
+//   if ( /^\^/.test( data.iFilter ) ) {
+//     return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
+//   }
+//   return null;
+// };
+
+// search for a match at the end of a string
+// "a$" matches "Llama" but not "aardvark"
+// $.tablesorter.filter.types.end = function( config, data ) {
+//   if ( /\$$/.test( data.iFilter ) ) {
+//     var filter = data.iFilter,
+//       filterLength = filter.length - 1,
+//       removedSymbol = filter.substring(0, filterLength),
+//       exactLength = data.iExact.length;
+//     return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
+//   }
+//   return null;
+// };
+
+
     $(function() {
       $('#dctable').tablesorter({
         theme: 'ice',
         headers: {
-          0: {sorter: false},
-          2: {sorter: false},
-          6: {sorter: false},
-          7: {sorter: false}
+          0: {sorter: false,filter:false},
+          2: {sorter: false ,filter:false},
+          6: {sorter: false ,filter:false},
+          7: {sorter: false,filter:false}
         }
+        // widgets: ['zebra', 'filter'],
+        // widgetOptions: {
+        //
+        //     filter_reset: '.reset'
+        //     }
       });
       // $("#dim").click();
     });
   }
   render() {
-
-    console.log("subsetting is called####$$$$!!");
-    console.log(this.props)
     this.dcTableSorter()
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
@@ -264,7 +305,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           <div class="panel box-shadow xs-m-0">
             <div class="panel-body no-border xs-p-20">
               <div class="form-group">
-                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
@@ -277,7 +318,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
               <div class="clearfix xs-mb-5"></div>
 
               <div class="form-group">
-                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
+                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
@@ -290,32 +331,28 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           </div>
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
-                  <div className="table-responsive ">
-                      <table  id="dctable" className="table table-striped table-bordered break-if-longText">
+                              <div class="row xs-mb-10">
+                                <div class="col-md-3 col-md-offset-9">
+                                  <div class="form-inline" >
+                                    <div class="form-group pull-right">
+                                      <label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+                                    </div>
+                                  </div>
+                                	</div>
+                                </div>
+                        <div className="table-responsive ">
+                      <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                         <thead>
-                          <tr>
+                          <tr className="myHead">
                             <th> <div class="ma-checkbox inline">
                                 {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
                                 <input id="checkAll" type="checkbox" class="needsclick" />
 
-                                 <label for="checkAll">All</label>
+                                 <label for="checkAll"></label>
                               </div>
                             </th>
-
-                            <th  ><b>Variable name</b>
-                            {/* <div class="btn-group">
-                                                       <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
-                                                       <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                           <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                           <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
-                                                       </ul>
-                                                   </div> */}
-                                                 </th>
+                            <th><b>Variable name</b></th>
                             <th ><b>Data type</b></th>
-
-
-
-
                             <th><b>No of unique values</b></th>
                             <th><b>No of outliers</b></th>
                             <th><b>No of missing values</b></th>

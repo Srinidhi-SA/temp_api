@@ -58,6 +58,22 @@ export class FeatureEngineering extends React.Component {
     };
   }
 
+  componentDidMount() {
+ $('#search').on('keyup', function() {
+   var value = $(this).val();
+   var patt = new RegExp(value, "i");
+   $('#fetable').find('tr').each(function() {
+	if (!($(this).find('td').text().search(patt) >= 0)) {
+ 		  $(this).not('.myHead').hide();
+	}
+	if (($(this).find('td').text().search(patt) >= 0)) {
+  $(this).show();
+	}
+ });
+});
+   }
+
+
   // pickValuesAndStoreLocally(slug, inputId, event){ }
 
   clearBinsAndIntervals(event){
@@ -437,10 +453,19 @@ export class FeatureEngineering extends React.Component {
                 </div>
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
+                    <div class="row xs-mb-10">
+<div class="col-md-3 col-md-offset-9">
+                          <div class="form-inline" >
+                          <div class="form-group pull-right">
+                          <label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+</div>
+                          </div>
+                          </div>
+                        </div>
                     <div className="table-responsive ">
                       <table id="fetable" className="table table-striped table-bordered break-if-longText">
                         <thead>
-                          <tr key="trKey">
+                          <tr key="trKey" className="myHead">
                             <th className="text-left"><b>Variable name</b></th>
                             <th ><b>Data type</b></th>
                             <th></th>
