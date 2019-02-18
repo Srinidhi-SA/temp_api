@@ -21,6 +21,7 @@ import {
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering,
+      datasets : store.datasets,
   };
 })
 
@@ -152,7 +153,7 @@ if(this.props.selectedItem.columnType == "dimension")
         var levels = "";
     levels = (
       <Tab.Pane>
-        <form id="binsForm">
+
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
@@ -185,7 +186,7 @@ if(this.props.selectedItem.columnType == "dimension")
           <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
         </div>
       </div>
-    </form>
+
   </Tab.Pane>
     )
 
@@ -196,11 +197,16 @@ else{
 
 
  var dtlevels="";
+
+ var cname = this.props.datasets.dataPreview.meta_data.scriptMetaData.columnData.filter(function (items){return items.actualColumnType =="datetime"}).map((names) =>{
+   return(<span>{names.name}</span>);})
+
  var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
  var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
       <Tab.Pane>
-        <form id="binsForm">
+
+        <p>*The column <b> {cname} </b> contains date ranges from "<i>{startDate}</i>" to "<i>{endDate}</i>". </p>
       <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
@@ -229,7 +235,6 @@ else{
           <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
         </div>
       </div>
-    </form>
   </Tab.Pane>
     )
 }
