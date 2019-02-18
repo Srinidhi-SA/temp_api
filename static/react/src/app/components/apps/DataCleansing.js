@@ -182,7 +182,23 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     else { return "";}
   }
 
+  callSubsetTableSorter() {
+    $(function() {
+      $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {
+            sorter: false
+          }
+        }
+      });
+      // $("#dim").click();
+    });
+  }
+
   render() {
+
+    this.callSubsetTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -193,12 +209,12 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           return "";
         return (
           <tr>
-            {/* <td>
+            <td>
               <div class="ma-checkbox inline">
               <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
               <label for={item.slug}> </label>
               </div>
-            </td> */}
+            </td>
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)}</td>
             <td>
@@ -244,7 +260,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           <div class="panel box-shadow xs-m-0">
             <div class="panel-body no-border xs-p-20">
               <div class="form-group">
-                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     {/* <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} /> */}
@@ -257,7 +273,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
               <div class="clearfix xs-mb-5"></div>
 
               <div class="form-group">
-                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
+                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
@@ -271,29 +287,18 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
                   <div className="table-responsive ">
-                      <table className="table table-striped table-bordered break-if-longText">
+                    <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
+
+                    {/* <table id="subset" className="tablesorter table table-striped table-condensed table-hover table-bordered break-if-longText"> */}
                         <thead>
                           <tr>
-                            {/* <th> <div class="ma-checkbox inline">
-                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
-                                <label for="checkAll">All</label>
+                            <th> <div class="ma-checkbox inline">
+                                {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
+                                {/* <label for="checkAll">All</label> */}
                               </div>
-                            </th> */}
-
-                            <th className="text-left"><b>Variable name</b>
-                            {/* <div class="btn-group">
-                                                       <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
-                                                       <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                           <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
-                                                           <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
-                                                       </ul>
-                                                   </div> */}
-                                                 </th>
+                            </th>
+                            <th className="text-left"><b>Variable name</b></th>
                             <th><b>Data type</b></th>
-
-
-
-
                             <th><b>No of unique values</b></th>
                             <th><b>No of outliers</b></th>
                             <th><b>No of missing values</b></th>

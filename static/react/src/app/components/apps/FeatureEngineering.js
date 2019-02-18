@@ -185,8 +185,7 @@ export class FeatureEngineering extends React.Component {
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Enter Start Date & End Date");
           return;
-        }else
-         if ((Date.parse(startDate) > Date.parse(endDate))) {
+        }else if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
@@ -279,7 +278,7 @@ export class FeatureEngineering extends React.Component {
             $("#fileErrorMsg").html("Select Encoding Type");
             return;
           }
-        }
+        }encoding_dimensions
         var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
         this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
         this.closeBinsOrLevelsModal();
@@ -310,7 +309,25 @@ export class FeatureEngineering extends React.Component {
       return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
   }
 
+  callSubsetTableSorter() {
+    $(function() {
+      $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+          2: {
+            sorter: false
+          },
+          3:{
+            sorter: false
+          }
+        }
+      });
+      // $("#dim").click();
+    });
+  }
+
   render() {
+    this.callSubsetTableSorter();
     console.log("FeatureEngineering render method is called...");
     var feHtml = "";
     var binsOrLevelsPopup = "";
@@ -425,7 +442,9 @@ export class FeatureEngineering extends React.Component {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div className="table-responsive ">
-                      <table className="table table-striped table-bordered break-if-longText">
+                      <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
+
+                      {/* <table className="table table-striped table-bordered break-if-longText"> */}
                         <thead>
                           <tr key="trKey">
                             <th className="text-left"><b>Variable name</b></th>
