@@ -193,12 +193,12 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           return "";
         return (
           <tr>
-            <td>
+            {/* <td>
               <div class="ma-checkbox inline">
               <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
               <label for={item.slug}> </label>
               </div>
-            </td>
+            </td> */}
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)}</td>
             <td>

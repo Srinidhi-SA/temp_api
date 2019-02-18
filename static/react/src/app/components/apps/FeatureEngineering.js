@@ -185,7 +185,8 @@ export class FeatureEngineering extends React.Component {
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Enter Start Date & End Date");
           return;
-        }else if ((Date.parse(startDate) > Date.parse(endDate))) {
+        }else
+         if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
@@ -278,7 +279,7 @@ export class FeatureEngineering extends React.Component {
             $("#fileErrorMsg").html("Select Encoding Type");
             return;
           }
-        }encoding_dimensions
+        }
         var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
         this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
         this.closeBinsOrLevelsModal();
