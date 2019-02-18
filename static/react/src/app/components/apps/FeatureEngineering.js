@@ -309,9 +309,22 @@ export class FeatureEngineering extends React.Component {
   isBinningOrLevelsDisabled(item){
       return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
   }
+  feTableSorter() {
+    $(function() {
+      $('#fetable').tablesorter({
+        theme: 'ice',
+        headers: {
+          3: {sorter: false},
+          2: {sorter: false}
+        }
+      });
+      // $("#dim").click();
+    });
+  }
 
   render() {
     console.log("FeatureEngineering render method is called...");
+      this.feTableSorter()
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
@@ -425,7 +438,7 @@ export class FeatureEngineering extends React.Component {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div className="table-responsive ">
-                      <table className="table table-striped table-bordered break-if-longText">
+                      <table id="fetable" className="table table-striped table-bordered break-if-longText">
                         <thead>
                           <tr key="trKey">
                             <th className="text-left"><b>Variable name</b></th>

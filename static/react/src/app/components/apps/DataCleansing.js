@@ -69,9 +69,9 @@ export class DataCleansing extends React.Component {
   }
 
   componentWillMount() {
-    // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-    //   window.history.go(-1);
-    // }
+    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+      window.history.go(-1);
+    }
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }else{
@@ -182,7 +182,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     else { return "";}
   }
 
-  callSubsetTableSorter() {
+  dcTableSorter() {
     $(function() {
       $('#dctable').tablesorter({
         theme: 'ice',
@@ -200,7 +200,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
     console.log("subsetting is called####$$$$!!");
     console.log(this.props)
-    this.callSubsetTableSorter()
+    this.dcTableSorter()
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
