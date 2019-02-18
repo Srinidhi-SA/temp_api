@@ -69,9 +69,9 @@ export class DataCleansing extends React.Component {
   }
 
   componentWillMount() {
-    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-      window.history.go(-1);
-    }
+    // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+    //   window.history.go(-1);
+    // }
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }else{
@@ -184,12 +184,13 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
   callSubsetTableSorter() {
     $(function() {
-      $('#subset').tablesorter({
+      $('#dctable').tablesorter({
         theme: 'ice',
         headers: {
-          0: {
-            sorter: false
-          }
+          0: {sorter: false},
+          2: {sorter: false},
+          6: {sorter: false},
+          7: {sorter: false}
         }
       });
       // $("#dim").click();
@@ -210,12 +211,14 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           return "";
         return (
           <tr>
-            {/* <td>
+            <td>
               <div class="ma-checkbox inline">
-              <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+              {/* <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/> */}
+              <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} />
+
               <label for={item.slug}> </label>
               </div>
-            </td> */}
+            </td>
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)}</td>
             <td>
@@ -288,16 +291,18 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
                   <div className="table-responsive ">
-                      <table  id="subset" className="sortable table-striped table-bordered break-if-longText">
+                      <table  id="dctable" className="table table-striped table-bordered break-if-longText">
                         <thead>
                           <tr>
-                            {/* <th> <div class="ma-checkbox inline">
-                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
-                                <label for="checkAll">All</label>
-                              </div>
-                            </th> */}
+                            <th> <div class="ma-checkbox inline">
+                                {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
+                                <input id="checkAll" type="checkbox" class="needsclick" />
 
-                            <th><b>Variable name</b>
+                                 <label for="checkAll">All</label>
+                              </div>
+                            </th>
+
+                            <th  ><b>Variable name</b>
                             {/* <div class="btn-group">
                                                        <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
                                                        <ul role="menu" className="dropdown-menu dropdown-menu-right">
