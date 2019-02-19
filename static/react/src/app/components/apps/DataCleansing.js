@@ -235,7 +235,13 @@ $.tablesorter.filter.types.end = function( config, data ) {
         widgetOptions: {
               filter_reset : 'button.reset',
             // filter_reset: '.reset'
-
+            filter_functions : {
+                    3 : {
+                    "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+                    "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+                    "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+                        }
+                       }
 
             }
       });
