@@ -201,25 +201,25 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   }
 
   dcTableSorter() {
-    $.tablesorter.filter.types.start = function( config, data ) {
-  if ( /^\^/.test( data.iFilter ) ) {
-    return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
-  }
-  return null;
-};
+//     $.tablesorter.filter.types.start = function( config, data ) {
+//   if ( /^\^/.test( data.iFilter ) ) {
+//     return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
+//   }
+//   return null;
+// };
 
 // search for a match at the end of a string
 // "a$" matches "Llama" but not "aardvark"
-$.tablesorter.filter.types.end = function( config, data ) {
-  if ( /\$$/.test( data.iFilter ) ) {
-    var filter = data.iFilter,
-      filterLength = filter.length - 1,
-      removedSymbol = filter.substring(0, filterLength),
-      exactLength = data.iExact.length;
-    return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
-  }
-  return null;
-};
+// $.tablesorter.filter.types.end = function( config, data ) {
+//   if ( /\$$/.test( data.iFilter ) ) {
+//     var filter = data.iFilter,
+//       filterLength = filter.length - 1,
+//       removedSymbol = filter.substring(0, filterLength),
+//       exactLength = data.iExact.length;
+//     return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
+//   }
+//   return null;
+// };
 
 
     $(function() {
@@ -231,17 +231,17 @@ $.tablesorter.filter.types.end = function( config, data ) {
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
         },
-        widgets: [ 'filter'],
+        // widgets: [ 'filter'],
         widgetOptions: {
-              filter_reset : 'button.reset',
+              // filter_reset : 'button.reset',
             // filter_reset: '.reset'
-            filter_functions : {
-                    3 : {
-                    "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
-                    "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
-                    "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
-                        }
-                       }
+            // filter_functions : {
+            //         3 : {
+            //         "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+            //         "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+            //         "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+            //             }
+            //            }
 
             }
       });
@@ -269,6 +269,8 @@ $.tablesorter.filter.types.end = function( config, data ) {
               </div>
             </td>
             <td className="text-left">{item.name}</td>
+            {/* <td>{item.actualColumnType}</td> */}
+
             <td>  {this.getUpdatedDataType(item.slug)}</td>
             <td>
               {item.columnStats.filter(function(items){
@@ -340,13 +342,13 @@ $.tablesorter.filter.types.end = function( config, data ) {
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
                               <div class="row xs-mb-10">
-                                <div class="col-md-3 col-md-offset-100">
+                                <div class="col-md-3 col-md-offset-9">
                                   <div class="form-inline" >
-                                    <div class="form-group pull-left">
-                                      <button type="button" className="btn btn-default btn-md reset ">Reset filter</button>
+                                    <div class="form-group pull-right">
+                                      {/* <button type="button" className="btn btn-default btn-md reset ">Reeeset filter</button> */}
 
                                       {/* <label class="col-sm-3 xs-pt-5">	Search</label> */}
-                                       {/* <input type="text" id="search" className="form-control" placeholder="Search..."></input> */}
+                                       <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
                                     </div>
                                   </div>
                                 	</div>
@@ -362,11 +364,13 @@ $.tablesorter.filter.types.end = function( config, data ) {
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th class="filter-select filter-exact" data-placeholder=""><b>Variable name</b></th>
-                            <th class="filter-select filter-exact" data-placeholder=""><b>Data type</b></th>
-                            <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
-                            <th class="filter-select filter-exact" data-placeholder=""><b>No of outliers</b></th>
-                            <th class="filter-select filter-exact" data-placeholder=""><b>No of missing values</b></th>
+                            <th ><b>Variable name</b></th>
+                            <th ><b>Data type</b></th>
+                            {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
+
+                            <th ><b>No of unique values</b></th>
+                            <th ><b>No of outliers</b></th>
+                            <th ><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
