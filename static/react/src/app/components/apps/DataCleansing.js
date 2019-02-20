@@ -148,7 +148,9 @@ export class DataCleansing extends React.Component {
   getUpdatedDataType(colSlug){
     // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
     // console.log(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug));
+    let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
     let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+
     var arr = [ "Measure","Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
       if(item.toLowerCase()== colType.toLowerCase() ){
@@ -157,7 +159,7 @@ export class DataCleansing extends React.Component {
         return <option value={item.toLowerCase()} >{item}</option>
       }
     })
-    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {colType} {optionsHtml} </select>
+    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {actualColType} {optionsHtml} </select>
   }
 
   proceedFeatureEngineering()
@@ -235,12 +237,29 @@ $.tablesorter.filter.types.end = function( config, data ) {
         widgetOptions: {
               filter_reset : 'button.reset',
             filter_functions : {
-                    3 : {
-                    "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
-                    "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
-                    "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
-                        }
-                       }
+                  //   3 : {
+                  //   "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+                  //   "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+                  //   "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+                  // },
+                  1 : {
+                     "A - D" : function(e, n, f, i, $r, c, data) { return /^[A-D]/.test(e); },
+                     "E - H" : function(e, n, f, i, $r, c, data) { return /^[E-H]/.test(e); },
+                     "I - L" : function(e, n, f, i, $r, c, data) { return /^[I-L]/.test(e); },
+                     "M - P" : function(e, n, f, i, $r, c, data) { return /^[M-P]/.test(e); },
+                     "Q - T" : function(e, n, f, i, $r, c, data) { return /^[Q-T]/.test(e); },
+                     "U - X" : function(e, n, f, i, $r, c, data) { return /^[U-X]/.test(e); },
+                     "Y - Z" : function(e, n, f, i, $r, c, data) { return /^[Y-Z]/.test(e); }
+                   },
+                   2 : {
+                      "Dimension" : function(e, n, f, i, $r, c, data) { return /^[di]{2}/.test(e); },
+                      "Measure" : function(e, n, f, i, $r, c, data) { return /^[m]/.test(e); },
+                      "Datetime" : function(e, n, f, i, $r, c, data) { return /^[da]{2}/.test(e); }
+
+                    },
+                      },
+
+
 
             }
       });
@@ -369,13 +388,13 @@ $.tablesorter.filter.types.end = function( config, data ) {
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th ><b>Vaaariable name</b></th>
+                            <th class="filter-select filter-exact" data-placeholder="" ><b>Vaaariable name</b></th>
                             <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
                             {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
 
                             <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
                             <th class="filter-select filter-exact" data-placeholder="" ><b>No of outliers</b></th>
-                            <th ><b>No of missing values</b></th>
+                            <th  ><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
