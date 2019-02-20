@@ -71,10 +71,10 @@ export class Transform extends React.Component {
     this.setState({ state: this.state });
   }
 
-
   render() {
     console.log("Transforms render method is called...");
     var transformationData = this.getTransformationata();
+
 
        if(this.props.selectedItem.columnType == "measure"){
           return (
