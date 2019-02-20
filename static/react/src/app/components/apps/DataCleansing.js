@@ -200,39 +200,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     else { return "";}
   }
 
-<<<<<<< HEAD
-  callSubsetTableSorter() {
-    $(function() {
-      $('#subset').tablesorter({
-        theme: 'ice',
-        headers: {
-          0: {
-            sorter: false
-          }
-        }
-=======
   dcTableSorter() {
-//     $.tablesorter.filter.types.start = function( config, data ) {
-//   if ( /^\^/.test( data.iFilter ) ) {
-//     return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
-//   }
-//   return null;
-// };
-
-// search for a match at the end of a string
-// "a$" matches "Llama" but not "aardvark"
-// $.tablesorter.filter.types.end = function( config, data ) {
-//   if ( /\$$/.test( data.iFilter ) ) {
-//     var filter = data.iFilter,
-//       filterLength = filter.length - 1,
-//       removedSymbol = filter.substring(0, filterLength),
-//       exactLength = data.iExact.length;
-//     return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
-//   }
-//   return null;
-// };
-
-
     $(function() {
       $('#dctable').tablesorter({
         theme: 'ice',
@@ -247,20 +215,13 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         //
         //     filter_reset: '.reset'
         //     }
->>>>>>> 5a8fa8e664f1d993f3572f99b9e69ba1e81c8f5a
       });
       // $("#dim").click();
     });
   }
-<<<<<<< HEAD
 
   render() {
-
-    this.callSubsetTableSorter();
-=======
-  render() {
-    this.dcTableSorter()
->>>>>>> 5a8fa8e664f1d993f3572f99b9e69ba1e81c8f5a
+    this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
@@ -350,21 +311,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           </div>
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
-<<<<<<< HEAD
-                  <div className="table-responsive ">
-                    <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
 
-                    {/* <table id="subset" className="tablesorter table table-striped table-condensed table-hover table-bordered break-if-longText"> */}
-                        <thead>
-                          <tr>
-                            <th> <div class="ma-checkbox inline">
-                                {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
-                                {/* <label for="checkAll">All</label> */}
-                              </div>
-                            </th>
-                            <th className="text-left"><b>Variable name</b></th>
-                            <th><b>Data type</b></th>
-=======
                               <div class="row xs-mb-10">
                                 <div class="col-md-3 col-md-offset-9">
                                   <div class="form-inline" >
@@ -387,7 +334,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                             </th>
                             <th><b>Variable name</b></th>
                             <th ><b>Data type</b></th>
->>>>>>> 5a8fa8e664f1d993f3572f99b9e69ba1e81c8f5a
                             <th><b>No of unique values</b></th>
                             <th><b>No of outliers</b></th>
                             <th><b>No of missing values</b></th>

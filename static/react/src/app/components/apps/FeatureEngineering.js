@@ -337,27 +337,9 @@ export class FeatureEngineering extends React.Component {
     });
   }
 
-  callSubsetTableSorter() {
-    $(function() {
-      $('#fetable').tablesorter({
-        theme: 'ice',
-        headers: {
-          2: {
-            sorter: false
-          },
-          3:{
-            sorter: false
-          }
-        }
-      });
-      // $("#dim").click();
-    });
-  }
-
   render() {
-    this.callSubsetTableSorter();
     console.log("FeatureEngineering render method is called...");
-      this.feTableSorter()
+      this.feTableSorter();
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
