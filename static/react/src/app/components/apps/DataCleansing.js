@@ -206,15 +206,23 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         theme: 'ice',
         headers: {
           0: {sorter: false,filter:false},
-          2: {sorter: false ,filter:false},
+          2: {sorter: false , filter:false},
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
-        }
-        // widgets: ['zebra', 'filter'],
-        // widgetOptions: {
-        //
-        //     filter_reset: '.reset'
-        //     }
+        },
+        // widgets: [ 'filter'],
+        widgetOptions: {
+              // filter_reset : 'button.reset',
+            // filter_reset: '.reset'
+            // filter_functions : {
+            //         3 : {
+            //         "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+            //         "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+            //         "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+            //             }
+            //            }
+
+            }
       });
       // $("#dim").click();
     });
@@ -241,6 +249,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
               </div>
             </td>
             <td className="text-left">{item.name}</td>
+            {/* <td>{item.actualColumnType}</td> */}
+
             <td>  {this.getUpdatedDataType(item.slug)}</td>
             <td>
               {item.columnStats.filter(function(items){
@@ -316,7 +326,10 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                                 <div class="col-md-3 col-md-offset-9">
                                   <div class="form-inline" >
                                     <div class="form-group pull-right">
-                                      <label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+                                      {/* <button type="button" className="btn btn-default btn-md reset ">Reeeset filter</button> */}
+
+                                      {/* <label class="col-sm-3 xs-pt-5">	Search</label> */}
+                                       <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
                                     </div>
                                   </div>
                                 	</div>
@@ -332,11 +345,13 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th><b>Variable name</b></th>
+                            <th ><b>Variable name</b></th>
                             <th ><b>Data type</b></th>
-                            <th><b>No of unique values</b></th>
-                            <th><b>No of outliers</b></th>
-                            <th><b>No of missing values</b></th>
+                            {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
+
+                            <th ><b>No of unique values</b></th>
+                            <th ><b>No of outliers</b></th>
+                            <th ><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
