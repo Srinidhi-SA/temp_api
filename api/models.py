@@ -1125,6 +1125,7 @@ class Trainer(models.Model):
 
         # overall_settings
         if 'overallSettings' in data_cleansing_config_ui:
+
             overall_data = data_cleansing_config_ui['overallSettings']
             overall_settings_ui_ml_name_mapping = feature_engineering_settings.overall_settings_data_cleasing_ui_ml_mapping
             for d in overall_data:
@@ -1132,6 +1133,7 @@ class Trainer(models.Model):
                     if i['name'] == overall_settings_ui_ml_name_mapping[d]:
                         if overall_data[d] == 'true' or overall_data[d] == True:
                             i['selected'] = True
+                            data_cleansing['selected'] = True
 
         name_mapping = {
             'missingValueTreatment': 'missing_value_treatment',
@@ -1140,6 +1142,7 @@ class Trainer(models.Model):
 
         # column_wise_settings
         for fkey in columns_wise_data_ui:
+            data_cleansing['selected'] = True
             columns_wise_data_f = columns_wise_data_ui[fkey]
 
             for slug in columns_wise_data_f:
@@ -1201,6 +1204,7 @@ class Trainer(models.Model):
 	
             if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
             #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+                feature_engineering_ml_config['selected'] = True
                 overall_settings[0]['selected'] = True
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                 for col in column_data:
@@ -1214,6 +1218,7 @@ class Trainer(models.Model):
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
+            feature_engineering_ml_config['selected'] = True
             columns_wise_data_f = columns_wise_data[slug]
 
             for fkey in columns_wise_data_f:
