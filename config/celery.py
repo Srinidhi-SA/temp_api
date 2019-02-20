@@ -25,6 +25,8 @@ app.autodiscover_tasks()
 
 if 'leia' == CONFIG_FILE_NAME:
   from config.settings.leia import CELERY_ONCE_CONFIG
+elif 'local' == CONFIG_FILE_NAME:
+  from config.settings.luke import CELERY_ONCE_CONFIG
 elif 'luke' == CONFIG_FILE_NAME:
   from config.settings.luke import CELERY_ONCE_CONFIG
 elif 'development' == CONFIG_FILE_NAME:
