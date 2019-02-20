@@ -1142,7 +1142,6 @@ class Trainer(models.Model):
 
         # column_wise_settings
         for fkey in columns_wise_data_ui:
-            data_cleansing['selected'] = True
             columns_wise_data_f = columns_wise_data_ui[fkey]
 
             for slug in columns_wise_data_f:
@@ -1165,6 +1164,7 @@ class Trainer(models.Model):
                 }
 
                 columns_wise_settings[name_mapping[fkey]]['selected'] = True
+                data_cleansing['selected'] = True
                 operations = columns_wise_settings[name_mapping[fkey]]['operations']
                 print([op['name'] for op in operations])
                 treatment = value['treatment']
