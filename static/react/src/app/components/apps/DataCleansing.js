@@ -157,7 +157,7 @@ export class DataCleansing extends React.Component {
         return <option value={item.toLowerCase()} >{item}</option>
       }
     })
-    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {optionsHtml} </select>
+    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {colType} {optionsHtml} </select>
   }
 
   proceedFeatureEngineering()
@@ -201,25 +201,25 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   }
 
   dcTableSorter() {
-//     $.tablesorter.filter.types.start = function( config, data ) {
-//   if ( /^\^/.test( data.iFilter ) ) {
-//     return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
-//   }
-//   return null;
-// };
+    $.tablesorter.filter.types.start = function( config, data ) {
+  if ( /^\^/.test( data.iFilter ) ) {
+    return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
+  }
+  return null;
+};
 
 // search for a match at the end of a string
 // "a$" matches "Llama" but not "aardvark"
-// $.tablesorter.filter.types.end = function( config, data ) {
-//   if ( /\$$/.test( data.iFilter ) ) {
-//     var filter = data.iFilter,
-//       filterLength = filter.length - 1,
-//       removedSymbol = filter.substring(0, filterLength),
-//       exactLength = data.iExact.length;
-//     return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
-//   }
-//   return null;
-// };
+$.tablesorter.filter.types.end = function( config, data ) {
+  if ( /\$$/.test( data.iFilter ) ) {
+    var filter = data.iFilter,
+      filterLength = filter.length - 1,
+      removedSymbol = filter.substring(0, filterLength),
+      exactLength = data.iExact.length;
+    return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
+  }
+  return null;
+};
 
 
     $(function() {
@@ -227,21 +227,20 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         theme: 'ice',
         headers: {
           0: {sorter: false,filter:false},
-          2: {sorter: false , filter:false},
+          // 2: {sorter: false , filter:false},
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
         },
-        // widgets: [ 'filter'],
+        widgets: [ 'filter'],
         widgetOptions: {
-              // filter_reset : 'button.reset',
-            // filter_reset: '.reset'
-            // filter_functions : {
-            //         3 : {
-            //         "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
-            //         "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
-            //         "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
-            //             }
-            //            }
+              filter_reset : 'button.reset',
+            filter_functions : {
+                    3 : {
+                    "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+                    "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+                    "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+                        }
+                       }
 
             }
       });
@@ -251,6 +250,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   render() {
     this.dcTableSorter()
     var cleansingHtml = <span>"Loading ... "</span>;
+
+
     if(this.props.dataPreview!=null)
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
@@ -258,12 +259,14 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
+          let checked=true
+
         return (
           <tr>
             <td>
               <div class="ma-checkbox inline">
-              {/* <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/> */}
-              <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} />
+              <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+              {/* <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} /> */}
 
               <label for={item.slug}> </label>
               </div>
@@ -271,7 +274,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
             <td className="text-left">{item.name}</td>
             {/* <td>{item.actualColumnType}</td> */}
 
-            <td>  {this.getUpdatedDataType(item.slug)}</td>
+            <td>  {this.getUpdatedDataType(item.slug)} </td>
             <td>
               {item.columnStats.filter(function(items){
                 return  items.name == "numberOfUniqueValues" }).map((option)=>{
@@ -359,17 +362,17 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                           <tr className="myHead">
                             <th> <div class="ma-checkbox inline">
                                 {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
-                                <input id="checkAll" type="checkbox" class="needsclick" />
+                                <input id="checkAll" type="checkbox" class="needsclick" checked="checked" />
 
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th ><b>Variable name</b></th>
-                            <th ><b>Data type</b></th>
+                            <th ><b>Vaaariable name</b></th>
+                            <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
                             {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
 
-                            <th ><b>No of unique values</b></th>
-                            <th ><b>No of outliers</b></th>
+                            <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
+                            <th class="filter-select filter-exact" data-placeholder="" ><b>No of outliers</b></th>
                             <th ><b>No of missing values</b></th>
                             <th><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>

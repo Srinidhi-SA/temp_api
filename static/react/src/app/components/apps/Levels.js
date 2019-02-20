@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {MultiSelect} from 'primereact/multiselect';
+import dateFormat from 'dateformat';
+import DatePicker from 'react-bootstrap-date-picker';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
 import {
   openBinsOrLevelsModalAction,
@@ -213,10 +215,17 @@ else{
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
             <input type="text" id="txt_lName1" value={level.inputValue} name="inputVal" defaultValue={level.newcolumnname} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
           </div>
+
+
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
             <input type="date" id="txt_sPeriod1" value={level.startDate} min={startDate} max={endDate}  defaultValue={startDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
           </div>
+
+
+          {/* <div className="col-xs-12">
+            <DatePicker key={this.state.startDate} minDate = {startDate} maxDate = {endDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
+          </div> */}
 
           <div class="form-group">
             <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
