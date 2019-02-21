@@ -154,19 +154,15 @@ export class DataCleansing extends React.Component {
     var arr = [ "Measure","Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
       if(item.toLowerCase()== colType.toLowerCase() ){
-        return <option value={item.toLowerCase()} selected>{item}</option>
+        return <option value={item.toLowerCase()} selected> {item}</option>
       }else{
-        return <option value={item.toLowerCase()} >{item}</option>
+        return <option value={item.toLowerCase()} > {item}</option>
       }
     })
-    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {actualColType} {optionsHtml} </select>
+    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {colType} {optionsHtml} </select>
   }
 
-  proceedFeatureEngineering()
-  {
-    var proccedUrl = this.props.match.url.replace('dataCleansing','featureEngineering');
-    this.props.history.push(proccedUrl);
-  }
+
 
   getOutlierRemovalOptions(dataType, colName, colSlug){
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
@@ -181,6 +177,12 @@ export class DataCleansing extends React.Component {
       );
     }
     else return ""
+  }
+
+  proceedFeatureEngineering()
+  {
+    var proccedUrl = this.props.match.url.replace('dataCleansing','featureEngineering');
+    this.props.history.push(proccedUrl);
   }
 handelSort(variableType,sortOrder){
   this.props.dispatch(handelSort(variableType,sortOrder))
