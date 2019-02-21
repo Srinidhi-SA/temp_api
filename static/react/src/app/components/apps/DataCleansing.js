@@ -209,7 +209,9 @@ export class DataCleansing extends React.Component {
         theme : 'ice',
         headers : {
           0: {sorter: false,filter:false},
-          // 2: {sorter: false , filter:false},
+          1: {sorter: false , filter:false},
+          4: {sorter: false , filter:false},
+          5: {sorter: false , filter:false},
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
         },
@@ -247,10 +249,10 @@ export class DataCleansing extends React.Component {
         return (
           <tr>
             <td>
-              <div class="ma-checkbox inline">
+              {/* <div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
-              </div>
+              </div> */}
             </td>
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)} </td>
@@ -331,11 +333,11 @@ export class DataCleansing extends React.Component {
                       <thead>
                         <tr className="myHead">
                           <th>
-                            <div class="ma-checkbox inline">
+                            {/* <div class="ma-checkbox inline">
                               <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
                               <input id="checkAll" type="checkbox" class="needsclick" checked="checked" />
                               <label for="checkAll"></label>
-                            </div>
+                            </div> */}
                           </th>
                           <th class="filter-select filter-exact" data-placeholder="" ><b>Variable name</b></th>
                           <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
