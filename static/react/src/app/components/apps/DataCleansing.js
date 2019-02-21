@@ -54,6 +54,7 @@ import {
     apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets : store.datasets
+    //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
@@ -84,8 +85,10 @@ export class DataCleansing extends React.Component {
         text:"Proceed"
       };
     }
-
   }
+
+  // componentDidMount() {
+  // }
 
   componentDidMount() {
  $('#search').on('keyup', function() {
@@ -108,8 +111,9 @@ export class DataCleansing extends React.Component {
   componentWillUpdate() {
   }
 
-
-
+  shouldComponentUpdate(nextProps) {
+    return true;
+  }
 
   onchangeMissingValueTreatment(event, variable_name){
   }
@@ -142,6 +146,8 @@ export class DataCleansing extends React.Component {
   }
 
   getUpdatedDataType(colSlug){
+    // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
+    // console.log(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug));
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
     let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
 
@@ -153,7 +159,7 @@ export class DataCleansing extends React.Component {
         return <option value={item.toLowerCase()} >{item}</option>
       }
     })
-    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {colType} {optionsHtml} </select>
+    return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} > {actualColType} {optionsHtml} </select>
   }
 
   proceedFeatureEngineering()
@@ -161,7 +167,8 @@ export class DataCleansing extends React.Component {
     var proccedUrl = this.props.match.url.replace('dataCleansing','featureEngineering');
     this.props.history.push(proccedUrl);
   }
- getOutlierRemovalOptions(dataType, colName, colSlug){
+
+  getOutlierRemovalOptions(dataType, colName, colSlug){
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
       var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
@@ -183,7 +190,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
                     <option value={item.name} selected >{item.displayName}</option>))
-                    var selectedValue = "none";
+
+      var selectedValue = "none";
       if(colSlug in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
@@ -202,6 +210,8 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   return null;
 };
 
+// search for a match at the end of a string
+// "a$" matches "Llama" but not "aardvark"
 $.tablesorter.filter.types.end = function( config, data ) {
   if ( /\$$/.test( data.iFilter ) ) {
     var filter = data.iFilter,
@@ -219,6 +229,7 @@ $.tablesorter.filter.types.end = function( config, data ) {
         theme: 'ice',
         headers: {
           0: {sorter: false,filter:false},
+          // 2: {sorter: false , filter:false},
           6: {sorter: false ,filter:false},
           7: {sorter: false,filter:false}
         },
@@ -226,21 +237,41 @@ $.tablesorter.filter.types.end = function( config, data ) {
         widgetOptions: {
               filter_reset : 'button.reset',
             filter_functions : {
+                  //   3 : {
+                  //   "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
+                  //   "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
+                  //   "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
+                  // },
+                  1 : {
+                     "A - D" : function(e, n, f, i, $r, c, data) { return /^[A-D]/.test(e); },
+                     "E - H" : function(e, n, f, i, $r, c, data) { return /^[E-H]/.test(e); },
+                     "I - L" : function(e, n, f, i, $r, c, data) { return /^[I-L]/.test(e); },
+                     "M - P" : function(e, n, f, i, $r, c, data) { return /^[M-P]/.test(e); },
+                     "Q - T" : function(e, n, f, i, $r, c, data) { return /^[Q-T]/.test(e); },
+                     "U - X" : function(e, n, f, i, $r, c, data) { return /^[U-X]/.test(e); },
+                     "Y - Z" : function(e, n, f, i, $r, c, data) { return /^[Y-Z]/.test(e); }
+                   },
                    2 : {
                       "Dimension" : function(e, n, f, i, $r, c, data) { return /^[di]{2}/.test(e); },
                       "Measure" : function(e, n, f, i, $r, c, data) { return /^[m]/.test(e); },
                       "Datetime" : function(e, n, f, i, $r, c, data) { return /^[da]{2}/.test(e); }
 
                     },
-                  },
-                }
+                      },
+
+
+
+            }
       });
-        });
+      // $("#dim").click();
+    });
   }
   render() {
-this.dcTableSorter()
+    this.dcTableSorter()
     var cleansingHtml = <span>"Loading ... "</span>;
-  if(this.props.dataPreview!=null)
+
+
+    if(this.props.dataPreview!=null)
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
@@ -248,17 +279,20 @@ this.dcTableSorter()
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
           let checked=true
-          return (
+
+        return (
           <tr>
             <td>
               <div class="ma-checkbox inline">
               <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
               {/* <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} /> */}
+
               <label for={item.slug}> </label>
               </div>
             </td>
             <td className="text-left">{item.name}</td>
             {/* <td>{item.actualColumnType}</td> */}
+
             <td>  {this.getUpdatedDataType(item.slug)} </td>
             <td>
               {item.columnStats.filter(function(items){
@@ -312,12 +346,15 @@ this.dcTableSorter()
                   </div>
                   </div>
               </div>
+
               <div class="clearfix xs-mb-5"></div>
+
               <div class="form-group">
                 <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     <InputSwitch id="rd2" checked={this.state.value2}  name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+
                     {/* <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} /> */}
                   </div>
                 </div>
@@ -331,6 +368,7 @@ this.dcTableSorter()
                                   <div class="form-inline" >
                                     <div class="form-group pull-right">
                                       {/* <button type="button" className="btn btn-default btn-md reset ">Reeeset filter</button> */}
+
                                       {/* <label class="col-sm-3 xs-pt-5">	Search</label> */}
                                        <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
                                     </div>
@@ -344,11 +382,14 @@ this.dcTableSorter()
                             <th> <div class="ma-checkbox inline">
                                 {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
                                 <input id="checkAll" type="checkbox" class="needsclick" checked="checked" />
-                                <label for="checkAll"></label>
+
+                                 <label for="checkAll"></label>
                               </div>
                             </th>
                             <th class="filter-select filter-exact" data-placeholder="" ><b>Vaaariable name</b></th>
                             <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
+                            {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
+
                             <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
                             <th class="filter-select filter-exact" data-placeholder="" ><b>No of outliers</b></th>
                             <th  ><b>No of missing values</b></th>
