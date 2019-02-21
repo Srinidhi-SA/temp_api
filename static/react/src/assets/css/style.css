@@ -9769,8 +9769,8 @@ pre {
 	border-color: #c5c5c5
 }
 .btn-default.disabled, .btn-default.disabled.active, .btn-default.disabled.focus, .btn-default.disabled:active, .btn-default.disabled:focus, .btn-default.disabled:hover, .btn-default[disabled], .btn-default[disabled].active, .btn-default[disabled].focus, .btn-default[disabled]:active, .btn-default[disabled]:focus, .btn-default[disabled]:hover, fieldset[disabled] .btn-default, fieldset[disabled] .btn-default.active, fieldset[disabled] .btn-default.focus, fieldset[disabled] .btn-default:active, fieldset[disabled] .btn-default:focus, fieldset[disabled] .btn-default:hover {
-	background-color: #fff;
-	border-color: #dedede
+    background-color: #e5e5e5;
+    border-color: #dfdfdf;
 }
 .btn-default .badge {
 	color: #fff;
@@ -15233,7 +15233,7 @@ blockquote p:after {
 input#flight_number { display: inherit; width: inherit; }
 .mProcess { min-height:80px; }
 button.btn.btn-primary.b-inline.addn { position: absolute; right: 25px; top: 12px; }
-form .col-sm-4.control-label { 
+form .col-sm-4.control-label {
     margin: 6px 0 0 0;
 }
 .form_withrowlabels .form-group label {
@@ -15241,11 +15241,26 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-
+.algSelection .bg-highlight-parent { padding: 10px 15px; height: 280px; border: 1px solid #ededed; }
+div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: uppercase; padding: 10px; }
+.algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
+.modal-lg-dimSEdate { width:805px; }
+.modal-lg-dimSEdate .modal-content { max-width:inherit; }
+button.btn.btn-cst_button { border: none; background: transparent; color: #0000ff; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
+    -moz-transition:opacity .5s ease;
+    transition:opacity .5s ease; }
+button.btn.btn-cst_button:hover { background:#f3f3f3; color:#00998c;
+		-webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1); }
+button.btn.btn-cst_button[disabled] { background-color: #cccccc; color: #666666;  }
+button.btn.btn-cst_button[disabled]:hover { background-color: #cccccc; color: #666666; -webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); }
+.tablesorter thead .disabled { display: none; }
 /**************** Css realated to developers, keep the source down ***/
+.binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
 	    width: 40%;
-    margin: 15px 0px 0px 0px;
+    margin: 15px 0px 0px 0px
 }
 
 progress {

@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {MultiSelect} from 'primereact/multiselect';
+import dateFormat from 'dateformat';
+import DatePicker from 'react-bootstrap-date-picker';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
 import {
   openBinsOrLevelsModalAction,
@@ -21,24 +23,19 @@ import {
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering,
+      datasets : store.datasets,
   };
 })
+
 export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-
     this.state = { levelsArray: this.props.levelsData ,}
+
+
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
-
   }
-  // getAllOptions(){
-  //   // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
-  //   let levelOptions = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
-  //   levelOptions.sort();
-  //   return levelOptions
-  // }
-
 
   getAllOptions(){
     let levelOptions = Object.keys(this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "LevelCount"))[0].value)
@@ -46,12 +43,16 @@ export class Levels extends React.Component {
     return levelOptions
   }
 
+  // datasets.dataPreview.meta_data.scriptMetaData.columnData[3].columnStats[""0""].value
+
+
   getMultiSelectOptions(idx){
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
       return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function(elem) {
         return {"label": elem, "value" : elem };
       });
   }
+
   getAllSelectedOptionsExceptCurrent(idx){
     var allSelectedItems = new Set();
     this.state.levelsArray.map(function(elem,elemIdx){
@@ -71,16 +72,18 @@ export class Levels extends React.Component {
     this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
 
+   componentDidMount() {
+	if ($('#dimSEdate').hasClass('wide-modal')) {
+		$('.modal-colored-header').addClass('modal-lg-dimSEdate');
+	}
+ }
+
   handleLevelSubmit = evt => {
 
   };
 
-
-
-
-
   addNewLevel(){
-    var newObj = {"inputValue":"", "multiselectValue":""};
+    var newObj = {"inputValue":"", "multiselectValue":"","startDate":"", "endDate":""};
     this.setState({
       levelsArray: this.state.levelsArray.concat([newObj,])
     });
@@ -100,7 +103,6 @@ export class Levels extends React.Component {
       if(slugData != undefined){
         levelData = slugData.levelData;
       }
-
     }
     return levelData;
   }
@@ -127,10 +129,9 @@ export class Levels extends React.Component {
       }
     }
 
-    inputOnChangeHandler(idx, event){
-
+    inputOnChangeHandler(idx, valueToChange, event){
       var newArray = this.state.levelsArray;
-      newArray[idx]["inputValue"] = event.target.value;
+      newArray[idx][valueToChange] = event.target.value;
       this.setState({
         levelsArray: newArray
       });
@@ -142,22 +143,25 @@ export class Levels extends React.Component {
       this.setState({
         levelsArray: newArray
       });
-
     }
 
   render() {
     console.log("Levels render method is called...");
 
-    var levelData = this.getLevelData();
 
-    var levels = "";
+if(this.props.selectedItem.columnType == "dimension")
+{
+    var levelData = this.getLevelData();
+        var levels = "";
     levels = (
+      <Tab.Pane>
+
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
-            {/* <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label> */}
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
+            <input type="text" value={level.inputValue}  name={`name #${idx + 1}`} name="newcolumnname" className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
@@ -172,62 +176,79 @@ export class Levels extends React.Component {
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
+
         </div>
 
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
 
       </div>
+      <div className="row form-group">
+        <div className="col-sm-12 text-center">
+          <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+        </div>
+      </div>
+
+  </Tab.Pane>
     )
 
 
 
-
-
+}
+else{
 
 
  var dtlevels="";
+
+ var cname = this.props.datasets.dataPreview.meta_data.scriptMetaData.columnData.filter(function (items){return items.actualColumnType =="datetime"}).map((names) =>{
+   return(<span>{names.name}</span>);})
+
+ var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "firstDate"))[0].value
+ var endDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "lastDate"))[0].value
     dtlevels = (
-      <div>
+      <Tab.Pane>
+        <p>Please create new levels based on <b> {cname} </b>column by selecting start and end between "<i>{startDate}</i>" and "<i>{endDate}</i>". </p>
+      <div id="dimSEdate" className="wide-modal">
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-            <input type="text" id="txt_lName1"  name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="text" id="txt_lName1" value={level.inputValue} name="inputVal" defaultValue={level.newcolumnname} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx,"inputValue")} />&nbsp;&nbsp;&nbsp;
           </div>
-            {/* <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
-          </div> */}
+
+
           <div class="form-group">
             <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
-            <input type="text" id="txt_sPeriod1"  className="form-control" placeholder="DD/MM/YYYY" deafaultValue="" onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="date" id="txt_sPeriod1" value={level.startDate} min={startDate} max={endDate}  defaultValue={startDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx,"startDate")} />
           </div>
+
+
+          {/* <div className="col-xs-12">
+            <DatePicker key={this.state.startDate} minDate = {startDate} maxDate = {endDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
+          </div> */}
 
           <div class="form-group">
             <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
-            <input type="text" id="txt_ePeriod1"  class="form-control" placeholder="DD/MM/YYYY"  deafaultValue=""  onInput={this.inputOnChangeHandler.bind(this, idx)}/>
+            <input type="date" id="txt_ePeriod1" value={level.endDate} min={startDate} max={endDate} defaultValue={endDate} className="form-control"   onInput={this.inputOnChangeHandler.bind(this, idx, "endDate")}/>
           </div>
           <div className="form-group">
           &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
         </div>
-
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
-
       </div>
+      <div className="row form-group">
+        <div className="col-sm-12 text-center">
+          <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+        </div>
+      </div>
+  </Tab.Pane>
     )
-
-
-
-
-
-
-
-
-
+}
 
     return (
-      <div>
+      <div className="binsLevelsHeight">
         <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
@@ -239,6 +260,4 @@ export class Levels extends React.Component {
       </div>
     );
   }
-
-
 }
