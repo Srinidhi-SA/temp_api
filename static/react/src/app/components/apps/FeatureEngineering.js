@@ -332,6 +332,7 @@ export class FeatureEngineering extends React.Component {
           3: {sorter: false},
           2: {sorter: false}
         }
+        
       });
       // $("#dim").click();
     });
