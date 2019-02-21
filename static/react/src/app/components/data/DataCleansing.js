@@ -259,7 +259,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                             <th>Data type</th>
                             <th># of unique values</th>
                             <th># of outliers</th>
-                            <th>% of missing values</th>
+                            <th>No of missing values</th>
                             <th>Missing value treatment</th>
                             <th>Outlier removal</th>
                             </tr>

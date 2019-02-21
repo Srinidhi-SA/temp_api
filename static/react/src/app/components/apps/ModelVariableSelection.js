@@ -144,7 +144,6 @@ export class ModelVariableSelection extends React.Component {
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
-
                                     <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-8">
                                         <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
