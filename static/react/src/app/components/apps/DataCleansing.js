@@ -88,6 +88,12 @@ export class DataCleansing extends React.Component {
   }
 
   componentDidMount() {
+    $("#sdataType").change(function(){
+      $("#dctable tbody tr").hide();
+      $("#dctable tbody tr."+$(this).val()).show('fast');
+    });
+
+
     $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
@@ -192,43 +198,16 @@ export class DataCleansing extends React.Component {
     else { return "";}
   }
 
+
+
   dcTableSorter() {
-    $.tablesorter.filter.types.start = function( config, data ) {
-      if ( /^\^/.test( data.iFilter ) ) {
-        return data.iExact.indexOf( data.iFilter.substring(1) ) === 0;
-      }
-      return null;
-    };
-    $.tablesorter.filter.types.end = function( config, data ) {
-      if ( /\$$/.test( data.iFilter ) ) {
-        var filter = data.iFilter,
-        filterLength = filter.length - 1,
-        removedSymbol = filter.substring(0, filterLength),
-        exactLength = data.iExact.length;
-        return data.iExact.lastIndexOf(removedSymbol) + filterLength === exactLength;
-      }
-      return null;
-    };
+
+
     $(function() {
       $('#dctable').tablesorter({
-        theme: 'ice',
-        headers: {
-          0: {sorter: false,filter:false},
-          6: {sorter: false ,filter:false},
-          7: {sorter: false,filter:false}
-        },
-        widgets: [ 'filter'],
-        widgetOptions: {
-          filter_reset : 'button.reset',
-          filter_functions : {
-            2 : {
-              "Dimension" : function(e, n, f, i, $r, c, data) { return /^[di]{2}/.test(e); },
-              "Measure" : function(e, n, f, i, $r, c, data) { return /^[m]/.test(e); },
-              "Datetime" : function(e, n, f, i, $r, c, data) { return /^[da]{2}/.test(e); }
-            },
-          },
-        }
+        theme : 'ice'
       });
+
     });
   }
 
@@ -243,7 +222,7 @@ export class DataCleansing extends React.Component {
           return "";
         let checked=true
         return (
-          <tr>
+          <tr className={('all ' + item.columnType)}>
             <td>
               <div class="ma-checkbox inline">
                 {/* <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/> */}
@@ -316,7 +295,15 @@ export class DataCleansing extends React.Component {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
-                      <div class="col-md-3 col-md-offset-9">
+                      <div className="col-md-2">
+                        <select id="sdataType" className="form-control">
+                        <option value="all">Sort By Data Type</option>
+                        <option value="measure">Measure</option>
+                        <option value="dimension">Dimension</option>
+                        <option value="datetime">Datetime</option>
+                        </select>
+                      </div>
+                      <div class="col-md-3 col-md-offset-7">
                         <div class="form-inline" >
                           <div class="form-group pull-right">
                             <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
@@ -325,6 +312,7 @@ export class DataCleansing extends React.Component {
                       </div>
                     </div>
                   <div className="table-responsive ">
+
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                       <thead>
                         <tr className="myHead">
