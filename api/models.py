@@ -26,6 +26,7 @@ from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
+from helper import convert_fe_date_format
 
 from guardian.shortcuts import assign_perm
 
@@ -1055,7 +1056,6 @@ class Trainer(models.Model):
         feature_engineering_config = dict()
         variable_selection = config['variablesSelection']
         column_data = self.convert_variable_selection_config_into_dict(data=variable_selection)
-
         self.add_newly_generated_column_names = []
         self.collect_column_slugs_which_all_got_transformations = []
         if 'dataCleansing' in config:
@@ -1240,6 +1240,11 @@ class Trainer(models.Model):
                                                 variable_selection_column_data=column_data[slug]
                                                 )
                     self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
+                elif fkey == 'dateLevelData':
+                    mlJson = self.dateLevelsAdapter(uiJson=uiJson,
+                                                variable_selection_column_data=column_data[slug]
+                                                )
+                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
 
         return feature_engineering_ml_config
 
@@ -1273,6 +1278,11 @@ class Trainer(models.Model):
                     level_creation_settings['selected'] = True
                     key['selected'] = True
                     key['columns'].append(mlJson)
+                if key['name'] == 'create_new_datetime_levels':
+                    level_creation_settings['selected'] = True
+                    key['selected'] = True
+                    key['columns'].append(mlJson)
+
         except:
             pass
 
@@ -1469,6 +1479,28 @@ class Trainer(models.Model):
         for item in uiJson:
             if "inputValue" in item and "multiselectValue" in item:
                 mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
+        return mlJson
+
+    def dateLevelsAdapter(self, uiJson, variable_selection_column_data):
+        user_given_name = self.generate_new_column_name_based_on_transformation(
+            variable_selection_column_data,
+            'create_new_datetime_levels'
+        )
+        mlJson = {
+            "name": variable_selection_column_data['name'],
+            "datatype": variable_selection_column_data['columnType'],
+            "user_given_name": user_given_name,
+            "mapping_dict": {}
+        }
+        for item in uiJson:
+            if "inputValue" in item and "multiselectValue" in item:
+                start_date = convert_fe_date_format(item['startDate'])
+                end_date = convert_fe_date_format(item['endDate'])
+                '''
+                convert this start_date to dd/mm/yyyy
+                save it back in start_date
+                '''
+                mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
         return mlJson
 
     def generate_new_column_name_based_on_transformation(self, variable_selection_column_data, function_name, *args):
