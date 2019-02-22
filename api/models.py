@@ -26,6 +26,7 @@ from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
+from helper import convert_fe_date_format
 
 from guardian.shortcuts import assign_perm
 
@@ -1055,7 +1056,6 @@ class Trainer(models.Model):
         feature_engineering_config = dict()
         variable_selection = config['variablesSelection']
         column_data = self.convert_variable_selection_config_into_dict(data=variable_selection)
-
         self.add_newly_generated_column_names = []
         self.collect_column_slugs_which_all_got_transformations = []
         if 'dataCleansing' in config:
@@ -1125,13 +1125,15 @@ class Trainer(models.Model):
 
         # overall_settings
         if 'overallSettings' in data_cleansing_config_ui:
+
             overall_data = data_cleansing_config_ui['overallSettings']
             overall_settings_ui_ml_name_mapping = feature_engineering_settings.overall_settings_data_cleasing_ui_ml_mapping
             for d in overall_data:
                 for i in overall_settings:
                     if i['name'] == overall_settings_ui_ml_name_mapping[d]:
-                        if overall_data[d] == 'true':
+                        if overall_data[d] == 'true' or overall_data[d] == True:
                             i['selected'] = True
+                            data_cleansing['selected'] = True
 
         name_mapping = {
             'missingValueTreatment': 'missing_value_treatment',
@@ -1162,6 +1164,7 @@ class Trainer(models.Model):
                 }
 
                 columns_wise_settings[name_mapping[fkey]]['selected'] = True
+                data_cleansing['selected'] = True
                 operations = columns_wise_settings[name_mapping[fkey]]['operations']
                 print([op['name'] for op in operations])
                 treatment = value['treatment']
@@ -1201,6 +1204,7 @@ class Trainer(models.Model):
 	
             if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
             #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+                feature_engineering_ml_config['selected'] = True
                 overall_settings[0]['selected'] = True
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                 for col in column_data:
@@ -1214,6 +1218,7 @@ class Trainer(models.Model):
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
+            feature_engineering_ml_config['selected'] = True
             columns_wise_data_f = columns_wise_data[slug]
 
             for fkey in columns_wise_data_f:
@@ -1268,6 +1273,11 @@ class Trainer(models.Model):
                     level_creation_settings['selected'] = True
                     key['selected'] = True
                     key['columns'].append(mlJson)
+                if key['name'] == 'create_new_datetime_levels':
+                    level_creation_settings['selected'] = True
+                    key['selected'] = True
+                    key['columns'].append(mlJson)
+
         except:
             pass
 
@@ -1451,19 +1461,42 @@ class Trainer(models.Model):
 
     def levelsAdapter(self, uiJson, variable_selection_column_data):
 
-        user_given_name = self.generate_new_column_name_based_on_transformation(
-            variable_selection_column_data,
-            'create_new_levels'
-        )
+        is_datetime_level = True
         mlJson = {
             "name": variable_selection_column_data['name'],
             "datatype": variable_selection_column_data['columnType'],
-            "user_given_name": user_given_name,
+            "user_given_name": '',
             "mapping_dict": {}
         }
+
         for item in uiJson:
             if "inputValue" in item and "multiselectValue" in item:
-                mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
+                if item['multiselectValue'] == '':
+                    '''
+                    if multiselectValue is "" , then this is a datetime thing
+                    convert this start_date/endDate from yyyy-mm-dd to dd/mm/yyyy
+                    save it back in start_date/endDate
+                    '''
+                    start_date = convert_fe_date_format(item['startDate'])
+                    end_date = convert_fe_date_format(item['endDate'])
+                    mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
+                else:
+                    is_datetime_level = False
+                    mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
+
+        if is_datetime_level is False:
+            user_given_name = self.generate_new_column_name_based_on_transformation(
+                variable_selection_column_data,
+                'create_new_datetime_levels'
+            )
+        else:
+            user_given_name = self.generate_new_column_name_based_on_transformation(
+                variable_selection_column_data,
+                'create_new_levels'
+            )
+
+        mlJson['user_given_name'] = user_given_name
+
         return mlJson
 
     def generate_new_column_name_based_on_transformation(self, variable_selection_column_data, function_name, *args):

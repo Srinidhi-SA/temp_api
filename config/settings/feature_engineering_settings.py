@@ -213,7 +213,7 @@ overall_settings_data_cleasing_ui_ml_mapping = {
 data_cleansing_final_config_format = {
       "name": "data_cleansing",
       "displayName": "Data Cleansing",
-      "selected": True,
+      "selected": False,
       "slug": "",
       "overall_settings": [
         {
@@ -1217,7 +1217,7 @@ feture_engineering_static = {
 feature_engineering_ml_settings = {
       "name": "feature_engineering",
       "displayName": "Feature Engineering",
-      "selected": True,
+      "selected": False,
       "slug": "",
       "overall_settings": [
         {
