@@ -1240,11 +1240,6 @@ class Trainer(models.Model):
                                                 variable_selection_column_data=column_data[slug]
                                                 )
                     self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
-                elif fkey == 'dateLevelData':
-                    mlJson = self.dateLevelsAdapter(uiJson=uiJson,
-                                                variable_selection_column_data=column_data[slug]
-                                                )
-                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
 
         return feature_engineering_ml_config
 
@@ -1466,41 +1461,42 @@ class Trainer(models.Model):
 
     def levelsAdapter(self, uiJson, variable_selection_column_data):
 
-        user_given_name = self.generate_new_column_name_based_on_transformation(
-            variable_selection_column_data,
-            'create_new_levels'
-        )
+        is_datetime_level = True
         mlJson = {
             "name": variable_selection_column_data['name'],
             "datatype": variable_selection_column_data['columnType'],
-            "user_given_name": user_given_name,
+            "user_given_name": '',
             "mapping_dict": {}
         }
-        for item in uiJson:
-            if "inputValue" in item and "multiselectValue" in item:
-                mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
-        return mlJson
 
-    def dateLevelsAdapter(self, uiJson, variable_selection_column_data):
-        user_given_name = self.generate_new_column_name_based_on_transformation(
-            variable_selection_column_data,
-            'create_new_datetime_levels'
-        )
-        mlJson = {
-            "name": variable_selection_column_data['name'],
-            "datatype": variable_selection_column_data['columnType'],
-            "user_given_name": user_given_name,
-            "mapping_dict": {}
-        }
         for item in uiJson:
             if "inputValue" in item and "multiselectValue" in item:
-                start_date = convert_fe_date_format(item['startDate'])
-                end_date = convert_fe_date_format(item['endDate'])
-                '''
-                convert this start_date to dd/mm/yyyy
-                save it back in start_date
-                '''
-                mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
+                if item['multiselectValue'] == '':
+                    '''
+                    if multiselectValue is "" , then this is a datetime thing
+                    convert this start_date/endDate from yyyy-mm-dd to dd/mm/yyyy
+                    save it back in start_date/endDate
+                    '''
+                    start_date = convert_fe_date_format(item['startDate'])
+                    end_date = convert_fe_date_format(item['endDate'])
+                    mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
+                else:
+                    is_datetime_level = False
+                    mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
+
+        if is_datetime_level is False:
+            user_given_name = self.generate_new_column_name_based_on_transformation(
+                variable_selection_column_data,
+                'create_new_datetime_levels'
+            )
+        else:
+            user_given_name = self.generate_new_column_name_based_on_transformation(
+                variable_selection_column_data,
+                'create_new_levels'
+            )
+
+        mlJson['user_given_name'] = user_given_name
+
         return mlJson
 
     def generate_new_column_name_based_on_transformation(self, variable_selection_column_data, function_name, *args):
