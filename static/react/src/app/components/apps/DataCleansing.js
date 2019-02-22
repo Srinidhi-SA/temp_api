@@ -239,20 +239,6 @@ $.tablesorter.filter.types.end = function( config, data ) {
         widgetOptions: {
               filter_reset : 'button.reset',
             filter_functions : {
-                  //   3 : {
-                  //   "< 10"      : function(e, n, f, i, $r, c, data) { return n < 10; },
-                  //   "10 - 100" : function(e, n, f, i, $r, c, data) { return n >= 10 && n <=100; },
-                  //   "> 100"     : function(e, n, f, i, $r, c, data) { return n > 100; }
-                  // },
-                  1 : {
-                     "A - D" : function(e, n, f, i, $r, c, data) { return /^[A-D]/.test(e); },
-                     "E - H" : function(e, n, f, i, $r, c, data) { return /^[E-H]/.test(e); },
-                     "I - L" : function(e, n, f, i, $r, c, data) { return /^[I-L]/.test(e); },
-                     "M - P" : function(e, n, f, i, $r, c, data) { return /^[M-P]/.test(e); },
-                     "Q - T" : function(e, n, f, i, $r, c, data) { return /^[Q-T]/.test(e); },
-                     "U - X" : function(e, n, f, i, $r, c, data) { return /^[U-X]/.test(e); },
-                     "Y - Z" : function(e, n, f, i, $r, c, data) { return /^[Y-Z]/.test(e); }
-                   },
                    2 : {
                       "Dimension" : function(e, n, f, i, $r, c, data) { return /^[di]{2}/.test(e); },
                       "Measure" : function(e, n, f, i, $r, c, data) { return /^[m]/.test(e); },
@@ -388,14 +374,13 @@ $.tablesorter.filter.types.end = function( config, data ) {
                                  <label for="checkAll"></label>
                               </div>
                             </th>
-                            <th class="filter-select filter-exact" data-placeholder="" ><b>Vaaariable name</b></th>
-                            <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
+                            <th class="filter-select filter-exact"  ><b>Variable name</b></th>
+                            <th class="filter-select filter-exact"  ><b>Data type</b></th>
                             {/* <th class="filter-select filter-exact" data-placeholder=""><b>Convert Data type to</b></th> */}
-
-                            <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
-                            <th class="filter-select filter-exact" data-placeholder="" ><b>No of outliers</b></th>
-                            <th  ><b>No of missing values</b></th>
-                            <th><b>Missing value treatment</b></th>
+                            <th class="filter-select filter-exact" ><b>No of unique values</b></th>
+                            <th class="filter-select filter-exact"  ><b>No of outliers</b></th>
+                            <th class="filter-select filter-exact" ><b>No of missing values</b></th>
+                            <th ><b>Missing value treatment</b></th>
                             <th><b>Outlier removal</b></th>
                             </tr>
                         </thead>
@@ -403,8 +388,7 @@ $.tablesorter.filter.types.end = function( config, data ) {
                           {cleansingHtml}
                         </tbody>
                       </table>
-
-                  </div>
+                    </div>
   <div class="buttonRow text-right">
      <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
    </div>
