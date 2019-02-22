@@ -59,22 +59,19 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentDidMount() {
- $('#search').on('keyup', function() {
-   var value = $(this).val();
-   var patt = new RegExp(value, "i");
-   $('#fetable').find('tr').each(function() {
-	if (!($(this).find('td').text().search(patt) >= 0)) {
- 		  $(this).not('.myHead').hide();
-	}
-	if (($(this).find('td').text().search(patt) >= 0)) {
-  $(this).show();
-	}
- });
-});
-   }
-
-
-  // pickValuesAndStoreLocally(slug, inputId, event){ }
+    $('#search').on('keyup', function() {
+      var value = $(this).val();
+      var patt = new RegExp(value, "i");
+      $('#fetable').find('tr').each(function() {
+        if (!($(this).find('td').text().search(patt) >= 0)) {
+          $(this).not('.myHead').hide();
+        }
+        if (($(this).find('td').text().search(patt) >= 0)) {
+          $(this).show();
+        }
+      });
+    });
+  }
 
   clearBinsAndIntervals(event){
     if(this.state[this.props.selectedItem.slug] != undefined  && this.state[this.props.selectedItem.slug]["binData"] != undefined){
@@ -218,92 +215,76 @@ export class FeatureEngineering extends React.Component {
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-      }else{
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter new level ");
-      }
+    }else{
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("#fileErrorMsg").html("Please enter new level ");
     }
-
-
-  //       var multiselect = levelData[i].multiselectValue;
-  //       if(multiselect != undefined || multiselect != null|| multiselect != ""){
-  //         for (var i = 0; i < multiselect.length; i++){
-  //           if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-  //             $("#fileErrorMsg").removeClass("visibilityHidden");
-  //             $("#fileErrorMsg").html("Please enter the new column name");
-  //             $("input[name='inputValue']").focus();
-  //             return;
-  //           }
-  //         }
-  //       }
-
+  }
 
   validateTransformdata(actionType){
-      console.log('transform validation starts');
-      var slugData = this.state[this.props.selectedItem.slug];
-      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
-        var transformationData = this.state[this.props.selectedItem.slug][actionType];
-        if(transformationData.replace_values_with == true){
-          if(transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null|| transformationData.replace_values_with_input == "" ){
-            console.log('replace value input field is empty');
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Enter value");
-            $("input[name='replace_values_with_input']").focus();
-            return;
-          }
-          else if(transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null|| transformationData.replace_values_with_selected == "" ){
-            console.log('dates are undefined');
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Select value to replace with");
-            $("input[name='replace_values_with_selected']").focus();
-            return;
-          }
-        }else if(transformationData.feature_scaling == true){
-          if(transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null|| transformationData.perform_standardization_select == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Select value for feature scaling");
-            return;
-          }
-        }else if(transformationData.variable_transformation == true){
-          if(transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null|| transformationData.variable_transformation_select == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Select value for variable transformation");
-            return;
-          }
-        }else if(transformationData.extract_time_feature == true){
-          if(transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null|| transformationData.extract_time_feature_select == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Select value for time feature");
-            return;
-          }
-        }else if(transformationData.time_since == true){
-          if(transformationData.time_since_input == undefined || transformationData.time_since_input == null|| transformationData.time_since_input == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Enter value for Time Since");
-            return;
-          }
-        }else if(transformationData.is_custom_string_in == true){
-          if(transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null|| transformationData.is_custom_string_in_input == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Enter value for custom String");
-            return;
-          }
-        }else if(transformationData.encoding_dimensions == true){
-          if(transformationData.encoding_type == undefined || transformationData.encoding_type == null|| transformationData.encoding_type == ""){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Select Encoding Type");
-            return;
-          }
-        }encoding_dimensions
-        var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-        this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-        this.closeBinsOrLevelsModal();
-        this.closeTransformColumnModal();
-      }else{
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("No fields Selected");
+    console.log('transform validation starts');
+    var slugData = this.state[this.props.selectedItem.slug];
+    if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+      var transformationData = this.state[this.props.selectedItem.slug][actionType];
+      if(transformationData.replace_values_with == true){
+        if(transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null|| transformationData.replace_values_with_input == "" ){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter value");
+          $("input[name='replace_values_with_input']").focus();
+          return;
+        }
+        else if(transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null|| transformationData.replace_values_with_selected == "" ){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select value to replace with");
+          $("input[name='replace_values_with_selected']").focus();
+          return;
+        }
+      }else if(transformationData.feature_scaling == true){
+        if(transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null|| transformationData.perform_standardization_select == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select value for feature scaling");
+          return;
+        }
+      }else if(transformationData.variable_transformation == true){
+        if(transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null|| transformationData.variable_transformation_select == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select value for variable transformation");
+          return;
+        }
+      }else if(transformationData.extract_time_feature == true){
+        if(transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null|| transformationData.extract_time_feature_select == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select value for time feature");
+          return;
+        }
+      }else if(transformationData.time_since == true){
+        if(transformationData.time_since_input == undefined || transformationData.time_since_input == null|| transformationData.time_since_input == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter value for Time Since");
+          return;
+        }
+      }else if(transformationData.is_custom_string_in == true){
+        if(transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null|| transformationData.is_custom_string_in_input == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter value for custom String");
+          return;
+        }
+      }else if(transformationData.encoding_dimensions == true){
+        if(transformationData.encoding_type == undefined || transformationData.encoding_type == null|| transformationData.encoding_type == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select Encoding Type");
+          return;
+        }
       }
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeBinsOrLevelsModal();
+      this.closeTransformColumnModal();
+    }else {
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("#fileErrorMsg").html("No fields Selected");
     }
+  }
 
   handleTopLevelRadioButtonOnchange(event){
     this.state.topLevelRadioButton = event.target.value;
@@ -324,6 +305,7 @@ export class FeatureEngineering extends React.Component {
   isBinningOrLevelsDisabled(item){
       return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
   }
+
   feTableSorter() {
     $(function() {
       $('#fetable').tablesorter({
@@ -332,15 +314,13 @@ export class FeatureEngineering extends React.Component {
           3: {sorter: false},
           2: {sorter: false}
         }
-        
       });
-      // $("#dim").click();
     });
   }
 
   render() {
     console.log("FeatureEngineering render method is called...");
-      this.feTableSorter();
+    this.feTableSorter();
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
@@ -354,140 +334,143 @@ export class FeatureEngineering extends React.Component {
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag) return "";
-        if(item.columnType == "measure") numberOfSelectedMeasures +=1;
-        else numberOfSelectedDimensions +=1;
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          return "";
+        if(item.columnType == "measure")
+          numberOfSelectedMeasures +=1;
+        else
+          numberOfSelectedDimensions +=1;
         return (
           <tr key={key}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase()+item.columnType.slice(1)}</td>
             <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
             <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="cst_button">Transform</Button></td>
-          </tr>);
-        })
-      }
-      if(this.props.selectedItem.columnType == "measure"){
-        binOrLevels=   <Bins parentPickValue={this.pickValue} clearBinsAndIntervals={this.clearBinsAndIntervals} />
-        binOrLevelData="binData";
-      }
-      else if(this.props.selectedItem.columnType == "dimension")
-      {
-        binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-        binOrLevelData="levelData";
-      }
-      else
-      {
-        binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-        binOrLevelData="levelData";
-      }
-      binsOrLevelsPopup = (
-        <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{overflow: 'inherit' }} >
+          </tr>
+        );
+      })
+    }
+    if(this.props.selectedItem.columnType == "measure"){
+      binOrLevels=   <Bins parentPickValue={this.pickValue} clearBinsAndIntervals={this.clearBinsAndIntervals} />
+      binOrLevelData="binData";
+    } else if(this.props.selectedItem.columnType == "dimension") {
+      binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
+      binOrLevelData="levelData";
+    } else {
+      binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
+      binOrLevelData="levelData";
+    }
+
+    binsOrLevelsPopup = (
+      <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
+        <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{overflow: 'inherit' }} >
+          <Modal.Header closeButton>
+            <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
+          </Modal.Header>
+          <Modal.Body>
+            <div>
+              <h4>What you want to do?</h4>
+              {binOrLevels}
+            </div>
+            <div id="errorMsgs" className="text-danger"></div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
+            <Button bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    )
+    transformColumnPopup = (
+      <div class="col-md-3 xs-mb-15 list-boxes" >
+        <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
+          <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
-              <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
+              <h3 className="modal-title">Transform column</h3>
             </Modal.Header>
             <Modal.Body>
-              <div>
-                <h4>What you want to do?</h4>
-                {binOrLevels}
-              </div>
-              <div id="errorMsgs" className="text-danger"></div>
+              <Transform parentPickValue={this.pickValue}/>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
+              <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
+              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"transformationData")}>Create</Button>
             </Modal.Footer>
           </Modal>
         </div>
-      )
-      transformColumnPopup = (
-        <div class="col-md-3 xs-mb-15 list-boxes" >
-          <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
-            <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
-              <Modal.Header closeButton>
-                <h3 className="modal-title">Transform column</h3>
-              </Modal.Header>
-              <Modal.Body>
-                <Transform parentPickValue={this.pickValue}/>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"transformationData")}>Create</Button>
-              </Modal.Footer>
-            </Modal>
-          </div>
+      </div>
+    )
+
+    return (
+      // <!-- Main Content starts with side-body -->
+      <div className="side-body">
+        {/* <!-- Page Title and Breadcrumbs --> */}
+        <div class="page-head">
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize">Feature Engineering</h3>
         </div>
-      )
-      return (
-        // <!-- Main Content starts with side-body -->
-        <div className="side-body">
-          {/* <!-- Page Title and Breadcrumbs --> */}
-          <div class="page-head">
-            <h3 class="xs-mt-0 xs-mb-0 text-capitalize">Feature Engineering</h3>
-          </div>
-          {/*<!-- Page Content Area -->*/}
-          {/*<!-- /.Page Title and Breadcrumbs -->*/}
-          {binsOrLevelsPopup}
-          {transformColumnPopup}
-          <div className="main-content">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="panel box-shadow xs-m-0">
-                  <div class="panel-body no-border xs-p-20">
-                    <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or create new features from the existing data, you can use the options provided below. </h4><hr/>
-                    <p class="inline-block">
-                      <i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
-                    </p>
-                    <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
-                      <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
-                        <label for="mTod-binning1">Yes</label>
-                      </div>
-                      <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
-                        <label for="mTod-binning2">No </label>
-                      </div>
-                    </span>
-                    {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
-                  </div>
+        {/*<!-- Page Content Area -->*/}
+        {/*<!-- /.Page Title and Breadcrumbs -->*/}
+        {binsOrLevelsPopup}
+        {transformColumnPopup}
+        <div className="main-content">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel box-shadow xs-m-0">
+                <div class="panel-body no-border xs-p-20">
+                  <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or create new features from the existing data, you can use the options provided below. </h4><hr/>
+                  <p class="inline-block">
+                    <i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+                  </p>
+                  <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
+                    <div class="ma-checkbox inline">
+                      <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
+                      <label for="mTod-binning1">Yes</label>
+                    </div>
+                    <div class="ma-checkbox inline">
+                      <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
+                      <label for="mTod-binning2">No </label>
+                    </div>
+                  </span>
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
                 </div>
-                <div className="panel box-shadow ">
-                  <div class="panel-body no-border xs-p-20">
-                    <div class="row xs-mb-10">
-<div class="col-md-3 col-md-offset-9">
-                          <div class="form-inline" >
-                          <div class="form-group pull-right">
-                          <label class="col-sm-3 xs-pt-5">	Search</label> <input type="text" id="search" className="form-control" placeholder="Search..."></input>
-</div>
-                          </div>
-                          </div>
+              </div>
+              <div className="panel box-shadow ">
+                <div class="panel-body no-border xs-p-20">
+                  <div class="row xs-mb-10">
+                    <div class="col-md-3 col-md-offset-9">
+                      <div class="form-inline" >
+                        <div class="form-group pull-right">
+                          <label class="col-sm-3 xs-pt-5">	Search</label>
+                          <input type="text" id="search" className="form-control" placeholder="Search..."></input>
                         </div>
-                    <div className="table-responsive ">
-                      <table id="fetable" className="table table-striped table-bordered break-if-longText">
-                        <thead>
-                          <tr key="trKey" className="myHead">
-                            <th className="text-left"><b>Variable name</b></th>
-                            <th ><b>Data type</b></th>
-                            <th></th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody className="no-border-x">{feHtml}</tbody>
-                      </table>
+                      </div>
                     </div>
-                    <div className="buttonRow text-right" id="dataPreviewButton">
-                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
-                    </div>
+                  </div>
+                  <div className="table-responsive ">
+                    <table id="fetable" className="table table-striped table-bordered break-if-longText">
+                      <thead>
+                        <tr key="trKey" className="myHead">
+                          <th className="text-left"><b>Variable name</b></th>
+                          <th ><b>Data type</b></th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody className="no-border-x">{feHtml}</tbody>
+                    </table>
+                  </div>
+                  <div className="buttonRow text-right" id="dataPreviewButton">
+                    <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                   </div>
                 </div>
               </div>
-              {/* <!--End of Page Content Area --> */}
             </div>
+            {/* <!--End of Page Content Area --> */}
           </div>
-          {/* <!-- Main Content ends with side-body --> */}
         </div>
-      );
-    }
+        {/* <!-- Main Content ends with side-body --> */}
+      </div>
+    );
+  }
 
   openBinsOrLevelsModal(item) {
     console.log("open ---openBinsOrLevelsModal");
@@ -496,7 +479,6 @@ export class FeatureEngineering extends React.Component {
 
   closeBinsOrLevelsModal(event) {
     console.log("closeddddd ---closeBinsOrLevelsModal");
-    console.log(".... ",);
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
 
@@ -514,10 +496,6 @@ export class FeatureEngineering extends React.Component {
     console.log(`selected ${selectedKey}`);
     this.props.dispatch(selectedBinsOrLevelsTabAction(selectedKey));
   }
-
-  // createBins(slug,actionType,userData) {
-  // this.props.dispatch(saveBinLevelTransformationValuesAction(slug, actionType, userData);
-  // }
 
   createLevels(slug) {
     this.props.dispatch();
