@@ -1,6 +1,7 @@
 import md5
 import time
 from math import floor, log10
+import datetime
 
 from django.conf import settings
 import yarn_api_client
@@ -1296,3 +1297,8 @@ def encrypt_for_kylo(username, password_encrypted):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
+
+def convert_fe_date_format(date_string):
+    return datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%d/%m/%Y')
+
+
