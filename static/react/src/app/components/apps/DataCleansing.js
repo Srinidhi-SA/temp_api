@@ -31,6 +31,7 @@ import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
   variableSelectedAction,
+  checkedAllAction,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
   dataCleansingDataTypeChange
@@ -53,7 +54,8 @@ import {
     scoreToProceed: store.apps.scoreToProceed,
     apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
-    datasets : store.datasets
+    datasets : store.datasets,
+    checkedAll: store.datasets.checkedAll
     //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
@@ -87,9 +89,10 @@ export class DataCleansing extends React.Component {
       };
     }
 
-     
-   
-  }
+    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+      this.props.dispatch(variableSelectedAction(item.slug, true));
+      });   
+        }
 
   componentDidMount() {
     $("#sdataType").change(function(){
@@ -100,14 +103,11 @@ export class DataCleansing extends React.Component {
       // }
     });
 
-
-
     $("#myCheckAll").click(function () {
       $('input:checkbox').not(this).prop('checked', this.checked);
   });
 
-
-    $('#search').on('keyup', function() {
+  $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
       $('#dctable').find('tr').each(function() {
@@ -141,6 +141,28 @@ export class DataCleansing extends React.Component {
 
   variableCheckboxOnChange(event){
     this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
+    if(Object.values(this.props.datasets.selectedVariables).includes(false)){
+      // this.props.checkedAll=false
+      this.props.dispatch(checkedAllAction(false));
+  }
+  else
+  {
+  this.props.dispatch(checkedAllAction(true));
+  }
+}
+
+  checkedAllOnChange(event){
+    this.props.dispatch(checkedAllAction( event.target.checked));
+
+    if(!event.target.checked){
+      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+      this.props.dispatch(variableSelectedAction(item.slug, false));
+      });
+     }else{
+      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+      this.props.dispatch(variableSelectedAction(item.slug, true));
+      });
+    }     
   }
 
   handleDuplicateAttributesOnChange(event){
@@ -212,15 +234,12 @@ export class DataCleansing extends React.Component {
   }
 
 
-
   dcTableSorter() {
-
-
-    $(function() {
+  $(function() {
       $('#dctable').tablesorter({
         theme : 'ice',
         headers: {
-          //  0: {sorter: false,filter:false},
+           0: {sorter: false},
            6: {sorter: false},
            7: {sorter: false}
          },
@@ -230,8 +249,9 @@ export class DataCleansing extends React.Component {
     });
   }
 
+
   render() {
-    this.dcTableSorter();
+    // this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
     var selectAll=true;
     if(this.props.dataPreview!=null)  {
@@ -241,16 +261,15 @@ export class DataCleansing extends React.Component {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
         let checked=true;
-
-
+        
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
-            {/* <td>
+            <td>
               <div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
-            </td> */}
+            </td>
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)} </td>
             <td>
@@ -281,9 +300,9 @@ export class DataCleansing extends React.Component {
       })
     }
 
-    if(Object.values(this.props.datasets.selectedVariables).includes(false)){
-    selectAll=false
-}
+    // if(Object.values(this.props.datasets.selectedVariables).includes(false)){
+    // this.props.checkedAll=false
+// }
     return (
       // <!-- Main Content starts with side-body -->
       <div className="side-body">
@@ -341,16 +360,16 @@ export class DataCleansing extends React.Component {
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                       <thead>
                         <tr className="myHead">
-                          {/* <th>
+                          <th>
                             <div class="ma-checkbox inline">
-                              <input id="myCheckAll" type="checkbox" className="needsclick"  defaultChecked={selectAll} />
+                              <input id="myCheckAll" type="checkbox" className="needsclick"  checked={this.props.checkedAll}  onChange={this.checkedAllOnChange.bind(this)}/>
                               <label for="myCheckAll"></label>
                             </div>
-                          </th> */}
-                          <th class="filter-select filter-exact" data-placeholder="" ><b>Variable name</b></th>
-                          <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
-                          <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
-                          <th class="filter-select filter-exact" data-placeholder="" ><b>No of outliers</b></th>
+                          </th>
+                          <th><b>Variable name</b></th>
+                          <th ><b>Data type</b></th>
+                          <th><b>No of unique values</b></th>
+                          <th><b>No of outliers</b></th>
                           <th><b>No of missing values</b></th>
                           <th><b>Missing value treatment</b></th>
                           <th><b>Outlier removal</b></th>

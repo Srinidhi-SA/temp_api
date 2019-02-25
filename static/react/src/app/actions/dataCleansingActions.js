@@ -18,6 +18,12 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
     selecteOrNot
 	}
 }
+export function checkedAllAction( selecteOrNot, dispatch){
+  return {
+		type: "CHECKED_ALL_SELECTED",
+    selecteOrNot
+	}
+}
 
 
 export function removeDuplicateAttributesAction(duplicate_attribute_removal, yesOrNo, dispatch){

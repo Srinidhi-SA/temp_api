@@ -56,6 +56,7 @@ export default function reducer(state = {
   missingValueTreatment:{},
   featureEngineering:{},
   selectedVariables : {},
+  checkedAll:true,
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
   olUpperRange : {},
@@ -658,6 +659,17 @@ export default function reducer(state = {
       return {
         ...state,
         selectedVariables : allSelectedVariables
+      }
+
+    }
+    break;
+
+
+    case "CHECKED_ALL_SELECTED":
+    {
+      return {
+        ...state,
+        checkedAll : action.selecteOrNot
       }
 
     }
