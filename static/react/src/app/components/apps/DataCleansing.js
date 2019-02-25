@@ -64,7 +64,8 @@ export class DataCleansing extends React.Component {
     this.buttons = {};
     this.state = {
             value1: false,
-            value2: false
+            value2: false,
+            
         };
   }
 
@@ -85,13 +86,25 @@ export class DataCleansing extends React.Component {
         text:"Proceed"
       };
     }
+
+   
+
   }
 
   componentDidMount() {
     $("#sdataType").change(function(){
       $("#dctable tbody tr").hide();
       $("#dctable tbody tr."+$(this).val()).show('fast');
+      // if ($("#dctable tbody tr."+$(this).val()!=null) ) {
+      //   $('#dctable tbody tr').append('<div id="mssg">Empty List</div>');
+      // }
     });
+
+
+
+    $("#myCheckAll").click(function () {
+      $('input:checkbox').not(this).prop('checked', this.checked);
+  });
 
 
     $('#search').on('keyup', function() {
@@ -106,8 +119,8 @@ export class DataCleansing extends React.Component {
          }
       });
     });
-  }
 
+}
   componentWillUpdate() {
   }
 
@@ -218,17 +231,20 @@ export class DataCleansing extends React.Component {
   }
 
   render() {
-    this.dcTableSorter();
+    // this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
+    var selectAll=true;
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
-        let checked=true
+        let checked=true;
+
+
         return (
-          <tr className={('all ' + item.columnType)}>
+          <tr className={('all ' + item.columnType)} id="mssg">
             <td>
               <div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
@@ -265,6 +281,9 @@ export class DataCleansing extends React.Component {
       })
     }
 
+    if(Object.values(this.props.datasets.selectedVariables).includes(false)){
+    selectAll=false
+}
     return (
       // <!-- Main Content starts with side-body -->
       <div className="side-body">
@@ -324,8 +343,8 @@ export class DataCleansing extends React.Component {
                         <tr className="myHead">
                           <th>
                             <div class="ma-checkbox inline">
-                              {/* <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/> */}
-                              <label for="checkAll"></label>
+                              <input id="myCheckAll" type="checkbox" className="needsclick"  defaultChecked={selectAll} />
+                              <label for="myCheckAll"></label>
                             </div>
                           </th>
                           <th class="filter-select filter-exact" data-placeholder="" ><b>Variable name</b></th>
