@@ -87,8 +87,8 @@ export class DataCleansing extends React.Component {
       };
     }
 
+     
    
-
   }
 
   componentDidMount() {
@@ -220,7 +220,7 @@ export class DataCleansing extends React.Component {
       $('#dctable').tablesorter({
         theme : 'ice',
         headers: {
-           0: {sorter: false,filter:false},
+          //  0: {sorter: false,filter:false},
            6: {sorter: false},
            7: {sorter: false}
          },
@@ -231,7 +231,7 @@ export class DataCleansing extends React.Component {
   }
 
   render() {
-    // this.dcTableSorter();
+    this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
     var selectAll=true;
     if(this.props.dataPreview!=null)  {
@@ -245,12 +245,12 @@ export class DataCleansing extends React.Component {
 
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
-            <td>
+            {/* <td>
               <div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
-            </td>
+            </td> */}
             <td className="text-left">{item.name}</td>
             <td>  {this.getUpdatedDataType(item.slug)} </td>
             <td>
@@ -341,12 +341,12 @@ export class DataCleansing extends React.Component {
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                       <thead>
                         <tr className="myHead">
-                          <th>
+                          {/* <th>
                             <div class="ma-checkbox inline">
                               <input id="myCheckAll" type="checkbox" className="needsclick"  defaultChecked={selectAll} />
                               <label for="myCheckAll"></label>
                             </div>
-                          </th>
+                          </th> */}
                           <th class="filter-select filter-exact" data-placeholder="" ><b>Variable name</b></th>
                           <th class="filter-select filter-exact" data-placeholder="" ><b>Data type</b></th>
                           <th class="filter-select filter-exact" data-placeholder=""><b>No of unique values</b></th>
