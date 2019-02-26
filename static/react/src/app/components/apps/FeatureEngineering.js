@@ -443,7 +443,7 @@ export class FeatureEngineering extends React.Component {
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div class="row xs-mb-10">
-                    <div className="col-md-2">					
+                    <div className="col-md-3">					
 					 <div class="form-inline" >
 							<div class="form-group">
 							<label for="sdataType">Filter By: </label>
@@ -456,7 +456,7 @@ export class FeatureEngineering extends React.Component {
 							</div>
 						</div>
                     </div>
-                    <div class="col-md-3 col-md-offset-7">
+                    <div class="col-md-3 col-md-offset-6">
                       <div class="form-inline" >
                         <div class="form-group pull-right">
                           <input type="text" id="search" className="form-control" placeholder="Search..."></input>
