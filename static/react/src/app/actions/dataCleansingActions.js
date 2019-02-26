@@ -11,11 +11,11 @@ export function missingValueTreatmentSelectedAction(colName,colType,colSlug, tre
     treatment
 	}
 }
-export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
+export function variableSelectedAction(colSlug, selectedOrNot, dispatch){
   return {
 		type: "VARIABLE_SELECTED",
 		colSlug,
-    selecteOrNot
+    selectedOrNot
 	}
 }
 export function checkedAllAction( selecteOrNot, dispatch){
@@ -24,7 +24,6 @@ export function checkedAllAction( selecteOrNot, dispatch){
     selecteOrNot
 	}
 }
-
 
 export function removeDuplicateAttributesAction(duplicate_attribute_removal, yesOrNo, dispatch){
      return {

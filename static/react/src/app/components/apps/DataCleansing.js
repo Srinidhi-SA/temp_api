@@ -67,7 +67,7 @@ export class DataCleansing extends React.Component {
     this.state = {
             value1: false,
             value2: false,
-            
+
         };
   }
 
@@ -77,6 +77,7 @@ export class DataCleansing extends React.Component {
     }
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+
     }else{
       console.log("not updating dataPreview data from server");
     }
@@ -89,10 +90,16 @@ export class DataCleansing extends React.Component {
       };
     }
 
+    debugger;
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      this.props.dispatch(variableSelectedAction(item.slug, true));
-      });   
-        }
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          return "";
+        else
+          this.props.dispatch(variableSelectedAction(item.slug, true));
+      });
+
+    }
 
   componentDidMount() {
     $("#sdataType").change(function(){
@@ -139,30 +146,33 @@ export class DataCleansing extends React.Component {
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
   }
 
+  // var removedVariables = getRemovedVariableNames(this.props.datasets);
+  // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+
   variableCheckboxOnChange(event){
-    this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
+    // var removedVariables = getRemovedVariableNames(this.props.datasets);
+    // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+      this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
     if(Object.values(this.props.datasets.selectedVariables).includes(false)){
-      // this.props.checkedAll=false
-      this.props.dispatch(checkedAllAction(false));
+        this.props.dispatch(checkedAllAction(false));
+    }
+    else
+    {
+    this.props.dispatch(checkedAllAction(true));
+    }
   }
-  else
-  {
-  this.props.dispatch(checkedAllAction(true));
-  }
-}
 
   checkedAllOnChange(event){
     this.props.dispatch(checkedAllAction( event.target.checked));
-
+    debugger;
     if(!event.target.checked){
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      this.props.dispatch(variableSelectedAction(item.slug, false));
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          this.props.dispatch(variableSelectedAction(item.slug, false));
       });
-     }else{
-      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+     }else
       this.props.dispatch(variableSelectedAction(item.slug, true));
-      });
-    }     
   }
 
   handleDuplicateAttributesOnChange(event){
@@ -239,7 +249,7 @@ export class DataCleansing extends React.Component {
       $('#dctable').tablesorter({
         theme : 'ice',
         headers: {
-           0: {sorter: false},
+           // 0: {sorter: false},
            6: {sorter: false},
            7: {sorter: false}
          },
@@ -251,9 +261,10 @@ export class DataCleansing extends React.Component {
 
 
   render() {
-    // this.dcTableSorter();
+
     var cleansingHtml = <span>"Loading ... "</span>;
     var selectAll=true;
+    // this.dcTableSorter();
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
@@ -261,12 +272,12 @@ export class DataCleansing extends React.Component {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
         let checked=true;
-        
+
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
             <td>
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
             </td>
@@ -340,11 +351,11 @@ export class DataCleansing extends React.Component {
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
                       <div className="col-md-2">
-                        <select id="sdataType" className="form-control">
-                        <option value="all">Filter By Data Type</option>
-                        <option value="measure">Measure</option>
-                        <option value="dimension">Dimension</option>
-                        <option value="datetime">Datetime</option>
+                        Filter By Data Type:<select id="sdataType" className="form-control">
+                          <option value="all">Select</option>
+                          <option value="measure">Measure</option>
+                          <option value="dimension">Dimension</option>
+                          <option value="datetime">Datetime</option>
                         </select>
                       </div>
                       <div class="col-md-3 col-md-offset-7">
