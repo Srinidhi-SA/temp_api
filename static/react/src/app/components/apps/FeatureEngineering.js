@@ -443,13 +443,18 @@ export class FeatureEngineering extends React.Component {
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div class="row xs-mb-10">
-                    <div className="col-md-2">
-                      <select id="sdataType" className="form-control">
-                      <option value="all">Filter By Data Type</option>
-                      <option value="measure">Measure</option>
-                      <option value="dimension">Dimension</option>
-                      <option value="datetime">Datetime</option>
-                      </select>
+                    <div className="col-md-2">					
+					 <div class="form-inline" >
+							<div class="form-group">
+							<label for="sdataType">Filter By: </label>
+							 <select id="sdataType" className="form-control cst-width">
+							  <option value="all">Data Type</option>
+							  <option value="measure">Measure</option>
+							  <option value="dimension">Dimension</option>
+							  <option value="datetime">Datetime</option>
+							  </select>
+							</div>
+						</div>
                     </div>
                     <div class="col-md-3 col-md-offset-7">
                       <div class="form-inline" >
