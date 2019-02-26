@@ -1480,8 +1480,9 @@ class Trainer(models.Model):
                     start_date = convert_fe_date_format(item['startDate'])
                     end_date = convert_fe_date_format(item['endDate'])
                     mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
-                else:
                     is_datetime_level = False
+                else:
+                    is_datetime_level = True
                     mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
 
         if is_datetime_level is False:
