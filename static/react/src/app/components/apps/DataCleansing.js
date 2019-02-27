@@ -90,11 +90,10 @@ export class DataCleansing extends React.Component {
       };
     }
 
-    debugger;
-    var removedVariables = getRemovedVariableNames(this.props.datasets);
+     var removedVariables = getRemovedVariableNames(this.props.datasets);
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-          return "";
+        if(removedVariables.indexOf(item.name)!= -1 || item.ignoreSuggestionFlag)
+        return "";
         else
           this.props.dispatch(variableSelectedAction(item.slug, true));
       });
@@ -164,15 +163,22 @@ export class DataCleansing extends React.Component {
 
   checkedAllOnChange(event){
     this.props.dispatch(checkedAllAction( event.target.checked));
-    debugger;
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
     if(!event.target.checked){
-      var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          return "";
+        else
           this.props.dispatch(variableSelectedAction(item.slug, false));
       });
-     }else
-      this.props.dispatch(variableSelectedAction(item.slug, true));
+    }else{
+      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          return "";
+        else
+          this.props.dispatch(variableSelectedAction(item.slug, true));
+      });
+    }
   }
 
   handleDuplicateAttributesOnChange(event){
