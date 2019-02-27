@@ -63,11 +63,12 @@ import {
 export class DataCleansing extends React.Component {
   constructor(props) {
     super(props);
+
     this.buttons = {};
     this.state = {
-            value1: false,
-            value2: false,
-
+            value1 : false,
+            value2 : false,
+            checked : true,
         };
   }
 
@@ -109,9 +110,10 @@ export class DataCleansing extends React.Component {
       // }
     });
 
-    $("#myCheckAll").click(function () {
-      $('input:checkbox').not(this).prop('checked', this.checked);
-  });
+//     $('.checkall').on('click', function (e) {
+//     e.stopPropagation();
+//     $(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
+// });
 
   $('#search').on('keyup', function() {
       var value = $(this).val();
@@ -255,7 +257,7 @@ export class DataCleansing extends React.Component {
       $('#dctable').tablesorter({
         theme : 'ice',
         headers: {
-           // 0: {sorter: false},
+           0: {sorter: false},
            6: {sorter: false},
            7: {sorter: false}
          },
@@ -267,23 +269,22 @@ export class DataCleansing extends React.Component {
 
 
   render() {
-
     var cleansingHtml = <span>"Loading ... "</span>;
-    var selectAll=true;
     // this.dcTableSorter();
+
+    debugger;
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
-        let checked=true;
-
+        else{
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
             <td>
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
             </td>
@@ -314,12 +315,10 @@ export class DataCleansing extends React.Component {
             <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td>
           </tr>
         );
+      }
       })
     }
 
-    // if(Object.values(this.props.datasets.selectedVariables).includes(false)){
-    // this.props.checkedAll=false
-// }
     return (
       // <!-- Main Content starts with side-body -->
       <div className="side-body">
