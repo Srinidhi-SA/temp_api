@@ -105,15 +105,13 @@ export class DataCleansing extends React.Component {
     $("#sdataType").change(function(){
       $("#dctable tbody tr").hide();
       $("#dctable tbody tr."+$(this).val()).show('fast');
-      // if ($("#dctable tbody tr."+$(this).val()!=null) ) {
-      //   $('#dctable tbody tr').append('<div id="mssg">Empty List</div>');
-      // }
     });
 
 //     $('.checkall').on('click', function (e) {
 //     e.stopPropagation();
 //     $(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
 // });
+
 
   $('#search').on('keyup', function() {
       var value = $(this).val();
@@ -167,6 +165,7 @@ export class DataCleansing extends React.Component {
     this.props.dispatch(checkedAllAction( event.target.checked));
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     if(!event.target.checked){
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
@@ -355,15 +354,20 @@ export class DataCleansing extends React.Component {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
-                      <div className="col-md-2">
-                        Filter By Data Type:<select id="sdataType" className="form-control">
-                          <option value="all">Select</option>
-                          <option value="measure">Measure</option>
-                          <option value="dimension">Dimension</option>
-                          <option value="datetime">Datetime</option>
-                        </select>
+                      <div className="col-md-3">
+                        <div class="form-inline" >
+							<div class="form-group">
+							<label for="sdataType">Filter By: </label>
+							<select id="sdataType" className="form-control cst-width">
+							<option value="all">Data Type</option>
+							<option value="measure">Measure</option>
+							<option value="dimension">Dimension</option>
+							<option value="datetime">Datetime</option>
+							</select>
+							</div>
+						</div>
                       </div>
-                      <div class="col-md-3 col-md-offset-7">
+                      <div class="col-md-3 col-md-offset-6">
                         <div class="form-inline" >
                           <div class="form-group pull-right">
                             <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
@@ -378,7 +382,7 @@ export class DataCleansing extends React.Component {
                         <tr className="myHead">
                           <th>
                             <div class="ma-checkbox inline">
-                              <input id="myCheckAll" type="checkbox" className="needsclick"  checked={this.props.checkedAll}  onChange={this.checkedAllOnChange.bind(this)}/>
+                              <input id="myCheckAll" type="checkbox" className="needsclick"   checked={this.props.checkedAll} defaultChecked="true"  onChange={this.checkedAllOnChange.bind(this)}/>
                               <label for="myCheckAll"></label>
                             </div>
                           </th>

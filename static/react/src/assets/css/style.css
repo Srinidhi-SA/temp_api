@@ -15246,7 +15246,7 @@ div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform:
 .algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
 .modal-lg-dimSEdate { width:805px; }
 .modal-lg-dimSEdate .modal-content { max-width:inherit; }
-button.btn.btn-cst_button { border: none; background: transparent; color: #0000ff; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
+button.btn.btn-cst_button { border: none; background: transparent; color: #0000ff; padding: 2px 5px; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
     -moz-transition:opacity .5s ease;
     transition:opacity .5s ease; }
 button.btn.btn-cst_button:hover { background:#f3f3f3; color:#00998c;
@@ -15256,6 +15256,9 @@ button.btn.btn-cst_button:hover { background:#f3f3f3; color:#00998c;
 button.btn.btn-cst_button[disabled] { background-color: #cccccc; color: #666666;  }
 button.btn.btn-cst_button[disabled]:hover { background-color: #cccccc; color: #666666; -webkit-transform: scale(1); -ms-transform: scale(1); transform: scale(1); }
 .tablesorter thead .disabled { display: none; }
+.tablesorter thead tr th { vertical-align: inherit; }
+th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
+.cst-width { min-width: 180px; margin-left:5px; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
@@ -15963,8 +15966,8 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 	border: 3px solid #f4f4f4;
 	padding: 35px 20px;
 	background: #fff;
-	text-align: center;
-	margin: 0 0 20px
+	margin: 0 0 20px;
+	min-height:460px;
 }
 
 .mod-process-title {
