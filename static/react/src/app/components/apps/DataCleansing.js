@@ -67,7 +67,7 @@ export class DataCleansing extends React.Component {
     this.state = {
             value1: false,
             value2: false,
-            
+            checked:true,
         };
   }
 
@@ -88,9 +88,11 @@ export class DataCleansing extends React.Component {
         text:"Proceed"
       };
     }
-
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      this.props.dispatch(variableSelectedAction(item.slug, true));
+      if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+      return "";
+        this.props.dispatch(variableSelectedAction(item.slug, true));
       });   
         }
 
@@ -98,15 +100,13 @@ export class DataCleansing extends React.Component {
     $("#sdataType").change(function(){
       $("#dctable tbody tr").hide();
       $("#dctable tbody tr."+$(this).val()).show('fast');
-      // if ($("#dctable tbody tr."+$(this).val()!=null) ) {
-      //   $('#dctable tbody tr').append('<div id="mssg">Empty List</div>');
-      // }
     });
 
     $("#myCheckAll").click(function () {
       $('input:checkbox').not(this).prop('checked', this.checked);
   });
 
+ 
   $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
@@ -153,13 +153,18 @@ export class DataCleansing extends React.Component {
 
   checkedAllOnChange(event){
     this.props.dispatch(checkedAllAction( event.target.checked));
-
     if(!event.target.checked){
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+        return "";
       this.props.dispatch(variableSelectedAction(item.slug, false));
       });
      }else{
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+        return "";
       this.props.dispatch(variableSelectedAction(item.slug, true));
       });
     }     
@@ -253,20 +258,17 @@ export class DataCleansing extends React.Component {
   render() {
     // this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
-    var selectAll=true;
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
           return "";
-        let checked=true;
-        
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
             <td>
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
             </td>
@@ -300,9 +302,6 @@ export class DataCleansing extends React.Component {
       })
     }
 
-    // if(Object.values(this.props.datasets.selectedVariables).includes(false)){
-    // this.props.checkedAll=false
-// }
     return (
       // <!-- Main Content starts with side-body -->
       <div className="side-body">
@@ -341,7 +340,7 @@ export class DataCleansing extends React.Component {
                     <div class="row xs-mb-10">
                       <div className="col-md-2">
                         <select id="sdataType" className="form-control">
-                        <option value="all">Filter By Data Type</option>
+                        <option value="all">All</option>
                         <option value="measure">Measure</option>
                         <option value="dimension">Dimension</option>
                         <option value="datetime">Datetime</option>
@@ -362,7 +361,7 @@ export class DataCleansing extends React.Component {
                         <tr className="myHead">
                           <th>
                             <div class="ma-checkbox inline">
-                              <input id="myCheckAll" type="checkbox" className="needsclick"  checked={this.props.checkedAll}  onChange={this.checkedAllOnChange.bind(this)}/>
+                              <input id="myCheckAll" type="checkbox" className="needsclick"   checked={this.props.checkedAll} defaultChecked="true"  onChange={this.checkedAllOnChange.bind(this)}/>
                               <label for="myCheckAll"></label>
                             </div>
                           </th>
