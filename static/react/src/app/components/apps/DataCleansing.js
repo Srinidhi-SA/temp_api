@@ -113,20 +113,6 @@ export class DataCleansing extends React.Component {
          }
       });
     });
-	
-	 $("#myCheckAll").click( function (event) {
-			alert("Hi");
-            if ($("#myCheckAll").hasClass('not_checked')) {
-                $("#myCheckAll").removeClass('not_checked');
-                $(".check-box").attr('checked', true);
-            }
-            else {
-                $("#myCheckAll").addClass('not_checked');
-                $(".check-box").attr('checked', false);
-            }
-        });	
-
-
 }
   componentWillUpdate() {
   }
