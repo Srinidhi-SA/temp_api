@@ -88,13 +88,7 @@ export class DataCleansing extends React.Component {
         text:"Proceed"
       };
     }
-    var removedVariables = getRemovedVariableNames(this.props.datasets);
-    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-      return "";
-        this.props.dispatch(variableSelectedAction(item.name, true));
-      });   
-        }
+}
 
   componentDidMount() {
     $("#sdataType").change(function(){
@@ -102,11 +96,7 @@ export class DataCleansing extends React.Component {
       $("#dctable tbody tr."+$(this).val()).show('fast');
     });
 
-    $("#myCheckAll").click(function () {
-      $('input:checkbox').not(this).prop('checked', this.checked);
-  });
 
- 
   $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
@@ -119,7 +109,6 @@ export class DataCleansing extends React.Component {
          }
       });
     });
-
 }
   componentWillUpdate() {
   }
@@ -137,37 +126,6 @@ export class DataCleansing extends React.Component {
 
   outlierRemovalOnChange(event){
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
-  }
-
-  variableCheckboxOnChange(event){
-    this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
-    if(Object.values(this.props.datasets.selectedVariables).includes(false)){
-      // this.props.checkedAll=false
-      this.props.dispatch(checkedAllAction(false));
-  }
-  else
-  {
-  this.props.dispatch(checkedAllAction(true));
-  }
-}
-
-  checkedAllOnChange(event){
-    this.props.dispatch(checkedAllAction( event.target.checked));
-    if(!event.target.checked){
-      var removedVariables = getRemovedVariableNames(this.props.datasets);
-      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-        return "";
-      this.props.dispatch(variableSelectedAction(item.name, false));
-      });
-     }else{
-      var removedVariables = getRemovedVariableNames(this.props.datasets);
-      this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-        return "";
-      this.props.dispatch(variableSelectedAction(item.name, true));
-      });
-    }     
   }
 
   handleDuplicateAttributesOnChange(event){
@@ -239,36 +197,57 @@ export class DataCleansing extends React.Component {
   }
 
 
-  dcTableSorter() {
-  $(function() {
-      $('#dctable').tablesorter({
-        theme : 'ice',
-        headers: {
-           0: {sorter: false},
-           6: {sorter: false},
-           7: {sorter: false}
-         },
-
-      });
-
-    });
-  }
-
-
-  render() {
-    // this.dcTableSorter();
+dcTableSorter() {
+	$(function() {
+  
+		$('#dctable').tablesorter({
+			theme : 'ice',
+			headers: {
+			   0: { sorter: false },
+			   2: {sorter: false},
+			   6: {sorter: false},
+			   7: {sorter: false}
+			 }
+		});	  
+	  
+		$('#myCheckAll').click(function() {
+			var isChecked = $(this).prop("checked");
+			$('#dctable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+		});
+	  
+		$('#dctable tr:has(td)').find('input[type="checkbox"]').click(function() {
+			var isChecked = $(this).prop("checked");
+			var isHeaderChecked = $("#myCheckAll").prop("checked");
+			if (isChecked == false && isHeaderChecked)
+			  $("#myCheckAll").prop('checked', isChecked);
+			else {
+			  $('#dctable tr:has(td)').find('input[type="checkbox"]').each(function() {
+				if ($(this).prop("checked") == false)
+				  isChecked = false;
+			  });
+			  $("#myCheckAll").prop('checked', isChecked);
+			}	
+		});
+	  
+	});
+}
+  
+render() {
+    this.dcTableSorter();
     var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-          return "";
+        return "";
+		
+
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
-            <td>
+            <td  class="filter-false sorter-false">
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected check-box" value={item} data-colslug={item.slug}/>
                 <label for={item.slug}> </label>
               </div>
             </td>
@@ -366,7 +345,7 @@ export class DataCleansing extends React.Component {
                         <tr className="myHead">
                           <th>
                             <div class="ma-checkbox inline">
-                              <input id="myCheckAll" type="checkbox" className="needsclick"   checked={this.props.checkedAll} defaultChecked="true"  onChange={this.checkedAllOnChange.bind(this)}/>
+                              <input id="myCheckAll" type="checkbox" className="needsclick check-box not_checked" />
                               <label for="myCheckAll"></label>
                             </div>
                           </th>
