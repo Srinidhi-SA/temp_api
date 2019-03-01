@@ -341,8 +341,13 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
 
     if (this.props.dataPreview != null) {
+      // console.log("$$$$$$$%%%%%%%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$$$$",this.props.datasets.selectedVariables.splice());
+
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag )
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag
+        //  || Object.values(this.props.datasets.selectedVariables).foreach (object t in tArray)
+        // if (t follows some condition...) t++; 
+        )
         // || (Object.values(this.props.datasets.selectedVariables))
         return "";
         if(item.columnType == "measure")

@@ -11,10 +11,10 @@ export function missingValueTreatmentSelectedAction(colName,colType,colSlug, tre
     treatment
 	}
 }
-export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
+export function variableSelectedAction(colName, selecteOrNot, dispatch){
   return {
 		type: "VARIABLE_SELECTED",
-		colSlug,
+		colName,
     selecteOrNot
 	}
 }

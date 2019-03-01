@@ -92,7 +92,7 @@ export class DataCleansing extends React.Component {
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
       if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
       return "";
-        this.props.dispatch(variableSelectedAction(item.slug, true));
+        this.props.dispatch(variableSelectedAction(item.name, true));
       });   
         }
 
@@ -140,7 +140,7 @@ export class DataCleansing extends React.Component {
   }
 
   variableCheckboxOnChange(event){
-    this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
+    this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
     if(Object.values(this.props.datasets.selectedVariables).includes(false)){
       // this.props.checkedAll=false
       this.props.dispatch(checkedAllAction(false));
@@ -158,14 +158,14 @@ export class DataCleansing extends React.Component {
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
         return "";
-      this.props.dispatch(variableSelectedAction(item.slug, false));
+      this.props.dispatch(variableSelectedAction(item.name, false));
       });
      }else{
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
         return "";
-      this.props.dispatch(variableSelectedAction(item.slug, true));
+      this.props.dispatch(variableSelectedAction(item.name, true));
       });
     }     
   }
@@ -268,7 +268,7 @@ export class DataCleansing extends React.Component {
           <tr className={('all ' + item.columnType)} id="mssg">
             <td>
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
             </td>
