@@ -1519,6 +1519,7 @@ PERMISSIONS_RELATED_TO_DATASET = (
     ('upload_from_mssql', 'Upload from mssql'),
     ('upload_from_hdfs', 'Upload from hdfs'),
     ('upload_from_hana', 'Upload from hana'),
+    ('upload_from_s3', 'Upload from s3'),
     ('data_validation', 'Data Validation'),
     ('subsetting_dataset', 'Subsetting dataset'),
 )
