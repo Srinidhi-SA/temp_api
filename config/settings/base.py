@@ -526,7 +526,54 @@ DATA_SOURCES_CONFIG = {"conf": [{
                 }
 
             ]
-        }
+        },
+    {
+        "dataSourceType": "S3",
+        "dataSourceName": "S3",
+        "formFields": [
+            {
+                "fieldType": "text",
+                "fieldName": "datasetname",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "bucket_name",
+                "placeHolder": "bucket",
+                "labelName": "Bucket",
+                "required": "true"
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "file_name",
+                "placeHolder": "data.csv",
+                "labelName": "File Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "password",
+                "fieldName": "access_key_id",
+                "placeHolder": "AccessKey",
+                "labelName": "Access Key",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "secret_key",
+                "placeHolder": "SecretKey",
+                "labelName": "Secret Key",
+                "required": "true"
+            }
+
+        ]
+    }
 
 ]
 }
