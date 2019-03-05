@@ -241,24 +241,53 @@ export class DataCleansing extends React.Component {
   }
 
 
-  dcTableSorter() {
-  $(function() {
-      $('#dctable').tablesorter({
-        theme : 'ice',
-        headers: {
-           0: {sorter: false},
-           6: {sorter: false},
-           7: {sorter: false}
-         },
+  // dcTableSorter() {
+  // $(function() {
+  //     $('#dctable').tablesorter({
+  //       theme : 'ice',
+  //       headers: {
+  //          0: {sorter: false},
+  //          6: {sorter: false},
+  //          7: {sorter: false}
+  //        },
 
-      });
+  //     });
 
-    });
-  }
+  //   });
+  // }
 
+ 
+dcTableSorter() {
+	$(function() {
+  
+		
+		
+		$("#dctable").addSortWidget();
 
+	  
+		$('#myCheckAll').click(function() {
+			var isChecked = $(this).prop("checked");
+			$('#dctable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+		});
+	  
+		$('#dctable tr:has(td)').find('input[type="checkbox"]').click(function() {
+			var isChecked = $(this).prop("checked");
+			var isHeaderChecked = $("#myCheckAll").prop("checked");
+			if (isChecked == false && isHeaderChecked)
+			  $("#myCheckAll").prop('checked', isChecked);
+			else {
+			  $('#dctable tr:has(td)').find('input[type="checkbox"]').each(function() {
+				if ($(this).prop("checked") == false)
+				  isChecked = false;
+			  });
+			  $("#myCheckAll").prop('checked', isChecked);
+			}	
+		});
+	  
+	});
+}
   render() {
-    // this.dcTableSorter();
+    this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
 
