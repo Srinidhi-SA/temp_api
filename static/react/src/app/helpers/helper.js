@@ -641,3 +641,16 @@ export function getRemovedVariableNames(dataset){
     return arr;
 
 }
+
+export function getSelectedVariableNames(obj){
+  
+  debugger;
+  var items={};
+ for(var i in obj){
+   if((obj[i])== "true")
+   items[i]= getSelectedVariableNames(obj[i]);
+   else 
+   items[i]=obj[i];
+ }
+ return items;
+ }

@@ -3,6 +3,8 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
+import faker from 'faker'
+import SmartDataTable from 'react-smart-data-table';
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
@@ -257,7 +259,38 @@ export class DataCleansing extends React.Component {
 
   render() {
     // this.dcTableSorter();
-    var cleansingHtml = <span>"Loading ... "</span>;
+    var cleansingHtml = <span>"Loading..."</span>;
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
+
+
+    var testData = [];
+    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(function(items){
+      if(removedVariables.indexOf(items.name)!= -1|| items.ignoreSuggestionFlag )
+      return "";
+
+      return(
+      testData.push({
+        Variablename: items.name,
+        Datatype: items.columnType,
+        // No_of_unique_values: items.columnStats.filter(function(itemss){
+        //   return  itemss.name == "numberOfUniqueValues" }).map((option)=>{
+        //     return(<span>{option.value}</span>);
+        //   }
+        // ),
+        // phone_number:getMissingValueTreatmentOptions(item.columnType, item.name, item.slug),
+        address: {
+          city: faker.address.city(),
+          state: faker.address.state(),
+          country: faker.address.country()
+        }
+      }));
+    })
+
+
+
+
+
+
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
@@ -384,6 +417,15 @@ export class DataCleansing extends React.Component {
                       </tbody>
                     </table>
                   </div>
+
+                                    <SmartDataTable
+                      data={testData}
+                      name='test-table'
+                      className='table table-condensed table-hover table-bordered'
+                      perPage='10'
+                      // filterValue=''
+                      sortable
+                    />
                   <div class="buttonRow text-right">
                     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
                   </div>
