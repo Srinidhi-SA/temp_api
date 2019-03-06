@@ -298,13 +298,7 @@ dcTableSorter() {
       testData.push({
         Variablename: items.name,
         Datatype: items.columnType,
-        // No_of_unique_values: items.columnStats.filter(function(itemss){
-        //   return  itemss.name == "numberOfUniqueValues" }).map((option)=>{
-        //     return(<span>{option.value}</span>);
-        //   }
-        // ),
-        // phone_number:getMissingValueTreatmentOptions(item.columnType, item.name, item.slug),
-        address: {
+               address: {
           city: faker.address.city(),
           state: faker.address.state(),
           country: faker.address.country()
