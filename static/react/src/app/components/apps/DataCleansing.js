@@ -256,7 +256,7 @@ export class DataCleansing extends React.Component {
 
     var arr = [ "Measure","Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
-      if(item.toLowerCase()== colType.toLowerCase() ){
+      if(item.toLowerCase()== colType.toLowerCase() ){byyyyyyyyyyyyyyeeeeeeeeeeeeeeee
         return <option value={item.toLowerCase()} selected> {item}</option>
       }else{
         return <option value={item.toLowerCase()} > {item}</option>

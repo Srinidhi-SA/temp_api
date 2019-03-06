@@ -46,7 +46,7 @@ jQuery.fn.addSortWidget = function(options){
                     $(tbody, $destElement).append(rows[i]); // add each row to table (elements do not duplicate, just place to new position)
                 }
             })
-            .appendTo(this); // add created sort image with click event handler to current th element
+            // .appendTo(this); // add created sort image with click event handler to current th element
     });
 	
 	return $destElement;
