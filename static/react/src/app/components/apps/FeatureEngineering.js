@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col, Tabs } from "react-bootstrap";
+import { Button, Modal} from "react-bootstrap";
 import {
   openBinsOrLevelsModalAction,
   closeBinsOrLevelsModalAction,
@@ -11,8 +10,8 @@ import {
   saveBinLevelTransformationValuesAction,
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-import { getDataSetPreview } from "../../actions/dataActions";
+import {getRemovedVariableNames} from "../../helpers/helper.js"
+import { getDataSetPreview} from "../../actions/dataActions";
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Transform } from "./Transform";
@@ -28,9 +27,11 @@ return {
   selectedItem: store.datasets.selectedItem,
   apps_regression_modelName:store.apps.apps_regression_modelName,
   currentAppDetails:store.apps.currentAppDetails,
-  featureEngineering:store.datasets.featureEngineering
+  featureEngineering:store.datasets.featureEngineering,
+  selectedVariables:store.datasets.selectedVariables
   };
 })
+
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
@@ -200,13 +201,8 @@ export class FeatureEngineering extends React.Component {
         var inputValue = levelData[i].inputValue;
         var multiselect = levelData[i].multiselectValue;
 
-//        if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")){
-//          console.log('dates are undefined');
-//          $("#fileErrorMsg").removeClass("visibilityHidden");
-//          $("#fileErrorMsg").html("Enter Start Date & End Date");
-//          return;
-//        }else
-        if ((Date.parse(startDate) > Date.parse(endDate))) {
+
+         if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
@@ -330,6 +326,7 @@ export class FeatureEngineering extends React.Component {
     console.log("FeatureEngineering render method is called...");
     this.feTableSorter();
     var feHtml = "";
+    var SV="";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
@@ -339,11 +336,17 @@ export class FeatureEngineering extends React.Component {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
+    var unselectedvar = [];
+    for (var key in this.props.datasets.selectedVariables){ 
+      if(!this.props.datasets.selectedVariables[key])
+      unselectedvar.push(key);
+    }
+      console.log(unselectedvar);
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-          return "";
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag||unselectedvar.indexOf(item.name)!= -1)
+        return "";
         if(item.columnType == "measure")
           numberOfSelectedMeasures +=1;
         else
@@ -410,6 +413,7 @@ export class FeatureEngineering extends React.Component {
 
     return (
       // <!-- Main Content starts with side-body -->
+      <div>
       <div className="side-body">
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
@@ -444,15 +448,20 @@ export class FeatureEngineering extends React.Component {
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div class="row xs-mb-10">
-                    <div className="col-md-2">
-                      <select id="sdataType" className="form-control">
-                      <option value="all">Filter By Data Type</option>
-                      <option value="measure">Measure</option>
-                      <option value="dimension">Dimension</option>
-                      <option value="datetime">Datetime</option>
-                      </select>
+                    <div className="col-md-3">					
+					 <div class="form-inline" >
+							<div class="form-group">
+							<label for="sdataType">Filter By: </label>
+							 <select id="sdataType" className="form-control cst-width">
+							  <option value="all">Data Type</option>
+							  <option value="measure">Measure</option>
+							  <option value="dimension">Dimension</option>
+							  <option value="datetime">Datetime</option>
+							  </select>
+							</div>
+						</div>
                     </div>
-                    <div class="col-md-3 col-md-offset-7">
+                    <div class="col-md-3 col-md-offset-6">
                       <div class="form-inline" >
                         <div class="form-group pull-right">
                           <input type="text" id="search" className="form-control" placeholder="Search..."></input>
@@ -484,6 +493,10 @@ export class FeatureEngineering extends React.Component {
         </div>
         {/* <!-- Main Content ends with side-body --> */}
       </div>
+
+
+</div>
+
     );
   }
 
