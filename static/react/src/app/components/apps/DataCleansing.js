@@ -350,7 +350,7 @@ dcTableSorter() {
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
                       <div className="col-md-2">
-                        Filter By Data Type:<select id="sdataType" className="form-control">
+                         Filter By Data Type :<select id="sdataType" className="form-control">
                           <option value="all">Select</option>
                           <option value="measure">Measure</option>
                           <option value="dimension">Dimension</option>
