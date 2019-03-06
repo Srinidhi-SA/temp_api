@@ -1009,7 +1009,8 @@ def get_datasource_config_list(request):
         'api.upload_from_mssql': 'mssql',
         'api.upload_from_hana': 'Hana',
         'api.upload_from_hdfs': 'Hdfs',
-        'api.upload_from_hive': 'Hive'
+        'api.upload_from_hive': 'Hive',
+        'api.upload_from_s3': 'S3'
     }
 
     upload_permitted_list = []

@@ -34,6 +34,8 @@ class DatasetRelatedPermission(permissions.BasePermission):
                     return user.has_perm('api.upload_from_hana')
                 elif datasource_type == 'Hdfs':
                     return user.has_perm('api.upload_from_hdfs')
+                elif datasource_type == 'S3':
+                    return user.has_perm('api.upload_from_s3')
                 elif datasource_type is None:
                     return user.has_perm('api.upload_from_file')
 
