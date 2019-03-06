@@ -54,7 +54,6 @@ import {
     currentAppDetails: store.apps.currentAppDetails,
     datasets : store.datasets,
     checkedAll: store.datasets.checkedAll
-    //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
@@ -67,8 +66,6 @@ export class DataCleansing extends React.Component {
             value1 : false,
             value2 : false,
             checked :true,
-            // curdimention: [],
-            // selectedDimention: [],
         };
   }
 
@@ -186,7 +183,7 @@ export class DataCleansing extends React.Component {
 
     var arr = [ "Measure","Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
-      if(item.toLowerCase()== colType.toLowerCase() ){byyyyyyyyyyyyyyeeeeeeeeeeeeeeee
+      if(item.toLowerCase()== colType.toLowerCase()){
         return <option value={item.toLowerCase()} selected> {item}</option>
       }else{
         return <option value={item.toLowerCase()} > {item}</option>
@@ -234,22 +231,6 @@ export class DataCleansing extends React.Component {
     else { return "";}
   }
 
-
-  // dcTableSorter() {
-  // $(function() {
-  //     $('#dctable').tablesorter({
-  //       theme : 'ice',
-  //       headers: {
-  //          0: {sorter: false},
-  //          6: {sorter: false},
-  //          7: {sorter: false}
-  //        },
-
-  //     });
-
-  //   });
-  // }
-
  
 dcTableSorter() {
 	$(function() {
@@ -279,35 +260,6 @@ dcTableSorter() {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-
-
-    var testData = [];
-    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(function(items){
-      if(removedVariables.indexOf(items.name)!= -1|| items.ignoreSuggestionFlag )
-      return "";
-
-      return(
-      testData.push({
-        Variablename: items.name,
-        Datatype: items.columnType,
-        // No_of_unique_values: items.columnStats.filter(function(itemss){
-        //   return  itemss.name == "numberOfUniqueValues" }).map((option)=>{
-        //     return(<span>{option.value}</span>);
-        //   }
-        // ),
-        // phone_number:getMissingValueTreatmentOptions(item.columnType, item.name, item.slug),
-        address: {
-          city: faker.address.city(),
-          state: faker.address.state(),
-          country: faker.address.country()
-        }
-      }));
-    })
-
-
-
-
-
 
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
@@ -433,14 +385,6 @@ dcTableSorter() {
                     </table>
                   </div>
 
-                                    {/* <SmartDataTable
-                      data={testData}
-                      name='test-table'
-                      className='table table-condensed table-hover table-bordered'
-                      perPage='10'
-                      // filterValue=''
-                      sortable
-                    /> */}
                   <div class="buttonRow text-right">
                     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
                   </div>
