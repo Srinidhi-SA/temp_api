@@ -122,6 +122,8 @@ export class DataCleansing extends React.Component {
       });
     });
 
+    $("#dctable").addSortWidget();
+
 }
   componentWillUpdate() {
   }
@@ -260,11 +262,6 @@ export class DataCleansing extends React.Component {
 dcTableSorter() {
 	$(function() {
   
-		
-		
-		$("#dctable").addSortWidget();
-
-	  
 		$('#myCheckAll').click(function() {
 			var isChecked = $(this).prop("checked");
 			$('#dctable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -426,19 +423,19 @@ dcTableSorter() {
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                       <thead>
                         <tr className="myHead">
-                          <th>
+                          <th className="hideSortImg">
                             <div class="ma-checkbox inline">
                               <input id="myCheckAll" type="checkbox" className="needsclick"   checked={this.props.checkedAll} defaultChecked="true"  onChange={this.checkedAllOnChange.bind(this)}/>
                               <label for="myCheckAll"></label>
                             </div>
                           </th>
                           <th><b>Variable name</b></th>
-                          <th ><b>Data type</b></th>
+                          <th><b>Data type</b></th>
                           <th><b>No of unique values</b></th>
-                          <th><b>No of outliers</b></th>
-                          <th><b>No of missing values</b></th>
-                          <th><b>Missing value treatment</b></th>
-                          <th><b>Outlier removal</b></th>
+                          <th ><b>No of outliers</b></th>
+                          <th ><b>No of missing values</b></th>
+                          <th className="hideSortImg"><b>Missing value treatment</b></th>
+                          <th className="hideSortImg"><b>Outlier removal</b></th>
                         </tr>
                       </thead>
                       <tbody className="no-border-x">
@@ -447,14 +444,14 @@ dcTableSorter() {
                     </table>
                   </div>
 
-                                    <SmartDataTable
+                                    {/* <SmartDataTable
                       data={testData}
                       name='test-table'
                       className='table table-condensed table-hover table-bordered'
                       perPage='10'
                       // filterValue=''
                       sortable
-                    />
+                    /> */}
                   <div class="buttonRow text-right">
                     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
                   </div>
