@@ -11737,7 +11737,8 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 	text-align: right
 }
 .table-fw-widget tr td:first-child, .table-fw-widget tr th:first-child {
-	padding-left: 15px
+	padding-left: 15px;
+	font-weight: 500;
 }
 .table-fw-widget tr td:last-child, .table-fw-widget tr th:last-child {
 	padding-right: 15px
@@ -15246,7 +15247,7 @@ div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform:
 .algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
 .modal-lg-dimSEdate { width:805px; }
 .modal-lg-dimSEdate .modal-content { max-width:inherit; }
-button.btn.btn-cst_button { border: none; background: transparent; color: #0000ff; padding: 2px 5px; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
+button.btn.btn-cst_button { border: none; background: transparent; color: #0078ff; padding: 2px 5px; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
     -moz-transition:opacity .5s ease;
     transition:opacity .5s ease; }
 button.btn.btn-cst_button:hover { background:#f3f3f3; color:#00998c;
@@ -15259,7 +15260,8 @@ button.btn.btn-cst_button[disabled]:hover { background-color: #cccccc; color: #6
 .tablesorter thead tr th { vertical-align: inherit; }
 th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .cst-width { min-width: 180px; margin-left:5px; }
-.hideSortImg .sorttable_img { display: none; }
+#pDetail .nav-tabs { border-color:#ddd}
+.tab-content .bgStockBox { margin-right: -4px;}
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{

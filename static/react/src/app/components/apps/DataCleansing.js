@@ -91,16 +91,21 @@ export class DataCleansing extends React.Component {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
       if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-      return "";
-        this.props.dispatch(variableSelectedAction(item.name, true));
-      });   
-        }
+        return "";
+      this.props.dispatch(variableSelectedAction(item.name, true));
+    });   
+  }
 
   componentDidMount() {
     $("#sdataType").change(function(){
       $("#dctable tbody tr").hide();
       $("#dctable tbody tr."+$(this).val()).show('fast');
     });
+
+//     $('.checkall').on('click', function (e) {
+//     e.stopPropagation();
+//     $(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
+// });
 
   $('#search').on('keyup', function() {
       var value = $(this).val();
@@ -135,6 +140,7 @@ export class DataCleansing extends React.Component {
   outlierRemovalOnChange(event){
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
   }
+
 
   variableCheckboxOnChange(event){
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
@@ -231,10 +237,8 @@ export class DataCleansing extends React.Component {
     else { return "";}
   }
 
- 
 dcTableSorter() {
 	$(function() {
-  
 		$('#myCheckAll').click(function() {
 			var isChecked = $(this).prop("checked");
 			$('#dctable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -256,10 +260,12 @@ dcTableSorter() {
 	  
 	});
 }
+
   render() {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+
 
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
@@ -270,7 +276,7 @@ dcTableSorter() {
         else{
         return (
           <tr className={('all ' + item.columnType)} id="mssg">
-            <td>
+            <td  class="filter-false sorter-false">
               <div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
@@ -366,7 +372,7 @@ dcTableSorter() {
                         <tr className="myHead">
                           <th className="hideSortImg">
                             <div class="ma-checkbox inline">
-                              <input id="myCheckAll" type="checkbox" className="dimention"  checked={this.props.checkedAll}  onChange={this.checkedAllOnChange.bind(this)}/>
+                              <input id="myCheckAll" type="checkbox" className="needsclick"  checked={this.props.checkedAll}  onChange={this.checkedAllOnChange.bind(this)}/>
                               <label for="myCheckAll"></label>
                             </div>
                           </th>
