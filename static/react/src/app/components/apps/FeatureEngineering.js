@@ -11,8 +11,8 @@ import {
   saveBinLevelTransformationValuesAction,
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-import { getDataSetPreview } from "../../actions/dataActions";
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getSelectedVariableNames,getRemovedVariableNames} from "../../helpers/helper.js"
+import { getDataSetPreview, storeSearchElement } from "../../actions/dataActions";
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Transform } from "./Transform";
@@ -28,9 +28,11 @@ return {
   selectedItem: store.datasets.selectedItem,
   apps_regression_modelName:store.apps.apps_regression_modelName,
   currentAppDetails:store.apps.currentAppDetails,
-  featureEngineering:store.datasets.featureEngineering
+  featureEngineering:store.datasets.featureEngineering,
+  selectedVariables:store.datasets.selectedVariables
   };
 })
+
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
@@ -330,6 +332,7 @@ export class FeatureEngineering extends React.Component {
     console.log("FeatureEngineering render method is called...");
     this.feTableSorter();
     var feHtml = "";
+    var SV="";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
@@ -337,10 +340,75 @@ export class FeatureEngineering extends React.Component {
     var binOrLevelData="";
     var values="";
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    debugger;
+    var selectedVariables = getSelectedVariableNames(this.props.datasets.selectedVariables);
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
 
+
+    const columns = [, {
+      title: 'Age',
+      dataIndex: 'age',
+    }, {
+      title: 'Address',
+      dataIndex: 'address',
+    },
+  {
+      title: 'Name',
+      dataIndex: 'name',
+      render: text => <a href="javascript:;">{text}</a>,
+    }];
+
+    const data = [];
+for (let i = 0; i < 10; i++) {
+  data.push({
+    key: i,
+    name: `Edrward ${i}`,
+    age: 32,
+    address: `London Park no. ${i}`,
+  });
+}
+
+
+
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  getCheckboxProps: record => ({
+    disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    name: record.name,
+  }),
+};
+
+    
+    
+    var testData = [];
+    this.props.dataPreview.meta_data.scriptMetaData.columnData.map(function(items){
+      if(removedVariables.indexOf(items.name)!= -1|| items.ignoreSuggestionFlag )
+      return "";
+
+      return(
+      testData.push({
+        Variablename: items.name,
+        Datatype: items.columnType,
+        'email.address': faker.internet.email(),
+        phone_number: faker.phone.phoneNumber(),
+        address: {
+          city: faker.address.city(),
+          state: faker.address.state(),
+          country: faker.address.country()
+        }
+      }));
+    })
+
+
+    // var SV =this.props.datasets.selectedVariables.map((item)=> item);
+
+
     if (this.props.dataPreview != null) {
+      // console.log("$$$$$$$%%%%%%%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$$$$",this.props.datasets.selectedVariables.splice());
+console.log("$$$$$$$%%%%%%%%%%%%%%%$$$$$$$$$$$$$$$$$$$$$$$$", selectedVariables);
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
         if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag )
         // || (Object.values(this.props.datasets.selectedVariables))
@@ -411,6 +479,7 @@ export class FeatureEngineering extends React.Component {
 
     return (
       // <!-- Main Content starts with side-body -->
+      <div>
       <div className="side-body">
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
@@ -479,6 +548,17 @@ export class FeatureEngineering extends React.Component {
                       <tbody className="no-border-x">{feHtml}</tbody>
                     </table>
                   </div>
+                  {/* <SmartDataTable
+    data={testData}
+    name='test-table'
+    className='ui compact selectable table'
+    perPage='10'
+    // filterValue=''
+    sortable
+  /> */}
+<div>
+{/* <Table rowSelection={rowSelection} columns={columns} dataSource={data} /> */}
+</div>
                   <div className="buttonRow text-right" id="dataPreviewButton">
                     <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                   </div>
@@ -490,6 +570,10 @@ export class FeatureEngineering extends React.Component {
         </div>
         {/* <!-- Main Content ends with side-body --> */}
       </div>
+
+
+</div>
+
     );
   }
 
