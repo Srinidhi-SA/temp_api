@@ -88,12 +88,12 @@
 					<div class="form-inline text-right">
 						<div class="form-group">
 						<label for="sdataType">Filter By: </label>
-						<input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name">
+						<input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name" />
 								<datalist id="listProjectName">
-								<option value="Credit Churn Prediction">
-								<option value="Ecommerce Predict">
-								<option value="Call Volume">
-								<option value="Student Performance">								
+								<option value="Credit Churn Prediction" />
+								<option value="Ecommerce Predict" />
+								<option value="Call Volume" />
+								<option value="Student Performance" />
 								</datalist> &nbsp;&nbsp;&nbsp;
 						<label for="sdataType">Search: </label>
 							<input type="text" id="search" class="form-control" placeholder="Search...">
@@ -107,12 +107,9 @@
                 <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                   <thead>
                     <tr className="myHead">
-					  <th>
-						<div class="ma-checkbox inline">
-							<input id="checkAll" type="checkbox" />
-							<label for="checkAll"> </label>
-						</div>
-					  </th>
+                      <th>
+                      #
+                      </th>
                       <th>Model Id</th>
                       <th class="text-left">Project Name</th>
                       <th class="text-left">Algorithm</th>
@@ -121,19 +118,16 @@
                       <th>Created On</th>
                       <th>Owner</th>
 					  <th>Runtime</th>
-					  <th>Deploy</th>
+					  <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
 					  <td>
-						<div class="ma-checkbox inline">
-							<input id="row1" type="checkbox" />
-							<label for="row1"> </label>
-						</div>
+						1.
 					  </td>
                       <td>LR-000</td>
-                      <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
+                      <td class="text-left"><b><a href="project_datadetail.html">Credit Churn Prediction</a></b></td>
                       <td class="text-left">Logistic Regression</td>
                       <td><span class="text-success">Completed</span></td>
                       <td>0.97</td>
@@ -141,62 +135,119 @@
                       <td>Marlabs</td>
 					  <td>230 s</td>
 					  <td>
-						<a href="#" class="btn btn-cst_button" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
+                <div class="pos-relative">
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-right">
+                          <li>
+                              <a href="#" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
+                          </li>
+                          <li>
+                              <a href="#">Clone</a>
+                          </li>
+                          <li>
+                              <a href="#">Delete</a>
+                          </li>
+                      </ul>
+                </div>
 					  </td>
-                    </tr>
-                    <tr>
+            </tr>
+            <tr>
 					  <td>
-						<div class="ma-checkbox inline">
-							<input id="row2" type="checkbox" />
-							<label for="row2"> </label>
-						</div>
+						2.
 					  </td>
-                      <td>RF-001</td>
-                      <td class="text-left">Ecommerce Predict</td>
-                      <td class="text-left">Random Forest</td>
-                      <td>Completed</td>
-                      <td>0.86</td>
-                      <td>02/02/2019</td>
-                      <td>Marlabs</td>
+            <td>RF-001</td>
+            <td class="text-left"><b><a href="project_datadetail.html">Ecommerce Predict</a></b></td>
+            <td class="text-left">Random Forest</td>
+            <td><span class="text-success">Completed</span></td>
+            <td>0.86</td>
+            <td>02/02/2019</td>
+            <td>Marlabs</td>
 					  <td>189 s</td>
-					  <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                    </tr>
-                    <tr>
 					  <td>
-						<div class="ma-checkbox inline">
-							<input id="row3" type="checkbox" />
-							<label for="row3"> </label>
-						</div>
+                <div class="pos-relative">
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-right">
+                          <li>
+                              <a href="#">Deploy</a>
+                          </li>
+                          <li>
+                              <a href="#">Clone</a>
+                          </li>
+                          <li>
+                              <a href="#">Delete</a>
+                          </li>
+                      </ul>
+                  </div>
+            </td>
+            </tr>
+            <tr>
+					  <td>
+						3.
 					  </td>
                       <td>XG-003</td>
-                      <td class="text-left">Call Volume</td>
+                      <td class="text-left"><b><a href="project_datadetail.html">Call Volume</a></b></td>
                       <td class="text-left">XG Boost</td>
-                      <td>Completed</td>
+                      <td><span class="text-success">Completed</span></td>
                       <td>0.79</td>
                       <td>31/12/2018</td>
                       <td>Marlabs</td>
 					  <td>340 s</td>
-					  <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                    </tr>
-                    <tr>
 					  <td>
-						<div class="ma-checkbox inline">
-							<input id="row4" type="checkbox" />
-							<label for="row4"> </label>
-						</div>
+                <div class="pos-relative">
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-right">
+                          <li>
+                              <a href="#">Deploy</a>
+                          </li>
+                          <li>
+                              <a href="#">Clone</a>
+                          </li>
+                          <li>
+                              <a href="#">Delete</a>
+                          </li>
+                      </ul>
+                  </div>
+            </td>
+            </tr>
+            <tr>
+					  <td>
+						4.
 					  </td>
                       <td>NB-004</td>
-                      <td class="text-left">Student Performance</td>
+                      <td class="text-left"><b><a href="project_datadetail.html">Student Performance</a></b></td>
                       <td class="text-left">Naïve Bayes</td>
-                      <td>Completed</td>
+                      <td><span class="text-danger">In Progress</span></td>
                       <td>0.72</td>
                       <td>12/09/2018</td>
                       <td>Marlabs</td>
 					  <td>679 s</td>
-					  <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                    </tr>
-                  </tbody>
-                </table>
+					  <td>
+                <div class="pos-relative">
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-right">
+                          <li>
+                              <a href="#">Deploy</a>
+                          </li>
+                          <li>
+                              <a href="#">Clone</a>
+                          </li>
+                          <li>
+                              <a href="#">Delete</a>
+                          </li>
+                      </ul>
+                  </div>
+            </td>
+             </tr>
+             </tbody>
+             </table>
               </div>
               <div class="buttonRow text-right"> <a href="javascript:;" class="btn btn-primary">Close </a> </div>
             </div>
@@ -214,7 +265,7 @@
     <!-- End Main Content -->
   </div>
   <!-- /.Page Content Area -->
-
+	
 </div>
 <!-- /. Main Content ends with side-body -->
 
