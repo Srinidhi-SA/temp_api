@@ -200,23 +200,6 @@ export class DataCleansing extends React.Component {
     }
     else { return "";}
   }
-
-
-  // dcTableSorter() {
-  // $(function() {
-  //     $('#dctable').tablesorter({
-  //       theme : 'ice',
-  //       headers: {
-  //          0: {sorter: false},
-  //          6: {sorter: false},
-  //          7: {sorter: false}
-  //        },
-
-  //     });
-
-  //   });
-  // }
-
  
 dcTableSorter() {
 	$(function() {
@@ -399,14 +382,14 @@ dcTableSorter() {
                     </table>
                   </div>
 
-                                    {/* <SmartDataTable
+                                    <SmartDataTable
                       data={testData}
                       name='test-table'
                       className='table table-condensed table-hover table-bordered'
                       perPage='10'
                       // filterValue=''
                       sortable
-                    /> */}
+                    />
                   <div class="buttonRow text-right">
                     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
                   </div>
