@@ -22,9 +22,8 @@ import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
 import {DataCleansing} from "./components/apps/DataCleansing"
-import {ModelManagement} from "./components/apps/ModelManagement"
-
 import {FeatureEngineering} from "./components/apps/FeatureEngineering"
+import {ModelManagement} from "./components/apps/ModelManagement"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
@@ -304,7 +303,6 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/modelmanagement" component={ModelManagement}/>
-
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>
@@ -316,8 +314,7 @@ class App extends React.Component {
             <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
             <Route exact path="/datamgmt" component={KyloMenuList}/>
             <Route exact path="/datamgmt/selected_menu/:kylo_url" component={SampleFrame}/>
-
-          </Main>
+        </Main>
         </Switch>
       </BrowserRouter>
     );
