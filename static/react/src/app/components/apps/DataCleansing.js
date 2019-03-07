@@ -351,7 +351,7 @@ dcTableSorter() {
                 </div>
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
-                    <div class="row xs-mb-10">
+                    {/* <div class="row xs-mb-10">
                       <div className="col-md-3">
                         <div class="form-inline" >
 							<div class="form-group">
@@ -372,7 +372,7 @@ dcTableSorter() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   <div className="table-responsive ">
 
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
