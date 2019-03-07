@@ -21,7 +21,9 @@ import {VariableSelection} from "./components/signals/variableSelection";
 import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
-import {DataCleansing} from "./components/apps/DataCleansing"
+// import {DataCleansing} from "./components/apps/DataCleansing"
+import {ModelManagement} from "./components/apps/ModelManagement"
+
 import {FeatureEngineering} from "./components/apps/FeatureEngineering"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
@@ -264,7 +266,7 @@ class App extends React.Component {
             <Route exact path="/apps?page=:slug" component={AppsPanel}/>
             <Route exact path="/apps/:AppId/models" render={trainer}/>
             <Route exact path="/apps/:AppId/scores" render={score}/>
-            {/* <Route exact path="/apps/:AppId/scores" render={}/> */}
+            {/* <Route exact path="/apps/:AppId/modelmanagement" Component={DataCleansing}/> */}
 
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
@@ -301,8 +303,9 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
+            {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/> */}
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
+            <Route exact path="/apps/:AppId/modelmanagement" component={ModelManagement}/>
 
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
