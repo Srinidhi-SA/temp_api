@@ -75,10 +75,15 @@ export class Apps extends React.Component {
   }
 
 
-  proceedMm()
+  proceedToModelManagement(tabId)
   {
-    var proccedUrl = this.props.match.url.replace('models','modelmanagement');
-    this.props.history.push(proccedUrl);
+    if (tabId == "score")
+    {
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelmanagement');
+    }else{
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelmanagement');
+    }
+
   }
 
 
@@ -103,9 +108,8 @@ export class Apps extends React.Component {
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-                    <Button variant="outline-success"  onClick={this.proceedMm.bind(this)} bsStyle="primary">Manage Models</Button>
-                  </div>
-
+                    <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
+          </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
          
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
@@ -114,10 +118,6 @@ export class Apps extends React.Component {
             {(getUserDetailsOrRestart.get().view_score_permission == "true")
               ? <Tab eventKey="score" title="Scores">{scores}</Tab>
               : <Tab eventKey="score" disabled  title="Scores">{scores}</Tab>}
-              {/* { <Tab eventKey="score" title="Manage Models"><div class="buttonRow text-right">
-                    <Button variant="outline-success" onClick bsStyle="primary">Manage Models</Button>
-                  </div></Tab>} */}
-
           </Tabs>
           <AppsLoader match={this.props.match}/>
         </div>

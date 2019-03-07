@@ -64,7 +64,7 @@ export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
   }
-  closeMm()
+  closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelmanagement','models');
     this.props.history.push(proccedUrl);
@@ -290,7 +290,7 @@ export class ModelManagement extends React.Component {
                     </table>
                   </div>
                   <div class="buttonRow pull-right">
-                    <Button variant="outline-success"  onClick={this.closeMm.bind(this)} bsStyle="primary">Close</Button>
+                    <Button variant="outline-success"  onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
                 </div>
               </div>
