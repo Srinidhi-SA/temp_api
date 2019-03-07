@@ -86,12 +86,6 @@ export class ModelManagement extends React.Component {
     //     else{
     //     return (
     //       <tr className={('all ' + item.columnType)} id="mssg">
-    //         {/* <td  class="filter-false sorter-false">
-    //           <div class="ma-checkbox inline">
-    //             <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
-    //             <label for={item.slug}> </label>
-    //           </div>
-    //         </td> */}
     //         <td className="text-left">{item.name}</td>
     //         {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
     //         <td>
@@ -191,15 +185,12 @@ export class ModelManagement extends React.Component {
                       </div>
                     </div>
                   <div class="table-responsive">
-                    <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                    <table  id="fetable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                {/* <th>
-                <div class="ma-checkbox inline">
-                  <input id="checkAll" type="checkbox" />
-                  <label for="checkAll"> </label>
-                </div>
-                </th> */}
+                <th>
+                      #
+                      </th>
                           <th>Model Id</th>
                           <th class="text-left">Project Name</th>
                           <th class="text-left">Algorithm</th>
