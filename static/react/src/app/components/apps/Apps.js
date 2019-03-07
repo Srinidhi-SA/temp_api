@@ -5,6 +5,8 @@ import {AppsModelList} from "./AppsModelList";
 import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
+import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+
 import {connect} from "react-redux";
 import {
   APPID1,
@@ -71,6 +73,16 @@ export class Apps extends React.Component {
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/models')
     }
   }
+
+
+  proceedMm()
+  {
+    var proccedUrl = this.props.match.url.replace('models','modelmanagement');
+    this.props.history.push(proccedUrl);
+  }
+
+
+
   render() {
     console.log("apps is called##########3");
     console.log(this.props);
@@ -90,13 +102,22 @@ export class Apps extends React.Component {
     return (
       <div className="side-body">
         <div className="main-content">
+        <div class="buttonRow pull-right">
+                    <Button variant="outline-success"  onClick={this.proceedMm.bind(this)} bsStyle="primary">Manage Models</Button>
+                  </div>
+
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
+         
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
               ? <Tab eventKey="model"  title="Models">{models}</Tab>
               : <Tab eventKey="model" disabled title="Models">{models}</Tab>}
             {(getUserDetailsOrRestart.get().view_score_permission == "true")
               ? <Tab eventKey="score" title="Scores">{scores}</Tab>
               : <Tab eventKey="score" disabled  title="Scores">{scores}</Tab>}
+              {/* { <Tab eventKey="score" title="Manage Models"><div class="buttonRow text-right">
+                    <Button variant="outline-success" onClick bsStyle="primary">Manage Models</Button>
+                  </div></Tab>} */}
+
           </Tabs>
           <AppsLoader match={this.props.match}/>
         </div>

@@ -264,6 +264,8 @@ class App extends React.Component {
             <Route exact path="/apps?page=:slug" component={AppsPanel}/>
             <Route exact path="/apps/:AppId/models" render={trainer}/>
             <Route exact path="/apps/:AppId/scores" render={score}/>
+            {/* <Route exact path="/apps/:AppId/scores" render={}/> */}
+
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>

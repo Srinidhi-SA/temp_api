@@ -67,6 +67,58 @@ export class DataCleansing extends React.Component {
 
   render(){
 
+
+
+    var cleansingHtml = <span>"Loading..."</span>;
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
+
+
+    if(this.props.dataPreview!=null)  {
+      var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
+      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+          return "";
+        else{
+        return (
+          <tr className={('all ' + item.columnType)} id="mssg">
+            {/* <td  class="filter-false sorter-false">
+              <div class="ma-checkbox inline">
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <label for={item.slug}> </label>
+              </div>
+            </td> */}
+            <td className="text-left">{item.name}</td>
+            {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
+            <td>
+              {item.columnStats.filter(function(items){
+                return  items.name == "numberOfUniqueValues" }).map((option)=>{
+                  return(<span>{option.value}</span>);
+                }
+              )}
+            </td>
+            <td>
+              {item.columnStats.filter(function(items){
+                return  items.name == "Outliers" }).map((option)=>{
+                  return(<span>{option.value}</span>);
+                }
+              )}
+            </td>
+            <td>
+              {item.columnStats.filter(function(items){
+                return  items.name == "numberOfNulls" }).map((option)=>{
+                  return(<span>{option.value}</span>);
+                }
+               )}
+            </td>
+            {/* <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td> */}
+            {/* <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td> */}
+          </tr>
+        );
+      }
+      })
+    }
+
     return (
       // <!-- Main Content starts with side-body -->
       <div class="side-body">
@@ -117,7 +169,8 @@ export class DataCleansing extends React.Component {
 							<div class="form-group">
 							<label for="sdataType">Filter By: </label>
 							<select id="sdataType" className="form-control cst-width">
-							<option value="all"></option>
+              <i class="fa fa-filter" aria-hidden="true"></i>
+							<option value="all">All Projects</option>
 							<option value="measure"></option>
 							<option value="dimension"></option>
 							<option value="datetime"></option>
@@ -137,24 +190,28 @@ export class DataCleansing extends React.Component {
                     <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                <th>
+                {/* <th>
                 <div class="ma-checkbox inline">
                   <input id="checkAll" type="checkbox" />
                   <label for="checkAll"> </label>
                 </div>
-                </th>
+                </th> */}
                           <th>Model Id</th>
                           <th class="text-left">Project Name</th>
                           <th class="text-left">Algorithm</th>
                           <th>Status</th>
                           <th>Accuracy</th>
                           <th>Created On</th>
-                          <th>Owner</th>
+                          <th>Deployment</th>
                 <th>Runtime</th>
-                <th>Deploy</th>
+                <th>Action</th>
                         </tr>
                       </thead>
-                      <tbody>
+
+                      <tbody className="no-border-x">
+                        {cleansingHtml}
+                      </tbody>
+                      {/* <tbody>
                         <tr>
                 <td>
                 <div class="ma-checkbox inline">
@@ -225,7 +282,7 @@ export class DataCleansing extends React.Component {
                 <td>679 s</td>
                 <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
                         </tr>
-                      </tbody>
+                      </tbody> */}
                     </table>
                   </div>
                   <div class="buttonRow text-right"> <a href="javascript:;" class="btn btn-primary">Close </a> </div>
