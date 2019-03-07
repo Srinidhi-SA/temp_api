@@ -64,6 +64,24 @@ export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
   }
+
+
+  componentDidMount() {
+
+    $('#search').on('keyup', function() {
+      var value = $(this).val();
+      var patt = new RegExp(value, "i");
+      $('#mmtable').find('tr').each(function() {
+        if (!($(this).find('td').text().search(patt) >= 0)) {
+          $(this).not('.myHead').hide();
+        }
+        if (($(this).find('td').text().search(patt) >= 0)) {
+          $(this).show();
+        }
+      });
+    });
+  }
+
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelmanagement','models');
@@ -74,7 +92,6 @@ export class ModelManagement extends React.Component {
 
 
     // var cleansingHtml = <span>"Loading..."</span>;
-    // var removedVariables = getRemovedVariableNames(this.props.datasets);
 
 
     // if(this.props.dataPreview!=null)  {
@@ -185,7 +202,7 @@ export class ModelManagement extends React.Component {
                       </div>
                     </div>
                   <div class="table-responsive">
-                    <table  id="fetable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                    <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
                 <th>
