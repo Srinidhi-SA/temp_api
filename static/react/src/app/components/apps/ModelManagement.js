@@ -140,7 +140,7 @@ export class ModelManagement extends React.Component {
     
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <small>Automated Prediction</small></h3>
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
@@ -296,6 +296,9 @@ export class ModelManagement extends React.Component {
                         </tr>
                       </tbody> */}
                     </table>
+                    <div class="col-md-12 text-center">
+           <ul class="pagination pagination-lg pager" id="myPager"></ul>
+       </div>
                   </div>
                   <div class="buttonRow pull-right">
                     <Button variant="outline-success"  onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
