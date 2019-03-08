@@ -87,8 +87,21 @@ export class ModelManagement extends React.Component {
     var proccedUrl = this.props.match.url.replace('modelmanagement','models');
     this.props.history.push(proccedUrl);
   }
-  render(){
 
+  tableSorter() {
+    $(function() {
+      $('#mmtable').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {sorter: false},
+          9: {sorter: false}
+        }
+      });
+    });
+  }
+
+  render(){
+    this.tableSorter();
 
 
     // var cleansingHtml = <span>"Loading..."</span>;
