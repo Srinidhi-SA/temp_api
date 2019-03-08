@@ -13,6 +13,7 @@ from views import AppView
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
+from views import TrainAlgorithmMappingView
 # from views import RegressionView
 from dummyModel.models import DummyView
 
@@ -73,6 +74,13 @@ router.register(
     DummyView,
     base_name='dummy'
 )
+
+router.register(
+    'trainalgomapping',
+    TrainAlgorithmMappingView,
+    base_name='trainalgomapping'
+)
+
 # router.register(
 #     'regression',
 #     RegressionView,

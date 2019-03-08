@@ -63,7 +63,8 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, slug)
+            pass
+            # submit_job_separate_task.delay(command_array, slug)
         else:
             submit_job_separate_task1(command_array, slug)
 
@@ -1124,6 +1125,9 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(TrainAlgorithmMappingSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
         ret['created_by'] = UserSerializer(instance.created_by).data
         return ret
 
@@ -1132,4 +1136,5 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
         exclude = (
 
             'id',
+            # 'trainer'
         )
