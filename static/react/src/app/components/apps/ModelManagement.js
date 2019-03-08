@@ -191,45 +191,45 @@ export class ModelManagement extends React.Component {
 
 
 
-<div class="row xs-mb-10">
-                      <div className="col-md-3">
-                        <div class="form-inline" >
-							<div class="form-group">
-							<label for="sdataType">Filter By: </label>
-							<select id="sdataType" className="form-control cst-width">
-              <i class="fa fa-filter" aria-hidden="true"></i>
-							<option value="all">All Projects</option>
-							<option value="measure"></option>
-							<option value="dimension"></option>
-							<option value="datetime"></option>
-							</select>
-							</div>
-						</div>
+            <div class="row xs-mb-10">
+              <div className="col-md-3">
+                <div class="form-inline" >
+                  <div class="form-group">
+                    <label for="sdataType">Filter By: </label>
+                      <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                        <datalist id="listProjectName">
+                           <option value="Credit Churn Prediction"></option>
+                           <option value="Ecommerce Predict"></option>
+                           <option value="Call Volume"></option>
+                           <option value="Student Performance"></option>								
+                        </datalist> &nbsp;&nbsp;&nbsp;
+                   </div>
+						    </div>
+               </div>
+                <div class="col-md-3 col-md-offset-6">
+                   <div class="form-inline" >
+                      <div class="form-group pull-right">
+                          <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
                       </div>
-                      <div class="col-md-3 col-md-offset-6">
-                        <div class="form-inline" >
-                          <div class="form-group pull-right">
-                            <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  <div class="table-responsive">
+                   </div>
+               </div>
+            </div>
+             <div class="table-responsive">
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
                 <th>
                       #
                       </th>
-                          <th>Model Id</th>
-                          <th class="text-left">Project Name</th>
-                          <th class="text-left">Algorithm</th>
-                          <th>Status</th>
-                          <th>Accuracy</th>
-                          <th>Created On</th>
-                          <th>Deployment</th>
-                <th>Runtime</th>
-                <th>Action</th>
+                          <th><b>Model Id</b></th>
+                          <th class="text-left"><b>Project Name</b></th>
+                          <th class="text-left"><b>Algorithm</b></th>
+                          <th><b>Status</b></th>
+                          <th><b>Accuracy</b></th>
+                          <th><b>Created On</b></th>
+                          <th><b>Deployment</b></th>
+                <th><b>Runtime</b></th>
+                <th><b>Action</b></th>
                         </tr>
                       </thead>
 
@@ -314,7 +314,7 @@ export class ModelManagement extends React.Component {
        </div>
                   </div>
                   <div class="buttonRow pull-right">
-                    <Button variant="outline-success"  onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                    <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
                 </div>
               </div>
