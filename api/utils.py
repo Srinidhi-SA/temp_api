@@ -11,7 +11,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping
 
 from django.conf import settings
 import subprocess
@@ -1098,3 +1098,38 @@ def get_random_true_false():
     import random
     return True if random.randint(0, 1) else False
 
+# model management
+
+class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainAlgorithmMappingSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = TrainAlgorithmMapping
+        exclude =  (
+
+            'id',
+            'config',
+            'data',
+            'trainer'
+        )
+
+
+class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainAlgorithmMappingSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = TrainAlgorithmMapping
+        exclude = (
+
+            'id',
+        )
