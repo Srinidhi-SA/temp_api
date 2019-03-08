@@ -634,7 +634,6 @@ export function getRemovedVariableNames(dataset){
             arr.push(item.name)
         }
     }
-
     dataset.CopyOfDimension.map(pickRemoved);
     dataset.CopyOfMeasures.map(pickRemoved);
     dataset.CopyTimeDimension.map(pickRemoved);

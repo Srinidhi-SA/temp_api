@@ -5,12 +5,13 @@
  
 
 /* header */
+.tablesorter { background:#FFFFFF; }
 .tablesorter-ice th,
 .tablesorter-ice thead td {
 	/*font: 12px/18px Arial, Sans-serif;*/
 	font: 12px/18px;
 	color: #555;
-	background-color: #f6f8f9;
+	background-color: #FFFFFF /*f6f8f9*/;
 	border-collapse: collapse;
 	 
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
@@ -24,7 +25,7 @@
  .cst-scroll-panel th .ma-checkbox { padding: 0 4px;}
 .tablesorter-ice .header,
 .tablesorter-ice .tablesorter-header {
-	background-color: #f6f8f9;
+	background-color: #FFFFFF;
 	background-position: center right;
 	background-repeat: no-repeat;
 	/*background-image: url(data:image/gif;base64,R0lGODlhDAAMAMQAAAJEjAJCiwJBigJAiANFjgNGjgNEjQRIkQRHkANIkAVMlAVQmAZWnQZUnAdYoAhdpAhZoAlhqQlepQliqQppsApmrQxutgtutQtutAxwtwxwtg1yug1zugxtsw1yuP8A/yH5BAEAAB8ALAAAAAAMAAwAAAUx4Cd+3GiOW4ado2d9VMVm1xg9ptadTsP+QNZEcjoQTBDGCAFgLRSfQgCYMAiCn8EvBAA7);*/

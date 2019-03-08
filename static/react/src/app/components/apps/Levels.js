@@ -38,6 +38,9 @@ export class Levels extends React.Component {
   }
 
   getAllOptions(){
+    // datasets.dataPreview.meta_data.scriptMetaData.columnData[8].columnStats[5].value
+    // datasets.selectedVariables[""1cbce2ce373e42248952e902fc03046f""]
+    // datasets.dataPreview.meta_data.uiMetaData.columnDataUI[8].columnStats[5].value.Arkansas
     let levelOptions = Object.keys(this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].columnStats.filter(options => (options.name == "LevelCount"))[0].value)
     levelOptions.sort();
     return levelOptions

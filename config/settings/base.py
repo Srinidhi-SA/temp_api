@@ -15,6 +15,7 @@ import os
 import datetime
 import config_file_name_to_run
 from mlsettings import *
+from logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -525,7 +526,54 @@ DATA_SOURCES_CONFIG = {"conf": [{
                 }
 
             ]
-        }
+        },
+    {
+        "dataSourceType": "S3",
+        "dataSourceName": "S3",
+        "formFields": [
+            {
+                "fieldType": "text",
+                "fieldName": "datasetname",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "bucket_name",
+                "placeHolder": "bucket",
+                "labelName": "Bucket",
+                "required": "true"
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "file_name",
+                "placeHolder": "data.csv",
+                "labelName": "File Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "password",
+                "fieldName": "access_key_id",
+                "placeHolder": "AccessKey",
+                "labelName": "Access Key",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "secret_key",
+                "placeHolder": "SecretKey",
+                "labelName": "Secret Key",
+                "required": "true"
+            }
+
+        ]
+    }
 
 ]
 }
@@ -1471,6 +1519,7 @@ PERMISSIONS_RELATED_TO_DATASET = (
     ('upload_from_mssql', 'Upload from mssql'),
     ('upload_from_hdfs', 'Upload from hdfs'),
     ('upload_from_hana', 'Upload from hana'),
+    ('upload_from_s3', 'Upload from s3'),
     ('data_validation', 'Data Validation'),
     ('subsetting_dataset', 'Subsetting dataset'),
 )

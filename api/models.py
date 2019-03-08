@@ -1236,10 +1236,10 @@ class Trainer(models.Model):
                                                  )
                     self.add_to_feature_engineering_bin_creation_settings(level_creation_settings, mlJson)
                 elif fkey == 'levelData':
-                    mlJson = self.levelsAdapter(uiJson=uiJson,
+                    mlJson, is_datetime_level = self.levelsAdapter(uiJson=uiJson,
                                                 variable_selection_column_data=column_data[slug]
                                                 )
-                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson)
+                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson, is_datetime_level)
 
         return feature_engineering_ml_config
 
@@ -1265,19 +1265,18 @@ class Trainer(models.Model):
         except:
             pass
 
-    def add_to_feature_engineering_level_creation_settings(self, level_creation_settings, mlJson):
+    def add_to_feature_engineering_level_creation_settings(self, level_creation_settings, mlJson, is_datetime_level):
 
         try:
             for key in level_creation_settings['operations']:
-                if key['name'] == 'create_new_levels':
+                if key['name'] == 'create_new_levels' and is_datetime_level is False:
                     level_creation_settings['selected'] = True
                     key['selected'] = True
                     key['columns'].append(mlJson)
-                if key['name'] == 'create_new_datetime_levels':
+                if key['name'] == 'create_new_datetime_levels' and is_datetime_level is True:
                     level_creation_settings['selected'] = True
                     key['selected'] = True
                     key['columns'].append(mlJson)
-
         except:
             pass
 
@@ -1461,7 +1460,7 @@ class Trainer(models.Model):
 
     def levelsAdapter(self, uiJson, variable_selection_column_data):
 
-        is_datetime_level = True
+        is_datetime_level = False
         mlJson = {
             "name": variable_selection_column_data['name'],
             "datatype": variable_selection_column_data['columnType'],
@@ -1480,11 +1479,12 @@ class Trainer(models.Model):
                     start_date = convert_fe_date_format(item['startDate'])
                     end_date = convert_fe_date_format(item['endDate'])
                     mlJson["mapping_dict"][item["inputValue"]] = [start_date, end_date]
+                    is_datetime_level = True
                 else:
                     is_datetime_level = False
                     mlJson["mapping_dict"][item["inputValue"]] = item["multiselectValue"]
 
-        if is_datetime_level is False:
+        if is_datetime_level is True:
             user_given_name = self.generate_new_column_name_based_on_transformation(
                 variable_selection_column_data,
                 'create_new_datetime_levels'
@@ -1497,7 +1497,7 @@ class Trainer(models.Model):
 
         mlJson['user_given_name'] = user_given_name
 
-        return mlJson
+        return mlJson, is_datetime_level
 
     def generate_new_column_name_based_on_transformation(self, variable_selection_column_data, function_name, *args):
 
