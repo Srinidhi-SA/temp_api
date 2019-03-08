@@ -15260,9 +15260,15 @@ button.btn.btn-cst_button[disabled]:hover { background-color: #cccccc; color: #6
 .tablesorter thead tr th { vertical-align: inherit; }
 th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .cst-width { min-width: 180px; margin-left:5px; }
+<<<<<<< HEAD
 #pDetail .nav-tabs { border-color:#ddd}
 .tab-content .bgStockBox { margin-right: -4px;}
 .hideSortImg .sorttable_img { display: none;}
+=======
+.hideSortImg .sorttable_img { display: none; }
+#pDetail .nav-tabs { border-color:#ddd}
+.tab-content .bgStockBox { margin-right: -4px;}
+>>>>>>> e7c9848c05b02b47d85d595f579d5a3f2ef3e282
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{

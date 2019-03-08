@@ -351,16 +351,16 @@ dcTableSorter() {
                     <div class="row xs-mb-10">
                     <div className="col-md-3">
                         <div class="form-inline" >
-                          <div class="form-group">
-                            <label for="sdataType">Filter By: </label>
-                            <select id="sdataType" className="form-control cst-width">
-                              <option value="all">Data Type</option>
-                              <option value="measure">Measure</option>
-                              <option value="dimension">Dimension</option>
-                              <option value="datetime">Datetime</option>
-                            </select>
-                          </div>
-                        </div>
+              <div class="form-group">
+              <label for="sdataType">Filter By: </label>
+              <select id="sdataType" className="form-control cst-width">
+              <option value="all">Data Type</option>
+              <option value="measure">Measure</option>
+              <option value="dimension">Dimension</option>
+              <option value="datetime">Datetime</option>
+              </select>
+              </div>
+            </div>
                       </div>
                       <div class="col-md-3 col-md-offset-6">
                         <div class="form-inline" >

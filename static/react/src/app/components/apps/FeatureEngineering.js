@@ -201,13 +201,8 @@ export class FeatureEngineering extends React.Component {
         var inputValue = levelData[i].inputValue;
         var multiselect = levelData[i].multiselectValue;
 
-//        if((startDate==undefined || startDate == null || startDate =="") || (endDate==undefined || endDate == null || endDate =="")){
-//          console.log('dates are undefined');
-//          $("#fileErrorMsg").removeClass("visibilityHidden");
-//          $("#fileErrorMsg").html("Enter Start Date & End Date");
-//          return;
-//        }else
-        if ((Date.parse(startDate) > Date.parse(endDate))) {
+
+         if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
@@ -339,18 +334,33 @@ export class FeatureEngineering extends React.Component {
     var binOrLevelData="";
     var values="";
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    debugger;
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
+    var data = this.props.datasets.selectedVariables;
+
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables){ 
       if(!this.props.datasets.selectedVariables[key])
       unselectedvar.push(key);
     }
-      console.log(unselectedvar);
+      // var result = {};
+
+      // for(var key in data)
+      // {
+      //     if(data.hasOwnProperty(key))
+      //     {
+      //         result.add({
+      //             key: key,
+      //             value: data[key]
+      //         });
+      //     }
+      // }
+
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag||unselectedvar.indexOf(item.name)!= -1)
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
         return "";
         if(item.columnType == "measure")
           numberOfSelectedMeasures +=1;
