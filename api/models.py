@@ -4779,3 +4779,59 @@ class Role(Group):
         proxy = True
         app_label = 'auth'
         verbose_name = _('Role')
+
+
+# model management
+
+
+class TrainAlgorithmMapping(models.Model):
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    trainer = models.ForeignKey(Trainer, null=False)
+    config = models.TextField(default="{}")
+
+    data = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(TrainAlgorithmMapping, self).save(*args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
