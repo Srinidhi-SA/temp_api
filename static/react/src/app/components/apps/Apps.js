@@ -46,12 +46,6 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount() {
-    /*if(this.props.match.params.AppId == APPID1){
-          this.props.dispatch(updateSelectedApp(APPID1,APPNAME1));
-      }else if(this.props.match.params.AppId == APPID2){
-          this.props.dispatch(updateSelectedApp(APPID2,APPNAME2));
-      }*/
-
     //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {
       this.props.dispatch(activateModelScoreTabs("model"));
@@ -108,10 +102,9 @@ export class Apps extends React.Component {
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-                    <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
-          </div>
+            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
+        </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
-         
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
               ? <Tab eventKey="model"  title="Models">{models}</Tab>
               : <Tab eventKey="model" disabled title="Models">{models}</Tab>}
