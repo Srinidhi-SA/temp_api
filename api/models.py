@@ -4818,10 +4818,10 @@ class TrainAlgorithmMapping(models.Model):
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
 # Deployment for Model management
-class Deployment(models.Model):
+class ModelDeployment(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
-    deployment = models.ForeignKey(Trainer, null=False)
+    deploytrainer = models.ForeignKey(TrainAlgorithmMapping, null=False)
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
@@ -4851,4 +4851,4 @@ class Deployment(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        super(Deployment, self).save(*args, **kwargs)
+        super(ModelDeployment, self).save(*args, **kwargs)
