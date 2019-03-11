@@ -1201,7 +1201,7 @@ class Trainer(models.Model):
 
             overall_data = feature_engineering_config_ui['overallSettings']
 
-	
+
             if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
             #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 feature_engineering_ml_config['selected'] = True
@@ -4817,21 +4817,38 @@ class TrainAlgorithmMapping(models.Model):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
+# Deployment for Model management
+class Deployment(models.Model):
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    deployment = models.ForeignKey(Trainer, null=False)
+    config = models.TextField(default="{}")
+
+    data = models.TextField(default="{}")
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
 
 
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
 
 
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
 
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
-
-
-
-
-
-
-
-
-
-
-
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Deployment, self).save(*args, **kwargs)
