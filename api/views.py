@@ -36,10 +36,12 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer, \
     TrainAlgorithmMappingListSerializer, \
-    TrainAlgorithmMappingSerializer
+    TrainAlgorithmMappingSerializer, \
+    DeploymentSerializer, \
+    DeploymentListSerializer
     # RegressionSerlializer, \
     # RegressionListSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment
 from api.tasks import clean_up_on_delete
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
@@ -5544,9 +5546,9 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['deploytrainer'] = TrainAlgorithmMapping.objects.filter(slug=data['deploytrainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
+        serializer = DeploymentSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             train_algo_object = serializer.save()
             #train_algo_object.create()
@@ -5600,4 +5602,94 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
             return creation_failed_exception("File Doesn't exist.")
 
         serializer = TrainAlgorithmMappingSerializer(instance=instance, context={"request": self.request})
+        return Response(serializer.data)
+
+
+class ModelDeployementView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = ModelDeployment.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+
+        ).select_related('created_by')
+        return queryset
+
+    def get_serializer_class(self):
+        return DeploymentSerializer
+
+    def get_object_from_all(self):
+        return ModelDeployment.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'name')
+    pagination_class = CustomPagination
+    #permission_classes = (TrainerRelatedPermission, )
+
+    def create(self, request, *args, **kwargs):
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+
+        data['deploytrainer'] = TrainAlgorithmMapping.objects.filter(slug=data['deploytrainer'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
+        if serializer.is_valid():
+            train_algo_object = serializer.save()
+            #train_algo_object.create()
+            return Response(serializer.data)
+
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        # instance = self.get_object()
+        try:
+            instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
+                    clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+                    return JsonResponse({'message':'Deleted'})
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    # @print_sql_decorator(count_only=True)
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DeploymentListSerializer
+        )
+
+    # @print_sql_decorator(count_only=True)
+    def retrieve(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = DeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)

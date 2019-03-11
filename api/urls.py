@@ -14,6 +14,7 @@ from views import TrainerView
 from views import RoboView
 from views import AudiosetView
 from views import TrainAlgorithmMappingView
+from views import ModelDeployementView
 # from views import RegressionView
 from dummyModel.models import DummyView
 
@@ -81,6 +82,12 @@ router.register(
     base_name='trainalgomapping'
 )
 
+router.register(
+    'deploymodel',
+    ModelDeployementView,
+    base_name='deploymodel'
+)
+
 # router.register(
 #     'regression',
 #     RegressionView,
@@ -120,4 +127,4 @@ urlpatterns = [
 
 
 urlpatterns += router.urls
-# print urlpatterns
+print urlpatterns
