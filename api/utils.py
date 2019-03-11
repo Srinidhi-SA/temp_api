@@ -1104,7 +1104,7 @@ def get_random_true_false():
 class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        ret = super(TrainAlgorithmMappingSerializer, self).to_representation(instance)
+        ret = super(TrainAlgorithmMappingListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
         return ret
