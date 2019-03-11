@@ -11,7 +11,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment
 
 from django.conf import settings
 import subprocess
@@ -1133,6 +1133,45 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrainAlgorithmMapping
+        exclude = (
+
+            'id',
+            # 'trainer'
+        )
+
+
+class DeploymentListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DeploymentListSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = ModelDeployment
+        exclude =  (
+
+            'id',
+            'config',
+            'data',
+            'deploytrainer'
+        )
+
+
+class DeploymentSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DeploymentSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        deploytrainer = ret['deploytrainer']
+        deployment_object = Trainer.objects.get(pk=deploytrainer)
+        ret['deploytrainer'] = deployment_object.slug
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = ModelDeployment
         exclude = (
 
             'id',
