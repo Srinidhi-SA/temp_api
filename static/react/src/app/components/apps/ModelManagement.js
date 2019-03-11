@@ -102,6 +102,7 @@ export class ModelManagement extends React.Component {
 
   render(){
     this.tableSorter();
+    console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 
     // var cleansingHtml = <span>"Loading..."</span>;
@@ -236,17 +237,17 @@ export class ModelManagement extends React.Component {
                       <tbody className="no-border-x">
                         {/* {cleansingHtml} */}
                       </tbody>
-                      {/* <tbody>
-                        <tr>
+                      <tbody>
+                      <tr>
                 <td>
-                <div class="ma-checkbox inline">
+                  <div class="ma-checkbox inline">
                   <input id="row1" type="checkbox" />
                   <label for="row1"> </label>
                 </div>
                 </td>
-                          <td>LR-000</td>
+                          <td>  LR-000</td>
                           <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
-                          <td class="text-left">Logistic Regression</td>
+                          <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
                           <td><span class="text-success">Completed</span></td>
                           <td>0.97</td>
                           <td>21/12/2018</td>
@@ -307,7 +308,7 @@ export class ModelManagement extends React.Component {
                 <td>679 s</td>
                 <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
                         </tr>
-                      </tbody> */}
+                      </tbody>
                     </table>
                     <div class="col-md-12 text-center">
            <ul class="pagination pagination-lg pager" id="myPager"></ul>

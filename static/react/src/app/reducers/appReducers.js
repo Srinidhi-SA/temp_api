@@ -1,6 +1,7 @@
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
+        algoList:{},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -129,6 +130,30 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model list!!");
     }
     break;
+
+
+
+
+    // case "MODEL_LIST2":
+    case "ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList: action.data,
+            latestModels:action.latestModels,
+            current_page:action.current_page,
+        }
+    }
+    break;
+
+    case "ALGO_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+
     case "UPDATE_MODEL_RANGE":
     {
         return {

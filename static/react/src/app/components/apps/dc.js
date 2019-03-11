@@ -1,12 +1,13 @@
 import React from "react";
+import {connect} from "react-redux";
+import {InputSwitch} from 'primereact/inputswitch';
+import {C3Chart} from "../c3Chart";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
-import {connect} from "react-redux";
+
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {InputSwitch} from 'primereact/inputswitch';
-import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
   hideDataPreview,
@@ -292,7 +293,8 @@ dcTableSorter() {
               )}
             </td>
             <td>
-              {item.columnStats.filter(function(items){
+              {item.columnStats.
+            filter(function(items){
                 return  items.name == "Outliers" }).map((option)=>{
                   return(<span>{option.value}</span>);
                 }

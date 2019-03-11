@@ -43,6 +43,8 @@ import {cookieObj} from '../../helpers/cookiesHandler'
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
+    // algoList: store.appsAlgoList,
+
     modelSummaryFlag: store.apps.modelSummaryFlag,
     modelSlug: store.apps.modelSlug,
     currentAppId: store.apps.currentAppId,

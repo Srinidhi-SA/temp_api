@@ -65,6 +65,7 @@ export function refreshAppsModelList(props) {
   }
 }
 
+
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -116,6 +117,61 @@ export function fetchModelListSuccess(doc) {
   var latestModels = doc.top_3
   return {type: "MODEL_LIST", data, latestModels, current_page}
 }
+
+
+
+function fetchAlgoListError(json) {
+
+// function fetchModelList2Error(json) {
+  return {type: "ALGO_LIST_ERROR", json}
+}
+console.log("###################################################################stophere")
+
+export function fetchAlgoListSuccess(doc) {
+  var data = doc;
+  // console.log("###################################################################stophere",data)
+  var current_page = doc.current_page;
+  var latestModels = doc.top_3
+  return {type: "ALGO_LIST", data, latestModels, current_page}
+}
+export function getAppsAlgoList(pageNo) {
+  return (dispatch) => {
+    return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200) {
+        console.log(json)
+        dispatch(fetchAlgoListSuccess(json))
+      } else {
+        dispatch(fetchAlgoListError(json))
+      }
+    })
+  }
+}
+
+
+function fetchAlgoList(pageNo, token) {
+    return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+
+}
+
+export function refreshAppsAlgoList(props) {
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function()
+    {
+      var pageNo = window.location.href.split("=").pop();
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
+        pageNo = 1;
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
+        dispatch(getAppsAlgoList(parseInt(pageNo)));
+    }
+    , APPSDEFAULTINTERVAL);
+  }
+}
+
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
@@ -256,6 +312,9 @@ export function getAppsScoreList(pageNo) {
   }
 }
 
+
+
+
 function fetchScoreList(pageNo, token) {
   let search_element = store.getState().apps.score_search_element;
   let apps_score_sorton = store.getState().apps.apps_score_sorton;
@@ -284,6 +343,8 @@ function fetchScoreList(pageNo, token) {
   }
 
 }
+
+
 
 function fetchScoreListError(json) {
   return {type: "SCORE_LIST_ERROR", json}

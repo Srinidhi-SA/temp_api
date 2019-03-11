@@ -142,7 +142,7 @@ export class DataCleansing extends React.Component {
   }
 
 
-  variableCheckboxOnChange(event){
+  variableCheckboxOnChange(event,item){
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
     if(Object.values(this.props.datasets.selectedVariables).includes(false)){
         this.props.dispatch(checkedAllAction(false));
@@ -231,7 +231,7 @@ export class DataCleansing extends React.Component {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType}  data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+        <select className="form-control" data-coltype={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
       );
     }
     else { return "";}
@@ -258,8 +258,10 @@ dcTableSorter() {
 			}	
 		});
 	  
-	});
+  });
+  
 }
+
 
   render() {
     this.dcTableSorter();

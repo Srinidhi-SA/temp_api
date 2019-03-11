@@ -31,6 +31,7 @@ import {AppsLoader} from "../common/AppsLoader";
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
+    algolist:store.algoList,
     currentAppId: store.apps.currentAppId,
     scoreList: store.apps.scoreList,
     activateModelScoreTabs: store.apps.activateModelScoreTabs,
@@ -102,7 +103,7 @@ export class Apps extends React.Component {
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primaryM">Manage Models</Button>
+            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="warning">Manage Models</Button>
         </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
