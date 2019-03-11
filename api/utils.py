@@ -11,7 +11,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
 
 from django.conf import settings
 import subprocess
@@ -1165,13 +1165,63 @@ class DeploymentSerializer(serializers.ModelSerializer):
         ret = super(DeploymentSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         deploytrainer = ret['deploytrainer']
-        deployment_object = Trainer.objects.get(pk=deploytrainer)
+        deployment_object = TrainAlgorithmMapping.objects.get(pk=deploytrainer)
         ret['deploytrainer'] = deployment_object.slug
         ret['created_by'] = UserSerializer(instance.created_by).data
         return ret
 
     class Meta:
         model = ModelDeployment
+        exclude = (
+
+            'id',
+            # 'trainer'
+        )
+
+class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DatasetScoreDeploymentListSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = DatasetScoreDeployment
+        exclude =  (
+
+            'id',
+            'config',
+            'data',
+            'dataset',
+            'score',
+            'deployment'
+        )
+
+
+class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DatasetScoreDeploymentSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+
+        deployment = ret['deployment']
+        deployment_object = ModelDeployment.objects.get(pk=deployment)
+        ret['deployment'] = deployment_object.slug
+
+        score = ret['score']
+        score_object = Score.objects.get(pk=score)
+        ret['score'] = score_object.slug
+
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        return ret
+
+    class Meta:
+        model = DatasetScoreDeployment
         exclude = (
 
             'id',

@@ -4852,3 +4852,44 @@ class ModelDeployment(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(ModelDeployment, self).save(*args, **kwargs)
+
+
+class DatasetScoreDeployment(models.Model):
+
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300
+                            )
+    deployment = models.ForeignKey(ModelDeployment, null=False)
+    dataset = models.ForeignKey(Dataset, null=False)
+    score = models.ForeignKey(Score, null=False)
+
+    config = models.TextField(default="{}")
+
+    data = models.TextField(default="{}")
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(DatasetScoreDeployment, self).save(*args, **kwargs)
