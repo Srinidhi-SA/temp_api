@@ -40,6 +40,7 @@ import {
 @connect((store) => {
   return {
     login_response: store.login.login_response,
+    algoList: store.apps.algoList,
     dataPreview: store.datasets.dataPreview,
     signalMeta: store.datasets.signalMeta,
     curUrl: store.datasets.curUrl,
@@ -102,8 +103,8 @@ export class ModelManagement extends React.Component {
 
   render(){
     this.tableSorter();
-    console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
+    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
 
     // var cleansingHtml = <span>"Loading..."</span>;
 
