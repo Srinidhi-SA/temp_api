@@ -102,7 +102,7 @@ export class Apps extends React.Component {
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
+            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="warning">Manage Models</Button>
         </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")

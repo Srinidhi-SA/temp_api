@@ -87,52 +87,6 @@ export class ModelManagement extends React.Component {
     this.props.history.push(proccedUrl);
   }
   render(){
-
-
-
-    // var cleansingHtml = <span>"Loading..."</span>;
-
-
-    // if(this.props.dataPreview!=null)  {
-    //   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    //   var removedVariables = getRemovedVariableNames(this.props.datasets);
-    //   cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-    //     if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-    //       return "";
-    //     else{
-    //     return (
-    //       <tr className={('all ' + item.columnType)} id="mssg">
-    //         <td className="text-left">{item.name}</td>
-    //         {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfUniqueValues" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "Outliers" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfNulls" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //            )}
-    //         </td>
-    //         {/* <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td> */}
-    //         {/* <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td> */}
-    //       </tr>
-    //     );
-    //   }
-    //   })
-    // }
-
     return (
       // <!-- Main Content starts with side-body -->
       <div class="side-body">
@@ -144,53 +98,24 @@ export class ModelManagement extends React.Component {
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
         {/* <!-- Page Content Area --> */}
-        <div class="main-content">
-    
-        {/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
-    
-        <div class="row">
-            <div class="col-md-12">           
-              <div class="panel box-shadow">
-                <div class="panel-body no-border xs-p-20">
-          
-          {/* <div class="row xs-mb-10">
-             
-            <div class="col-md-12">
-              <div class="form-inline text-right">
-                <div class="form-group">
-                <label for="sdataType">Filter By: </label>
-                <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                    <datalist id="listProjectName">
-                    <option value="Credit Churn Prediction"></option>
-                    <option value="Ecommerce Predict"></option>
-                    <option value="Call Volume"></option>
-                    <option value="Student Performance"></option>								
-                    </datalist> &nbsp;&nbsp;&nbsp;
-                <label for="sdataType">Search: </label>
-                  <input type="text" id="search" class="form-control" placeholder="Search..."></input>
-                </div>
-              </div>
-            </div>
-            
-            
-          </div> */}
-
-
-
-<div class="row xs-mb-10">
+        <div class="main-content">    
+          <div class="row">
+              <div class="col-md-12">           
+                <div class="panel box-shadow">
+                  <div class="panel-body no-border xs-p-20">
+                    <div class="row xs-mb-10">
                       <div className="col-md-3">
                         <div class="form-inline" >
-							<div class="form-group">
-							<label for="sdataType">Filter By: </label>
-							<select id="sdataType" className="form-control cst-width">
-              <i class="fa fa-filter" aria-hidden="true"></i>
-							<option value="all">All Projects</option>
-							<option value="measure"></option>
-							<option value="dimension"></option>
-							<option value="datetime"></option>
-							</select>
-							</div>
-						</div>
+                          <div class="form-group">
+                            <label for="sdataType">Filter By: </label>
+                            <select id="sdataType" className="form-control cst-width">
+                              <option value="all">All Projects</option>
+                              <option value="measure"></option>
+                              <option value="dimension"></option>
+                              <option value="datetime"></option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                       <div class="col-md-3 col-md-offset-6">
                         <div class="form-inline" >
@@ -204,9 +129,6 @@ export class ModelManagement extends React.Component {
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                <th>
-                      #
-                      </th>
                           <th>Model Id</th>
                           <th class="text-left">Project Name</th>
                           <th class="text-left">Algorithm</th>
@@ -214,8 +136,8 @@ export class ModelManagement extends React.Component {
                           <th>Accuracy</th>
                           <th>Created On</th>
                           <th>Deployment</th>
-                <th>Runtime</th>
-                <th>Action</th>
+                          <th>Runtime</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
 
@@ -224,12 +146,6 @@ export class ModelManagement extends React.Component {
                       </tbody>
                       {/* <tbody>
                         <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row1" type="checkbox" />
-                  <label for="row1"> </label>
-                </div>
-                </td>
                           <td>LR-000</td>
                           <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
                           <td class="text-left">Logistic Regression</td>

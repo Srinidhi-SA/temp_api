@@ -22,7 +22,6 @@ import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
 import {DataCleansing} from "./components/apps/DataCleansing"
-import {ModelManagement} from "./components/apps/ModelManagement"
 import {FeatureEngineering} from "./components/apps/FeatureEngineering"
 import {ModelManagement} from "./components/apps/ModelManagement"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
@@ -268,10 +267,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores" render={score}/>
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
-            {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelManagement}/> */}
-
             <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
-
             <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
@@ -288,7 +284,6 @@ class App extends React.Component {
             <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode}/>
-            {/* <Route exact path="/apps/:AppId/models/modelManagement" component={ModelManagement}/> */}
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" render={data}/>
             <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview}/>
             <Route exact path="/apps-robo-list" component={RoboInsightList}/>
