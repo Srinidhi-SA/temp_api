@@ -1205,16 +1205,22 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
 
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
-        ret['dataset'] = dataset_object.slug
+        if dataset == None:
+            pass
+        else:
+            dataset_object = Dataset.objects.get(pk=dataset)
+            ret['dataset'] = dataset_object.slug
 
         deployment = ret['deployment']
         deployment_object = ModelDeployment.objects.get(pk=deployment)
         ret['deployment'] = deployment_object.slug
 
         score = ret['score']
-        score_object = Score.objects.get(pk=score)
-        ret['score'] = score_object.slug
+        if score == None:
+            pass
+        else:
+            score_object = Score.objects.get(pk=score)
+            ret['score'] = score_object.slug
 
         ret['created_by'] = UserSerializer(instance.created_by).data
         return ret
