@@ -40,7 +40,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         print("About to submit job through YARN")
         # Submit_job to YARN
-        print queue_name
+        # print queue_name
 
         '''
         if queue_name is None:
@@ -63,8 +63,8 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            pass
-            # submit_job_separate_task.delay(command_array, slug)
+            # pass
+            submit_job_separate_task.delay(command_array, slug)
         else:
             submit_job_separate_task1(command_array, slug)
 
@@ -1151,7 +1151,6 @@ class DeploymentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ModelDeployment
         exclude =  (
-
             'id',
             'config',
             'data',
