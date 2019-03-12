@@ -1,12 +1,13 @@
 import React from "react";
+import {connect} from "react-redux";
+import {InputSwitch} from 'primereact/inputswitch';
+import {C3Chart} from "../c3Chart";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
-import {connect} from "react-redux";
+
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {InputSwitch} from 'primereact/inputswitch';
-import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
   hideDataPreview,
@@ -142,7 +143,7 @@ export class DataCleansing extends React.Component {
   }
 
 
-  variableCheckboxOnChange(event,item){
+  variableCheckboxOnChange(event){
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
     if(Object.values(this.props.datasets.selectedVariables).includes(false)){
         this.props.dispatch(checkedAllAction(false));
@@ -231,7 +232,7 @@ export class DataCleansing extends React.Component {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+        <select className="form-control" data-coltype={dataType}  data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
       );
     }
     else { return "";}
@@ -258,10 +259,8 @@ dcTableSorter() {
 			}	
 		});
 	  
-  });
-  
+	});
 }
-
 
   render() {
     this.dcTableSorter();
@@ -294,7 +293,8 @@ dcTableSorter() {
               )}
             </td>
             <td>
-              {item.columnStats.filter(function(items){
+              {item.columnStats.
+            filter(function(items){
                 return  items.name == "Outliers" }).map((option)=>{
                   return(<span>{option.value}</span>);
                 }
@@ -351,20 +351,15 @@ dcTableSorter() {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
-                    <div className="col-md-3">
-                        <div class="form-inline" >
-              <div class="form-group">
-              <label for="sdataType">Filter By: </label>
-              <select id="sdataType" className="form-control cst-width">
-              <option value="all">Data Type</option>
-              <option value="measure">Measure</option>
-              <option value="dimension">Dimension</option>
-              <option value="datetime">Datetime</option>
-              </select>
-              </div>
-            </div>
+                      <div className="col-md-2">
+                         Filter By Data Type :<select id="sdataType" className="form-control">
+                          <option value="all">Select</option>
+                          <option value="measure">Measure</option>
+                          <option value="dimension">Dimension</option>
+                          <option value="datetime">Datetime</option>
+                        </select>
                       </div>
-                      <div class="col-md-3 col-md-offset-6">
+                      <div class="col-md-3 col-md-offset-7">
                         <div class="form-inline" >
                           <div class="form-group pull-right">
                             <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>

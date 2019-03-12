@@ -39,6 +39,7 @@ import {
 @connect((store) => {
   return {
     login_response: store.login.login_response,
+    algoList: store.apps.algoList,
     dataPreview: store.datasets.dataPreview,
     signalMeta: store.datasets.signalMeta,
     curUrl: store.datasets.curUrl,
@@ -86,7 +87,67 @@ export class ModelManagement extends React.Component {
     var proccedUrl = this.props.match.url.replace('modelmanagement','models');
     this.props.history.push(proccedUrl);
   }
+
+  tableSorter() {
+    $(function() {
+      $('#mmtable').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {sorter: false},
+          9: {sorter: false}
+        }
+      });
+    });
+  }
+
   render(){
+    this.tableSorter();
+    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+
+    // var cleansingHtml = <span>"Loading..."</span>;
+
+
+    // if(this.props.dataPreview!=null)  {
+    //   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+    //   var removedVariables = getRemovedVariableNames(this.props.datasets);
+    //   cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+    //     if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+    //       return "";
+    //     else{
+    //     return (
+    //       <tr className={('all ' + item.columnType)} id="mssg">
+    //         <td className="text-left">{item.name}</td>
+    //         {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
+    //         <td>
+    //           {item.columnStats.filter(function(items){
+    //             return  items.name == "numberOfUniqueValues" }).map((option)=>{
+    //               return(<span>{option.value}</span>);
+    //             }
+    //           )}
+    //         </td>
+    //         <td>
+    //           {item.columnStats.filter(function(items){
+    //             return  items.name == "Outliers" }).map((option)=>{
+    //               return(<span>{option.value}</span>);
+    //             }
+    //           )}
+    //         </td>
+    //         <td>
+    //           {item.columnStats.filter(function(items){
+    //             return  items.name == "numberOfNulls" }).map((option)=>{
+    //               return(<span>{option.value}</span>);
+    //             }
+    //            )}
+    //         </td>
+    //         {/* <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td> */}
+    //         {/* <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td> */}
+    //       </tr>
+    //     );
+    //   }
+    //   })
+    // }
+
     return (
       // <!-- Main Content starts with side-body -->
       <div class="side-body">
@@ -98,57 +159,95 @@ export class ModelManagement extends React.Component {
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
         {/* <!-- Page Content Area --> */}
-        <div class="main-content">    
-          <div class="row">
-              <div class="col-md-12">           
-                <div class="panel box-shadow">
-                  <div class="panel-body no-border xs-p-20">
-                    <div class="row xs-mb-10">
-                      <div className="col-md-3">
-                        <div class="form-inline" >
-                          <div class="form-group">
-                            <label for="sdataType">Filter By: </label>
-                            <select id="sdataType" className="form-control cst-width">
-                              <option value="all">All Projects</option>
-                              <option value="measure"></option>
-                              <option value="dimension"></option>
-                              <option value="datetime"></option>
-                            </select>
-                          </div>
-                        </div>
+        <div class="main-content">
+    
+        {/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
+    
+        <div class="row">
+            <div class="col-md-12">           
+              <div class="panel box-shadow">
+                <div class="panel-body no-border xs-p-20">
+          
+          {/* <div class="row xs-mb-10">
+             
+            <div class="col-md-12">
+              <div class="form-inline text-right">
+                <div class="form-group">
+                <label for="sdataType">Filter By: </label>
+                <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                    <datalist id="listProjectName">
+                    <option value="Credit Churn Prediction"></option>
+                    <option value="Ecommerce Predict"></option>
+                    <option value="Call Volume"></option>
+                    <option value="Student Performance"></option>								
+                    </datalist> &nbsp;&nbsp;&nbsp;
+                <label for="sdataType">Search: </label>
+                  <input type="text" id="search" class="form-control" placeholder="Search..."></input>
+                </div>
+              </div>
+            </div>
+            
+            
+          </div> */}
+
+
+
+            <div class="row xs-mb-10">
+              <div className="col-md-3">
+                <div class="form-inline" >
+                  <div class="form-group">
+                    <label for="sdataType">Filter By: </label>
+                      <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                        <datalist id="listProjectName">
+                           <option value="Credit Churn Prediction"></option>
+                           <option value="Ecommerce Predict"></option>
+                           <option value="Call Volume"></option>
+                           <option value="Student Performance"></option>								
+                        </datalist> &nbsp;&nbsp;&nbsp;
+                   </div>
+						    </div>
+               </div>
+                <div class="col-md-3 col-md-offset-6">
+                   <div class="form-inline" >
+                      <div class="form-group pull-right">
+                          <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
                       </div>
-                      <div class="col-md-3 col-md-offset-6">
-                        <div class="form-inline" >
-                          <div class="form-group pull-right">
-                            <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  <div class="table-responsive">
+                   </div>
+               </div>
+            </div>
+             <div class="table-responsive">
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                          <th>Model Id</th>
-                          <th class="text-left">Project Name</th>
-                          <th class="text-left">Algorithm</th>
-                          <th>Status</th>
-                          <th>Accuracy</th>
-                          <th>Created On</th>
-                          <th>Deployment</th>
-                          <th>Runtime</th>
-                          <th>Action</th>
+                <th>
+                      #
+                      </th>
+                          <th><b>Model Id</b></th>
+                          <th class="text-left"><b>Project Name</b></th>
+                          <th class="text-left"><b>Algorithm</b></th>
+                          <th><b>Status</b></th>
+                          <th><b>Accuracy</b></th>
+                          <th><b>Created On</b></th>
+                          <th><b>Deployment</b></th>
+                <th><b>Runtime</b></th>
+                <th><b>Action</b></th>
                         </tr>
                       </thead>
 
                       <tbody className="no-border-x">
                         {/* {cleansingHtml} */}
                       </tbody>
-                      {/* <tbody>
-                        <tr>
-                          <td>LR-000</td>
+                      <tbody>
+                      <tr>
+                <td>
+                  <div class="ma-checkbox inline">
+                  <input id="row1" type="checkbox" />
+                  <label for="row1"> </label>
+                </div>
+                </td>
+                          <td>  LR-000</td>
                           <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
-                          <td class="text-left">Logistic Regression</td>
+                          <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
                           <td><span class="text-success">Completed</span></td>
                           <td>0.97</td>
                           <td>21/12/2018</td>
@@ -209,14 +308,14 @@ export class ModelManagement extends React.Component {
                 <td>679 s</td>
                 <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
                         </tr>
-                      </tbody> */}
+                      </tbody>
                     </table>
                     <div class="col-md-12 text-center">
            <ul class="pagination pagination-lg pager" id="myPager"></ul>
        </div>
                   </div>
                   <div class="buttonRow pull-right">
-                    <Button variant="outline-success"  onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                    <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
                 </div>
               </div>

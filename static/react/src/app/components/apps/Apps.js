@@ -31,6 +31,7 @@ import {AppsLoader} from "../common/AppsLoader";
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
+    algolist:store.algoList,
     currentAppId: store.apps.currentAppId,
     scoreList: store.apps.scoreList,
     activateModelScoreTabs: store.apps.activateModelScoreTabs,
