@@ -56,7 +56,6 @@ import {
     currentAppDetails: store.apps.currentAppDetails,
     datasets : store.datasets,
     checkedAll: store.datasets.checkedAll
-    //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
@@ -67,7 +66,6 @@ export class ModelManagement extends React.Component {
 
 
   componentDidMount() {
-
     $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
@@ -102,16 +100,12 @@ export class ModelManagement extends React.Component {
 
   render(){
     this.tableSorter();
-    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
-
-    // var cleansingHtml = <span>"Loading..."</span>;
-
-
+    console.log(this.props.algoList,"---------------------------------------------------------------------------------")
+    // var modelList = <span>"Loading..."</span>;
     // if(this.props.dataPreview!=null)  {
     //   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
     //   var removedVariables = getRemovedVariableNames(this.props.datasets);
-    //   cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+    //   modelList = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
     //     if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
     //       return "";
     //     else{
@@ -151,187 +145,149 @@ console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@
     return (
       // <!-- Main Content starts with side-body -->
       <div class="side-body">
-    
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
           <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
-    
         {/* <!-- Page Content Area --> */}
         <div class="main-content">
-    
-        {/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
-    
-        <div class="row">
+          <div class="row">
             <div class="col-md-12">           
               <div class="panel box-shadow">
                 <div class="panel-body no-border xs-p-20">
-          
-          {/* <div class="row xs-mb-10">
-             
-            <div class="col-md-12">
-              <div class="form-inline text-right">
-                <div class="form-group">
-                <label for="sdataType">Filter By: </label>
-                <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                    <datalist id="listProjectName">
-                    <option value="Credit Churn Prediction"></option>
-                    <option value="Ecommerce Predict"></option>
-                    <option value="Call Volume"></option>
-                    <option value="Student Performance"></option>								
-                    </datalist> &nbsp;&nbsp;&nbsp;
-                <label for="sdataType">Search: </label>
-                  <input type="text" id="search" class="form-control" placeholder="Search..."></input>
-                </div>
-              </div>
-            </div>
-            
-            
-          </div> */}
-
-
-
-            <div class="row xs-mb-10">
-              <div className="col-md-3">
-                <div class="form-inline" >
-                  <div class="form-group">
-                    <label for="sdataType">Filter By: </label>
-                      <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                        <datalist id="listProjectName">
-                           <option value="Credit Churn Prediction"></option>
-                           <option value="Ecommerce Predict"></option>
-                           <option value="Call Volume"></option>
-                           <option value="Student Performance"></option>								
-                        </datalist> &nbsp;&nbsp;&nbsp;
-                   </div>
-						    </div>
-               </div>
-                <div class="col-md-3 col-md-offset-6">
-                   <div class="form-inline" >
-                      <div class="form-group pull-right">
-                          <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
+                  <div class="row xs-mb-10">
+                    <div className="col-md-3">
+                      <div class="form-inline" >
+                        <div class="form-group">
+                          <label for="sdataType">Filter By: </label>
+                            <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                              <datalist id="listProjectName">
+                                <option value="Credit Churn Prediction"></option>
+                                <option value="Ecommerce Predict"></option>
+                                <option value="Call Volume"></option>
+                                <option value="Student Performance"></option>								
+                              </datalist> &nbsp;&nbsp;&nbsp;
+                            </div>
+                          </div>
+                        </div>
+                          <div class="col-md-3 col-md-offset-6">
+                            <div class="form-inline" >
+                                <div class="form-group pull-right">
+                                    <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="table-responsive">
+                          <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                            <thead>
+                              <tr className="myHead">
+                                <th>#</th>
+                                <th><b>Model Id</b></th>
+                                <th class="text-left"><b>Project Name</b></th>
+                                <th class="text-left"><b>Algorithm</b></th>
+                                <th><b>Status</b></th>
+                                <th><b>Accuracy</b></th>
+                                <th><b>Created On</b></th>
+                                <th><b>Deployment</b></th>
+                                <th><b>Runtime</b></th>
+                                <th><b>Action</b></th>
+                              </tr>
+                            </thead>
+                          <tbody className="no-border-x">
+                            {/* {modelList} */}
+                          </tbody>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <div class="ma-checkbox inline">
+                                  <input id="row1" type="checkbox" />
+                                  <label for="row1"> </label>
+                                </div>
+                              </td>
+                              <td>  LR-000</td>
+                              <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
+                              <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
+                              <td><span class="text-success">Completed</span></td>
+                              <td>0.97</td>
+                              <td>21/12/2018</td>
+                              <td>Marlabs</td>
+                              <td>230 s</td>
+                              <td>
+                                <a href="#" class="btn btn-cst_button" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <div class="ma-checkbox inline">
+                                  <input id="row2" type="checkbox" />
+                                  <label for="row2"> </label>
+                                </div>
+                              </td>
+                              <td>RF-001</td>
+                              <td class="text-left">Ecommerce Predict</td>
+                              <td class="text-left">Random Forest</td>
+                              <td>Completed</td>
+                              <td>0.86</td>
+                              <td>02/02/2019</td>
+                              <td>Marlabs</td>
+                              <td>189 s</td>
+                              <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <div class="ma-checkbox inline">
+                                  <input id="row3" type="checkbox" />
+                                  <label for="row3"> </label>
+                                </div>
+                              </td>
+                              <td>XG-003</td>
+                              <td class="text-left">Call Volume</td>
+                              <td class="text-left">XG Boost</td>
+                              <td>Completed</td>
+                              <td>0.79</td>
+                              <td>31/12/2018</td>
+                              <td>Marlabs</td>
+                              <td>340 s</td>
+                              <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <div class="ma-checkbox inline">
+                                  <input id="row4" type="checkbox" />
+                                  <label for="row4"> </label>
+                                </div>
+                              </td>
+                              <td>NB-004</td>
+                              <td class="text-left">Student Performance</td>
+                              <td class="text-left">Naïve Bayes</td>
+                              <td>Completed</td>
+                              <td>0.72</td>
+                              <td>12/09/2018</td>
+                              <td>Marlabs</td>
+                              <td>679 s</td>
+                              <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="col-md-12 text-center">
+                          <ul class="pagination pagination-lg pager" id="myPager"></ul>
+                        </div>
                       </div>
-                   </div>
-               </div>
-            </div>
-             <div class="table-responsive">
-                    <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                      <thead>
-                        <tr className="myHead">
-                <th>
-                      #
-                      </th>
-                          <th><b>Model Id</b></th>
-                          <th class="text-left"><b>Project Name</b></th>
-                          <th class="text-left"><b>Algorithm</b></th>
-                          <th><b>Status</b></th>
-                          <th><b>Accuracy</b></th>
-                          <th><b>Created On</b></th>
-                          <th><b>Deployment</b></th>
-                <th><b>Runtime</b></th>
-                <th><b>Action</b></th>
-                        </tr>
-                      </thead>
-
-                      <tbody className="no-border-x">
-                        {/* {cleansingHtml} */}
-                      </tbody>
-                      <tbody>
-                      <tr>
-                <td>
-                  <div class="ma-checkbox inline">
-                  <input id="row1" type="checkbox" />
-                  <label for="row1"> </label>
-                </div>
-                </td>
-                          <td>  LR-000</td>
-                          <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
-                          <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
-                          <td><span class="text-success">Completed</span></td>
-                          <td>0.97</td>
-                          <td>21/12/2018</td>
-                          <td>Marlabs</td>
-                <td>230 s</td>
-                <td>
-                <a href="#" class="btn btn-cst_button" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
-                </td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row2" type="checkbox" />
-                  <label for="row2"> </label>
-                </div>
-                </td>
-                          <td>RF-001</td>
-                          <td class="text-left">Ecommerce Predict</td>
-                          <td class="text-left">Random Forest</td>
-                          <td>Completed</td>
-                          <td>0.86</td>
-                          <td>02/02/2019</td>
-                          <td>Marlabs</td>
-                <td>189 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row3" type="checkbox" />
-                  <label for="row3"> </label>
-                </div>
-                </td>
-                          <td>XG-003</td>
-                          <td class="text-left">Call Volume</td>
-                          <td class="text-left">XG Boost</td>
-                          <td>Completed</td>
-                          <td>0.79</td>
-                          <td>31/12/2018</td>
-                          <td>Marlabs</td>
-                <td>340 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row4" type="checkbox" />
-                  <label for="row4"> </label>
-                </div>
-                </td>
-                          <td>NB-004</td>
-                          <td class="text-left">Student Performance</td>
-                          <td class="text-left">Naïve Bayes</td>
-                          <td>Completed</td>
-                          <td>0.72</td>
-                          <td>12/09/2018</td>
-                          <td>Marlabs</td>
-                <td>679 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="col-md-12 text-center">
-           <ul class="pagination pagination-lg pager" id="myPager"></ul>
-       </div>
+                      <div class="buttonRow pull-right">
+                        <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="buttonRow pull-right">
-                    <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
-                  </div>
-                </div>
+                <div class="xs-p-30"></div>
               </div>
-              <div class="xs-p-30"></div>
+              {/* <!-- Open Column --> */}
             </div>
-            {/* <!-- Open Column --> */}
+            {/* <!-- End Row --> */}    
           </div>
-          {/* <!-- End Row --> */}
-    
-    
-      {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
-    
+          {/* <!-- End Main Content --> */}
         </div>
-        {/* <!-- End Main Content --> */}
-      </div>
-    
-    );
+      );
     }
   }
