@@ -26,7 +26,9 @@ import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualizatio
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
+  updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
+  
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -39,7 +41,7 @@ import {
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
+    // login_response: store.login.login_response,
     algoList: store.apps.algoList,
     dataPreview: store.datasets.dataPreview,
     signalMeta: store.datasets.signalMeta,
@@ -65,9 +67,34 @@ export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
   }
+  
 
+  componentWillMount() {
+    this.props.dispatch(refreshAppsAlgoList(this.props));
+
+    // var pageNo = 1;
+    // if(this.props.history.location.search.indexOf("page") != -1){
+    //     pageNo = this.props.history.location.search.split("page=")[1];
+    // }
+    // if(store.getState().apps.currentAppId == ""){
+    //     this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    // }else{
+    //     this.props.dispatch(getAppsModelList(pageNo));
+    // }
+    var pageNo = 1;
+    if(this.props.history.location.search.indexOf("page") != -1){
+        pageNo = this.props.history.location.search.split("page=")[1];
+    }
+    if(store.getState().apps.currentAppId == ""){
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    }else{
+        this.props.dispatch(getAppsAlgoList(pageNo));
+    }
+  }
 
   componentDidMount() {
+    // this.props.dispatch(refreshAppsModelList(this.props));
+    this.props.dispatch(refreshAppsAlgoList(this.props));
 
     $('#search').on('keyup', function() {
       var value = $(this).val();
@@ -105,49 +132,40 @@ export class ModelManagement extends React.Component {
     this.tableSorter();
     // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+var mmTable = "";
+// var algoListData=this.props.algoList;
 
-    // var cleansingHtml = <span>"Loading..."</span>;
 
 
-    // if(this.props.dataPreview!=null)  {
-    //   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    //   var removedVariables = getRemovedVariableNames(this.props.datasets);
-    //   cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-    //     if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-    //       return "";
-    //     else{
-    //     return (
-    //       <tr className={('all ' + item.columnType)} id="mssg">
-    //         <td className="text-left">{item.name}</td>
-    //         {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfUniqueValues" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "Outliers" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfNulls" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //            )}
-    //         </td>
-    //         {/* <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td> */}
-    //         {/* <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td> */}
-    //       </tr>
-    //     );
-    //   }
-    //   })
-    // }
+
+mmTable = this.props.algoList.data.map((item,key )=> {
+  // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
+  // return "";
+  // if(item.columnType == "measure")
+  //   numberOfSelectedMeasures +=1;
+  // else
+  //   numberOfSelectedDimensions +=1;
+  return (
+    <tr  className={('all ' + item.name)}>
+      <td className="text-left"> {item.model_id}</td>
+      <td className="text-left"> {item.name}</td>
+      <td className="text-left"> {item.algorithm}</td>
+      <td className="text-left"> {item.status}</td>
+      <td className="text-left"> {item.accuracy}</td>
+      <td className="text-left"> {item.created_on}</td>
+      <td className="text-left"> {item.deployment}</td>
+      <td className="text-left"> {item.runtime}</td>
+
+
+      
+
+
+
+
+
+    </tr>
+  );
+})
 
     return (
       // <!-- Main Content starts with side-body -->
@@ -168,32 +186,7 @@ console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@
             <div class="col-md-12">           
               <div class="panel box-shadow">
                 <div class="panel-body no-border xs-p-20">
-          
-          {/* <div class="row xs-mb-10">
-             
-            <div class="col-md-12">
-              <div class="form-inline text-right">
-                <div class="form-group">
-                <label for="sdataType">Filter By: </label>
-                <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                    <datalist id="listProjectName">
-                    <option value="Credit Churn Prediction"></option>
-                    <option value="Ecommerce Predict"></option>
-                    <option value="Call Volume"></option>
-                    <option value="Student Performance"></option>								
-                    </datalist> &nbsp;&nbsp;&nbsp;
-                <label for="sdataType">Search: </label>
-                  <input type="text" id="search" class="form-control" placeholder="Search..."></input>
-                </div>
-              </div>
-            </div>
-            
-            
-          </div> */}
-
-
-
-            <div class="row xs-mb-10">
+             <div class="row xs-mb-10">
               <div className="col-md-3">
                 <div class="form-inline" >
                   <div class="form-group">
@@ -220,9 +213,9 @@ console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                <th>
+                {/* <th>
                       #
-                      </th>
+                      </th> */}
                           <th><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
@@ -236,79 +229,7 @@ console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@
                       </thead>
 
                       <tbody className="no-border-x">
-                        {/* {cleansingHtml} */}
-                      </tbody>
-                      <tbody>
-                      <tr>
-                <td>
-                  <div class="ma-checkbox inline">
-                  <input id="row1" type="checkbox" />
-                  <label for="row1"> </label>
-                </div>
-                </td>
-                          <td>  LR-000</td>
-                          <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
-                          <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
-                          <td><span class="text-success">Completed</span></td>
-                          <td>0.97</td>
-                          <td>21/12/2018</td>
-                          <td>Marlabs</td>
-                <td>230 s</td>
-                <td>
-                <a href="#" class="btn btn-cst_button" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
-                </td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row2" type="checkbox" />
-                  <label for="row2"> </label>
-                </div>
-                </td>
-                          <td>RF-001</td>
-                          <td class="text-left">Ecommerce Predict</td>
-                          <td class="text-left">Random Forest</td>
-                          <td>Completed</td>
-                          <td>0.86</td>
-                          <td>02/02/2019</td>
-                          <td>Marlabs</td>
-                <td>189 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row3" type="checkbox" />
-                  <label for="row3"> </label>
-                </div>
-                </td>
-                          <td>XG-003</td>
-                          <td class="text-left">Call Volume</td>
-                          <td class="text-left">XG Boost</td>
-                          <td>Completed</td>
-                          <td>0.79</td>
-                          <td>31/12/2018</td>
-                          <td>Marlabs</td>
-                <td>340 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
-                        <tr>
-                <td>
-                <div class="ma-checkbox inline">
-                  <input id="row4" type="checkbox" />
-                  <label for="row4"> </label>
-                </div>
-                </td>
-                          <td>NB-004</td>
-                          <td class="text-left">Student Performance</td>
-                          <td class="text-left">Naïve Bayes</td>
-                          <td>Completed</td>
-                          <td>0.72</td>
-                          <td>12/09/2018</td>
-                          <td>Marlabs</td>
-                <td>679 s</td>
-                <td><button type="button" class="btn btn-cst_button">Deploy</button></td>
-                        </tr>
+                        {mmTable}
                       </tbody>
                     </table>
                     <div class="col-md-12 text-center">

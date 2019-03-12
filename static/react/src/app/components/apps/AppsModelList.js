@@ -22,7 +22,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
     @connect((store) => {
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
-            // algoList: store.apps.algoList,
+            algoList: store.apps.algoList,
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
@@ -47,7 +47,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
-            var pageNo = 1;
+            // var pageNo = 1;if removing,getting error in mm map because mm is dependent on this page
             if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
             }
@@ -60,7 +60,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
-            this.props.dispatch(refreshAppsAlgoList(this.props));
+            // this.props.dispatch(refreshAppsAlgoList(this.props));
 
         }
         getModelSummary(slug){
