@@ -1107,6 +1107,14 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret = super(TrainAlgorithmMappingListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
+        ret['model_id'] = ret['slug']
+        ret['project_name'] = "project_name_1"
+        ret['algorithm'] = "random_forest"
+        ret['accuracy'] = "99%"
+        ret['created_on'] = ret['created_at']
+        ret['status'] = "SUCCESS"
+        ret['deployment'] = "4"
+        ret['runtime'] = "3 mins"
         return ret
 
     class Meta:
