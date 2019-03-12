@@ -15,6 +15,7 @@ from views import RoboView
 from views import AudiosetView
 from views import TrainAlgorithmMappingView
 from views import ModelDeployementView
+from views import DatasetScoreDeployementView
 # from views import RegressionView
 from dummyModel.models import DummyView
 
@@ -86,6 +87,12 @@ router.register(
     'deploymodel',
     ModelDeployementView,
     base_name='deploymodel'
+)
+
+router.register(
+    'datasetscoredeploy',
+    DatasetScoreDeployementView,
+    base_name='datasetscoredeploy'
 )
 
 # router.register(

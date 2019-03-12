@@ -4860,8 +4860,8 @@ class DatasetScoreDeployment(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300
                             )
     deployment = models.ForeignKey(ModelDeployment, null=False)
-    dataset = models.ForeignKey(Dataset, null=False)
-    score = models.ForeignKey(Score, null=False)
+    dataset = models.ForeignKey(Dataset, null=True)
+    score = models.ForeignKey(Score, null=True)
 
     config = models.TextField(default="{}")
 
