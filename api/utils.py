@@ -40,7 +40,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         print("About to submit job through YARN")
         # Submit_job to YARN
-        # print queue_name
+        print queue_name
 
         '''
         if queue_name is None:
