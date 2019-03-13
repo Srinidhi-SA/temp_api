@@ -1115,6 +1115,14 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret['status'] = "SUCCESS"
         ret['deployment'] = "4"
         ret['runtime'] = "3 mins"
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -1137,6 +1145,14 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
         trainer_object = Trainer.objects.get(pk=trainer)
         ret['trainer'] = trainer_object.slug
         ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -1154,6 +1170,15 @@ class DeploymentListSerializer(serializers.ModelSerializer):
         ret = super(DeploymentListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -1175,6 +1200,14 @@ class DeploymentSerializer(serializers.ModelSerializer):
         deployment_object = TrainAlgorithmMapping.objects.get(pk=deploytrainer)
         ret['deploytrainer'] = deployment_object.slug
         ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -1191,6 +1224,14 @@ class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
         ret = super(DatasetScoreDeploymentListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -1231,6 +1272,14 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
             ret['score'] = score_object.slug
 
         ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=Trainer.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:

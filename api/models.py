@@ -4803,7 +4803,8 @@ class TrainAlgorithmMapping(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
@@ -4839,7 +4840,8 @@ class ModelDeployment(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
@@ -4880,7 +4882,8 @@ class DatasetScoreDeployment(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])

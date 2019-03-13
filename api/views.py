@@ -47,7 +47,7 @@ from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockD
 from api.tasks import clean_up_on_delete
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
-    SignalsRelatedPermission, StocksRelatedPermission
+    SignalsRelatedPermission, StocksRelatedPermission ,DatasetRelatedPermission
 
 import sys
 reload(sys)
@@ -5541,7 +5541,8 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #permission_classes = (TrainerRelatedPermission, )
+    #Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -5608,6 +5609,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
 
 class ModelDeployementView(viewsets.ModelViewSet):
+
     def get_queryset(self):
         queryset = ModelDeployment.objects.filter(
             created_by=self.request.user,
@@ -5631,7 +5633,8 @@ class ModelDeployementView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #permission_classes = (TrainerRelatedPermission, )
+    #Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -5721,7 +5724,8 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #permission_classes = (TrainerRelatedPermission, )
+    #Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission,DatasetRelatedPermission,ScoreRelatedPermission )
 
     def create(self, request, *args, **kwargs):
         # try:
