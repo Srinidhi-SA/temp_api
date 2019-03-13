@@ -23,6 +23,8 @@ import {
   storeScoreSearchElement,
   getAppsModelList,
   getAppsScoreList,
+  getAppsAlgoList,
+  refreshAppsAlgoList,
   updateSelectedApp
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
@@ -62,6 +64,7 @@ export class Apps extends React.Component {
     //clear score Filters
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
+
     if (tabId == "score") {
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores')
     } else {
@@ -72,10 +75,16 @@ export class Apps extends React.Component {
 
   proceedToModelManagement(tabId)
   {
+    
+
     if (tabId == "score")
     {
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
+      // this.props.dispatch(getAppsAlgoList(1));
+      // this.props.dispatch(refreshAppsAlgoList(this.props));
+     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }else{
+      // this.props.dispatch(getAppsAlgoList(1));
+      // this.props.dispatch(refreshAppsAlgoList(this.props));
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }
 

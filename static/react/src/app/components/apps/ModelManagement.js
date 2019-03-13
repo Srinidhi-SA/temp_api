@@ -70,24 +70,14 @@ export class ModelManagement extends React.Component {
   
 
   componentWillMount() {
-    this.props.dispatch(refreshAppsAlgoList(this.props));
-
-    // var pageNo = 1;
-    // if(this.props.history.location.search.indexOf("page") != -1){
-    //     pageNo = this.props.history.location.search.split("page=")[1];
-    // }
-    // if(store.getState().apps.currentAppId == ""){
-    //     this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-    // }else{
-    //     this.props.dispatch(getAppsModelList(pageNo));
-    // }
     var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
     }
     if(store.getState().apps.currentAppId == ""){
         this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-    }else{
+    }else
+    {
         this.props.dispatch(getAppsAlgoList(pageNo));
     }
   }
@@ -173,7 +163,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Mooodel Management <br></br><small>Automated Prediction</small></h3>
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
