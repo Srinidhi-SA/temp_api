@@ -116,24 +116,24 @@
                       <th>Status</th>
                       <th>Accuracy</th>
                       <th>Created On</th>
-                      <th>Owner</th>
-					  <th>Runtime</th>
+                      <th>Runtime</th>
+					  <th>Deployment</th>
 					  <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-					  <td>
+					  <td class="text-info">
 						1.
 					  </td>
                       <td>LR-000</td>
-                      <td class="text-left"><b><a href="project_datadetail.html">Credit Churn Prediction</a></b></td>
+                      <td class="text-left"><a href="project_datadetail.html"><i class="fa fa-briefcase"></i> Credit Churn Prediction</a></td>
                       <td class="text-left">Logistic Regression</td>
                       <td><span class="text-success">Completed</span></td>
                       <td>0.97</td>
-                      <td>21/12/2018</td>
-                      <td>Marlabs</td>
-					  <td>230 s</td>
+                      <td><i class="fa fa-calendar text-info"></i> 21/12/2018</td>                      
+					  <td><i class="fa fa-clock-o text-warning"></i> 230 s</td>
+					  <td>1</td>
 					  <td>
                 <div class="pos-relative">
                     <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
@@ -144,28 +144,28 @@
                               <a href="#" data-toggle="modal" data-target="#deploy_popup">Deploy</a>
                           </li>
                           <li>
-                              <a href="#">Clone</a>
+                              <a href="#" data-toggle="modal" data-target="#clone">Clone</a>
                           </li>
                           <li>
-                              <a href="#">Delete</a>
+                              <a href="#" data-toggle="modal" data-target="#DeleteWarning">Delete</a>
                           </li>
                       </ul>
                 </div>
 					  </td>
             </tr>
             <tr>
-					  <td>
+					  <td class="text-info">
 						2.
 					  </td>
             <td>RF-001</td>
-            <td class="text-left"><b><a href="project_datadetail.html">Ecommerce Predict</a></b></td>
+            <td class="text-left"><a href="project_datadetail.html"><i class="fa fa-briefcase"></i> Ecommerce Predict</a></td>
             <td class="text-left">Random Forest</td>
             <td><span class="text-success">Completed</span></td>
             <td>0.86</td>
-            <td>02/02/2019</td>
-            <td>Marlabs</td>
-					  <td>189 s</td>
-					  <td>
+            <td><i class="fa fa-calendar text-info"></i> 02/02/2019</td>
+            <td><i class="fa fa-clock-o text-warning"></i> 189 s</td>
+			<td>0</td>
+			<td>
                 <div class="pos-relative">
                     <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                       <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
@@ -185,17 +185,17 @@
             </td>
             </tr>
             <tr>
-					  <td>
+					  <td class="text-info">
 						3.
 					  </td>
                       <td>XG-003</td>
-                      <td class="text-left"><b><a href="project_datadetail.html">Call Volume</a></b></td>
+                      <td class="text-left"><a href="project_datadetail.html"><i class="fa fa-briefcase"></i> Call Volume</a></td>
                       <td class="text-left">XG Boost</td>
                       <td><span class="text-success">Completed</span></td>
                       <td>0.79</td>
-                      <td>31/12/2018</td>
-                      <td>Marlabs</td>
-					  <td>340 s</td>
+                      <td><i class="fa fa-calendar text-info"></i> 31/12/2018</td>                      
+					  <td><i class="fa fa-clock-o text-warning"></i> 340 s</td>
+					  <td>0</td>
 					  <td>
                 <div class="pos-relative">
                     <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
@@ -216,17 +216,17 @@
             </td>
             </tr>
             <tr>
-					  <td>
+					  <td class="text-info">
 						4.
 					  </td>
                       <td>NB-004</td>
-                      <td class="text-left"><b><a href="project_datadetail.html">Student Performance</a></b></td>
+                      <td class="text-left"><a href="project_datadetail.html"><i class="fa fa-briefcase"></i> Student Performance</a></td>
                       <td class="text-left">Naïve Bayes</td>
                       <td><span class="text-danger">In Progress</span></td>
                       <td>0.72</td>
-                      <td>12/09/2018</td>
-                      <td>Marlabs</td>
-					  <td>679 s</td>
+                      <td><i class="fa fa-calendar text-info"></i> 12/09/2018</td>                     
+					  <td><i class="fa fa-clock-o text-warning"></i> 679 s</td>
+					  <td>0</td>
 					  <td>
                 <div class="pos-relative">
                     <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
@@ -335,6 +335,28 @@
   </div>
 </div>
 
+
+<!-- Warning -->
+<div class="modal fade success-popup" id="DeleteWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content ">
+          <div class="modal-body text-center">
+             <div class="row">
+                <div class="col-md-4">
+                   <img src="../assets/images/alert_warning.png" class="img-responsive" />
+                </div>
+                <div class="col-md-8">
+                   <h4 class="text-warning">Are You Sure !</h4>
+                   <p>Do you want to Delete the Project Name By The Table </p>
+                   <a href="#" class="rd_more btn btn-default" data-dismiss="modal">No</a>
+                   <a href="#" class="rd_more btn btn-primary" data-dismiss="modal">Yes</a>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- Warning Text -->
 
 <!-- Bootstrap core JavaScript
     ================================================== -->
