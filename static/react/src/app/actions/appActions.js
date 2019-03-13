@@ -131,7 +131,8 @@ export function getAppsAlgoList(pageNo) {
 }
 
 function fetchAlgoList(pageNo, token) {
-  return fetch(API + '/api/trainalgomapping/?' + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+  return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+    // return fetch(API + '/api/trainalgomapping/?' + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));
@@ -159,12 +160,15 @@ export function refreshAppsAlgoList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.slug+ "/modelManagement")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/modelManagement")
+
         dispatch(getAppsAlgoList(parseInt(pageNo)));
     }
     , APPSDEFAULTINTERVAL);
   }
 }
+
+
 
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;

@@ -25,7 +25,9 @@ import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualizatio
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
+  updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
+  
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -38,7 +40,7 @@ import {
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
+    // login_response: store.login.login_response,
     algoList: store.apps.algoList,
     dataPreview: store.datasets.dataPreview,
     signalMeta: store.datasets.signalMeta,
@@ -63,9 +65,35 @@ export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
   }
+  
 
+  componentWillMount() {
+    this.props.dispatch(refreshAppsAlgoList(this.props));
+
+    // var pageNo = 1;
+    // if(this.props.history.location.search.indexOf("page") != -1){
+    //     pageNo = this.props.history.location.search.split("page=")[1];
+    // }
+    // if(store.getState().apps.currentAppId == ""){
+    //     this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    // }else{
+    //     this.props.dispatch(getAppsModelList(pageNo));
+    // }
+    var pageNo = 1;
+    if(this.props.history.location.search.indexOf("page") != -1){
+        pageNo = this.props.history.location.search.split("page=")[1];
+    }
+    if(store.getState().apps.currentAppId == ""){
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    }else{
+        this.props.dispatch(getAppsAlgoList(pageNo));
+    }
+  }
 
   componentDidMount() {
+    // this.props.dispatch(refreshAppsModelList(this.props));
+    this.props.dispatch(refreshAppsAlgoList(this.props));
+
     $('#search').on('keyup', function() {
       var value = $(this).val();
       var patt = new RegExp(value, "i");
@@ -100,54 +128,37 @@ export class ModelManagement extends React.Component {
 
   render(){
     this.tableSorter();
-    console.log(this.props.algoList,"---------------------------------------------------------------------------------")
-    // var modelList = <span>"Loading..."</span>;
-    // if(this.props.dataPreview!=null)  {
-    //   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-    //   var removedVariables = getRemovedVariableNames(this.props.datasets);
-    //   modelList = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-    //     if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
-    //       return "";
-    //     else{
-    //     return (
-    //       <tr className={('all ' + item.columnType)} id="mssg">
-    //         <td className="text-left">{item.name}</td>
-    //         {/* <td>  {this.getUpdatedDataType(item.slug)} </td> */}
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfUniqueValues" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "Outliers" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //           )}
-    //         </td>
-    //         <td>
-    //           {item.columnStats.filter(function(items){
-    //             return  items.name == "numberOfNulls" }).map((option)=>{
-    //               return(<span>{option.value}</span>);
-    //             }
-    //            )}
-    //         </td>
-    //         {/* <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td> */}
-    //         {/* <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td> */}
-    //       </tr>
-    //     );
-    //   }
-    //   })
-    // }
+    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+var mmTable = "";
+// var algoListData=this.props.algoList;
+mmTable = this.props.algoList.data.map((item,key )=> {
+  // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
+  // return "";
+  // if(item.columnType == "measure")
+  //   numberOfSelectedMeasures +=1;
+  // else
+  //   numberOfSelectedDimensions +=1;
+  return (
+    <tr  className={('all ' + item.name)}>
+      <td className="text-left"> {item.model_id}</td>
+      <td className="text-left"> {item.name}</td>
+      <td className="text-left"> {item.algorithm}</td>
+      <td className="text-left"> {item.status}</td>
+      <td className="text-left"> {item.accuracy}</td>
+      <td className="text-left"> {item.created_on}</td>
+      <td className="text-left"> {item.deployment}</td>
+      <td className="text-left"> {item.runtime}</td>
+    </tr>
+  );
+})
 
     return (
       // <!-- Main Content starts with side-body -->
       <div class="side-body">
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Mooodel Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
         {/* <!-- Page Content Area --> */}
