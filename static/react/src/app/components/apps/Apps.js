@@ -74,9 +74,9 @@ export class Apps extends React.Component {
   {
     if (tabId == "score")
     {
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelmanagement');
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }else{
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelmanagement');
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }
 
   }

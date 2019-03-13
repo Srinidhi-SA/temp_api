@@ -112,7 +112,7 @@ export class ModelManagement extends React.Component {
 
   closeModelmanagement()
   {
-    var proccedUrl = this.props.match.url.replace('modelmanagement','models');
+    var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
 
@@ -173,7 +173,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Mooodel Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
