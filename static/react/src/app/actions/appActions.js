@@ -159,7 +159,7 @@ export function refreshAppsAlgoList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.slug+ "/modelManagement")
         dispatch(getAppsAlgoList(parseInt(pageNo)));
     }
     , APPSDEFAULTINTERVAL);

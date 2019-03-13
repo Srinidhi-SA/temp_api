@@ -82,7 +82,7 @@ export class ModelManagement extends React.Component {
 
   closeModelmanagement()
   {
-    var proccedUrl = this.props.match.url.replace('modelmanagement','models');
+    var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
 
@@ -207,7 +207,7 @@ export class ModelManagement extends React.Component {
                                 </div>
                               </td>
                               <td>  LR-000</td>
-                              <td class="text-left"><a href="project_datadetail.html">Credit Churn Prediction</a></td>
+                              <td class="text-left">Credit Churn Prediction</td>
                               <td class="text-left" onClick={this.closeModelmanagement.bind(this)} >Logistic Regression</td>
                               <td><span class="text-success">Completed</span></td>
                               <td>0.97</td>
