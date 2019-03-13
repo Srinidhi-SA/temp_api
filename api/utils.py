@@ -1082,6 +1082,45 @@ def get_permissions(user, model, type='retrieve'):
             return {
                 'create_stock': user.has_perm('api.create_stock') and user.has_perm('api.view_stock'),
             }
+    if model == 'trainalgorithmmapping':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
+    if model == 'modeldeployment':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
+    if model == 'datasetscoredeployment':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
     return {}
 
 
@@ -1120,7 +1159,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
@@ -1150,7 +1189,7 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
@@ -1176,7 +1215,7 @@ class DeploymentListSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
@@ -1205,7 +1244,7 @@ class DeploymentSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
@@ -1229,7 +1268,7 @@ class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
@@ -1277,7 +1316,7 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
         #Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
-            model=Trainer.__name__.lower(),
+            model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
         return ret
