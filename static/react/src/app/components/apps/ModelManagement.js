@@ -28,16 +28,6 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
   updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
-  
-import {
-  missingValueTreatmentSelectedAction,
-  outlierRemovalSelectedAction,
-  variableSelectedAction,
-  checkedAllAction,
-  removeDuplicateAttributesAction,
-  removeDuplicateObservationsAction,
-  dataCleansingDataTypeChange
-} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -134,14 +124,26 @@ mmTable = this.props.algoList.data.map((item,key )=> {
   //   numberOfSelectedDimensions +=1;
   return (
     <tr  className={('all ' + item.name)}>
-      <td className="text-left"> {item.model_id}</td>
+      <td className="text-left"><i class="fa fa-briefcase"/> {item.model_id}</td>
       <td className="text-left"> {item.name}</td>
       <td className="text-left"> {item.algorithm}</td>
-      <td className="text-left"> {item.status}</td>
-      <td className="text-left"> {item.accuracy}</td>
-      <td className="text-left"> {item.created_on}</td>
-      <td className="text-left"> {item.deployment}</td>
-      <td className="text-left"> {item.runtime}</td>
+      <td> {item.status}</td>
+      <td> {item.accuracy}</td>
+      <td><i class="fa fa-calendar text-info"/> {item.created_on}</td>
+      <td> {item.deployment}</td>
+      <td><i class="fa fa-clock-o text-warning"/> {item.runtime}</td>
+      <td>
+        <div class="pos-relative">
+          <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+            <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+          </a>    
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a href="#">Deploy</a></li>
+            <li><a href="#">Clone</a></li>
+            <li><a href="#">Delete</a></li>
+          </ul>
+        </div>
+      </td>
     </tr>
   );
 })
@@ -152,7 +154,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
         {/* <!-- Page Title and Breadcrumbs --> */}
         <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Mooodel Management <br></br><small>Automated Prediction</small></h3>
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
         </div>
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
@@ -190,9 +192,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                {/* <th>
-                      #
-                      </th> */}
+                          {/* <th>#</th> */}
                           <th><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
@@ -200,8 +200,8 @@ mmTable = this.props.algoList.data.map((item,key )=> {
                           <th><b>Accuracy</b></th>
                           <th><b>Created On</b></th>
                           <th><b>Deployment</b></th>
-                <th><b>Runtime</b></th>
-                <th><b>Action</b></th>
+                          <th><b>Runtime</b></th>
+                          <th><b>Action</b></th>
                         </tr>
                       </thead>
 
