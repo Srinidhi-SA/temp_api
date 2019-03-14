@@ -28,7 +28,6 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
   updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
-  
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -70,6 +69,10 @@ export class ModelManagement extends React.Component {
   
 
   componentWillMount() {
+    debugger;
+    if(this.props.algoList =="null"){
+      window.history.go(-1);
+    }
     var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -99,7 +102,10 @@ export class ModelManagement extends React.Component {
       });
     });
   }
-
+  proceedToModelSummary()
+  {
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/modelSummary');
+  }
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
@@ -140,11 +146,11 @@ mmTable = algoList.map((item,key )=> {
   return (
     <tr  className={('all ' + item.name)}>
       <td className="text-left"> {item.model_id}</td>
-      <td > <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
+      <td onClick={this.proceedToModelSummary.bind(this)}> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.status}</td>
       <td > {item.accuracy}</td>
-      <td > <i class="fa fa-calendar text-info"></i> {item.created_on}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{item.created_on}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
       <td>
