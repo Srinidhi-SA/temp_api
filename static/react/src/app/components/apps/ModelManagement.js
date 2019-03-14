@@ -140,13 +140,31 @@ mmTable = algoList.map((item,key )=> {
   return (
     <tr  className={('all ' + item.name)}>
       <td className="text-left"> {item.model_id}</td>
-      <td className="text-left"> {item.name}</td>
+      <td > <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
       <td className="text-left"> {item.algorithm}</td>
-      <td className="text-left"> {item.status}</td>
-      <td className="text-left"> {item.accuracy}</td>
-      <td className="text-left"> {item.created_on}</td>
-      <td className="text-left"> {item.deployment}</td>
-      <td className="text-left"> {item.runtime}</td>
+      <td ><span className="text-success"></span> {item.status}</td>
+      <td > {item.accuracy}</td>
+      <td > <i class="fa fa-calendar text-info"></i> {item.created_on}</td>
+      <td > {item.deployment}</td>
+      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+      <td>
+                <div class="pos-relative">
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-right">
+                          <li>
+                              <a href="#">Deploy</a>
+                          </li>
+                          <li>
+                              <a href="#">Clone</a>
+                          </li>
+                          <li>
+                              <a href="#">Delete</a>
+                          </li>
+                      </ul>
+                  </div>
+            </td>
 
 
       
