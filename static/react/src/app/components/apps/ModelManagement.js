@@ -119,16 +119,18 @@ export class ModelManagement extends React.Component {
   }
 
   render(){
-    this.tableSorter();
+    // this.tableSorter();
     // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
 var mmTable = "";
-// var algoListData=this.props.algoList;
+const algoList = store.getState().apps.algoList.data;
 
 
 
 
-mmTable = this.props.algoList.data.map((item,key )=> {
+// mmTable = this.props.algoList.data.map((item,key )=> {
+mmTable = algoList.map((item,key )=> {
+
   // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
   // return "";
   // if(item.columnType == "measure")

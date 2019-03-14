@@ -47,7 +47,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
-            // var pageNo = 1; //if removing,getting error in mm map because mm is dependent on this page
+            var pageNo = 1; //if removing,getting error in mm map because mm is dependent on this page
             if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
             }

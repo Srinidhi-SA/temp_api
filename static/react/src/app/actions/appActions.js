@@ -132,6 +132,7 @@ export function fetchAlgoListSuccess(doc) {
   var latestModels = doc.top_3
   return {type: "ALGO_LIST", data, latestModels, current_page}
 }
+
 export function getAppsAlgoList(pageNo) {
   return (dispatch) => {
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -1822,6 +1823,8 @@ export function getAppDetails(appSlug, pageNo) {
         if (pageNo != undefined) {
           dispatch(getAppsModelList(pageNo));
           dispatch(getAppsScoreList(pageNo));
+          dispatch(getAppsAlgoList(pageNo));
+          
         }
 
       }
@@ -1943,6 +1946,9 @@ export function updateCurrentAppByID(app_id,pageNo) {
             if (pageNo != undefined) {
               dispatch(getAppsModelList(pageNo));
               dispatch(getAppsScoreList(pageNo));
+              dispatch(getAppsAlgoList(pageNo));
+
+              
             }
 
           }
