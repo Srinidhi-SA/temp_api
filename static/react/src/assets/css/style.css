@@ -15270,6 +15270,8 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .hideSortImg .sorttable_img { display: none; }
 #pDetail .nav-tabs { border-color:#ddd}
 .tab-content .bgStockBox { margin-right: -4px;}
+.pos-relative .dropdown-menu.dropdown-menu-right:before { right: 28px; }
+.pos-relative .dropdown-menu.dropdown-menu-right:after {     right: 29px; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
