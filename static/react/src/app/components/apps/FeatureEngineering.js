@@ -60,8 +60,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentDidMount() {
-
-
     $("#sdataType").change(function(){
       $("#fetable tbody tr").hide();
       $("#fetable tbody tr."+$(this).val()).show('fast');

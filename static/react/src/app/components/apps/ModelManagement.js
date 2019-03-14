@@ -3,22 +3,15 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-//import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {
-  hideDataPreview,
-  getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
-  hideDataPreviewDropDown,
-  popupAlertBox
-} from "../../actions/dataActions";
+import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
+import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
 
@@ -28,6 +21,8 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
   updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
+import { Deploy } from "./Deploy";
+
 
 @connect((store) => {
   return {
@@ -49,12 +44,15 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
     signalMeta: store.datasets.signalMeta,
     subsettingDone: store.datasets.subsettingDone,
     subsettedSlug: store.datasets.subsettedSlug,
+    deployShowModal: store.datasets.deployShowModal,
   };
 })
 
 export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
+    this.pickValue = this.pickValue.bind(this);
+
   }
   
 
@@ -86,6 +84,29 @@ export class ModelManagement extends React.Component {
       });
     });
   }
+  pickValue(actionType, event){
+    if(this.state[this.props.selectedItem.slug] == undefined){
+      this.state[this.props.selectedItem.slug] = {}
+    }
+    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
+      this.state[this.props.selectedItem.slug][actionType] = {}
+    }
+    if(event.target.type == "checkbox"){
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
+    }else{
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+    }
+  }
+  
+  handleCreateClicked(actionType, event){
+    if(actionType == "deployData"){
+      this.validateTransformdata(actionType);
+    }else{
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeTransformColumnModal();
+    }
+  }
 
   closeModelmanagement()
   {
@@ -108,12 +129,10 @@ export class ModelManagement extends React.Component {
   render(){
     this.tableSorter();
     // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
-var mmTable = "";
-// var algoListData=this.props.algoList;
-
-
-
+    console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+    var mmTable = "";
+    // var algoListData=this.props.algoList;
+    var deployPopup = "";
 
 mmTable = this.props.algoList.data.map((item,key )=> {
   // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
@@ -139,14 +158,32 @@ mmTable = this.props.algoList.data.map((item,key )=> {
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="#">Deploy</a></li>
-            <li><a href="#">Clone</a></li>
+            <li><a href="#">Clonee</a></li>
+            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Transform</Button></li>
             <li><a href="#">Delete</a></li>
           </ul>
         </div>
       </td>
-    </tr>
-  );
-})
+    </tr>);
+    })
+    deployPopup = (
+      <div class="col-md-3 xs-mb-15 list-boxes" >
+        <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+          <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+            <Modal.Header closeButton>
+              <h3 className="modal-title">Deploy Project</h3>
+            </Modal.Header>
+            <Modal.Body>
+              <Deploy/>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Create</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </div>
+    )
 
     return (
       // <!-- Main Content starts with side-body -->
@@ -159,6 +196,8 @@ mmTable = this.props.algoList.data.map((item,key )=> {
         {/* <!-- /.Page Title and Breadcrumbs --> */}
     
         {/* <!-- Page Content Area --> */}
+        {deployPopup}
+
         <div class="main-content">
       
         <div class="row">
@@ -233,4 +272,14 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
     );
     }
+  
+  openDeployModal(item) {
+    console.log("open ---openTransformColumnModal");
+    this.props.dispatch(openDeployModalAction(item));
   }
+
+  closeDeployModal() {
+    console.log("closeddddd ---closeTransformColumnModal");
+    this.props.dispatch(closeDeployModalAction());
+  }
+}

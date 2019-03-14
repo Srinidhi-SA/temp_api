@@ -90,6 +90,7 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
+        deployShowModal:false,        
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -131,9 +132,6 @@ export default function reducer(state = {
     }
     break;
 
-
-
-
     // case "MODEL_LIST2":
     case "ALGO_LIST":
     {
@@ -153,6 +151,25 @@ export default function reducer(state = {
     }
     break;
 
+    case "DEPLOY_SHOW_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: true,
+        selectedItem:action.selectedItem
+      }
+      console.log(deployShowModal)
+    }
+    break;
+
+    case "DEPLOY_HIDE_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: false
+      }
+    }
+    break;
 
     case "UPDATE_MODEL_RANGE":
     {
