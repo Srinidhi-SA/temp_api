@@ -362,7 +362,7 @@ dcTableSorter() {
               <option value="datetime">Datetime</option>
               </select>
               </div>
-            </div>
+                 </div>
                       </div>
                       <div class="col-md-3 col-md-offset-6">
                         <div class="form-inline" >
