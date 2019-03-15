@@ -40,8 +40,7 @@ from api.utils import \
     DeploymentSerializer, \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
-    DatasetScoreDeploymentListSerializer,\
-    CloneSerializer
+    DatasetScoreDeploymentListSerializer
     # RegressionSerlializer, \
     # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
@@ -5519,7 +5518,7 @@ def all_apps_for_users(request):
 
 #model management changes
 class TrainAlgorithmMappingView(viewsets.ModelViewSet):
-    
+
     def get_queryset(self):
         queryset = TrainAlgorithmMapping.objects.filter(
             created_by=self.request.user,
@@ -5554,10 +5553,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
-        # data = request.data
-        # data = convert_to_string(data)
-        # data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
-        # data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+
 
         cuurent_instance_serializer = TrainAlgorithmMappingSerializer(instance, context={"request": self.request})
         current_instance_data = cuurent_instance_serializer.data
@@ -5582,13 +5578,6 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-
-        #Addinf try execption for colne method
-
-        #instance = self.clone()
-        #instance.save()
-        #print (instance)
-        #return instance
 
 
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
@@ -5633,8 +5622,8 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         return get_listed_data(
             viewset=self,
             request=request,
-            list_serializer=TrainAlgorithmMappingListSerializer,
-            #print x
+            list_serializer=TrainAlgorithmMappingListSerializer
+
         )
 
 
