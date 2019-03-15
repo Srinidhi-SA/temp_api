@@ -22,7 +22,7 @@ import Dialog from 'react-bootstrap-dialog';
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
   updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
 import { Deploy } from "./Deploy";
-
+import {Transform} from "./Transform";
 
 @connect((store) => {
   return {
@@ -44,7 +44,7 @@ import { Deploy } from "./Deploy";
     signalMeta: store.datasets.signalMeta,
     subsettingDone: store.datasets.subsettingDone,
     subsettedSlug: store.datasets.subsettedSlug,
-    deployShowModal: store.datasets.deployShowModal,
+    deployShowModal: store.apps.deployShowModal,
   };
 })
 
@@ -157,15 +157,15 @@ mmTable = this.props.algoList.data.map((item,key )=> {
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="#">Deploy</a></li>
-            <li><a href="#">Clonee</a></li>
-            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Transform</Button></li>
+            <li><a href="#">Clone</a></li>
+            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</Button></li>
             <li><a href="#">Delete</a></li>
           </ul>
         </div>
       </td>
     </tr>);
     })
+
     deployPopup = (
       <div class="col-md-3 xs-mb-15 list-boxes" >
         <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
@@ -174,7 +174,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
               <h3 className="modal-title">Deploy Project</h3>
             </Modal.Header>
             <Modal.Body>
-              <Deploy/>
+              <Deploy /*parentPickValue={this.pickValue}*//>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
@@ -249,8 +249,8 @@ mmTable = this.props.algoList.data.map((item,key )=> {
                       </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-           <ul class="pagination pagination-lg pager" id="myPager"></ul>
-       </div>
+                  <ul class="pagination pagination-lg pager" id="myPager"></ul>
+              </div>
                   </div>
                   <div class="buttonRow pull-right">
                     <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
