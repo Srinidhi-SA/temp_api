@@ -42,6 +42,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
             }
+            debugger;
             if(store.getState().apps.currentAppId == ""){
                 this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
             }else{

@@ -1,79 +1,31 @@
 import React from "react";
-import {Scrollbars} from 'react-custom-scrollbars';
-import {Provider} from "react-redux";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-//import {Redirect} from 'react-router';
-import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {InputSwitch} from 'primereact/inputswitch';
-import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
-import {
-  hideDataPreview,
-  getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
-  hideDataPreviewDropDown,
-  popupAlertBox
-} from "../../actions/dataActions";
-import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
-import {STATIC_URL} from "../../helpers/env.js"
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
-
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
-import {DataUploadLoader} from "../common/DataUploadLoader";
-import Dialog from 'react-bootstrap-dialog';
-import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-  updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
-import {
-  missingValueTreatmentSelectedAction,
-  outlierRemovalSelectedAction,
-  variableSelectedAction,
-  checkedAllAction,
-  removeDuplicateAttributesAction,
-  removeDuplicateObservationsAction,
-  dataCleansingDataTypeChange
-} from "../../actions/dataCleansingActions";
-
+import {openModelSummaryAction} from "../../actions/modelSummaryActions";
+import {Button} from "react-bootstrap";
+import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
+  var dateFormat = require('dateformat');
 @connect((store) => {
   return {
-    // login_response: store.login.login_response,
     algoList: store.apps.algoList,
-    dataPreview: store.datasets.dataPreview,
-    signalMeta: store.datasets.signalMeta,
-    curUrl: store.datasets.curUrl,
+    selectedSummary:store.summarySelected,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
     modelSlug: store.apps.modelSlug,
-    signal: store.signals.signalAnalysis,
-    subsettingDone: store.datasets.subsettingDone,
-    subsettedSlug: store.datasets.subsettedSlug,
-    dataTransformSettings: store.datasets.dataTransformSettings,
-    scoreToProceed: store.apps.scoreToProceed,
     apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
-    datasets : store.datasets,
-    checkedAll: store.datasets.checkedAll
-    //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
 export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
+
   }
   
-
-  componentWillMount() {
-    debugger;
-    if(this.props.algoList =="null"){
-      window.history.go(-1);
-    }
-    var pageNo = 1;
+ componentWillMount() {
+  var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
     }
@@ -86,25 +38,14 @@ export class ModelManagement extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.dispatch(refreshAppsModelList(this.props));
     this.props.dispatch(refreshAppsAlgoList(this.props));
-
-    $('#search').on('keyup', function() {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#mmtable').find('tr').each(function() {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-          $(this).not('.myHead').hide();
-        }
-        if (($(this).find('td').text().search(patt) >= 0)) {
-          $(this).show();
-        }
-      });
-    });
   }
-  proceedToModelSummary()
+  proceedToModelSummary(item)
   {
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/modelSummary');
+    console.log(item,"item called for individual page...........................")
+    this.props.dispatch(openModelSummaryAction(item));
+
   }
   closeModelmanagement()
   {
@@ -112,52 +53,28 @@ export class ModelManagement extends React.Component {
     this.props.history.push(proccedUrl);
   }
 
-  tableSorter() {
-    $(function() {
-      $('#mmtable').tablesorter({
-        theme: 'ice',
-        headers: {
-          0: {sorter: false},
-          9: {sorter: false}
-        }
-      });
-    });
-  }
-
   render(){
-    // this.tableSorter();
-    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+console.log(this.props.algoList,"@@@@@@@@@@@@@#######")
 var mmTable = "";
 const algoList = store.getState().apps.algoList.data;
 
-
-
-
-// mmTable = this.props.algoList.data.map((item,key )=> {
-mmTable = algoList.map((item,key )=> {
-
-  // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
-  // return "";
-  // if(item.columnType == "measure")
-  //   numberOfSelectedMeasures +=1;
-  // else
-  //   numberOfSelectedDimensions +=1;
-  return (
-    <tr  className={('all ' + item.name)}>
-      <td className="text-left"> {item.model_id}</td>
-      <td onClick={this.proceedToModelSummary.bind(this)}> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
-      <td className="text-left"> {item.algorithm}</td>
-      <td ><span className="text-success"></span> {item.status}</td>
-      <td > {item.accuracy}</td>
-      <td > <i class="fa fa-calendar text-info"></i>{item.created_on}</td>
-      <td > {item.deployment}</td>
-      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-      <td>
+      mmTable = this.props.algoList.data.map((item,key )=> {
+        return (
+          <tr  className={('all ' + item.name)}>
+                <td className="text-left"> {item.model_id}</td>
+                <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"><i className="fa fa-briefcase text-primary"></i> {item.name}</Button></td>
+                {/* <td onClick={this.proceedToModelSummary.bind(this)}> <i className="fa fa-briefcase text-primary"></i> {item.name}</td> */}
+                <td className="text-left"> {item.algorithm}</td>
+                <td ><span className="text-success"></span> {item.status}</td>
+                <td > {item.accuracy}</td>
+                <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_on, " mmm d,yyyy HH:MM")}</td>
+                <td > {item.deployment}</td>
+                <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+                <td>
                 <div class="pos-relative">
-                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                    </a>    
+                <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                </a>    
                     <ul class="dropdown-menu dropdown-menu-right">
                           <li>
                               <a href="#">Deploy</a>
@@ -171,14 +88,6 @@ mmTable = algoList.map((item,key )=> {
                       </ul>
                   </div>
             </td>
-
-
-      
-
-
-
-
-
     </tr>
   );
 })
@@ -238,7 +147,7 @@ mmTable = algoList.map((item,key )=> {
                           <th><b>Status</b></th>
                           <th><b>Accuracy</b></th>
                           <th><b>Created On</b></th>
-                          <th><b>Deployment</b></th>
+                          <th><b>Deployments</b></th>
                 <th><b>Runtime</b></th>
                 <th><b>Action</b></th>
                         </tr>
@@ -249,8 +158,7 @@ mmTable = algoList.map((item,key )=> {
                       </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-           <ul class="pagination pagination-lg pager" id="myPager"></ul>
-       </div>
+                    </div>
                   </div>
                   <div class="buttonRow pull-right">
                     <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>

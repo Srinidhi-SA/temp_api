@@ -121,9 +121,7 @@ export function fetchModelListSuccess(doc) {
 
 
 function fetchAlgoListError(json) {
-
-// function fetchModelList2Error(json) {
-  return {type: "ALGO_LIST_ERROR", json}
+ return {type: "ALGO_LIST_ERROR", json}
 }
 
 export function fetchAlgoListSuccess(doc) {
@@ -149,8 +147,7 @@ export function getAppsAlgoList(pageNo) {
 
 function fetchAlgoList(pageNo, token) {
   // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-
-    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));

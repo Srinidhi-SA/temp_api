@@ -64,12 +64,22 @@ export class Apps extends React.Component {
     //clear score Filters
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
+    this.props.dispatch(getAppsAlgoList(1));
 
+debugger;
     if (tabId == "score") {
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores')
-    } else {
+    } 
+    //  else if(tabId == "algo"){
+    //     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
+    //   }
+    
+    else{
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/models')
     }
+    // else{
+    //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
+    // }
   }
 
 
@@ -79,12 +89,12 @@ export class Apps extends React.Component {
 
     if (tabId == "score")
     {
-      // this.props.dispatch(getAppsAlgoList(1));
-      // this.props.dispatch(refreshAppsAlgoList(this.props));
+      this.props.dispatch(getAppsAlgoList(1));
+      this.props.dispatch(refreshAppsAlgoList(this.props));
      this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }else{
-      // this.props.dispatch(getAppsAlgoList(1));
-      // this.props.dispatch(refreshAppsAlgoList(this.props));
+      this.props.dispatch(getAppsAlgoList(1));
+      this.props.dispatch(refreshAppsAlgoList(this.props));
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
     }
 
@@ -112,7 +122,7 @@ export class Apps extends React.Component {
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-            <Button onClick={this.proceedToModelManagement.bind(this)} bsStyle="warning">Manage Models</Button>
+            <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button>
         </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
