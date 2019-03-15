@@ -2,6 +2,7 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        summarySelected:{},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -150,6 +151,17 @@ export default function reducer(state = {
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "SUMMARY_SELECTED_LIST":
+    {
+      return {
+        ...state,
+        summarySelected: action.summarySelected,
+        // latestDatasets:action.latestDatasets,
+        // current_page: action.current_page
+      }
     }
     break;
 
