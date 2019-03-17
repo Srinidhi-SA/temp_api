@@ -16,16 +16,18 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-  }
+		// debugger;
+		// if(this.props.selectedSummary == null){
+    //   windo.history.back();
+    // }
+	}
 
   componentDidMount() {
 			this.props.dispatch(refreshAppsAlgoList(this.props));
 	}
-  closeModelmanagement()
-  {
-    var proccedUrl = this.props.match.url.replace('modelManagement','models');
-    this.props.history.push(proccedUrl);
-  }
+  closeModelSummary(){
+	 window.history.back();
+	}
   render(){
 		console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;
@@ -52,7 +54,7 @@ export class ModelSummary extends React.Component {
 							</tr>
 							<tr>
 								<th class="text-left">Accuracy</th>
-								<td class="text-left">0.97</td>
+								<td class="text-left">accuracy</td>
 							</tr>
 							<tr>
 								<th class="text-left">Runtime</th>
@@ -290,7 +292,7 @@ export class ModelSummary extends React.Component {
 			  </div>
             </div>
 			
-			<div class="buttonRow text-right"> <a href="javascript:;" class="btn btn-primary">Close </a> </div>
+			<div class="buttonRow text-right"> <a href="javascript:;" onClick={this.closeModelSummary.bind(this)}class="btn btn-primary">Close </a> </div>
 			
           </div>
 		

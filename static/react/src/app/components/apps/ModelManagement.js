@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
+import { Router, Route, IndexRoute } from 'react-router';
 import {openModelSummaryAction} from "../../actions/modelSummaryActions";
 import {Button} from "react-bootstrap";
 import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
@@ -54,27 +55,27 @@ export class ModelManagement extends React.Component {
   }
 
   render(){
-console.log(this.props.algoList,"@@@@@@@@@@@@@#######")
+console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
 var mmTable = "";
 const algoList = store.getState().apps.algoList.data;
 
       mmTable = this.props.algoList.data.map((item,key )=> {
         return (
-          <tr  className={('all ' + item.name)}>
-                <td className="text-left"> {item.model_id}</td>
-                <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"><i className="fa fa-briefcase text-primary"></i> {item.name}</Button></td>
-                {/* <td onClick={this.proceedToModelSummary.bind(this)}> <i className="fa fa-briefcase text-primary"></i> {item.name}</td> */}
-                <td className="text-left"> {item.algorithm}</td>
-                <td ><span className="text-success"></span> {item.status}</td>
-                <td > {item.accuracy}</td>
-                <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_on, " mmm d,yyyy HH:MM")}</td>
-                <td > {item.deployment}</td>
-                <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-                <td>
+        <tr  className={('all ' + item.name)}>
+      <td className="text-left"> {item.model_id}</td>
+      <td> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
+      <td className="text-left"> {item.algorithm}</td>
+      <td ><span className="text-success"></span> {item.status}</td>
+      <td > {item.accuracy}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_on, " mmm d,yyyy HH:MM")}</td>
+      <td > {item.deployment}</td>
+      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+      <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"> Details</Button></td>
+      <td>
                 <div class="pos-relative">
-                <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                </a>    
+                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>    
                     <ul class="dropdown-menu dropdown-menu-right">
                           <li>
                               <a href="#">Deploy</a>
@@ -149,6 +150,8 @@ const algoList = store.getState().apps.algoList.data;
                           <th><b>Created On</b></th>
                           <th><b>Deployments</b></th>
                 <th><b>Runtime</b></th>
+                <th><b>View Summary</b></th>
+
                 <th><b>Action</b></th>
                         </tr>
                       </thead>

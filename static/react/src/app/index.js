@@ -255,7 +255,7 @@ class App extends React.Component {
               return (<Apps {...props}/>)
             }
             break;
-            case "/apps/:AppId/modelManagement/modelSummary":
+            case "/apps/:AppId/modelManagement":
             {
               return (<ModelManagement {...props}/>)
             }
