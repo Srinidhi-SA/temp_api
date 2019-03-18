@@ -249,17 +249,18 @@ class App extends React.Component {
 
     const modelmanagement = (props) => {
       if (this.hasScoreRoutePermission()) {
+        debugger;
         switch (props.match.path) {
-          case "/apps/:AppId":
+          case "/apps/" + props.match.params.AppId:
             {
               return (<Apps {...props}/>)
             }
             break;
-            case "/apps/:AppId/modelManagement":
-            {
-              return (<ModelManagement {...props}/>)
-            }
-            break;
+            // case "/apps/:AppId/modelManagement":
+            // {
+            //   return (<ModelManagement {...props}/>)
+            // }
+            // break;
         }
 
       } else if (this.hasTrainerRoutePermission()) {

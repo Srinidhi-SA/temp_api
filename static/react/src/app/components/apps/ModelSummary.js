@@ -2,6 +2,9 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
 import {refreshAppsAlgoList} from "../../actions/appActions";
+import {isEmpty} from "../../helpers/helper";
+
+
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -16,15 +19,21 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		// debugger;
-		// if(this.props.selectedSummary == null){
-    //   windo.history.back();
-    // }
+		debugger;
+		if (isEmpty(this.props.selectedSummary)) {
+      if (!this.props.match.path.includes("robo")) {
+        let url = '/signals/'
+        console.log(this.props);
+        this.props.history.push(url)
+      }
+		}
 	}
 
   componentDidMount() {
 			this.props.dispatch(refreshAppsAlgoList(this.props));
 	}
+
+
   closeModelSummary(){
 	 window.history.back();
 	}

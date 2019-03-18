@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import store from "../../store"
 import { Router, Route, IndexRoute } from 'react-router';
 import {openModelSummaryAction} from "../../actions/modelSummaryActions";
+import {isEmpty} from "../../helpers/helper";
 import {Button} from "react-bootstrap";
 import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
   var dateFormat = require('dateformat');
@@ -26,16 +27,24 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-  var pageNo = 1;
-    if(this.props.history.location.search.indexOf("page") != -1){
-        pageNo = this.props.history.location.search.split("page=")[1];
-    }
-    if(store.getState().apps.currentAppId == ""){
-        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-    }else
-    {
-        this.props.dispatch(getAppsAlgoList(pageNo));
-    }
+  // var pageNo = 1;
+  //   if(this.props.history.location.search.indexOf("page") != -1){
+  //       pageNo = this.props.history.location.search.split("page=")[1];
+  //   }
+  //   if(store.getState().apps.currentAppId == ""){
+  //       this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+  //   }else
+  //   {
+  //       this.props.dispatch(getAppsAlgoList(pageNo));
+  //   }
+
+    if (isEmpty(this.props.algoList)) {
+      if (!this.props.match.path.includes("robo")) {
+        let url = '/signals/'
+        console.log(this.props);
+        this.props.history.push(url)
+      }
+		}
   }
 
   componentDidMount() {
