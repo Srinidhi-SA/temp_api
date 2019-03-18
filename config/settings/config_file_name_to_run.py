@@ -1,3 +1,3 @@
-CONFIG_FILE_NAME = 'development'
+CONFIG_FILE_NAME = 'leia'
 UI_VERSION = '8185306'
     

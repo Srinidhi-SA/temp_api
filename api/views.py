@@ -5518,6 +5518,7 @@ def all_apps_for_users(request):
 
 #model management changes
 class TrainAlgorithmMappingView(viewsets.ModelViewSet):
+
     def get_queryset(self):
         queryset = TrainAlgorithmMapping.objects.filter(
             created_by=self.request.user,
@@ -5544,14 +5545,45 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     #Uncommented for trainer related permissions
     permission_classes = (TrainerRelatedPermission, )
 
+
+    #adding clone method
+    @detail_route(methods=['get'])
+    def clone(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+
+        cuurent_instance_serializer = TrainAlgorithmMappingSerializer(instance, context={"request": self.request})
+        current_instance_data = cuurent_instance_serializer.data
+        temp_data = dict()
+
+        temp_data['trainer'] = Trainer.objects.filter(slug=current_instance_data['trainer'])
+        temp_data['config'] = json.dumps(current_instance_data['config'])
+        temp_data['app_id'] = current_instance_data['app_id']
+        temp_data['name'] = current_instance_data['name'] + '_clone'
+        temp_data['created_by'] = request.user.id
+
+        serializer = TrainAlgorithmMappingSerializer(data=temp_data, context={"request": self.request})
+
+        if serializer.is_valid():
+            train_algo_object = serializer.save()
+            #train_algo_object.create()
+            return Response(serializer.data)
+
+        return creation_failed_exception(serializer.errors)
+
     def create(self, request, *args, **kwargs):
         # try:
         data = request.data
         data = convert_to_string(data)
 
+
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
+
         if serializer.is_valid():
             train_algo_object = serializer.save()
             #train_algo_object.create()
@@ -5591,7 +5623,9 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
             viewset=self,
             request=request,
             list_serializer=TrainAlgorithmMappingListSerializer
+
         )
+
 
     # @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
@@ -5775,7 +5809,7 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
         return get_listed_data(
             viewset=self,
             request=request,
-            list_serializer=DatasetScoreDeploymentListSerializer
+            list_serializer=DatasetScoreDeploymentListSerializer,
         )
 
     # @print_sql_decorator(count_only=True)

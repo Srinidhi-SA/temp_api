@@ -4789,6 +4789,7 @@ class TrainAlgorithmMapping(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     trainer = models.ForeignKey(Trainer, null=False)
     config = models.TextField(default="{}")
+    app_id = models.IntegerField(null=True, default=0)
 
     data = models.TextField(default="{}")
 
