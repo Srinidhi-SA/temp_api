@@ -295,7 +295,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        get_job_status(instance)
+        # get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -360,7 +360,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        get_job_status(instance)
+        # get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = instance.dataset
@@ -1187,11 +1187,12 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
         #return ret
 
         #Permission details
-        permission_details = get_permissions(
-            user=self.context['request'].user,
-            model=self.Meta.model.__name__.lower(),
-        )
-        ret['permission_details'] = permission_details
+        if 'request' in self.context:
+            permission_details = get_permissions(
+                user=self.context['request'].user,
+                model=self.Meta.model.__name__.lower(),
+            )
+            ret['permission_details'] = permission_details
         return ret
 
     class Meta:

@@ -266,6 +266,23 @@ def write_into_databases1(job_type, object_slug, results):
         trainer_object.analysis_done = True
         trainer_object.status = 'SUCCESS'
         trainer_object.save()
+
+        if 'model_management_summary' in results:
+            train_algo_details = results['model_management_summary']
+            for algo_detail in train_algo_details:
+                if len(algo_detail['listOfNodes']) > 1:
+                    from api.utils import TrainAlgorithmMappingSerializer
+                    temp_data = dict()
+                    temp_data['name'] = algo_detail['name']
+                    temp_data['data'] = json.dumps(add_slugs(algo_detail, object_slug=object_slug))
+                    temp_data['trainer'] = trainer_object
+                    temp_data['created_by'] = trainer_object.created_by.id
+
+                    serializer = TrainAlgorithmMappingSerializer(data=temp_data)
+                    if serializer.is_valid():
+                        train_algo_object = serializer.save()
+                    else:
+                        print(serializer.errors)
         return results
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
