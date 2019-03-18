@@ -158,7 +158,7 @@ def write_into_databases(job_type, object_slug, results):
                     temp_data = dict()
                     temp_data['name'] = algo_detail['name']
                     temp_data['data'] = json.dumps(add_slugs(algo_detail, object_slug=object_slug))
-                    temp_data['trainer'] = trainer_object
+                    temp_data['trainer'] = trainer_object.id
                     temp_data['created_by'] = trainer_object.created_by.id
 
                     serializer = TrainAlgorithmMappingSerializer(data=temp_data)
