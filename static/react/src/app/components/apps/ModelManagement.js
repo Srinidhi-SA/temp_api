@@ -158,10 +158,8 @@ mmTable = this.props.algoList.data.map((item,key )=> {
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="#">Clone</a></li>
+          <li><Button bsStyle="cst_button">Clone</Button></li>
             <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</Button></li>
-            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Delete</Button></li>
-            <li><a href="#">Delete</a></li>
           </ul>
         </div>
       </td>
