@@ -1153,7 +1153,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         #Fetching Data from ML
         raw_data = ret['data']
         list_data=(raw_data['data']['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
-        key=['Project Name','Algorithm','Training Status','Accuracy','Runtime']
+        key=['project_name','algorithm','training_status','accuracy','runtime']
         value= [item[1] for item in list_data]
         ret.update(dict(zip(key,value)))
 
@@ -1172,7 +1172,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
             'id',
             'config',
             'data',
-            'trainer'
+            #'trainer'
         )
 
 
