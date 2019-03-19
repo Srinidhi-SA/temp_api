@@ -7,7 +7,7 @@ import {isEmpty} from "../../helpers/helper";
 import {Button} from "react-bootstrap";
 import Dialog from 'react-bootstrap-dialog'
 
-import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,handleAlgoDelete,refreshAppsModelList} from "../../actions/appActions";
+import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
@@ -104,9 +104,7 @@ const algoList = store.getState().apps.algoList.data;
                               <a href="#">Clone</a>
                           </li>
                           <li>
-                          <a  >Delete</a>
-                             
-                              {/* <a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a> */}
+                             <a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a>
                           </li>
                           
                       </ul>
@@ -187,7 +185,7 @@ const algoList = store.getState().apps.algoList.data;
                     </div>
                   </div>
                   <div class="buttonRow pull-right">
-                    <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                    <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
                   <Dialog ref="dialog"/>
                 </div>
