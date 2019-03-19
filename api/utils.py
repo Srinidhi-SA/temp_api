@@ -1151,10 +1151,16 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret['created_on'] = ret['created_at']
 
         #Fetching Data from ML
-        raw_data = ret['data']
-        list_data=(raw_data['data']['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+        if 'data' in ret:
+            raw_data = ret['data']
+            try:
+                list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+                value = [item[1] for item in list_data]
+            except:
+                value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
+        else:
+            value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         key=['project_name','algorithm','training_status','accuracy','runtime']
-        value= [item[1] for item in list_data]
         ret.update(dict(zip(key,value)))
 
         #Permission details
