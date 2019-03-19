@@ -138,13 +138,13 @@ export class ModelVariableSelection extends React.Component {
                        modelValidation = <div className="col-lg-8">
                             <h4>Model Validation</h4>
                             <div class="xs-pb-10">
+                              <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "trainTestValidation"}/><label for="trainTestValidation">Train Test Validation</label></div>
+
                             <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="crossValidation" value="crossValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "crossValidation"}/><label for="crossValidation">Cross Validation</label></div>
-                                <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "trainTestValidation"}/><label for="trainTestValidation">Train Test Validation</label></div>
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
-
-                                    <label class="col-lg-4 control-label xs-pt-10" for="noOffolds">No of Folds :</label>
+                                    <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-8">
                                         <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
 

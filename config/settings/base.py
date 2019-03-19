@@ -1588,3 +1588,5 @@ CELERY_ONCE_CONFIG = {
     'default_timeout': 60 * 60
   }
 }
+
+FILE_UPLOAD_PERMISSIONS = 0777

@@ -2,40 +2,53 @@ import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
 
 
-export function missingValueTreatmentSelectedAction(colName,colSlug, treatment, dispatch){
+export function missingValueTreatmentSelectedAction(colName,colType,colSlug, treatment, dispatch){
   return {
 		type: "MISSING_VALUE_TREATMENT",
 		colName,
+    colType,
     colSlug,
     treatment
 	}
 }
-export function outlierRemovalSelectedAction(colName,colslug, treatment, dispatch){
-  return {
-		type: "OUTLIER_REMOVAL",
-		colName,
-    colslug,
-        treatment
-	}
-}
-export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
+export function variableSelectedAction(colName, selecteOrNot, dispatch){
   return {
 		type: "VARIABLE_SELECTED",
-		colSlug,
+		colName,
+    selecteOrNot
+	}
+}
+export function checkedAllAction( selecteOrNot, dispatch){
+  return {
+		type: "CHECKED_ALL_SELECTED",
     selecteOrNot
 	}
 }
 
 
- export function removeDuplicatesAction(duplicate_removal_name, yesOrNo, dispatch){
-  return {
-		type: "REMOVE_DUPLICATES",
+export function removeDuplicateAttributesAction(duplicate_attribute_removal, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_ATTRIBUTES",
     yesOrNo,
-    duplicate_removal_name
-
-
+    duplicate_attribute_removal
 	}
 }
+
+export function removeDuplicateObservationsAction(duplicate_observation_removal, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_OBSERVATIONS",
+    yesOrNo,
+    duplicate_observation_removal
+	}
+}
+
+  export function outlierRangeAction(name,value,dispatch){
+    return{
+      type: "OUTLIER_UR",
+      name,
+      value
+    }
+  }
 
 export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
     return {
@@ -44,4 +57,3 @@ export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
         newDataType
     }
 }
-

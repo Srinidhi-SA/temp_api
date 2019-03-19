@@ -36,7 +36,6 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        debugger;
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
@@ -110,18 +109,18 @@ export class ModelAlgorithmSelection extends React.Component {
                 pageData = algorithmData.map((data,Index) =>{
                     var checkboxId = "check"+Index;
                     return(
-                        <div className="row">
-                        <div className="col-md-12">
-						<div className="bg-highlight-parent xs-mb-10">
+                         
+                        <div className="col-md-3">
+						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
-                            <div className="ma-checkbox inline">
-                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>
-                            </div>
-							<div className="xs-mt-5 xs-ml-20"><p>{data.description}</p></div>
+                            <div className="ma-checkbox">
+                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}> {data.algorithmName}</label>
+                            </div>							
+							<div className="xs-mt-5"><p>{data.description}</p></div>
                         </div>
 						</div>
                         </div>
-                        </div>
+                         
 
                     );
                 });
@@ -252,7 +251,9 @@ export class ModelAlgorithmSelection extends React.Component {
                                         Please use the following learning algorithms for prediction
                                     </div>
                                     <div className="panel-body no-border">
+									<div className="row algSelection xs-mb-20">
                                      {pageData}
+									 </div>
                                      </div>
                                 </div>:
 

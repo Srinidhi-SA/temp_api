@@ -21,6 +21,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
     @connect((store) => {
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
+            algoList: store.apps.algoList,
+
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,

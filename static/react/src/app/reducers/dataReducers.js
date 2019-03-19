@@ -54,19 +54,18 @@ export default function reducer(state = {
   advancedAnalysisPerformance:true,
   createScoreShowVariables:false,
   missingValueTreatment:{},
-  outlierRemoval:{},
   featureEngineering:{},
   selectedVariables : {},
-  removeDuplicates :{},
+  checkedAll:true,
+  removeDuplicateAttributes :{},
+  removeDuplicateObservations :{},
+  olUpperRange : {},
   binsOrLevelsShowModal:false,
-
-transferColumnShowModal:false,
-
-selectedBinsOrLevelsTab:"Bins",
-
-selectedItem:{},
-isNoOfBinsEnabled:false,
-isSpecifyIntervalsEnabled:false,
+  transferColumnShowModal:false,
+  selectedBinsOrLevelsTab:"Bins",
+  selectedItem:{},
+  isNoOfBinsEnabled:false,
+  isSpecifyIntervalsEnabled:true,
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -557,275 +556,294 @@ isSpecifyIntervalsEnabled:false,
     }
     break;
     case "UPDATE_ANALYSIS_LIST_SELECT_ALL":
-      {
-        return {
-          ...state,
-          dataSetAnalysisList: action.renderList,
-          dataSetPrevAnalysisList:action.renderList,
-          dataSetSelectAllAnalysis:action.flag,
-        }
+    {
+      return {
+        ...state,
+        dataSetAnalysisList: action.renderList,
+        dataSetPrevAnalysisList:action.renderList,
+        dataSetSelectAllAnalysis:action.flag,
       }
-      break;
-      case "ADVANCE_ANALYSIS_ASSOCIATION":
-      {
-        return {
-          ...state,
-          advancedAnalysisAssociation: action.disble,
-        }
+    }
+    break;
+    case "ADVANCE_ANALYSIS_ASSOCIATION":
+    {
+      return {
+        ...state,
+        advancedAnalysisAssociation: action.disble,
       }
-      break;
-      case "ADVANCE_ANALYSIS_PREDICTION":
-      {
-        return {
-          ...state,
-          advancedAnalysisPrediction: action.disble,
-        }
+    }
+    break;
+    case "ADVANCE_ANALYSIS_PREDICTION":
+    {
+      return {
+        ...state,
+        advancedAnalysisPrediction: action.disble,
       }
-      break;
-      case "ADVANCE_ANALYSIS_PERFORMANCE":
-      {
-        return {
-          ...state,
-          advancedAnalysisPerformance: action.disble,
-        }
+    }
+    break;
+    case "ADVANCE_ANALYSIS_PERFORMANCE":
+    {
+      return {
+        ...state,
+        advancedAnalysisPerformance: action.disble,
       }
-      break;
-      case "ADVANCE_ANALYSIS_INFLUENCER":
-      {
-        return {
-          ...state,
-          advancedAnalysisInfluencer: action.disble,
-        }
+    }
+    break;
+    case "ADVANCE_ANALYSIS_INFLUENCER":
+    {
+      return {
+        ...state,
+        advancedAnalysisInfluencer: action.disble,
       }
-      break;
-      case "RESET_SUBSETTED_DATASET":
-      {
-        return {
-          ...state,
-          subsettedSlug: action.slug,
-          updatedSubSetting: {
-            "measureColumnFilters": [],
-            "dimensionColumnFilters": [],
-            "timeDimensionColumnFilters": []
-          },
-          subsettingDone: false,
-          selectedDataSet: action.slug
-
-        }
-      }
-      break;
-      case "UPDATE_VARAIABLE_SELECTION_ARRAY":
-      {
-        return {
-          ...state,
-          dataPreview: action.newDataPreview,
-          createScoreShowVariables:action.flag
-        }
-      }
-      break;
-      case "MISSING_VALUE_TREATMENT":
-      {
-        var curmissingValueTreatment = state.missingValueTreatment;
-        curmissingValueTreatment[action.colSlug] = {"treatment" : action.treatment, "name" : action.colName };
-
-        return {
-          ...state,
-          missingValueTreatment : curmissingValueTreatment
-        }
+    }
+    break;
+    case "RESET_SUBSETTED_DATASET":
+    {
+      return {
+        ...state,
+        subsettedSlug: action.slug,
+        updatedSubSetting: {
+          "measureColumnFilters": [],
+          "dimensionColumnFilters": [],
+          "timeDimensionColumnFilters": []
+        },
+        subsettingDone: false,
+        selectedDataSet: action.slug
 
       }
-      break;
-      case "OUTLIER_REMOVAL":
-      {
-        var curOutlierRemoval = state.outlierRemoval;
-        curOutlierRemoval[action.colSlug] = action.treatment;
-        return {
-          ...state,
-          outlierRemoval : curOutlierRemoval
-        }
-
+    }
+    break;
+    case "UPDATE_VARAIABLE_SELECTION_ARRAY":
+    {
+      return {
+        ...state,
+        dataPreview: action.newDataPreview,
+        createScoreShowVariables:action.flag
       }
-      break;
-      case "VARIABLE_SELECTED":
-      {
-        var allSelectedVariables = state.selectedVariables;
-        allSelectedVariables[action.colSlug] = action.selecteOrNot;
-        return {
-          ...state,
-          selectedVariables : allSelectedVariables
-        }
-
+    }
+    break;
+    case "MISSING_VALUE_TREATMENT":
+    {
+      var curmissingValueTreatment = state.missingValueTreatment;
+      curmissingValueTreatment[action.colSlug] = {
+        "treatment" : action.treatment,
+        "name" : action.colName,
+        "type" : action.colType
+      };
+      return {
+        ...state,
+        missingValueTreatment : curmissingValueTreatment
       }
-      break;
 
-      case "REMOVE_DUPLICATES":
-      {
-        var curRemoveDuplicates = state.removeDuplicates;
-        curRemoveDuplicates[action.duplicate_removal_name] = action.yesOrNo;
-        return {
-          ...state,
-          removeDuplicates : curRemoveDuplicates
-        }
-
+    }
+    break;
+    case "OUTLIER_REMOVAL":
+    {
+      var curOutlierRemoval = state.outlierRemoval;
+      curOutlierRemoval[action.colSlug] = {
+        "treatment" : action.treatment,
+        "name" : action.colName,
+        "type" : action.colType
+      };
+      return {
+        ...state,
+        outlierRemoval : curOutlierRemoval
       }
-      break;
-      case "DATACLEANSING_DATA_TYPE_CHANGE":
-      {
-         console.log(   action.colSlug);
-         console.log(action.newDataType);
-         var newDataPreview = state.dataPreview
+
+    }
+    break;
+    case "VARIABLE_SELECTED":
+    {
+      var allSelectedVariables = state.selectedVariables;
+      allSelectedVariables[action.colName] = action.selecteOrNot;
+      return {
+        ...state,
+        selectedVariables : allSelectedVariables
+      }
+
+    }
+    break;
 
 
-         newDataPreview.meta_data.uiMetaData.columnDataUI = newDataPreview.meta_data.uiMetaData.columnDataUI.map(item => {
-            if(item.slug == action.colSlug){
-               item.columnType = action.newDataType;
-            }
-            return item;
-         })
-         newDataPreview.meta_data.scriptMetaData.columnData = newDataPreview.meta_data.scriptMetaData.columnData.map(item => {
-            if(item.slug == action.colSlug){
-               item.columnType = action.newDataType;
-            }
-            return item;
-         })
+    case "CHECKED_ALL_SELECTED":
+    {
+      return {
+        ...state,
+        checkedAll : action.selecteOrNot
+      }
 
-//        Clear missing value treatment
-          var curMissingValueTreatment = state.missingValueTreatment
-          delete(curMissingValueTreatment[action.colSlug]);
-//        Clear outlier removal
-          var curOutlierRemoval = state.outlierRemoval;
-          delete(curOutlierRemoval[action.colSlug]);
+    }
+    break;
 
+    case "REMOVE_DUPLICATE_ATTRIBUTES":
+    {
+      return {
+        ...state,
+        removeDuplicateAttributes : action.yesOrNo
+      }
+    }
+    break;
 
-        return {
+    case "REMOVE_DUPLICATE_OBSERVATIONS":
+    {
+      return {
+        ...state,
+        removeDuplicateObservations : action.yesOrNo
+      }
+    }
+    break;
+
+    case "OUTLIER_UR":
+    {
+      return{
+        ...state,
+        olUpperRange : action.value
+      }
+    }
+
+    case "DATACLEANSING_DATA_TYPE_CHANGE":
+    {
+       var newDataPreview = state.dataPreview
+       newDataPreview.meta_data.uiMetaData.columnDataUI = newDataPreview.meta_data.uiMetaData.columnDataUI.map(item => {
+          if(item.slug == action.colSlug){
+             item.columnType = action.newDataType;
+          }
+          return item;
+       })
+       newDataPreview.meta_data.scriptMetaData.columnData = newDataPreview.meta_data.scriptMetaData.columnData.map(item => {
+          if(item.slug == action.colSlug){
+             item.columnType = action.newDataType;
+          }
+          return item;
+       })
+       // Clear missing value treatment
+       var curMissingValueTreatment = state.missingValueTreatment
+       delete(curMissingValueTreatment[action.colSlug]);
+       // Clear outlier removal
+       var curOutlierRemoval = state.outlierRemoval;
+       delete(curOutlierRemoval[action.colSlug]);
+
+       return {
           ...state,
           dataPreview: newDataPreview,
           missingValueTreatment : curMissingValueTreatment,
           outlierRemoval : curOutlierRemoval
         }
-
       }
-      break;
+    break;
 
-      case "BINS_LEVELS_SHOW_MODAL":
-            {
-              return {
-                ...state,
-                binsOrLevelsShowModal: true,
-                selectedItem:action.selectedItem
-              }
-            }
-            break;
+    case "BINS_LEVELS_SHOW_MODAL":
+    {
+      return {
+        ...state,
+        binsOrLevelsShowModal: true,
+        selectedItem:action.selectedItem
+      }
+    }
+    break;
 
-            case "BINS_LEVELS_HIDE_MODAL":
-            {
-              return {
-                ...state,
-                binsOrLevelsShowModal: false
-              }
-            }
-            break;
+    case "BINS_LEVELS_HIDE_MODAL":
+    {
+      return {
+        ...state,
+        binsOrLevelsShowModal: false
+      }
+    }
+    break;
 
-           case "TRANSFORM_COLUMN_SHOW_MODAL":
+    case "TRANSFORM_COLUMN_SHOW_MODAL":
+    {
+      return {
+        ...state,
+        transferColumnShowModal: true,
+        selectedItem:action.selectedItem
+      }
+    }
+    break;
 
-            {
+    case "TRANSFORM_COLUMN_HIDE_MODAL":
+    {
+      return {
+        ...state,
+        transferColumnShowModal: false
+      }
+    }
+    break;
 
-              return {
+    case "BINS_OR_LEVELS":
+    {
+      return {
+        ...state,
+        selectedBinsOrLevelsTab: action.selectedBinsOrLevelsTab
+      }
+    }
+    break;
 
-                ...state,
+    case "NUM_OF_BINS_SPECIFY_INTERVALS":
+    {
+      return {
+        ...state,
+        isNoOfBinsEnabled: action.isNoOfBinsEnabled,
+        isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+      }
+    }
+    break;
 
-                transferColumnShowModal: true,
-                selectedItem:action.selectedItem
+    case "FE_SAVE_TOP_LEVEL_DATA":
+    {
+      return {
+        ...state,
+        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
+      }
+    }
+    break;
 
-              }
+    case "CLEAR_DATACLEANSING":
+    {
+      return{
+        ...state,
+        missingValueTreatment:{},
+        outlierRemoval:{},
+        removeDuplicateAttributes :{},
+        removeDuplicateObservations :{},
+      }
+    }
+    break;
 
-            }
+    case "CLEAR_FEATUREENGINEERING":
+    {
+      return {
+        ...state,
+        featureEngineering:{},
+        topLevelData:{}
+      }
+    }
+    break;
 
-            break;
+    case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
+    {
+      var curFeData = state.featureEngineering
+      var curSlugData = curFeData[action.coloumnSlug];
+      if(curSlugData == undefined){
+        curSlugData = {}
+      }
+      curSlugData[action.actionType] = action.userData;
+      curFeData[action.coloumnSlug] = curSlugData;
+      return{
+        ...state,
+        featureEngineering : curFeData
+      }
+    }
+    break;
 
-            case "TRANSFORM_COLUMN_HIDE_MODAL":
-
-            {
-
-              return {
-
-                ...state,
-
-                transferColumnShowModal: false
-
-              }
-
-            }
-
-            break;
-
-            case "BINS_OR_LEVELS":
-
-            {
-
-              return {
-
-                ...state,
-
-                selectedBinsOrLevelsTab: action.selectedBinsOrLevelsTab
-
-              }
-
-            }
-
-            break;
-            case "NUM_OF_BINS_SPECIFY_INTERVALS":
-
-            {
-
-              return {
-
-                ...state,
-
-                isNoOfBinsEnabled: action.isNoOfBinsEnabled,
-                isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
-
-              }
-
-            }
-
-            break;
-
-            case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
-              var curFeData = state.featureEngineering
-              var curSlugData = curFeData[action.coloumnSlug];
-              if(curSlugData == undefined){
-                curSlugData = {}
-              }
-              curSlugData[action.actionType] = action.userData;
-              curFeData[action.coloumnSlug] = curSlugData;
-            return{
-               ...state,
-              featureEngineering : curFeData
-            }
-            break;
-
-            // case "SPECIFY_INTERVALS_ENABLED":
-            //
-            // {
-            //
-            //   return {
-            //
-            //     ...state,
-            //
-            //     isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
-            //
-            //   }
-            //
-            // }
-            //
-            // break;
-
-
-
-
-
+    case "SPECIFY_INTERVALS_ENABLED":
+    {
+      return {
+        ...state,
+        isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+      }
+    }
+    break;
   }
   return state
-
 }

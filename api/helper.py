@@ -1,6 +1,7 @@
 import md5
 import time
 from math import floor, log10
+import datetime
 
 from django.conf import settings
 import yarn_api_client
@@ -51,16 +52,16 @@ class JobserverDetails(object):
         return {
             "job_config": {
                 "job_type": job_type[class_name],
-                "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                "job_url" : "https://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
-                "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                "message_url": "https://{0}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 message_slug),
-                "xml_url": "http://{0}:{1}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                "xml_url": "https://{0}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 slug),
-                "error_reporting_url": "http://{0}:{1}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                "error_reporting_url": "https://{0}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 slug),
                 "job_name": job_name,
@@ -1296,3 +1297,8 @@ def encrypt_for_kylo(username, password_encrypted):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
+
+def convert_fe_date_format(date_string):
+    return datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%d/%m/%Y')
+
+

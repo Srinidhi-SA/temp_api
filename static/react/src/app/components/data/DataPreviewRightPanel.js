@@ -19,10 +19,10 @@ export class DataPreviewRightPanel extends React.Component {
 		console.log("data prev right panel is called##########3");
 		let dataPrev = this.props.dataPreview.meta_data;
 		const sideChart = dataPrev.columnData[0].chartData;
-		console.log("chart-----------")
+		console.log("chart----------))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))")
 		console.log(JSON.stringify(sideChart));
 		const sideTable = dataPrev.columnData;
-		console.log(sideTable)
+		console.log(sideTable);
 		const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 			return(  <tr key={tableIndex}>
 			<td className="item">{tableItem.name}</td>

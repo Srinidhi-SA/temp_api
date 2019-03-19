@@ -132,6 +132,7 @@ const ACCESSDENIED = "Access Denied"
 const CREATESIGNAL = "Create Signal";
 const PROCEEDTODATACLEANSING = "Proceed to data cleansing";
 const PROCEEDTOFEATUREENGINEERING ="proceed to feature Engineering"
+const PROCEEDTOMODELMANAGEMENT= "proceed to model management"
 const CREATEMODEL = "Create Model";
 const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
@@ -453,6 +454,7 @@ export {
   CREATESIGNAL,
   PROCEEDTODATACLEANSING,
   PROCEEDTOFEATUREENGINEERING,
+  PROCEEDTOMODELMANAGEMENT,
   CREATESCORE,
   CREATEMODEL,
   DELETESTOCKMODEL,
@@ -628,7 +630,9 @@ export function getRemovedVariableNames(dataset){
     var arr = [];
 
     var pickRemoved = function(item){
-        if(!item.selected){
+        if(item.targetColumn||!item.selected ){
+            // if(!item.selected ){
+            // if(item.selected="true"|| item.targetColumn=="true"){
             arr.push(item.name)
         }
     }
@@ -639,3 +643,16 @@ export function getRemovedVariableNames(dataset){
     return arr;
 
 }
+
+export function getSelectedVariableNames(obj){
+  
+  debugger;
+  var items={};
+ for(var i in obj){
+   if((obj[i])== "true")
+   items[i]= getSelectedVariableNames(obj[i]);
+   else 
+   items[i]=obj[i];
+ }
+ return items;
+ }
