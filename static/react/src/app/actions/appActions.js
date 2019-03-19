@@ -53,7 +53,7 @@ export function refreshAppsModelList(props) {
   return (dispatch) => {
     if(refreshAppsModelInterval != null)
     clearInterval(refreshAppsModelInterval);
-    refreshAppsModelInterval = setInterval(function() 
+    refreshAppsModelInterval = setInterval(function()
     {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
@@ -64,6 +64,7 @@ export function refreshAppsModelList(props) {
     , APPSDEFAULTINTERVAL);
   }
 }
+
 
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
@@ -104,7 +105,6 @@ function fetchModelList(pageNo, token) {
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
-
 }
 
 function fetchModelListError(json) {
@@ -116,6 +116,60 @@ export function fetchModelListSuccess(doc) {
   var latestModels = doc.top_3
   return {type: "MODEL_LIST", data, latestModels, current_page}
 }
+
+export function getAppsAlgoList(pageNo) {
+  return (dispatch) => {
+    return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200) {
+        console.log(json)
+        dispatch(fetchAlgoListSuccess(json))
+      } else {
+        dispatch(fetchAlgoListError(json))
+      }
+    })
+  }
+}
+
+function fetchAlgoList(pageNo, token) {
+  // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchAlgoListSuccess(doc) {
+  var data = doc;
+  // console.log("###################################################################stophere",data)
+  var current_page = doc.current_page;
+  var latestModels = doc.top_3
+  return {type: "ALGO_LIST", data, latestModels, current_page}
+}
+
+function fetchAlgoListError(json) {
+  // function fetchModelList2Error(json) {
+    return {type: "ALGO_LIST_ERROR", json}
+  }
+
+export function refreshAppsAlgoList(props) {
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function()
+    {
+      var pageNo = window.location.href.split("=").pop();
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
+        pageNo = 1;
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/modelManagement")
+
+        dispatch(getAppsAlgoList(parseInt(pageNo)));
+    }
+    , APPSDEFAULTINTERVAL);
+  }
+}
+
+
+
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
@@ -169,11 +223,23 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 }
             }
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+            var dataCleansing = {  "columnsSettings" : {
+                                    "missingValueTreatment" :store.getState().datasets.missingValueTreatment,
+                                    "outlierRemoval" : store.getState().datasets.outlierRemoval,
+                                     },
+                                   "overallSettings" :{"remove_duplicate_attributes":store.getState().datasets.removeDuplicateAttributes,
+                                                      "remove_duplicate_observations":store.getState().datasets.removeDuplicateObservations,
+                                   },
+                                  }
 
             var details = {
                 "ALGORITHM_SETTING":AlgorithmSettings,
                 "validationTechnique":validationTechnique,
                 "targetLevel":targetLevel,
+                "dataCleansing" : dataCleansing,
+                "featureEngineering" : {"columnsSettings" : store.getState().datasets.featureEngineering,
+                                       "overallSettings" :  store.getState().datasets.topLevelData,
+                                          },
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
             }
         }
@@ -244,6 +310,9 @@ export function getAppsScoreList(pageNo) {
   }
 }
 
+
+
+
 function fetchScoreList(pageNo, token) {
   let search_element = store.getState().apps.score_search_element;
   let apps_score_sorton = store.getState().apps.apps_score_sorton;
@@ -272,6 +341,8 @@ function fetchScoreList(pageNo, token) {
   }
 
 }
+
+
 
 function fetchScoreListError(json) {
   return {type: "SCORE_LIST_ERROR", json}
@@ -753,7 +824,7 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))
-	 
+
   }
 }
 function deleteModel(slug, dialog, dispatch) {
@@ -781,7 +852,7 @@ function deleteModelAPI(slug) {
 
 export function handleModelRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -792,7 +863,7 @@ export function handleModelRename(slug, dialog, name) {
 			</div>
 			</div>
 		</div>
-    
+
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
@@ -878,7 +949,7 @@ function deleteScoreAPI(slug) {
 
 export function handleScoreRename(slug, dialog, name) {
   const customBody = (
-	<div className="row">	
+	<div className="row">
 	<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 	</div>
@@ -952,7 +1023,7 @@ function deleteInsightAPI(slug) {
 
 export function handleInsightRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 		<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 		</div>
@@ -1189,7 +1260,7 @@ function deleteAudioAPI(slug) {
 
 export function handleAudioRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 		<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 		</div>
@@ -1502,7 +1573,7 @@ export function triggerStockAnalysis(slug,dispatch) {
     return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
   }, APPSDEFAULTINTERVAL);
   return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
-    
+
 }
 export function getStockAnalysis(slug,appsInterval) {
   return (dispatch) => {
@@ -1966,7 +2037,7 @@ export function clearSelectedModelsCount(){
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete analysis?","small_mascot")))
-	 
+
   }
 }
 function deleteStockModel(slug, dialog, dispatch) {
@@ -1995,7 +2066,7 @@ function deleteStockModelAPI(slug) {
 
 export function handleStockModelRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -2006,7 +2077,7 @@ export function handleStockModelRename(slug, dialog, name) {
 			</div>
 			</div>
 		</div>
-    
+
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
