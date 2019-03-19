@@ -1,50 +1,26 @@
 import React from "react";
-import {Scrollbars} from 'react-custom-scrollbars';
-import {Provider} from "react-redux";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {InputSwitch} from 'primereact/inputswitch';
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
 import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
-import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
-
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
-import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
-import {DataUploadLoader} from "../common/DataUploadLoader";
+import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
-import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-  updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
 import { Deploy } from "./Deploy";
-import {Transform} from "./Transform";
-
+import {openModelSummaryAction} from "../../actions/modelSummaryActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
+  var dateFormat = require('dateformat');
 @connect((store) => {
   return {
-    apps_regression_modelName:store.apps.apps_regression_modelName,
     algoList: store.apps.algoList,
-    checkedAll: store.datasets.checkedAll,
     currentAppId: store.apps.currentAppId,
     currentAppDetails: store.apps.currentAppDetails,
-    curUrl: store.datasets.curUrl,
-    dataPreview: store.datasets.dataPreview,
-    dataPreviewFlag: store.datasets.dataPreviewFlag,
-    datasets : store.datasets,
-    dataTransformSettings: store.datasets.dataTransformSettings,
-    login_response: store.login.login_response,
     modelSlug: store.apps.modelSlug,
-    roboDatasetSlug: store.apps.roboDatasetSlug,
-    scoreToProceed: store.apps.scoreToProceed,
-    signal: store.signals.signalAnalysis,
-    signalMeta: store.datasets.signalMeta,
-    subsettingDone: store.datasets.subsettingDone,
-    subsettedSlug: store.datasets.subsettedSlug,
     deployShowModal: store.apps.deployShowModal,
+    selectedSummary :store.summarySelected,
   };
 })
 
@@ -55,17 +31,25 @@ export class ModelManagement extends React.Component {
 
   }
   
+ componentWillMount() {
+  // var pageNo = 1;
+  //   if(this.props.history.location.search.indexOf("page") != -1){
+  //       pageNo = this.props.history.location.search.split("page=")[1];
+  //   }
+  //   if(store.getState().apps.currentAppId == ""){
+  //       this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+  //   }else
+  //   {
+  //       this.props.dispatch(getAppsAlgoList(pageNo));
+  //   }
 
-  componentWillMount() {
-    var pageNo = 1;
-    if(this.props.history.location.search.indexOf("page") != -1){
-        pageNo = this.props.history.location.search.split("page=")[1];
-    }
-    if(store.getState().apps.currentAppId == ""){
-        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-    }else{
-        this.props.dispatch(getAppsAlgoList(pageNo));
-    }
+    if (isEmpty(this.props.algoList)) {
+      if (!this.props.match.path.includes("robo")) {
+        let url = '/signals/'
+        console.log(this.props);
+        this.props.history.push(url)
+      }
+		}
   }
 
   componentDidMount() {
@@ -84,6 +68,22 @@ export class ModelManagement extends React.Component {
       });
     });
   }
+  proceedToModelSummary(item)
+  {
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/modelSummary');
+    console.log(item,"item called for individual page...........................")
+    this.props.dispatch(openModelSummaryAction(item));
+
+  }
+  closeModelmanagement()
+  {
+    var proccedUrl = this.props.match.url.replace('modelManagement','models');
+    this.props.history.push(proccedUrl);
+  }
+
+  handleAlgoDelete(slug) {
+    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+}
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
       this.state[this.props.selectedItem.slug] = {}
@@ -114,44 +114,33 @@ export class ModelManagement extends React.Component {
     this.props.history.push(proccedUrl);
   }
 
-  tableSorter() {
-    $(function() {
-      $('#mmtable').tablesorter({
-        theme: 'ice',
-        headers: {
-          // 0: {sorter: false},
-          9: {sorter: false}
-        }
-      });
-    });
-  }
+  handleAlgoDelete(slug) {
+    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+}
 
   render(){
-    this.tableSorter();
-    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
     var mmTable = "";
-    // var algoListData=this.props.algoList;
     var deployPopup = "";
-    var deletePopup = "";
+    // debugger;
+    const algoList = store.getState().apps.algoList.data;
 
-mmTable = this.props.algoList.data.map((item,key )=> {
-  // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
-  // return "";
-  // if(item.columnType == "measure")
-  //   numberOfSelectedMeasures +=1;
-  // else
-  //   numberOfSelectedDimensions +=1;
-  return (
-    <tr  className={('all ' + item.name)}>
-      <td className="text-left"><i class="fa fa-briefcase"/> {item.model_id}</td>
-      <td className="text-left"> {item.name}</td>
+      mmTable = this.props.algoList.data.map((item,key )=> {
+        return (
+          
+        <tr  className={('all ' + item.name)}>
+        <td>
+          <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
+       </td>
+      <td className="text-left"> {item.model_id}</td>
+      <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td> {item.status}</td>
       <td> {item.accuracy}</td>
       <td><i class="fa fa-calendar text-info"/> {item.created_on}</td>
       <td> {item.deployment}</td>
       <td><i class="fa fa-clock-o text-warning"/> {item.runtime}</td>
+      <td><Button onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary">Details</Button></td>
       <td>
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
@@ -160,6 +149,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
           <ul class="dropdown-menu dropdown-menu-right">
           <li><Button bsStyle="cst_button">Clone</Button></li>
             <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</Button></li>
+            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>       
           </ul>
         </div>
       </td>
@@ -185,43 +175,6 @@ mmTable = this.props.algoList.data.map((item,key )=> {
       </div>
     )
 
-    deletePopup = (
-      <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
-            <Modal.Header closeButton>
-              <h3 className="modal-title">Deploy Project</h3>
-            </Modal.Header>
-            <Modal.Body>
-              <Deploy /*parentPickValue={this.pickValue}*//>
-            </Modal.Body> 
-            <Modal.Footer>
-              <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-      </div>
-    //   <div class="modal fade success-popup" id="DeleteWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    //     <div class="modal-dialog" role="document">
-    //       <div class="modal-content ">
-    //           <div class="modal-body text-center">
-    //             <div class="row">
-    //                 <div class="col-md-4">
-    //                   <img src="../assets/images/alert_warning.png" class="img-responsive" />
-    //                 </div>
-    //                 <div class="col-md-8">
-    //                   <h4 class="text-warning">Are You Sure !</h4>
-    //                   <p>Do you want to Delete the Project Name By The Table </p>
-    //                   <a href="#" class="rd_more btn btn-default" data-dismiss="modal">No</a>
-    //                   <a href="#" class="rd_more btn btn-primary" data-dismiss="modal">Yes</a>
-    //                 </div>
-    //             </div>
-    //           </div>
-    //       </div>
-    //     </div>
-    // </div>
-    )
 
     return (
       // <!-- Main Content starts with side-body -->
@@ -235,7 +188,6 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
         {/* <!-- Page Content Area --> */}
         {deployPopup}
-        {deletePopup}
         <div class="main-content">
       
         <div class="row">
@@ -269,7 +221,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                          {/* <th>#</th> */}
+                          <th>#</th>
                           <th><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
@@ -278,6 +230,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
                           <th><b>Created On</b></th>
                           <th><b>Deployment</b></th>
                           <th><b>Runtime</b></th>
+                          <th><b>Summary</b></th>
                           <th><b>Action</b></th>
                         </tr>
                       </thead>
@@ -291,8 +244,9 @@ mmTable = this.props.algoList.data.map((item,key )=> {
               </div>
                   </div>
                   <div class="buttonRow pull-right">
-                    <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                    <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
+                  <Dialog ref="dialog"/>
                 </div>
               </div>
               <div class="xs-p-30"></div>

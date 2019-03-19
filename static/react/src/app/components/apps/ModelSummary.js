@@ -2,6 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
 import {refreshAppsAlgoList} from "../../actions/appActions";
+import {isEmpty} from "../../helpers/helper";
+var dateFormat = require('dateformat');
+
+
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -16,15 +20,21 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		// debugger;
-		// if(this.props.selectedSummary == null){
-    //   windo.history.back();
-    // }
+		debugger;
+		if (isEmpty(this.props.selectedSummary)) {
+      if (!this.props.match.path.includes("robo")) {
+        let url = '/signals/'
+        console.log(this.props);
+        this.props.history.push(url)
+      }
+		}
 	}
 
   componentDidMount() {
 			this.props.dispatch(refreshAppsAlgoList(this.props));
 	}
+
+
   closeModelSummary(){
 	 window.history.back();
 	}
@@ -36,7 +46,7 @@ export class ModelSummary extends React.Component {
 	overviewCard=(
 			 <div class="row">
 					<div class="col-md-6">
-						<h2> {summary.algorithm}</h2>
+						<h2> Model Summary</h2>
 
 						<table class="table table-condensed table-striped table-fw-widget">
 						<tbody>
@@ -54,7 +64,7 @@ export class ModelSummary extends React.Component {
 							</tr>
 							<tr>
 								<th class="text-left">Accuracy</th>
-								<td class="text-left">accuracy</td>
+								<td class="text-left">{summary.accuracy}</td>
 							</tr>
 							<tr>
 								<th class="text-left">Runtime</th>
@@ -62,11 +72,12 @@ export class ModelSummary extends React.Component {
 							</tr>
 							<tr>
 								<th class="text-left">Owner</th>
-								<td class="text-left">Marlabs</td>
+								{/* <td class="text-left">{summary.created_by.username}</td> */}
 							</tr>
 							<tr>
+						
 								<th class="text-left">Created on</th>
-								<td class="text-left">{}</td>
+								<td class="text-left">{dateFormat(summary.created_on, " mmm d,yyyy HH:MM")}</td>
 							</tr>
 							</tbody>
 						</table>
@@ -198,7 +209,7 @@ export class ModelSummary extends React.Component {
 		{/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.name}<small> : LR-001</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.name}<small> : {summary.algorithm}</small></h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">

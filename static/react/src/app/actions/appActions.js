@@ -22,6 +22,7 @@ import {
   RENAMEAUDIO,
   INPROGRESS,
   DELETESTOCKMODEL,
+  DELETEALGO,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
@@ -144,7 +145,6 @@ export function getAppsAlgoList(pageNo) {
 }
 
 function fetchAlgoList(pageNo, token) {
-  // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -170,6 +170,36 @@ export function refreshAppsAlgoList(props) {
   }
 }
 
+
+function deleteAlgo(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteAlgoAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsAlgoList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+
+
+function deleteAlgoAPI(slug) {
+  return fetch(API + '/api/trainalgomapping/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+
+}
+export function handleAlgoDelete(slug, dialog) {
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+  }
+}
 
 
 export function updateTrainAndTest(trainValue) {
@@ -811,6 +841,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteAudio(slug, dialog, dispatch)
         else if (title == DELETESTOCKMODEL)
           deleteStockModel(slug, dialog, dispatch)
+          else if(title == DELETEALGO )
+          deleteAlgo(slug, dialog, dispatch)
         else
           deleteScore(slug, dialog, dispatch)
 
