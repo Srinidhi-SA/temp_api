@@ -1153,11 +1153,12 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         #Fetching Data from ML
         if 'data' in ret:
             raw_data = ret['data']
-            try:
-                list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
-                value = [item[1] for item in list_data]
-            except:
-                value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
+            # try:
+            # import pdb;pdb.set_trace()
+            list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+            value = [item[1] for item in list_data]
+            # except:
+                # value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         else:
             value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         key=['project_name','algorithm','training_status','accuracy','runtime']
@@ -1205,7 +1206,6 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainAlgorithmMapping
         exclude = (
-
             'id',
             # 'trainer'
         )
