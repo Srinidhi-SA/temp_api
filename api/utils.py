@@ -1147,14 +1147,15 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['model_id'] = ret['slug']
-        ret['project_name'] = "project_name_1"
-        ret['algorithm'] = "random_forest"
-        ret['accuracy'] = "99%"
-        ret['created_on'] = ret['created_at']
-        ret['status'] = "SUCCESS"
         ret['deployment'] = "4"
-        ret['runtime'] = "3 mins"
-        #return ret
+        ret['created_on'] = ret['created_at']
+
+        #Fetching Data from ML
+        raw_data = ret['data']
+        list_data=(raw_data['data']['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+        key=['Project Name','Algorithm','Training Status','Accuracy','Runtime']
+        value= [item[1] for item in list_data]
+        ret.update(dict(zip(key,value)))
 
         #Permission details
         permission_details = get_permissions(
@@ -1280,9 +1281,9 @@ class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            'data',
-            'dataset',
-            'score',
+            #'data',
+            #'dataset',
+            #'score',
             'deployment'
         )
 
