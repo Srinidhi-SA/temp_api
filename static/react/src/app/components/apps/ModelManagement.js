@@ -133,6 +133,7 @@ export class ModelManagement extends React.Component {
     var mmTable = "";
     // var algoListData=this.props.algoList;
     var deployPopup = "";
+    var deletePopup = "";
 
 mmTable = this.props.algoList.data.map((item,key )=> {
   // if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
@@ -159,6 +160,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="#">Clone</a></li>
             <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</Button></li>
+            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Delete</Button></li>
             <li><a href="#">Delete</a></li>
           </ul>
         </div>
@@ -175,14 +177,52 @@ mmTable = this.props.algoList.data.map((item,key )=> {
             </Modal.Header>
             <Modal.Body>
               <Deploy /*parentPickValue={this.pickValue}*//>
-            </Modal.Body>
+            </Modal.Body> 
             <Modal.Footer>
               <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Create</Button>
+              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
             </Modal.Footer>
           </Modal>
         </div>
       </div>
+    )
+
+    deletePopup = (
+      <div class="col-md-3 xs-mb-15 list-boxes" >
+        <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+          <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+            <Modal.Header closeButton>
+              <h3 className="modal-title">Deploy Project</h3>
+            </Modal.Header>
+            <Modal.Body>
+              <Deploy /*parentPickValue={this.pickValue}*//>
+            </Modal.Body> 
+            <Modal.Footer>
+              <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </div>
+    //   <div class="modal fade success-popup" id="DeleteWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    //     <div class="modal-dialog" role="document">
+    //       <div class="modal-content ">
+    //           <div class="modal-body text-center">
+    //             <div class="row">
+    //                 <div class="col-md-4">
+    //                   <img src="../assets/images/alert_warning.png" class="img-responsive" />
+    //                 </div>
+    //                 <div class="col-md-8">
+    //                   <h4 class="text-warning">Are You Sure !</h4>
+    //                   <p>Do you want to Delete the Project Name By The Table </p>
+    //                   <a href="#" class="rd_more btn btn-default" data-dismiss="modal">No</a>
+    //                   <a href="#" class="rd_more btn btn-primary" data-dismiss="modal">Yes</a>
+    //                 </div>
+    //             </div>
+    //           </div>
+    //       </div>
+    //     </div>
+    // </div>
     )
 
     return (
@@ -197,7 +237,7 @@ mmTable = this.props.algoList.data.map((item,key )=> {
     
         {/* <!-- Page Content Area --> */}
         {deployPopup}
-
+        {deletePopup}
         <div class="main-content">
       
         <div class="row">
