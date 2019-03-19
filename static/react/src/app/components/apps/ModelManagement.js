@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
 import { Router, Route, IndexRoute } from 'react-router';
-import {openModelSummaryAction} from "../../actions/modelSummaryActions";
+import {openModelSummaryAction} from "../../actions/modelManagementActions";
 import {isEmpty} from "../../helpers/helper";
 import {Button} from "react-bootstrap";
 import Dialog from 'react-bootstrap-dialog'
@@ -17,7 +17,6 @@ import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,handleAlgoDelete} from
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
     modelSlug: store.apps.modelSlug,
-    apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
   };
 })
@@ -66,6 +65,7 @@ export class ModelManagement extends React.Component {
   }
 
   handleAlgoDelete(slug) {
+    debugger;
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
 }
 
@@ -87,7 +87,7 @@ const algoList = store.getState().apps.algoList.data;
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.status}</td>
       <td > {item.accuracy}</td>
-      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_on, " mmm d,yyyy HH:MM")}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.Created_on, " mmm d,yyyy HH:MM")}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
       <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"> Details</Button></td>
