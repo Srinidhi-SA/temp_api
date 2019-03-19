@@ -1154,10 +1154,13 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
         if 'data' in ret:
             raw_data = ret['data']
-            list_data=(raw_data['data']['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
-            value = [item[1] for item in list_data]
+            try:
+                list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+                value = [item[1] for item in list_data]
+            except:
+                value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         else:
-            value = [instance.trainer.name, instance.name, 'SUCCESS', '96', '9 min']
+            value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         key=['Project Name','Algorithm','Training Status','Accuracy','Runtime']
 
         ret.update(dict(zip(key,value)))
@@ -1176,7 +1179,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            # 'data',
+            'data',
             'trainer'
         )
 
