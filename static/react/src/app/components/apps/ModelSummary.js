@@ -20,7 +20,7 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		debugger;
+		// debugger;
 		if (isEmpty(this.props.selectedSummary)) {
       if (!this.props.match.path.includes("robo")) {
         let url = '/signals/'

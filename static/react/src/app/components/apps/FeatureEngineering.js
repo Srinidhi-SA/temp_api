@@ -334,7 +334,6 @@ export class FeatureEngineering extends React.Component {
     var binOrLevelData="";
     var values="";
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    debugger;
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;

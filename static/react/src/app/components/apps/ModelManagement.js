@@ -5,7 +5,9 @@ import { Router, Route, IndexRoute } from 'react-router';
 import {openModelSummaryAction} from "../../actions/modelSummaryActions";
 import {isEmpty} from "../../helpers/helper";
 import {Button} from "react-bootstrap";
-import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
+import Dialog from 'react-bootstrap-dialog'
+
+import {getAppsAlgoList,getAppDetails,refreshAppsAlgoList,handleAlgoDelete,refreshAppsModelList} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
@@ -63,16 +65,25 @@ export class ModelManagement extends React.Component {
     this.props.history.push(proccedUrl);
   }
 
+  handleAlgoDelete(slug) {
+    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+}
+
   render(){
 console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
 var mmTable = "";
+// debugger;
 const algoList = store.getState().apps.algoList.data;
 
       mmTable = this.props.algoList.data.map((item,key )=> {
         return (
+          
         <tr  className={('all ' + item.name)}>
+        <td>
+          <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
+       </td>
       <td className="text-left"> {item.model_id}</td>
-      <td> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
+      <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.status}</td>
       <td > {item.accuracy}</td>
@@ -93,8 +104,11 @@ const algoList = store.getState().apps.algoList.data;
                               <a href="#">Clone</a>
                           </li>
                           <li>
-                              <a href="#">Delete</a>
+                          <a  >Delete</a>
+                             
+                              {/* <a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a> */}
                           </li>
+                          
                       </ul>
                   </div>
             </td>
@@ -148,9 +162,9 @@ const algoList = store.getState().apps.algoList.data;
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                {/* <th>
+                <th>
                       #
-                      </th> */}
+                      </th>
                           <th><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
@@ -175,6 +189,7 @@ const algoList = store.getState().apps.algoList.data;
                   <div class="buttonRow pull-right">
                     <Button   onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
                   </div>
+                  <Dialog ref="dialog"/>
                 </div>
               </div>
               <div class="xs-p-30"></div>

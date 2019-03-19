@@ -65,8 +65,6 @@ export class Apps extends React.Component {
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
     this.props.dispatch(getAppsAlgoList(1));
-
-debugger;
     if (tabId == "score") {
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores')
     } 
