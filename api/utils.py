@@ -1155,10 +1155,11 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         if 'data' in ret:
             raw_data = ret['data']
             list_data=(raw_data['data']['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+            value = [item[1] for item in list_data]
         else:
-            list_data = [instance.trainer.name, instance.name, 'SUCCESS', '96', '9 min']
+            value = [instance.trainer.name, instance.name, 'SUCCESS', '96', '9 min']
         key=['Project Name','Algorithm','Training Status','Accuracy','Runtime']
-        value= [item[1] for item in list_data]
+
         ret.update(dict(zip(key,value)))
 
         #Permission details
@@ -1175,7 +1176,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            'data',
+            # 'data',
             'trainer'
         )
 
