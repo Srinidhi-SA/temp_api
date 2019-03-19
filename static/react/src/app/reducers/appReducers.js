@@ -2,6 +2,7 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        summarySelected:{},
         current_page:1,
         trainValue:50,
         testValue:50,

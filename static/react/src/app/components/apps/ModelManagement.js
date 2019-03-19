@@ -1,7 +1,4 @@
 import React from "react";
-import {Scrollbars} from 'react-custom-scrollbars';
-import {Provider} from "react-redux";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
@@ -63,26 +60,14 @@ export class ModelManagement extends React.Component {
     }
     if(store.getState().apps.currentAppId == ""){
         this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-    }else{
+    }else
+    {
         this.props.dispatch(getAppsAlgoList(pageNo));
     }
   }
 
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
-
-    $('#search').on('keyup', function() {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#mmtable').find('tr').each(function() {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-          $(this).not('.myHead').hide();
-        }
-        if (($(this).find('td').text().search(patt) >= 0)) {
-          $(this).show();
-        }
-      });
-    });
   }
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
@@ -108,27 +93,14 @@ export class ModelManagement extends React.Component {
     }
   }
 
+  }
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
 
-  tableSorter() {
-    $(function() {
-      $('#mmtable').tablesorter({
-        theme: 'ice',
-        headers: {
-          // 0: {sorter: false},
-          9: {sorter: false}
-        }
-      });
-    });
-  }
-
   render(){
-    this.tableSorter();
-    // console.log(this.props.data,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
     var mmTable = "";
     // var algoListData=this.props.algoList;

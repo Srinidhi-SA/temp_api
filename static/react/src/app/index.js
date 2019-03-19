@@ -24,6 +24,7 @@ import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSel
 import {DataCleansing} from "./components/apps/DataCleansing"
 import {FeatureEngineering} from "./components/apps/FeatureEngineering"
 import {ModelManagement} from "./components/apps/ModelManagement"
+import {ModelSummary} from "./components/apps/ModelSummary"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
@@ -137,6 +138,7 @@ class App extends React.Component {
     const data = (props) => {
       if (this.hasDataRoutePermission()) {
         switch (props.match.path) {
+
           case "/data":
             {
               return (<Data {...props}/>)
@@ -208,7 +210,7 @@ class App extends React.Component {
       }
     }
 
-    const score = (props) => {
+    const score = (props) =>  {
       if (this.hasScoreRoutePermission()) {
         switch (props.match.path) {
           case "/apps/:AppId/scores":
@@ -242,6 +244,34 @@ class App extends React.Component {
         return (<Redirect to="/apps"/>)
       }
     }
+
+
+
+    const modelmanagement = (props) => {
+      if (this.hasScoreRoutePermission()) {
+        switch (props.match.path) {
+          case "/apps/:AppId":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+            case "/apps/:AppId/modelManagement":
+            {
+              return (<ModelManagement {...props}/>)
+            }
+            break;
+        }
+
+      } else if (this.hasTrainerRoutePermission()) {
+        let model_url = "/apps"
+        if (props.match.params.AppId)
+          model_url = "/apps/" + props.match.params.AppId + "/modelManagement"
+        return (<Redirect to={model_url}/>)
+      } else {
+        return (<Redirect to="/apps"/>)
+      }
+    }
+
 
     return (
       <BrowserRouter>
@@ -303,6 +333,12 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
+            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> */}
+            {/* <Route exact path="/apps/:AppId/modelManagement/modelSummary" render={modelmanagement}/> */}
+
+
+            <Route exact path="/apps/:AppId/modelManagement/modelSummary" component={ModelSummary}/>
+
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>
