@@ -1151,7 +1151,6 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret['created_on'] = ret['created_at']
 
         #Fetching Data from ML
-
         if 'data' in ret:
             raw_data = ret['data']
             try:
@@ -1161,9 +1160,10 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
                 value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         else:
             value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
-        key=['Project Name','Algorithm','Training Status','Accuracy','Runtime']
-
+        key=['project_name','algorithm','training_status','accuracy','runtime']
         ret.update(dict(zip(key,value)))
+        ret['trainer'] = instance.trainer.slug
+        #return ret
 
         #Permission details
         permission_details = get_permissions(
@@ -1179,8 +1179,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            'data',
-            'trainer'
+            'data'
         )
 
 
@@ -1207,7 +1206,6 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainAlgorithmMapping
         exclude = (
-
             'id',
             # 'trainer'
         )
