@@ -15,12 +15,13 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.decorators import method_decorator
+from rest_framework.renderers import JSONRenderer
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
 from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.pagination import CustomPagination
-from api.query_filtering import get_listed_data
+from api.query_filtering import get_listed_data, get_specific_listed_data
 from api.utils import \
     convert_to_string, \
     InsightSerializer, \
@@ -5538,6 +5539,9 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     def get_serializer_context(self):
         return {'request': self.request}
 
+    def get_queryset_specific(self, xxx):
+        return self.get_queryset().filter(trainer=xxx.id)
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -5578,12 +5582,13 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-
+        print (data)
 
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
-
+        print ("\n")
+        print (data)
         if serializer.is_valid():
             train_algo_object = serializer.save()
             #train_algo_object.create()
@@ -5626,6 +5631,18 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
         )
 
+    @list_route(methods=['get'])
+    def search(self, request, *args, **kwargs):
+        trainer_slug = request.GET['trainer']
+        trainer_object = Trainer.objects.get(slug=trainer_slug)
+
+        response = get_specific_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=TrainAlgorithmMappingListSerializer,
+            xxx=trainer_object
+        )
+        return response
 
     # @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
