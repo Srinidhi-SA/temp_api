@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'api',
     'django_filters',
     'auditlog',
-    'guardian'
+    'guardian',
+    'django-celery-beat'
 ]
 
 MIDDLEWARE = [

@@ -5698,6 +5698,14 @@ class ModelDeployementView(viewsets.ModelViewSet):
         if serializer.is_valid():
             model_deployment_object = serializer.save()
             #train_algo_object.create()
+            from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
+            schedule, _ = IntervalSchedule(every=60, period='seconds')
+            PeriodicTask.objects.create(
+                interval=schedule,
+                name=model_deployment_object.slug,
+                task='api.tasks.print_this_every_minute',
+                args='I---------am----------------Groot.x'
+            )
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
