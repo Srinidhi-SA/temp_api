@@ -1162,6 +1162,8 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
             value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         key=['project_name','algorithm','training_status','accuracy','runtime']
         ret.update(dict(zip(key,value)))
+        ret['trainer'] = instance.trainer.slug
+        #return ret
 
         #Permission details
         permission_details = get_permissions(
@@ -1177,8 +1179,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            'data',
-            #'trainer'
+            'data'
         )
 
 

@@ -20,12 +20,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Marlabs@123',
-        # 'USER': 'root',
-        # 'PASSWORD': 'root',
-        'HOST': '172.31.64.145',
-        'PORT': '',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '3307',
     }
 }
 
@@ -95,7 +93,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://172.31.64.145:6379/1",
+        "LOCATION": "redis://192.168.57.20:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -137,8 +135,8 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "dev"
 
-CELERY_BROKER_URL = 'redis://172.31.64.145:6379'
-CELERY_RESULT_BACKEND = 'redis://172.31.64.145:6379'
+CELERY_BROKER_URL = 'redis://192.168.57.20:6379'
+CELERY_RESULT_BACKEND = 'redis://192.168.57.20:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -184,7 +182,7 @@ END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
 CELERY_ONCE_CONFIG = {
   'backend': 'celery_once.backends.Redis',
   'settings': {
-    'url': 'redis://172.31.64.145:6379',
+    'url': 'redis://192.168.57.20:6379',
     'default_timeout': 60 * 60
   }
 }
