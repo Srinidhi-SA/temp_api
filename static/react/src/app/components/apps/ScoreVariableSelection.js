@@ -83,7 +83,7 @@ export class ScoreVariableSelection extends React.Component {
                 
 
                 
-                <label className="control-label cst-fSize">I want to analyse</label>
+                <label className="col-lg-2 control-label cst-fSize" for="createScoreAnalysisList">I want to analyse</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 
                  {/*<!-- /.col-lg-4 -->*/}
