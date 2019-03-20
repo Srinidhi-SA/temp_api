@@ -52,7 +52,7 @@ export class ModelSummary extends React.Component {
 						<tbody>
 							<tr>
 								<th class="text-left">Project name</th>
-								<td class="text-left">{summary.name}</td>
+								<td class="text-left">{summary.project_name}</td>
 							</tr>
 							<tr>
 								<th class="text-left">Algorithm</th>
@@ -209,7 +209,7 @@ export class ModelSummary extends React.Component {
 		{/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.name}<small> : {summary.algorithm}</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.project_name}<small> : {summary.algorithm}</small></h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
