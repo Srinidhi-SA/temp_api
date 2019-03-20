@@ -137,7 +137,7 @@ const CREATEMODEL = "Create Model";
 const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
 const RENAMESTOCKMODEL = "Rename Analysis";
-const DELETEALGO ="Delete Model";
+const DELETEALGO ="Delete this Model";
 
 export function generateHeaders(table) {
   var cols = table.tableData.map(function(rowData, i) {

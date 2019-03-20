@@ -145,6 +145,8 @@ export function getAppsAlgoList(pageNo) {
 }
 
 function fetchAlgoList(pageNo, token) {
+  // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
+
    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -175,7 +177,9 @@ function deleteAlgo(slug, dialog, dispatch) {
   dispatch(showLoading());
   Dialog.resetOptions();
   return deleteAlgoAPI(slug).then(([response, json]) => {
+    debugger;
     if (response.status === 200) {
+      debugger;
       dispatch(getAppsAlgoList(store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
@@ -188,11 +192,15 @@ function deleteAlgo(slug, dialog, dispatch) {
 
 
 function deleteAlgoAPI(slug) {
+  debugger;
+  // return fetch(API + '/api/score/' + slug + '/', {
+
   return fetch(API + '/api/trainalgomapping/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({deleted: true})
   }).then(response => Promise.all([response, response.json()]));
+  debugger;
 
 }
 

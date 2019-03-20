@@ -60,7 +60,7 @@ export class ModelSummary extends React.Component {
 							</tr>
 							<tr>
 								<th class="text-left">Training status</th>
-								<td class="text-left">{summary.status}</td>
+								<td class="text-left">{summary.training_status}</td>
 							</tr>
 							<tr>
 								<th class="text-left">Accuracy</th>

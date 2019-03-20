@@ -89,7 +89,11 @@ export class ModelVariableSelection extends React.Component {
        let custom_word1 = "";
        let custom_word2 = "";
        var modelValidation = "";
+       var noOfROws ="";
        var buttonName = "Create Model";
+       noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function(elements) {
+        return elements;}).value;
+       console.log(noOfROws,"no of rows ++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         if(store.getState().apps.modelSummaryFlag){
             let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
@@ -105,6 +109,7 @@ export class ModelVariableSelection extends React.Component {
                     <option value=""></option>
                 {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
                     metaData.map((metaItem,metaIndex) =>{
+                        debugger;
                         if(metaItem.columnType =="measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol){
                             return(<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>)
                         }
@@ -147,8 +152,7 @@ export class ModelVariableSelection extends React.Component {
                                 <div class="form-group">
                                     <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-8">
-                                    
-                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
+                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={noOfROws-1} value={store.getState().apps.regression_crossvalidationvalue}/>
 
                                     </div>
                                 </div>:

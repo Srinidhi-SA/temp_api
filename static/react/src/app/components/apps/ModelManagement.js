@@ -7,6 +7,7 @@ import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction,ha
 import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
 import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
+import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import { Deploy } from "./Deploy";
@@ -16,6 +17,8 @@ import {getAppsAlgoList,refreshAppsAlgoList} from "../../actions/appActions";
   return {
     algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
+    roboDatasetSlug: store.apps.roboDatasetSlug,
+    modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
     deployShowModal: store.apps.deployShowModal,
@@ -81,7 +84,8 @@ export class ModelManagement extends React.Component {
   }
 
   handleAlgoDelete(slug) {
-    this.props.dispatch(handleAlgoDeleteAction(slug, this.refs.dialog));
+    debugger;
+    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
 }
 
   pickValue(actionType, event){
@@ -125,12 +129,12 @@ export class ModelManagement extends React.Component {
       <td className="text-left"> {item.model_id}</td>
       <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
-      <td> {item.training_status}</td>
-      <td> {item.accuracy}</td>
-      <td><i class="fa fa-calendar text-info"/> {item.created_on}</td>
-      <td> {item.deployment}</td>
-      <td><i class="fa fa-clock-o text-warning"/> {item.runtime}</td>
-      <td><Button onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary">Details</Button></td>
+      <td ><span className="text-success"></span> {item.training_status}</td>
+      <td > {item.accuracy}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.Created_on, " mmm d,yyyy HH:MM")}</td>
+      <td > {item.deployment}</td>
+      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+      <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"> Details</Button></td>
       <td>
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">

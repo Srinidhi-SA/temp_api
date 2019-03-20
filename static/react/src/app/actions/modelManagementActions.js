@@ -1,3 +1,9 @@
+export function openModelSummaryAction(summarySelected) {
+  return {
+    type: "SUMMARY_SELECTED_LIST" ,
+    summarySelected
+  }
+}
 export function openDeployModalAction(selectedItem) {
   return {
     type: "DEPLOY_SHOW_MODAL" ,
@@ -19,12 +25,7 @@ export function closeDeployModalAction() {
 //     actionType
 //   }
 // }
-export function openModelSummaryAction(summarySelected) {
-  return {
-    type: "SUMMARY_SELECTED_LIST" ,
-    summarySelected
-  }
-}
+
 
 export function handleAlgoDeleteAction(slug, dialog) {
   return (dispatch) => {
