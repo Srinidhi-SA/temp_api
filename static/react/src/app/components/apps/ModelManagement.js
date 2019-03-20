@@ -84,7 +84,6 @@ export class ModelManagement extends React.Component {
   }
 
   handleAlgoDelete(slug) {
-    debugger;
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
 }
 
@@ -118,7 +117,6 @@ export class ModelManagement extends React.Component {
     var deployPopup = "";
     // debugger;
     const algoList = store.getState().apps.algoList.data;
-    debugger;
       mmTable = this.props.algoList.data.map((item,key )=> {
         return (
           
@@ -141,8 +139,8 @@ export class ModelManagement extends React.Component {
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-          <li><Button bsStyle="cst_button">Clone</Button></li>
-            <li><Button onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</Button></li>
+          <li><a bsStyle="cst_button">Clone</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
             <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>       
           </ul>
         </div>
@@ -212,7 +210,7 @@ export class ModelManagement extends React.Component {
                </div>
             </div>
              <div class="table-responsive">
-                    <table  id="mmtable" class="tablesorter table table-striped table-hover  break-if-longText">
+                    <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
                           <th>#</th>
