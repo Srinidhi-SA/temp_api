@@ -25,10 +25,3 @@ export function closeDeployModalAction() {
 //     actionType
 //   }
 // }
-
-
-export function handleAlgoDeleteAction(slug, dialog) {
-  return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
-  }
-}

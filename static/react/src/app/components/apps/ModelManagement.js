@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {C3Chart} from "../c3Chart";
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction,handleAlgoDeleteAction} from "../../actions/modelManagementActions"
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
 import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
 import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -11,7 +11,7 @@ import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import { Deploy } from "./Deploy";
-import {getAppsAlgoList,refreshAppsAlgoList} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
