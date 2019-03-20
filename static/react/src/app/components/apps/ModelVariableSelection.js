@@ -98,6 +98,7 @@ export class ModelVariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if(dataPrev && store.getState().apps.currentAppDetails != null ){
+            debugger;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
@@ -132,7 +133,7 @@ export class ModelVariableSelection extends React.Component {
         if(this.props.currentAppDetails != null){
             custom_word1 = this.props.currentAppDetails.custom_word1;
             custom_word2 = this.props.currentAppDetails.custom_word2;
-
+                          
              if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
                  buttonName = "Proceed";
                        modelValidation = <div className="col-lg-8">
@@ -146,6 +147,7 @@ export class ModelVariableSelection extends React.Component {
                                 <div class="form-group">
                                     <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-8">
+                                    
                                         <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
 
                                     </div>

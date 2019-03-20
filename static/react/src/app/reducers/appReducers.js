@@ -152,6 +152,17 @@ export default function reducer(state = {
     }
     break;
 
+    case "SUMMARY_SELECTED_LIST":
+    {
+      return {
+        ...state,
+        summarySelected: action.summarySelected,
+        // latestDatasets:action.latestDatasets,
+        // current_page: action.current_page
+      }
+    }
+    break;
+
     case "DEPLOY_SHOW_MODAL":
     {
       return {

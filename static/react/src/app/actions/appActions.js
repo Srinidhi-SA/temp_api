@@ -195,12 +195,12 @@ function deleteAlgoAPI(slug) {
   }).then(response => Promise.all([response, response.json()]));
 
 }
-export function handleAlgoDelete(slug, dialog) {
+
+export function handleAlgoDeleteAction(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
   }
 }
-
 
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;

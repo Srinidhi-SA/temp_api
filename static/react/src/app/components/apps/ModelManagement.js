@@ -3,15 +3,14 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {C3Chart} from "../c3Chart";
-import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction,handleAlgoDeleteAction} from "../../actions/modelManagementActions"
 import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
 import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import { Deploy } from "./Deploy";
-import {openModelSummaryAction} from "../../actions/modelSummaryActions";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
@@ -82,8 +81,9 @@ export class ModelManagement extends React.Component {
   }
 
   handleAlgoDelete(slug) {
-    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+    this.props.dispatch(handleAlgoDeleteAction(slug, this.refs.dialog));
 }
+
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
       this.state[this.props.selectedItem.slug] = {}
@@ -108,34 +108,24 @@ export class ModelManagement extends React.Component {
     }
   }
 
-  closeModelmanagement()
-  {
-    var proccedUrl = this.props.match.url.replace('modelManagement','models');
-    this.props.history.push(proccedUrl);
-  }
-
-  handleAlgoDelete(slug) {
-    this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
-}
-
   render(){
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
     var mmTable = "";
     var deployPopup = "";
     // debugger;
     const algoList = store.getState().apps.algoList.data;
-
+    debugger;
       mmTable = this.props.algoList.data.map((item,key )=> {
         return (
           
         <tr  className={('all ' + item.name)}>
-        <td>
+       <td>
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
       <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
-      <td> {item.status}</td>
+      <td> {item.training_status}</td>
       <td> {item.accuracy}</td>
       <td><i class="fa fa-calendar text-info"/> {item.created_on}</td>
       <td> {item.deployment}</td>
@@ -218,7 +208,7 @@ export class ModelManagement extends React.Component {
                </div>
             </div>
              <div class="table-responsive">
-                    <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                    <table  id="mmtable" class="tablesorter table table-striped table-hover  break-if-longText">
                       <thead>
                         <tr className="myHead">
                           <th>#</th>
