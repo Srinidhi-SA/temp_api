@@ -85,7 +85,7 @@ const algoList = store.getState().apps.algoList.data;
       <td className="text-left"> {item.model_id}</td>
       <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
-      <td ><span className="text-success"></span> {item.status}</td>
+      <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
       <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.Created_on, " mmm d,yyyy HH:MM")}</td>
       <td > {item.deployment}</td>
