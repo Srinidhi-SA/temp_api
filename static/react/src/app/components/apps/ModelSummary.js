@@ -48,7 +48,7 @@ export class ModelSummary extends React.Component {
 					<div class="col-md-6">
 						<h2> Model Summary</h2>
 
-						<table class="table table-condensed table-striped table-fw-widget">
+						<table class="table table-bordered table-condensed table-striped table-fw-widget">
 						<tbody>
 							<tr>
 								<th class="text-left">Project name</th>
@@ -84,7 +84,7 @@ export class ModelSummary extends React.Component {
 					</div>
 					<div class="col-md-6">
 						<h2>Model Settings</h2>
-						<table class="table table-condensed table-striped table-fw-widget">
+						<table class="table table-bordered table-condensed table-striped table-fw-widget">
 						<tbody>
 							<tr>
 								<th class="text-left">Training dataset</th>

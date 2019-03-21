@@ -83,7 +83,7 @@ const algoList = store.getState().apps.algoList.data;
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
+      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
@@ -160,10 +160,7 @@ const algoList = store.getState().apps.algoList.data;
                     <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
                       <thead>
                         <tr className="myHead">
-                <th>
-                      #
-                      </th>
-                          <th><b>Model Id</b></th>
+                          <th class="text-left"><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
                           <th><b>Status</b></th>
