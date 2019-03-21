@@ -16,12 +16,3 @@ export function closeDeployModalAction() {
      type: "DEPLOY_HIDE_MODAL",
    }
 }
-
-// export function saveBinLevelTransformationValuesAction(coloumnSlug, actionType, userData){
-//   return {
-//     type: "SAVE_BIN_LEVEL_TRANSFORMATION_DATA",
-//     coloumnSlug,
-//     userData,
-//     actionType
-//   }
-// }
