@@ -59,11 +59,8 @@ export class ModelSummary extends React.Component {
 		var sideChart = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
 		top =sideChart.map(card => card.listOfCards);
-		var cards ="";
-		cards =top.map(fun => fun[0].cardData[0].data);
-		var cardsobj = JSON.stringify(cards[0]);
-
-		console.log(cardsobj,",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
+		var icards ="";
+		icards =top.map(fun => fun[0].cardData[0].data);
 
 	overviewCard=(
 			 <div class="row">
@@ -171,27 +168,27 @@ export class ModelSummary extends React.Component {
  <div>
 	 <div class="row ov_card_boxes">
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.87<br/>
+					<h3 class="text-center"> {icards.map(i=>i[0].value)}<br/>
 						<small>Accuracy</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.8<br/>
+					<h3 class="text-center"> {icards.map(i=>i[1].value)}<br/>
 						<small>Precision</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 2.6<br/>
+					<h3 class="text-center"> {icards.map(i=>i[2].value)}<br/>
 						<small>Recall</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.9<br/>
+					<h3 class="text-center">{icards.map(i=>i[3].value)}<br/>
 						<small>F1 Score</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.8<br/>
+					<h3 class="text-center"> {icards.map(i=>i[4].value)}<br/>
 						<small>Log-loss
 </small>
 					</h3>
