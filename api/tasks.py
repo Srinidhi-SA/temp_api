@@ -461,6 +461,7 @@ def kill_application_using_fabric(app_id=None):
 #     stock_dataset_object.call_mlscripts()
 #     stock_dataset_object.save()
 
+
 @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
 
@@ -477,6 +478,6 @@ def stock_sense_crawl(object_slug):
     # stock_dataset_object.call_mlscripts()
 
 
-@task(name='print_this_every_minute')
-def print_this_every_minute(data=None):
+@task(name='print_this_every_minute', queue=CONFIG_FILE_NAME)
+def print_this_every_minute(data):
     print(data)
