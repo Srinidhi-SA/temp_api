@@ -57,13 +57,14 @@ export class ModelSummary extends React.Component {
 ;
 // apps.algoList.data[""0""].data.listOfNodes[1].listOfCards[""0""].cardData[""0""].data
 		var sideChart = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
-		var top="";
-		top =sideChart.map(card => card.listOfCards);
-		var cards ="";
-		cards =top.map(fun => fun[0].cardData[0].data);
-		var cardsobj = JSON.stringify(cards[0]);
+		var top =sideChart.map(card => card.listOfCards);
+		var cards =top.map(fun => fun[0].cardData[0].data);
+		var val =cards[0].filter(function(val){ return(val.name)});
 
-		console.log(cardsobj,",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
+		function vals(i){
+			return (Number(val[i].value)).toFixed(2);
+		}
+		
 
 	overviewCard=(
 			 <div class="row">
@@ -166,34 +167,32 @@ export class ModelSummary extends React.Component {
 				</div>)
 
 
-
  performanceCard=(
  <div>
 	 <div class="row ov_card_boxes">
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.87<br/>
+					<h3 class="text-center" id="Accuracy"> {vals(0)}<br/>
 						<small>Accuracy</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.8<br/>
+					<h3 class="text-center"> {vals(1)}<br/>
 						<small>Precision</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 2.6<br/>
+					<h3 class="text-center"> {vals(2)} <br/>
 						<small>Recall</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.9<br/>
+					<h3 class="text-center"> {vals(3)}<br/>
 						<small>F1 Score</small>
 					</h3>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> 0.8<br/>
-						<small>Log-loss
-</small>
+					<h3 class="text-center"> {vals(4)}<br/>
+						<small>Log-loss</small>
 					</h3>
 				</div>				
 			  </div>
