@@ -5750,6 +5750,27 @@ class ModelDeployementView(viewsets.ModelViewSet):
         serializer = DeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    def get_queryset_specific(self,xxx):
+        return self.get_queryset().filter(deploytrainer=xxx.id)
+
+    @list_route(methods=['get'])
+    def deploy_details_search(self, request, *args, **kwargs):
+        #print ("I m in Deploy details search method")
+        #import pdb;pdb.set_trace()
+        deploytrainer_slug = request.GET['deploytrainer']
+        #print (deploytrainer_slug)
+        #print (deploytrainer_slug)
+
+        trainalgo_object = TrainAlgorithmMapping.objects.get(slug=deploytrainer_slug)
+        print (trainalgo_object)
+        print (deploytrainer_slug)
+        response = get_specific_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DeploymentListSerializer,
+            xxx=trainalgo_object)
+        return response
+
 #view for deployment + Dataset +Score
 class DatasetScoreDeployementView(viewsets.ModelViewSet):
     def get_queryset(self):
