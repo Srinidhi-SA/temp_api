@@ -63,7 +63,7 @@ const algoList = store.getState().apps.algoList.data;
         return (
         <tr  className={('all ' + item.name)}>
       <td className="text-left"> {item.model_id}</td>
-      <td> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
+      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.status}</td>
       <td > {item.accuracy}</td>
@@ -142,7 +142,7 @@ const algoList = store.getState().apps.algoList.data;
                 {/* <th>
                       #
                       </th> */}
-                          <th><b>Model Id</b></th>
+                          <th class="text-left"><b>Model Id</b></th>
                           <th class="text-left"><b>Project Name</b></th>
                           <th class="text-left"><b>Algorithm</b></th>
                           <th><b>Status</b></th>
