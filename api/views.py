@@ -5688,24 +5688,201 @@ class ModelDeployementView(viewsets.ModelViewSet):
     permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
+        '''
+        request.data = {
+            "config":{
+                    "timing_details": {
+                                    "type": "interval",
+                                    "crontab": {
+                                        "minute": "30",
+                                        "hour": "*",
+                                        "day_of_week": "*",
+                                        "day_of_month": "*",
+                                        "month_of_year": "*",
+                                        "timezone": "Kolkata/Asia"
+                                    },
+                                    "interval": {
+                                        "every": 60,
+                                        "period": "seconds"
+                                    }
+                                },
+                    "score_details": {
+                      "name": "score_check",
+                      "dataset": "diabetic-datacsv-5nm9kubdkb",
+                      "trainer": "thanu_diabetic-uwrs0tym6i",
+                      "config": {
+                        "selectedModel": {
+                          "evaluationMetricValue": 0.77,
+                          "evaluationMetricName": "accuracy",
+                          "name": "Logistic Regression",
+                          "Model Id": "M0001",
+                          "slug": "f77631ce2ab24cf78c55bb6a5fce4db8lr"
+                        },
+                        "variablesSelection": [
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "Pregnancies",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "4f51d79a62834242bce3a9e58a14f4d5",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "Glucose",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "e9ec44182f804988a291fcc73001c155",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "BloodPressure",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "584c1bcbf6044b2295131e92e79549fb",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "Skin Thickness",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "d897704ec11841fa84d7f4009fa0ce46",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "Insulin",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "39d0c65d967c435bb5c66a448746fe10",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "BMI",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "6768075988694bb9a749daabe17d8daf",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "PedigreeFunction",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "0ab0f6dce4ae4b96b8c7d76cd78be18f",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "measure",
+                            "name": "Age",
+                            "selected": true,
+                            "actualColumnType": "measure",
+                            "targetColumn": false,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "a50709216b0a44a9a1d8524b4d3595fb",
+                            "uidCol": false
+                          },
+                          {
+                            "polarity": null,
+                            "setVarAs": null,
+                            "columnType": "dimension",
+                            "name": "Outcome",
+                            "selected": true,
+                            "actualColumnType": "dimension",
+                            "targetColumn": true,
+                            "targetColSetVarAs": null,
+                            "dateSuggestionFlag": false,
+                            "slug": "a45bca7304b245eba9ee37f880818ff5",
+                            "uidCol": false
+                          }
+                        ],
+                        "app_id": 2
+                      }
+                    },
+                    "dataset_details":{
+                        "datasource_details":{
+                            "datasetname":"name",
+                            "bucket_name":"bucker",
+                            "file_name":"data.csv",
+                            "access_key_id":"access_key",
+                            "secret_key":"secret_key"
+
+                        },
+                        "datasource_type":"S3"
+
+                    }
+                },
+        }
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        '''
         # try:
         data = request.data
+        # DEFAULT TIMING DETAILS
+        timing_details = {
+            'type': 'interval',
+            'interval': {
+                'every': 60,
+                'period': 'seconds'
+            }
+        }
+        if 'config' in data:
+            if 'timing_details' in data['config']:
+                timing_details = data['config']['timing_details']
+            else:
+                data['config']['timing_details'] = timing_details
         data = convert_to_string(data)
+
 
         data['deploytrainer'] = TrainAlgorithmMapping.objects.filter(slug=data['deploytrainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = DeploymentSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             model_deployment_object = serializer.save()
-            #train_algo_object.create()
-            from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
-            schedule, _ = IntervalSchedule(every=60, period='seconds')
-            PeriodicTask.objects.create(
-                interval=schedule,
-                name=model_deployment_object.slug,
-                task='api.tasks.print_this_every_minute',
-                args='I---------am----------------Groot.x'
-            )
+            model_deployment_object.start_periodically()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
@@ -5757,6 +5934,59 @@ class ModelDeployementView(viewsets.ModelViewSet):
 
         serializer = DeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def terminate_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.terminate_periodic_task()
+            return JsonResponse({'message': 'Terminated'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
+
+    @detail_route(methods=['get'])
+    def stop_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.disable_periodic_task()
+            return JsonResponse({'message': 'Stopped'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
+    @detail_route(methods=['get'])
+    def resume_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.resume_periodic_task()
+            return JsonResponse({'message': 'Resumed'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
 
 #view for deployment + Dataset +Score
 class DatasetScoreDeployementView(viewsets.ModelViewSet):
