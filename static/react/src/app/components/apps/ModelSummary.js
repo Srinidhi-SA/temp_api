@@ -1,9 +1,11 @@
 import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
-import {refreshAppsAlgoList} from "../../actions/appActions";
+import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
+import {C3Chart} from "../c3Chart";
+
 
 
 @connect((store) => {
@@ -11,6 +13,7 @@ var dateFormat = require('dateformat');
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
 		selectedSummary:store.apps.summarySelected,
+		dataPreview: store.datasets.dataPreview,
   };
 })
 
@@ -20,7 +23,6 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		debugger;
 		if (isEmpty(this.props.selectedSummary)) {
       if (!this.props.match.path.includes("robo")) {
         let url = '/signals/'
@@ -38,11 +40,31 @@ export class ModelSummary extends React.Component {
   closeModelSummary(){
 	 window.history.back();
 	}
+ 
+
+
+
+
   render(){
 		console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
+		let chartInfo=[]
+		// var listOfCardList = getListOfCards(summary.data.listOfNodes);
+
+
+;
+// apps.algoList.data[""0""].data.listOfNodes[1].listOfCards[""0""].cardData[""0""].data
+		var sideChart = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
+		var top="";
+		top =sideChart.map(card => card.listOfCards);
+		var cards ="";
+		cards =top.map(fun => fun[0].cardData[0].data);
+		var cardsobj = JSON.stringify(cards[0]);
+
+		console.log(cardsobj,",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
+
 	overviewCard=(
 			 <div class="row">
 					<div class="col-md-6">
@@ -199,6 +221,8 @@ export class ModelSummary extends React.Component {
 						<h2>Gain Chart</h2>
 						<img src="images/gain_chart.png" class="img-responsive" />
 					</div>
+				<C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+
 				</div>
 				</div>)
 
@@ -304,7 +328,6 @@ export class ModelSummary extends React.Component {
             </div>
 			
 			<div class="buttonRow text-right"> <a href="javascript:;" onClick={this.closeModelSummary.bind(this)}class="btn btn-primary">Close </a> </div>
-			
           </div>
 		
 		

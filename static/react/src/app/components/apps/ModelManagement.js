@@ -84,7 +84,6 @@ export class ModelManagement extends React.Component {
   }
 
   handleAlgoDelete(slug) {
-    debugger;
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
 }
 
@@ -118,7 +117,6 @@ export class ModelManagement extends React.Component {
     var deployPopup = "";
     // debugger;
     const algoList = store.getState().apps.algoList.data;
-    debugger;
       mmTable = this.props.algoList.data.map((item,key )=> {
         return (
           

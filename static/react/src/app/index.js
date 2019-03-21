@@ -251,9 +251,9 @@ class App extends React.Component {
       if (this.hasScoreRoutePermission()) {
         debugger;
         switch (props.match.path) {
-          case "/apps/" + props.match.params.AppId:
+          case "/signals/":
             {
-              return (<Apps {...props}/>)
+              return (<Signals {...props}/>)
             }
             break;
             // case "/apps/:AppId/modelManagement":

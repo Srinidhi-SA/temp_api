@@ -49,7 +49,6 @@ export class OverViewPage extends React.Component {
   }
   //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
-
     if (isEmpty(this.props.signal)) {
       if (this.props.match.url.indexOf("apps-robo") != -1) {
         this.props.dispatch(getRoboDataset(this.props.match.params.slug));
