@@ -35,13 +35,13 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		if (isEmpty(this.props.selectedSummary)) {
-      if (!this.props.match.path.includes("robo")) {
-        let url = '/signals/'
-        console.log(this.props);
-        this.props.history.push(url)
-      }
-		}
+		// if (isEmpty(this.props.selectedSummary)) {
+    //   if (!this.props.match.path.includes("robo")) {
+    //     let url = '/signals/'
+    //     console.log(this.props);
+    //     this.props.history.push(url)
+    //   }
+		// }
 	}
 
   componentDidMount() {

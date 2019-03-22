@@ -72,7 +72,7 @@ export class ModelManagement extends React.Component {
   }
   proceedToModelSummary(item)
   {
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/modelSummary');
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
     console.log(item,"item called for individual page...........................")
     this.props.dispatch(openModelSummaryAction(item));
 
