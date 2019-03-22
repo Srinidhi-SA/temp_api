@@ -147,7 +147,7 @@ export function getAppsAlgoList(pageNo) {
 function fetchAlgoList(pageNo, token) {
   // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
 
-   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + 30 + '', {
       method: 'get',
       headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));
