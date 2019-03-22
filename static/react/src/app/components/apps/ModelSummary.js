@@ -4,6 +4,7 @@ import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
+
 import {C3Chart} from "../c3Chart";
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "../../components/signals/CardHtml";
@@ -107,7 +108,7 @@ renderCardData(c3,cardWidth){
 						break;
 						case "dataBox":
 						let bgStockBox = "bgStockBox"
-                return (<DataBox  className= {bgStockBox} key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                return (<DataBox  key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
 			
 				}
@@ -182,157 +183,34 @@ renderCardData(c3,cardWidth){
 	overviewCard=(
 			 <div class="row">
 					<div class="col-md-6">
-						{/* <h2> Model Summary</h2> */}
-{headSummaryTable}
-						{/* <table class="table table-bordered table-condensed table-striped table-fw-widget"> */}
-
-						<tbody>
+							{headSummaryTable}
 						{summaryTable}
-							{/* <tr>
-								<th class="text-left">Project name</th>
-								<td class="text-left">{summary.project_name}</td>
-							</tr>
-							<tr>
-								<th class="text-left">Algorithm</th>
-								<td class="text-left">{summary.algorithm}</td>
-							</tr>
-							<tr>
-								<th class="text-left">Training status</th>
-								<td class="text-left">{summary.training_status}</td>
-							</tr>
-							<tr>
-								<th class="text-left">Accuracy</th>
-								<td class="text-left">{summary.accuracy}</td>
-							</tr>
-							<tr>
-								<th class="text-left">Runtime</th>
-								<td class="text-left">{summary.runtime}</td>
-							</tr>
-							<tr>
-								<th class="text-left">Owner</th>
-								<td class="text-left">{summary.created_by.username}</td>
-							</tr>
-							<tr>
-						
-								<th class="text-left">Created on</th>
-								<td class="text-left">{dateFormat(summary.created_on, " mmm d,yyyy HH:MM")}</td>
-							</tr> */}
-							</tbody>
-						{/* </table> */}
 					</div>
 					<div class="col-md-6">
-						{/* <h2>Model Settings</h2> */}
 						{headSettingsTable}
-						{/* <table class="table table-bordered table-condensed table-striped table-fw-widget"> */}
-						{/* <tbody> */}
-							{/* {/* <tr>
-								<th class="text-left">Training dataset</th>
-								<td class="text-left">Credit_churn_model.csv</td>
-							</tr>
-							<tr>
-								<th class="text-left">Target column</th>
-								<td class="text-left">Status</td>
-							</tr>
-							<tr>
-								<th class="text-left">Target column value</th>
-								<td class="text-left">Churn</td>
-							</tr>
-							<tr>
-								<th class="text-left">Number of independent variables</th>
-								<td class="text-left">20</td>
-							</tr>
-							<tr>
-								<th class="text-left">Algorithm</th>
-								<td class="text-left">Logistic Regression</td>
-							</tr>
-							<tr>
-								<th class="text-left">Model validation</th>
-								<td class="text-left">Train and test (80:20)</td>
-							</tr>
-							<tr>
-								<th class="text-left">Fit intercept</th>
-								<td class="text-left">True</td>
-							</tr>
-							<tr>
-								<th class="text-left">Solver used</th>
-								<td class="text-left">LBFGS</td>
-							</tr>
-							<tr>
-								<th class="text-left">Multiclass option</th>
-								<td class="text-left">One vs Rest</td>
-							</tr>
-							<tr>
-								<th class="text-left">Maximum solver iterations</th>
-								<td class="text-left">100</td>
-							</tr>
-							<tr>
-								<th class="text-left">Warm start</th>
-								<td class="text-left">False</td>
-							</tr>
-							<tr>
-								<th class="text-left">Convergence tolerance of iterations</th>
-								<td class="text-left">4</td>
-							</tr>
-							<tr>
-								<th class="text-left">Inverse regularization strength</th>
-								<td class="text-left">1</td>
-							</tr> */}
 								{settingsTable}
-							{/* </tbody>  */}
-						{/* </table> */}
 					</div>
-				
-				
-				</div>)
+			 </div>)
 
 
 
  performanceCard=(
  <div>
 
-	 {topCards}
-	 {/* {headtopCards} */}
-	 {/* <div class="row ov_card_boxes">
-				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> {icards.map(i=>i[0].value)}<br/>
-						<small>Accuracy</small>
-					</h3>
+	 {/* {topCards} */}
+
+	 
+	 <div class="row ov_card_boxes">
+				{/* <div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox"> */}
+	       {topCards}
+				{/* </div>	 */}
 				</div>
-				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> {icards.map(i=>i[1].value)}<br/>
-						<small>Precision</small>
-					</h3>
-				</div>
-				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> {icards.map(i=>i[2].value)}<br/>
-						<small>Recall</small>
-					</h3>
-				</div>
-				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center">{icards.map(i=>i[3].value)}<br/>
-						<small>F1 Score</small>
-					</h3>
-				</div>
-				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
-					<h3 class="text-center"> {icards.map(i=>i[4].value)}<br/>
-						<small>Log-loss
-</small>
-					</h3>
-				</div>				
-			  </div> */}
-			   
 				
-				 {/* {headtopCards}
-				 {topCards} */}
-			  
-				{/* {headconfusionMatrix}
-				{confusionMatrix}
-				{headliftChart}
-				{liftChart}
-				{headksChart}
-				{ksChart}
-				{headgainChart}
-				{gainChart} */}
+
+
+
+
+
 				<div class="row xs-mt-10">
 					<div class="col-md-6">
 				{headconfusionMatrix}
