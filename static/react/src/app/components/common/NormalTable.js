@@ -13,10 +13,11 @@ export class NormalTable extends React.Component {
   constructor(){
     super();
   }
- 
+  // table table-bordered table-condensed table-striped
+  // table table-bordered break-if-longText
   render() {
    var data = this.props.tableData;
-   var className = "table table-bordered break-if-longText"
+   var className = "table table-bordered  table-condensed table-striped break-if-longText"
    console.log("checking normal tabletable element");
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
