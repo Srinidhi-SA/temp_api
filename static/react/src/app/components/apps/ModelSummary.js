@@ -5,6 +5,17 @@ import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 import {C3Chart} from "../c3Chart";
+import {DecisionTree} from "../decisionTree";
+import {CardHtml} from "../../components/signals/CardHtml";
+import {CardTable} from "../common/CardTable";
+import { Scrollbars } from 'react-custom-scrollbars';
+//import Tree from 'react-tree-graph';
+import {DataBox} from "../common/DataBox";
+import $ from "jquery";
+
+var data = null,
+yformat = null,
+cardData = {};
 
 
 
@@ -40,7 +51,70 @@ export class ModelSummary extends React.Component {
   closeModelSummary(){
 	 window.history.back();
 	}
- 
+	calculateWidth(width){
+		let colWidth  = parseInt((width/100)*12)
+		let divClass="col-md-"+colWidth;
+		return divClass;
+}
+renderCardData(c3,cardWidth){
+
+		var htmlData = c3.map((story, i) => {
+				let randomNum = Math.random().toString(36).substr(2,8);
+				switch (story.dataType) {
+				case "html":
+						if(!story.hasOwnProperty("classTag"))story.classTag ="none";
+						return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
+						break;
+				case "c3Chart":
+						//console.log("checking chart data:::::");
+						let chartInfo=[]
+						if(!$.isEmptyObject(story.data)){
+							 if(story.chartInfo){
+								 chartInfo=story.chartInfo
+							 }
+								if(story.widthPercent &&  story.widthPercent != 100){
+									//  let width  = story.widthPercent+"%";
+										let width  = parseInt((story.widthPercent/100)*12)
+										let divClass="col-md-"+width;
+										let sideChart=false;
+										if(story.widthPercent < 50)sideChart=true;
+										return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+								}else if(story.widthPercent == 100){
+										let divClass="";
+										let parentDivClass = "col-md-12";
+										if(!cardWidth || cardWidth > 50)
+										divClass = "col-md-7 col-md-offset-2"
+										else
+										divClass = "col-md-12";
+										let sideChart=false;
+										return (<div className={parentDivClass}><div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+								}else{
+										let parentDivClass = "col-md-12";
+										return (<div className={parentDivClass}><div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+								}
+						}
+						break;
+				case "tree":
+						//console.log("checking tree data");
+						return ( <DecisionTree key={randomNum} treeData={story.data}/>);
+						break;
+				case "table":
+						if(!story.tableWidth)story.tableWidth = 100;
+						var colClass= this.calculateWidth(story.tableWidth)
+						let tableClass ="table table-bordered table-condensed table-striped table-fw-widget"
+						colClass = colClass;
+				 return (<div className={colClass} key={randomNum}><CardTable  jsonData={story.data} type={story.dataType}/></div>);
+						break;
+						case "dataBox":
+						let bgStockBox = "bgStockBox"
+                return (<DataBox  className= {bgStockBox} key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                break;
+			
+				}
+
+		});
+		return htmlData;
+}
 
 
 
@@ -50,26 +124,71 @@ export class ModelSummary extends React.Component {
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
-		let chartInfo=[]
-		// var listOfCardList = getListOfCards(summary.data.listOfNodes);
+		let chartInfo=[];
 
-
-;
-// apps.algoList.data[""0""].data.listOfNodes[1].listOfCards[""0""].cardData[""0""].data
-		var sideChart = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
+		var performancePage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
-		top =sideChart.map(card => card.listOfCards);
+		top =performancePage.map(card => card.listOfCards);
 		var icards ="";
-		icards =top.map(fun => fun[0].cardData[0].data);
+		
+		var overviewPage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Overview");
+		var oVtop="";
+		oVtop =overviewPage.map(card => card.listOfCards);
+		
+		let cardWidth = this.props.cardWidth;
+
+		var th1 = oVtop.map(fun => fun[0].cardData[0])
+		var tdata1 = oVtop.map(fun => fun[0].cardData[1])
+		
+		
+		var th2 = oVtop.map(fun => fun[1].cardData[0])
+		var tdata2 = oVtop.map(fun => fun[1].cardData[1])
+
+		var c0 = top.map(fun => fun[0].cardData[0])
+
+		var h1 = top.map(fun => fun[1].cardData[0])
+		var c1 = top.map(fun => fun[1].cardData[1])
+		var h2 = top.map(fun => fun[2].cardData[0])
+		var c2 = top.map(fun => fun[2].cardData[1])
+		var h3 = top.map(fun => fun[3].cardData[0])
+		var c3 = top.map(fun => fun[3].cardData[1])
+		var h4 = top.map(fun => fun[4].cardData[0])
+		var c4 = top.map(fun => fun[4].cardData[1])
+		
+
+
+
+
+		const summaryTable = this.renderCardData(tdata1,cardWidth);
+		const headSummaryTable = this.renderCardData(th1,cardWidth);
+ 
+		const settingsTable = this.renderCardData(tdata2,cardWidth);
+		const headSettingsTable = this.renderCardData(th2,cardWidth);
+
+
+		const topCards = this.renderCardData(c0,cardWidth);
+		
+		const headconfusionMatrix = this.renderCardData(h1,cardWidth);
+		const confusionMatrix = this.renderCardData(c1,cardWidth);
+		const headksChart = this.renderCardData(h2,cardWidth);
+		const ksChart = this.renderCardData(c2,cardWidth);
+		const headgainChart = this.renderCardData(h3,cardWidth);
+		const gainChart = this.renderCardData(c3,cardWidth);
+		const headliftChart = this.renderCardData(h4,cardWidth);
+		const liftChart = this.renderCardData(c4,cardWidth);
+ 
+
 
 	overviewCard=(
 			 <div class="row">
 					<div class="col-md-6">
-						<h2> Model Summary</h2>
+						{/* <h2> Model Summary</h2> */}
+{headSummaryTable}
+						{/* <table class="table table-bordered table-condensed table-striped table-fw-widget"> */}
 
-						<table class="table table-bordered table-condensed table-striped table-fw-widget">
 						<tbody>
-							<tr>
+						{summaryTable}
+							{/* <tr>
 								<th class="text-left">Project name</th>
 								<td class="text-left">{summary.project_name}</td>
 							</tr>
@@ -91,21 +210,22 @@ export class ModelSummary extends React.Component {
 							</tr>
 							<tr>
 								<th class="text-left">Owner</th>
-								{/* <td class="text-left">{summary.created_by.username}</td> */}
+								<td class="text-left">{summary.created_by.username}</td>
 							</tr>
 							<tr>
 						
 								<th class="text-left">Created on</th>
 								<td class="text-left">{dateFormat(summary.created_on, " mmm d,yyyy HH:MM")}</td>
-							</tr>
+							</tr> */}
 							</tbody>
-						</table>
+						{/* </table> */}
 					</div>
 					<div class="col-md-6">
-						<h2>Model Settings</h2>
-						<table class="table table-bordered table-condensed table-striped table-fw-widget">
-						<tbody>
-							<tr>
+						{/* <h2>Model Settings</h2> */}
+						{headSettingsTable}
+						{/* <table class="table table-bordered table-condensed table-striped table-fw-widget"> */}
+						{/* <tbody> */}
+							{/* {/* <tr>
 								<th class="text-left">Training dataset</th>
 								<td class="text-left">Credit_churn_model.csv</td>
 							</tr>
@@ -156,17 +276,23 @@ export class ModelSummary extends React.Component {
 							<tr>
 								<th class="text-left">Inverse regularization strength</th>
 								<td class="text-left">1</td>
-							</tr>
-							</tbody>
-						</table>
+							</tr> */}
+								{settingsTable}
+							{/* </tbody>  */}
+						{/* </table> */}
 					</div>
+				
+				
 				</div>)
 
 
 
  performanceCard=(
  <div>
-	 <div class="row ov_card_boxes">
+
+	 {topCards}
+	 {/* {headtopCards} */}
+	 {/* <div class="row ov_card_boxes">
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
 					<h3 class="text-center"> {icards.map(i=>i[0].value)}<br/>
 						<small>Accuracy</small>
@@ -193,33 +319,41 @@ export class ModelSummary extends React.Component {
 </small>
 					</h3>
 				</div>				
-			  </div>
+			  </div> */}
+			   
+				
+				 {/* {headtopCards}
+				 {topCards} */}
 			  
-			  
-			  
-			  
+				{/* {headconfusionMatrix}
+				{confusionMatrix}
+				{headliftChart}
+				{liftChart}
+				{headksChart}
+				{ksChart}
+				{headgainChart}
+				{gainChart} */}
 				<div class="row xs-mt-10">
 					<div class="col-md-6">
-						<h2>Confusion Matrix</h2>
-						<img src="images/confusion_matrix.png" class="img-responsive" />
+				{headconfusionMatrix}
+						{confusionMatrix}
 					</div>
 					<div class="col-md-6">
-						<h2>Lift Chart</h2>
-						<img src="images/lift-chart.png" class="img-responsive" />
+					{headliftChart}
+						{liftChart}
 					</div>
 				</div>
 				<hr/>
-				<div class="row">
+				<div class="row xs-mt-10">
 					<div class="col-md-6">
-						<h2>Kolmogorov Smirnov Chart</h2>
-						<img src="images/kolChart.png" class="img-responsive" />
-					</div>
-					<div class="col-md-6">
-						<h2>Gain Chart</h2>
-						<img src="images/gain_chart.png" class="img-responsive" />
-					</div>
-				<C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+						{headksChart}
+						{ksChart}
 
+					</div>
+					<div class="col-md-6">
+						{headgainChart}
+						{gainChart}
+					</div>
 				</div>
 				</div>)
 
