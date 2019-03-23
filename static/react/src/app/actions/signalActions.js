@@ -261,6 +261,38 @@ export function getSignalAnalysis(token, errandId) {
   }
 }
 
+
+export function getAlgoAnalysis(token, errandId) {
+  return (dispatch) => {
+    return fetchAlgos_analysis(token, errandId).then(([response, json]) => {
+      if (response.status === 200) {
+        dispatch(fetchAlgosSuccess_analysis(json, errandId, dispatch))
+      } else {
+        dispatch(fetchAlgosError_analysis(json));
+      }
+    })
+  }
+}
+
+function fetchAlgos_analysis(token, errandId) {
+  //console.log(token)
+  return fetch(
+  API + '/api/trainalgomapping/' + errandId + "/" ,{
+    method: 'get',
+    headers: {
+      'Authorization': token,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+      bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
+  });
+
+}
+
+
+// return fetch(API + '/api/signals/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+
+
 function fetchPosts_analysis(token, errandId) {
   //console.log(token)
 
@@ -277,14 +309,14 @@ function fetchPosts_analysis(token, errandId) {
 }
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
-
   if (signalAnalysis.status == SUCCESS) {
-    clearInterval(createSignalInterval);
+   clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg());
     dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
-  } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
+  } 
+  else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
     bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
     clearInterval(createSignalInterval);
@@ -295,6 +327,36 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
   }
   return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
+}
+
+
+
+function fetchAlgosSuccess_analysis(algoAnalysis, errandId, dispatch) {
+  // if (algoAnalysis.status == SUCCESS)
+  //  {
+    // clearInterval(createSignalInterval);
+    // dispatch(closeCsLoaderModal())
+    // dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+    // dispatch(clearLoadingMsg());
+    // dispatch(updateTargetTypForSelSignal(algoAnalysis.type))
+  // } 
+  // else if (algoAnalysis.status == FAILED || algoAnalysis.status == false) {
+  //   //bootbox.alert("Your signal could not be created. Please try later.")
+  //   bootbox.alert(statusMessages("error","The Algo could not be created. Please check the dataset and try again.","small_mascot"))
+  //   clearInterval(createSignalInterval);
+  //   dispatch(closeCsLoaderModal())
+  //   dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+  //   dispatch(clearLoadingMsg())
+  // } else if (algoAnalysis.status == "INPROGRESS") {
+  //   dispatch(dispatchSignalLoadingMsg(algoAnalysis));
+  // }
+  return {type: "ALGO_ANALYSIS", algoAnalysis, errandId}
+}
+
+
+function fetchAlgosError_analysis(json) {
+  //console.log("fetching list error!!",json)
+  return {type: "ALGO_ANALYSIS_ERROR", json}
 }
 
 function fetchPostsError_analysis(json) {
@@ -547,6 +609,10 @@ export function showPredictions(predictionSelected) {
 }
 export function emptySignalAnalysis() {
   return {type: "SIGNAL_ANALYSIS_EMPTY"}
+}
+
+export function emptyAlgoAnalysis() {
+  return {type: "ALGO_ANALYSIS_EMPTY"}
 }
 
 //delete signal -------------------
