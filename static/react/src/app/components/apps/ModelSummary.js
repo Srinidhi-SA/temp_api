@@ -2,10 +2,12 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
-import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 
 import {C3Chart} from "../c3Chart";
+import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
+import {getAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "../../components/signals/CardHtml";
 import {CardTable} from "../common/CardTable";
@@ -24,7 +26,8 @@ cardData = {};
   return {
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
-		selectedSummary:store.apps.summarySelected,
+		// selectedSummary:store.apps.summarySelected,
+		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
   };
 })
@@ -42,10 +45,12 @@ export class ModelSummary extends React.Component {
     //     this.props.history.push(url)
     //   }
 		// }
+
+		
 	}
 
   componentDidMount() {
-			this.props.dispatch(refreshAppsAlgoList(this.props));
+			// this.props.dispatch(refreshAppsAlgoList(this.props));
 	}
 
 
@@ -108,7 +113,7 @@ renderCardData(c3,cardWidth){
 						break;
 						case "dataBox":
 						let bgStockBox = "bgStockBox"
-                return (<DataBox  key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
                 break;
 			
 				}
@@ -121,18 +126,25 @@ renderCardData(c3,cardWidth){
 
 
   render(){
-		console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+
+		if(isEmpty(this.props.algoAnalysis)){
+			return null;
+		}else{
+		// console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
+		var algoAnalysis="";
 		let chartInfo=[];
-
-		var performancePage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
+		algoAnalysis = this.props.algoAnalysis;
+		console.log(algoAnalysis,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
 		top =performancePage.map(card => card.listOfCards);
 		var icards ="";
 		
-		var overviewPage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Overview");
+		var overviewPage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Overview");
 		var oVtop="";
 		oVtop =overviewPage.map(card => card.listOfCards);
 		
@@ -234,6 +246,7 @@ renderCardData(c3,cardWidth){
 					</div>
 				</div>
 				</div>)
+		}
 
     return (
       // <!-- Main Content starts with side-body -->
@@ -242,7 +255,7 @@ renderCardData(c3,cardWidth){
 		{/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.project_name}<small> : {summary.algorithm}</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.name}<small> : {algoAnalysis.slug}</small></h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
