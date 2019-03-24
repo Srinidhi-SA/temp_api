@@ -127,8 +127,8 @@ function fetchAlgoListError(json) {
 export function fetchAlgoListSuccess(doc) {
   var data = doc;
   var current_page = doc.current_page;
-  var latestModels = doc.top_3
-  return {type: "ALGO_LIST", data, latestModels, current_page}
+  var latestAlgos = doc.top_3
+  return {type: "ALGO_LIST", data, latestAlgos, current_page}
 }
 
 export function getAppsAlgoList(pageNo) {
