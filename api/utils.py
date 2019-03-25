@@ -1338,3 +1338,17 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
             'id',
             # 'trainer'
         )
+
+
+class TrainerNameListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainerNameListSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta:
+        model = Trainer
+        fields = (
+            'slug',
+            'name'
+        )

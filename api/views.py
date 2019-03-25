@@ -41,7 +41,8 @@ from api.utils import \
     DeploymentSerializer, \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
-    DatasetScoreDeploymentListSerializer
+    DatasetScoreDeploymentListSerializer, \
+    TrainerNameListSerializer
     # RegressionSerlializer, \
     # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
@@ -388,6 +389,17 @@ class TrainerView(viewsets.ModelViewSet):
             "hyperparamter_saved": "Success"
         })
 
+    @list_route(methods=['get'])
+    def all(self, request):
+        queryset = Trainer.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['SUCCESS']
+        )
+        serializer = TrainerNameListSerializer(queryset, many=True, context={"request": self.request})
+        return Response({
+            "data": serializer.data
+        })
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
