@@ -180,6 +180,8 @@ renderCardData(c3,cardWidth){
 		var c3 = top.map(fun => fun[3].cardData[1])
 		var h4 = top.map(fun => fun[4].cardData[0])
 		var c4 = top.map(fun => fun[4].cardData[1])
+		var h5 = top.map(fun => fun[5].cardData[0])
+		var c5 = top.map(fun => fun[5].cardData[1])
 		
 
 
@@ -202,6 +204,9 @@ renderCardData(c3,cardWidth){
 		const gainChart = this.renderCardData(c3,cardWidth);
 		const headliftChart = this.renderCardData(h4,cardWidth);
 		const liftChart = this.renderCardData(c4,cardWidth);
+		const headROCChart = this.renderCardData(h5,cardWidth);
+		const ROCChart = this.renderCardData(c5,cardWidth);
+ 
  
 
 
@@ -242,8 +247,8 @@ renderCardData(c3,cardWidth){
 						{confusionMatrix}
 					</div>
 					<div class="col-md-6">
-					{headliftChart}
-						{liftChart}
+					{headROCChart}
+						{ROCChart}
 					</div>
 				</div>
 				<hr/>
