@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 var dateFormat = require('dateformat');
+import {STATIC_URL} from "../../helpers/env.js"
+
 
 import {C3Chart} from "../c3Chart";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
@@ -26,6 +28,8 @@ cardData = {};
   return {
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
+    currentAppId: store.apps.currentAppId,
+
 		// selectedSummary:store.apps.summarySelected,
 		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
@@ -50,7 +54,7 @@ export class ModelSummary extends React.Component {
 	}
 
   componentDidMount() {
-			// this.props.dispatch(refreshAppsAlgoList(this.props));
+			this.props.dispatch(refreshAppsAlgoList(this.props));
 	}
 
 
@@ -129,7 +133,16 @@ renderCardData(c3,cardWidth){
 
 
 		if(isEmpty(this.props.algoAnalysis)){
-			return null;
+			return (
+
+				<div className="side-body">
+					<div className="page-head">
+					</div>
+					<div className="main-content">
+						<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+					</div>
+				</div>
+			);
 		}else{
 		// console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;

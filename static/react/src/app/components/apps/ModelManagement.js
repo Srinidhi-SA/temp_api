@@ -10,11 +10,12 @@ import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 
+
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 
 import { Deploy } from "./Deploy";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
@@ -42,16 +43,16 @@ export class ModelManagement extends React.Component {
 
   this.setState({algoAnalysis:this.props.algoAnalysis});
 
-  // var pageNo = 1;
-  //   if(this.props.history.location.search.indexOf("page") != -1){
-  //       pageNo = this.props.history.location.search.split("page=")[1];
-  //   }
-  //   if(store.getState().apps.currentAppId == ""){
-  //       this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-  //   }else
-  //   {
-  //       this.props.dispatch(getAppsAlgoList(pageNo));
-  //   }
+  var pageNo = 1;
+    if(this.props.history.location.search.indexOf("page") != -1){
+        pageNo = this.props.history.location.search.split("page=")[1];
+    }
+    if(store.getState().apps.currentAppId == ""){
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    }else
+    {
+        this.props.dispatch(getAppsAlgoList(pageNo));
+    }
 
     // if (isEmpty(this.props.algoList)) {
     //   if (!this.props.match.path.includes("robo")) {
@@ -64,7 +65,6 @@ export class ModelManagement extends React.Component {
     
     
   }
-
   componentDidMount() {
 		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 
@@ -128,7 +128,16 @@ export class ModelManagement extends React.Component {
   render(){
 
     if(isEmpty(this.props.algoList)){
-			return null;
+			return ( null
+
+        // <div className="side-body">
+        //   <div className="page-head">
+        //   </div>
+        //   <div className="main-content">
+        //     <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+        //   </div>
+        // </div>
+      );
 		}else{
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
     var mmTable = "";
@@ -150,7 +159,7 @@ export class ModelManagement extends React.Component {
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
-      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.Created_on, " mmm d,yyyy")}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
       {/* <td><Button   onClick={this.proceedToModelSummary.bind(this,item)}  bsStyle="primary"></Button></td> */}
