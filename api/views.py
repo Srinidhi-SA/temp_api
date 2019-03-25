@@ -5579,16 +5579,13 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         return creation_failed_exception(serializer.errors)
 
     def create(self, request, *args, **kwargs):
-        # try:
         data = request.data
         data = convert_to_string(data)
-        #print (data)
 
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
-        #print ("\n")
-        #print (data)
+
         if serializer.is_valid():
             train_algo_object = serializer.save()
             #train_algo_object.create()
@@ -5632,7 +5629,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         )
 
     @list_route(methods=['get'])
-    def train_deploy_search(self, request, *args, **kwargs):
+    def search(self, request, *args, **kwargs):
         trainer_slug = request.GET['trainer']
         trainer_object = Trainer.objects.get(slug=trainer_slug)
 
@@ -5679,6 +5676,9 @@ class ModelDeployementView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         return {'request': self.request}
+
+    def get_queryset_specific(self,xxx):
+        return self.get_queryset().filter(deploytrainer=xxx.id)
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -5750,19 +5750,17 @@ class ModelDeployementView(viewsets.ModelViewSet):
         serializer = DeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
-    def get_queryset_specific(self,xxx):
-        return self.get_queryset().filter(deploytrainer=xxx.id)
 
     @list_route(methods=['get'])
-    def deploy_details_search(self, request, *args, **kwargs):
+    def search(self, request, *args, **kwargs):
         deploytrainer_slug = request.GET['deploytrainer']
+        deploytrainer_object = TrainAlgorithmMapping.objects.get(slug=deploytrainer_slug)
 
-        trainalgo_object = TrainAlgorithmMapping.objects.get(slug=deploytrainer_slug)
         response = get_specific_listed_data(
             viewset=self,
             request=request,
             list_serializer=DeploymentListSerializer,
-            xxx=trainalgo_object)
+            xxx=deploytrainer_object)
         return response
 
 #view for deployment + Dataset +Score
@@ -5861,18 +5859,14 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
         serializer = DatasetScoreDeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
-    ##########################################################################
-    #########  Method for specific dataset and Score details #################
-    ##########################################################################
-
     @list_route(methods=['get'])
-    def dataset_score_details_search(self, request, *args, **kwargs):
-        deploy_trainer_slug = request.GET['deployment']
+    def search(self, request, *args, **kwargs):
+        deployment_slug = request.GET['deployment']
+        deployment_object = ModelDeployment.objects.get(slug=deployment_slug)
 
-        dataScore_object = ModelDeployment.objects.get(slug=deploy_trainer_slug)
         response = get_specific_listed_data(
             viewset=self,
             request=request,
-            list_serializer=DeploymentListSerializer,
-            xxx=dataScore_object)
+            list_serializer=DatasetScoreDeploymentListSerializer,
+            xxx=deployment_object)
         return response
