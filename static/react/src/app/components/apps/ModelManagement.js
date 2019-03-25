@@ -119,7 +119,6 @@ export class ModelManagement extends React.Component {
 
   getAlgoAnalysis(item,signalType,e) {
     console.log("Link Onclick is called")
-		alert("go to next page!!")
 
     this.props.dispatch(emptyAlgoAnalysis());
 
