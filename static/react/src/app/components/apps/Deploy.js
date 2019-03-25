@@ -99,7 +99,7 @@ export class Deploy extends React.Component {
                 </select>
               </div>
             </div>
-            <div class="row form-group">
+            {/* <div class="row form-group">
               <label for="txt_dolurl" class="col-sm-4 control-label">Scored output location</label>
               <div class="col-sm-8">
                 <input type="text" class="form-control" id="txt_dolurl" placeholder="Output location URL" />
@@ -110,44 +110,9 @@ export class Deploy extends React.Component {
               <div class="col-sm-8">
                 <input type="text" class="form-control" id="txt_ofname" placeholder="Output folder name" />
               </div>
-            </div>
+            </div> */}
           </form>
         </div>
           );
         }
   }
-
-
-
-
-
-
-
-  // render() {
-  //   debugger;
-  //   console.log("Deploy render method is called...");
-  //   var deploymentData = this.getDeploymentData();
-  //   return (
-  //     <div class="modal fade" id="deploy_popup" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-  //       <div class="modal-dialog">
-  //         <div class="modal-content">
-  //           <div class="modal-header">
-  //             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-  //               <h3 class="modal-title" >Configure deployment</h3>
-  //           </div>
-  //           ==========================
-  //           <div class="modal-footer">
-  //             <div class="btn-group" role="group" aria-label="group button">
-  //               <div class="btn-group" role="group">
-  //                 <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
-  //               </div>
-  //               <div class="btn-group" role="group">
-  //                 <button type="button"  class="btn btn-primary btn-hover-green" data-action="Deploy" role="button">Deploy</button>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }  

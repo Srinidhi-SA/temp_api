@@ -3,12 +3,12 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {C3Chart} from "../c3Chart";
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement} from "../../actions/modelManagementActions"
 import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
-import {Button,Modal,Dropdown, Menu, MenuItem} from "react-bootstrap";
+import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
-import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 
 
 import Dialog from 'react-bootstrap-dialog';
@@ -29,12 +29,14 @@ import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} fro
     modelSlug: store.apps.modelSlug,
     deployShowModal: store.apps.deployShowModal,
     selectedSummary :store.summarySelected,
+    algo_search_element :store.apps.algo_search_element
   };
 })
 
 export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
+    this.handleSelect = this.handleSelect.bind(this);
     this.pickValue = this.pickValue.bind(this);
 
   }
@@ -125,6 +127,33 @@ export class ModelManagement extends React.Component {
 
   }
 
+  _handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+        //console.log('searching in data list');
+        if (e.target.value != "" && e.target.value != null)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
+            this.props.dispatch(storeAlgoSearchElement(e.target.value));
+        this.props.dispatch(getAppsAlgoList(1));
+        
+    }
+  }
+
+  onChangeOfSearchBox(e){
+    if(e.target.value==""||e.target.value==null){
+        this.props.dispatch(storeAlgoSearchElement(""));
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
+        this.props.dispatch(getAppsAlgoList(1));
+        
+    }else if (e.target.value.length > SEARCHCHARLIMIT) {
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
+        this.props.dispatch(storeAlgoSearchElement(e.target.value));
+        this.props.dispatch(getAppsAlgoList(1));
+    }
+    else{
+        this.props.dispatch(storeAlgoSearchElement(e.target.value));
+    }
+}
+
   render(){
 
     if(isEmpty(this.props.algoList)){
@@ -199,7 +228,16 @@ export class ModelManagement extends React.Component {
         </div>
       </div>
     )
-    }
+
+    
+    if (algoList) {
+        const pages = store.getState().apps.algoList.total_number_of_pages;
+        const current_page = store.getState().apps.algoList.current_page;
+        
+        let paginationTag = null
+        if(pages > 1){
+            paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+        }
 
     return (
       // <!-- Main Content starts with side-body -->
@@ -235,11 +273,11 @@ export class ModelManagement extends React.Component {
 						    </div>
                </div>
                 <div class="col-md-3 col-md-offset-6">
-                   <div class="form-inline" >
-                      <div class="form-group pull-right">
-                          <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
-                      </div>
-                   </div>
+                  <div className="search-wrapper">
+                    <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
+                    <span className="zmdi zmdi-search form-control-feedback"></span>
+                    <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
+                  </div>
                </div>
             </div>
              <div class="table-responsive">
@@ -265,7 +303,12 @@ export class ModelManagement extends React.Component {
                       </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                  <ul class="pagination pagination-lg pager" id="myPager"></ul>
+                  {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
+                  <div className="footer"  id="idPagination">
+            <div className="algo_paginate">
+            {paginationTag}
+          </div>
+          </div>
               </div>
                   </div>
                   <div class="buttonRow pull-right">
@@ -284,19 +327,35 @@ export class ModelManagement extends React.Component {
       {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
     
         </div>
+        
         {/* <!-- End Main Content --> */}
       </div>
     
     );
-    }
-  
+   }
+  }
+}
   openDeployModal(item) {
-    console.log("open ---openTransformColumnModal");
+    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(item));
   }
-
+  
   closeDeployModal() {
-    console.log("closeddddd ---closeTransformColumnModal");
+    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
+  }
+
+  handleSelect(eventKey) {
+    if (this.props.algo_search_element) {
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
+    }else
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
+        this.props.dispatch(getAppsAlgoList(eventKey));
+}
+
+  clearSearchElement(e){
+    this.props.dispatch(storeAlgoSearchElement(""));
+    this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
+    this.props.dispatch(getAppsAlgoList(1));
   }
 }

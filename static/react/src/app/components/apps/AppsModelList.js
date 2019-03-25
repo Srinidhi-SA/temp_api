@@ -218,7 +218,6 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }
         }
         handleSelect(eventKey) {
-            
             if (this.props.model_search_element) {
                 this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){

@@ -16,3 +16,7 @@ export function closeDeployModalAction() {
      type: "DEPLOY_HIDE_MODAL",
    }
 }
+
+export function storeAlgoSearchElement(search_element) {
+  return {type: "SEARCH_ALGORITHM", search_element}
+}

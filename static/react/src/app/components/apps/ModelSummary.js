@@ -6,6 +6,7 @@ var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 
 
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
 import {C3Chart} from "../c3Chart";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
 import {getAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
@@ -17,12 +18,12 @@ import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 import {DataBox} from "../common/DataBox";
 import $ from "jquery";
+import {Button,Modal} from "react-bootstrap";
+// import { Deploy } from "./Deploy";
 
 var data = null,
 yformat = null,
 cardData = {};
-
-
 
 @connect((store) => {
   return {
@@ -38,7 +39,9 @@ cardData = {};
 
 export class ModelSummary extends React.Component {
   constructor(props) {
-    super(props);
+		super(props);
+    this.pickValue = this.pickValue.bind(this);
+		
   }
 	
 	componentWillMount() {
@@ -55,8 +58,8 @@ export class ModelSummary extends React.Component {
 
   componentDidMount() {
 			this.props.dispatch(refreshAppsAlgoList(this.props));
+			
 	}
-
 
   closeModelSummary(){
 	 window.history.back();
@@ -65,12 +68,36 @@ export class ModelSummary extends React.Component {
 		let colWidth  = parseInt((width/100)*12)
 		let divClass="col-md-"+colWidth;
 		return divClass;
-}
-renderCardData(c3,cardWidth){
+	}
 
+	pickValue(actionType, event){
+    if(this.state[this.props.selectedItem.slug] == undefined){
+      this.state[this.props.selectedItem.slug] = {}
+    }
+    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
+      this.state[this.props.selectedItem.slug][actionType] = {}
+    }
+    if(event.target.type == "checkbox"){
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
+    }else{
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+    }
+  }
+  
+  handleCreateClicked(actionType, event){
+    if(actionType == "deployData"){
+      this.validateTransformdata(actionType);
+    }else{
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeTransformColumnModal();
+    }
+  }
+	
+	renderCardData(c3,cardWidth){
 		var htmlData = c3.map((story, i) => {
-				let randomNum = Math.random().toString(36).substr(2,8);
-				switch (story.dataType) {
+			let randomNum = Math.random().toString(36).substr(2,8);
+			switch (story.dataType) {
 				case "html":
 						if(!story.hasOwnProperty("classTag"))story.classTag ="none";
 						return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
@@ -93,7 +120,7 @@ renderCardData(c3,cardWidth){
 										let divClass="";
 										let parentDivClass = "col-md-12";
 										if(!cardWidth || cardWidth > 50)
-										divClass = "col-md-7 col-md-offset-2"
+										divClass = "col-md-12"
 										else
 										divClass = "col-md-12";
 										let sideChart=false;
@@ -124,10 +151,7 @@ renderCardData(c3,cardWidth){
 
 		});
 		return htmlData;
-}
-
-
-
+	}
 
   render(){
 
@@ -166,12 +190,10 @@ renderCardData(c3,cardWidth){
 		var th1 = oVtop.map(fun => fun[0].cardData[0])
 		var tdata1 = oVtop.map(fun => fun[0].cardData[1])
 		
-		
 		var th2 = oVtop.map(fun => fun[1].cardData[0])
 		var tdata2 = oVtop.map(fun => fun[1].cardData[1])
 
 		var c0 = top.map(fun => fun[0].cardData[0])
-
 		var h1 = top.map(fun => fun[1].cardData[0])
 		var c1 = top.map(fun => fun[1].cardData[1])
 		var h2 = top.map(fun => fun[2].cardData[0])
@@ -183,16 +205,11 @@ renderCardData(c3,cardWidth){
 		var h5 = top.map(fun => fun[5].cardData[0])
 		var c5 = top.map(fun => fun[5].cardData[1])
 		
-
-
-
-
 		const summaryTable = this.renderCardData(tdata1,cardWidth);
 		const headSummaryTable = this.renderCardData(th1,cardWidth);
  
 		const settingsTable = this.renderCardData(tdata2,cardWidth);
 		const headSettingsTable = this.renderCardData(th2,cardWidth);
-
 
 		const topCards = this.renderCardData(c0,cardWidth);
 		
@@ -208,42 +225,29 @@ renderCardData(c3,cardWidth){
 		const ROCChart = this.renderCardData(c5,cardWidth);
  
  
-
-
-	overviewCard=(
-			 <div class="row">
-					<div class="col-md-6">
-							{headSummaryTable}
-						{summaryTable}
-					</div>
-					<div class="col-md-6">
-						{headSettingsTable}
-								{settingsTable}
-					</div>
-			 </div>)
-
-
-
- performanceCard=(
- <div>
-
-	 {/* {topCards} */}
-
-	 
-	 <div class="row ov_card_boxes">
-				{/* <div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox"> */}
-	       {topCards}
-				{/* </div>	 */}
+		overviewCard=(
+			<div class="row">
+				<div class="col-md-6">
+					{headSummaryTable}
+					{summaryTable}
 				</div>
-				
+				<div class="col-md-6">
+					{headSettingsTable}
+					{settingsTable}
+				</div>
+			</div>
+			)
 
 
-
-
-
+		performanceCard = (
+			<div>
+				 <div class="row ov_card_boxes">
+				 {topCards} 
+				 </div>
+			
 				<div class="row xs-mt-10">
 					<div class="col-md-6">
-				{headconfusionMatrix}
+						{headconfusionMatrix}
 						{confusionMatrix}
 					</div>
 					<div class="col-md-6">
@@ -256,7 +260,6 @@ renderCardData(c3,cardWidth){
 					<div class="col-md-6">
 						{headksChart}
 						{ksChart}
-
 					</div>
 					<div class="col-md-6">
 						{headgainChart}
@@ -314,27 +317,27 @@ renderCardData(c3,cardWidth){
 						1.
 					  </td>
                       <td class="text-left"><b><a href="#">LR-001-D001</a></b></td>
-					  <td class="text-left">Batch Prediction</td>                      
-                      <td><span class="text-success">Success</span></td>
-					  <td><i class="fa fa-calendar text-info"></i> 21/12/2018</td>
-					  <td><i class="fa fa-clock-o text-warning"></i> 230 s</td>
-					  <td>1</td>
-					  <td>
-						<div class="pos-relative">
-							<a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-							  <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-							</a>    
-							<ul class="dropdown-menu dropdown-menu-right">
-								  <li>
-									  <a href="#" data-toggle="modal" data-target="#deploy_popup">View</a>
-								  </li>                          
-								  <li>
-									  <a href="#" data-toggle="modal" data-target="#DeleteWarning">Delete</a>
-								  </li>
-							  </ul>
-						</div>
-					  </td>
-            </tr>
+											<td class="text-left">Batch Prediction</td>                      
+											<td><span class="text-success">Success</span></td>
+											<td><i class="fa fa-calendar text-info"></i> 21/12/2018</td>
+											<td><i class="fa fa-clock-o text-warning"></i> 230 s</td>
+											<td>1</td>
+											<td>
+												<div class="pos-relative">
+													<a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+														<i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+													</a>    
+													<ul class="dropdown-menu dropdown-menu-right">
+															<li>
+																<a href="#" data-toggle="modal" data-target="#deploy_popup">View</a>
+															</li>                          
+															<li>
+																<a href="#" data-toggle="modal" data-target="#DeleteWarning">Delete</a>
+															</li>
+														</ul>
+												</div>
+											</td>
+											</tr>
             <tr>
 					  <td>
 						2.
@@ -373,11 +376,18 @@ renderCardData(c3,cardWidth){
 		
 		</div>
 	</div>
-		
-		{/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
     </div>
     </div>
     
     );
-    }
+		}
+		openDeployModal(item) {
+			console.log("open ---openDeployModal");
+			this.props.dispatch(openDeployModalAction(item));
+		}
+	
+		closeDeployModal() {
+			console.log("closeddddd ---closeDeployModal");
+			this.props.dispatch(closeDeployModalAction());
+		}
   }

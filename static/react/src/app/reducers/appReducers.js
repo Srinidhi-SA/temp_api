@@ -91,7 +91,9 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
-        deployShowModal:false,        
+        deployShowModal:false,
+        algo_search_element:"",
+                
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -162,6 +164,13 @@ export default function reducer(state = {
       }
     }
     break;
+    case "SEARCH_ALGORITHM":
+    {
+        return{
+            ...state,
+            algo_search_element:action.search_element
+        }
+    }
 
     case "DEPLOY_SHOW_MODAL":
     {
