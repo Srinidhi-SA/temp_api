@@ -5869,11 +5869,13 @@ class ModelDeployementView(viewsets.ModelViewSet):
                 'period': 'seconds'
             }
         }
+        from api.helper import get_timing_details
         if 'config' in data:
             if 'timing_details' in data['config']:
-                timing_details = data['config']['timing_details']
+                data['config']['timing_details'] = get_timing_details(data['config']['timing_details'])
             else:
-                data['config']['timing_details'] = timing_details
+                data['config']['timing_details'] = get_timing_details()
+
         data = convert_to_string(data)
 
 
