@@ -341,7 +341,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
             <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/>
             
-            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> */}
+            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> "reason for not reloding the page"*/}
             <Route exact path="/apps/:AppId/modelManagement/:slug" render={modelmanagement}/>
 
 
