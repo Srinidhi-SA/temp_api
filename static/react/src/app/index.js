@@ -249,13 +249,18 @@ class App extends React.Component {
 
     const modelmanagement = (props) => {
       if (this.hasScoreRoutePermission()) {
-        debugger;
         switch (props.match.path) {
           case "/apps/" + props.match.params.AppId + "/modelManagement/:slug":
+            {
+              return (<ModelSummary {...props}/>)
+            }
+            break;
+            case "/apps/" + props.match.params.AppId + "/modelManagement":
             {
               return (<ModelManagement {...props}/>)
             }
             break;
+            
             // case "/apps/:AppId/modelManagement":
             // {
             //   return (<ModelManagement {...props}/>)
@@ -336,11 +341,11 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
             <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/>
             
-            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> */}
+            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> "reason for not reloding the page"*/}
             <Route exact path="/apps/:AppId/modelManagement/:slug" render={modelmanagement}/>
 
 
-            <Route exact path="/apps/:AppId/modelManagement/modelSummary" component={ModelSummary}/>
+            {/* <Route exact path="/apps/:AppId/modelManagement/modelSummary" component={ModelSummary}/> */}
 
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>

@@ -8,17 +8,22 @@ import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions"
 import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
-import {isEmpty,SEARCHCHARLIMIT} from "../../helpers/helper";
-import Dialog from 'react-bootstrap-dialog';
-import { Deploy } from "./Deploy";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete} from "../../actions/appActions";
+import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 
+
+import Dialog from 'react-bootstrap-dialog';
+import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+
+import { Deploy } from "./Deploy";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
   var dateFormat = require('dateformat');
 @connect((store) => {
   return {
     algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
+		algoAnalysis:store.signals.algoAnalysis,
+
     modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
@@ -37,47 +42,45 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-  // var pageNo = 1;
-  //   if(this.props.history.location.search.indexOf("page") != -1){
-  //       pageNo = this.props.history.location.search.split("page=")[1];
-  //   }
-  //   if(store.getState().apps.currentAppId == ""){
-  //       this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-  //   }else
-  //   {
-  //       this.props.dispatch(getAppsAlgoList(pageNo));
-  //   }
 
-    if (isEmpty(this.props.algoList)) {
-      if (!this.props.match.path.includes("robo")) {
-        let url = '/signals/'
-        console.log(this.props);
-        this.props.history.push(url)
-      }
-		}
+  this.setState({algoAnalysis:this.props.algoAnalysis});
+
+  var pageNo = 1;
+    if(this.props.history.location.search.indexOf("page") != -1){
+        pageNo = this.props.history.location.search.split("page=")[1];
+    }
+    if(store.getState().apps.currentAppId == ""){
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+    }else
+    {
+        this.props.dispatch(getAppsAlgoList(pageNo));
+    }
+
+    // if (isEmpty(this.props.algoList)) {
+    //   if (!this.props.match.path.includes("robo")) {
+    //     let url = '/signals/'
+    //     console.log(this.props);
+    //     this.props.history.push(url)
+    //   }
+    // }
+
+    
+    
   }
-
   componentDidMount() {
-    this.props.dispatch(refreshAppsAlgoList(this.props));
+		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 
-    $('#search').on('keyup', function() {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#mmtable').find('tr').each(function() {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-          $(this).not('.myHead').hide();
-        }
-        if (($(this).find('td').text().search(patt) >= 0)) {
-          $(this).show();
-        }
-      });
-    });
+    this.props.dispatch(refreshAppsAlgoList(this.props));
   }
   proceedToModelSummary(item)
   {
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
     console.log(item,"item called for individual page...........................")
     this.props.dispatch(openModelSummaryAction(item));
+			this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
+      console.log(item,"item called for individual page...........................")
+
+
 
   }
   closeModelmanagement()
@@ -114,6 +117,16 @@ export class ModelManagement extends React.Component {
     }
   }
 
+  getAlgoAnalysis(item,signalType,e) {
+    console.log("Link Onclick is called")
+		alert("go to next page!!")
+
+    this.props.dispatch(emptyAlgoAnalysis());
+
+			this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
+
+  }
+
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
         //console.log('searching in data list');
@@ -144,53 +157,58 @@ export class ModelManagement extends React.Component {
   render(){
 
     if(isEmpty(this.props.algoList)){
-      return(
-        <div class="side-body">
-          <div class="page-head">
-        </div>
-        <div class="main-content">
-          <div>
-           <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			return ( 
+
+        <div className="side-body">
+          <div className="page-head">
           </div>
-        </div>
+          <div className="main-content">
+            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+          </div>
         </div>
       );
-    }else{
-      console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
-      var mmTable = "";
-      var deployPopup = "";
-      // debugger;
-      const algoList = store.getState().apps.algoList.data;
-        mmTable = this.props.algoList.data.map((item,key )=> {
-          return (
-            
-          <tr  className={('all ' + item.name)}>
-        <td>
-            <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
-        </td>
-        <td className="text-left"> {item.model_id}</td>
-        <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
-        <td className="text-left"> {item.algorithm}</td>
-        <td ><span className="text-success"></span> {item.training_status}</td>
-        <td > {item.accuracy}</td>
-        <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_on, " mmm d,yyyy")}</td>
-        <td > {item.deployment}</td>
-        <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-        <td><Button   onClick={this.proceedToModelSummary.bind(this,item)} bsStyle="primary"> Details</Button></td>
-        <td>
-          <div class="pos-relative">
-            <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-              <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-            </a>    
-            <ul class="dropdown-menu dropdown-menu-right">
-            <li><a bsStyle="cst_button">Clone</a></li>
-              <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
-              <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>       
-            </ul>
-          </div>
-        </td>
-      </tr>);
-      })
+		}else{
+    console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+    var mmTable = "";
+    var deployPopup = "";
+    var Details="Details"
+    // debugger;
+    const algoList = store.getState().apps.algoList.data;
+      mmTable = this.props.algoList.data.map((item,key )=> {
+    var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
+
+        return (
+          
+        <tr key={key} className={('all ' + item.name)}>
+       <td>
+          <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
+       </td>
+      <td className="text-left"> {item.model_id}</td>
+      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
+      <td className="text-left"> {item.algorithm}</td>
+      <td ><span className="text-success"></span> {item.training_status}</td>
+      <td > {item.accuracy}</td>
+      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
+      <td > {item.deployment}</td>
+      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+      {/* <td><Button   onClick={this.proceedToModelSummary.bind(this,item)}  bsStyle="primary"></Button></td> */}
+      <td> <Button ><Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
+              {Details}
+              </Link></Button></td>
+      <td>
+        <div class="pos-relative">
+          <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+            <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+          </a>    
+          <ul class="dropdown-menu dropdown-menu-right">
+          <li><a bsStyle="cst_button">Clone</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
+            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>       
+          </ul>
+        </div>
+      </td>
+    </tr>);
+    })
 
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
@@ -312,12 +330,11 @@ export class ModelManagement extends React.Component {
           
           {/* <!-- End Main Content --> */}
         </div>
-      
-      );
-    }
-    }
+        
+    );
+   }
   }
-  
+}
   openDeployModal(item) {
     console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(item));

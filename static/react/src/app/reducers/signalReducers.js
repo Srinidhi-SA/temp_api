@@ -1,6 +1,8 @@
 export default function reducer(state = {
   signalList: {},
   signalAnalysis:{},
+  algoAnalysis:{},
+  selectedAlgo:{},
   selectedSignal:{},
   newSignalShowModal:false,
   signalData:null,
@@ -58,6 +60,32 @@ export default function reducer(state = {
         }
       }
       break;
+
+      case "ALGO_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch algo list!!");
+      }
+      break;
+
+      case "ALGO_ANALYSIS":
+      {
+        return {
+          ...state,
+          algoAnalysis: action.algoAnalysis,
+          selectedAlgo: action.errandId,
+          // urlPrefix: action.urlPrefix,
+        }
+      }
+      break;
+
+  
+
+      case "ALGO_ANALYSIS_ERROR":
+      {
+        throw new Error("Unable to fetch algo list!!");
+      }
+      break; 
+
 
     case "SIGNAL_ANALYSIS_ERROR":
       {
@@ -143,6 +171,15 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: {}
+        }
+      }
+      break;
+
+      case "ALGO_ANALYSIS_EMPTY":
+      {
+        return {
+          ...state,
+          algoAnalysis: {}
         }
       }
       break;

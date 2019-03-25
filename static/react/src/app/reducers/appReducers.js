@@ -141,7 +141,7 @@ export default function reducer(state = {
         return {
             ...state,
             algoList: action.data,
-            latestModels:action.latestModels,
+            latestAlgos:action.latestAlgos,
             current_page:action.current_page,
         }
     }

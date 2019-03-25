@@ -127,8 +127,8 @@ function fetchAlgoListError(json) {
 export function fetchAlgoListSuccess(doc) {
   var data = doc;
   var current_page = doc.current_page;
-  var latestModels = doc.top_3
-  return {type: "ALGO_LIST", data, latestModels, current_page}
+  var latestAlgos = doc.top_3
+  return {type: "ALGO_LIST", data, latestAlgos, current_page}
 }
 
 export function getAppsAlgoList(pageNo) {
@@ -172,14 +172,13 @@ export function refreshAppsAlgoList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/modelManagement")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.app_url + "/modelManagement")
 
         dispatch(getAppsAlgoList(parseInt(pageNo)));
     }
     , APPSDEFAULTINTERVAL);
   }
 }
-
 
 function deleteAlgo(slug, dialog, dispatch) {
   dispatch(showLoading());

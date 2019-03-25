@@ -2,10 +2,15 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
-import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
+import {STATIC_URL} from "../../helpers/env.js"
+
+
 import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
 import {C3Chart} from "../c3Chart";
+import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
+import {getAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "../../components/signals/CardHtml";
 import {CardTable} from "../common/CardTable";
@@ -24,7 +29,10 @@ cardData = {};
   return {
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
-		selectedSummary:store.apps.summarySelected,
+    currentAppId: store.apps.currentAppId,
+
+		// selectedSummary:store.apps.summarySelected,
+		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
   };
 })
@@ -44,6 +52,8 @@ export class ModelSummary extends React.Component {
     //     this.props.history.push(url)
     //   }
 		// }
+
+		
 	}
 
   componentDidMount() {
@@ -134,7 +144,7 @@ export class ModelSummary extends React.Component {
 						break;
 						case "dataBox":
 						let bgStockBox = "bgStockBox"
-                return (<DataBox  key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
                 break;
 			
 				}
@@ -144,20 +154,37 @@ export class ModelSummary extends React.Component {
 	}
 
   render(){
-		console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+
+		if(isEmpty(this.props.algoAnalysis)){
+			return (
+
+				<div className="side-body">
+					<div className="page-head">
+					</div>
+					<div className="main-content">
+						<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+					</div>
+				</div>
+			);
+		}else{
+		// console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
-    // var deployPopup = "";
-
+		var algoAnalysis="";
 		let chartInfo=[];
-
-		var performancePage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
-		var top =performancePage.map(card => card.listOfCards);
-
-		var overviewPage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Overview");
-		var oVtop = overviewPage.map(card => card.listOfCards);
-
+		algoAnalysis = this.props.algoAnalysis;
+		console.log(algoAnalysis,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
+		var top="";
+		top =performancePage.map(card => card.listOfCards);
+		var icards ="";
+		
+		var overviewPage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Overview");
+		var oVtop="";
+		oVtop =overviewPage.map(card => card.listOfCards);
+		
 		let cardWidth = this.props.cardWidth;
 
 		var th1 = oVtop.map(fun => fun[0].cardData[0])
@@ -175,6 +202,8 @@ export class ModelSummary extends React.Component {
 		var c3 = top.map(fun => fun[3].cardData[1])
 		var h4 = top.map(fun => fun[4].cardData[0])
 		var c4 = top.map(fun => fun[4].cardData[1])
+		var h5 = top.map(fun => fun[5].cardData[0])
+		var c5 = top.map(fun => fun[5].cardData[1])
 		
 		const summaryTable = this.renderCardData(tdata1,cardWidth);
 		const headSummaryTable = this.renderCardData(th1,cardWidth);
@@ -192,6 +221,9 @@ export class ModelSummary extends React.Component {
 		const gainChart = this.renderCardData(c3,cardWidth);
 		const headliftChart = this.renderCardData(h4,cardWidth);
 		const liftChart = this.renderCardData(c4,cardWidth);
+		const headROCChart = this.renderCardData(h5,cardWidth);
+		const ROCChart = this.renderCardData(c5,cardWidth);
+ 
  
 		overviewCard=(
 			<div class="row">
@@ -209,15 +241,18 @@ export class ModelSummary extends React.Component {
 
 		performanceCard = (
 			<div>
-			{topCards}
+				 <div class="row ov_card_boxes">
+				 {topCards} 
+				 </div>
+			
 				<div class="row xs-mt-10">
 					<div class="col-md-6">
 						{headconfusionMatrix}
 						{confusionMatrix}
 					</div>
 					<div class="col-md-6">
-						{headliftChart}
-						{liftChart}
+					{headROCChart}
+						{ROCChart}
 					</div>
 				</div>
 				<hr/>
@@ -231,78 +266,56 @@ export class ModelSummary extends React.Component {
 						{gainChart}
 					</div>
 				</div>
-			</div>
-			)
-
-			
-
-			// deployPopup = (
-			// 	<div class="col-md-3 xs-mb-15 list-boxes" >
-			// 		<div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
-			// 			<Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
-			// 				<Modal.Header closeButton>
-			// 					<h3 className="modal-title">Deploy Project</h3>
-			// 				</Modal.Header>
-			// 				<Modal.Body>
-			// 					<Deploy /*parentPickValue={this.pickValue}*//>
-			// 				</Modal.Body> 
-			// 				<Modal.Footer>
-			// 					<Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-			// 					<Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
-			// 				</Modal.Footer>
-			// 			</Modal>
-			// 		</div>
-			// 	</div>
-			// )
-		
+				</div>)
+		}
 
     return (
       // <!-- Main Content starts with side-body -->
-			<div class="side-body">
-				<div class="main-content">
-				{/* {deployPopup} */}
-
-					<div class="page-head">
-						<h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.project_name}<small> : {summary.algorithm}</small></h3>
-					</div>
-					<div class="panel panel-mAd box-shadow">
-        		<div class="panel-body no-border xs-p-20">
-							<div id="pDetail" class="tab-container">
-            		<ul class="nav nav-tabs">
-              		<li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
-              		<li><a href="#performance" data-toggle="tab">Performance</a></li>
-             		 	<li><a href="#deployment" data-toggle="tab">Deployment</a></li>
-            		</ul>
-            		<div class="tab-content xs-pt-20">
-              		<div id="overview" class="tab-pane active cont">                
-										{overviewCard}
-									</div>
-    		          <div id="performance" class="tab-pane cont">
-										{performanceCard}
-          		    </div>
-									<div id="deployment" class="tab-pane">
-										<button class="btn btn-warning btn-shade4 pull-right" /*onClick={this.openDeployModal.bind(this,item)}*/>Add New Deployment</button>
-										<div class="clearfix"></div>
-  		              <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-      		            <thead>
-          		          <tr className="myHead">
-              	        <th>
-                		      #
-  	                    </th>
-    	                  <th class="text-left">Name</th>
-      	                <th class="text-left">Deployment Type</th>
-        	              <th>Status</th>
-          	            <th>Deployed On</th>
-												<th>Runtime</th>
-												<th>Jobs Triggered</th>
-												<th>Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-											  <td>
-												1.
-												</td>
+		<div class="side-body">
+      <div class="main-content">
+		{/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
+	
+    <div class="page-head">
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.name}<small> : {algoAnalysis.slug}</small></h3>
+    </div>
+	<div class="panel panel-mAd box-shadow">
+        <div class="panel-body no-border xs-p-20">
+		<div id="pDetail" class="tab-container">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
+              <li><a href="#performance" data-toggle="tab">Performance</a></li>
+              <li><a href="#deployment" data-toggle="tab">Deployment</a></li>
+            </ul>
+            <div class="tab-content xs-pt-20">
+              <div id="overview" class="tab-pane active cont">                
+							{overviewCard}
+						</div>
+              <div id="performance" class="tab-pane cont">
+							{performanceCard}
+              </div>
+              <div id="deployment" class="tab-pane">
+				<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button>
+				<div class="clearfix"></div>
+                <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                  <thead>
+                    <tr className="myHead">
+                      <th>
+                      #
+                      </th>
+                      <th class="text-left">Name</th>
+                      <th class="text-left">Deployment Type</th>
+                      <th>Status</th>
+                      <th>Deployed On</th>
+					  <th>Runtime</th>
+					  <th>Jobs Triggered</th>
+					  <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+					  <td>
+						1.
+					  </td>
                       <td class="text-left"><b><a href="#">LR-001-D001</a></b></td>
 											<td class="text-left">Batch Prediction</td>                      
 											<td><span class="text-success">Success</span></td>
