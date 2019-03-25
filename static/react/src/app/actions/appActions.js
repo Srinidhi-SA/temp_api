@@ -145,12 +145,20 @@ export function getAppsAlgoList(pageNo) {
 }
 
 function fetchAlgoList(pageNo, token) {
-  // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
-
-   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + 30 + '', {
+  let search_element = store.getState().apps.algo_search_element;
+  if (search_element != "" && search_element != null) {
+    console.log("calling for algo search element!!")
+    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else {
+    // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
+   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+    method: 'get',
+    headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));
+  }
 }
 
 

@@ -4,6 +4,7 @@ import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 import {isEmpty} from "../../helpers/helper";
 var dateFormat = require('dateformat');
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
 import {C3Chart} from "../c3Chart";
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "../../components/signals/CardHtml";
@@ -12,6 +13,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 import {DataBox} from "../common/DataBox";
 import $ from "jquery";
+import {Button,Modal} from "react-bootstrap";
+import { Deploy } from "./Deploy";
 
 var data = null,
 yformat = null,
@@ -28,17 +31,19 @@ cardData = {};
 
 export class ModelSummary extends React.Component {
   constructor(props) {
-    super(props);
+		super(props);
+    this.pickValue = this.pickValue.bind(this);
+		
   }
 	
 	componentWillMount() {
-		if (isEmpty(this.props.selectedSummary)) {
-      if (!this.props.match.path.includes("robo")) {
-        let url = '/signals/'
-        console.log(this.props);
-        this.props.history.push(url)
-      }
-		}
+		// if (isEmpty(this.props.selectedSummary)) {
+    //   if (!this.props.match.path.includes("robo")) {
+    //     let url = '/signals/'
+    //     console.log(this.props);
+    //     this.props.history.push(url)
+    //   }
+		// }
 	}
 
   componentDidMount() {
@@ -54,6 +59,30 @@ export class ModelSummary extends React.Component {
 		let divClass="col-md-"+colWidth;
 		return divClass;
 	}
+
+	pickValue(actionType, event){
+    if(this.state[this.props.selectedItem.slug] == undefined){
+      this.state[this.props.selectedItem.slug] = {}
+    }
+    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
+      this.state[this.props.selectedItem.slug][actionType] = {}
+    }
+    if(event.target.type == "checkbox"){
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
+    }else{
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+    }
+  }
+  
+  handleCreateClicked(actionType, event){
+    if(actionType == "deployData"){
+      this.validateTransformdata(actionType);
+    }else{
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeTransformColumnModal();
+    }
+  }
 	
 	renderCardData(c3,cardWidth){
 		var htmlData = c3.map((story, i) => {
@@ -78,7 +107,7 @@ export class ModelSummary extends React.Component {
 										if(story.widthPercent < 50)sideChart=true;
 										return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
 								}else if(story.widthPercent == 100){
-									debugger;		let divClass="";
+										let divClass="";
 										let parentDivClass = "col-md-12";
 										if(!cardWidth || cardWidth > 50)
 										divClass = "col-md-12"
@@ -105,7 +134,7 @@ export class ModelSummary extends React.Component {
 						break;
 						case "dataBox":
 						let bgStockBox = "bgStockBox"
-                return (<DataBox  className= {bgStockBox} key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                return (<DataBox  key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
 			
 				}
@@ -119,6 +148,8 @@ export class ModelSummary extends React.Component {
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
+    var deployPopup = "";
+
 		let chartInfo=[];
 
 		var performancePage = this.props.selectedSummary.data.listOfNodes.filter(row => row.name === "Performance");
@@ -203,10 +234,34 @@ export class ModelSummary extends React.Component {
 			</div>
 			)
 
+			
+
+			deployPopup = (
+				<div class="col-md-3 xs-mb-15 list-boxes" >
+					<div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+						<Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+							<Modal.Header closeButton>
+								<h3 className="modal-title">Deploy Project</h3>
+							</Modal.Header>
+							<Modal.Body>
+								<Deploy /*parentPickValue={this.pickValue}*//>
+							</Modal.Body> 
+							<Modal.Footer>
+								<Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+								<Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+							</Modal.Footer>
+						</Modal>
+					</div>
+				</div>
+			)
+		
+
     return (
       // <!-- Main Content starts with side-body -->
 			<div class="side-body">
 				<div class="main-content">
+				{deployPopup}
+
 					<div class="page-head">
 						<h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.project_name}<small> : {summary.algorithm}</small></h3>
 					</div>
@@ -225,8 +280,8 @@ export class ModelSummary extends React.Component {
     		          <div id="performance" class="tab-pane cont">
 										{performanceCard}
           		    </div>
-          		    <div id="deployment" class="tab-pane">
-										<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button>
+									<div id="deployment" class="tab-pane">
+										<button class="btn btn-warning btn-shade4 pull-right" onClick={this.openDeployModal.bind(this,item)}>Add New Deployment</button>
 										<div class="clearfix"></div>
   		              <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
       		            <thead>
@@ -312,5 +367,14 @@ export class ModelSummary extends React.Component {
     </div>
     
     );
-    }
+		}
+		openDeployModal(item) {
+			console.log("open ---openDeployModal");
+			this.props.dispatch(openDeployModalAction(item));
+		}
+	
+		closeDeployModal() {
+			console.log("closeddddd ---closeDeployModal");
+			this.props.dispatch(closeDeployModalAction());
+		}
   }

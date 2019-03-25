@@ -251,9 +251,9 @@ class App extends React.Component {
       if (this.hasScoreRoutePermission()) {
         debugger;
         switch (props.match.path) {
-          case "/signals/":
+          case "/apps/" + props.match.params.AppId + "/modelManagement/:slug":
             {
-              return (<Signals {...props}/>)
+              return (<ModelManagement {...props}/>)
             }
             break;
             // case "/apps/:AppId/modelManagement":
@@ -334,8 +334,10 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
+            <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/>
+            
             {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> */}
-            {/* <Route exact path="/apps/:AppId/modelManagement/modelSummary" render={modelmanagement}/> */}
+            <Route exact path="/apps/:AppId/modelManagement/:slug" render={modelmanagement}/>
 
 
             <Route exact path="/apps/:AppId/modelManagement/modelSummary" component={ModelSummary}/>
