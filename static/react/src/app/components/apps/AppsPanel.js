@@ -43,6 +43,8 @@ import {cookieObj} from '../../helpers/cookiesHandler'
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
+    // algoList: store.appsAlgoList,
+
     modelSummaryFlag: store.apps.modelSummaryFlag,
     modelSlug: store.apps.modelSlug,
     currentAppId: store.apps.currentAppId,
@@ -290,7 +292,7 @@ export class AppsPanel extends React.Component {
 
           <div class="row">
             <div class="col-md-7">
-              <h3 className="xs-mt-0 nText">mAdvisor Apps</h3>
+              <h3 className="xs-mt-0 nText">Apps</h3>
             </div>
             <div class="col-md-5">
               <div class="btn-toolbar pull-right">

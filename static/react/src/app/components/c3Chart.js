@@ -67,7 +67,8 @@ export class C3Chart extends React.Component {
 
     if (this.props.classId == '_side') {
       this.classId = "chart";
-    } else if (this.props.widthPercent) {
+    } else 
+    if (this.props.widthPercent) {
       this.classId = "chart" + this.props.classId;
     }
 

@@ -7,8 +7,8 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList} from "../../actions/appActions";
+import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -22,6 +22,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
     @connect((store) => {
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
+            algoList: store.apps.algoList,
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
@@ -46,10 +47,21 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
+            var pageNo = 1; //if removing,getting error in mm map because mm is dependent on this page
+            if(this.props.history.location.search.indexOf("page") != -1){
+                pageNo = this.props.history.location.search.split("page=")[1];
+            }
+            if(store.getState().apps.currentAppId == ""){
+                this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+            }else{
+                this.props.dispatch(getAppsAlgoList(pageNo));
+            }
            
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
+            // this.props.dispatch(refreshAppsAlgoList(this.props));
+
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -117,6 +129,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             */
             
             const modelList = store.getState().apps.modelList.data;
+            const algoList = store.getState().apps.algoList;
+            console.log("modelllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
+            
             var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {
@@ -203,7 +218,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             }
         }
         handleSelect(eventKey) {
-            
             if (this.props.model_search_element) {
                 this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){

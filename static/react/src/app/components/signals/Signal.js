@@ -28,9 +28,8 @@ export class Signal extends React.Component {
     super();
   }
   componentWillMount() {
-
-	  if(isEmpty(this.props.signal)){
-      //alert("in will mount!!")
+  if(isEmpty(this.props.signal)){
+      alert("in will mount!!")
 	  this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 	  }
   }

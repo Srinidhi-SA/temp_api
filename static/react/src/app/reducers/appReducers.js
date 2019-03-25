@@ -1,6 +1,8 @@
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
+        algoList:{},
+        summarySelected:{},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -89,6 +91,9 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
+        deployShowModal:false,
+        algo_search_element:"",
+                
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -129,6 +134,64 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model list!!");
     }
     break;
+
+    // case "MODEL_LIST2":
+    case "ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList: action.data,
+            latestAlgos:action.latestAlgos,
+            current_page:action.current_page,
+        }
+    }
+    break;
+
+    case "ALGO_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "SUMMARY_SELECTED_LIST":
+    {
+      return {
+        ...state,
+        summarySelected: action.summarySelected,
+        // latestDatasets:action.latestDatasets,
+        // current_page: action.current_page
+      }
+    }
+    break;
+    case "SEARCH_ALGORITHM":
+    {
+        return{
+            ...state,
+            algo_search_element:action.search_element
+        }
+    }
+
+    case "DEPLOY_SHOW_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: true,
+        selectedItem:action.selectedItem
+      }
+      console.log(deployShowModal)
+    }
+    break;
+
+    case "DEPLOY_HIDE_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: false
+      }
+    }
+    break;
+
     case "UPDATE_MODEL_RANGE":
     {
         return {

@@ -22,6 +22,7 @@ import {
   RENAMEAUDIO,
   INPROGRESS,
   DELETESTOCKMODEL,
+  DELETEALGO,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
@@ -65,6 +66,7 @@ export function refreshAppsModelList(props) {
   }
 }
 
+
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -104,7 +106,6 @@ function fetchModelList(pageNo, token) {
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
-
 }
 
 function fetchModelListError(json) {
@@ -116,6 +117,106 @@ export function fetchModelListSuccess(doc) {
   var latestModels = doc.top_3
   return {type: "MODEL_LIST", data, latestModels, current_page}
 }
+
+
+
+function fetchAlgoListError(json) {
+ return {type: "ALGO_LIST_ERROR", json}
+}
+
+export function fetchAlgoListSuccess(doc) {
+  var data = doc;
+  var current_page = doc.current_page;
+  var latestAlgos = doc.top_3
+  return {type: "ALGO_LIST", data, latestAlgos, current_page}
+}
+
+export function getAppsAlgoList(pageNo) {
+  return (dispatch) => {
+    return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200) {
+        console.log(json)
+        dispatch(fetchAlgoListSuccess(json))
+      } else {
+        dispatch(fetchAlgoListError(json))
+      }
+    })
+  }
+}
+
+function fetchAlgoList(pageNo, token) {
+  let search_element = store.getState().apps.algo_search_element;
+  if (search_element != "" && search_element != null) {
+    console.log("calling for algo search element!!")
+    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else {
+    // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
+   return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+    method: 'get',
+    headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+  }
+}
+
+
+
+export function refreshAppsAlgoList(props) {
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function()
+    {
+      var pageNo = window.location.href.split("=").pop();
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
+        pageNo = 1;
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.app_url + "/modelManagement")
+
+        dispatch(getAppsAlgoList(parseInt(pageNo)));
+    }
+    , APPSDEFAULTINTERVAL);
+  }
+}
+
+function deleteAlgo(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteAlgoAPI(slug).then(([response, json]) => {
+    debugger;
+    if (response.status === 200) {
+      debugger;
+      dispatch(getAppsAlgoList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+
+
+function deleteAlgoAPI(slug) {
+  debugger;
+  // return fetch(API + '/api/score/' + slug + '/', {
+
+  return fetch(API + '/api/trainalgomapping/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+  debugger;
+
+}
+
+export function handleAlgoDelete(slug, dialog) {
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+  }
+}
+
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
@@ -256,6 +357,9 @@ export function getAppsScoreList(pageNo) {
   }
 }
 
+
+
+
 function fetchScoreList(pageNo, token) {
   let search_element = store.getState().apps.score_search_element;
   let apps_score_sorton = store.getState().apps.apps_score_sorton;
@@ -284,6 +388,8 @@ function fetchScoreList(pageNo, token) {
   }
 
 }
+
+
 
 function fetchScoreListError(json) {
   return {type: "SCORE_LIST_ERROR", json}
@@ -750,6 +856,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteAudio(slug, dialog, dispatch)
         else if (title == DELETESTOCKMODEL)
           deleteStockModel(slug, dialog, dispatch)
+          else if(title == DELETEALGO )
+          deleteAlgo(slug, dialog, dispatch)
         else
           deleteScore(slug, dialog, dispatch)
 
@@ -1758,6 +1866,8 @@ export function getAppDetails(appSlug, pageNo) {
         if (pageNo != undefined) {
           dispatch(getAppsModelList(pageNo));
           dispatch(getAppsScoreList(pageNo));
+          dispatch(getAppsAlgoList(pageNo));
+          
         }
 
       }
@@ -1879,6 +1989,9 @@ export function updateCurrentAppByID(app_id,pageNo) {
             if (pageNo != undefined) {
               dispatch(getAppsModelList(pageNo));
               dispatch(getAppsScoreList(pageNo));
+              dispatch(getAppsAlgoList(pageNo));
+
+              
             }
 
           }

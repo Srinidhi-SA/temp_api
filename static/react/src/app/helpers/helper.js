@@ -132,10 +132,12 @@ const ACCESSDENIED = "Access Denied"
 const CREATESIGNAL = "Create Signal";
 const PROCEEDTODATACLEANSING = "Proceed to data cleansing";
 const PROCEEDTOFEATUREENGINEERING ="proceed to feature Engineering"
+const PROCEEDTOMODELMANAGEMENT= "proceed to model management"
 const CREATEMODEL = "Create Model";
 const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
 const RENAMESTOCKMODEL = "Rename Analysis";
+const DELETEALGO ="Delete this Model";
 
 export function generateHeaders(table) {
   var cols = table.tableData.map(function(rowData, i) {
@@ -453,10 +455,12 @@ export {
   CREATESIGNAL,
   PROCEEDTODATACLEANSING,
   PROCEEDTOFEATUREENGINEERING,
+  PROCEEDTOMODELMANAGEMENT,
   CREATESCORE,
   CREATEMODEL,
   DELETESTOCKMODEL,
-  RENAMESTOCKMODEL
+  RENAMESTOCKMODEL,
+  DELETEALGO
 }
 export function capitalizeArray(array) {
   let a = []

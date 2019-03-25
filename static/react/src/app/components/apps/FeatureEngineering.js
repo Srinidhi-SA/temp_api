@@ -60,8 +60,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentDidMount() {
-
-
     $("#sdataType").change(function(){
       $("#fetable tbody tr").hide();
       $("#fetable tbody tr."+$(this).val()).show('fast');
@@ -336,16 +334,30 @@ export class FeatureEngineering extends React.Component {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var numberOfSelectedMeasures = 0;
     var numberOfSelectedDimensions = 0;
+    var data = this.props.datasets.selectedVariables;
+
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables){ 
       if(!this.props.datasets.selectedVariables[key])
       unselectedvar.push(key);
     }
-      console.log(unselectedvar);
+      // var result = {};
+
+      // for(var key in data)
+      // {
+      //     if(data.hasOwnProperty(key))
+      //     {
+      //         result.add({
+      //             key: key,
+      //             value: data[key]
+      //         });
+      //     }
+      // }
+
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag||unselectedvar.indexOf(item.name)!= -1)
+        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
         return "";
         if(item.columnType == "measure")
           numberOfSelectedMeasures +=1;
@@ -400,7 +412,7 @@ export class FeatureEngineering extends React.Component {
               <h3 className="modal-title">Transform column</h3>
             </Modal.Header>
             <Modal.Body>
-              <Transform parentPickValue={this.pickValue}/>
+              <Transform /*parentPickValue={this.pickValue}*//>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
@@ -509,7 +521,6 @@ export class FeatureEngineering extends React.Component {
     console.log("closeddddd ---closeBinsOrLevelsModal");
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
-
   openTransformColumnModal(item) {
     console.log("open ---openTransformColumnModal");
     this.props.dispatch(openTransformColumnModalAction(item));
