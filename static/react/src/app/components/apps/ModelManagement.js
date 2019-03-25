@@ -128,15 +128,15 @@ export class ModelManagement extends React.Component {
   render(){
 
     if(isEmpty(this.props.algoList)){
-			return ( null
+			return ( 
 
-        // <div className="side-body">
-        //   <div className="page-head">
-        //   </div>
-        //   <div className="main-content">
-        //     <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-        //   </div>
-        // </div>
+        <div className="side-body">
+          <div className="page-head">
+          </div>
+          <div className="main-content">
+            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+          </div>
+        </div>
       );
 		}else{
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
@@ -155,7 +155,7 @@ export class ModelManagement extends React.Component {
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.name}</td>
+      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
