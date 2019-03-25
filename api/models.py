@@ -4820,6 +4820,7 @@ class TrainAlgorithmMapping(models.Model):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
+
 # Deployment for Model management
 class ModelDeployment(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -4885,6 +4886,9 @@ class ModelDeployment(models.Model):
         import pytz
         from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
         config = json.loads(self.config)
+        config['trainer_details'] = self.add_trainer_details()
+        config['modeldeployment_details'] = self.add_modeldeployment_details()
+        config['user_details'] = self.add_user_details()
         timing_details = config['timing_details']
         schedule = None
         if timing_details['type'] == 'crontab':
@@ -4906,9 +4910,10 @@ class ModelDeployment(models.Model):
             periodic_task = PeriodicTask.objects.create(
                 interval=schedule,
                 name=self.slug,
-                task='print_this_every_minute',
+                # task='print_this_every_minute',
+                task='call_dataset_then_score',
                 args='["hello"]',
-                kwargs="{}"
+                kwargs=json.dumps(config)
             )
             self.periodic_task = periodic_task
             self.status = 'STARTED'
@@ -4916,6 +4921,21 @@ class ModelDeployment(models.Model):
             return True
         else:
             pass
+
+    def add_trainer_details(self):
+        return {
+            'trainer_slug': self.deploytrainer.trainer.slug
+        }
+
+    def add_modeldeployment_details(self):
+        return {
+            'modeldeployment_slug': self.slug
+        }
+
+    def add_user_details(self):
+        return {
+            'username': self.created_by.username
+        }
 
     def disable_periodic_task(self):
         '''
@@ -4967,6 +4987,25 @@ class ModelDeployment(models.Model):
 
     def change_config(self):
         pass
+
+    def get_trainer_details_for_score(self, score_name):
+        score_details = {
+            "name": score_name,
+            "config": {
+                "selectModel": {},
+                "variablesSelection": {},
+                "app_id": ""
+            }
+        }
+        trainer_data = json.loads(self.deploytrainer.trainer.data)
+        train_algo_mapping_data = json.loads(self.deploytrainer.data)
+        model_dropdowns = trainer_data['model_dropdown']
+        for model_dropdown in model_dropdowns:
+            if model_dropdown['name'] == train_algo_mapping_data['name']:
+                score_details['config']['selectModel'] = model_dropdown
+                break
+        score_details["config"]["app_id"] = self.deploytrainer.trainer.app_id
+        return score_details
 
 
 class DatasetScoreDeployment(models.Model):
