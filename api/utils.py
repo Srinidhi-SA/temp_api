@@ -1147,7 +1147,9 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['model_id'] = ret['slug']
-        ret['deployment'] = "4"
+        x=ModelDeployment.objects.filter(deploytrainer_id=instance.id)
+        #print(len(x))
+        ret['deployment'] =len(x)
         ret['created_on'] = ret['created_at']
         raw_data = json.loads(instance.data)
         #Fetching Data from ML
@@ -1161,6 +1163,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
             value = [u'autopred9', u'NaiveBayes', u'completed', 1, 5.97]
         key=['project_name','algorithm','training_status','accuracy','runtime']
         ret.update(dict(zip(key,value)))
+
         ret['trainer'] = instance.trainer.slug
         #return ret
 
@@ -1178,7 +1181,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            'data'
+            #'data'
         )
 
 
@@ -1337,4 +1340,18 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
 
             'id',
             # 'trainer'
+        )
+
+
+class TrainerNameListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainerNameListSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta:
+        model = Trainer
+        fields = (
+            'slug',
+            'name'
         )

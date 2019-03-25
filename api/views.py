@@ -41,7 +41,8 @@ from api.utils import \
     DeploymentSerializer, \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
-    DatasetScoreDeploymentListSerializer
+    DatasetScoreDeploymentListSerializer, \
+    TrainerNameListSerializer
     # RegressionSerlializer, \
     # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
@@ -388,6 +389,17 @@ class TrainerView(viewsets.ModelViewSet):
             "hyperparamter_saved": "Success"
         })
 
+    @list_route(methods=['get'])
+    def all(self, request):
+        queryset = Trainer.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['SUCCESS']
+        )
+        serializer = TrainerNameListSerializer(queryset, many=True, context={"request": self.request})
+        return Response({
+            "data": serializer.data
+        })
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -5579,16 +5591,13 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         return creation_failed_exception(serializer.errors)
 
     def create(self, request, *args, **kwargs):
-        # try:
         data = request.data
         data = convert_to_string(data)
-        print (data)
 
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainAlgorithmMappingSerializer(data=data, context={"request": self.request})
-        print ("\n")
-        print (data)
+
         if serializer.is_valid():
             train_algo_object = serializer.save()
             #train_algo_object.create()
@@ -5680,6 +5689,9 @@ class ModelDeployementView(viewsets.ModelViewSet):
     def get_serializer_context(self):
         return {'request': self.request}
 
+    def get_queryset_specific(self,xxx):
+        return self.get_queryset().filter(deploytrainer=xxx.id)
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -5688,177 +5700,7 @@ class ModelDeployementView(viewsets.ModelViewSet):
     permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
-        '''
-        request.data = {
-            "config":{
-                    "timing_details": {
-                                    "type": "interval",
-                                    "crontab": {
-                                        "minute": "30",
-                                        "hour": "*",
-                                        "day_of_week": "*",
-                                        "day_of_month": "*",
-                                        "month_of_year": "*",
-                                        "timezone": "Kolkata/Asia"
-                                    },
-                                    "interval": {
-                                        "every": 60,
-                                        "period": "seconds"
-                                    }
-                                },
-                    "score_details": {
-                      "name": "score_check",
-                      "dataset": "diabetic-datacsv-5nm9kubdkb",
-                      "trainer": "thanu_diabetic-uwrs0tym6i",
-                      "config": {
-                        "selectedModel": {
-                          "evaluationMetricValue": 0.77,
-                          "evaluationMetricName": "accuracy",
-                          "name": "Logistic Regression",
-                          "Model Id": "M0001",
-                          "slug": "f77631ce2ab24cf78c55bb6a5fce4db8lr"
-                        },
-                        "variablesSelection": [
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "Pregnancies",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "4f51d79a62834242bce3a9e58a14f4d5",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "Glucose",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "e9ec44182f804988a291fcc73001c155",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "BloodPressure",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "584c1bcbf6044b2295131e92e79549fb",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "Skin Thickness",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "d897704ec11841fa84d7f4009fa0ce46",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "Insulin",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "39d0c65d967c435bb5c66a448746fe10",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "BMI",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "6768075988694bb9a749daabe17d8daf",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "PedigreeFunction",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "0ab0f6dce4ae4b96b8c7d76cd78be18f",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "measure",
-                            "name": "Age",
-                            "selected": true,
-                            "actualColumnType": "measure",
-                            "targetColumn": false,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "a50709216b0a44a9a1d8524b4d3595fb",
-                            "uidCol": false
-                          },
-                          {
-                            "polarity": null,
-                            "setVarAs": null,
-                            "columnType": "dimension",
-                            "name": "Outcome",
-                            "selected": true,
-                            "actualColumnType": "dimension",
-                            "targetColumn": true,
-                            "targetColSetVarAs": null,
-                            "dateSuggestionFlag": false,
-                            "slug": "a45bca7304b245eba9ee37f880818ff5",
-                            "uidCol": false
-                          }
-                        ],
-                        "app_id": 2
-                      }
-                    },
-                    "dataset_details":{
-                        "datasource_details":{
-                            "datasetname":"name",
-                            "bucket_name":"bucker",
-                            "file_name":"data.csv",
-                            "access_key_id":"access_key",
-                            "secret_key":"secret_key"
 
-                        },
-                        "datasource_type":"S3"
-
-                    }
-                },
-        }
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        '''
         # try:
         data = request.data
         # DEFAULT TIMING DETAILS
@@ -5990,6 +5832,19 @@ class ModelDeployementView(viewsets.ModelViewSet):
             return JsonResponse({'message': err})
 
 
+
+    @list_route(methods=['get'])
+    def search(self, request, *args, **kwargs):
+        deploytrainer_slug = request.GET['deploytrainer']
+        deploytrainer_object = TrainAlgorithmMapping.objects.get(slug=deploytrainer_slug)
+
+        response = get_specific_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DeploymentListSerializer,
+            xxx=deploytrainer_object)
+        return response
+
 #view for deployment + Dataset +Score
 class DatasetScoreDeployementView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -6010,6 +5865,9 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         return {'request': self.request}
+
+    def get_queryset_specific(self,xxx):
+        return self.get_queryset().filter(deployment=xxx.id)
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -6082,3 +5940,15 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
 
         serializer = DatasetScoreDeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
+
+    @list_route(methods=['get'])
+    def search(self, request, *args, **kwargs):
+        deployment_slug = request.GET['deployment']
+        deployment_object = ModelDeployment.objects.get(slug=deployment_slug)
+
+        response = get_specific_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DatasetScoreDeploymentListSerializer,
+            xxx=deployment_object)
+        return response
