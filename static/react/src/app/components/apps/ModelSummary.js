@@ -14,7 +14,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {DataBox} from "../common/DataBox";
 import $ from "jquery";
 import {Button,Modal} from "react-bootstrap";
-import { Deploy } from "./Deploy";
+// import { Deploy } from "./Deploy";
 
 var data = null,
 yformat = null,
@@ -148,7 +148,7 @@ export class ModelSummary extends React.Component {
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
 		var performanceCard="";
-    var deployPopup = "";
+    // var deployPopup = "";
 
 		let chartInfo=[];
 
@@ -236,31 +236,31 @@ export class ModelSummary extends React.Component {
 
 			
 
-			deployPopup = (
-				<div class="col-md-3 xs-mb-15 list-boxes" >
-					<div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
-						<Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
-							<Modal.Header closeButton>
-								<h3 className="modal-title">Deploy Project</h3>
-							</Modal.Header>
-							<Modal.Body>
-								<Deploy /*parentPickValue={this.pickValue}*//>
-							</Modal.Body> 
-							<Modal.Footer>
-								<Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-								<Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
-							</Modal.Footer>
-						</Modal>
-					</div>
-				</div>
-			)
+			// deployPopup = (
+			// 	<div class="col-md-3 xs-mb-15 list-boxes" >
+			// 		<div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+			// 			<Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+			// 				<Modal.Header closeButton>
+			// 					<h3 className="modal-title">Deploy Project</h3>
+			// 				</Modal.Header>
+			// 				<Modal.Body>
+			// 					<Deploy /*parentPickValue={this.pickValue}*//>
+			// 				</Modal.Body> 
+			// 				<Modal.Footer>
+			// 					<Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+			// 					<Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+			// 				</Modal.Footer>
+			// 			</Modal>
+			// 		</div>
+			// 	</div>
+			// )
 		
 
     return (
       // <!-- Main Content starts with side-body -->
 			<div class="side-body">
 				<div class="main-content">
-				{deployPopup}
+				{/* {deployPopup} */}
 
 					<div class="page-head">
 						<h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {summary.project_name}<small> : {summary.algorithm}</small></h3>
@@ -281,7 +281,7 @@ export class ModelSummary extends React.Component {
 										{performanceCard}
           		    </div>
 									<div id="deployment" class="tab-pane">
-										<button class="btn btn-warning btn-shade4 pull-right" onClick={this.openDeployModal.bind(this,item)}>Add New Deployment</button>
+										<button class="btn btn-warning btn-shade4 pull-right" /*onClick={this.openDeployModal.bind(this,item)}*/>Add New Deployment</button>
 										<div class="clearfix"></div>
   		              <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
       		            <thead>
