@@ -134,7 +134,6 @@ export class ModelSummary extends React.Component {
 						}
 						break;
 				case "tree":
-						//console.log("checking tree data");
 						return ( <DecisionTree key={randomNum} treeData={story.data}/>);
 						break;
 				case "table":
@@ -177,7 +176,8 @@ export class ModelSummary extends React.Component {
 		var algoAnalysis="";
 		let chartInfo=[];
 		algoAnalysis = this.props.algoAnalysis;
-		console.log(this.props.deploymentList,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		var deploymentList = this.props.deploymentList;
+		console.log(deploymentList,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
 		top =performancePage.map(card => card.listOfCards);
