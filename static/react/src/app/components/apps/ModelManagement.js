@@ -9,11 +9,8 @@ import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
-
-
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-
 import { Deploy } from "./Deploy";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
   var dateFormat = require('dateformat');
@@ -23,7 +20,6 @@ import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} fro
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
 		algoAnalysis:store.signals.algoAnalysis,
-
     modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
@@ -42,9 +38,6 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-
-  // this.setState({algoAnalysis:this.props.algoAnalysis});
-
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -54,22 +47,9 @@ export class ModelManagement extends React.Component {
     }else
     {
         this.props.dispatch(getAppsAlgoList(pageNo));
-    }
-
-    // if (isEmpty(this.props.algoList)) {
-    //   if (!this.props.match.path.includes("robo")) {
-    //     let url = '/signals/'
-    //     console.log(this.props);
-    //     this.props.history.push(url)
-    //   }
-    // }
-
-    
-    
+    }    
   }
   componentDidMount() {
-		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
-
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
   // proceedToModelSummary(item)
@@ -79,9 +59,6 @@ export class ModelManagement extends React.Component {
   //   this.props.dispatch(openModelSummaryAction(item));
 	// 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
   //     console.log(item,"item called for individual page...........................")
-
-
-
   // }
   closeModelmanagement()
   {
@@ -91,7 +68,7 @@ export class ModelManagement extends React.Component {
 
   handleAlgoDelete(slug) {
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
-}
+  }
 
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
@@ -117,7 +94,7 @@ export class ModelManagement extends React.Component {
     }
   }
 
-  getAlgoAnalysis(item,signalType,e) {
+  getAlgoAnalysis(item,e) {
     console.log("Link Onclick is called")
 
     this.props.dispatch(emptyAlgoAnalysis());
@@ -157,7 +134,6 @@ export class ModelManagement extends React.Component {
 
     if(isEmpty(this.props.algoList)){
 			return ( 
-
         <div className="side-body">
           <div className="page-head">
           </div>
@@ -171,14 +147,11 @@ export class ModelManagement extends React.Component {
     var mmTable = "";
     var deployPopup = "";
     var Details="Details"
-    // debugger;
     const algoList = store.getState().apps.algoList.data;
       mmTable = this.props.algoList.data.map((item,key )=> {
     var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
-
-        return (
-          
-        <tr key={key} className={('all ' + item.name)}>
+       return (
+           <tr key={key} className={('all ' + item.name)}>
        <td>
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>

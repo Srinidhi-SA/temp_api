@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
-import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
+import {refreshAppsAlgoList,getDeploymentList,getListOfCards} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 import {Card} from "../signals/Card";
@@ -34,6 +34,9 @@ cardData = {};
     currentAppId: store.apps.currentAppId,
 		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
+		currentAppDetails:store.apps.currentAppDetails,
+		deploymentList:store.apps.deploymentList
+
   };
 })
 
@@ -45,13 +48,18 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
+		debugger;
+		
 		console.log("api call start")
+		
+		this.props.dispatch(getDeploymentList(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		
 		console.log("api call end")	
 	}
 
   componentDidMount() {
-			this.props.dispatch(refreshAppsAlgoList(this.props));
+			// this.props.dispatch(refreshAppsAlgoList(this.props));
 			
 	}
 
@@ -169,7 +177,7 @@ export class ModelSummary extends React.Component {
 		var algoAnalysis="";
 		let chartInfo=[];
 		algoAnalysis = this.props.algoAnalysis;
-		console.log(algoAnalysis,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		console.log(this.props.deploymentList,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
 		top =performancePage.map(card => card.listOfCards);

@@ -260,12 +260,6 @@ class App extends React.Component {
               return (<ModelManagement {...props}/>)
             }
             break;
-            
-            // case "/apps/:AppId/modelManagement":
-            // {
-            //   return (<ModelManagement {...props}/>)
-            // }
-            // break;
         }
 
       } else if (this.hasTrainerRoutePermission()) {
