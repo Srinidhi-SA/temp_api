@@ -32,8 +32,6 @@ cardData = {};
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
-
-		// selectedSummary:store.apps.summarySelected,
 		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
   };
@@ -47,18 +45,9 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		// if (isEmpty(this.props.selectedSummary)) {
-    //   if (!this.props.match.path.includes("robo")) {
-    //     let url = '/signals/'
-    //     console.log(this.props);
-    //     this.props.history.push(url)
-    //   }
-		// }
 		console.log("api call start")
-		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
-		console.log("api call end")
-
-		
+		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		console.log("api call end")	
 	}
 
   componentDidMount() {
@@ -376,10 +365,7 @@ export class ModelSummary extends React.Component {
             </div>
 			
 			<div class="buttonRow text-right"> <a href="javascript:;" onClick={this.closeModelSummary.bind(this)}class="btn btn-primary">Close </a> </div>
-			{/* <div className="panel-body no-border documentModeSpacing">
-                        <Card cardData={this.props.algoAnalysis.data.listOfNodes}/>
-                      </div> */}
-					</div>
+  		</div>
 		
 		
 		</div>
