@@ -4902,7 +4902,7 @@ class ModelDeployment(models.Model):
                 )
         else:
             schedule, _ = IntervalSchedule.objects.get_or_create(
-                every=timing_details['interval'].get('every', 3600),
+                every=timing_details['interval'].get('every', 600),
                 period=timing_details['interval'].get('period', 'seconds')
             )
 
