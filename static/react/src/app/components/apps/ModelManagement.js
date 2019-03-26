@@ -40,7 +40,9 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-  this.setState({algoAnalysis:this.props.algoAnalysis});
+
+  // this.setState({algoAnalysis:this.props.algoAnalysis});
+
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -67,18 +69,17 @@ export class ModelManagement extends React.Component {
 		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
-
-  proceedToModelSummary(item)
-  {
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
-    console.log(item,"item called for individual page...........................")
-    this.props.dispatch(openModelSummaryAction(item));
-			this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-      console.log(item,"item called for individual page...........................")
-
+  // proceedToModelSummary(item)
+  // {
+  //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
+  //   console.log(item,"item called for individual page...........................")
+  //   this.props.dispatch(openModelSummaryAction(item));
+	// 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
+  //     console.log(item,"item called for individual page...........................")
 
 
-  }
+
+  // }
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
@@ -115,7 +116,8 @@ export class ModelManagement extends React.Component {
 
   getAlgoAnalysis(item,signalType,e) {
     this.props.dispatch(emptyAlgoAnalysis());
-			this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
+
+		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
 
   }
 
