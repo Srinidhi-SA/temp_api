@@ -9,14 +9,12 @@ import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
-
-
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-
 import { Deploy } from "./Deploy";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
-  var dateFormat = require('dateformat');
+
+var dateFormat = require('dateformat');
 @connect((store) => {
   return {
     algoList: store.apps.algoList,
@@ -42,9 +40,7 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-
   this.setState({algoAnalysis:this.props.algoAnalysis});
-
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -69,9 +65,9 @@ export class ModelManagement extends React.Component {
   }
   componentDidMount() {
 		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
-
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
+  
   proceedToModelSummary(item)
   {
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
@@ -118,11 +114,7 @@ export class ModelManagement extends React.Component {
   }
 
   getAlgoAnalysis(item,signalType,e) {
-    console.log("Link Onclick is called")
-		alert("go to next page!!")
-
     this.props.dispatch(emptyAlgoAnalysis());
-
 			this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
 
   }
