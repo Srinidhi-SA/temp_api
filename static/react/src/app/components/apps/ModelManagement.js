@@ -13,7 +13,8 @@ import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { Deploy } from "./Deploy";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
-  var dateFormat = require('dateformat');
+
+var dateFormat = require('dateformat');
 @connect((store) => {
   return {
     algoList: store.apps.algoList,
@@ -182,131 +183,127 @@ export class ModelManagement extends React.Component {
     </tr>);
     })
 
-    deployPopup = (
-      <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
-            <Modal.Header closeButton>
-              <h3 className="modal-title">Deploy Project</h3>
-            </Modal.Header>
-            <Modal.Body>
-              <Deploy /*parentPickValue={this.pickValue}*//>
-            </Modal.Body> 
-            <Modal.Footer>
-              <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
-            </Modal.Footer>
-          </Modal>
+      deployPopup = (
+        <div class="col-md-3 xs-mb-15 list-boxes" >
+          <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+            <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+              <Modal.Header closeButton>
+                <h3 className="modal-title">Deploy Project</h3>
+              </Modal.Header>
+              <Modal.Body>
+                <Deploy /*parentPickValue={this.pickValue}*//>
+              </Modal.Body> 
+              <Modal.Footer>
+                <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         </div>
-      </div>
-    )
+      )
 
-    
-    if (algoList) {
-        const pages = store.getState().apps.algoList.total_number_of_pages;
-        const current_page = store.getState().apps.algoList.current_page;
-        
-        let paginationTag = null
-        if(pages > 1){
-            paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
-        }
-
-    return (
-      // <!-- Main Content starts with side-body -->
-      <div class="side-body">
-    
-        {/* <!-- Page Title and Breadcrumbs --> */}
-        <div class="page-head">
-          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
-        </div>
-        {/* <!-- /.Page Title and Breadcrumbs --> */}
-    
-        {/* <!-- Page Content Area --> */}
-        {deployPopup}
-        <div class="main-content">
       
-        <div class="row">
-            <div class="col-md-12">           
-              <div class="panel box-shadow">
-                <div class="panel-body no-border xs-p-20">
-             <div class="row xs-mb-10">
-              <div className="col-md-3">
-                <div class="form-inline" >
-                  <div class="form-group">
-                    <label for="sdataType">Filter By: </label>
-                      <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                        <datalist id="listProjectName">
-                           <option value="Credit Churn Prediction"></option>
-                           <option value="Ecommerce Predict"></option>
-                           <option value="Call Volume"></option>
-                           <option value="Student Performance"></option>								
-                        </datalist> &nbsp;&nbsp;&nbsp;
-                   </div>
-						    </div>
-               </div>
-                <div class="col-md-3 col-md-offset-6">
-					<div class="btn-toolbar pull-right">
-						<div class="input-group">
-						  <div className="search-wrapper">
-							<input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
-							<span className="zmdi zmdi-search form-control-feedback"></span>
-							<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
-						  </div>
-						</div>
-					</div>	
-               </div>
-            </div>
-             <div class="table-responsive">
-                    <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                      <thead>
-                        <tr className="myHead">
-                          <th>#</th>
-                          <th class="text-left"><b>Model Id</b></th>
-                          <th class="text-left"><b>Project Name</b></th>
-                          <th class="text-left"><b>Algorithm</b></th>
-                          <th><b>Status</b></th>
-                          <th><b>Accuracy</b></th>
-                          <th><b>Created On</b></th>
-                          <th><b>Deployment</b></th>
-                          <th><b>Runtime</b></th>
-                          <th><b>Summary</b></th>
-                          <th><b>Action</b></th>
-                        </tr>
-                      </thead>
+      if (algoList) {
+          const pages = store.getState().apps.algoList.total_number_of_pages;
+          const current_page = store.getState().apps.algoList.current_page;
+          
+          let paginationTag = null
+          if(pages > 1){
+              paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+          }
 
-                      <tbody className="no-border-x">
-                        {mmTable}
-                      </tbody>
-                    </table>
-                    <div class="col-md-12 text-center">
-                  {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
-                  <div className="footer"  id="idPagination">
-            <div className="algo_paginate">
-            {paginationTag}
+      return (
+        // <!-- Main Content starts with side-body -->
+        <div class="side-body">
+      
+          {/* <!-- Page Title and Breadcrumbs --> */}
+          <div class="page-head">
+            <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
           </div>
-          </div>
-              </div>
+          {/* <!-- /.Page Title and Breadcrumbs --> */}
+      
+          {/* <!-- Page Content Area --> */}
+          {deployPopup}
+          <div class="main-content">
+        
+          <div class="row">
+              <div class="col-md-12">           
+                <div class="panel box-shadow">
+                  <div class="panel-body no-border xs-p-20">
+              <div class="row xs-mb-10">
+                <div className="col-md-3">
+                  <div class="form-inline" >
+                    <div class="form-group">
+                      <label for="sdataType">Filter By: </label>
+                        <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                          <datalist id="listProjectName">
+                            <option value="Credit Churn Prediction"></option>
+                            <option value="Ecommerce Predict"></option>
+                            <option value="Call Volume"></option>
+                            <option value="Student Performance"></option>								
+                          </datalist> &nbsp;&nbsp;&nbsp;
+                    </div>
                   </div>
-                  <div class="buttonRow pull-right">
-                    <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
-                  </div>
-                  <Dialog ref="dialog"/>
+                </div>
+                  <div class="col-md-3 col-md-offset-6">
+                    <div className="search-wrapper">
+                      <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
+                      <span className="zmdi zmdi-search form-control-feedback"></span>
+                      <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
+                    </div>
                 </div>
               </div>
-              <div class="xs-p-30"></div>
+              <div class="table-responsive">
+                      <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                        <thead>
+                          <tr className="myHead">
+                            <th>#</th>
+                            <th class="text-left"><b>Model Id</b></th>
+                            <th class="text-left"><b>Project Name</b></th>
+                            <th class="text-left"><b>Algorithm</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Accuracy</b></th>
+                            <th><b>Created On</b></th>
+                            <th><b>Deployment</b></th>
+                            <th><b>Runtime</b></th>
+                            <th><b>Summary</b></th>
+                            <th><b>Action</b></th>
+                          </tr>
+                        </thead>
+
+                        <tbody className="no-border-x">
+                          {mmTable}
+                        </tbody>
+                      </table>
+                      <div class="col-md-12 text-center">
+                    {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
+                    <div className="footer"  id="idPagination">
+              <div className="algo_paginate">
+              {paginationTag}
             </div>
-            {/* <!-- Open Column --> */}
+            </div>
+                </div>
+                    </div>
+                    <div class="buttonRow pull-right">
+                      <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                    </div>
+                    <Dialog ref="dialog"/>
+                  </div>
+                </div>
+                <div class="xs-p-30"></div>
+              </div>
+              {/* <!-- Open Column --> */}
+            </div>
+            {/* <!-- End Row --> */}
+      
+      
+        {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
+      
           </div>
-          {/* <!-- End Row --> */}
-    
-    
-      {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
-    
+          
+          {/* <!-- End Main Content --> */}
         </div>
         
-        {/* <!-- End Main Content --> */}
-      </div>
-    
     );
    }
   }
@@ -333,6 +330,5 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
     this.props.dispatch(getAppsAlgoList(1));
-	document.getElementById('algo_search').value = "";
   }
 }
