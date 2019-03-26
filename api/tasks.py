@@ -539,7 +539,7 @@ def call_dataset_then_score(*args, **kwrgs):
     serializer = DatasetSerializer(data=dataset_details)
     if serializer.is_valid():
         dataset_object = serializer.save()
-        dataset_score_deployment_object.dataset = dataset_object.id
+        dataset_score_deployment_object.dataset = dataset_object
         dataset_score_deployment_object.save()
         print(dataset_object)
         dataset_object.create()
