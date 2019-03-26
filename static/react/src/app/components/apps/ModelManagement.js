@@ -67,7 +67,7 @@ export class ModelManagement extends React.Component {
 		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
-  
+
   proceedToModelSummary(item)
   {
     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);

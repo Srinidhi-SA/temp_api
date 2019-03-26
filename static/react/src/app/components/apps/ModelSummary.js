@@ -4,6 +4,8 @@ import store from "../../store"
 import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
+import {Card} from "../signals/Card";
+
 
 
 import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
@@ -52,6 +54,9 @@ export class ModelSummary extends React.Component {
     //     this.props.history.push(url)
     //   }
 		// }
+		console.log("api call start")
+		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		console.log("api call end")
 
 		
 	}
@@ -371,7 +376,10 @@ export class ModelSummary extends React.Component {
             </div>
 			
 			<div class="buttonRow text-right"> <a href="javascript:;" onClick={this.closeModelSummary.bind(this)}class="btn btn-primary">Close </a> </div>
-          </div>
+			{/* <div className="panel-body no-border documentModeSpacing">
+                        <Card cardData={this.props.algoAnalysis.data.listOfNodes}/>
+                      </div> */}
+					</div>
 		
 		
 		</div>
