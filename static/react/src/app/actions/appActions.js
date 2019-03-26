@@ -212,6 +212,81 @@ export function handleAlgoDelete(slug, dialog) {
   }
 }
 
+
+export function getDeploymentList(errandId,pageNo) {
+  return (dispatch) => {
+    return fetchDeploymentList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200) {
+        console.log(json)
+        dispatch(fetchDeploymentListSuccess(json))
+      } else {
+        dispatch(fetchDeploymentListError(json))
+      }
+    })
+  }
+}
+
+
+function fetchDeploymentList(errandId,token,pageNo) {
+  debugger;
+  // let search_element = store.getState().apps.algo_search_element;
+  // if (search_element != "" && search_element != null) {
+  //   console.log("calling for algo search element!!")
+  //   return fetch(API + '/api/deploymodel/?app_id=' + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+  //     method: 'get',
+  //     headers: getHeader(token)
+  //   }).then(response => Promise.all([response, response.json()]));
+  // }else 
+  // {
+    // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
+   return fetch(
+    //  API + '/api/deploymodel/?'+ '&page_number=' + pageNo + '&page_size=' + PERPAGE + slug +'', {
+    API + '/api/deploymodel/search/?deploytrainer=' + errandId ,{
+      // deploymodel/search/?deploytrainer
+
+    method: 'get',
+    headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+  // }
+}
+
+// function fetchAlgos_analysis(token, errandId) {
+//   //console.log(token)
+//   return fetch(
+//   API + '/api/trainalgomapping/' + errandId + "/" ,{
+//     method: 'get',
+//     headers: {
+//       'Authorization': token,
+//       'Content-Type': 'application/x-www-form-urlencoded'
+//     }
+//   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+//       bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
+//   });
+
+// }
+
+
+
+function fetchDeploymentListError(json) {
+  return {type: "DEPLOYMENT_LIST_ERROR", json}
+ }
+ 
+ export function fetchDeploymentListSuccess(doc) {
+   var data = doc;
+   var current_page = doc.current_page;
+   var latestDeployments = doc.top_3
+   return {type: "DEPLOYMENT_LIST", data, latestDeployments, current_page}
+ }
+
+
+
+
+
+
+
+
+
+
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
