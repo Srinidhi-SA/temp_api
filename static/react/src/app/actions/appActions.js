@@ -184,9 +184,7 @@ function deleteAlgo(slug, dialog, dispatch) {
   dispatch(showLoading());
   Dialog.resetOptions();
   return deleteAlgoAPI(slug).then(([response, json]) => {
-    debugger;
     if (response.status === 200) {
-      debugger;
       dispatch(getAppsAlgoList(store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
@@ -199,7 +197,6 @@ function deleteAlgo(slug, dialog, dispatch) {
 
 
 function deleteAlgoAPI(slug) {
-  debugger;
   // return fetch(API + '/api/score/' + slug + '/', {
 
   return fetch(API + '/api/trainalgomapping/' + slug + '/', {
@@ -207,8 +204,6 @@ function deleteAlgoAPI(slug) {
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({deleted: true})
   }).then(response => Promise.all([response, response.json()]));
-  debugger;
-
 }
 
 export function handleAlgoDelete(slug, dialog) {
