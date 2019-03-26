@@ -8,6 +8,7 @@ import os
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
+import datetime
 
 
 @task(name="sum_two_numbers")
@@ -29,7 +30,7 @@ def xsum(numbers):
 
 import subprocess
 import re
-from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
+from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo, DatasetScoreDeployment
 
 
 @task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
@@ -493,7 +494,6 @@ def print_this_every_minute(data):
 @task(name='call_dataset_then_score', queue=CONFIG_FILE_NAME)
 def call_dataset_then_score(*args, **kwrgs):
     print(args)
-
     print(kwrgs)
     # collect all configs
     config = kwrgs
@@ -513,7 +513,20 @@ def call_dataset_then_score(*args, **kwrgs):
 
     # fetch trainer model
     # trainer_object = model_deployment_object.deploytrainer.trainer
-
+    dataset_score_deployment_details = {
+        'name': model_deployment_object.name + str(datetime.datetime.now().time()),
+        'deployment': model_deployment_object.id,
+        'created_by': user_object.id,
+        'config': '{}',
+        'data': '{}'
+    }
+    from api.utils import DatasetScoreDeploymentSerializer
+    dataset_score_deployment_serializer = DatasetScoreDeploymentSerializer(data=dataset_score_deployment_details)
+    if dataset_score_deployment_serializer.is_valid():
+        dataset_score_deployment_object = dataset_score_deployment_serializer.save()
+        print(dataset_score_deployment_object)
+    else:
+        return
     # create dataset
     dataset_details['input_file'] = None
     if 'datasetname' in dataset_details['datasource_details']:
@@ -523,12 +536,13 @@ def call_dataset_then_score(*args, **kwrgs):
     from api.datasets.serializers import DatasetSerializer
 
     dataset_details = convert_to_string(dataset_details)
-    serializer = DatasetSerializer(data=dataset_details, context={})
+    serializer = DatasetSerializer(data=dataset_details)
     if serializer.is_valid():
         dataset_object = serializer.save()
-        model_deployment_object.dataset = dataset_object.id
-        model_deployment_object.save()
-        # dataset_object.create()
+        dataset_score_deployment_object.dataset = dataset_object.id
+        dataset_score_deployment_object.save()
+        print(dataset_object)
+        dataset_object.create()
         #
         # # create score
         # dataset_object = dataset_object.data
