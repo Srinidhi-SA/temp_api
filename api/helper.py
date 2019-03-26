@@ -1301,4 +1301,30 @@ def encrypt_for_kylo(username, password_encrypted):
 def convert_fe_date_format(date_string):
     return datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%d/%m/%Y')
 
+def get_timing_details(timing_type=None):
+    timing_details = {
+                        "type": "crontab",
+                        "crontab": {
+                            "minute": "*",
+                            "hour": "*",
+                            "day_of_week": "*",
+                            "day_of_month": "*",
+                            "month_of_year": "*",
+                            "timezone": "Kolkata/Asia"
+                        },
+                        "interval": {
+                            "every": 60,
+                            "period": "seconds"
+                        }
+                    }
+
+    if timing_type == 'weekly':
+        timing_details['crontab']['day_of_week'] = 1
+    elif timing_type == 'monthly':
+        timing_details['crontab']['day_of_month'] = 1
+    else:
+        timing_details['crontab']['day_of_week'] = 1
+
+    return timing_details
+
 

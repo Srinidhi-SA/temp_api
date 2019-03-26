@@ -1228,6 +1228,7 @@ class DeploymentListSerializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret['periodic_task'] = instance.get_periodic_task_details()
         return ret
 
     class Meta:
@@ -1236,7 +1237,8 @@ class DeploymentListSerializer(serializers.ModelSerializer):
             'id',
             'config',
             'data',
-            'deploytrainer'
+            'deploytrainer',
+            # 'periodic_task'
         )
 
 
@@ -1248,6 +1250,7 @@ class DeploymentSerializer(serializers.ModelSerializer):
         deploytrainer = ret['deploytrainer']
         deployment_object = TrainAlgorithmMapping.objects.get(pk=deploytrainer)
         ret['deploytrainer'] = deployment_object.slug
+        ret['periodic_task'] = instance.get_periodic_task_details()
         ret['created_by'] = UserSerializer(instance.created_by).data
         #return ret
 

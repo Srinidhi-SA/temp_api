@@ -295,6 +295,13 @@ def write_into_databases1(job_type, object_slug, results):
                     temp_data['data'] = json.dumps(add_slugs(algo_detail, object_slug=object_slug))
                     temp_data['trainer'] = trainer_object
                     temp_data['created_by'] = trainer_object.created_by.id
+                    temp_config = {}
+                    for i in results['model_dropdown']:
+                        if algo_detail['name'] == i['name']:
+                            temp_config['selectedModel'] = i
+                    temp_config['variablesSelection'] = {}
+                    temp_config['app_id'] = trainer_object.app_id
+                    temp_data['config'] = json.dumps(temp_config)
 
                     serializer = TrainAlgorithmMappingSerializer(data=temp_data)
                     if serializer.is_valid():
@@ -461,6 +468,7 @@ def kill_application_using_fabric(app_id=None):
 #     stock_dataset_object.call_mlscripts()
 #     stock_dataset_object.save()
 
+
 @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
 
@@ -475,3 +483,109 @@ def stock_sense_crawl(object_slug):
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
     # stock_dataset_object.call_mlscripts()
+
+
+@task(name='print_this_every_minute', queue=CONFIG_FILE_NAME)
+def print_this_every_minute(data):
+    print(data)
+
+
+@task(name='call_dataset_then_score', queue=CONFIG_FILE_NAME)
+def call_dataset_then_score(*args, **kwrgs):
+    print(args)
+
+    print(kwrgs)
+    # collect all configs
+    config = kwrgs
+    dataset_details = config['dataset_details']
+    # score_details = config['score_details']
+    # trainer_details = config['trainer_details']
+    modeldeployment_details = config['modeldeployment_details']
+    user_details = config['user_details']
+
+    # fetch modeldeployment instance
+    from api.models import ModelDeployment
+    model_deployment_object = ModelDeployment.objects.get(slug=modeldeployment_details['modeldeployment_slug'])
+
+    # fetch user instance
+    from django.contrib.auth.models import User
+    user_object = User.objects.get_by_natural_key(username=user_details['username'])
+
+    # fetch trainer model
+    # trainer_object = model_deployment_object.deploytrainer.trainer
+
+    # create dataset
+    dataset_details['input_file'] = None
+    if 'datasetname' in dataset_details['datasource_details']:
+        dataset_details['name'] = dataset_details['datasource_details']['datasetname']
+        dataset_details['created_by'] = user_object.id
+    from api.datasets.helper import convert_to_string
+    from api.datasets.serializers import DatasetSerializer
+
+    dataset_details = convert_to_string(dataset_details)
+    serializer = DatasetSerializer(data=dataset_details, context={})
+    if serializer.is_valid():
+        dataset_object = serializer.save()
+        model_deployment_object.dataset = dataset_object.id
+        model_deployment_object.save()
+        # dataset_object.create()
+        #
+        # # create score
+        # dataset_object = dataset_object.data
+        # original_meta_data_from_scripts = dataset_object['meta_data']
+        #
+        # if original_meta_data_from_scripts is None:
+        #     uiMetaData = None
+        # if original_meta_data_from_scripts == {}:
+        #     uiMetaData = None
+        # else:
+        #     permissions_dict = {
+        #         'create_signal': user_object.has_perm('api.create_signal'),
+        #         'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+        #     }
+        #     from api.datasets.helper import add_ui_metadata_to_metadata
+        #     uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
+        #
+        # from api.utils import convert_to_string
+        # import json
+        # # dataset_metadata = json.loads(dataset_object.meta_data)
+        # score_details['config'] = model_deployment_object.get_trainer_details_for_score()
+        # score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+        # score_details['trainer'] = trainer_object.id
+        # score_details['dataset'] = dataset_object.id
+        # score_details['created_by'] = user_object.id
+        # score_details['app_id'] = int(score_details['config']['app_id'])
+        # score_details = convert_to_string(score_details)
+        # from api.utils import ScoreSerlializer
+        # score_serializer = ScoreSerlializer(data=score_details, context={})
+        # if score_serializer.is_valid():
+        #     score_object = score_serializer.save()
+        #     # we will not call score_object.create() here it will be called in write_into_databases
+        #     model_deployment_object.score = score_object.id
+        #     model_deployment_object.save()
+        #     print(dataset_object,score_object)
+        # else:
+        #     print(score_serializer.errors)
+    else:
+        print(serializer.errors)
+
+'''
+Things to do
+- call dataset object create function (uncomment in above code)
+- Once dataset is completed from ML side they will 
+    -> call set_result API 
+    -> which will call write_into_database
+    -> where we need to check if database is part of DatasetScore Table
+    -> if yes, trigger score object create function
+'''
+
+
+def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object):
+    from api.models import DatasetScoreDeployment
+    datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object.id)
+    if datasetscore_deployment_object is not None:
+        score_object = datasetscore_deployment_object.score
+        if score_object is not None:
+            if score_object.status == 'NOT STARTED':
+                score_object.create()
+

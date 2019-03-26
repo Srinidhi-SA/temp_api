@@ -5700,16 +5700,33 @@ class ModelDeployementView(viewsets.ModelViewSet):
     permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
+
         # try:
         data = request.data
+        # DEFAULT TIMING DETAILS
+        timing_details = {
+            'type': 'interval',
+            'interval': {
+                'every': 60,
+                'period': 'seconds'
+            }
+        }
+        from api.helper import get_timing_details
+        if 'config' in data:
+            if 'timing_details' in data['config']:
+                data['config']['timing_details'] = get_timing_details(data['config']['timing_details'])
+            else:
+                data['config']['timing_details'] = get_timing_details()
+
         data = convert_to_string(data)
+
 
         data['deploytrainer'] = TrainAlgorithmMapping.objects.filter(slug=data['deploytrainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = DeploymentSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             model_deployment_object = serializer.save()
-            #train_algo_object.create()
+            model_deployment_object.start_periodically()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
@@ -5761,6 +5778,59 @@ class ModelDeployementView(viewsets.ModelViewSet):
 
         serializer = DeploymentSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def terminate_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.terminate_periodic_task()
+            return JsonResponse({'message': 'Terminated'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
+
+    @detail_route(methods=['get'])
+    def stop_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.disable_periodic_task()
+            return JsonResponse({'message': 'Stopped'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
+    @detail_route(methods=['get'])
+    def resume_periodic_run(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        try:
+            instance.resume_periodic_task()
+            return JsonResponse({'message': 'Resumed'})
+        except Exception as err:
+            return JsonResponse({'message': err})
+
 
 
     @list_route(methods=['get'])

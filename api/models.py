@@ -27,6 +27,7 @@ THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
 from helper import convert_fe_date_format
+from django_celery_beat.models import PeriodicTask
 
 from guardian.shortcuts import assign_perm
 
@@ -4819,11 +4820,13 @@ class TrainAlgorithmMapping(models.Model):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
+
 # Deployment for Model management
 class ModelDeployment(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
     deploytrainer = models.ForeignKey(TrainAlgorithmMapping, null=False)
+    periodic_task = models.ForeignKey(PeriodicTask, null=True)
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
@@ -4855,6 +4858,154 @@ class ModelDeployment(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(ModelDeployment, self).save(*args, **kwargs)
+
+    def start_periodically(self):
+        '''
+        timing_details = {
+            'type': 'crontab',
+            'crontab': {
+                'minute': '30',
+                'hour': '*',
+                'day_of_week': '*',
+                'day_of_month': '*',
+                'month_of_year': '*',
+                'timezone': 'Kolkata/Asia'
+            },
+            'interval': {
+                'every': 30,
+                'period': 'seconds'
+            }
+        }
+        :param timing_details:
+        :return:
+        '''
+        if self.periodic_task is None:
+            pass
+        else:
+            return False
+        import pytz
+        from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
+        config = json.loads(self.config)
+        config['trainer_details'] = self.add_trainer_details()
+        config['modeldeployment_details'] = self.add_modeldeployment_details()
+        config['user_details'] = self.add_user_details()
+        timing_details = config['timing_details']
+        schedule = None
+        if timing_details['type'] == 'crontab':
+            schedule, _ = CrontabSchedule.objects.get_or_create(
+                minute = timing_details['crontab'].get('minute', '30'),
+                hour = timing_details['crontab'].get('hour', '*'),
+                day_of_week = timing_details['crontab'].get('day_of_week', '*'),
+                day_of_month = timing_details['crontab'].get('day_of_month', '*'),
+                month_of_year = timing_details['crontab'].get('month_of_year', '*'),
+                timezone = pytz.timezone(timing_details['crontab'].get('timezone', 'Kolkata/Asia'))
+                )
+        else:
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                every=timing_details['interval'].get('every', 600),
+                period=timing_details['interval'].get('period', 'seconds')
+            )
+
+        if schedule is not None:
+            periodic_task = PeriodicTask.objects.create(
+                interval=schedule,
+                name=self.slug,
+                # task='print_this_every_minute',
+                task='call_dataset_then_score',
+                args='["hello"]',
+                kwargs=json.dumps(config)
+            )
+            self.periodic_task = periodic_task
+            self.status = 'STARTED'
+            self.save()
+            return True
+        else:
+            pass
+
+    def add_trainer_details(self):
+        return {
+            'trainer_slug': self.deploytrainer.trainer.slug
+        }
+
+    def add_modeldeployment_details(self):
+        return {
+            'modeldeployment_slug': self.slug
+        }
+
+    def add_user_details(self):
+        return {
+            'username': self.created_by.username
+        }
+
+    def disable_periodic_task(self):
+        '''
+            >>> periodic_task.enabled = False
+            >>> periodic_task.save()
+        :return:
+        '''
+        self.periodic_task.enabled = False
+        self.status = 'STOPPED'
+        self.save()
+        self.save()
+
+    def resume_periodic_task(self):
+        '''
+            >>> periodic_task.enabled = True
+            >>> periodic_task.save()
+        :return:
+        '''
+        self.periodic_task.enabled = True
+        self.status = 'STARTED'
+        self.save()
+        self.save()
+
+    def terminate_periodic_task(self):
+        '''
+            >>> task = PeriodicTask.objects.get(name='simple-add')
+            >>> task.delete()
+        :return:
+        '''
+        self.periodic_task.delete()
+        self.periodic_task = None
+        self.status = 'TERMINATED'
+        self.save()
+        self.deleted = True
+        self.save()
+
+    def get_periodic_task_details(self):
+
+        if self.periodic_task:
+            return {
+                'name': self.periodic_task.name,
+                'status': self.periodic_task.enabled
+            }
+        else:
+            return None
+
+    def change_timings_of_periodic_task(self):
+        pass
+
+    def change_config(self):
+        pass
+
+    def get_trainer_details_for_score(self, score_name):
+        score_details = {
+            "name": score_name,
+            "config": {
+                "selectModel": {},
+                "variablesSelection": {},
+                "app_id": ""
+            }
+        }
+        trainer_data = json.loads(self.deploytrainer.trainer.data)
+        train_algo_mapping_data = json.loads(self.deploytrainer.data)
+        model_dropdowns = trainer_data['model_dropdown']
+        for model_dropdown in model_dropdowns:
+            if model_dropdown['name'] == train_algo_mapping_data['name']:
+                score_details['config']['selectModel'] = model_dropdown
+                break
+        score_details["config"]["app_id"] = self.deploytrainer.trainer.app_id
+        return score_details
 
 
 class DatasetScoreDeployment(models.Model):
