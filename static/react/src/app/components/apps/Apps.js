@@ -102,6 +102,8 @@ export class Apps extends React.Component {
   render() {
     console.log("apps is called##########3");
     console.log(this.props);
+    var appId = this.props.currentAppId;
+    console.log(appId,"++++++++++++++++++++++++++++++++++++++++++++++++")
     if (store.getState().apps.modelSummaryFlag) {
       let _link = "/apps/" + this.props.match.params.AppId + '/models/' + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
@@ -115,11 +117,21 @@ export class Apps extends React.Component {
 
     let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
 
+    let modelManagement = ""
+
+    if(appId==2 || appId == 13){
+     modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button>
+    }else
+    {
+     modelManagement = "";
+    }
+
     return (
       <div className="side-body">
         <div className="main-content">
         <div class="buttonRow pull-right">
-            <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button>
+        {modelManagement}
+            {/* <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button> */}
         </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")

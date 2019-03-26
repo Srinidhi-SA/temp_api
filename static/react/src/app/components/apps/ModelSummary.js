@@ -54,6 +54,9 @@ export class ModelSummary extends React.Component {
     //     this.props.history.push(url)
     //   }
 		// }
+		console.log("api call start")
+		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		console.log("api call end")
 
 		
 	}
