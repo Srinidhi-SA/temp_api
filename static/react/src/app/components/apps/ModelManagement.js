@@ -272,11 +272,15 @@ export class ModelManagement extends React.Component {
 						    </div>
                </div>
                 <div class="col-md-3 col-md-offset-6">
-                  <div className="search-wrapper">
-                    <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
-                    <span className="zmdi zmdi-search form-control-feedback"></span>
-                    <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
-                  </div>
+					<div class="btn-toolbar pull-right">
+						<div class="input-group">
+						  <div className="search-wrapper">
+							<input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
+							<span className="zmdi zmdi-search form-control-feedback"></span>
+							<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
+						  </div>
+						</div>
+					</div>	
                </div>
             </div>
              <div class="table-responsive">
@@ -356,5 +360,6 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
     this.props.dispatch(getAppsAlgoList(1));
+	document.getElementById('algo_search').value = "";
   }
 }
