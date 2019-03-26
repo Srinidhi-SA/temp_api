@@ -4898,7 +4898,7 @@ class ModelDeployment(models.Model):
                 day_of_week = timing_details['crontab'].get('day_of_week', '*'),
                 day_of_month = timing_details['crontab'].get('day_of_month', '*'),
                 month_of_year = timing_details['crontab'].get('month_of_year', '*'),
-                timezone = pytz.timezone(timing_details['crontab'].get('timezone', 'Kolkata/Asia'))
+                timezone = pytz.timezone(timing_details['crontab'].get('timezone', 'Asia/Calcutta'))
                 )
         else:
             schedule, _ = IntervalSchedule.objects.get_or_create(

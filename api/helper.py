@@ -1303,14 +1303,14 @@ def convert_fe_date_format(date_string):
 
 def get_timing_details(timing_type=None):
     timing_details = {
-                        "type": "crontab",
+                        "type": "interval",
                         "crontab": {
                             "minute": "*",
                             "hour": "*",
                             "day_of_week": "*",
                             "day_of_month": "*",
                             "month_of_year": "*",
-                            "timezone": "Kolkata/Asia"
+                            "timezone": "Asia/Calcutta"
                         },
                         "interval": {
                             "every": 60,
