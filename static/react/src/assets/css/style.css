@@ -15272,6 +15272,7 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 
 .hideSortImg .sorttable_img { display: none; }
 #pDetail .nav-tabs { border-color:#ddd}
+#pDetail table th, #pDetail table td { text-align:left }
 .tab-content .bgStockBox { margin-right: -4px;}
 
 .pos-relative .dropdown-menu.dropdown-menu-right:before { right: 28px; }
