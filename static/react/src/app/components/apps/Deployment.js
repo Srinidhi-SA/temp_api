@@ -32,7 +32,7 @@ export class Deployment extends React.Component {
     console.log("Deployment render method is called...");
     return (
 			<div id="deployment" class="tab-pane">
-				<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button>
+				<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button><br/><br/>
 					<div class="clearfix"></div>
 						<table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
 							<thead>
