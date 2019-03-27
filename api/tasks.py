@@ -587,7 +587,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
 
             # fetch user instance
             from django.contrib.auth.models import User
-            user_object = dataset_object.user
+            user_object = dataset_object.created_by
             print("Found User")
 
             # create score
