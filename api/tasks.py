@@ -9,6 +9,7 @@ from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
 import datetime
+import json
 from api.helper import get_random_model_id
 
 
@@ -591,8 +592,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             print("Found User")
 
             # create score
-            dataset_object = dataset_object.meta_data
-            original_meta_data_from_scripts = dataset_object['meta_data']
+            original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
             print("Got metedata from dataset")
 
             if original_meta_data_from_scripts is None:
