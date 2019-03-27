@@ -959,13 +959,16 @@ def get_db_object(model_name, model_slug):
 @task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME)
 def get_job_from_yarn(model_name=None, model_slug=None):
 
-    model_instance = get_db_object(model_name=model_name,
-                                   model_slug=model_slug
-                                   )
-    if model_instance.job == None:
-        return 1
-    if model_instance.job.url == '':
-        return model_instance.status
+    try:
+        model_instance = get_db_object(model_name=model_name,
+                                       model_slug=model_slug
+                                       )
+        if model_instance.job == None:
+            return 1
+        if model_instance.job.url == '':
+            return model_instance.status
+    except:
+        return 
 
     try:
         ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
