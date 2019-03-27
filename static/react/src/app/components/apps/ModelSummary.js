@@ -36,10 +36,6 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		debugger;
-		
-		console.log("api call start")
-		
 		this.props.dispatch(getDeploymentList(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 		
@@ -85,7 +81,8 @@ export class ModelSummary extends React.Component {
   }
 	
 	renderCardData(c3,cardWidth){
-		var htmlData = c3.map((story, i) => {
+		debugger;
+			var htmlData = c3.map((story, i) => {
 			let randomNum = Math.random().toString(36).substr(2,8);
 			switch (story.dataType) {
 				case "html":
@@ -100,6 +97,7 @@ export class ModelSummary extends React.Component {
 								 chartInfo=story.chartInfo
 							 }
 								if(story.widthPercent &&  story.widthPercent != 100){
+									debugger;
 									//  let width  = story.widthPercent+"%";
 										let width  = parseInt((story.widthPercent/100)*12)
 										let divClass="col-md-"+width;
@@ -107,8 +105,10 @@ export class ModelSummary extends React.Component {
 										if(story.widthPercent < 50)sideChart=true;
 										return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
 								}else if(story.widthPercent == 100){
+									debugger;
 										let divClass="";
 										let parentDivClass = "col-md-12";
+										debugger;
 										if(!cardWidth || cardWidth > 50)
 										divClass = "col-md-12"
 										else
@@ -144,7 +144,7 @@ export class ModelSummary extends React.Component {
 
   render(){
 
-
+		debugger;
 		if(isEmpty(this.props.algoAnalysis)){
 			return (
 
@@ -175,44 +175,51 @@ export class ModelSummary extends React.Component {
 		var oVtop="";
 		oVtop =overviewPage.map(card => card.listOfCards);
 		
-		let cardWidth = this.props.cardWidth;
+		// let cardWidth = this.props.cardWidth;
 
 		var th1 = oVtop.map(fun => fun[0].cardData[0])
 		var tdata1 = oVtop.map(fun => fun[0].cardData[1])
+		var tw1 = oVtop.map(fun => fun[0].cardWidth)[0]
 		
 		var th2 = oVtop.map(fun => fun[1].cardData[0])
 		var tdata2 = oVtop.map(fun => fun[1].cardData[1])
+		var tw2 = oVtop.map(fun => fun[1].cardWidth)[0]
 
 		var c0 = top.map(fun => fun[0].cardData[0])
+		var w0 = top.map(fun => fun[0].cardWidth)[0]
 		var h1 = top.map(fun => fun[1].cardData[0])
 		var c1 = top.map(fun => fun[1].cardData[1])
+		var w1 = top.map(fun => fun[1].cardWidth)[0]
 		var h2 = top.map(fun => fun[2].cardData[0])
 		var c2 = top.map(fun => fun[2].cardData[1])
+		var w2 = top.map(fun => fun[2].cardWidth)[0]
 		var h3 = top.map(fun => fun[3].cardData[0])
 		var c3 = top.map(fun => fun[3].cardData[1])
+		var w3 = top.map(fun => fun[3].cardWidth)[0]
 		var h4 = top.map(fun => fun[4].cardData[0])
 		var c4 = top.map(fun => fun[4].cardData[1])
+		var w4 = top.map(fun => fun[4].cardWidth)[0]
 		var h5 = top.map(fun => fun[5].cardData[0])
 		var c5 = top.map(fun => fun[5].cardData[1])
+		var w5 = top.map(fun => fun[5].cardWidth)[0]
 		
-		const summaryTable = this.renderCardData(tdata1,cardWidth);
-		const headSummaryTable = this.renderCardData(th1,cardWidth);
+		const summaryTable = this.renderCardData(tdata1,tw1);
+		const headSummaryTable = this.renderCardData(th1,tw1);
  
-		const settingsTable = this.renderCardData(tdata2,cardWidth);
-		const headSettingsTable = this.renderCardData(th2,cardWidth);
+		const settingsTable = this.renderCardData(tdata2,tw2);
+		const headSettingsTable = this.renderCardData(th2,tw2);
 
-		const topCards = this.renderCardData(c0,cardWidth);
-		
-		const headconfusionMatrix = this.renderCardData(h1,cardWidth);
-		const confusionMatrix = this.renderCardData(c1,cardWidth);
-		const headksChart = this.renderCardData(h2,cardWidth);
-		const ksChart = this.renderCardData(c2,cardWidth);
-		const headgainChart = this.renderCardData(h3,cardWidth);
-		const gainChart = this.renderCardData(c3,cardWidth);
-		const headliftChart = this.renderCardData(h4,cardWidth);
-		const liftChart = this.renderCardData(c4,cardWidth);
-		const headROCChart = this.renderCardData(h5,cardWidth);
-		const ROCChart = this.renderCardData(c5,cardWidth);
+		const topCards = this.renderCardData(c0,w0);
+		const headconfusionMatrix = this.renderCardData(h1,w1);
+		const confusionMatrix = this.renderCardData(c1,w1);
+		const headksChart = this.renderCardData(h2,w2);
+		const ksChart = this.renderCardData(c2,w2);
+		const headgainChart = this.renderCardData(h3,w3);
+		const gainChart = this.renderCardData(c3,w3);
+		const headliftChart = this.renderCardData(h4,w4);
+		const liftChart = this.renderCardData(c4,w4);
+		const headROCChart = this.renderCardData(h5,w5);
+		const ROCChart = this.renderCardData(c5,w5);
  
  
 		overviewCard=(

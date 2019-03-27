@@ -228,7 +228,6 @@ export function getDeploymentList(errandId,pageNo) {
 
 
 function fetchDeploymentList(errandId,token,pageNo) {
-  debugger;
   // let search_element = store.getState().apps.algo_search_element;
   // if (search_element != "" && search_element != null) {
   //   console.log("calling for algo search element!!")
