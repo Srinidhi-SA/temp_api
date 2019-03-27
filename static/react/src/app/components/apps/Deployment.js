@@ -58,7 +58,18 @@ if(deploymentList.data.length == 0){
      <td ><span className="text-success"></span> {deploy.updated_at}</td>
      <td > {deploy.name}</td>
      <td > {deploy.name}</td>
-     <td > {deploy.name}</td>
+     {/* <td > {deploy.name}</td> */}
+     <td>
+        <div class="pos-relative">
+          <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+            <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+          </a>    
+          <ul class="dropdown-menu dropdown-menu-right">
+          <li><a bsStyle="cst_button">View</a></li>
+            <li><a  >Delete</a></li>       
+          </ul>
+        </div>
+      </td>
    </tr>);
    }) 
   }
