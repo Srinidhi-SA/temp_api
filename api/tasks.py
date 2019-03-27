@@ -119,7 +119,8 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.analysis_done = True
         dataset_object.status = 'SUCCESS'
         dataset_object.save()
-        check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object)
+        print("Every thing went well. Lets see if more can be done")
+        check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object.id)
         return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
@@ -559,31 +560,38 @@ Things to do
 '''
 
 
-def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object):
+def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object_id):
+    print('received this dataset_object_id : ', dataset_object_id)
 
-    if dataset_object is None:
+    if dataset_object_id is None:
+        print("No dataset id given found")
+
         return
-    if dataset_object.status is not 'SUCCESS':
-        return None
-    from api.models import DatasetScoreDeployment
-    try:
-        datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object.id)
 
+    from api.models import DatasetScoreDeployment
+
+    try:
+        datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object_id).first()
         if datasetscore_deployment_object is not None:
             # fetch modeldeployment instance
+            print("Found the dataset in datasetscoredeployment table.")
             from api.models import ModelDeployment
             model_deployment_object = datasetscore_deployment_object.deployment
+            print("Found deployment.")
 
             # fetch trainer insctance
             trainer_object = model_deployment_object.deploytrainer.trainer
+            print("Found trainer_object.")
 
             # fetch user instance
             from django.contrib.auth.models import User
             user_object = dataset_object.user
+            print("Found User")
 
             # create score
             dataset_object = dataset_object.data
             original_meta_data_from_scripts = dataset_object['meta_data']
+            print("Got metedata from dataset")
 
             if original_meta_data_from_scripts is None:
                 uiMetaData = dict()
@@ -597,10 +605,12 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
                 from api.datasets.helper import add_ui_metadata_to_metadata
                 uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
                                                          permissions_dict=permissions_dict)
+                print("Got uiMetaData from dataset")
 
             from api.utils import convert_to_string
             import json
             config = json.loads(model_deployment_object.config)
+            print("Got model_deployment_object config")
             score_details = config['score_details']
             # dataset_metadata = json.loads(dataset_object.meta_data)
             score_details['config'] = model_deployment_object.get_trainer_details_for_score()
@@ -610,6 +620,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             score_details['created_by'] = user_object.id
             score_details['app_id'] = int(score_details['config']['app_id'])
             score_details = convert_to_string(score_details)
+            print("Constructed score_details")
             from api.utils import ScoreSerlializer
             score_serializer = ScoreSerlializer(data=score_details, context={})
             if score_serializer.is_valid():
