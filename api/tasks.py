@@ -544,43 +544,6 @@ def call_dataset_then_score(*args, **kwrgs):
         dataset_score_deployment_object.save()
         print(dataset_object)
         dataset_object.create()
-        #
-        # # create score
-        # dataset_object = dataset_object.data
-        # original_meta_data_from_scripts = dataset_object['meta_data']
-        #
-        # if original_meta_data_from_scripts is None:
-        #     uiMetaData = None
-        # if original_meta_data_from_scripts == {}:
-        #     uiMetaData = None
-        # else:
-        #     permissions_dict = {
-        #         'create_signal': user_object.has_perm('api.create_signal'),
-        #         'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
-        #     }
-        #     from api.datasets.helper import add_ui_metadata_to_metadata
-        #     uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
-        #
-        # from api.utils import convert_to_string
-        # import json
-        # # dataset_metadata = json.loads(dataset_object.meta_data)
-        # score_details['config'] = model_deployment_object.get_trainer_details_for_score()
-        # score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
-        # score_details['trainer'] = trainer_object.id
-        # score_details['dataset'] = dataset_object.id
-        # score_details['created_by'] = user_object.id
-        # score_details['app_id'] = int(score_details['config']['app_id'])
-        # score_details = convert_to_string(score_details)
-        # from api.utils import ScoreSerlializer
-        # score_serializer = ScoreSerlializer(data=score_details, context={})
-        # if score_serializer.is_valid():
-        #     score_object = score_serializer.save()
-        #     # we will not call score_object.create() here it will be called in write_into_databases
-        #     model_deployment_object.score = score_object.id
-        #     model_deployment_object.save()
-        #     print(dataset_object,score_object)
-        # else:
-        #     print(score_serializer.errors)
     else:
         print(serializer.errors)
 
@@ -596,11 +559,71 @@ Things to do
 
 
 def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object):
+
+    if dataset_object is None:
+        return
+    if dataset_object.status is not 'SUCCESS':
+        return None
     from api.models import DatasetScoreDeployment
-    datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object.id)
-    if datasetscore_deployment_object is not None:
-        score_object = datasetscore_deployment_object.score
-        if score_object is not None:
-            if score_object.status == 'NOT STARTED':
+    try:
+        datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object.id)
+
+        if datasetscore_deployment_object is not None:
+            # fetch modeldeployment instance
+            from api.models import ModelDeployment
+            model_deployment_object = datasetscore_deployment_object.deployment
+
+            # fetch trainer insctance
+            trainer_object = model_deployment_object.deploytrainer.trainer
+
+            # fetch user instance
+            from django.contrib.auth.models import User
+            user_object = dataset_object.user
+
+            # create score
+            dataset_object = dataset_object.data
+            original_meta_data_from_scripts = dataset_object['meta_data']
+
+            if original_meta_data_from_scripts is None:
+                uiMetaData = dict()
+            if original_meta_data_from_scripts == {}:
+                uiMetaData = dict()
+            else:
+                permissions_dict = {
+                    'create_signal': user_object.has_perm('api.create_signal'),
+                    'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+                }
+                from api.datasets.helper import add_ui_metadata_to_metadata
+                uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
+                                                         permissions_dict=permissions_dict)
+
+            from api.utils import convert_to_string
+            import json
+            config = json.loads(model_deployment_object.config)
+            score_details = config['score_details']
+            # dataset_metadata = json.loads(dataset_object.meta_data)
+            score_details['config'] = model_deployment_object.get_trainer_details_for_score()
+            score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+            score_details['trainer'] = trainer_object.id
+            score_details['dataset'] = dataset_object.id
+            score_details['created_by'] = user_object.id
+            score_details['app_id'] = int(score_details['config']['app_id'])
+            score_details = convert_to_string(score_details)
+            from api.utils import ScoreSerlializer
+            score_serializer = ScoreSerlializer(data=score_details, context={})
+            if score_serializer.is_valid():
+                score_object = score_serializer.save()
+                # we will not call score_object.create() here it will be called in write_into_databases
+                datasetscore_deployment_object.score = score_object.id
+                datasetscore_deployment_object.save()
+                print(score_object)
                 score_object.create()
+            else:
+                print(score_serializer.errors)
+        else:
+            print('datasetscore_deployment_object si None.')
+            return
+    except Exception as err:
+        print(err)
+
 
