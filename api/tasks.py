@@ -9,6 +9,7 @@ from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
 import datetime
+from api.helper import get_random_model_id
 
 
 @task(name="sum_two_numbers")
@@ -157,7 +158,7 @@ def write_into_databases(job_type, object_slug, results):
                 if len(algo_detail['listOfNodes']) > 1:
                     from api.utils import TrainAlgorithmMappingSerializer
                     temp_data = dict()
-                    temp_data['name'] = algo_detail['name']
+                    temp_data['name'] = get_random_model_id(algo_detail['name'])
                     temp_data['data'] = json.dumps(add_slugs(algo_detail, object_slug=object_slug))
                     temp_data['trainer'] = trainer_object.id
                     temp_data['app_id'] = trainer_object.app_id
