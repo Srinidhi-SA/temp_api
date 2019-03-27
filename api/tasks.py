@@ -611,9 +611,11 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
                 print("Got uiMetaData from dataset")
 
             from api.utils import convert_to_string
-            config = json.loads(model_deployment_object.config)
+            # import json
+            # config = json.loads(model_deployment_object.config)
             print("Got model_deployment_object config")
-            score_details = config['score_details']
+            score_details = dict()
+            score_details['name'] = datasetscore_deployment_object.name + "_score"
             # dataset_metadata = json.loads(dataset_object.meta_data)
             score_details['config'] = model_deployment_object.get_trainer_details_for_score()
             score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
