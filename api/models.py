@@ -4992,7 +4992,7 @@ class ModelDeployment(models.Model):
         score_details = {
             "name": score_name,
             "config": {
-                "selectModel": {},
+                "selectedModel": {},
                 "variablesSelection": {},
                 "app_id": ""
             }
