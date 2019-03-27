@@ -119,6 +119,7 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.analysis_done = True
         dataset_object.status = 'SUCCESS'
         dataset_object.save()
+        check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object)
         return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
