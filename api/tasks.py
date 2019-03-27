@@ -592,6 +592,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             print("Found User")
 
             # create score
+            import json
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
             print("Got metedata from dataset")
 
@@ -610,7 +611,6 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
                 print("Got uiMetaData from dataset")
 
             from api.utils import convert_to_string
-            import json
             config = json.loads(model_deployment_object.config)
             print("Got model_deployment_object config")
             score_details = config['score_details']
