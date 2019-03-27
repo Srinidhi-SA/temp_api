@@ -1146,7 +1146,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret = super(TrainAlgorithmMappingListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
-        ret['model_id'] = ret['slug']
+        ret['model_id'] = ret['name']
         x=ModelDeployment.objects.filter(deploytrainer_id=instance.id)
         #print(len(x))
         ret['deployment'] =len(x)
