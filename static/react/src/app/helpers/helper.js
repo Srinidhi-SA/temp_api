@@ -138,6 +138,7 @@ const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
 const RENAMESTOCKMODEL = "Rename Analysis";
 const DELETEALGO ="Delete this Model";
+const DELETEDEPLOYMENT ="Delete this Deployment"
 
 export function generateHeaders(table) {
   var cols = table.tableData.map(function(rowData, i) {
@@ -460,7 +461,9 @@ export {
   CREATEMODEL,
   DELETESTOCKMODEL,
   RENAMESTOCKMODEL,
-  DELETEALGO
+  DELETEALGO,
+  DELETEDEPLOYMENT
+
 }
 export function capitalizeArray(array) {
   let a = []

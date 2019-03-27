@@ -11,7 +11,7 @@ import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-import { Deploy } from "./Deploy";
+import { DeployPopup } from "./DeployPopup";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
@@ -191,7 +191,7 @@ export class ModelManagement extends React.Component {
                 <h3 className="modal-title">Deploy Project</h3>
               </Modal.Header>
               <Modal.Body>
-                <Deploy /*parentPickValue={this.pickValue}*//>
+                <DeployPopup /*parentPickValue={this.pickValue}*//>
               </Modal.Body> 
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
