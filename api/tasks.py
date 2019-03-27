@@ -571,7 +571,9 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
     from api.models import DatasetScoreDeployment
 
     try:
+        dataset_object = Dataset.objects.get(id=dataset_object_id)
         datasetscore_deployment_object = DatasetScoreDeployment.objects.filter(dataset=dataset_object_id).first()
+        
         if datasetscore_deployment_object is not None:
             # fetch modeldeployment instance
             print("Found the dataset in datasetscoredeployment table.")
