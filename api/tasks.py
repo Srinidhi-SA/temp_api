@@ -514,7 +514,7 @@ def call_dataset_then_score(*args, **kwrgs):
     # fetch trainer model
     # trainer_object = model_deployment_object.deploytrainer.trainer
     dataset_score_deployment_details = {
-        'name': model_deployment_object.name + str(datetime.datetime.now().time()),
+        'name': model_deployment_object.name + ' - ' +  str(datetime.datetime.now().time()),
         'deployment': model_deployment_object.id,
         'created_by': user_object.id,
         'config': '{}',
