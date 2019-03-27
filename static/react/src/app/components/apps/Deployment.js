@@ -4,11 +4,6 @@ import {isEmpty} from "../../helpers/helper";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 
 
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
-import {refreshAppsAlgoList,getDeploymentList,getListOfCards} from "../../actions/appActions";
-
-import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -45,22 +40,30 @@ export class Deployment extends React.Component {
 		var deploymentList = this.props.deploymentList;
     var deploymentTable = "";
 
-    deploymentTable = deploymentList.data.map((deploy,key )=> {
-         return (
-             <tr key={key} className={('all ' + deploy.name)}>
-         <td>
-            <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
-         </td>
-        <td className="text-left"> {deploy.name}</td>
-        <td  className="text-left"> {deploy.name}</td>
-        <td className="text-left"> {deploy.status}</td>
-        <td ><span className="text-success"></span> {deploy.updated_at}</td>
-        <td > {deploy.name}</td>
-        <td > {deploy.name}</td>
-        <td > {deploy.name}</td>
+if(deploymentList.data.length == 0){    
+      return(
+        deploymentTable = <h4 style={{textAlign:"center"}}>No Deployments Available</h4>
+      );
+    }
+    else {
+      deploymentTable = deploymentList.data.map((deploy,key )=> {
+      return (
+          <tr key={key} className={('all ' + deploy.name)}>
+      <td>
+         <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
+      </td>
+     <td className="text-left"> {deploy.name}</td>
+     <td  className="text-left"> {deploy.name}</td>
+     <td className="text-left"> {deploy.status}</td>
+     <td ><span className="text-success"></span> {deploy.updated_at}</td>
+     <td > {deploy.name}</td>
+     <td > {deploy.name}</td>
+     <td > {deploy.name}</td>
+   </tr>);
+   }) 
+  }
 
-      </tr>);
-      })
+    
     return (
       
 			<div id="deployment" class="tab-pane">
