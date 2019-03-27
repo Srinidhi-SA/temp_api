@@ -614,15 +614,13 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             # import json
             # config = json.loads(model_deployment_object.config)
             print("Got model_deployment_object config")
-            score_details = dict()
-            score_details['name'] = datasetscore_deployment_object.name + "_score"
+
             # dataset_metadata = json.loads(dataset_object.meta_data)
-            score_details['config'] = model_deployment_object.get_trainer_details_for_score()
+            score_details = model_deployment_object.get_trainer_details_for_score(datasetscore_deployment_object.name + "_score")
             score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
             score_details['trainer'] = trainer_object.id
             score_details['dataset'] = dataset_object.id
             score_details['created_by'] = user_object.id
-            score_details['app_id'] = int(score_details['config']['app_id'])
             score_details = convert_to_string(score_details)
             print("Constructed score_details")
             from api.utils import ScoreSerlializer
