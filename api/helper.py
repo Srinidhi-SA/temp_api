@@ -2,6 +2,7 @@ import md5
 import time
 from math import floor, log10
 import datetime
+import random
 
 from django.conf import settings
 import yarn_api_client
@@ -968,7 +969,8 @@ def get_job_from_yarn(model_name=None, model_slug=None):
         if model_instance.job.url == '':
             return model_instance.status
     except:
-        return 
+        print(model_instance)
+        return
 
     try:
         ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
@@ -1330,4 +1332,22 @@ def get_timing_details(timing_type=None):
 
     return timing_details
 
+
+def get_a_random_slug(num=5):
+    import string
+    return ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(num))
+
+
+def get_random_model_id(algo_name):
+    algo_map = {
+        "Random Forest": "RF",
+        "XG Boost": "XG",
+        "XGBoost": "XG",
+        "Xgboost": "XG",
+        "Logistic Regression": "LG",
+        "Naive Bayes": "NB"
+    }
+    get_a_random_number = get_a_random_slug()
+    return ''.join([algo_map[algo_name], '_', get_a_random_number ])
 
