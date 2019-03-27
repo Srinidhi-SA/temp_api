@@ -11,7 +11,7 @@ import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-import { Deploy } from "./Deploy";
+import { DeployPopup } from "./DeployPopup";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
@@ -191,8 +191,8 @@ export class ModelManagement extends React.Component {
                 <h3 className="modal-title">Deploy Project</h3>
               </Modal.Header>
               <Modal.Body>
-                <Deploy /*parentPickValue={this.pickValue}*//>
-              </Modal.Body> 
+                <DeployPopup /*parentPickValue={this.pickValue}*//>
+              </Modal.Body>  
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
                 <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
@@ -278,31 +278,27 @@ export class ModelManagement extends React.Component {
                       <div class="col-md-12 text-center">
                     {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
                     <div className="footer"  id="idPagination">
-              <div className="algo_paginate">
-              {paginationTag}
-            </div>
-            </div>
-                </div>
+                      <div className="algo_paginate">
+                      {paginationTag}
                     </div>
-                    <div class="buttonRow pull-right">
-                      <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
-                    </div>
-                    <Dialog ref="dialog"/>
                   </div>
                 </div>
-                <div class="xs-p-30"></div>
               </div>
-              {/* <!-- Open Column --> */}
+            <div class="buttonRow pull-right">
+              <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
             </div>
-            {/* <!-- End Row --> */}
-      
-      
-        {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
-      
+            <Dialog ref="dialog"/>
           </div>
-          
-          {/* <!-- End Main Content --> */}
         </div>
+        <div class="xs-p-30"></div>
+      </div>
+      {/* <!-- Open Column --> */}
+    </div>
+    {/* <!-- End Row --> */}
+    </div>
+    
+    {/* <!-- End Main Content --> */}
+  </div>
         
     );
    }

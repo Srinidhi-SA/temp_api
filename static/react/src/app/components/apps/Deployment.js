@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import {isEmpty} from "../../helpers/helper";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 
-
-
 @connect((store) => {
   return {
     login_response: store.login.login_response,

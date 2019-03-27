@@ -20,10 +20,10 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
   };
 })
 
-export class Deploy extends React.Component {
+export class DeployPopup extends React.Component {
   constructor(props) {
     super(props);
-    console.log("Deploy constructor method is called...");
+    console.log("DeployPopup constructor method is called...");
     this.pickValue = this.pickValue.bind(this);
     this.state = {};
     this.state.encodingRadioButton;
@@ -31,7 +31,7 @@ export class Deploy extends React.Component {
   }
 
   componentWillMount() {
-    console.log("Deploy componentWillMount method is called...");
+    console.log("DeployPopup componentWillMount method is called...");
   }
 
   getDeployData(){
@@ -65,7 +65,7 @@ export class Deploy extends React.Component {
   }
 
   render() {
-    console.log("Deploy render method is called...");
+    console.log("DeployPopup render method is called...");
     var deployData = this.getDeployData();
           return (
           <div class="modal-body">
