@@ -591,7 +591,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             print("Found User")
 
             # create score
-            dataset_object = dataset_object.data
+            dataset_object = dataset_object.meta_data
             original_meta_data_from_scripts = dataset_object['meta_data']
             print("Got metedata from dataset")
 
