@@ -621,6 +621,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             score_details['trainer'] = trainer_object.id
             score_details['dataset'] = dataset_object.id
             score_details['created_by'] = user_object.id
+            score_details['app_id'] = int(score_details['config']['app_id'])
             score_details = convert_to_string(score_details)
             print("Constructed score_details")
             from api.utils import ScoreSerlializer
@@ -628,7 +629,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             if score_serializer.is_valid():
                 score_object = score_serializer.save()
                 # we will not call score_object.create() here it will be called in write_into_databases
-                datasetscore_deployment_object.score = score_object.id
+                datasetscore_deployment_object.score = score_object
                 datasetscore_deployment_object.save()
                 print(score_object)
                 score_object.create()
