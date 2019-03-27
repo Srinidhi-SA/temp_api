@@ -192,7 +192,7 @@ export class ModelManagement extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <DeployPopup /*parentPickValue={this.pickValue}*//>
-              </Modal.Body>  
+              </Modal.Body> 
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
                 <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>

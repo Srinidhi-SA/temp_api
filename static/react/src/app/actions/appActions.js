@@ -23,6 +23,7 @@ import {
   INPROGRESS,
   DELETESTOCKMODEL,
   DELETEALGO,
+  DELETEDEPLOYMENT,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
@@ -209,6 +210,40 @@ function deleteAlgoAPI(slug) {
 export function handleAlgoDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+  }
+}
+
+function deleteDeployment(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteDeploymentAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getDeploymentList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+
+
+function deleteDeploymentAPI(slug) {
+  // return fetch(API + '/api/score/' + slug + '/', {
+
+  return fetch(API + '/api/deploymodel/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+}
+
+
+export function handleDeploymentDeleteAction(slug, dialog) {
+  debugger;
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
   }
 }
 
@@ -925,9 +960,11 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteAudio(slug, dialog, dispatch)
         else if (title == DELETESTOCKMODEL)
           deleteStockModel(slug, dialog, dispatch)
-          else if(title == DELETEALGO )
+        else if(title == DELETEALGO )
           deleteAlgo(slug, dialog, dispatch)
-        else
+        else if(title == DELETEDEPLOYMENT )
+          deleteDeployment(slug, dialog, dispatch)
+        else 
           deleteScore(slug, dialog, dispatch)
 
       })
