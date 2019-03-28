@@ -1327,6 +1327,8 @@ def get_timing_details(timing_type=None):
         timing_details['crontab']['day_of_week'] = 1
     elif timing_type == 'monthly':
         timing_details['crontab']['day_of_month'] = 1
+    elif timing_type == 'hourly':
+        timing_details['crontab']['hour'] = 1
     else:
         timing_details['crontab']['day_of_week'] = 1
 

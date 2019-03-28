@@ -5952,3 +5952,16 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
             list_serializer=DatasetScoreDeploymentListSerializer,
             xxx=deployment_object)
         return response
+
+
+def disable_all_periodic_tasks(request):
+    from django_celery_beat.models import PeriodicTask
+
+    all_periodic_objects = PeriodicTask.objects.all()
+    for periodic_task in all_periodic_objects:
+        periodic_task.enabled = False
+
+    return JsonResponse({'message':'Done'})
+
+
+def remove_all_pre
