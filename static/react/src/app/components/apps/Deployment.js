@@ -14,7 +14,9 @@ import Dialog from 'react-bootstrap-dialog';
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering,
-		deploymentList:store.apps.deploymentList,
+    deploymentList:store.apps.deploymentList,
+		algoAnalysis:store.signals.algoAnalysis,
+    
 
   };
 })
@@ -33,7 +35,9 @@ export class Deployment extends React.Component {
   }
 
   handleDeploymentDelete(slug) {
-    this.props.dispatch(handleDeploymentDeleteAction(slug, this.refs.dialog));
+    var algoSlug= this.props.algoAnalysis.slug; 
+    debugger;
+    this.props.dispatch(handleDeploymentDeleteAction(slug,algoSlug, this.refs.dialog));
   }
 
   render() {
