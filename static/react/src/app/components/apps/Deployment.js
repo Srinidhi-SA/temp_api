@@ -35,7 +35,7 @@ export class Deployment extends React.Component {
   handleDeploymentDelete(slug) {
     var algoSlug= this.props.algoAnalysis.slug; 
     debugger;
-    this.props.dispatch(handleDeploymentDeleteAction(slug, this.refs.dialog,algoSlug));
+    this.props.dispatch(handleDeploymentDeleteAction(slug,algoSlug, this.refs.dialog,));
   }
 
   render() {

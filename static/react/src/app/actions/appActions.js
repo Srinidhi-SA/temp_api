@@ -967,7 +967,7 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText,algoSlug) {
         else if(title == DELETEALGO )
           deleteAlgo(slug, dialog, dispatch)
         else if(title == DELETEDEPLOYMENT )
-          deleteDeployment(slug,dialog, dispatch,algoSlug)
+          deleteDeployment(slug, algoSlug,dialog, dispatch)
         else 
           deleteScore(slug, dialog, dispatch)
 
