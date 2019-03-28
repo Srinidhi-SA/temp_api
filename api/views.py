@@ -5959,9 +5959,11 @@ def disable_all_periodic_tasks(request):
 
     all_periodic_objects = PeriodicTask.objects.all()
     for periodic_task in all_periodic_objects:
-        periodic_task.enabled = False
+        if periodic_task.name == 'celery.backend_cleanup':
+            pass
+        else:
+            periodic_task.enabled = False
 
     return JsonResponse({'message':'Done'})
 
 
-def remove_all_pre
