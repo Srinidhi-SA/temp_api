@@ -7,7 +7,7 @@ import json
 
 from api.models import Dataset, Insight, Job, Score, Trainer,\
     CustomApps, CustomAppsUserMapping, StockDataset, \
-    Robo
+    Robo, TrainAlgorithmMapping, DatasetScoreDeployment, ModelDeployment
 from api.user_helper import Profile
 
 
@@ -226,10 +226,18 @@ class StockDatasetAdmin(admin.ModelAdmin):
 class RoboAdmin(admin.ModelAdmin):
     pass
 
+class ModelDeploymentAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">assessment</i>'
+    search_fields = ["name", "slug"]
+    list_display = ["name", "slug", "created_at", "created_by", "status", "deleted", "config"]
+    list_filter = ["deleted", ]
+    readonly_fields = ["created_at", "created_by"]
+
 admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
 admin.site.register(StockDataset, StockDatasetAdmin)
 admin.site.register(Robo, RoboAdmin)
 admin.site.register(User, MyUserAdmin)
+admin.site.register(ModelDeployment, ModelDeploymentAdmin)
 
 
 
