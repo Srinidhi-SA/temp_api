@@ -213,12 +213,12 @@ export function handleAlgoDelete(slug, dialog) {
   }
 }
 
-function deleteDeployment(slug, dialog, dispatch) {
+function deleteDeployment(slug,algoSlug, dialog, dispatch) {
   dispatch(showLoading());
   Dialog.resetOptions();
   return deleteDeploymentAPI(slug).then(([response, json]) => {
     if (response.status === 200) {
-      dispatch(getDeploymentList(store.getState().apps.current_page));
+      dispatch(getDeploymentList(algoSlug,store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
       dispatch(hideLoading());
@@ -240,17 +240,17 @@ function deleteDeploymentAPI(slug) {
 }
 
 
-export function handleDeploymentDeleteAction(slug, dialog) {
+export function handleDeploymentDeleteAction(slug, algoSlug, dialog) {
   debugger;
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+    showDialogBox(slug, algoSlug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
   }
 }
 
 
-export function getDeploymentList(errandId,pageNo) {
+export function getDeploymentList(errandId) {
   return (dispatch) => {
-    return fetchDeploymentList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+    return fetchDeploymentList(errandId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
         console.log(json)
         dispatch(fetchDeploymentListSuccess(json))
@@ -262,7 +262,8 @@ export function getDeploymentList(errandId,pageNo) {
 }
 
 
-function fetchDeploymentList(errandId,token,pageNo) {
+function fetchDeploymentList(errandId,token) {
+  debugger;
   // let search_element = store.getState().apps.algo_search_element;
   // if (search_element != "" && search_element != null) {
   //   console.log("calling for algo search element!!")
@@ -945,7 +946,8 @@ export function updateRoboAnalysisData(roboData, urlPrefix) {
   var roboSlug = roboData.slug;
   return {type: "ROBO_DATA_ANALYSIS", roboData, urlPrefix, roboSlug}
 }
-export function showDialogBox(slug, dialog, dispatch, title, msgText) {
+export function showDialogBox(slug, dialog, dispatch,algoSlug, title, msgText) {
+  debugger;
   Dialog.setOptions({defaultOkLabel: 'Yes', defaultCancelLabel: 'No'})
   dialog.show({
     title: title,
@@ -963,7 +965,7 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
         else if(title == DELETEALGO )
           deleteAlgo(slug, dialog, dispatch)
         else if(title == DELETEDEPLOYMENT )
-          deleteDeployment(slug, dialog, dispatch)
+          deleteDeployment(slug,dialog, dispatch,algoSlug)
         else 
           deleteScore(slug, dialog, dispatch)
 

@@ -79,24 +79,43 @@ export class DeployPopup extends React.Component {
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dsrclocation" class="col-sm-4 control-label">Input data source location</label>
+              <label for="txt_dname" class="col-sm-4 control-label">S3 bucket name</label>
               <div class="col-sm-8">
-                <input type="text" id="txt_dsrclocation" class="form-control" placeholder="Input location URL" />
+                <input type="text" id="txt_dname" class="form-control" placeholder="Enter S3 bucket name" />
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Input data sources folder name</label>
+              <label for="txt_dname" class="col-sm-4 control-label">Source file name</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+                <input type="text" id="txt_dname" class="form-control" placeholder="Name of source file" />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dname" class="col-sm-4 control-label">Access Key</label>
+              <div class="col-sm-8">
+                <input type="text" id="txt_dname" class="form-control" placeholder="" />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dname" class="col-sm-4 control-label">Secret Key</label>
+              <div class="col-sm-8">
+                <input type="text" id="txt_dname" class="form-control" placeholder="" />
               </div>
             </div>
             <div class="row form-group">
               <label for="txt_dscoring" class="col-sm-4 control-label">Frequency of scoring</label>
               <div class="col-sm-8">
                 <select class="form-control" id="txt_dscoring">
-                <option>Weekly</option>
-                <option>Monthly</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                  <option selected>-Select-</option>
                 </select>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dsrclocation" class="col-sm-4 control-label">Target Bucket Name</label>
+              <div class="col-sm-8">
+                <input type="text" id="txt_dsrclocation" class="form-control" placeholder="Bucket name" />
               </div>
             </div>
             {/* <div class="row form-group">

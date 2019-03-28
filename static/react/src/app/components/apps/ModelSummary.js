@@ -36,8 +36,10 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		this.props.dispatch(getDeploymentList(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		console.log("api call start")
+		
 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		this.props.dispatch(getDeploymentList(this.props.match.params.slug));
 		
 		console.log("api call end")	
 	}
@@ -81,7 +83,6 @@ export class ModelSummary extends React.Component {
   }
 	
 	renderCardData(c3,cardWidth){
-		debugger;
 			var htmlData = c3.map((story, i) => {
 			let randomNum = Math.random().toString(36).substr(2,8);
 			switch (story.dataType) {
@@ -97,7 +98,6 @@ export class ModelSummary extends React.Component {
 								 chartInfo=story.chartInfo
 							 }
 								if(story.widthPercent &&  story.widthPercent != 100){
-									debugger;
 									//  let width  = story.widthPercent+"%";
 										let width  = parseInt((story.widthPercent/100)*12)
 										let divClass="col-md-"+width;
@@ -105,10 +105,8 @@ export class ModelSummary extends React.Component {
 										if(story.widthPercent < 50)sideChart=true;
 										return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
 								}else if(story.widthPercent == 100){
-									debugger;
 										let divClass="";
 										let parentDivClass = "col-md-12";
-										debugger;
 										if(!cardWidth || cardWidth > 50)
 										divClass = "col-md-12"
 										else
@@ -143,8 +141,6 @@ export class ModelSummary extends React.Component {
 	}
 
   render(){
-
-		debugger;
 		if(isEmpty(this.props.algoAnalysis)){
 			return (
 
@@ -273,7 +269,7 @@ export class ModelSummary extends React.Component {
       <div class="main-content">
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.name}<small> : {algoAnalysis.slug}</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.data.name}<small> : {algoAnalysis.name}</small></h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
