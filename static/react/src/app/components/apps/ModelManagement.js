@@ -176,7 +176,9 @@ export class ModelManagement extends React.Component {
           <ul class="dropdown-menu dropdown-menu-right">
           <li><a bsStyle="cst_button">Clone</a></li>
             <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
-            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>       
+            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
+            <Dialog ref="dialog"/>
+
           </ul>
         </div>
       </td>

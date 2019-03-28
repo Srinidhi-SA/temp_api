@@ -243,7 +243,7 @@ function deleteDeploymentAPI(slug) {
 export function handleDeploymentDeleteAction(slug, algoSlug, dialog) {
   debugger;
   return (dispatch) => {
-    showDialogBox(slug, algoSlug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+    showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this deployment?","small_mascot")),algoSlug)
   }
 }
 
@@ -946,8 +946,10 @@ export function updateRoboAnalysisData(roboData, urlPrefix) {
   var roboSlug = roboData.slug;
   return {type: "ROBO_DATA_ANALYSIS", roboData, urlPrefix, roboSlug}
 }
-export function showDialogBox(slug, dialog, dispatch,algoSlug, title, msgText) {
-  debugger;
+
+// showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT,algoSlug, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+
+export function showDialogBox(slug, dialog, dispatch, title, msgText,algoSlug) {
   Dialog.setOptions({defaultOkLabel: 'Yes', defaultCancelLabel: 'No'})
   dialog.show({
     title: title,
