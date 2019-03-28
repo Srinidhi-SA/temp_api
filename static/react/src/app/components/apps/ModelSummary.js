@@ -1,39 +1,30 @@
 import React from "react";
 import {connect} from "react-redux";
 import store from "../../store"
-import {refreshAppsAlgoList,getListOfCards} from "../../actions/appActions";
+import {refreshAppsAlgoList,getDeploymentList,getListOfCards} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
-
-
 import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
 import {C3Chart} from "../c3Chart";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
 import {getAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "../../components/signals/CardHtml";
 import {CardTable} from "../common/CardTable";
-import { Scrollbars } from 'react-custom-scrollbars';
-//import Tree from 'react-tree-graph';
 import {DataBox} from "../common/DataBox";
 import $ from "jquery";
-import {Button,Modal} from "react-bootstrap";
-// import { Deploy } from "./Deploy";
-
-var data = null,
-yformat = null,
-cardData = {};
+import { Deployment } from "./Deployment";
 
 @connect((store) => {
   return {
     login_response: store.login.login_response,
 		algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
-
-		// selectedSummary:store.apps.summarySelected,
 		algoAnalysis:store.signals.algoAnalysis,
 		dataPreview: store.datasets.dataPreview,
+		currentAppDetails:store.apps.currentAppDetails,
+		deploymentList:store.apps.deploymentList
+
   };
 })
 
@@ -45,19 +36,18 @@ export class ModelSummary extends React.Component {
   }
 	
 	componentWillMount() {
-		// if (isEmpty(this.props.selectedSummary)) {
-    //   if (!this.props.match.path.includes("robo")) {
-    //     let url = '/signals/'
-    //     console.log(this.props);
-    //     this.props.history.push(url)
-    //   }
-		// }
-
+		debugger;
 		
+		console.log("api call start")
+		
+		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+		this.props.dispatch(getDeploymentList(this.props.match.params.slug));
+		
+		console.log("api call end")	
 	}
 
   componentDidMount() {
-			this.props.dispatch(refreshAppsAlgoList(this.props));
+			// this.props.dispatch(refreshAppsAlgoList(this.props));
 			
 	}
 
@@ -132,7 +122,6 @@ export class ModelSummary extends React.Component {
 						}
 						break;
 				case "tree":
-						//console.log("checking tree data");
 						return ( <DecisionTree key={randomNum} treeData={story.data}/>);
 						break;
 				case "table":
@@ -175,7 +164,8 @@ export class ModelSummary extends React.Component {
 		var algoAnalysis="";
 		let chartInfo=[];
 		algoAnalysis = this.props.algoAnalysis;
-		console.log(algoAnalysis,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		var deploymentList = this.props.deploymentList;
+		console.log(deploymentList,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
 		var top="";
 		top =performancePage.map(card => card.listOfCards);
@@ -266,17 +256,17 @@ export class ModelSummary extends React.Component {
 						{gainChart}
 					</div>
 				</div>
-				</div>)
+				</div>
+				)
 		}
 
     return (
       // <!-- Main Content starts with side-body -->
 		<div class="side-body">
       <div class="main-content">
-		{/* <!-- Copy the Code From Here ////////////////////////////////////////////////// --> */}
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.name}<small> : {algoAnalysis.slug}</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.data.name}<small> : {algoAnalysis.name}</small></h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
@@ -293,85 +283,14 @@ export class ModelSummary extends React.Component {
               <div id="performance" class="tab-pane cont">
 							{performanceCard}
               </div>
-              <div id="deployment" class="tab-pane">
-				<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button>
-				<div class="clearfix"></div>
-                <table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                  <thead>
-                    <tr className="myHead">
-                      <th>
-                      #
-                      </th>
-                      <th class="text-left">Name</th>
-                      <th class="text-left">Deployment Type</th>
-                      <th>Status</th>
-                      <th>Deployed On</th>
-					  <th>Runtime</th>
-					  <th>Jobs Triggered</th>
-					  <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-					  <td>
-						1.
-					  </td>
-                      <td class="text-left"><b><a href="#">LR-001-D001</a></b></td>
-											<td class="text-left">Batch Prediction</td>                      
-											<td><span class="text-success">Success</span></td>
-											<td><i class="fa fa-calendar text-info"></i> 21/12/2018</td>
-											<td><i class="fa fa-clock-o text-warning"></i> 230 s</td>
-											<td>1</td>
-											<td>
-												<div class="pos-relative">
-													<a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-														<i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-													</a>    
-													<ul class="dropdown-menu dropdown-menu-right">
-															<li>
-																<a href="#" data-toggle="modal" data-target="#deploy_popup">View</a>
-															</li>                          
-															<li>
-																<a href="#" data-toggle="modal" data-target="#DeleteWarning">Delete</a>
-															</li>
-														</ul>
-												</div>
-											</td>
-											</tr>
-            <tr>
-					  <td>
-						2.
-					  </td>
-            <td class="text-left"><b><a href="project_datadetail.html">LR-001-D002</a></b></td>
-            <td class="text-left">Batch Prediction</td>
-            <td><span class="text-success">Success</span></td>             
-            <td><i class="fa fa-calendar text-info"></i> 02/02/2019</td>
-			<td><i class="fa fa-clock-o text-warning"></i> 189 s</td>
-            <td>0</td>
-			<td>
-                <div class="pos-relative">
-                    <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                      <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                    </a>    
-                    <ul class="dropdown-menu dropdown-menu-right">
-                          <li>
-                              <a href="#">View</a>
-                          </li>                           
-                          <li>
-                              <a href="#">Delete</a>
-                          </li>
-                      </ul>
-                  </div>
-            </td>
-            </tr>
-             </tbody>
-             </table>
-               
-			  </div>
+							<div id="deployment" class="tab-pane cont">
+								<Deployment/>
+							</div>
+              
             </div>
 			
 			<div class="buttonRow text-right"> <a href="javascript:;" onClick={this.closeModelSummary.bind(this)}class="btn btn-primary">Close </a> </div>
-          </div>
+  		</div>
 		
 		
 		</div>

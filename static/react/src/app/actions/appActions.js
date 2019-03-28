@@ -23,6 +23,7 @@ import {
   INPROGRESS,
   DELETESTOCKMODEL,
   DELETEALGO,
+  DELETEDEPLOYMENT,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
@@ -212,6 +213,115 @@ export function handleAlgoDelete(slug, dialog) {
     showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
   }
 }
+
+function deleteDeployment(slug,algoSlug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteDeploymentAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getDeploymentList(algoSlug,store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+
+
+function deleteDeploymentAPI(slug) {
+  // return fetch(API + '/api/score/' + slug + '/', {
+
+  return fetch(API + '/api/deploymodel/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+}
+
+
+export function handleDeploymentDeleteAction(slug, algoSlug, dialog) {
+  debugger;
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this deployment?","small_mascot")),algoSlug)
+  }
+}
+
+
+export function getDeploymentList(errandId) {
+  return (dispatch) => {
+    return fetchDeploymentList(errandId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200) {
+        console.log(json)
+        dispatch(fetchDeploymentListSuccess(json))
+      } else {
+        dispatch(fetchDeploymentListError(json))
+      }
+    })
+  }
+}
+
+
+function fetchDeploymentList(errandId,token) {
+  debugger;
+  // let search_element = store.getState().apps.algo_search_element;
+  // if (search_element != "" && search_element != null) {
+  //   console.log("calling for algo search element!!")
+  //   return fetch(API + '/api/deploymodel/?app_id=' + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+  //     method: 'get',
+  //     headers: getHeader(token)
+  //   }).then(response => Promise.all([response, response.json()]));
+  // }else 
+  // {
+    // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
+   return fetch(
+    //  API + '/api/deploymodel/?'+ '&page_number=' + pageNo + '&page_size=' + PERPAGE + slug +'', {
+    API + '/api/deploymodel/search/?deploytrainer=' + errandId ,{
+      // deploymodel/search/?deploytrainer
+
+    method: 'get',
+    headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+  // }
+}
+
+// function fetchAlgos_analysis(token, errandId) {
+//   //console.log(token)
+//   return fetch(
+//   API + '/api/trainalgomapping/' + errandId + "/" ,{
+//     method: 'get',
+//     headers: {
+//       'Authorization': token,
+//       'Content-Type': 'application/x-www-form-urlencoded'
+//     }
+//   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+//       bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
+//   });
+
+// }
+
+
+
+function fetchDeploymentListError(json) {
+  return {type: "DEPLOYMENT_LIST_ERROR", json}
+ }
+ 
+ export function fetchDeploymentListSuccess(doc) {
+   var data = doc;
+   var current_page = doc.current_page;
+   var latestDeployments = doc.top_3
+   return {type: "DEPLOYMENT_LIST", data, latestDeployments, current_page}
+ }
+
+
+
+
+
+
+
+
+
 
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
@@ -837,7 +947,10 @@ export function updateRoboAnalysisData(roboData, urlPrefix) {
   var roboSlug = roboData.slug;
   return {type: "ROBO_DATA_ANALYSIS", roboData, urlPrefix, roboSlug}
 }
-export function showDialogBox(slug, dialog, dispatch, title, msgText) {
+
+// showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT,algoSlug, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
+
+export function showDialogBox(slug, dialog, dispatch, title, msgText,algoSlug) {
   Dialog.setOptions({defaultOkLabel: 'Yes', defaultCancelLabel: 'No'})
   dialog.show({
     title: title,
@@ -852,9 +965,11 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteAudio(slug, dialog, dispatch)
         else if (title == DELETESTOCKMODEL)
           deleteStockModel(slug, dialog, dispatch)
-          else if(title == DELETEALGO )
+        else if(title == DELETEALGO )
           deleteAlgo(slug, dialog, dispatch)
-        else
+        else if(title == DELETEDEPLOYMENT )
+          deleteDeployment(slug, algoSlug,dialog, dispatch)
+        else 
           deleteScore(slug, dialog, dispatch)
 
       })

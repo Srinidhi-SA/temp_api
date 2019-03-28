@@ -260,12 +260,6 @@ class App extends React.Component {
               return (<ModelManagement {...props}/>)
             }
             break;
-            
-            // case "/apps/:AppId/modelManagement":
-            // {
-            //   return (<ModelManagement {...props}/>)
-            // }
-            // break;
         }
 
       } else if (this.hasTrainerRoutePermission()) {
@@ -339,14 +333,9 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
-            <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/>
-            
-            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> "reason for not reloding the page"*/}
-            <Route exact path="/apps/:AppId/modelManagement/:slug" render={modelmanagement}/>
-
-
-            {/* <Route exact path="/apps/:AppId/modelManagement/modelSummary" component={ModelSummary}/> */}
-
+            <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/>   
+            {/* <Route exact path="/apps/:AppId/modelManagement" render={modelmanagement}/> "reason for not reloding the page" */}
+            {/* <Route exact path="/apps/:AppId/modelManagement/:slug" render={modelmanagement}/> "reason for not reloding the page" */}
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>

@@ -2,6 +2,7 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        deploymentList:{},
         summarySelected:{},
         current_page:1,
         trainValue:50,
@@ -71,6 +72,7 @@ export default function reducer(state = {
         scoreToProceed:false,
         latestScores : {},
         latestModels :{},
+        latestAlgos:{},
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
@@ -151,6 +153,24 @@ export default function reducer(state = {
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "DEPLOYMENT_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "DEPLOYMENT_LIST":
+    {
+        return {
+            ...state,
+            deploymentList: action.data,
+            // latestDeployments:action.latestDeployments,
+            current_page:action.current_page,
+        }
     }
     break;
 

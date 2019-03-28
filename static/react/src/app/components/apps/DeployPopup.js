@@ -20,7 +20,7 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
   };
 })
 
-export class Deploy extends React.Component {
+export class DeployPopup extends React.Component {
   constructor(props) {
     super(props);
     console.log("Deploy constructor method is called...");
@@ -79,13 +79,25 @@ export class Deploy extends React.Component {
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dsrclocation" class="col-sm-4 control-label">Input data source location</label>
+              <label for="txt_dsrclocation" class="col-sm-4 control-label">S3 bucket name</label>
               <div class="col-sm-8">
                 <input type="text" id="txt_dsrclocation" class="form-control" placeholder="Input location URL" />
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Input data sources folder name</label>
+              <label for="txt_dfname" class="col-sm-4 control-label">Source file name</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dfname" class="col-sm-4 control-label">Access key</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dfname" class="col-sm-4 control-label">Secret key</label>
               <div class="col-sm-8">
                 <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
               </div>
@@ -97,6 +109,12 @@ export class Deploy extends React.Component {
                 <option>Weekly</option>
                 <option>Monthly</option>
                 </select>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="txt_dfname" class="col-sm-4 control-label">Target bucket name</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
               </div>
             </div>
             {/* <div class="row form-group">
