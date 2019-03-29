@@ -4997,6 +4997,8 @@ class ModelDeployment(models.Model):
                 "app_id": ""
             }
         }
+        score_details['config'] = json.loads(self.deploytrainer.config)
+        return score_details
         trainer_data = json.loads(self.deploytrainer.trainer.data)
         train_algo_mapping_data = json.loads(self.deploytrainer.data)
         model_dropdowns = trainer_data['model_dropdown']
@@ -5006,6 +5008,7 @@ class ModelDeployment(models.Model):
                 break
         score_details["config"]["app_id"] = self.deploytrainer.trainer.app_id
         return score_details
+
 
 
 class DatasetScoreDeployment(models.Model):
