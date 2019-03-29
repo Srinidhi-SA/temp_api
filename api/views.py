@@ -212,7 +212,7 @@ class TrainerView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
+                    # instance.data = '{}'
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
@@ -1243,7 +1243,9 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
-    print results.keys()
+    if settings.DEBUG == True:
+        print(results)
+        print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -1266,6 +1268,8 @@ def add_slugs(results, object_slug=""):
 def convert_chart_data_to_beautiful_things(data, object_slug=""):
     from api import helper
     for card in data:
+        if settings.DEBUG == True:
+            print(card)
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
