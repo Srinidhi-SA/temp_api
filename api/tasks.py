@@ -166,6 +166,13 @@ def write_into_databases(job_type, object_slug, results):
                     temp_data['trainer'] = trainer_object.id
                     temp_data['app_id'] = trainer_object.app_id
                     temp_data['created_by'] = trainer_object.created_by.id
+                    temp_config = {}
+                    for i in results['model_dropdown']:
+                        if algo_detail['name'] == i['name']:
+                            temp_config['selectedModel'] = i
+                    temp_config['variablesSelection'] = {}
+                    temp_config['app_id'] = trainer_object.app_id
+                    temp_data['config'] = json.dumps(temp_config)
 
                     serializer = TrainAlgorithmMappingSerializer(data=temp_data)
                     if serializer.is_valid():
