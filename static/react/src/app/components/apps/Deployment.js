@@ -73,7 +73,7 @@ if(deploymentList.data.length == 0){
      <td className="text-left"> {deploy.status}</td>
      <td ><span className="text-success"></span> {deploy.updated_at}</td>
      <td > {deploy.name}</td>
-     <td > {deploy.name}</td>
+     <td > {deploy.deployment}</td>
      {/* <td > {deploy.name}</td> */}
      <td>
         <div class="pos-relative">
