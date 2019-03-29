@@ -16,7 +16,9 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
     login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
-    featureEngineering:store.datasets.featureEngineering,
+    deployData: store.apps.deployData,
+    deployItem:store.apps.deployItem,
+
   };
 })
 
@@ -34,24 +36,27 @@ export class DeployPopup extends React.Component {
     console.log("DeployPopup componentWillMount method is called...");
   }
 
-  getDeployData(){
-      var deployData = {};
-        return deployData;
+    getDeployData(){
+      if(this.props.deployData != undefined || this.props.deployData !=null){
+        var slugData = this.props.deployData[this.props.deployItem];
+        if(slugData != undefined && slugData.depData !=undefined){
+          return JSON.parse(JSON.stringify(slugData.depData));
+        }
       }
-
-    getDeployDataValue(name){
-      var deployData = this.getDeployData();
-      var value = deployData[name];
-      return value;
-    }
+        return {};
+      }
+    // getDeployDataValue(name){
+    //   var depData = this.getDeployData();
+    //   var value = depData[name];
+    //   return value;
+    // }
 
   pickValue(event){
-    this.props.parentPickValue("deployData", event);
+    this.props.parentPickValue("deployData",event);
 
   }
 
   onchangeInput(event){
-    //disable CREATEMODEL
     return event.target.value;
   }
 
@@ -66,18 +71,22 @@ export class DeployPopup extends React.Component {
 
   render() {
     console.log("DeployPopup render method is called...");
-    var deployData = this.getDeployData();
+    var depData = this.getDeployData();
+    // if(){}
           return (
           <div class="modal-body">
           {/* <!-- content goes here --> */}
           <form>
             <div class="xs-m-20"></div>
+
             <div class="row form-group">
-              <label for="txt_dname" class="col-sm-4 control-label">Deployment name</label>
+              <label for="dname" class="col-sm-4 control-label">Deployment name</label>
               <div class="col-sm-8">
-                <input type="text" id="txt_dname" class="form-control" placeholder="Name of the deployment" />
+                <input type="text" name="deployName" class="form-control" placeholder="Name of the deployment" defaultvalue={depData.deployName} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
               </div>
             </div>
+
+
             <div class="row form-group">
               <label for="txt_dname" class="col-sm-4 control-label">S3 bucket name</label>
               <div class="col-sm-8">

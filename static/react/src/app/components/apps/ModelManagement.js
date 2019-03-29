@@ -3,8 +3,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {C3Chart} from "../c3Chart";
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement} from "../../actions/modelManagementActions"
-import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
 import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
@@ -12,7 +11,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -26,13 +25,16 @@ var dateFormat = require('dateformat');
     modelSlug: store.apps.modelSlug,
     deployShowModal: store.apps.deployShowModal,
     selectedSummary :store.summarySelected,
-    algo_search_element :store.apps.algo_search_element
+    algo_search_element :store.apps.algo_search_element,
+    deployData: store.apps.deployData,
+    deployItem:store.apps.deployItem,
   };
 })
 
 export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {};
     this.handleSelect = this.handleSelect.bind(this);
     this.pickValue = this.pickValue.bind(this);
 
@@ -72,26 +74,35 @@ export class ModelManagement extends React.Component {
   }
 
   pickValue(actionType, event){
-    if(this.state[this.props.selectedItem.slug] == undefined){
-      this.state[this.props.selectedItem.slug] = {}
-    }
-    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
-      this.state[this.props.selectedItem.slug][actionType] = {}
+    if(this.state[this.props.deployItem] == undefined){
+      this.state[this.props.deployItem] = {}
     }
     if(event.target.type == "checkbox"){
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
-    }else{
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+      this.state[this.props.deployItem][event.target.name] = event.target.checked;
+    }
+    else{
+      this.state[this.props.deployItem][event.target.name] = event.target.value;
     }
   }
-  
-  handleCreateClicked(actionType, event){
+ 
+  handleCreateClicked(actionType,event){
     if(actionType == "deployData"){
-      this.validateTransformdata(actionType);
+      this.validateDeployData(actionType,event);
     }else{
-      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.closeTransformColumnModal();
+      debugger;
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem][event.target.name]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
+    }
+  }
+
+  validateDeployData(actionType,event){
+    var slugData = this.state[this.props.deployItem];
+    if(slugData != undefined && this.state[this.props.deployItem] != undefined){
+      var deployData = this.state[this.props.deployItem];
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
     }
   }
 
@@ -147,6 +158,7 @@ export class ModelManagement extends React.Component {
     console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
     var mmTable = "";
     var deployPopup = "";
+    var deployData = "";
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
       mmTable = this.props.algoList.data.map((item,key )=> {
@@ -175,7 +187,7 @@ export class ModelManagement extends React.Component {
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
           <li><a bsStyle="cst_button">Clone</a></li>
-            <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item.slug)} bsStyle="cst_button">Deploy</a></li>
             <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
             <Dialog ref="dialog"/>
 
@@ -184,7 +196,8 @@ export class ModelManagement extends React.Component {
       </td>
     </tr>);
     })
-
+    
+    deployData = "deployData";
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
@@ -193,11 +206,11 @@ export class ModelManagement extends React.Component {
                 <h3 className="modal-title">Deploy Project</h3>
               </Modal.Header>
               <Modal.Body>
-                <DeployPopup /*parentPickValue={this.pickValue}*//>
+                <DeployPopup parentPickValue={this.pickValue}/>
               </Modal.Body> 
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,deployData)}>Deploy</Button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -306,9 +319,9 @@ export class ModelManagement extends React.Component {
    }
   }
 }
-  openDeployModal(item) {
+  openDeployModal(slug) {
     console.log("open ---openDeployModal");
-    this.props.dispatch(openDeployModalAction(item));
+    this.props.dispatch(openDeployModalAction(slug));
   }
   
   closeDeployModal() {

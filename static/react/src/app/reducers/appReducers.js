@@ -4,6 +4,10 @@ export default function reducer(state = {
         algoList:{},
         deploymentList:{},
         summarySelected:{},
+        deployShowModal:false,
+        algo_search_element:"",
+        deployItem:{},
+        deployData: {},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -93,8 +97,7 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
-        deployShowModal:false,
-        algo_search_element:"",
+        
                 
 
 }, action) {
@@ -174,6 +177,22 @@ export default function reducer(state = {
     }
     break;
 
+    case "SAVE_DEPLOY_DATA":
+    {
+        var curDepData = state.deployData
+        var curColSlug = curDepData[action.colSlug];
+        if(curColSlug == undefined){
+            curColSlug = {}
+          }
+          curDepData[action.colSlug] = action.dataToSave;
+          console.log(curColSlug);
+      return{
+        ...state,
+        deployData : curDepData
+      }
+    }
+    break;
+
     case "SUMMARY_SELECTED_LIST":
     {
       return {
@@ -197,7 +216,7 @@ export default function reducer(state = {
       return {
         ...state,
         deployShowModal: true,
-        selectedItem:action.selectedItem
+        deployItem:action.selectedItem
       }
       console.log(deployShowModal)
     }

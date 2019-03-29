@@ -20,3 +20,11 @@ export function closeDeployModalAction() {
 export function storeAlgoSearchElement(search_element) {
   return {type: "SEARCH_ALGORITHM", search_element}
 }
+
+export function saveDeployValueAction(colSlug,dataToSave){
+  return {
+    type: "SAVE_DEPLOY_DATA",
+    colSlug,
+    dataToSave
+  }
+}
