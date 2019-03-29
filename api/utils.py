@@ -1147,9 +1147,10 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['model_id'] = ret['name']
-        x=ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=False)
-        #print(len(x))
-        ret['deployment'] =len(x)
+        ################### Count for deployment ##########################
+        deployment_count_obj=ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=False)
+        ret['deployment'] =len(deployment_count_obj)
+        ####################################################################
         ret['created_on'] = ret['created_at']
         raw_data = json.loads(instance.data)
         #Fetching Data from ML
@@ -1220,7 +1221,10 @@ class DeploymentListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
         #return ret
-
+        ################### Count for dataset and score #########################
+        dataset_score_count_obj=DatasetScoreDeployment.objects.filter(deployment_id=instance.id, deleted=False)
+        ret['deployment'] =len(dataset_score_count_obj)
+        #########################################################################
 
         #Permission details
         permission_details = get_permissions(
