@@ -1308,7 +1308,7 @@ def convert_fe_date_format(date_string):
 
 def get_timing_details(timing_type=None):
     timing_details = {
-                        "type": "interval",
+                        "type": "crontab",
                         "crontab": {
                             "minute": "*",
                             "hour": "*",
@@ -1330,7 +1330,7 @@ def get_timing_details(timing_type=None):
     elif timing_type == 'hourly':
         timing_details['crontab']['hour'] = 1
     else:
-        timing_details['crontab']['day_of_week'] = 1
+        timing_details['type'] = "interval"
 
     return timing_details
 
