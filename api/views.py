@@ -5580,6 +5580,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
         temp_data['app_id'] = current_instance_data['app_id']
         temp_data['name'] = current_instance_data['name'] + '_clone'
         temp_data['created_by'] = request.user.id
+        temp_data['data'] = json.dumps(current_instance_data['data'])
 
         serializer = TrainAlgorithmMappingSerializer(data=temp_data, context={"request": self.request})
 
@@ -5965,5 +5966,3 @@ def disable_all_periodic_tasks(request):
             periodic_task.enabled = False
 
     return JsonResponse({'message':'Done'})
-
-
