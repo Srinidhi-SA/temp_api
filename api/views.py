@@ -5561,6 +5561,32 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     #Uncommented for trainer related permissions
     permission_classes = (TrainerRelatedPermission, )
 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+########### Delete Method for TrainAlgorithmMapping ############
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+    @detail_route(methods=['put'])
+    def delete(self,request,*args,**kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        print(data)
+        try:
+            instance = self.get_object_from_all()
+
+            if 'deleted' in data:
+                if data['deleted'] == False:
+                    print 'let us delete'
+                    instance.deleted = True
+                    instance.save()
+                    #clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+                    return JsonResponse({'message':'Deleted'})
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
     #adding clone method
     @detail_route(methods=['get'])
