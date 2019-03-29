@@ -12,7 +12,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -69,6 +69,10 @@ export class ModelManagement extends React.Component {
 
   handleAlgoDelete(slug) {
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+  }
+
+  handleAlgoClone(slug) {
+    this.props.dispatch(handleAlgoClone(slug, this.refs.dialog));
   }
 
   pickValue(actionType, event){
@@ -174,8 +178,8 @@ export class ModelManagement extends React.Component {
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-          <li><a bsStyle="cst_button">Clone</a></li>
-            <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
+            <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item)} >Deploy</a></li>
             <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
             <Dialog ref="dialog"/>
 

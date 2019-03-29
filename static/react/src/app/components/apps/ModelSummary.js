@@ -156,7 +156,22 @@ export class ModelSummary extends React.Component {
 					</div>
 				</div>
 			);
-		}else{
+		}
+		else if(isEmpty(this.props.algoAnalysis.data)){
+
+			return (
+
+				<div className="side-body">
+					<div className="page-head">
+					</div>
+					<div className="main-content">
+						<h1>There was no data</h1>
+					</div>
+				</div>
+			);
+
+		}	
+		else{
 		// console.log(this.props.selectedSummary,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		var summary=this.props.selectedSummary;
 		var overviewCard = "";
@@ -251,7 +266,7 @@ export class ModelSummary extends React.Component {
 						{headksChart}
 						{ksChart}
 					</div>
-					<div class="col-md-6">
+			    <div class="col-md-6">
 						{headgainChart}
 						{gainChart}
 					</div>
