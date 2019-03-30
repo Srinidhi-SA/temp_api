@@ -12,7 +12,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -20,7 +20,8 @@ var dateFormat = require('dateformat');
     algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
-		algoAnalysis:store.signals.algoAnalysis,
+    algoAnalysis:store.signals.algoAnalysis,
+    allProjects : store.apps.allProjects ,
     modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
@@ -39,6 +40,8 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
+   debugger;
+  this.props.dispatch(getAllProjectList(pageNo));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -137,7 +140,10 @@ export class ModelManagement extends React.Component {
 
   render(){
 
-    if(isEmpty(this.props.algoList)){
+
+   
+
+    if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
 			return ( 
         <div className="side-body">
           <div className="page-head">
@@ -148,11 +154,29 @@ export class ModelManagement extends React.Component {
         </div>
       );
 		}else{
-    console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+    console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
     var mmTable = "";
     var deployPopup = "";
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
+
+    // const dataSets = this.props.allProjects;
+    // var options= this.props.allProjects.map(dataSet =>
+		// 	<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+		// 	)
+    // debugger;
+		// // const algorithms = store.getState().apps.algorithmsList;
+		// let renderSelectBox = null;
+		// let algorithmNames = null;
+		// if(dataSets){
+		// 	renderSelectBox = <select id="score_Dataset" name="selectbasic"   class="form-control">
+    //   {/* <h1>hiii</h1> */}
+		// 	{options}
+		// 	</select>
+		// }else{
+		// 	renderSelectBox = "No Datasets"
+		// }
+
       mmTable = this.props.algoList.data.map((item,key )=> {
     var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
        return (
@@ -188,6 +212,7 @@ export class ModelManagement extends React.Component {
       </td>
     </tr>);
     })
+
 
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
@@ -241,6 +266,7 @@ export class ModelManagement extends React.Component {
                   <div class="form-inline" >
                     <div class="form-group">
                       <label for="sdataType">Filter By: </label>
+                      {/* {renderSelectBox} */}
                         <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
                           <datalist id="listProjectName">
                             <option value="Credit Churn Prediction"></option>

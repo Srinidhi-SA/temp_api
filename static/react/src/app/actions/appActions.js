@@ -217,6 +217,48 @@ export function handleAlgoDelete(slug, dialog) {
 }
 
 
+export function getAllProjectList(pageNo) {
+  return (dispatch) => {
+      return fetchAllProjectList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+          if(response.status === 200){
+              console.log(json)
+              dispatch(fetchAllProjectSuccess(json))
+          }
+          else{
+              dispatch(fetchAllProjectError(json))
+          }
+      })
+  }
+}
+
+function fetchAllProjectList(token) {
+  return fetch(API+'/api/trainer/all/',{
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllProjectSuccess(doc){
+  var data = ""
+      var slug = "";
+  if(doc.data[0] != undefined){
+      slug  = doc.data[0].slug;
+      data = doc;
+  }
+  return {
+      type: "PROJECT_ALL_LIST",
+      data,
+      slug
+  }
+}
+
+function fetchAllProjectError(json) {
+  return {
+      type: "PROJECT_ALL_LIST_ERROR",
+      json
+  }
+}
+
 
 function deleteDeployment(slug,algoSlug, dialog, dispatch) {
   dispatch(showLoading());

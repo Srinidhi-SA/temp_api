@@ -20,3 +20,4 @@ export function closeDeployModalAction() {
 export function storeAlgoSearchElement(search_element) {
   return {type: "SEARCH_ALGORITHM", search_element}
 }
+

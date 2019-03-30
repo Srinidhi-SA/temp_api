@@ -2,6 +2,8 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        selectedProject: "",
+        allProjects: {},
         deploymentList:{},
         summarySelected:{},
         current_page:1,
@@ -211,6 +213,22 @@ export default function reducer(state = {
       }
     }
     break;
+
+    case "PROJECT_ALL_LIST":
+    {
+      return {
+        ...state,
+        allProjects: action.data,
+        selectedProject: action.slug
+      }
+    }
+    break;
+
+    case "PROJECT_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch project list!!");
+      }
+      break;
 
     case "UPDATE_MODEL_RANGE":
     {
