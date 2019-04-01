@@ -1241,7 +1241,9 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
-    print results.keys()
+    if settings.DEBUG == True:
+        print(results)
+        print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -1264,6 +1266,8 @@ def add_slugs(results, object_slug=""):
 def convert_chart_data_to_beautiful_things(data, object_slug=""):
     from api import helper
     for card in data:
+        if settings.DEBUG == True:
+            print(card)
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
@@ -5698,24 +5702,7 @@ class ModelDeployementView(viewsets.ModelViewSet):
 
         # try:
         data = request.data
-        # DEFAULT TIMING DETAILS
-        timing_details = {
-            'type': 'interval',
-            'interval': {
-                'every': 60,
-                'period': 'seconds'
-            }
-        }
-        from api.helper import get_timing_details
-        if 'config' in data:
-            if 'timing_details' in data['config']:
-                data['config']['timing_details'] = get_timing_details(data['config']['timing_details'])
-            else:
-                data['config']['timing_details'] = get_timing_details()
-
         data = convert_to_string(data)
-
-
         data['deploytrainer'] = TrainAlgorithmMapping.objects.filter(slug=data['deploytrainer'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = DeploymentSerializer(data=data, context={"request": self.request})
