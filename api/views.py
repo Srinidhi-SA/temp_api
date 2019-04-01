@@ -12,6 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route, list_route
+
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.decorators import method_decorator
@@ -206,15 +207,12 @@ class TrainerView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
+                    instance.delete()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
@@ -5561,33 +5559,6 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     #Uncommented for trainer related permissions
     permission_classes = (TrainerRelatedPermission, )
 
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
-########### Delete Method for TrainAlgorithmMapping ############
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
-    @detail_route(methods=['put'])
-    def delete(self,request,*args,**kwargs):
-        data = request.data
-        data = convert_to_string(data)
-        print(data)
-        try:
-            instance = self.get_object_from_all()
-
-            if 'deleted' in data:
-                if data['deleted'] == False:
-                    print 'let us delete'
-                    instance.deleted = True
-                    instance.save()
-                    #clean_up_on_delete.delay(instance.slug, Trainer.__name__)
-                    return JsonResponse({'message':'Deleted'})
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
     #adding clone method
     @detail_route(methods=['get'])
     def clone(self, request, *args, **kwargs):
@@ -5637,15 +5608,12 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
+                    instance.delete()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:

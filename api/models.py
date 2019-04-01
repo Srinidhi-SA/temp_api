@@ -1607,6 +1607,18 @@ class Trainer(models.Model):
         self.add_newly_generated_column_names.append(custom_dict)
 
 
+    def delete(self):
+        try:
+            self.deleted=True
+            self.save()
+            train_algo_instance = TrainAlgorithmMapping.objects.filter(trainer_id=self.id)
+            for iter in train_algo_instance:
+                iter.delete()
+
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
@@ -4819,6 +4831,17 @@ class TrainAlgorithmMapping(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
+
+
+    def delete(self):
+        try:
+            self.deleted=True
+            instance.save()
+            deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
+            for iter in deploy_instance:
+                iter.terminate_periodic_task()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
 
 # Deployment for Model management
