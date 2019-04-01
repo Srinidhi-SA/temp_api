@@ -4836,7 +4836,7 @@ class TrainAlgorithmMapping(models.Model):
     def delete(self):
         try:
             self.deleted=True
-            instance.save()
+            self.save()
             deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
             for iter in deploy_instance:
                 iter.terminate_periodic_task()
