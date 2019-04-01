@@ -160,22 +160,22 @@ export class ModelManagement extends React.Component {
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
 
-    // const dataSets = this.props.allProjects;
-    // var options= this.props.allProjects.map(dataSet =>
-		// 	<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
-		// 	)
-    // debugger;
-		// // const algorithms = store.getState().apps.algorithmsList;
-		// let renderSelectBox = null;
-		// let algorithmNames = null;
-		// if(dataSets){
-		// 	renderSelectBox = <select id="score_Dataset" name="selectbasic"   class="form-control">
-    //   {/* <h1>hiii</h1> */}
-		// 	{options}
-		// 	</select>
-		// }else{
-		// 	renderSelectBox = "No Datasets"
-		// }
+    const dataSets = this.props.allProjects;
+    var options= dataSets.data.map(dataSet =>
+			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+			)
+    debugger;
+		// const algorithms = store.getState().apps.algorithmsList;
+		let renderSelectBox = null;
+		let algorithmNames = null;
+		if(dataSets){
+			renderSelectBox = <select id="score_Dataset" name="selectbasic"   class="form-control">
+      {/* <h1>hiii</h1> */}
+			{options}
+			</select>
+		}else{
+			renderSelectBox = "No Datasets"
+		}
 
       mmTable = this.props.algoList.data.map((item,key )=> {
     var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
@@ -266,14 +266,14 @@ export class ModelManagement extends React.Component {
                   <div class="form-inline" >
                     <div class="form-group">
                       <label for="sdataType">Filter By: </label>
-                      {/* {renderSelectBox} */}
-                        <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
+                      {renderSelectBox}
+                        {/* <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
                           <datalist id="listProjectName">
                             <option value="Credit Churn Prediction"></option>
                             <option value="Ecommerce Predict"></option>
                             <option value="Call Volume"></option>
                             <option value="Student Performance"></option>								
-                          </datalist> &nbsp;&nbsp;&nbsp;
+                          </datalist> &nbsp;&nbsp;&nbsp; */}
                     </div>
                   </div>
                 </div>

@@ -190,7 +190,7 @@ export class ModelSummary extends React.Component {
 		var oVtop="";
 		oVtop =overviewPage.map(card => card.listOfCards);
 		
-		let cardWidth = this.props.cardWidth;
+		let cardWidth = 100;
 
 		var th1 = oVtop.map(fun => fun[0].cardData[0])
 		var tdata1 = oVtop.map(fun => fun[0].cardData[1])
