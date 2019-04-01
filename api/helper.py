@@ -7,6 +7,8 @@ import random
 from django.conf import settings
 import yarn_api_client
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
+from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
+import pytz
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -1333,6 +1335,27 @@ def get_timing_details(timing_type=None):
         timing_details['type'] = "interval"
 
     return timing_details
+
+
+def get_schedule(timing_type=None):
+    timing_details = get_timing_details(timing_type)
+
+    if timing_details['type'] == 'crontab':
+        schedule, _ = CrontabSchedule.objects.get_or_create(
+            minute=timing_details['crontab'].get('minute', '*'),
+            hour=timing_details['crontab'].get('hour', '*'),
+            day_of_week=timing_details['crontab'].get('day_of_week', '*'),
+            day_of_month=timing_details['crontab'].get('day_of_month', '*'),
+            month_of_year=timing_details['crontab'].get('month_of_year', '*'),
+            timezone=pytz.timezone(timing_details['crontab'].get('timezone', 'Asia/Calcutta'))
+        )
+        return schedule, 'crontab'
+    else:
+        schedule, _ = IntervalSchedule.objects.get_or_create(
+            every=timing_details['interval'].get('every', 600),
+            period=timing_details['interval'].get('period', 'seconds')
+        )
+        return schedule, 'interval'
 
 
 def get_a_random_slug(num=5):
