@@ -2,6 +2,8 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        filter:"",
+
         selectedProject: "",
         allProjects: {},
         deploymentList:{},
@@ -133,6 +135,23 @@ export default function reducer(state = {
     break;
 
     case "MODEL_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+
+    case "DEPLOY_PREVIEW":
+    {
+        return {
+            ...state,
+            filter: action.data,
+        }
+    }
+    break;
+
+    case "DEPLOY_PREVIEW_ERROR":
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");

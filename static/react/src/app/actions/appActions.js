@@ -2376,3 +2376,41 @@ export function refreshRoboInsightsList(props){
     , APPSDEFAULTINTERVAL);
   }
 }
+
+export function getDeployPreview(filtername) {
+  debugger;
+  return (dispatch) => {
+      return fetchDeployPreview(filtername,dispatch).then(([response, json]) =>{
+          if(response.status === 200){
+              console.log(json)
+              dispatch(fetchDeployPreviewSuccess(json,dispatch))
+          }
+          else{
+              dispatch(fetchDeployPreviewError(json))
+          }
+      });
+  }
+}
+
+function fetchDeployPreview(filtername,dispatch) {
+  // return fetch(API+'/api/datasets/'+slug+'/',{
+
+    return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
+ 
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then( response => Promise.all([response, response.json()])).catch(function(error){
+
+      let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+      bootbox.alert(msg)
+  });
+}
+//get preview data
+
+function fetchDeployPreviewError(json) {
+  return {type: "DEPLOY_PREVIEW_ERROR", json}
+}
+export function fetchDeployPreviewSuccess(doc) {
+  var data = doc;
+  return {type: "DEPLOY_PREVIEW", data}
+}

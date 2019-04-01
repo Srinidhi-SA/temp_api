@@ -12,7 +12,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList,getDeployPreview} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -137,6 +137,13 @@ export class ModelManagement extends React.Component {
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
     }
 }
+getDeployPreview(e){
+  this.selectedData = $("#score_Dataset").val();
+  this.props.dispatch(getDeployPreview(this.selectedData));
+  debugger;
+
+
+}
 
   render(){
 
@@ -162,14 +169,14 @@ export class ModelManagement extends React.Component {
 
     const dataSets = this.props.allProjects;
     var options= dataSets.data.map(dataSet =>
-			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
 			)
     debugger;
 		// const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
 		let algorithmNames = null;
 		if(dataSets){
-			renderSelectBox = <select id="score_Dataset" name="selectbasic"   class="form-control">
+			renderSelectBox = <select id="score_Dataset" name="selectbasic"  class="form-control">
       {/* <h1>hiii</h1> */}
 			{options}
 			</select>
@@ -267,6 +274,9 @@ export class ModelManagement extends React.Component {
                     <div class="form-group">
                       <label for="sdataType">Filter By: </label>
                       {renderSelectBox}
+
+				                <Button bsStyle="primary" onClick={this.getDeployPreview.bind(this)}  >Apply</Button>
+
                         {/* <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
                           <datalist id="listProjectName">
                             <option value="Credit Churn Prediction"></option>
