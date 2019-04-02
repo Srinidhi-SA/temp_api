@@ -5641,7 +5641,18 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def search(self, request, *args, **kwargs):
         trainer_slug = request.GET['trainer']
+
+        if trainer_slug == "":
+            return get_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=TrainAlgorithmMappingListSerializer
+
+            )
+
         trainer_object = Trainer.objects.get(slug=trainer_slug)
+        if trainer_object is None:
+            return retrieve_failed_exception("Model doesn't exist.")
 
         response = get_specific_listed_data(
             viewset=self,
