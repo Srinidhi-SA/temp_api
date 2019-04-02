@@ -5614,7 +5614,6 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
                 if data['deleted'] == True:
                     print 'let us delete'
                     instance.delete()
-                    clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
@@ -5740,7 +5739,6 @@ class ModelDeployementView(viewsets.ModelViewSet):
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
-                    clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
