@@ -40,7 +40,6 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
-   debugger;
   this.props.dispatch(getAllProjectList(pageNo));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
@@ -55,6 +54,21 @@ export class ModelManagement extends React.Component {
   }
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
+
+    $('#search').on('keyup', function() {
+      var value = $(this).val();
+      var patt = new RegExp(value, "i");
+      $('#mmtable').find('tr').each(function() {
+        if (!($(this).find('td').text().search(patt) >= 0)) {
+   		     $(this).not('.myHead').hide();
+         }
+         if (($(this).find('td').text().search(patt) >= 0)) {
+           $(this).show();
+         }
+      });
+    });
+
+    // $("#mmtable").addSortWidget();
   }
   // proceedToModelSummary(item)
   // {
@@ -138,17 +152,35 @@ export class ModelManagement extends React.Component {
     }
 }
 getDeployPreview(e){
-  this.selectedData = $("#score_Dataset").val();
-  this.props.dispatch(getDeployPreview(this.selectedData));
   debugger;
+  var pageNo =1;
+  this.selectedData = $("#project_all").val();
+  this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+}
+getAllDeployPreview()
+{
+  this.props.dispatch(getAppsAlgoList(1));
+
+}
 
 
+mmTableSorter() {
+  $(function() {
+    $('#mmtable').tablesorter({
+      theme: 'ice',
+      headers: {
+        9: {sorter: false},
+        10: {sorter: false}
+      }
+    });
+  });
 }
 
   render(){
 
 
    
+    // this.mmTableSorter();
 
     if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
 			return ( 
@@ -166,19 +198,19 @@ getDeployPreview(e){
     var deployPopup = "";
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
+    var none =none;
 
     const dataSets = this.props.allProjects;
     var options= dataSets.data.map(dataSet =>
+
 			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
 			)
-    debugger;
-		// const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
-		let algorithmNames = null;
+    let algorithmNames = null;  
 		if(dataSets){
-			renderSelectBox = <select id="score_Dataset" name="selectbasic"  class="form-control">
-      {/* <h1>hiii</h1> */}
-			{options}
+			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
+       <option value=""></option>
+         {options}
 			</select>
 		}else{
 			renderSelectBox = "No Datasets"
@@ -199,10 +231,12 @@ getDeployPreview(e){
       <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-      {/* <td><Button   onClick={this.proceedToModelSummary.bind(this,item)}  bsStyle="primary"></Button></td> */}
-      <td> <Button ><Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
-              {Details}
-              </Link></Button></td>
+      <td> <Button >
+              <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
+                  {Details}
+              </Link>
+           </Button>
+      </td>
       <td>
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
@@ -263,7 +297,6 @@ getDeployPreview(e){
           {/* <!-- Page Content Area --> */}
           {deployPopup}
           <div class="main-content">
-        
           <div class="row">
               <div class="col-md-12">           
                 <div class="panel box-shadow">
@@ -272,18 +305,11 @@ getDeployPreview(e){
                 <div className="col-md-3">
                   <div class="form-inline" >
                     <div class="form-group">
-                      <label for="sdataType">Filter By: </label>
+                        <div class="input-group">
+                        <span class="input-group-btn"><label for="sdataType">Filter By: </label></span>
                       {renderSelectBox}
-
-				                <Button bsStyle="primary" onClick={this.getDeployPreview.bind(this)}  >Apply</Button>
-
-                        {/* <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                          <datalist id="listProjectName">
-                            <option value="Credit Churn Prediction"></option>
-                            <option value="Ecommerce Predict"></option>
-                            <option value="Call Volume"></option>
-                            <option value="Student Performance"></option>								
-                          </datalist> &nbsp;&nbsp;&nbsp; */}
+                      </div>
+                    
                     </div>
                   </div>
                 </div>
@@ -291,6 +317,8 @@ getDeployPreview(e){
                   <div className="btn-toolbar pull-right">
                   <div className="input-group">
                     <div className="search-wrapper">
+                    {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
+
                       <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
                       <span className="zmdi zmdi-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
