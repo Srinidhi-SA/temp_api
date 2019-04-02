@@ -145,6 +145,42 @@ export function getAppsAlgoList(pageNo) {
   }
 }
 
+export function createDeploy(slug) {
+  return (dispatch) => {
+      return triggerCreateDeploy(getUserDetailsOrRestart.get().userToken,slug,dispatch).then(([response, json]) =>{
+          if(response.status === 200){
+              console.log(json)
+              dispatch(createDeploySuccess(json,slug,dispatch))
+              dispatch(getDeploymentList(slug,store.getState().apps.current_page));
+          }
+          else{
+              dispatch(createDeployError(json))
+          }
+      })
+    }
+  }
+
+  function triggerCreateDeploy(token,slug,dispatch) {
+    let deploy_details = store.getState().apps.deployData;
+    console.log(deploy_details);
+    var slug = slug;
+    var details = deploy_details;
+    return fetch(API + '/api/deploymodel/',  {
+      method: 'post',
+      headers: getHeader(token),
+      body: JSON.stringify(details)
+    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+      bootbox.alert("Unable to connect to server. Check your connection please try again.")
+    });
+  }
+
+  function createDeploySuccess(slug, dispatch) {
+    return {type: "CREATE_DEPLOY_SUCCESS", slug}
+  }
+  function createDeployError() {
+    return {type: "CREATE_DEPLOY_ERROR"}
+  }
+
 function fetchAlgoList(pageNo, token) {
   let search_element = store.getState().apps.algo_search_element;
   if (search_element != "" && search_element != null) {
@@ -161,7 +197,6 @@ function fetchAlgoList(pageNo, token) {
   }).then(response => Promise.all([response, response.json()]));
   }
 }
-
 
 
 export function refreshAppsAlgoList(props) {
@@ -263,7 +298,6 @@ export function getDeploymentList(errandId) {
 
 
 function fetchDeploymentList(errandId,token) {
-  debugger;
   // let search_element = store.getState().apps.algo_search_element;
   // if (search_element != "" && search_element != null) {
   //   console.log("calling for algo search element!!")
@@ -313,15 +347,6 @@ function fetchDeploymentListError(json) {
    return {type: "DEPLOYMENT_LIST", data, latestDeployments, current_page}
  }
 
-
-
-
-
-
-
-
-
-
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
@@ -354,6 +379,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
     }
 
     function triggerCreateModel(token,modelName,targetVariable,targetLevel,dispatch) {
+      debugger;
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
@@ -430,11 +456,14 @@ function createModelSuccess(data, dispatch) {
   }, APPSDEFAULTINTERVAL);
   return {type: "CREATE_MODEL_SUCCESS", slug}
 }
+
 export function createModelSuccessAnalysis(data) {
   return (dispatch) => {
     dispatch(createModelSuccess(data, dispatch))
   }
 }
+
+
 export function refreshAppsScoreList(props) {
   return (dispatch) => {
     if(refreshAppsScoresInterval != null)

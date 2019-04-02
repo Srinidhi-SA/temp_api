@@ -31,7 +31,6 @@ import { Deployment } from "./Deployment";
 export class ModelSummary extends React.Component {
   constructor(props) {
 		super(props);
-    this.pickValue = this.pickValue.bind(this);
 		
   }
 	
@@ -57,30 +56,6 @@ export class ModelSummary extends React.Component {
 		let divClass="col-md-"+colWidth;
 		return divClass;
 	}
-
-	pickValue(actionType, event){
-    if(this.state[this.props.selectedItem.slug] == undefined){
-      this.state[this.props.selectedItem.slug] = {}
-    }
-    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
-      this.state[this.props.selectedItem.slug][actionType] = {}
-    }
-    if(event.target.type == "checkbox"){
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
-    }else{
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
-    }
-  }
-  
-  handleCreateClicked(actionType, event){
-    if(actionType == "deployData"){
-      this.validateTransformdata(actionType);
-    }else{
-      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.closeTransformColumnModal();
-    }
-  }
 	
 	renderCardData(c3,cardWidth){
 			var htmlData = c3.map((story, i) => {

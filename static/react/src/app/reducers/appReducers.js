@@ -179,17 +179,53 @@ export default function reducer(state = {
 
     case "SAVE_DEPLOY_DATA":
     {
-        var curDepData = state.deployData
-        var curColSlug = curDepData[action.colSlug];
-        if(curColSlug == undefined){
-            curColSlug = {}
-          }
-          curDepData[action.colSlug] = action.dataToSave;
-          console.log(curColSlug);
-      return{
-        ...state,
-        deployData : curDepData
-      }
+        var dd = action.dataToSave
+        return{
+            ...state,
+            deployData :{
+                "name":dd.name,
+                "deploytrainer": action.colSlug,
+                "config":{
+                "dataset_details":{
+                    "datasource_details":{
+                        "datasetname":dd.datasetname,
+                        "bucket_name":dd.bucket_name,
+                        "file_name":dd.file_name,
+                        "access_key_id":dd.access_key_id,
+                        "secret_key":dd.secret_key
+                    },
+                    "datasource_type":"S3"
+                },
+                "timing_details": dd.timing_details,
+                "destination_s3": { "bucket": "s3" }
+                },
+                "data":{}
+            }
+        }
+    //     var curDepData = state.deployData
+    //     var curColSlug = curDepData[action.colSlug];
+    //     if(curColSlug == undefined){
+    //         curColSlug = { }
+    //       }
+    //       curDepData[action.colSlug] = action.dataToSave;
+    //       console.log(curColSlug);
+    //   return{
+    //     ...state,
+    //     deployData : curDepData
+    //   }
+    }
+    break;
+
+    case "CREATE_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+        }
+    }
+    break;
+    case "CREATE_DEPLOY_ERROR":
+    {
+        throw new Error("Unable to create deployment!");
     }
     break;
 

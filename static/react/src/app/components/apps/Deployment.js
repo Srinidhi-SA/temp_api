@@ -2,9 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import {isEmpty} from "../../helpers/helper";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
-import {getAppsAlgoList,refreshAppsAlgoList,handleDeploymentDeleteAction,getAppDetails,} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleDeploymentDeleteAction,createDeploy} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog';
-
+import { DeployPopup } from "./DeployPopup";
+import {Button,Modal} from "react-bootstrap";
+import {openDeployModalAction, closeDeployModalAction,saveDeployValueAction} from "../../actions/modelManagementActions";
 
 @connect((store) => {
   return {
@@ -14,28 +16,63 @@ import Dialog from 'react-bootstrap-dialog';
     featureEngineering:store.datasets.featureEngineering,
     deploymentList:store.apps.deploymentList,
 		algoAnalysis:store.signals.algoAnalysis,
-    
-
+    deployShowModal: store.apps.deployShowModal,
+    deployData: store.apps.deployData,
+    deployItem: store.apps.deployItem,
   };
 })
-
-
-
 
 export class Deployment extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {};
+    this.pickValue = this.pickValue.bind(this);
   }
 
   componentWillMount() {
-		// this.props.dispatch(getDeploymentList(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+    // this.props.dispatch(getDeploymentList(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+    
 
   }
 
   handleDeploymentDelete(slug) {
     var algoSlug= this.props.algoAnalysis.slug; 
-    debugger;
     this.props.dispatch(handleDeploymentDeleteAction(slug,algoSlug, this.refs.dialog,));
+  }
+
+  pickValue(actionType, event){
+    if(this.state[this.props.deployItem] == undefined){
+      this.state[this.props.deployItem] = {}
+    }
+    if(event.target.type == "checkbox"){
+      this.state[this.props.deployItem][event.target.name] = event.target.checked;
+    }
+    else{
+      this.state[this.props.deployItem][event.target.name] = event.target.value;
+    }
+  }
+
+  handleCreateClicked(actionType,event){
+    if(actionType == "deployData"){
+      this.validateDeployData(actionType,event);
+    }else{
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem][event.target.name]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
+    }
+  }
+
+  validateDeployData(actionType,event){
+    var slugData = this.state[this.props.deployItem];
+    
+    if(slugData != undefined && this.state[this.props.deployItem] != undefined){
+      var deployData = this.state[this.props.deployItem];
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
+    }
   }
 
   render() {
@@ -50,11 +87,33 @@ export class Deployment extends React.Component {
         </div>
       );
 		}else{
+    var deployPopup = "";
+    var deployData = "";
     console.log("Deployment render method is called...");
+    console.log(this.props.algoAnalysis.slug, +"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		var deploymentList = this.props.deploymentList;
     var deploymentTable = "";
+    deployData = "deployData";
+      deployPopup = (
+        <div class="col-md-3 xs-mb-15 list-boxes" >
+          <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
+            <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
+              <Modal.Header closeButton>
+                <h3 className="modal-title">Deploy Project</h3>
+              </Modal.Header>
+              <Modal.Body>
+                <DeployPopup parentPickValue={this.pickValue}/>
+              </Modal.Body> 
+              <Modal.Footer>
+                <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,deployData)}>Deploy</Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
+        </div>
+      )
 
-if(deploymentList.data.length == 0){    
+    if(deploymentList.data.length == 0){    
       return(
         deploymentTable = <h4 style={{textAlign:"center"}}>No Deployments Available</h4>
       );
@@ -80,19 +139,18 @@ if(deploymentList.data.length == 0){
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
           <li><a bsStyle="cst_button">View</a></li>
-            <li><a onClick={this.handleDeploymentDelete.bind(this, deploy.slug)}  >Delete</a></li>       
+            <li><a onClick={this.handleDeploymentDelete.bind(this, this.props.selectedItem)}  >Delete</a></li>       
           </ul>
         </div>
       </td>
    </tr>);
    }) 
   }
-
     
     return (
-      
 			<div id="deployment" class="tab-pane">
-				<button class="btn btn-warning btn-shade4 pull-right">Add New Deployment</button><br/><br/>
+          {deployPopup} 
+				<button class="btn btn-warning btn-shade4 pull-right"  onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
 					<div class="clearfix"></div>
 						<table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
 							<thead>
@@ -114,7 +172,16 @@ if(deploymentList.data.length == 0){
                     <Dialog ref="dialog"/>
 
 			  </div>
-    );
+      );
+    }
+  }
+  openDeployModal(slug) {
+    console.log("open ---openDeployModal");
+    this.props.dispatch(openDeployModalAction(slug));
+  }
+  
+  closeDeployModal() {
+    console.log("closeddddd ---closeDeployModal");
+    this.props.dispatch(closeDeployModalAction());
   }
 }
-  }

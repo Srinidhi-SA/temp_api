@@ -11,7 +11,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,createDeploy} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -89,10 +89,10 @@ export class ModelManagement extends React.Component {
     if(actionType == "deployData"){
       this.validateDeployData(actionType,event);
     }else{
-      debugger;
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem][event.target.name]));
       this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
       this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
     }
   }
 
@@ -103,6 +103,7 @@ export class ModelManagement extends React.Component {
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem]));
       this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
       this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
     }
   }
 
