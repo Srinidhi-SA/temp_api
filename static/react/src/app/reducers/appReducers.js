@@ -2,6 +2,8 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        deploymentData:{},
+        viewDeploymentFlag:false,
         deploymentList:{},
         summarySelected:{},
         deployShowModal:false,
@@ -189,7 +191,7 @@ export default function reducer(state = {
                 "dataset_details":{
                     "datasource_details":{
                         "datasetname":dd.datasetname,
-                        "bucket_name":dd.bucket_name,
+                        "bucket_name":"s3",
                         "file_name":dd.file_name,
                         "access_key_id":dd.access_key_id,
                         "secret_key":dd.secret_key
@@ -197,7 +199,7 @@ export default function reducer(state = {
                     "datasource_type":"S3"
                 },
                 "timing_details": dd.timing_details,
-                "destination_s3": { "bucket": "s3" }
+                "destination_s3": { "bucket": "none" }
                 },
                 "data":{}
             }
@@ -226,6 +228,23 @@ export default function reducer(state = {
     case "CREATE_DEPLOY_ERROR":
     {
         throw new Error("Unable to create deployment!");
+    }
+    break;
+
+    case "VIEW_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+            deploymentData: action.data,
+            viewDeploymentFlag:true,
+        }
+    }
+    break;
+
+    case "VIEW_DEPLOY_ERROR":
+    {   
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch Deployment Details");
     }
     break;
 
@@ -263,6 +282,25 @@ export default function reducer(state = {
       return {
         ...state,
         deployShowModal: false
+      }
+    }
+    break;
+
+    case "SHOW_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: true,
+        // deployItem:action.selectedItem
+      }
+    }
+    break;
+
+    case "HIDE_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: false
       }
     }
     break;

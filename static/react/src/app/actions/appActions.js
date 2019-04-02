@@ -119,8 +119,6 @@ export function fetchModelListSuccess(doc) {
   return {type: "MODEL_LIST", data, latestModels, current_page}
 }
 
-
-
 function fetchAlgoListError(json) {
  return {type: "ALGO_LIST_ERROR", json}
 }
@@ -262,11 +260,7 @@ function deleteDeployment(slug,algoSlug, dialog, dispatch) {
     }
   })
 }
-
-
 function deleteDeploymentAPI(slug) {
-  // return fetch(API + '/api/score/' + slug + '/', {
-
   return fetch(API + '/api/deploymodel/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -274,12 +268,42 @@ function deleteDeploymentAPI(slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 
+export function viewDeployment(slug){
+  return (dispatch) => {
+    return viewDeploymentAPI(slug,getUserDetailsOrRestart.get().userToken).then(([response,json]) => {
+      if(response.status === 200){
+        console.log(json);
+        dispatch(viewDeploySuccess(json));
+      }
+      else{
+        dispatch(viewDeployError(json));
+      }
+    })
+  }
+}
+function viewDeploymentAPI(slug,token){
+  return fetch(API+ '/api/deploymodel/'+slug+ '/',{
+    method:'get',
+    headers:getHeader(token),
+  }).then(response => Promise.all([response,response.json()]));
+}
+  function viewDeployError(json) {
+    return {type: "VIEW_DEPLOY_ERROR", json}
+  }
+ 
+ export function viewDeploySuccess(json) {
+   var data = json;
+   return {type: "VIEW_DEPLOY_SUCCESS", data}
+ }
 
 export function handleDeploymentDeleteAction(slug, algoSlug, dialog) {
-  debugger;
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning","Are you sure, you want to delete this deployment?","small_mascot")),algoSlug)
   }
+}
+
+export function handleDeploymentViewAction(slug){
+
 }
 
 
@@ -1009,6 +1033,7 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText,algoSlug) {
     }
   });
 }
+
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))

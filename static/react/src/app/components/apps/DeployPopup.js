@@ -95,7 +95,7 @@ export class DeployPopup extends React.Component {
             <div class="row form-group">
               <label for="txt_dname" class="col-sm-4 control-label">S3 bucket name</label>
               <div class="col-sm-8">
-                <input type="text" name="s3Bucket" class="form-control" placeholder="Enter S3 bucket name" defaultValue={depData.s3Bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
+                <input type="text" name="s3Bucket" class="form-control" placeholder="s3" defaultValue={depData.s3Bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} disabled/>
               </div>
             </div>
             <div class="row form-group">
@@ -129,21 +129,14 @@ export class DeployPopup extends React.Component {
             <div class="row form-group">
               <label for="txt_dsrclocation" class="col-sm-4 control-label">Target Bucket Name</label>
               <div class="col-sm-8">
-                <input type="text" name="bucket" class="form-control" placeholder="Bucket name" defaultValue={depData.bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
+                <input type="text" name="bucket" class="form-control" placeholder="Bucket name" defaultValue={depData.bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} disabled/>
               </div>
             </div>
-            {/* <div class="row form-group">
-              <label for="txt_dolurl" class="col-sm-4 control-label">Scored output location</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dolurl" placeholder="Output location URL" />
-              </div>
+            <div className="row form-group">
+            <div className="col-sm-12 text-center">
+              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
             </div>
-            <div class="row form-group">
-              <label for="txt_ofname" class="col-sm-4 control-label">Scored output folder name</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_ofname" placeholder="Output folder name" />
-              </div>
-            </div> */}
+          </div>
           </form>
         </div>
           );

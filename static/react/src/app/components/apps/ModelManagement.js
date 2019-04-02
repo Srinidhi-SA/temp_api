@@ -100,10 +100,50 @@ export class ModelManagement extends React.Component {
     var slugData = this.state[this.props.deployItem];
     if(slugData != undefined && this.state[this.props.deployItem] != undefined){
       var deployData = this.state[this.props.deployItem];
+      if(deployData.name == undefined|| deployData.name == null || deployData.name == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter deployment name");
+        $("input[name='name']").focus();
+        return;
+      }else if(deployData.datasetname == undefined|| deployData.datasetname == null || deployData.datasetname == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter dataset name");
+        $("input[name='datasetname']").focus();
+        return;
+      }else if(deployData.file_name == undefined|| deployData.file_name == null || deployData.file_name == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter filename");
+        $("input[name='file_name']").focus();
+        return;
+      }else if(deployData.access_key_id == undefined|| deployData.access_key_id == null || deployData.access_key_id == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter access key password");
+        $("input[name='access_key_id']").focus();
+        return;
+      }else if(deployData.secret_key == undefined|| deployData.secret_key == null || deployData.secret_key == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter secret key password");
+        $("input[name='secret_key']").focus();
+        return;
+      }else if(deployData.timing_details == undefined|| deployData.timing_details == "none"){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please select frequency");
+        $("select[name='timing_details']").focus();
+        return;
+      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem]));
       this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
       this.closeDeployModal();
       this.props.dispatch(createDeploy(this.props.deployItem));
+    }else{
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("input[name='name']").css("border-color","red");
+		  $("input[name='datasetname']").css("border-color","red");
+      $("input[name='file_name']").css("border-color","red");
+      $("input[name='access_key_id']").css("border-color","red");
+      $("input[name='secret_key']").css("border-color","red");
+      $("select[name='timing_details']").css("border-color","red");
+      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
     }
   }
 
@@ -111,10 +151,7 @@ export class ModelManagement extends React.Component {
     console.log("Link Onclick is called")
 
     this.props.dispatch(emptyAlgoAnalysis());
-
-		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-
-  }
+    }
 
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
