@@ -146,7 +146,7 @@ export function getAppsAlgoList(pageNo) {
   }
 }
 
-function fetchAlgoList(pageNo, token) {
+function fetchAlgoList(pageNo, token, filtername) {
   let search_element = store.getState().apps.algo_search_element;
   if (search_element != "" && search_element != null) {
     console.log("calling for algo search element!!")
@@ -154,7 +154,17 @@ function fetchAlgoList(pageNo, token) {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  }else {
+  }else if (filtername) {
+    debugger;
+    return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
+
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then( response => Promise.all([response, response.json()]));
+    
+ }
+  else
+  {
     // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
     method: 'get',
@@ -2377,16 +2387,19 @@ export function refreshRoboInsightsList(props){
   }
 }
 
-export function getDeployPreview(filtername) {
+export function getDeployPreview(pageNo,filtername) {
   debugger;
   return (dispatch) => {
-      return fetchDeployPreview(filtername,dispatch).then(([response, json]) =>{
+
+    return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken,filtername).then(([response, json]) => {
+
+      // return fetchAlgoList(pageNo,filtername,dispatch).then(([response, json]) =>{
           if(response.status === 200){
               console.log(json)
-              dispatch(fetchDeployPreviewSuccess(json,dispatch))
+              dispatch(fetchAlgoListSuccess(json,dispatch))
           }
           else{
-              dispatch(fetchDeployPreviewError(json))
+              dispatch(fetchAlgoListError(json))
           }
       });
   }
