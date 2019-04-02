@@ -130,7 +130,7 @@ export class RoboInsightCard extends React.Component {
                     <span onClick={this.handleInsightDelete.bind(this, data.slug)}>
                       <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                         <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                                ? "Stop and Delete "
+                                ? "Stop"
                                 : "Delete"}</a>
                     </span>
 						 <div className="clearfix"></div>

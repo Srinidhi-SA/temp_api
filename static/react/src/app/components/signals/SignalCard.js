@@ -162,7 +162,7 @@ export class SignalCard extends React.Component {
                         <span onClick={this.handleDelete.bind(this, story.slug)}>
                           <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
-                              ? "Stop and Delete "
+                              ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
 						<div className="clearfix"></div>
