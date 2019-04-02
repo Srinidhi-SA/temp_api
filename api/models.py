@@ -2004,7 +2004,7 @@ class CustomApps(models.Model):
     rank = models.IntegerField(unique=True, null=True)
 
     class Meta:
-        ordering = ['app_id']
+        ordering = ['rank']
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.app_id]])
