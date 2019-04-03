@@ -147,22 +147,23 @@ export function getAppsAlgoList(pageNo) {
 }
 
 function fetchAlgoList(pageNo, token, filtername) {
+  debugger
   let search_element = store.getState().apps.algo_search_element;
-  if (search_element != "" && search_element != null) {
-    console.log("calling for algo search element!!")
-    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+  if ((search_element != "" && search_element != null)||(filtername)){
+    console.log(filtername,"calling for algo search element!!")
+    return fetch(API + '/api/trainalgomapping/search/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo +' &trainer=' + filtername +'&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
-    }).then(response => Promise.all([response, response.json()]));
-  }else if (filtername) {
-    debugger;
-    return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
+    }).then(response => Promise.all([response, response.json()]));}
+//   }else if (filtername) {
+//     debugger;
+//     return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
 
-      method: 'get',
-      headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  }).then( response => Promise.all([response, response.json()]));
+//       method: 'get',
+//       headers: getHeader(getUserDetailsOrRestart.get().userToken)
+//   }).then( response => Promise.all([response, response.json()]));
     
- }
+//  }
   else
   {
     // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
