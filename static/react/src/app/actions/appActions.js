@@ -441,10 +441,6 @@ function fetchDeploymentListError(json) {
    return {type: "DEPLOYMENT_LIST", data, latestDeployments, current_page}
  }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> b90eae873c1c841613189ba6b8f397643cb05455
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
