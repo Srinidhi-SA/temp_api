@@ -20,7 +20,7 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
     fetch_news_article_from_nasdaq, \
     generate_url_for_historic_data, \
     generate_urls_for_historic_data, fetch_news_sentiments_from_newsapi
-from api.helper import convert_json_object_into_list_of_object
+from api.helper import convert_json_object_into_list_of_object, get_schedule
 from api.lib import hadoop, fab_helper
 
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -4906,38 +4906,31 @@ class ModelDeployment(models.Model):
             pass
         else:
             return False
-        import pytz
-        from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
         config = json.loads(self.config)
         config['trainer_details'] = self.add_trainer_details()
         config['modeldeployment_details'] = self.add_modeldeployment_details()
         config['user_details'] = self.add_user_details()
         timing_details = config['timing_details']
-        schedule = None
-        if timing_details['type'] == 'crontab':
-            schedule, _ = CrontabSchedule.objects.get_or_create(
-                minute = timing_details['crontab'].get('minute', '30'),
-                hour = timing_details['crontab'].get('hour', '*'),
-                day_of_week = timing_details['crontab'].get('day_of_week', '*'),
-                day_of_month = timing_details['crontab'].get('day_of_month', '*'),
-                month_of_year = timing_details['crontab'].get('month_of_year', '*'),
-                timezone = pytz.timezone(timing_details['crontab'].get('timezone', 'Asia/Calcutta'))
-                )
-        else:
-            schedule, _ = IntervalSchedule.objects.get_or_create(
-                every=timing_details['interval'].get('every', 600),
-                period=timing_details['interval'].get('period', 'seconds')
-            )
-
-        if schedule is not None:
+        periodic_task = None
+        schedule, schedule_type = get_schedule(timing_details)
+        if schedule_type == 'crontab':
             periodic_task = PeriodicTask.objects.create(
-                interval=schedule,
+                crontab=schedule,
                 name=self.slug,
-                # task='print_this_every_minute',
                 task='call_dataset_then_score',
                 args='["hello"]',
                 kwargs=json.dumps(config)
             )
+        else:
+            periodic_task = PeriodicTask.objects.create(
+                interval=schedule,
+                name=self.slug,
+                task='call_dataset_then_score',
+                args='["hello"]',
+                kwargs=json.dumps(config)
+            )
+
+        if periodic_task is not None:
             self.periodic_task = periodic_task
             self.status = 'STARTED'
             self.save()
