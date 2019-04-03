@@ -16007,3 +16007,9 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 .mod-process-table-primary:hover { background:#dddddd; transition-duration: 0.5s;}
 .mod-process:hover {border-color:#dddddd }
 .mod-process-table-primary:hover .btn-primary { background-color: #3a3a3a; border-color:#3a3a3a; transition-duration: 0.5s;}
+.ellipse-text {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 180px;
+	overflow: hidden;
+}

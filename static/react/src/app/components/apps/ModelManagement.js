@@ -54,30 +54,8 @@ export class ModelManagement extends React.Component {
   }
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
-
-    $('#search').on('keyup', function() {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#mmtable').find('tr').each(function() {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-   		     $(this).not('.myHead').hide();
-         }
-         if (($(this).find('td').text().search(patt) >= 0)) {
-           $(this).show();
-         }
-      });
-    });
-
-    // $("#mmtable").addSortWidget();
   }
-  // proceedToModelSummary(item)
-  // {
-  //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
-  //   console.log(item,"item called for individual page...........................")
-  //   this.props.dispatch(openModelSummaryAction(item));
-	// 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-  //     console.log(item,"item called for individual page...........................")
-  // }
+
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
@@ -118,20 +96,20 @@ export class ModelManagement extends React.Component {
 
   getAlgoAnalysis(item,e) {
     console.log("Link Onclick is called")
-
     this.props.dispatch(emptyAlgoAnalysis());
-
-		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-
   }
 
+  // hello
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
         //console.log('searching in data list');
         if (e.target.value != "" && e.target.value != null)
             this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
             this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+            this.selectedData = $("#project_all").val();
+            var pageNo =1;
+            this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // this.props.dispatch(getAppsAlgoList(1));
         
     }
   }
@@ -163,25 +141,7 @@ getAllDeployPreview()
 
 }
 
-
-mmTableSorter() {
-  $(function() {
-    $('#mmtable').tablesorter({
-      theme: 'ice',
-      headers: {
-        9: {sorter: false},
-        10: {sorter: false}
-      }
-    });
-  });
-}
-
   render(){
-
-
-   
-    // this.mmTableSorter();
-
     if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
 			return ( 
         <div className="side-body">
@@ -209,7 +169,7 @@ mmTableSorter() {
     let algorithmNames = null;  
 		if(dataSets){
 			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
-       <option value=""></option>
+       <option value="">All</option>
          {options}
 			</select>
 		}else{
@@ -224,7 +184,7 @@ mmTableSorter() {
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
+      <td  class="text-left"><div class="ellipse-text" title={item.project_name}> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</div></td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
@@ -396,13 +356,18 @@ mmTableSorter() {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
-        this.props.dispatch(getAppsAlgoList(eventKey));
+         this.selectedData = $("#project_all").val();
+        this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
 }
 
-  clearSearchElement(e){
+  clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
     this.props.dispatch(getAppsAlgoList(1));
+    // this.selectedData = $("#project_all").val();
+    // var pageNo =1;
+
+    // this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
     document.getElementById('algo_search').value= "";
   }
 }
