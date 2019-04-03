@@ -120,7 +120,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
                                 ? "Stop and Delete "
-                                : "Delete"}</a>
+                                : "Stop"}</a>
                             </span>:""}
 							<div className="clearfix"></div>
 							</li>                            
