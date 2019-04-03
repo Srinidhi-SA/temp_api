@@ -5,6 +5,8 @@ import {AppsModelList} from "./AppsModelList";
 import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
+import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+
 import {connect} from "react-redux";
 import {
   APPID1,
@@ -21,6 +23,8 @@ import {
   storeScoreSearchElement,
   getAppsModelList,
   getAppsScoreList,
+  getAppsAlgoList,
+  refreshAppsAlgoList,
   updateSelectedApp
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
@@ -29,6 +33,7 @@ import {AppsLoader} from "../common/AppsLoader";
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
+    algolist:store.algoList,
     currentAppId: store.apps.currentAppId,
     scoreList: store.apps.scoreList,
     activateModelScoreTabs: store.apps.activateModelScoreTabs,
@@ -44,12 +49,6 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount() {
-    /*if(this.props.match.params.AppId == APPID1){
-          this.props.dispatch(updateSelectedApp(APPID1,APPNAME1));
-      }else if(this.props.match.params.AppId == APPID2){
-          this.props.dispatch(updateSelectedApp(APPID2,APPNAME2));
-      }*/
-
     //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {
       this.props.dispatch(activateModelScoreTabs("model"));
@@ -65,15 +64,46 @@ export class Apps extends React.Component {
     //clear score Filters
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
+    this.props.dispatch(getAppsAlgoList(1));
     if (tabId == "score") {
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores')
-    } else {
+    } 
+    //  else if(tabId == "algo"){
+    //     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
+    //   }
+    
+    else{
       this.props.history.push('/apps/' + this.props.match.params.AppId + '/models')
     }
+    // else{
+    //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
+    // }
   }
+
+
+  proceedToModelManagement(tabId)
+  {
+    
+
+    if (tabId == "score")
+    {
+      this.props.dispatch(getAppsAlgoList(1));
+      this.props.dispatch(refreshAppsAlgoList(this.props));
+     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
+    }else{
+      this.props.dispatch(getAppsAlgoList(1));
+      this.props.dispatch(refreshAppsAlgoList(this.props));
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
+    }
+  }
+
+
+
   render() {
     console.log("apps is called##########3");
     console.log(this.props);
+    var appId = this.props.currentAppId;
+    console.log(appId,"++++++++++++++++++++++++++++++++++++++++++++++++")
     if (store.getState().apps.modelSummaryFlag) {
       let _link = "/apps/" + this.props.match.params.AppId + '/models/' + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
@@ -87,9 +117,22 @@ export class Apps extends React.Component {
 
     let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
 
+    let modelManagement = ""
+
+    if(appId==2 || appId == 13){
+     modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button>
+    }else
+    {
+     modelManagement = "";
+    }
+
     return (
       <div className="side-body">
         <div className="main-content">
+        <div class="buttonRow pull-right">
+        {modelManagement}
+            {/* <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button> */}
+        </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
               ? <Tab eventKey="model"  title="Models">{models}</Tab>

@@ -21,6 +21,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
     @connect((store) => {
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
+            algoList: store.apps.algoList,
+
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
@@ -117,7 +119,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             <span onClick={this.handleModelDelete.bind(this,data.slug)} >
                             <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                                ? "Stop and Delete "
+                                ? "Stop"
                                 : "Delete"}</a>
                             </span>:""}
 							<div className="clearfix"></div>

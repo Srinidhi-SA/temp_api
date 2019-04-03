@@ -1,6 +1,18 @@
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
+        algoList:{},
+        deploymentData:{},
+        viewDeploymentFlag:false,
+        filter:"",
+        selectedProject: "",
+        allProjects: {},
+        deploymentList:{},
+        summarySelected:{},
+        deployShowModal:false,
+        algo_search_element:"",
+        deployItem:{},
+        deployData: {},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -69,6 +81,7 @@ export default function reducer(state = {
         scoreToProceed:false,
         latestScores : {},
         latestModels :{},
+        latestAlgos:{},
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
@@ -89,6 +102,8 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
+        
+                
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -129,6 +144,201 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model list!!");
     }
     break;
+
+
+    case "DEPLOY_PREVIEW":
+    {
+        return {
+            ...state,
+            filter: action.data,
+        }
+    }
+    break;
+
+    case "DEPLOY_PREVIEW_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    // case "MODEL_LIST2":
+    case "ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList: action.data,
+            latestAlgos:action.latestAlgos,
+            current_page:action.current_page,
+        }
+    }
+    break;
+
+    case "ALGO_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "DEPLOYMENT_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+    case "DEPLOYMENT_LIST":
+    {
+        return {
+            ...state,
+            deploymentList: action.data,
+            // latestDeployments:action.latestDeployments,
+            current_page:action.current_page,
+        }
+    }
+    break;
+
+    case "SAVE_DEPLOY_DATA":
+    {
+        var dd = action.dataToSave
+        return{
+            ...state,
+            deployData :{
+                "name":dd.name,
+                "deploytrainer": action.colSlug,
+                "config":{
+                "dataset_details":{
+                    "datasource_details":{
+                        "datasetname":dd.datasetname,
+                        "bucket_name":"s3",
+                        "file_name":dd.file_name,
+                        "access_key_id":dd.access_key_id,
+                        "secret_key":dd.secret_key
+                    },
+                    "datasource_type":"S3"
+                },
+                "timing_details": dd.timing_details,
+                "destination_s3": { "bucket": "none" }
+                },
+                "data":{}
+            }
+        }
+    //     var curDepData = state.deployData
+    //     var curColSlug = curDepData[action.colSlug];
+    //     if(curColSlug == undefined){
+    //         curColSlug = { }
+    //       }
+    //       curDepData[action.colSlug] = action.dataToSave;
+    //       console.log(curColSlug);
+    //   return{
+    //     ...state,
+    //     deployData : curDepData
+    //   }
+    }
+    break;
+
+    case "CREATE_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+        }
+    }
+    break;
+    case "CREATE_DEPLOY_ERROR":
+    {
+        throw new Error("Unable to create deployment!");
+    }
+    break;
+
+    case "VIEW_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+            deploymentData: action.data,
+            viewDeploymentFlag:true,
+        }
+    }
+    break;
+
+    case "VIEW_DEPLOY_ERROR":
+    {   
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch Deployment Details");
+    }
+    break;
+
+    case "SUMMARY_SELECTED_LIST":
+    {
+      return {
+        ...state,
+        summarySelected: action.summarySelected,
+        // latestDatasets:action.latestDatasets,
+        // current_page: action.current_page
+      }
+    }
+    break;
+    case "SEARCH_ALGORITHM":
+    {
+        return{
+            ...state,
+            algo_search_element:action.search_element
+        }
+    }
+
+    case "DEPLOY_SHOW_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: true,
+        deployItem:action.selectedItem
+      }
+      console.log(deployShowModal)
+    }
+    break;
+
+    case "DEPLOY_HIDE_MODAL":
+    {
+      return {
+        ...state,
+        deployShowModal: false
+      }
+    }
+    break;
+
+    case "SHOW_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: true,
+        // deployItem:action.selectedItem
+      }
+    }
+    break;
+    case "HIDE_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: false
+      }
+    }
+    break;
+
+    case "PROJECT_ALL_LIST":
+    {
+      return {
+        ...state,
+        allProjects: action.data,
+        selectedProject: action.slug
+      }
+    }
+    break;
+    case "PROJECT_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch project list!!");
+      }
+      break;
+
     case "UPDATE_MODEL_RANGE":
     {
         return {
