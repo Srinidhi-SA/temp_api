@@ -274,6 +274,44 @@ getAllDeployPreview()
     </tr>);
     })
     
+
+    let tablecontent="";
+
+    if (this.props.algoList.data.length != 0){
+
+      tablecontent =(<table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+    <thead>
+      <tr className="myHead">
+        <th>#</th>
+        <th class="text-left"><b>Model Id</b></th>
+        <th class="text-left"><b>Project Name</b></th>
+        <th class="text-left"><b>Algorithm</b></th>
+        <th><b>Status</b></th>
+        <th><b>Accuracy</b></th>
+        <th><b>Created On</b></th>
+        <th><b>Deployment</b></th>
+        <th><b>Runtime</b></th>
+        <th><b>Summary</b></th>
+        <th><b>Action</b></th>
+      </tr>
+    </thead>
+
+    <tbody className="no-border-x">
+      {mmTable}
+    </tbody>
+  </table>)
+    }
+    else {(
+      tablecontent= (
+      <div className="side-body">
+          <div className="page-head">
+          </div>
+          <div className="main-content">
+            <h2><center>There are no models available for this selection</center></h2>
+          </div>
+        </div>))}
+
+
     deployData = "deployData";
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
@@ -348,27 +386,8 @@ getAllDeployPreview()
                 </div>
               </div>
               <div class="table-responsive">
-                      <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                        <thead>
-                          <tr className="myHead">
-                            <th>#</th>
-                            <th class="text-left"><b>Model Id</b></th>
-                            <th class="text-left"><b>Project Name</b></th>
-                            <th class="text-left"><b>Algorithm</b></th>
-                            <th><b>Status</b></th>
-                            <th><b>Accuracy</b></th>
-                            <th><b>Created On</b></th>
-                            <th><b>Deployment</b></th>
-                            <th><b>Runtime</b></th>
-                            <th><b>Summary</b></th>
-                            <th><b>Action</b></th>
-                          </tr>
-                        </thead>
 
-                        <tbody className="no-border-x">
-                          {mmTable}
-                        </tbody>
-                      </table>
+                      {tablecontent}
                       <div class="col-md-12 text-center">
                     {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
                     <div className="footer"  id="idPagination">
