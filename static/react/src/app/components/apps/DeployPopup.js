@@ -120,6 +120,7 @@ export class DeployPopup extends React.Component {
               <label for="txt_dscoring" class="col-sm-4 control-label">Frequency of scoring</label>
               <div class="col-sm-8">
                 <select class="form-control" name="timing_details" defaultValue={depData.timing_details} onChange={this.pickValue}>
+                <option value="hourly">Hourly</option>                  
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
                   <option value="none" selected>-Select-</option>
