@@ -115,15 +115,22 @@ export class ModelManagement extends React.Component {
   }
 
   onChangeOfSearchBox(e){
+    debugger;
     if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeAlgoSearchElement(""));
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
+
+            this.selectedData = $("#project_all").val();
+        var pageNo =1;
+
+        this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // document.getElementById('algo_search').value= "";
         
     }else if (e.target.value.length > SEARCHCHARLIMIT) {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
     }
     else{
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
@@ -363,11 +370,11 @@ getAllDeployPreview()
   clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
-    this.props.dispatch(getAppsAlgoList(1));
-    // this.selectedData = $("#project_all").val();
+    // this.props.dispatch(getAppsAlgoList(1));
+    this.selectedData = $("#project_all").val();
     // var pageNo =1;
 
-    // this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
+    this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
     document.getElementById('algo_search').value= "";
   }
 }
