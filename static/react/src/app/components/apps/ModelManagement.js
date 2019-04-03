@@ -11,7 +11,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,createDeploy} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList,getDeployPreview,createDeploy} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -19,7 +19,8 @@ var dateFormat = require('dateformat');
     algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
-		algoAnalysis:store.signals.algoAnalysis,
+    algoAnalysis:store.signals.algoAnalysis,
+    allProjects : store.apps.allProjects ,
     modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
@@ -41,6 +42,7 @@ export class ModelManagement extends React.Component {
   }
   
  componentWillMount() {
+  this.props.dispatch(getAllProjectList(pageNo));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -55,14 +57,7 @@ export class ModelManagement extends React.Component {
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
-  // proceedToModelSummary(item)
-  // {
-  //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
-  //   console.log(item,"item called for individual page...........................")
-  //   this.props.dispatch(openModelSummaryAction(item));
-	// 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-  //     console.log(item,"item called for individual page...........................")
-  // }
+
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
@@ -71,6 +66,10 @@ export class ModelManagement extends React.Component {
 
   handleAlgoDelete(slug) {
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
+  }
+
+  handleAlgoClone(slug) {
+    this.props.dispatch(handleAlgoClone(slug, this.refs.dialog));
   }
 
   pickValue(actionType, event){
@@ -149,40 +148,60 @@ export class ModelManagement extends React.Component {
 
   getAlgoAnalysis(item,e) {
     console.log("Link Onclick is called")
-
     this.props.dispatch(emptyAlgoAnalysis());
-    }
+  }
 
+  // hello
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
         //console.log('searching in data list');
         if (e.target.value != "" && e.target.value != null)
             this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
             this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+            this.selectedData = $("#project_all").val();
+            var pageNo =1;
+            this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // this.props.dispatch(getAppsAlgoList(1));
         
     }
   }
 
   onChangeOfSearchBox(e){
+    debugger;
     if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeAlgoSearchElement(""));
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
+
+            this.selectedData = $("#project_all").val();
+        var pageNo =1;
+
+        this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // document.getElementById('algo_search').value= "";
         
     }else if (e.target.value.length > SEARCHCHARLIMIT) {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
     }
     else{
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
     }
 }
+getDeployPreview(e){
+  debugger;
+  var pageNo =1;
+  this.selectedData = $("#project_all").val();
+  this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+}
+getAllDeployPreview()
+{
+  this.props.dispatch(getAppsAlgoList(1));
+
+}
 
   render(){
-
-    if(isEmpty(this.props.algoList)){
+    if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
 			return ( 
         <div className="side-body">
           <div className="page-head">
@@ -193,12 +212,30 @@ export class ModelManagement extends React.Component {
         </div>
       );
 		}else{
-    console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+    console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
     var mmTable = "";
     var deployPopup = "";
     var deployData = "";
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
+    var none =none;
+
+    const dataSets = this.props.allProjects;
+    var options= dataSets.data.map(dataSet =>
+
+			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
+			)
+		let renderSelectBox = null;
+    let algorithmNames = null;  
+		if(dataSets){
+			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
+       <option value="">All</option>
+         {options}
+			</select>
+		}else{
+			renderSelectBox = "No Datasets"
+		}
+
       mmTable = this.props.algoList.data.map((item,key )=> {
     var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
        return (
@@ -207,25 +244,27 @@ export class ModelManagement extends React.Component {
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
+      <td  class="text-left"><div class="ellipse-text" title={item.project_name}> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</div></td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
       <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-      {/* <td><Button   onClick={this.proceedToModelSummary.bind(this,item)}  bsStyle="primary"></Button></td> */}
-      <td> <Button ><Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
-              {Details}
-              </Link></Button></td>
+      <td> <Button >
+              <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
+                  {Details}
+              </Link>
+           </Button>
+      </td>
       <td>
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-          <li><a bsStyle="cst_button">Clone</a></li>
-            <li><a onClick={this.openDeployModal.bind(this,item.slug)} bsStyle="cst_button">Deploy</a></li>
+            <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item.slug)} >Deploy</a></li>
             <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
             <Dialog ref="dialog"/>
 
@@ -278,7 +317,6 @@ export class ModelManagement extends React.Component {
           {/* <!-- Page Content Area --> */}
           {deployPopup}
           <div class="main-content">
-        
           <div class="row">
               <div class="col-md-12">           
                 <div class="panel box-shadow">
@@ -287,22 +325,25 @@ export class ModelManagement extends React.Component {
                 <div className="col-md-3">
                   <div class="form-inline" >
                     <div class="form-group">
-                      <label for="sdataType">Filter By: </label>
-                        <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                          <datalist id="listProjectName">
-                            <option value="Credit Churn Prediction"></option>
-                            <option value="Ecommerce Predict"></option>
-                            <option value="Call Volume"></option>
-                            <option value="Student Performance"></option>								
-                          </datalist> &nbsp;&nbsp;&nbsp;
+                        <div class="input-group">
+                        <span class="input-group-btn"><label for="sdataType">Filter By: </label></span>
+                      {renderSelectBox}
+                      </div>
+                    
                     </div>
                   </div>
                 </div>
                   <div class="col-md-3 col-md-offset-6">
+                  <div className="btn-toolbar pull-right">
+                  <div className="input-group">
                     <div className="search-wrapper">
+                    {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
+
                       <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
                       <span className="zmdi zmdi-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
+                    </div>
+                    </div>
                     </div>
                 </div>
               </div>
@@ -372,12 +413,18 @@ export class ModelManagement extends React.Component {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
-        this.props.dispatch(getAppsAlgoList(eventKey));
+         this.selectedData = $("#project_all").val();
+        this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
 }
 
-  clearSearchElement(e){
+  clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
-    this.props.dispatch(getAppsAlgoList(1));
+    // this.props.dispatch(getAppsAlgoList(1));
+    this.selectedData = $("#project_all").val();
+    // var pageNo =1;
+
+    this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
+    document.getElementById('algo_search').value= "";
   }
 }

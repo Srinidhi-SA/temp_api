@@ -23,6 +23,7 @@ import {
   INPROGRESS,
   DELETESTOCKMODEL,
   DELETEALGO,
+  CLONEALGO,
   DELETEDEPLOYMENT,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
@@ -179,15 +180,25 @@ export function createDeploy(slug) {
     return {type: "CREATE_DEPLOY_ERROR"}
   }
 
-function fetchAlgoList(pageNo, token) {
+  function fetchAlgoList(pageNo, token, filtername) {
   let search_element = store.getState().apps.algo_search_element;
-  if (search_element != "" && search_element != null) {
-    console.log("calling for algo search element!!")
-    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+  if ((search_element != "" && search_element != null)||(filtername)){
+    console.log(filtername,"calling for algo search element!!")
+    return fetch(API + '/api/trainalgomapping/search/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo +' &trainer=' + filtername +'&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
-    }).then(response => Promise.all([response, response.json()]));
-  }else {
+    }).then(response => Promise.all([response, response.json()]));}
+//   }else if (filtername) {
+//     debugger;
+//     return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
+
+//       method: 'get',
+//       headers: getHeader(getUserDetailsOrRestart.get().userToken)
+//   }).then( response => Promise.all([response, response.json()]));
+    
+//  }
+  else
+  {
     // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
    return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
     method: 'get',
@@ -230,9 +241,11 @@ function deleteAlgo(slug, dialog, dispatch) {
 }
 
 
-function deleteAlgoAPI(slug) {
-  // return fetch(API + '/api/score/' + slug + '/', {
 
+
+function deleteAlgoAPI(slug) { debugger;
+// return fetch(API + '/api/trainalgomapping/' + slug +'/clone/', {
+    // api/trainalgomapping/<some-slug>/clone/
   return fetch(API + '/api/trainalgomapping/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -245,6 +258,50 @@ export function handleAlgoDelete(slug, dialog) {
     showDialogBox(slug, dialog, dispatch, DELETEALGO, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
   }
 }
+
+
+export function getAllProjectList(pageNo) {
+  return (dispatch) => {
+      return fetchAllProjectList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+          if(response.status === 200){
+              console.log(json)
+              dispatch(fetchAllProjectSuccess(json))
+          }
+          else{
+              dispatch(fetchAllProjectError(json))
+          }
+      })
+  }
+}
+
+function fetchAllProjectList(token) {
+  return fetch(API+'/api/trainer/all/',{
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllProjectSuccess(doc){
+  var data = ""
+      var slug = "";
+  if(doc.data[0] != undefined){
+      slug  = doc.data[0].slug;
+      data = doc;
+  }
+  return {
+      type: "PROJECT_ALL_LIST",
+      data,
+      slug
+  }
+}
+
+function fetchAllProjectError(json) {
+  return {
+      type: "PROJECT_ALL_LIST_ERROR",
+      json
+  }
+}
+
 
 function deleteDeployment(slug,algoSlug, dialog, dispatch) {
   dispatch(showLoading());
@@ -307,6 +364,34 @@ export function handleDeploymentViewAction(slug){
 }
 
 
+export function handleAlgoClone(slug, dialog) {
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, CLONEALGO, renderHTML(statusMessages("warning","Are you sure, you want to clone this model?","small_mascot")))
+  }
+}
+function cloneAlgo(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return cloneAlgoAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsAlgoList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+
+function cloneAlgoAPI(slug) { debugger;
+  return fetch(API + '/api/trainalgomapping/' + slug +'/clone/', {
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    }).then(response => Promise.all([response, response.json()]));
+  }
+
+
 export function getDeploymentList(errandId) {
   return (dispatch) => {
     return fetchDeploymentList(errandId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -343,21 +428,6 @@ function fetchDeploymentList(errandId,token) {
   // }
 }
 
-// function fetchAlgos_analysis(token, errandId) {
-//   //console.log(token)
-//   return fetch(
-//   API + '/api/trainalgomapping/' + errandId + "/" ,{
-//     method: 'get',
-//     headers: {
-//       'Authorization': token,
-//       'Content-Type': 'application/x-www-form-urlencoded'
-//     }
-//   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-//       bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
-//   });
-
-// }
-
 
 
 function fetchDeploymentListError(json) {
@@ -371,6 +441,10 @@ function fetchDeploymentListError(json) {
    return {type: "DEPLOYMENT_LIST", data, latestDeployments, current_page}
  }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b90eae873c1c841613189ba6b8f397643cb05455
 export function updateTrainAndTest(trainValue) {
   //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
@@ -1019,6 +1093,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText,algoSlug) {
           deleteStockModel(slug, dialog, dispatch)
         else if(title == DELETEALGO )
           deleteAlgo(slug, dialog, dispatch)
+        else if(title == CLONEALGO )
+          cloneAlgo(slug, dialog, dispatch)
         else if(title == DELETEDEPLOYMENT )
           deleteDeployment(slug, algoSlug,dialog, dispatch)
         else 
@@ -2376,4 +2452,45 @@ export function refreshRoboInsightsList(props){
       }
     , APPSDEFAULTINTERVAL);
   }
+}
+
+export function getDeployPreview(pageNo,filtername) {
+  debugger;
+  return (dispatch) => {
+
+    return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken,filtername).then(([response, json]) => {
+
+      // return fetchAlgoList(pageNo,filtername,dispatch).then(([response, json]) =>{
+          if(response.status === 200){
+              console.log(json)
+              dispatch(fetchAlgoListSuccess(json,dispatch))
+          }
+          else{
+              dispatch(fetchAlgoListError(json))
+          }
+      });
+  }
+}
+
+function fetchDeployPreview(filtername,dispatch) {
+  // return fetch(API+'/api/datasets/'+slug+'/',{
+
+    return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
+ 
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then( response => Promise.all([response, response.json()])).catch(function(error){
+
+      let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+      bootbox.alert(msg)
+  });
+}
+//get preview data
+
+function fetchDeployPreviewError(json) {
+  return {type: "DEPLOY_PREVIEW_ERROR", json}
+}
+export function fetchDeployPreviewSuccess(doc) {
+  var data = doc;
+  return {type: "DEPLOY_PREVIEW", data}
 }

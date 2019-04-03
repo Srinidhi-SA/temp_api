@@ -4,6 +4,9 @@ export default function reducer(state = {
         algoList:{},
         deploymentData:{},
         viewDeploymentFlag:false,
+        filter:"",
+        selectedProject: "",
+        allProjects: {},
         deploymentList:{},
         summarySelected:{},
         deployShowModal:false,
@@ -136,6 +139,23 @@ export default function reducer(state = {
     break;
 
     case "MODEL_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+
+    case "DEPLOY_PREVIEW":
+    {
+        return {
+            ...state,
+            filter: action.data,
+        }
+    }
+    break;
+
+    case "DEPLOY_PREVIEW_ERROR":
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
@@ -295,7 +315,6 @@ export default function reducer(state = {
       }
     }
     break;
-
     case "HIDE_VIEW_MODAL":
     {
       return {
@@ -304,6 +323,21 @@ export default function reducer(state = {
       }
     }
     break;
+
+    case "PROJECT_ALL_LIST":
+    {
+      return {
+        ...state,
+        allProjects: action.data,
+        selectedProject: action.slug
+      }
+    }
+    break;
+    case "PROJECT_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch project list!!");
+      }
+      break;
 
     case "UPDATE_MODEL_RANGE":
     {
