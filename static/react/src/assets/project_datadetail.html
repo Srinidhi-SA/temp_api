@@ -189,27 +189,31 @@
 					<h3 class="text-center"> 0.87<br>
 						<small>Accuracy</small>
 					</h3>
+					<p>Proportion of the total number of predictions that were correct</p>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
 					<h3 class="text-center"> 0.8<br>
 						<small>Precision</small>
 					</h3>
+					<p>Proportion of positive cases that were correctly identified</p>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
 					<h3 class="text-center"> 2.6<br>
 						<small>Recall</small>
 					</h3>
+					<p>Proportion of actual positive cases which are correctly identified</p>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
 					<h3 class="text-center"> 0.9<br>
 						<small>F1 Score</small>
 					</h3>
+					<p>Accuracy of the model balanced for Precision and Recall</p>
 				</div>
 				<div class="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
 					<h3 class="text-center"> 0.8<br>
-						<small>Log-loss
-</small>
+						<small>Log-loss</small>
 					</h3>
+					<p>Accuracy of the model by penalising false classifications</p>
 				</div>				
 			  </div>
 			  
@@ -220,21 +224,29 @@
 					<div class="col-md-6">
 						<h2>Confusion Matrix</h2>
 						<img src="images/confusion_matrix.png" class="img-responsive" />
+						<p>The confusion matrix shows the number of correct and incorrect predictions made by the classification model compared to the actual outcomes (target value) in the data.	
+</p>
 					</div>
 					<div class="col-md-6">
 						<h2>Lift Chart</h2>
 						<img src="images/lift-chart.png" class="img-responsive" />
+						<p>Gain or lift is a measure of the effectiveness of a classification model calculated as the ratio between the results obtained with and without the model. It shows how much more likely we are to receive positive responses than if we contact a random sample of customers.	
+</p>
 					</div>
 				</div>
 				<hr/>
 				<div class="row">
 					<div class="col-md-6">
-						<h2>Kolmogorov Smirnov Chart</h2>
+						<h2>ROC curve</h2>
 						<img src="images/kolChart.png" class="img-responsive" />
+						<p>It shows the tradeoff between sensitivity and specificity (any increase in sensitivity will be accompanied by a decrease in specificity). The closer the curve follows the left-hand border and then the top border of the ROC space, the more accurate the test.	
+</p>
 					</div>
 					<div class="col-md-6">
-						<h2>Gain Chart</h2>
+						<h2>KS chart</h2>
 						<img src="images/gain_chart.png" class="img-responsive" />
+						<p>The Kolmogorov-Smirnov chart measures performance of classification models. More accurately. It is a measure of the degree of separation between the positive and negative distributions. Higher the value the better the model is at separating the positive from negative cases.	
+</p>
 					</div>
 				</div>
               </div>
