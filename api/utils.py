@@ -1351,7 +1351,11 @@ class TrainerNameListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(TrainerNameListSerializer, self).to_representation(instance)
+        ret['count'] = self.get_count()
         return ret
+
+    def get_count(self, instance):
+        return len(TrainAlgorithmMapping.objects.filter(trainer=self.id))
 
     class Meta:
         model = Trainer
