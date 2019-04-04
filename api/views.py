@@ -389,10 +389,13 @@ class TrainerView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def all(self, request):
+
+        app_id = request.GET.get('app_id', 2)
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['SUCCESS']
+            status__in=['SUCCESS'],
+            app_id=app_id
         )
         serializer = TrainerNameListSerializer(queryset, many=True, context={"request": self.request})
         return Response({
