@@ -11,7 +11,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
 
 from django.conf import settings
 import subprocess
@@ -53,7 +53,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              json.dumps(config)]
         '''
         command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
-                            "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+                            # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
                              driver_file,
                              json.dumps(config)]
 
@@ -63,6 +63,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
+            # pass
             submit_job_separate_task.delay(command_array, slug)
         else:
             submit_job_separate_task1(command_array, slug)
@@ -294,7 +295,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        get_job_status(instance)
+        # get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -359,7 +360,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        get_job_status(instance)
+        # get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = instance.dataset
@@ -1081,6 +1082,45 @@ def get_permissions(user, model, type='retrieve'):
             return {
                 'create_stock': user.has_perm('api.create_stock') and user.has_perm('api.view_stock'),
             }
+    if model == 'trainalgorithmmapping':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
+    if model == 'modeldeployment':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
+    if model == 'datasetscoredeployment':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+            }
     return {}
 
 
@@ -1098,3 +1138,226 @@ def get_random_true_false():
     import random
     return True if random.randint(0, 1) else False
 
+# model management
+
+class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainAlgorithmMappingListSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        ret['model_id'] = ret['name']
+        ################### Count for deployment ##########################
+        deployment_count_obj=ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=False)
+        ret['deployment'] =len(deployment_count_obj)
+        ####################################################################
+        ret['created_on'] = ret['created_at']
+        raw_data = json.loads(instance.data)
+        #Fetching Data from ML
+        if raw_data is not dict():
+            try:
+                list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+                value = [item[1] for item in list_data]
+            except:
+                value = ['--', '--', '--', '--', '--']
+        else:
+            value = ['--', '--', '--', '--', '--']
+        key=['project_name','algorithm','training_status','accuracy','runtime']
+        ret.update(dict(zip(key,value)))
+
+        ret['trainer'] = instance.trainer.slug
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+    class Meta:
+        model = TrainAlgorithmMapping
+        exclude =  (
+
+            'id',
+            'config',
+            #'data'
+        )
+
+
+class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainAlgorithmMappingSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        if 'request' in self.context:
+            permission_details = get_permissions(
+                user=self.context['request'].user,
+                model=self.Meta.model.__name__.lower(),
+            )
+            ret['permission_details'] = permission_details
+        return ret
+
+    class Meta:
+        model = TrainAlgorithmMapping
+        exclude = (
+            'id',
+            # 'trainer'
+        )
+
+
+class DeploymentListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DeploymentListSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+        ################### Count for dataset and score #########################
+        dataset_score_count_obj=DatasetScoreDeployment.objects.filter(deployment_id=instance.id, deleted=False)
+        ret['deployment'] =len(dataset_score_count_obj)
+        #########################################################################
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        ret['periodic_task'] = instance.get_periodic_task_details()
+        return ret
+
+    class Meta:
+        model = ModelDeployment
+        exclude =  (
+            'id',
+            'config',
+            'data',
+            'deploytrainer',
+            # 'periodic_task'
+        )
+
+
+class DeploymentSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DeploymentSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        deploytrainer = ret['deploytrainer']
+        deployment_object = TrainAlgorithmMapping.objects.get(pk=deploytrainer)
+        ret['deploytrainer'] = deployment_object.slug
+        ret['periodic_task'] = instance.get_periodic_task_details()
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+    class Meta:
+        model = ModelDeployment
+        exclude = (
+
+            'id',
+            # 'trainer'
+        )
+
+class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DatasetScoreDeploymentListSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+    class Meta:
+        model = DatasetScoreDeployment
+        exclude =  (
+
+            'id',
+            'config',
+            #'data',
+            #'dataset',
+            #'score',
+            'deployment'
+        )
+
+
+class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DatasetScoreDeploymentSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+
+        dataset = ret['dataset']
+        if dataset == None:
+            pass
+        else:
+            dataset_object = Dataset.objects.get(pk=dataset)
+            ret['dataset'] = dataset_object.slug
+
+        deployment = ret['deployment']
+        deployment_object = ModelDeployment.objects.get(pk=deployment)
+        ret['deployment'] = deployment_object.slug
+
+        score = ret['score']
+        if score == None:
+            pass
+        else:
+            score_object = Score.objects.get(pk=score)
+            ret['score'] = score_object.slug
+
+        ret['created_by'] = UserSerializer(instance.created_by).data
+        #return ret
+
+        #Permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+    class Meta:
+        model = DatasetScoreDeployment
+        exclude = (
+
+            'id',
+            # 'trainer'
+        )
+
+
+class TrainerNameListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainerNameListSerializer, self).to_representation(instance)
+        import random
+        ret['count'] = random.randint(0,4)
+        return ret
+
+    class Meta:
+        model = Trainer
+        fields = (
+            'slug',
+            'name'
+        )

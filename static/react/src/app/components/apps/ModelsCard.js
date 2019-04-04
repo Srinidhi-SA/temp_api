@@ -119,7 +119,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             <span onClick={this.handleModelDelete.bind(this,data.slug)} >
                             <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                                ? "Stop"
+                                ? "Delete "
                                 : "Delete"}</a>
                             </span>:""}
 							<div className="clearfix"></div>

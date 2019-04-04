@@ -3,6 +3,8 @@
 # described in https://git-scm.com/docs/gitignore
 
 db.sqlite3
+dump.*
+celerybeat-*
 venv
 ENV
 server_log
