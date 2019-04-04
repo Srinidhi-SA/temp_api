@@ -256,11 +256,12 @@ export class ModelSummary extends React.Component {
     return (
       // <!-- Main Content starts with side-body -->
 		<div class="side-body">
-      <div class="main-content">
-	
-    <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.data.name}<small> : {algoAnalysis.name}</small></h3>
-    </div>
+		
+		<div class="page-head">
+		<h3 class="xs-mt-0 xs-mb-0 text-capitalize"> {algoAnalysis.data.name}<br /><small>{algoAnalysis.name}</small></h3>
+		</div>
+		
+    <div class="main-content">
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
 		<div id="pDetail" class="tab-container">

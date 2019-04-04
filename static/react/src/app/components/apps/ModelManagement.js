@@ -364,7 +364,7 @@ getAllDeployPreview()
                   <div class="form-inline" >
                     <div class="form-group">
                         <div class="input-group">
-                        <span class="input-group-btn"><label for="sdataType">Filter By: </label></span>
+                        <span class="input-group-btn"><label for="sdataType" class="xs-pt-5 xs-pr-10">Filter By: </label></span>
                       {renderSelectBox}
                       </div>
                     

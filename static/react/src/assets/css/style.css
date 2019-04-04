@@ -9759,6 +9759,7 @@ pre {
 	-moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1); }
 .btn-default.btn-round, .btn-warning.btn-round { padding: 5px 10px;}
+td .btn-default.btn-round {  padding: 0 10px; margin:0; }
 .btn-rounded.btn-lg {
 	border-radius: 5px
 }
@@ -15283,7 +15284,12 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .tab-content .bgStockBox { margin-right: -4px;}
 
 .pos-relative .dropdown-menu.dropdown-menu-right:before { right: 28px; }
-.pos-relative .dropdown-menu.dropdown-menu-right:after {     right: 29px; }
+.pos-relative .dropdown-menu.dropdown-menu-right:after { right: 29px; }
+#performance .table-style div:nth-last-child(2) { display:none; }
+#performance .col-md-6 { display: -webkit-flex; /* Safari */
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  display: flex;
+  flex-wrap: wrap; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
