@@ -390,7 +390,13 @@ class TrainerView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
 
-        app_id = int(request.GET.get('app_id', 2))
+        app_id = request.GET.get('app_id', None)
+        if app_id is "" or app_id is None:
+            return retrieve_failed_exception('No app_id')
+        try:
+            app_id = int(app_id)
+        except:
+            return retrieve_failed_exception('No app_id')
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
