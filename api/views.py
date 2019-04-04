@@ -390,7 +390,7 @@ class TrainerView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
 
-        app_id = request.GET.get('app_id', 2)
+        app_id = int(request.GET.get('app_id', 2))
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
