@@ -412,7 +412,7 @@ export class FeatureEngineering extends React.Component {
               <h3 className="modal-title">Transform column</h3>
             </Modal.Header>
             <Modal.Body>
-              <Transform /*parentPickValue={this.pickValue}*//>
+              <Transform parentPickValue={this.pickValue}/>
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>

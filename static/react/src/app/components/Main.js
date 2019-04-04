@@ -40,7 +40,7 @@ export class Main extends React.Component {
     console.log(this.props);
     // console.log(this.props.login_response);
     if (document.cookie.indexOf("JWT ") > 0 ) {
-      this.addChatbotScript()
+      // this.addChatbotScript()
       return (
         <div className="main_wrapper">
           <LeftPanel/>
