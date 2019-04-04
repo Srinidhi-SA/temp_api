@@ -138,6 +138,7 @@ const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
 const RENAMESTOCKMODEL = "Rename Analysis";
 const DELETEALGO ="Delete this Model";
+const CLONEALGO ="Clone this Model"
 const DELETEDEPLOYMENT ="Delete this Deployment"
 
 export function generateHeaders(table) {
@@ -462,6 +463,7 @@ export {
   DELETESTOCKMODEL,
   RENAMESTOCKMODEL,
   DELETEALGO,
+  CLONEALGO,
   DELETEDEPLOYMENT
 
 }

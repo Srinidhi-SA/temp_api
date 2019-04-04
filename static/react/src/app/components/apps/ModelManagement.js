@@ -3,8 +3,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
 import {C3Chart} from "../c3Chart";
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement} from "../../actions/modelManagementActions"
-import {saveBinLevelTransformationValuesAction} from "../../actions/dataActions";
+import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
 import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
@@ -12,7 +11,7 @@ import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from ".
 import Dialog from 'react-bootstrap-dialog';
 import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
-import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,getAppDetails,} from "../../actions/appActions";
+import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList,getDeployPreview,createDeploy} from "../../actions/appActions";
 
 var dateFormat = require('dateformat');
 @connect((store) => {
@@ -20,25 +19,30 @@ var dateFormat = require('dateformat');
     algoList: store.apps.algoList,
     currentAppId: store.apps.currentAppId,
     roboDatasetSlug: store.apps.roboDatasetSlug,
-		algoAnalysis:store.signals.algoAnalysis,
+    algoAnalysis:store.signals.algoAnalysis,
+    allProjects : store.apps.allProjects ,
     modelSlug: store.apps.modelSlug,
     currentAppDetails: store.apps.currentAppDetails,
     modelSlug: store.apps.modelSlug,
     deployShowModal: store.apps.deployShowModal,
     selectedSummary :store.summarySelected,
-    algo_search_element :store.apps.algo_search_element
+    algo_search_element :store.apps.algo_search_element,
+    deployData: store.apps.deployData,
+    deployItem:store.apps.deployItem,
   };
 })
 
 export class ModelManagement extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {};
     this.handleSelect = this.handleSelect.bind(this);
     this.pickValue = this.pickValue.bind(this);
 
   }
   
  componentWillMount() {
+  this.props.dispatch(getAllProjectList(pageNo));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -53,14 +57,7 @@ export class ModelManagement extends React.Component {
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
   }
-  // proceedToModelSummary(item)
-  // {
-  //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug);
-  //   console.log(item,"item called for individual page...........................")
-  //   this.props.dispatch(openModelSummaryAction(item));
-	// 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-  //     console.log(item,"item called for individual page...........................")
-  // }
+
   closeModelmanagement()
   {
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
@@ -71,69 +68,140 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(handleAlgoDelete(slug, this.refs.dialog));
   }
 
+  handleAlgoClone(slug) {
+    this.props.dispatch(handleAlgoClone(slug, this.refs.dialog));
+  }
+
   pickValue(actionType, event){
-    if(this.state[this.props.selectedItem.slug] == undefined){
-      this.state[this.props.selectedItem.slug] = {}
-    }
-    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
-      this.state[this.props.selectedItem.slug][actionType] = {}
+    if(this.state[this.props.deployItem] == undefined){
+      this.state[this.props.deployItem] = {}
     }
     if(event.target.type == "checkbox"){
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
-    }else{
-    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+      this.state[this.props.deployItem][event.target.name] = event.target.checked;
+    }
+    else{
+      this.state[this.props.deployItem][event.target.name] = event.target.value;
     }
   }
-  
-  handleCreateClicked(actionType, event){
+ 
+  handleCreateClicked(actionType,event){
     if(actionType == "deployData"){
-      this.validateTransformdata(actionType);
+      this.validateDeployData(actionType,event);
     }else{
-      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.closeTransformColumnModal();
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem][event.target.name]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
+    }
+  }
+
+  validateDeployData(actionType,event){
+    var slugData = this.state[this.props.deployItem];
+    if(slugData != undefined && this.state[this.props.deployItem] != undefined){
+      var deployData = this.state[this.props.deployItem];
+      if(deployData.name == undefined|| deployData.name == null || deployData.name == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter deployment name");
+        $("input[name='name']").focus();
+        return;
+      }else if(deployData.datasetname == undefined|| deployData.datasetname == null || deployData.datasetname == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter dataset name");
+        $("input[name='datasetname']").focus();
+        return;
+      }else if(deployData.file_name == undefined|| deployData.file_name == null || deployData.file_name == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter filename");
+        $("input[name='file_name']").focus();
+        return;
+      }else if(deployData.access_key_id == undefined|| deployData.access_key_id == null || deployData.access_key_id == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter access key password");
+        $("input[name='access_key_id']").focus();
+        return;
+      }else if(deployData.secret_key == undefined|| deployData.secret_key == null || deployData.secret_key == ""){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter secret key password");
+        $("input[name='secret_key']").focus();
+        return;
+      }else if(deployData.timing_details == undefined|| deployData.timing_details == "none"){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please select frequency");
+        $("select[name='timing_details']").focus();
+        return;
+      }
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.deployItem]));
+      this.props.dispatch(saveDeployValueAction(this.props.deployItem, dataToSave));
+      this.closeDeployModal();
+      this.props.dispatch(createDeploy(this.props.deployItem));
+    }else{
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("input[name='name']").css("border-color","red");
+		  $("input[name='datasetname']").css("border-color","red");
+      $("input[name='file_name']").css("border-color","red");
+      $("input[name='access_key_id']").css("border-color","red");
+      $("input[name='secret_key']").css("border-color","red");
+      $("select[name='timing_details']").css("border-color","red");
+      $("#fileErrorMsg").html("Please enter Mandatory fields * ");
     }
   }
 
   getAlgoAnalysis(item,e) {
     console.log("Link Onclick is called")
-
     this.props.dispatch(emptyAlgoAnalysis());
-
-		// this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken,item.slug));
-
   }
 
+  // hello
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
         //console.log('searching in data list');
         if (e.target.value != "" && e.target.value != null)
             this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
             this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+            this.selectedData = $("#project_all").val();
+            var pageNo =1;
+            this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // this.props.dispatch(getAppsAlgoList(1));
         
     }
   }
 
   onChangeOfSearchBox(e){
+    debugger;
     if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeAlgoSearchElement(""));
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
+
+            this.selectedData = $("#project_all").val();
+        var pageNo =1;
+
+        this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+        // document.getElementById('algo_search').value= "";
         
     }else if (e.target.value.length > SEARCHCHARLIMIT) {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        this.props.dispatch(getAppsAlgoList(1));
+        // this.props.dispatch(getAppsAlgoList(1));
     }
     else{
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
     }
 }
+getDeployPreview(e){
+  debugger;
+  var pageNo =1;
+  this.selectedData = $("#project_all").val();
+  this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
+}
+getAllDeployPreview()
+{
+  this.props.dispatch(getAppsAlgoList(1));
+
+}
 
   render(){
-
-    if(isEmpty(this.props.algoList)){
+    if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
 			return ( 
         <div className="side-body">
           <div className="page-head">
@@ -144,11 +212,30 @@ export class ModelManagement extends React.Component {
         </div>
       );
 		}else{
-    console.log(this.props.algoList,"@@@@@@@@@@@@@##################@@@@@@@@@@@@@@@@@")
+    console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
     var mmTable = "";
     var deployPopup = "";
+    var deployData = "";
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
+    var none =none;
+
+    const dataSets = this.props.allProjects;
+    var options= dataSets.data.map(dataSet =>
+
+			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
+			)
+		let renderSelectBox = null;
+    let algorithmNames = null;  
+		if(dataSets){
+			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
+       <option value="">All</option>
+         {options}
+			</select>
+		}else{
+			renderSelectBox = "No Datasets"
+		}
+
       mmTable = this.props.algoList.data.map((item,key )=> {
     var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
        return (
@@ -157,25 +244,27 @@ export class ModelManagement extends React.Component {
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td  class="text-left"> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</td>
+      <td  class="text-left"><div class="ellipse-text" title={item.project_name}> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</div></td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
       <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
       <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
-      {/* <td><Button   onClick={this.proceedToModelSummary.bind(this,item)}  bsStyle="primary"></Button></td> */}
-      <td> <Button ><Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
-              {Details}
-              </Link></Button></td>
+      <td> <Button >
+              <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
+                  {Details}
+              </Link>
+           </Button>
+      </td>
       <td>
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
           </a>    
           <ul class="dropdown-menu dropdown-menu-right">
-          <li><a bsStyle="cst_button">Clone</a></li>
-            <li><a onClick={this.openDeployModal.bind(this,item)} bsStyle="cst_button">Deploy</a></li>
+            <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>
+            <li><a onClick={this.openDeployModal.bind(this,item.slug)} >Deploy</a></li>
             <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
             <Dialog ref="dialog"/>
 
@@ -184,7 +273,46 @@ export class ModelManagement extends React.Component {
       </td>
     </tr>);
     })
+    
 
+    let tablecontent="";
+
+    if (this.props.algoList.data.length != 0){
+
+      tablecontent =(<table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+    <thead>
+      <tr className="myHead">
+        <th>#</th>
+        <th class="text-left"><b>Model Id</b></th>
+        <th class="text-left"><b>Project Name</b></th>
+        <th class="text-left"><b>Algorithm</b></th>
+        <th><b>Status</b></th>
+        <th><b>Accuracy</b></th>
+        <th><b>Created On</b></th>
+        <th><b>Deployment</b></th>
+        <th><b>Runtime</b></th>
+        <th><b>Summary</b></th>
+        <th><b>Action</b></th>
+      </tr>
+    </thead>
+
+    <tbody className="no-border-x">
+      {mmTable}
+    </tbody>
+  </table>)
+    }
+    else {(
+      tablecontent= (
+      <div className="side-body">
+          <div className="page-head">
+          </div>
+          <div className="main-content">
+            <h2><center>There are no models available for this selection</center></h2>
+          </div>
+        </div>))}
+
+
+    deployData = "deployData";
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
@@ -193,11 +321,11 @@ export class ModelManagement extends React.Component {
                 <h3 className="modal-title">Deploy Project</h3>
               </Modal.Header>
               <Modal.Body>
-                <DeployPopup /*parentPickValue={this.pickValue}*//>
+                <DeployPopup parentPickValue={this.pickValue}/>
               </Modal.Body> 
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"deployData")}>Deploy</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,deployData)}>Deploy</Button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -227,7 +355,6 @@ export class ModelManagement extends React.Component {
           {/* <!-- Page Content Area --> */}
           {deployPopup}
           <div class="main-content">
-        
           <div class="row">
               <div class="col-md-12">           
                 <div class="panel box-shadow">
@@ -236,82 +363,63 @@ export class ModelManagement extends React.Component {
                 <div className="col-md-3">
                   <div class="form-inline" >
                     <div class="form-group">
-                      <label for="sdataType">Filter By: </label>
-                        <input type="text" id="searchBypname" class="form-control" list="listProjectName" placeholder="Project Name"></input>
-                          <datalist id="listProjectName">
-                            <option value="Credit Churn Prediction"></option>
-                            <option value="Ecommerce Predict"></option>
-                            <option value="Call Volume"></option>
-                            <option value="Student Performance"></option>								
-                          </datalist> &nbsp;&nbsp;&nbsp;
+                        <div class="input-group">
+                        <span class="input-group-btn"><label for="sdataType">Filter By: </label></span>
+                      {renderSelectBox}
+                      </div>
+                    
                     </div>
                   </div>
                 </div>
                   <div class="col-md-3 col-md-offset-6">
+                  <div className="btn-toolbar pull-right">
+                  <div className="input-group">
                     <div className="search-wrapper">
+                    {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
+
                       <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
                       <span className="zmdi zmdi-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                     </div>
+                    </div>
+                    </div>
                 </div>
               </div>
               <div class="table-responsive">
-                      <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                        <thead>
-                          <tr className="myHead">
-                            <th>#</th>
-                            <th class="text-left"><b>Model Id</b></th>
-                            <th class="text-left"><b>Project Name</b></th>
-                            <th class="text-left"><b>Algorithm</b></th>
-                            <th><b>Status</b></th>
-                            <th><b>Accuracy</b></th>
-                            <th><b>Created On</b></th>
-                            <th><b>Deployment</b></th>
-                            <th><b>Runtime</b></th>
-                            <th><b>Summary</b></th>
-                            <th><b>Action</b></th>
-                          </tr>
-                        </thead>
 
-                        <tbody className="no-border-x">
-                          {mmTable}
-                        </tbody>
-                      </table>
+                      {tablecontent}
                       <div class="col-md-12 text-center">
                     {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
                     <div className="footer"  id="idPagination">
-              <div className="algo_paginate">
-              {paginationTag}
-            </div>
-            </div>
-                </div>
-                    </div>
-                    <div class="buttonRow pull-right">
-                      <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+                      <div className="algo_paginate">
+                      {paginationTag}
                     </div>
                   </div>
                 </div>
-                <div class="xs-p-30"></div>
               </div>
-              {/* <!-- Open Column --> */}
+            <div class="buttonRow pull-right">
+              <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
             </div>
-            {/* <!-- End Row --> */}
-      
-      
-        {/* <!-- End of the Copying Code Till Here /////////////////////////////////////////// --> */}
-      
+            <Dialog ref="dialog"/>
           </div>
-          
-          {/* <!-- End Main Content --> */}
         </div>
+        <div class="xs-p-30"></div>
+      </div>
+      {/* <!-- Open Column --> */}
+    </div>
+    {/* <!-- End Row --> */}
+    </div>
+    
+    {/* <!-- End Main Content --> */}
+  </div>
         
     );
    }
   }
 }
-  openDeployModal(item) {
+  openDeployModal(slug) {
     console.log("open ---openDeployModal");
-    this.props.dispatch(openDeployModalAction(item));
+    this.props.dispatch(openDeployModalAction(slug));
   }
   
   closeDeployModal() {
@@ -324,12 +432,18 @@ export class ModelManagement extends React.Component {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
-        this.props.dispatch(getAppsAlgoList(eventKey));
+         this.selectedData = $("#project_all").val();
+        this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
 }
 
-  clearSearchElement(e){
+  clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
-    this.props.dispatch(getAppsAlgoList(1));
+    // this.props.dispatch(getAppsAlgoList(1));
+    this.selectedData = $("#project_all").val();
+    // var pageNo =1;
+
+    this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
+    document.getElementById('algo_search').value= "";
   }
 }

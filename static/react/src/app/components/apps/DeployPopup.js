@@ -16,14 +16,16 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
     login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
-    featureEngineering:store.datasets.featureEngineering,
+    deployData: store.apps.deployData,
+    deployItem:store.apps.deployItem,
+
   };
 })
 
 export class DeployPopup extends React.Component {
   constructor(props) {
     super(props);
-    console.log("Deploy constructor method is called...");
+    console.log("DeployPopup constructor method is called...");
     this.pickValue = this.pickValue.bind(this);
     this.state = {};
     this.state.encodingRadioButton;
@@ -31,27 +33,30 @@ export class DeployPopup extends React.Component {
   }
 
   componentWillMount() {
-    console.log("Deploy componentWillMount method is called...");
+    console.log("DeployPopup componentWillMount method is called...");
   }
 
-  getDeployData(){
-      var deployData = {};
-        return deployData;
+    getDeployData(){
+      if(this.props.deployData != undefined || this.props.deployData !=null){
+        var slugData = this.props.deployData[this.props.deployItem];
+        if(slugData != undefined && slugData.depData !=undefined){
+          return JSON.parse(JSON.stringify(slugData.depData));
+        }
       }
-
-    getDeployDataValue(name){
-      var deployData = this.getDeployData();
-      var value = deployData[name];
-      return value;
-    }
+        return {};
+      }
+    // getDeployDataValue(name){
+    //   var depData = this.getDeployData();
+    //   var value = depData[name];
+    //   return value;
+    // }
 
   pickValue(event){
-    this.props.parentPickValue("deployData", event);
+    this.props.parentPickValue("deployData",event);
 
   }
 
   onchangeInput(event){
-    //disable CREATEMODEL
     return event.target.value;
   }
 
@@ -65,70 +70,74 @@ export class DeployPopup extends React.Component {
   }
 
   render() {
-    console.log("Deploy render method is called...");
-    var deployData = this.getDeployData();
+    console.log("DeployPopup render method is called...");
+    var depData = this.getDeployData();
+    // if(){}
           return (
           <div class="modal-body">
           {/* <!-- content goes here --> */}
           <form>
             <div class="xs-m-20"></div>
+
             <div class="row form-group">
-              <label for="txt_dname" class="col-sm-4 control-label">Deployment name</label>
+              <label for="dname" class="col-sm-4 control-label">Deployment name</label>
               <div class="col-sm-8">
-                <input type="text" id="txt_dname" class="form-control" placeholder="Name of the deployment" />
+                <input type="text" name="name" class="form-control" placeholder="Name of the deployment" defaultvalue={depData.deploytrainer} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dsrclocation" class="col-sm-4 control-label">S3 bucket name</label>
+              <label for="dname" class="col-sm-4 control-label">Dataset name</label>
               <div class="col-sm-8">
-                <input type="text" id="txt_dsrclocation" class="form-control" placeholder="Input location URL" />
+                <input type="text" name="datasetname" class="form-control" placeholder="Name of dataset" defaultvalue={depData.datasetname} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <label for="txt_dname" class="col-sm-4 control-label">S3 bucket name</label>
+              <div class="col-sm-8">
+                <input type="text" name="s3Bucket" class="form-control" placeholder="s3" defaultValue={depData.s3Bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} disabled/>
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Source file name</label>
+              <label for="txt_dname" class="col-sm-4 control-label">Source file name</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+                <input type="text" name="file_name" class="form-control" placeholder="Name of source file" defaultValue={depData.file_name} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Access key</label>
+              <label for="txt_dname" class="col-sm-4 control-label">Access Key</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+                <input type="text" name="access_key_id" class="form-control" placeholder="Enter Password" defaultValue={depData.access_key_id} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Secret key</label>
+              <label for="txt_dname" class="col-sm-4 control-label">Secret Key</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+                <input type="text" name="secret_key" class="form-control" placeholder="Enter Password" defaultValue={depData.secret_key} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)}/>
               </div>
             </div>
             <div class="row form-group">
               <label for="txt_dscoring" class="col-sm-4 control-label">Frequency of scoring</label>
               <div class="col-sm-8">
-                <select class="form-control" id="txt_dscoring">
-                <option>Weekly</option>
-                <option>Monthly</option>
+                <select class="form-control" name="timing_details" defaultValue={depData.timing_details} onChange={this.pickValue}>
+                <option value="hourly">Hourly</option>                  
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="none" selected>-Select-</option>
                 </select>
               </div>
             </div>
             <div class="row form-group">
-              <label for="txt_dfname" class="col-sm-4 control-label">Target bucket name</label>
+              <label for="txt_dsrclocation" class="col-sm-4 control-label">Target Bucket Name</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dfname" placeholder="Input folder name" />
+                <input type="text" name="bucket" class="form-control" placeholder="Bucket name" defaultValue={depData.bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} disabled/>
               </div>
             </div>
-            {/* <div class="row form-group">
-              <label for="txt_dolurl" class="col-sm-4 control-label">Scored output location</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_dolurl" placeholder="Output location URL" />
-              </div>
+            <div className="row form-group">
+            <div className="col-sm-12 text-center">
+              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
             </div>
-            <div class="row form-group">
-              <label for="txt_ofname" class="col-sm-4 control-label">Scored output folder name</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" id="txt_ofname" placeholder="Output folder name" />
-              </div>
-            </div> */}
+          </div>
           </form>
         </div>
           );

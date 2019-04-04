@@ -15199,6 +15199,13 @@ a:hover .icon-container .class { color: #02988c;}
 .d_m_block h1 small { color: #00998c; display: inline-block; text-align: left; }
 .bImpact_time_icon { width:21px; height:20px; display:inline-block; background: url(../images/icon_bAClock.png) no-repeat }
 .bgStockBox h3.text-center { color: #23cdff; }
+.bgStockBox p {
+    background: #fafafa;
+    padding: 5px 10px;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-color: #e9e9e9;
+}
 blockquote {
 background:#f7f7f7;
 border:none;
@@ -15512,7 +15519,9 @@ padding: 0px 15px 15px;
 }
 
 .overlayTooltip{
-word-break: break-word;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 
@@ -16007,3 +16016,9 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 .mod-process-table-primary:hover { background:#dddddd; transition-duration: 0.5s;}
 .mod-process:hover {border-color:#dddddd }
 .mod-process-table-primary:hover .btn-primary { background-color: #3a3a3a; border-color:#3a3a3a; transition-duration: 0.5s;}
+.ellipse-text {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 180px;
+	overflow: hidden;
+}

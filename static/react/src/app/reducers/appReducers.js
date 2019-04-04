@@ -2,8 +2,17 @@ export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
         algoList:{},
+        deploymentData:{},
+        viewDeploymentFlag:false,
+        filter:"",
+        selectedProject: "",
+        allProjects: {},
         deploymentList:{},
         summarySelected:{},
+        deployShowModal:false,
+        algo_search_element:"",
+        deployItem:{},
+        deployData: {},
         current_page:1,
         trainValue:50,
         testValue:50,
@@ -93,8 +102,7 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
-        deployShowModal:false,
-        algo_search_element:"",
+        
                 
 
 }, action) {
@@ -131,6 +139,23 @@ export default function reducer(state = {
     break;
 
     case "MODEL_LIST_ERROR":
+    {
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch model list!!");
+    }
+    break;
+
+
+    case "DEPLOY_PREVIEW":
+    {
+        return {
+            ...state,
+            filter: action.data,
+        }
+    }
+    break;
+
+    case "DEPLOY_PREVIEW_ERROR":
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
@@ -174,6 +199,75 @@ export default function reducer(state = {
     }
     break;
 
+    case "SAVE_DEPLOY_DATA":
+    {
+        var dd = action.dataToSave
+        return{
+            ...state,
+            deployData :{
+                "name":dd.name,
+                "deploytrainer": action.colSlug,
+                "config":{
+                "dataset_details":{
+                    "datasource_details":{
+                        "datasetname":dd.datasetname,
+                        "bucket_name":"s3",
+                        "file_name":dd.file_name,
+                        "access_key_id":dd.access_key_id,
+                        "secret_key":dd.secret_key
+                    },
+                    "datasource_type":"S3"
+                },
+                "timing_details": dd.timing_details,
+                "destination_s3": { "bucket": "none" }
+                },
+                "data":{}
+            }
+        }
+    //     var curDepData = state.deployData
+    //     var curColSlug = curDepData[action.colSlug];
+    //     if(curColSlug == undefined){
+    //         curColSlug = { }
+    //       }
+    //       curDepData[action.colSlug] = action.dataToSave;
+    //       console.log(curColSlug);
+    //   return{
+    //     ...state,
+    //     deployData : curDepData
+    //   }
+    }
+    break;
+
+    case "CREATE_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+        }
+    }
+    break;
+    case "CREATE_DEPLOY_ERROR":
+    {
+        throw new Error("Unable to create deployment!");
+    }
+    break;
+
+    case "VIEW_DEPLOY_SUCCESS":
+    {
+        return {
+            ...state,
+            deploymentData: action.data,
+            viewDeploymentFlag:true,
+        }
+    }
+    break;
+
+    case "VIEW_DEPLOY_ERROR":
+    {   
+        //alert(action.json.non_field_errors);
+        throw new Error("Unable to fetch Deployment Details");
+    }
+    break;
+
     case "SUMMARY_SELECTED_LIST":
     {
       return {
@@ -197,7 +291,7 @@ export default function reducer(state = {
       return {
         ...state,
         deployShowModal: true,
-        selectedItem:action.selectedItem
+        deployItem:action.selectedItem
       }
       console.log(deployShowModal)
     }
@@ -211,6 +305,39 @@ export default function reducer(state = {
       }
     }
     break;
+
+    case "SHOW_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: true,
+        // deployItem:action.selectedItem
+      }
+    }
+    break;
+    case "HIDE_VIEW_MODAL":
+    {
+      return {
+        ...state,
+        viewDeploymentFlag: false
+      }
+    }
+    break;
+
+    case "PROJECT_ALL_LIST":
+    {
+      return {
+        ...state,
+        allProjects: action.data,
+        selectedProject: action.slug
+      }
+    }
+    break;
+    case "PROJECT_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch project list!!");
+      }
+      break;
 
     case "UPDATE_MODEL_RANGE":
     {
