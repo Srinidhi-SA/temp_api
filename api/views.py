@@ -392,7 +392,8 @@ class TrainerView(viewsets.ModelViewSet):
 
         app_id = request.GET.get('app_id', None)
         if app_id is "" or app_id is None:
-            return retrieve_failed_exception('No app_id')
+            app_id = 2
+            # return retrieve_failed_exception('No app_id')
         try:
             app_id = int(app_id)
         except:
