@@ -219,10 +219,10 @@ getAllDeployPreview()
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
     var none =none;
-
+debugger;
     const dataSets = this.props.allProjects;
-    var options= dataSets.data.map(dataSet =>
-
+    var options= dataSets.data.filter(datacount => datacount.count>>0).map(dataSet =>
+  
 			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
 			)
 		let renderSelectBox = null;
@@ -283,7 +283,7 @@ getAllDeployPreview()
     <thead>
       <tr className="myHead">
         <th>#</th>
-        <th class="text-left"><b>Model Id</b></th>
+        <th class="text-left"><b>Model ID</b></th>
         <th class="text-left"><b>Project Name</b></th>
         <th class="text-left"><b>Algorithm</b></th>
         <th><b>Status</b></th>
@@ -303,13 +303,15 @@ getAllDeployPreview()
     }
     else {(
       tablecontent= (
-      <div className="side-body">
-          <div className="page-head">
-          </div>
-          <div className="main-content">
-            <h2><center>There are no models available for this selection</center></h2>
-          </div>
-        </div>))}
+            <h5><center>There are no models available for this selection</center></h5>
+      // <div className="side-body">
+      //     <div className="page-head">
+      //     </div>
+      //     <div className="main-content">
+      //     </div>
+      //   </div>
+        )
+        )}
 
 
     deployData = "deployData";
@@ -318,7 +320,7 @@ getAllDeployPreview()
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
             <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
               <Modal.Header closeButton>
-                <h3 className="modal-title">Deploy Project</h3>
+                <h3 className="modal-title">Deploy Model</h3>
               </Modal.Header>
               <Modal.Body>
                 <DeployPopup parentPickValue={this.pickValue}/>
