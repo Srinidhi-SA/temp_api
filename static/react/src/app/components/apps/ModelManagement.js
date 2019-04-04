@@ -260,7 +260,7 @@ export class ModelManagement extends React.Component {
                         <thead>
                           <tr className="myHead">
                             <th>#</th>
-                            <th class="text-left"><b>Model Id</b></th>
+                            <th class="text-left"><b>Model ID</b></th>
                             <th class="text-left"><b>Project Name</b></th>
                             <th class="text-left"><b>Algorithm</b></th>
                             <th><b>Status</b></th>
