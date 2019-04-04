@@ -251,6 +251,7 @@ function deleteAlgoAPI(slug) { debugger;
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({deleted: true})
   }).then(response => Promise.all([response, response.json()]));
+
 }
 
 export function handleAlgoDelete(slug, dialog) {

@@ -13,6 +13,9 @@ from views import AppView
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
+from views import TrainAlgorithmMappingView
+from views import ModelDeployementView
+from views import DatasetScoreDeployementView
 # from views import RegressionView
 from dummyModel.models import DummyView
 
@@ -73,6 +76,25 @@ router.register(
     DummyView,
     base_name='dummy'
 )
+
+router.register(
+    'trainalgomapping',
+    TrainAlgorithmMappingView,
+    base_name='trainalgomapping'
+)
+
+router.register(
+    'deploymodel',
+    ModelDeployementView,
+    base_name='deploymodel'
+)
+
+router.register(
+    'datasetscoredeploy',
+    DatasetScoreDeployementView,
+    base_name='datasetscoredeploy'
+)
+
 # router.register(
 #     'regression',
 #     RegressionView,
@@ -107,6 +129,7 @@ urlpatterns = [
     url(r'^get_app_id_map',views.get_appID_appName_map,name="get_app_id_map"),
     url(r'^nifi_update', views.updateFromNifi, name="nifi_update"),
     url(r'^all_apps_for_users', views.all_apps_for_users, name="all_apps_for_users"),
+    url(r'^disable_all_periodic_tasks', views.disable_all_periodic_tasks, name="disable_all_periodic_tasks"),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
 

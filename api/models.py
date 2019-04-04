@@ -20,13 +20,14 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
     fetch_news_article_from_nasdaq, \
     generate_url_for_historic_data, \
     generate_urls_for_historic_data, fetch_news_sentiments_from_newsapi
-from api.helper import convert_json_object_into_list_of_object
+from api.helper import convert_json_object_into_list_of_object, get_schedule
 from api.lib import hadoop, fab_helper
 
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
 from helper import convert_fe_date_format
+from django_celery_beat.models import PeriodicTask
 
 from guardian.shortcuts import assign_perm
 
@@ -1201,7 +1202,7 @@ class Trainer(models.Model):
 
             overall_data = feature_engineering_config_ui['overallSettings']
 
-	
+
             if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
             #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 feature_engineering_ml_config['selected'] = True
@@ -1606,6 +1607,18 @@ class Trainer(models.Model):
         self.add_newly_generated_column_names.append(custom_dict)
 
 
+    def delete(self):
+        try:
+            self.deleted=True
+            self.save()
+            train_algo_instance = TrainAlgorithmMapping.objects.filter(trainer_id=self.id)
+            for iter in train_algo_instance:
+                iter.delete()
+
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
@@ -1991,7 +2004,7 @@ class CustomApps(models.Model):
     rank = models.IntegerField(unique=True, null=True)
 
     class Meta:
-        ordering = ['app_id']
+        ordering = ['rank']
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.app_id]])
@@ -4779,3 +4792,278 @@ class Role(Group):
         proxy = True
         app_label = 'auth'
         verbose_name = _('Role')
+
+
+# model management
+
+
+class TrainAlgorithmMapping(models.Model):
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    trainer = models.ForeignKey(Trainer, null=False)
+    config = models.TextField(default="{}")
+    app_id = models.IntegerField(null=True, default=0)
+
+    data = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(TrainAlgorithmMapping, self).save(*args, **kwargs)
+
+
+    def delete(self):
+        try:
+            self.deleted=True
+            self.save()
+            deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
+            for iter in deploy_instance:
+                iter.terminate_periodic_task()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+
+# Deployment for Model management
+class ModelDeployment(models.Model):
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    deploytrainer = models.ForeignKey(TrainAlgorithmMapping, null=False)
+    periodic_task = models.ForeignKey(PeriodicTask, null=True)
+    config = models.TextField(default="{}")
+
+    data = models.TextField(default="{}")
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(ModelDeployment, self).save(*args, **kwargs)
+
+    def start_periodically(self):
+        '''
+        timing_details = {
+            'type': 'crontab',
+            'crontab': {
+                'minute': '30',
+                'hour': '*',
+                'day_of_week': '*',
+                'day_of_month': '*',
+                'month_of_year': '*',
+                'timezone': 'Kolkata/Asia'
+            },
+            'interval': {
+                'every': 30,
+                'period': 'seconds'
+            }
+        }
+        :param timing_details:
+        :return:
+        '''
+        if self.periodic_task is None:
+            pass
+        else:
+            return False
+        config = json.loads(self.config)
+        config['trainer_details'] = self.add_trainer_details()
+        config['modeldeployment_details'] = self.add_modeldeployment_details()
+        config['user_details'] = self.add_user_details()
+        timing_details = config['timing_details']
+        periodic_task = None
+        schedule, schedule_type = get_schedule(timing_details)
+        if schedule_type == 'crontab':
+            periodic_task = PeriodicTask.objects.create(
+                crontab=schedule,
+                name=self.slug,
+                task='call_dataset_then_score',
+                args='["hello"]',
+                kwargs=json.dumps(config)
+            )
+        else:
+            periodic_task = PeriodicTask.objects.create(
+                interval=schedule,
+                name=self.slug,
+                task='call_dataset_then_score',
+                args='["hello"]',
+                kwargs=json.dumps(config)
+            )
+
+        if periodic_task is not None:
+            self.periodic_task = periodic_task
+            self.status = 'STARTED'
+            self.save()
+            return True
+        else:
+            pass
+
+    def add_trainer_details(self):
+        return {
+            'trainer_slug': self.deploytrainer.trainer.slug
+        }
+
+    def add_modeldeployment_details(self):
+        return {
+            'modeldeployment_slug': self.slug
+        }
+
+    def add_user_details(self):
+        return {
+            'username': self.created_by.username
+        }
+
+    def disable_periodic_task(self):
+        '''
+            >>> periodic_task.enabled = False
+            >>> periodic_task.save()
+        :return:
+        '''
+        self.periodic_task.enabled = False
+        self.status = 'STOPPED'
+        self.save()
+        self.save()
+
+    def resume_periodic_task(self):
+        '''
+            >>> periodic_task.enabled = True
+            >>> periodic_task.save()
+        :return:
+        '''
+        self.periodic_task.enabled = True
+        self.status = 'STARTED'
+        self.save()
+        self.save()
+
+    def terminate_periodic_task(self):
+        '''
+            >>> task = PeriodicTask.objects.get(name='simple-add')
+            >>> task.delete()
+        :return:
+        '''
+        self.periodic_task.delete()
+        self.periodic_task = None
+        self.status = 'TERMINATED'
+        self.save()
+        self.deleted = True
+        self.save()
+
+    def get_periodic_task_details(self):
+
+        if self.periodic_task:
+            return {
+                'name': self.periodic_task.name,
+                'status': self.periodic_task.enabled
+            }
+        else:
+            return None
+
+    def change_timings_of_periodic_task(self):
+        pass
+
+    def change_config(self):
+        pass
+
+    def get_trainer_details_for_score(self, score_name):
+        score_details = {
+            "name": score_name,
+            "config": {
+                "selectedModel": {},
+                "variablesSelection": {},
+                "app_id": ""
+            }
+        }
+        score_details['config'] = json.loads(self.deploytrainer.config)
+        return score_details
+        trainer_data = json.loads(self.deploytrainer.trainer.data)
+        train_algo_mapping_data = json.loads(self.deploytrainer.data)
+        model_dropdowns = trainer_data['model_dropdown']
+        for model_dropdown in model_dropdowns:
+            if model_dropdown['name'] == train_algo_mapping_data['name']:
+                score_details['config']['selectModel'] = model_dropdown
+                break
+        score_details["config"]["app_id"] = self.deploytrainer.trainer.app_id
+        return score_details
+
+
+
+class DatasetScoreDeployment(models.Model):
+
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300
+                            )
+    deployment = models.ForeignKey(ModelDeployment, null=False)
+    dataset = models.ForeignKey(Dataset, null=True)
+    score = models.ForeignKey(Score, null=True)
+
+    config = models.TextField(default="{}")
+
+    data = models.TextField(default="{}")
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+
+    bookmarked = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        #Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(DatasetScoreDeployment, self).save(*args, **kwargs)
