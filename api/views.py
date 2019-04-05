@@ -389,10 +389,20 @@ class TrainerView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def all(self, request):
+
+        app_id = request.GET.get('app_id', None)
+        if app_id is "" or app_id is None:
+            app_id = 2
+            # return retrieve_failed_exception('No app_id')
+        try:
+            app_id = int(app_id)
+        except:
+            return retrieve_failed_exception('No app_id')
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['SUCCESS']
+            status__in=['SUCCESS'],
+            app_id=app_id
         )
         serializer = TrainerNameListSerializer(queryset, many=True, context={"request": self.request})
         return Response({
@@ -5535,10 +5545,11 @@ def all_apps_for_users(request):
 class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
     def get_queryset(self):
+        from django.db.models import Q
         queryset = TrainAlgorithmMapping.objects.filter(
+            ~Q(data='{}'),
             created_by=self.request.user,
             deleted=False,
-
         ).select_related('created_by')
         return queryset
 
@@ -5949,10 +5960,20 @@ def disable_all_periodic_tasks(request):
     from django_celery_beat.models import PeriodicTask
 
     all_periodic_objects = PeriodicTask.objects.all()
+    count_already_diabled = 0
+    count_just_disabled = 0
     for periodic_task in all_periodic_objects:
         if periodic_task.name == 'celery.backend_cleanup':
             pass
         else:
-            periodic_task.enabled = False
+            if periodic_task.enabled == False:
+                count_already_diabled += 1
+            else:
+                count_just_disabled += 1
+                periodic_task.enabled = False
+                periodic_task.save()
 
-    return JsonResponse({'message':'Done'})
+    return JsonResponse({'message':'Done',
+                         'count_already_diabled':count_already_diabled,
+                         'count_just_disabled':count_just_disabled
+                         })
