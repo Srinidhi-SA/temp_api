@@ -5960,10 +5960,19 @@ def disable_all_periodic_tasks(request):
     from django_celery_beat.models import PeriodicTask
 
     all_periodic_objects = PeriodicTask.objects.all()
+    count_already_diabled = 0
+    count_just_disabled = 0
     for periodic_task in all_periodic_objects:
         if periodic_task.name == 'celery.backend_cleanup':
             pass
         else:
-            periodic_task.enabled = False
+            if periodic_task.enabled == False:
+                count_already_diabled += 1
+            else:
+                count_just_disabled += 1
+                periodic_task.enabled = False
 
-    return JsonResponse({'message':'Done'})
+    return JsonResponse({'message':'Done',
+                         'count_already_diabled':count_already_diabled,
+                         'count_just_disabled':count_just_disabled
+                         })
