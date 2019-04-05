@@ -5971,6 +5971,7 @@ def disable_all_periodic_tasks(request):
             else:
                 count_just_disabled += 1
                 periodic_task.enabled = False
+                periodic_task.save()
 
     return JsonResponse({'message':'Done',
                          'count_already_diabled':count_already_diabled,
