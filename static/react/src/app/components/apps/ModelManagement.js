@@ -40,7 +40,7 @@ export class ModelManagement extends React.Component {
     this.pickValue = this.pickValue.bind(this);
 
   }
-  
+
  componentWillMount() {
   this.props.dispatch(getAllProjectList(pageNo));
   var pageNo = 1;
@@ -52,7 +52,7 @@ export class ModelManagement extends React.Component {
     }else
     {
         this.props.dispatch(getAppsAlgoList(pageNo));
-    }    
+    }
   }
   componentDidMount() {
     this.props.dispatch(refreshAppsAlgoList(this.props));
@@ -83,7 +83,7 @@ export class ModelManagement extends React.Component {
       this.state[this.props.deployItem][event.target.name] = event.target.value;
     }
   }
- 
+
   handleCreateClicked(actionType,event){
     if(actionType == "deployData"){
       this.validateDeployData(actionType,event);
@@ -162,7 +162,7 @@ export class ModelManagement extends React.Component {
             var pageNo =1;
             this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
         // this.props.dispatch(getAppsAlgoList(1));
-        
+
     }
   }
 
@@ -178,7 +178,7 @@ export class ModelManagement extends React.Component {
 
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
         // document.getElementById('algo_search').value= "";
-        
+
     }else if (e.target.value.length > SEARCHCHARLIMIT) {
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
@@ -202,7 +202,7 @@ getAllDeployPreview()
 
   render(){
     if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
-			return ( 
+			return (
         <div className="side-body">
           <div className="page-head">
           </div>
@@ -226,7 +226,7 @@ getAllDeployPreview()
 			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
 			)
 		let renderSelectBox = null;
-    let algorithmNames = null;  
+    let algorithmNames = null;
 		if(dataSets){
 			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
        <option value="">All</option>
@@ -261,11 +261,11 @@ getAllDeployPreview()
         <div class="pos-relative">
           <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
             <i class="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-          </a>    
+          </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a onClick={this.handleAlgoClone.bind(this, item.slug)}>Clone</a></li>
             <li><a onClick={this.openDeployModal.bind(this,item.slug)} >Deploy</a></li>
-            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>    
+            <li><a onClick={this.handleAlgoDelete.bind(this, item.slug)} >Delete</a></li>
             <Dialog ref="dialog"/>
 
           </ul>
@@ -273,7 +273,7 @@ getAllDeployPreview()
       </td>
     </tr>);
     })
-    
+
 
     let tablecontent="";
 
@@ -322,7 +322,7 @@ getAllDeployPreview()
               </Modal.Header>
               <Modal.Body>
                 <DeployPopup parentPickValue={this.pickValue}/>
-              </Modal.Body> 
+              </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeDeployModal.bind(this)}>Cancel</Button>
                 <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,deployData)}>Deploy</Button>
@@ -332,11 +332,11 @@ getAllDeployPreview()
         </div>
       )
 
-      
+
       if (algoList) {
           const pages = store.getState().apps.algoList.total_number_of_pages;
           const current_page = store.getState().apps.algoList.current_page;
-          
+
           let paginationTag = null
           if(pages > 1){
               paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
@@ -345,18 +345,18 @@ getAllDeployPreview()
       return (
         // <!-- Main Content starts with side-body -->
         <div class="side-body">
-      
+
           {/* <!-- Page Title and Breadcrumbs --> */}
           <div class="page-head">
             <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
           </div>
           {/* <!-- /.Page Title and Breadcrumbs --> */}
-      
+
           {/* <!-- Page Content Area --> */}
           {deployPopup}
           <div class="main-content">
           <div class="row">
-              <div class="col-md-12">           
+              <div class="col-md-12">
                 <div class="panel box-shadow">
                   <div class="panel-body no-border xs-p-20">
               <div class="row xs-mb-10">
@@ -367,7 +367,7 @@ getAllDeployPreview()
                         <span class="input-group-btn"><label for="sdataType">&nbsp;&nbsp;Filter By:&nbsp;</label></span>
                       {renderSelectBox}
                       </div>
-                    
+
                     </div>
                   </div>
                 </div>
@@ -390,27 +390,7 @@ getAllDeployPreview()
 
                       {tablecontent}
 
-                      <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-                        <thead>
-                          <tr className="myHead">
-                            <th>#</th>
-                            <th class="text-left"><b>Model ID</b></th>
-                            <th class="text-left"><b>Project Name</b></th>
-                            <th class="text-left"><b>Algorithm</b></th>
-                            <th><b>Status</b></th>
-                            <th><b>Accuracy</b></th>
-                            <th><b>Created On</b></th>
-                            <th><b>Deployment</b></th>
-                            <th><b>Runtime</b></th>
-                            <th><b>Summary</b></th>
-                            <th><b>Action</b></th>
-                          </tr>
-                        </thead>
-
-                        <tbody className="no-border-x">
-                          {mmTable}
-                        </tbody>
-                      </table>
+                    
 
                       <div class="col-md-12 text-center">
                     {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
@@ -433,10 +413,10 @@ getAllDeployPreview()
     </div>
     {/* <!-- End Row --> */}
     </div>
-    
+
     {/* <!-- End Main Content --> */}
   </div>
-        
+
     );
    }
   }
@@ -445,7 +425,7 @@ getAllDeployPreview()
     console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(slug));
   }
-  
+
   closeDeployModal() {
     console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
