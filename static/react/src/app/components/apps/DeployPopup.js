@@ -95,7 +95,7 @@ export class DeployPopup extends React.Component {
             <div class="row form-group">
               <label for="txt_dname" class="col-sm-4 control-label">S3 bucket name</label>
               <div class="col-sm-8">
-                <input type="text" name="s3Bucket" class="form-control" placeholder="s3" defaultValue={depData.s3Bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} disabled/>
+                <input type="text" name="s3Bucket" class="form-control" placeholder="s3-Bucket" defaultValue={depData.s3Bucket} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} />
               </div>
             </div>
             <div class="row form-group">
