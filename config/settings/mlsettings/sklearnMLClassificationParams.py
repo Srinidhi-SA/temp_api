@@ -31,18 +31,6 @@ SKLEARN_ML_SUPPORTED_MAX_FEATURES = [
 
 SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                 {
-                    "name":"criterion",
-                    "displayName":"Criterion",
-                    "description":"The function to measure the quality of a split",
-                    "defaultValue":[obj if obj["name"] != "gini" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_CLASSIFICATION],
-                    "paramType":"list",
-                    "uiElemType":"checkbox",
-                    "display":True,
-                    "hyperpatameterTuningCandidate":True,
-                    "expectedDataType":["string"],
-                    "allowedDataType":["string"]
-                },
-                {
                     "name":"max_depth",
                     "displayName":"Max Depth",
                     "description":"The maximum depth of the tree",
@@ -85,20 +73,6 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "allowedDataType": ["int", "float"]
                 },
                 {
-                    "name":"max_leaf_nodes",
-                    "displayName":"Max Leaf Nodes",
-                    "description":"The maximum of number of leaf nodes",
-                    "defaultValue":None,
-                    "acceptedValue":None,
-                    "valueRange":[],
-                    "paramType":"number",
-                    "uiElemType":"textBox",
-                    "display":True,
-                    "hyperpatameterTuningCandidate":False,
-                    "expectedDataType": ["int", None],
-                    "allowedDataType": ["int",None]
-                },
-                {
                     "name":"min_impurity_decrease",
                     "displayName":"Impurity Decrease cutoff for Split",
                     "description":"A node will be split if this split induces a decrease of the impurity greater than or equal to this value",
@@ -112,20 +86,6 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "expectedDataType": ["float"],
                     "allowedDataType": ["float"]
                 },
-                {
-                 "name":"random_state",
-                 "displayName":"Random Seed",
-                 "description":"The seed of the pseudo random number generator to use when shuffling the data",
-                 "defaultValue":None,
-                 "acceptedValue":None,
-                 "valueRange":[1,100],
-                 "paramType":"number",
-                 "uiElemType":"textBox",
-                 "display":True,
-                 "hyperpatameterTuningCandidate":False,
-                 "expectedDataType": ["int", None],
-                 "allowedDataType": ["int", None]
-                }
 ]
 
 SKLEARN_ML_DTREE_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS + [
@@ -207,6 +167,60 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "allowedDataType":["int"]
         },
         {
+            "name":"n_jobs",
+            "displayName":"No Of Jobs",
+            "description":"The number of jobs to run in parallel for both fit and predict",
+            "defaultValue":1,
+            "acceptedValue":None,
+            "valueRange":[-1,4],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["int"],
+            "allowedDataType": ["int"]
+        },
+        {
+            "name":"criterion",
+            "displayName":"Criterion",
+            "description":"The function to measure the quality of a split",
+            "defaultValue":[obj if obj["name"] != "gini" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_CLASSIFICATION],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType":["string"],
+            "allowedDataType":["string"]
+        },
+        {
+            "name":"max_leaf_nodes",
+            "displayName":"Max Leaf Nodes",
+            "description":"The maximum of number of leaf nodes",
+            "defaultValue":None,
+            "acceptedValue":None,
+            "valueRange":[],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["int", None],
+            "allowedDataType": ["int",None]
+        },
+        {
+         "name":"random_state",
+         "displayName":"Random Seed",
+         "description":"The seed of the pseudo random number generator to use when shuffling the data",
+         "defaultValue":None,
+         "acceptedValue":None,
+         "valueRange":[1,100],
+         "paramType":"number",
+         "uiElemType":"textBox",
+         "display":True,
+         "hyperpatameterTuningCandidate":False,
+         "expectedDataType": ["int", None],
+         "allowedDataType": ["int", None]
+        },
+        {
             "name":"bootstrap",
             "displayName":"Bootstrap Sampling",
             "description":"It defines whether bootstrap samples are used when building trees",
@@ -251,20 +265,6 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["bool"],
             "allowedDataType": ["bool"]
-        },
-        {
-            "name":"n_jobs",
-            "displayName":"No Of Jobs",
-            "description":"The number of jobs to run in parallel for both fit and predict",
-            "defaultValue":1,
-            "acceptedValue":None,
-            "valueRange":[-1,4],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":False,
-            "expectedDataType": ["int"],
-            "allowedDataType": ["int"]
         },
         {
             "name":"warm_start",
