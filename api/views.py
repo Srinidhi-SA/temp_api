@@ -5545,10 +5545,11 @@ def all_apps_for_users(request):
 class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
     def get_queryset(self):
+        from django.db.models import Q
         queryset = TrainAlgorithmMapping.objects.filter(
+            ~Q(data='{}'),
             created_by=self.request.user,
             deleted=False,
-
         ).select_related('created_by')
         return queryset
 
