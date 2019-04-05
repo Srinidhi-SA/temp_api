@@ -387,7 +387,31 @@ getAllDeployPreview()
               </div>
               <div class="table-responsive">
 
+
                       {tablecontent}
+
+                      <table  id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                        <thead>
+                          <tr className="myHead">
+                            <th>#</th>
+                            <th class="text-left"><b>Model ID</b></th>
+                            <th class="text-left"><b>Project Name</b></th>
+                            <th class="text-left"><b>Algorithm</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Accuracy</b></th>
+                            <th><b>Created On</b></th>
+                            <th><b>Deployment</b></th>
+                            <th><b>Runtime</b></th>
+                            <th><b>Summary</b></th>
+                            <th><b>Action</b></th>
+                          </tr>
+                        </thead>
+
+                        <tbody className="no-border-x">
+                          {mmTable}
+                        </tbody>
+                      </table>
+
                       <div class="col-md-12 text-center">
                     {/* <ul class="pagination pagination-lg pager" id="myPager"></ul> */}
                     <div className="footer"  id="idPagination">
