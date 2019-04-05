@@ -120,7 +120,7 @@ export class Apps extends React.Component {
     let modelManagement = ""
 
     if(appId==2 || appId == 13){
-     modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button>
+     modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="primary">Manage Models</Button>
     }else
     {
      modelManagement = "";
