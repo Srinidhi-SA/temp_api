@@ -453,30 +453,6 @@ SKLEARN_ML_SUPPORTED_XGB_TREE_ALGORITHMS = [
 
 SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
     {
-        "name":"booster",
-        "displayName" : "Booster Function",
-        "description" : "The booster function to be used",
-        "defaultValue":[obj if obj["name"] != "gbtree" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_XGB_BOOSTER],
-        "paramType":"list",
-        "uiElemType":"checkbox",
-        "display":True,
-        "hyperpatameterTuningCandidate":True,
-        "expectedDataType": ["string"],
-        "allowedDataType":["string"]
-    },
-    {
-        "name":"silent",
-        "displayName":"Print Messages on Console",
-        "description" : "Runtime Message Printing",
-        "defaultValue":[{"name":0,"selected":False,"displayName":"True"},{"name":1,"selected":True,"displayName":"False"}],
-        "paramType":"list",
-        "uiElemType":"checkbox",
-        "display":False,
-        "hyperpatameterTuningCandidate":False,
-        "expectedDataType": ["int"],
-        "allowedDataType":["int"]
-    },
-    {
         "name":"eta",
         "displayName":"Learning Rate",
         "description" : "It is the step size shrinkage used to prevent Overfitting",
@@ -575,6 +551,18 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "allowedDataType":["float"]
     },
     {
+        "name":"booster",
+        "displayName" : "Booster Function",
+        "description" : "The booster function to be used",
+        "defaultValue":[obj if obj["name"] != "gbtree" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_XGB_BOOSTER],
+        "paramType":"list",
+        "uiElemType":"checkbox",
+        "display":True,
+        "hyperpatameterTuningCandidate":True,
+        "expectedDataType": ["string"],
+        "allowedDataType":["string"]
+    },
+    {
         "name":"tree_method",
         "displayName":"Tree Construction Algorithm",
         "description":"The Tree construction algorithm used in XGBoost",
@@ -585,21 +573,6 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "hyperpatameterTuningCandidate":True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
-    },
-    {
-        "name":"predictor",
-        "displayName":"Type of Predictor Algorithm",
-        "description":"The type of predictor algorithm to use",
-        "defaultValue":[{"name":"cpu_predictor","selected":True,"displayName":"Multicore CPU prediction algorithm"},
-                {"name":"gpu_predictor","selected":True,"displayName":"Prediction using GPU"}
-            ],
-        "paramType":"list",
-        "uiElemType":"checkbox",
-        "display":False,
-        "hyperpatameterTuningCandidate":False,
-        "expectedDataType": ["string"],
-        "allowedDataType": ["string"]
-
     },
     {
         "name":"process_type",
@@ -615,7 +588,32 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
-
+    {
+        "name":"silent",
+        "displayName":"Print Messages on Console",
+        "description" : "Runtime Message Printing",
+        "defaultValue":[{"name":0,"selected":False,"displayName":"True"},{"name":1,"selected":True,"displayName":"False"}],
+        "paramType":"list",
+        "uiElemType":"checkbox",
+        "display":False,
+        "hyperpatameterTuningCandidate":False,
+        "expectedDataType": ["int"],
+        "allowedDataType":["int"]
+    },
+    {
+        "name":"predictor",
+        "displayName":"Type of Predictor Algorithm",
+        "description":"The type of predictor algorithm to use",
+        "defaultValue":[{"name":"cpu_predictor","selected":True,"displayName":"Multicore CPU prediction algorithm"},
+                {"name":"gpu_predictor","selected":True,"displayName":"Prediction using GPU"}
+            ],
+        "paramType":"list",
+        "uiElemType":"checkbox",
+        "display":False,
+        "hyperpatameterTuningCandidate":False,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
 ]
 
 SKLEARN_ML_NAIVE_BAYES_PARAMS = [
