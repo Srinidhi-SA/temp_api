@@ -30,7 +30,7 @@ SKLEARN_ML_SUPPORTED_MAX_FEATURES = [
 
 
 SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
-        {
+               {
                     "name":"max_depth",
                     "displayName":"Max Depth",
                     "description":"The maximum depth of the tree",

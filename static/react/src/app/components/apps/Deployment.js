@@ -143,7 +143,7 @@ export class Deployment extends React.Component {
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
             <Modal show={this.props.deployShowModal} onHide={this.closeDeployModal.bind(this)} dialogClassName="modal-colored-header">
               <Modal.Header closeButton>
-                <h3 className="modal-title">Deploy Project</h3>
+                <h3 className="modal-title">Deploy Model</h3>
               </Modal.Header>
               <Modal.Body>
                 <DeployPopup parentPickValue={this.pickValue}/>
