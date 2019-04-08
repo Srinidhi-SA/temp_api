@@ -276,7 +276,7 @@ export function getAllProjectList(pageNo) {
 }
 
 function fetchAllProjectList(token) {
-  return fetch(API+'/api/trainer/all/',{
+  return fetch(API+'/api/trainer/all/?app_id=' + store.getState().apps.currentAppId+'',{
       method: 'get',
       headers: getHeader(token)
   }).then( response => Promise.all([response, response.json()]));

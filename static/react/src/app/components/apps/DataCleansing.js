@@ -87,10 +87,12 @@ export class DataCleansing extends React.Component {
         text:"Proceed"
       };
     }
-
+ 
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider===false) && (i.ignoreSuggestionFlag===false))|| ((i.consider===false) && (i.ignoreSuggestionFlag===true))).map(j=>j.name);
+
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-      if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+      if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1)
         return "";
       this.props.dispatch(variableSelectedAction(item.name, true));
     });   
@@ -154,15 +156,18 @@ export class DataCleansing extends React.Component {
   checkedAllOnChange(event){
     this.props.dispatch(checkedAllAction( event.target.checked));
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider===false) && (i.ignoreSuggestionFlag===false))|| ((i.consider===false) && (i.ignoreSuggestionFlag===true))).map(j=>j.name);
+
+
     if(!event.target.checked){
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+        if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1 )
         return "";
       this.props.dispatch(variableSelectedAction(item.name, false));
       });
     }else{
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+        if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1)
         return "";
       this.props.dispatch(variableSelectedAction(item.name, true));
       });
@@ -267,13 +272,20 @@ dcTableSorter() {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    debugger;
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider===false) && (i.ignoreSuggestionFlag===false))|| ((i.consider===false) && (i.ignoreSuggestionFlag===true))).map(j=>j.name);
+
+
+    // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
+
+
 
 
     if(this.props.dataPreview!=null)  {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag)
+        if(removedVariables.indexOf(item.name)!= -1||considerItems.indexOf(item.name)!= -1)
           return "";
         else{
         return (

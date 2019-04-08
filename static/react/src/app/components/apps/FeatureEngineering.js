@@ -336,6 +336,8 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;
 
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider===false) && (i.ignoreSuggestionFlag===false))|| ((i.consider===false) && (i.ignoreSuggestionFlag===true))).map(j=>j.name);
+
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables){ 
       if(!this.props.datasets.selectedVariables[key])
@@ -357,7 +359,7 @@ export class FeatureEngineering extends React.Component {
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
-        if(removedVariables.indexOf(item.name)!= -1|| item.ignoreSuggestionFlag || unselectedvar.indexOf(item.name)!= -1 )
+        if(removedVariables.indexOf(item.name)!= -1 || unselectedvar.indexOf(item.name)!= -1 ||considerItems.indexOf(item.name)!= -1)
         return "";
         if(item.columnType == "measure")
           numberOfSelectedMeasures +=1;
