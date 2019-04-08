@@ -541,16 +541,16 @@ feture_engineering_static = {
             "selected": True,
             "display": True,
             "operations": [
-                {
-                    "name": "none",
-                    "displayName": "None",
-                    "selected": True,
-                    "columns": [],
-                    "display": True,
-                    "columns_structure": {
-
-                    }
-                },
+                # {
+                #     "name": "none",
+                #     "displayName": "None",
+                #     "selected": True,
+                #     "columns": [],
+                #     "display": True,
+                #     "columns_structure": {
+                #
+                #     }
+                # },
                 {
                     "name": "create_equal_sized_bins",
                     "displayName": "Create Equal Sized Bins",
