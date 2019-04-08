@@ -105,7 +105,7 @@ export class ModelVariableSelection extends React.Component {
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
-                    <option value="">Select</option>
+                    <option value="">None</option>
                 {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
                     metaData.map((metaItem,metaIndex) =>{
                         if(metaItem.columnType =="measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol){
