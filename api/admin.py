@@ -234,15 +234,15 @@ class ModelDeploymentAdmin(admin.ModelAdmin):
     list_filter = ["deleted", ]
     readonly_fields = ["created_at", "created_by"]
 
-class PeriodicTaskAdmin(admin.ModelAdmin):
-    pass
+# class PeriodicTaskAdmin(admin.ModelAdmin):
+#     pass
 
 admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
 admin.site.register(StockDataset, StockDatasetAdmin)
 admin.site.register(Robo, RoboAdmin)
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ModelDeployment, ModelDeploymentAdmin)
-admin.site.register(PeriodicTask, PeriodicTaskAdmin)
+# admin.site.register(PeriodicTask, PeriodicTaskAdmin)
 
 
 
