@@ -198,8 +198,21 @@ export class FeatureEngineering extends React.Component {
         var endDate = levelData[i].endDate;
         var inputValue = levelData[i].inputValue;
         var multiselect = levelData[i].multiselectValue;
-
-
+        if(startDate == "" && endDate == ""){ 
+          if(inputValue != undefined || inputValue != null || inputValue != ""){
+            if(multiselect == undefined || multiselect == null || multiselect == "" ||multiselect.length==0){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Please choose");
+              return;
+            }
+          }else{
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter new column name");
+            $("input[name='inputValue']").css("border-color","red");
+            $("input[name='inputValue']").focus();
+            return;
+          }
+        }else{
          if ((Date.parse(startDate) > Date.parse(endDate))) {
             console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
@@ -213,6 +226,7 @@ export class FeatureEngineering extends React.Component {
             return;
           }
         }
+      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
