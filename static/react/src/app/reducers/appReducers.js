@@ -211,7 +211,7 @@ export default function reducer(state = {
                 "dataset_details":{
                     "datasource_details":{
                         "datasetname":dd.datasetname,
-                        "bucket_name":"s3",
+                        "bucket_name":dd.s3Bucket,
                         "file_name":dd.file_name,
                         "access_key_id":dd.access_key_id,
                         "secret_key":dd.secret_key
