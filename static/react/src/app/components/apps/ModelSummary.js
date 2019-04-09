@@ -40,13 +40,43 @@ export class ModelSummary extends React.Component {
 		this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 		this.props.dispatch(getDeploymentList(this.props.match.params.slug));
 		
-		console.log("api call end")	
+		console.log("api call end")
+		
+		setInterval(function() {
+ 					  var evt = document.createEvent('UIEvents');
+					  evt.initUIEvent('resize', true, false,window,0);
+					  window.dispatchEvent(evt);
+					  console.log("I");
+		}, 500);
+
+
 	}
 
-  componentDidMount() {
-			// this.props.dispatch(refreshAppsAlgoList(this.props));
-			
-	}
+	
+
+ 
+ 
+componentDidMount() {
+		// this.props.dispatch(refreshAppsAlgoList(this.props));
+		/*
+		var i = 0;
+		var timer = setInterval(function() {
+		  if (i >= 5)
+		  {
+			  clearInterval(timer);
+			  console.log('post-interval'); 
+		  }//this will still run after clearing
+		  else
+		  {
+				  var evt = document.createEvent('UIEvents');
+				  evt.initUIEvent('resize', true, false,window,0);
+				  window.dispatchEvent(evt);
+				  i++;
+				console.log('Pre-interval'); 
+		  }
+		}, 1000);
+		*/
+}
 
   closeModelSummary(){
 	 window.history.back();
