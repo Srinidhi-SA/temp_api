@@ -158,7 +158,7 @@ if(this.props.selectedItem.columnType == "dimension")
         var levels = "";
     levels = (
       <Tab.Pane>
-
+        <form>
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
@@ -185,12 +185,14 @@ if(this.props.selectedItem.columnType == "dimension")
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
 
-      </div>
+      
       <div className="row form-group">
         <div className="col-sm-12 text-center">
           <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
         </div>
       </div>
+      </div>
+     </form>
 
   </Tab.Pane>
     )
