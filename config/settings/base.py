@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&j=7xx+szuncx4&!94sjx5p49yjc^drcptwmw#64#z39t(@^65'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.33.128"]
 
@@ -1639,3 +1639,13 @@ CELERY_ONCE_CONFIG = {
 }
 
 FILE_UPLOAD_PERMISSIONS = 0777
+
+if DEBUG == False:
+    from logger_config import *
+    server_log = BASE_DIR + '/server_log'
+    if os.path.exists(server_log):
+        pass
+    else:
+        os.mkdir(server_log)
+else:
+    pass
