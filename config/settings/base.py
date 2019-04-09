@@ -15,7 +15,6 @@ import os
 import datetime
 import config_file_name_to_run
 from mlsettings import *
-from logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
