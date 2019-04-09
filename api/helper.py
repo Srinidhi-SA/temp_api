@@ -1334,10 +1334,10 @@ def get_timing_details(timing_type=None):
         timing_details['crontab']['hour'] = 1
     elif timing_type == 'every 15 minutes':
         timing_details['type'] = "interval"
-        timing_details['interval'] = 60*15 # 15 minutes in seconds
+        timing_details['interval']['every'] = 60*15 # 15 minutes in seconds
     elif timing_type == 'every 10 minutes':
         timing_details['type'] = "interval"
-        timing_details['interval'] = 60*10 # 15 minutes in seconds
+        timing_details['interval']['every'] = 60*10 # 15 minutes in seconds
     else:
         timing_details['type'] = "interval"
 
