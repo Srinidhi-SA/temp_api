@@ -216,12 +216,12 @@ KYLO_SERVER_DETAILS = {
     "kylo_file_path":"/opt/kylo/"
 }
 
-if DEBUG == False:
-    from logger_config import *
-    server_log = BASE_DIR + '/server_log'
-    if os.path.exists(server_log):
-        pass
-    else:
-        os.mkdir(server_log)
-else:
-    pass
+# if DEBUG == False:
+#     from logger_config import *
+#     server_log = BASE_DIR + '/server_log'
+#     if os.path.exists(server_log):
+#         pass
+#     else:
+#         os.mkdir(server_log)
+# else:
+#     pass
