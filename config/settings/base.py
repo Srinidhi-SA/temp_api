@@ -721,6 +721,7 @@ BRIEF_INFO_CONFIG = {
     'dataset': 'Dataset',
     'analysis list': 'Analysis List',
     'train_test_split': 'Train Test Split',
+    'kFold': 'K Fold Validation',
     'algorithm name': 'Algorithm Name',
     'model': 'Model',
     'file_size': 'File Size',
