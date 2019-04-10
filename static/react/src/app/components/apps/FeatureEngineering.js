@@ -193,51 +193,31 @@ export class FeatureEngineering extends React.Component {
     var slugData = this.state[this.props.selectedItem.slug];
     if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
       var levelData = this.state[this.props.selectedItem.slug][actionType];
-      if(levelData != undefined){
-        for (var i = 0; i < levelData.length-1; i++) {
-          var startDate = levelData[i].startDate;
-          var endDate = levelData[i].endDate;
-          var inputValue = levelData[i].inputValue;
-          var multiselect = levelData[i].multiselectValue;
-          if(startDate == "" && endDate == ""){
-            if(inputValue != undefined || inputValue != null || inputValue != ""){
-              if(multiselect == undefined || multiselect == null || multiselect == ""){
-                $("#fileErrorMsg").removeClass("visibilityHidden");
-                $("input[name='inputValue']").focus();
-                $("#fileErrorMsg").html("Please enter value");
-                return;
-              }
-              var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-              this.closeBinsOrLevelsModal();
-              this.closeTransformColumnModal();
-            }
-            else{
-              $("#fileErrorMsg").removeClass("visibilityHidden");
-              $("#fileErrorMsg").html("Please select values");
-              return;
-            }
+      for (var i = 0; i < levelData.length-1; i++) {
+        var startDate = levelData[i].startDate;
+        var endDate = levelData[i].endDate;
+        var inputValue = levelData[i].inputValue;
+        var multiselect = levelData[i].multiselectValue;
+
+
+         if ((Date.parse(startDate) > Date.parse(endDate))) {
+            console.log('start date is greater');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Start Date should be before End Date");
+            return;
+          }
+          else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter the new column name");
+            $("input[name='inputValue']").focus();
+            return;
           }
         }
-      }
-      else if ((Date.parse(startDate) > Date.parse(endDate))) {
-        console.log('start date is greater');
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Start Date should be before End Date");
-        return;
-      }
-      else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter the new column name");
-        $("input[name='inputValue']").focus();
-        return;
-      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-    }
-    else{
+    }else{
       $("#fileErrorMsg").removeClass("visibilityHidden");
       $("#fileErrorMsg").html("Please enter new level ");
     }

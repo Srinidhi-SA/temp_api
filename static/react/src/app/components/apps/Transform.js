@@ -47,7 +47,6 @@ export class Transform extends React.Component {
       }
 
     getTranformDataValue(name){
-      debugger;;
       var transformationData = this.getTransformationata();
       var value = transformationData[name];
       return value;
@@ -55,6 +54,7 @@ export class Transform extends React.Component {
 
   pickValue(event){
     this.props.parentPickValue("transformationData", event);
+
   }
 
   onchangeInput(event){
@@ -246,7 +246,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" id="time_since_input" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                    <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div className="row form-group">
