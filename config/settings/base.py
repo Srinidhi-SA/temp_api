@@ -757,6 +757,7 @@ DATASET_ORDER = [
 THIRD_ORDER = [
     'analysis list',
     'train_test_split',
+    'kFold',
     'model',
     'algorithm name'
 ]
