@@ -213,25 +213,11 @@ export class FeatureEngineering extends React.Component {
             return;
           }
         }
-      }
-      else if ((Date.parse(startDate) > Date.parse(endDate))) {
-        console.log('start date is greater');
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Start Date should be before End Date");
-        return;
-      }
-      else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please enter the new column name");
-        $("input[name='inputValue']").focus();
-        return;
-      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-    }
-    else{
+    }else{
       $("#fileErrorMsg").removeClass("visibilityHidden");
       $("#fileErrorMsg").html("Please enter new level ");
     }
