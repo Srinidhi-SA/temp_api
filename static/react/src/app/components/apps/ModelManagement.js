@@ -274,13 +274,13 @@ debugger;
           <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
-      <td  class="text-left"><div class="ellipse-text" title={item.project_name}> <i className="fa fa-briefcase text-primary"></i> {item.project_name}</div></td>
+      <td  class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
       <td className="text-left"> {item.algorithm}</td>
       <td ><span className="text-success"></span> {item.training_status}</td>
       <td > {item.accuracy}</td>
-      <td > <i class="fa fa-calendar text-info"></i>{dateFormat( item.created_at, " mmm d,yyyy")}</td>
+      <td > {dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
-      <td ><i class="fa fa-clock-o text-warning"></i> {item.runtime}</td>
+      <td > {item.runtime}</td>
       <td> <Button >
               <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
                   {Details}
