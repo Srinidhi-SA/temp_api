@@ -15,7 +15,6 @@ import os
 import datetime
 import config_file_name_to_run
 from mlsettings import *
-from logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&j=7xx+szuncx4&!94sjx5p49yjc^drcptwmw#64#z39t(@^65'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.33.128"]
 
@@ -722,6 +721,8 @@ BRIEF_INFO_CONFIG = {
     'dataset': 'Dataset',
     'analysis list': 'Analysis List',
     'train_test_split': 'Train Test Split',
+    'trainAndtest': 'Train Test Split',
+    'kFold': 'K Fold Validation',
     'algorithm name': 'Algorithm Name',
     'model': 'Model',
     'file_size': 'File Size',
@@ -757,6 +758,8 @@ DATASET_ORDER = [
 THIRD_ORDER = [
     'analysis list',
     'train_test_split',
+    'trainAndtest',
+    'kFold',
     'model',
     'algorithm name'
 ]
@@ -1640,3 +1643,13 @@ CELERY_ONCE_CONFIG = {
 }
 
 FILE_UPLOAD_PERMISSIONS = 0777
+
+# if DEBUG == False:
+#     from logger_config import *
+#     server_log = BASE_DIR + '/server_log'
+#     if os.path.exists(server_log):
+#         pass
+#     else:
+#         os.mkdir(server_log)
+# else:
+#     pass

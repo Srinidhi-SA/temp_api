@@ -1029,7 +1029,7 @@ class Trainer(models.Model):
                     validationTechnique = file_setting.get('validationTechnique')[0]
                     valueKey = validationTechnique
                     brief_info.update({
-                        'train_test_split': valueKey['value']
+                        valueKey['name']: valueKey['value']
                     })
                 else:
                     brief_info.update({

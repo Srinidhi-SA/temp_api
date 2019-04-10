@@ -1065,6 +1065,7 @@ def get_job_status_from_jobserver(instance=None):
         return err
 
 def get_job_status(instance=None):
+    return
 
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
@@ -1331,6 +1332,12 @@ def get_timing_details(timing_type=None):
         timing_details['crontab']['day_of_month'] = 1
     elif timing_type == 'hourly':
         timing_details['crontab']['hour'] = 1
+    elif timing_type == 'every 15 minutes':
+        timing_details['type'] = "interval"
+        timing_details['interval']['every'] = 60*15 # 15 minutes in seconds
+    elif timing_type == 'every 10 minutes':
+        timing_details['type'] = "interval"
+        timing_details['interval']['every'] = 60*10 # 15 minutes in seconds
     else:
         timing_details['type'] = "interval"
 

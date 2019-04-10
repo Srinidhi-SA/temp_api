@@ -50,6 +50,7 @@ export class Levels extends React.Component {
 
 
   getMultiSelectOptions(idx){
+    debugger;
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
       return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function(elem) {
         return {"label": elem, "value" : elem };
@@ -158,7 +159,7 @@ if(this.props.selectedItem.columnType == "dimension")
         var levels = "";
     levels = (
       <Tab.Pane>
-
+        <form>
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
@@ -173,7 +174,7 @@ if(this.props.selectedItem.columnType == "dimension")
 
           <div className="content-section implementation multiselect-demo">
           <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
-                            style={{minWidth:'12em'}} filter={true} placeholder="choose" />
+                            style={{minWidth:'12em'}} tooltip={level.multiselectValue} filter={true} placeholder="choose" />
           </div>
           </div>
           <div className="form-group">
@@ -185,12 +186,14 @@ if(this.props.selectedItem.columnType == "dimension")
         ))}
         <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"> Add</i></button>
 
-      </div>
+      
       <div className="row form-group">
         <div className="col-sm-12 text-center">
           <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
         </div>
       </div>
+      </div>
+     </form>
 
   </Tab.Pane>
     )
