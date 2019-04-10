@@ -193,31 +193,51 @@ export class FeatureEngineering extends React.Component {
     var slugData = this.state[this.props.selectedItem.slug];
     if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
       var levelData = this.state[this.props.selectedItem.slug][actionType];
-      for (var i = 0; i < levelData.length; i++) {
-        var startDate = levelData[i].startDate;
-        var endDate = levelData[i].endDate;
-        var inputValue = levelData[i].inputValue;
-        var multiselect = levelData[i].multiselectValue;
-
-
-         if ((Date.parse(startDate) > Date.parse(endDate))) {
-            console.log('start date is greater');
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Start Date should be before End Date");
-            return;
-          }
-          else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
-            $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please enter the new column name");
-            $("input[name='inputValue']").focus();
-            return;
+      if(levelData != undefined){
+        for (var i = 0; i < levelData.length-1; i++) {
+          var startDate = levelData[i].startDate;
+          var endDate = levelData[i].endDate;
+          var inputValue = levelData[i].inputValue;
+          var multiselect = levelData[i].multiselectValue;
+          if(startDate == "" && endDate == ""){
+            if(inputValue != undefined || inputValue != null || inputValue != ""){
+              if(multiselect == undefined || multiselect == null || multiselect == ""){
+                $("#fileErrorMsg").removeClass("visibilityHidden");
+                $("input[name='inputValue']").focus();
+                $("#fileErrorMsg").html("Please enter value");
+                return;
+              }
+              var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+              this.closeBinsOrLevelsModal();
+              this.closeTransformColumnModal();
+            }
+            else{
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Please select values");
+              return;
+            }
           }
         }
+      }
+      else if ((Date.parse(startDate) > Date.parse(endDate))) {
+        console.log('start date is greater');
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Start Date should be before End Date");
+        return;
+      }
+      else if(inputValue == undefined || inputValue == null|| inputValue == "" ){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter the new column name");
+        $("input[name='inputValue']").focus();
+        return;
+      }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-    }else{
+    }
+    else{
       $("#fileErrorMsg").removeClass("visibilityHidden");
       $("#fileErrorMsg").html("Please enter new level ");
     }
@@ -238,43 +258,55 @@ export class FeatureEngineering extends React.Component {
         else if(transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null|| transformationData.replace_values_with_selected == "" ){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Select value to replace with");
-          $("input[name='replace_values_with_selected']").focus();
+          $("select[name='replace_values_with_selected']").focus();
           return;
         }
-      }else if(transformationData.feature_scaling == true){
+      }
+      else if(transformationData.feature_scaling == true){
         if(transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null|| transformationData.perform_standardization_select == ""){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Select value for feature scaling");
+          $("select[name='perform_standardization_select']").focus();
           return;
         }
-      }else if(transformationData.variable_transformation == true){
+      }
+      else if(transformationData.variable_transformation == true){
         if(transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null|| transformationData.variable_transformation_select == ""){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Select value for variable transformation");
+          $("select[name='variable_transformation_select']").focus();
           return;
         }
-      }else if(transformationData.extract_time_feature == true){
-        if(transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null|| transformationData.extract_time_feature_select == ""){
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for time feature");
-          return;
-        }
-      }else if(transformationData.time_since == true){
-        if(transformationData.time_since_input == undefined || transformationData.time_since_input == null|| transformationData.time_since_input == ""){
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for Time Since");
-          return;
-        }
-      }else if(transformationData.is_custom_string_in == true){
-        if(transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null|| transformationData.is_custom_string_in_input == ""){
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for custom String");
-          return;
-        }
-      }else if(transformationData.encoding_dimensions == true){
+      }
+      else if(transformationData.encoding_dimensions == true){
         if(transformationData.encoding_type == undefined || transformationData.encoding_type == null|| transformationData.encoding_type == ""){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Select Encoding Type");
+          $("select[name='encoding_type']").focus();          
+          return;
+        }
+      }
+      else if(transformationData.is_custom_string_in == true){
+        if(transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null|| transformationData.is_custom_string_in_input == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter value for custom String");
+          $("input[name='is_custom_string_in_input']").focus();          
+          return;
+        }
+      }
+      else if(transformationData.extract_time_feature == true){
+        if(transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null|| transformationData.extract_time_feature_select == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Select value for time feature");
+          $("select[name='extract_time_feature_select']").focus();          
+          return;
+        }
+      }
+      else if(transformationData.time_since == true){
+        if(transformationData.time_since_input == undefined || transformationData.time_since_input == null|| transformationData.time_since_input == ""){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Enter value for Time Since");
+          $("input[name='time_since_input']").focus();          
           return;
         }
       }
@@ -282,7 +314,8 @@ export class FeatureEngineering extends React.Component {
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
-    }else {
+    }
+    else {
       $("#fileErrorMsg").removeClass("visibilityHidden");
       $("#fileErrorMsg").html("No fields Selected");
     }
