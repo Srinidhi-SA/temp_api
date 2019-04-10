@@ -88,7 +88,7 @@ SKLEARN_GRIDSEARCH_PARAMS = [
                 "displayName":"No Of Folds to Use",
                 "defaultValue":3,
                 "acceptedValue":None,
-                "valueRange":[2,10],
+                "valueRange":[2,20],
                 "paramType":"number",
                 "uiElemType":"slider",
                 "display":True,
@@ -128,7 +128,7 @@ SKLEARN_RANDOMSEARCH_PARAMS = [
                 "displayName":"No Of Folds to Use",
                 "defaultValue":3,
                 "acceptedValue":None,
-                "valueRange":[2,10],
+                "valueRange":[2,20],
                 "paramType":"number",
                 "uiElemType":"slider",
                 "display":True
@@ -158,7 +158,7 @@ SKLEARN_NONE_PARAMS = [
                 "displayName":"No Of Folds to Use",
                 "defaultValue":3,
                 "acceptedValue":None,
-                "valueRange":[2,10],
+                "valueRange":[2,20],
                 "paramType":"number",
                 "uiElemType":"slider",
                 "display":True
