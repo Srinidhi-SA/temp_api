@@ -90,7 +90,7 @@ export class DataValidationEditValues extends React.Component {
 		  return (<div className="form-group" id={data.id} key={id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-4">
-			<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.valueToReplace} className="form-control"/>
+			<input  id={data.id} type="text" autocomplete="off" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.valueToReplace} className="form-control"/>
 			</div>
 			<div className="col-sm-3">
 			 <select className="form-control" id={data.id} onChange={this.handleInputChange.bind(this)}>
@@ -110,10 +110,10 @@ export class DataValidationEditValues extends React.Component {
 		  return (<div className="form-group" id={data.replaceId} key={data.replaceId}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-3">
-			<input  id={data.replaceId} placeholder="Current Value" type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,CURRENTVALUE)} value={data.valueToReplace} className="form-control"/>
+			<input  id={data.replaceId} placeholder="Current Value" type="text" autocomplete="off" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,CURRENTVALUE)} value={data.valueToReplace} className="form-control"/>
 			</div>
 			<div className="col-sm-3">
-			<input  id={data.replaceId} placeholder="New Value" type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,NEWVALUE)} value={data.replacedValue} className="form-control"/>
+			<input  id={data.replaceId} placeholder="New Value" type="text" autocomplete="off" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,NEWVALUE)} value={data.replacedValue} className="form-control"/>
 			</div>
 			<div className="col-sm-3">
 			 <select className="form-control" id={data.replaceId} onChange={this.handleInputChangeReplace.bind(this,data.replaceId)}>
