@@ -193,7 +193,7 @@ export class FeatureEngineering extends React.Component {
     var slugData = this.state[this.props.selectedItem.slug];
     if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
       var levelData = this.state[this.props.selectedItem.slug][actionType];
-      for (var i = 0; i < levelData.length; i++) {
+      for (var i = 0; i < levelData.length-1; i++) {
         var startDate = levelData[i].startDate;
         var endDate = levelData[i].endDate;
         var inputValue = levelData[i].inputValue;

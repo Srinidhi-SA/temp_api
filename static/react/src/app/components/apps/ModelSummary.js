@@ -259,7 +259,7 @@ export class ModelSummary extends React.Component {
       <div class="main-content">
 	
     <div class="page-head">
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize">Model ID:<small> {algoAnalysis.name}</small></h3>
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize">Model ID: {algoAnalysis.name}</h3>
     </div>
 	<div class="panel panel-mAd box-shadow">
         <div class="panel-body no-border xs-p-20">
