@@ -1065,10 +1065,13 @@ def get_job_status_from_jobserver(instance=None):
         return err
 
 def get_job_status(instance=None):
-    return
 
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
+    else:
+        if instance.job:
+            if instance.job.status in ['SUCCESS', 'FAILED']:
+                instance.status = instance.job.status
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
         try:

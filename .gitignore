@@ -7,6 +7,7 @@ dump.*
 celerybeat-*
 venv
 ENV
+metastore_db
 server_log
 .idea
 *.egg-info
