@@ -1297,7 +1297,7 @@ class Trainer(models.Model):
             "multiply_specific_value", "divide_specific_value",
             "perform_standardization", "variable_transformation",
             # Dimension Transformations
-            "encoding_dimensions", "is_custom_string_in", "return_character_count"
+            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling"
         ]
 
         for key in list_of_transformations:
@@ -1358,6 +1358,21 @@ class Trainer(models.Model):
                                                     )
 
             if key == "perform_standardization":
+
+                colStructure = {
+                    "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
+                }
+
+                name_mapping = {
+                    'standardization': 'standardized',
+                    'normalization': 'normalized'
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                                    )
+            if key == "feature_scaling":
 
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
@@ -1576,6 +1591,10 @@ class Trainer(models.Model):
                 'type': 'dimension'
             },
             'perform_standardization': {
+                'name': 'fs',
+                'type': 'measure'
+            },
+            'feature_scaling': {
                 'name': 'fs',
                 'type': 'measure'
             }
