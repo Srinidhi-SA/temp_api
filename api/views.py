@@ -123,8 +123,7 @@ class SignalView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception(
-                "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()
@@ -200,6 +199,9 @@ class TrainerView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainerSerlializer(data=data, context={"request": self.request})
@@ -215,6 +217,9 @@ class TrainerView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
@@ -448,6 +453,10 @@ class ScoreView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
@@ -466,6 +475,8 @@ class ScoreView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         # instance = self.get_object()
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()
