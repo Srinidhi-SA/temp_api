@@ -93,7 +93,7 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and name_check(data['name']):
+        if 'name' in data and not name_check(data['name']):
             return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         if 'config' in data:
@@ -122,7 +122,7 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and name_check(data['name']):
+        if 'name' in data and not name_check(data['name']):
             return creation_failed_exception(
                 "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 

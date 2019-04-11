@@ -1144,18 +1144,18 @@ def name_check(name):
 
 
 def check_for_length(name):
-    return False if len(name) < settings.MAX_LENGTH_OF_NAME else True
+    return True if len(name) < settings.MAX_LENGTH_OF_NAME else False
 
 def check_for_special_chars(name):
     import string
     KEEP_CHARACTERS_IN_NAME = string.digits + string.ascii_letters + settings.ALLOWED_SPECIAL_CHARS_IN_NAME
     for chr in name:
         if chr not in KEEP_CHARACTERS_IN_NAME:
-            return True
-    return False
+            return False
+    return True
 
 def check_for_empty(name):
-    return True if len(name) == 0 else False
+    return False if len(name) == 0 else True
 
 # model management
 
