@@ -872,6 +872,8 @@ class Trainer(models.Model):
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
             configUI = self.get_config()
+
+            # Unselect original
             if 'featureEngineering' in configUI:
                 for colSlug in self.collect_column_slugs_which_all_got_transformations:
                         for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -881,6 +883,7 @@ class Trainer(models.Model):
                                     break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
 
+            # Updating datatypes
             if 'newDataType' in configUI:
                 for colSlug in configUI['newDataType']:
                     for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -888,6 +891,7 @@ class Trainer(models.Model):
                             i['columnType'] = configUI['newDataType'][colSlug]['newColType']
                             break
 
+            # Select or not to Select
             if 'selectedVariables' in configUI:
                 for colSlug in configUI['selectedVariables']:
                     for i in config['config']['COLUMN_SETTINGS']['variableSelection']:

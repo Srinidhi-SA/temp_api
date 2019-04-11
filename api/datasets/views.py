@@ -103,7 +103,6 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Dataset.__name__)
