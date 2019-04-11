@@ -5015,7 +5015,9 @@ def get_chart_or_small_data(request, slug=None):
     from django.http import HttpResponse
     import csv
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(slug)
+    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(
+        'chart_' + data_object.object_slug + '_' + data_object.slug
+    )
     writer = csv.writer(response)
     for row in csv_data:
         writer.writerow(row)
