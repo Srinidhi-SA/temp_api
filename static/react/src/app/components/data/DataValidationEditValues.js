@@ -142,12 +142,13 @@ export class DataValidationEditValues extends React.Component {
 		<Row className="clearfix">
 		<Col sm={3}>
 		<Nav bsStyle="pills" stacked>
-		<NavItem eventKey="Remove">
-		Remove
-		</NavItem>
 		<NavItem eventKey="Replace" >
 		Replace
 		</NavItem>
+		<NavItem eventKey="Remove">
+		Remove
+		</NavItem>
+		
 		</Nav>
 		</Col>
 
