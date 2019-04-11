@@ -79,7 +79,10 @@ export class Levels extends React.Component {
    componentDidMount() {
 	if ($('#dimSEdate').hasClass('wide-modal')) {
 		$('.modal-colored-header').addClass('modal-lg-dimSEdate');
-	}
+  }
+  
+  $('.p-multiselect-item label').prop('title', function() { return $(this).text(); });
+
  }
 
   handleLevelSubmit = evt => {
@@ -171,7 +174,6 @@ if(this.props.selectedItem.columnType == "dimension")
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
           </div>
           <div className="form-group">
-
           <div className="content-section implementation multiselect-demo">
           <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
                             style={{minWidth:'12em'}} tooltip={level.multiselectValue} filter={true} placeholder="choose" />
