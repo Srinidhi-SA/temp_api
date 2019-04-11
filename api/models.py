@@ -887,7 +887,15 @@ class Trainer(models.Model):
                         if i['slug'] == colSlug:
                             i['columnType'] = configUI['newDataType'][colSlug]['newColType']
                             break
-        except:
+
+            if 'selectedVariables' in configUI:
+                for colSlug in configUI['selectedVariables']:
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            i['selected'] = configUI['selectedVariables'][colSlug]
+                            break
+        except Exception as err:
+            print(err)
             pass
 
         # first UI config was saved <-> this is ML config got saved in place of UI config
