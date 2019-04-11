@@ -28,6 +28,12 @@ export class Bins extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
   }
+   
+
+  componentWillMount(){
+    
+  }
+
 
   getBindata(){
     if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
@@ -40,19 +46,30 @@ export class Bins extends React.Component {
   }
 
   getbinningOptions(){
+
     var binData= this.getBindata();
     var measure = this.props.dataPreview.meta_data.uiMetaData.fe_config.fe.measure;
-    var binningOptions =  (measure.level_creation_settings.operations.map(item => <option  key={item.name} value={item.name}  >{item.displayName}</option>))
-    return (<select className="form-control" name="selectBinType" defaultValue={binData.selectBinType}  onChange={this.binningOptionsOnChange.bind(this)}>{binningOptions}</select>);
+                    
+                    var binningOptions =  (measure.level_creation_settings.operations.map(item => <option  key={item.name} value={item.name}  >{item.displayName}</option>))
+    return (<select className="form-control"  id="selectBinType" name="selectBinType" defaultValue={binData.selectBinType}  onChange={this.binningOptionsOnChange.bind(this)}> <option value="">--Select--</option> {binningOptions}</select>);
   }
 
   binningOptionsOnChange(event){
     var selectedValue = event.target.value;
+    if(selectedValue == ""){
+    document.getElementById('specifyintervals').value= "";
+    document.getElementById('numberofbins').value= "";
+    this.props.dispatch(binningOptionsOnChangeAction(true, true));
+
+    }
+
     //var binData = this.getBindata();
-    if(selectedValue == "create_equal_sized_bins"){
-      this.props.dispatch(binningOptionsOnChangeAction(false, true));
+     else if(selectedValue == "create_equal_sized_bins"){
+    document.getElementById('specifyintervals').value= "";
+     this.props.dispatch(binningOptionsOnChangeAction(false, true));
     }else if(selectedValue == "create_custom_bins"){
-      this.props.dispatch(binningOptionsOnChangeAction(true, false));
+    document.getElementById('numberofbins').value= "";
+     this.props.dispatch(binningOptionsOnChangeAction(true, false));
     }
     this.props.clearBinsAndIntervals(event);
     this.pickValue(event);
@@ -67,6 +84,7 @@ export class Bins extends React.Component {
   }
 
   render() {
+
     console.log("Bins render method is called...");
     var bins = "";
     var binData= this.getBindata();
@@ -90,13 +108,13 @@ export class Bins extends React.Component {
           <div className="row form-group">
             <label for="sel_tobg" className="col-sm-4 control-label">{"Number of bins"} <span className="text-danger">*</span></label>
             <div className="col-sm-8">
-              <input type="number" min="0" title="Number of bins " placeholder="Number of bins" name="numberofbins"  defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} className="form-control" />
+              <input type="number" min="0" title="Number of bins " placeholder="Number of bins" id="numberofbins" name="numberofbins"  defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} className="form-control" />
             </div>
           </div>
           <div className="row form-group">
             <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"} <span className="text-danger">*</span></label>
             <div className="col-sm-8">
-              <input type="text" title="Specify intervals" placeholder="Specify intervals" name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+              <input type="text" title="Specify intervals" placeholder="Specify intervals" id="specifyintervals"name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
             </div>
           </div>
           <div className="row form-group">

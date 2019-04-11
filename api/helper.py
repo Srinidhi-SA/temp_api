@@ -1065,6 +1065,7 @@ def get_job_status_from_jobserver(instance=None):
         return err
 
 def get_job_status(instance=None):
+    return
 
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status

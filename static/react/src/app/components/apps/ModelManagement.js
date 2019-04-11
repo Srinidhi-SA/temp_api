@@ -211,7 +211,38 @@ getAllDeployPreview()
           </div>
         </div>
       );
-		}else{
+    }
+    // else{
+  //     if(this.props.algoList.current_item_count == 0){
+  //       console.log("+++++++++++++++++++++++++++++====");
+        
+  //       return (
+  //         <div class="side-body">
+  //           <div class="page-head">
+  //             <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>Automated Prediction</small></h3>
+  //           </div>
+  //           <div class="main-content">
+  //           <div class="row">
+  //               <div class="col-md-12">
+  //                 <div class="panel box-shadow">
+  //                   <div class="panel-body no-border xs-p-20">
+  //               <div class="table-responsive xs-mt-50"  style={{height:'280px'}}>
+  //               <h3><center>Nooooo datasets available </center></h3>
+  //               </div>
+  //             <div class="buttonRow pull-right">
+  //               <Button onClick={this.closeModelmanagement.bind(this)} bsStyle="primary">Close</Button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //     </div>
+  // </div>
+  
+  //     );
+  //    }
+
+      else{
     console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
     var mmTable = "";
     var deployPopup = "";
@@ -241,7 +272,7 @@ debugger;
        return (
            <tr key={key} className={('all ' + item.name)}>
        <td>
-          <label for="txt_lName1" class="xs-m-0">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
+          <label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label>
        </td>
       <td className="text-left"> {item.model_id}</td>
       <td  class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
@@ -301,15 +332,16 @@ debugger;
     </tbody>
   </table>)
     }
+    else if(this.props.algoList.current_item_count == 0)
+    {
+      tablecontent= (
+        <h5><center>There are no models available for this selection</center></h5>
+    )
+    }
+    
     else {(
       tablecontent= (
             <h5><center>There are no models available for this selection</center></h5>
-      // <div className="side-body">
-      //     <div className="page-head">
-      //     </div>
-      //     <div className="main-content">
-      //     </div>
-      //   </div>
         )
         )}
 
@@ -422,6 +454,8 @@ debugger;
     );
    }
   }
+// }
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
   openDeployModal(slug) {
     console.log("open ---openDeployModal");
