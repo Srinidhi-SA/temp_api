@@ -880,8 +880,16 @@ class Trainer(models.Model):
                                     i['selected'] = False
                                     break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
+
+            if 'newDataType' in configUI:
+                for colSlug in configUI['newDataType']:
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            i['columnType'] = configUI['newDataType'][colSlug]['newColType']
+                            break
         except:
             pass
+
         # first UI config was saved <-> this is ML config got saved in place of UI config
         self.config = json.dumps(config)
         self.save()
