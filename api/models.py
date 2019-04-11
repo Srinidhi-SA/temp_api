@@ -164,7 +164,7 @@ class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
     subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
@@ -172,7 +172,7 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -579,14 +579,14 @@ class Insight(models.Model):
     data = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False, )
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -815,13 +815,13 @@ class Trainer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
@@ -1673,13 +1673,13 @@ class Score(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
@@ -4847,7 +4847,7 @@ class TrainAlgorithmMapping(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
@@ -4891,13 +4891,13 @@ class ModelDeployment(models.Model):
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
-    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
@@ -5077,13 +5077,13 @@ class DatasetScoreDeployment(models.Model):
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
-    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
