@@ -1295,6 +1295,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 }
 
 function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
+    debugger;
     dispatch(showLoading());
     var slug = store.getState().datasets.selectedDataSet;
     var transformSettings = store.getState().datasets.dataTransformSettings.slice();

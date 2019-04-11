@@ -53,6 +53,7 @@ export default function reducer(state = {
   advancedAnalysisPrediction:true,
   advancedAnalysisPerformance:true,
   createScoreShowVariables:false,
+  dataTypeChangedTo:{},
   missingValueTreatment:{},
   featureEngineering:{},
   selectedVariables : {},
@@ -724,8 +725,14 @@ export default function reducer(state = {
        var curOutlierRemoval = state.outlierRemoval;
        delete(curOutlierRemoval[action.colSlug]);
 
+       var curDataTypeChangedTo = state.dataTypeChangedTo;
+       curDataTypeChangedTo[action.colSlug] = {
+         "newColType" : action.newDataType
+       };
+       
        return {
           ...state,
+          dataTypeChangedTo: curDataTypeChangedTo,
           dataPreview: newDataPreview,
           missingValueTreatment : curMissingValueTreatment,
           outlierRemoval : curOutlierRemoval
