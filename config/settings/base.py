@@ -1653,3 +1653,6 @@ FILE_UPLOAD_PERMISSIONS = 0777
 #         os.mkdir(server_log)
 # else:
 #     pass
+
+ALLOWED_SPECIAL_CHARS_IN_NAME = '_-'
+MAX_LENGTH_OF_NAME = 100

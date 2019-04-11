@@ -25,6 +25,7 @@ from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
 from api.utils import \
     convert_to_string, \
+    name_check, \
     InsightSerializer, \
     TrainerSerlializer, \
     ScoreSerlializer, \
@@ -92,6 +93,9 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         if 'config' in data:
             ui_config = data['config']
             ui_config = json.loads(ui_config)
@@ -117,6 +121,10 @@ class SignalView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and name_check(data['name']):
+            return creation_failed_exception(
+                "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()

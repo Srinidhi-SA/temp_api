@@ -1138,6 +1138,25 @@ def get_random_true_false():
     import random
     return True if random.randint(0, 1) else False
 
+
+def name_check(name):
+    return check_for_empty(name) and check_for_length(name) and check_for_special_chars(name)
+
+
+def check_for_length(name):
+    return True if len(name) < settings.MAX_LENGTH_OF_NAME else False
+
+def check_for_special_chars(name):
+    import string
+    KEEP_CHARACTERS_IN_NAME = string.digits + string.ascii_letters + settings.ALLOWED_SPECIAL_CHARS_IN_NAME
+    for chr in name:
+        if chr not in KEEP_CHARACTERS_IN_NAME:
+            return False
+    return True
+
+def check_for_empty(name):
+    return False if len(name) == 0 else True
+
 # model management
 
 class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
