@@ -1160,7 +1160,7 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
             //updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
         }else if(actionName == UNIQUE_IDENTIFIER){
             if(!colStatus){
-				let prevUniqueid = statusMessages("warning","Setting this column as unique identifier will unset previous selection.","small_mascot");
+				let prevUniqueid = statusMessages("warning","Are you sure you want to make this column as unique identifier?","small_mascot");
                 bootbox.confirm(prevUniqueid,
                         function(result){
                     if(result){
