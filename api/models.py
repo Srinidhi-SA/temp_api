@@ -1606,7 +1606,6 @@ class Trainer(models.Model):
         custom_dict.update(temp)
         self.add_newly_generated_column_names.append(custom_dict)
 
-
     def delete(self):
         try:
             self.deleted=True
@@ -1615,8 +1614,8 @@ class Trainer(models.Model):
             for iter in train_algo_instance:
                 iter.delete()
 
-        except:
-            return creation_failed_exception("File Doesn't exist.")
+        except Exception as err:
+            print(err)
 
 
 # TODO: Add generate config
