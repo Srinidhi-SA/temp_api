@@ -1072,6 +1072,7 @@ def get_job_status(instance=None):
         if instance.job:
             if instance.job.status in ['SUCCESS', 'FAILED']:
                 instance.status = instance.job.status
+                instance.save()
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
         try:
