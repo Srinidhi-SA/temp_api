@@ -506,6 +506,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
                                   }
 
             var details = {
+                "selectedVariables" : store.getState().datasets.selectedVariables,
                 "newDataType" : store.getState().datasets.dataTypeChangedTo,
                 "ALGORITHM_SETTING":AlgorithmSettings,
                 "validationTechnique":validationTechnique,

@@ -657,7 +657,7 @@ export default function reducer(state = {
     case "VARIABLE_SELECTED":
     {
       var allSelectedVariables = state.selectedVariables;
-      allSelectedVariables[action.colName] = action.selecteOrNot;
+      allSelectedVariables[action.colSlug] = action.selecteOrNot;
       return {
         ...state,
         selectedVariables : allSelectedVariables
