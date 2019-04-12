@@ -1385,7 +1385,7 @@ class Trainer(models.Model):
                                         name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
                                     )
             if key == "feature_scaling":
-
+                key = "perform_standardization"
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
@@ -4870,7 +4870,6 @@ class TrainAlgorithmMapping(models.Model):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
-
     def delete(self):
         try:
             self.deleted=True
@@ -4878,9 +4877,8 @@ class TrainAlgorithmMapping(models.Model):
             deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
             for iter in deploy_instance:
                 iter.terminate_periodic_task()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
+        except Exception as err:
+            raise(err)
 
 # Deployment for Model management
 class ModelDeployment(models.Model):
