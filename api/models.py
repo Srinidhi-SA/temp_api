@@ -1385,7 +1385,7 @@ class Trainer(models.Model):
                                         name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
                                     )
             if key == "feature_scaling":
-
+                key = "perform_standardization"
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
@@ -1396,7 +1396,7 @@ class Trainer(models.Model):
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                                         variable_selection_column_data,
-                                        "perform_standardization",
+                                        key,
                                         name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
                                     )
             if key == "variable_transformation":
