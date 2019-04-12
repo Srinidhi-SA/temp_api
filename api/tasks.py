@@ -64,8 +64,8 @@ def submit_job_separate_task(command_array, slug):
                                            )
                 model_instance.url = application_id
                 model_instance.save()
-                dist_file_name = "tmp/" + str(application_id) + "driver.log"
-                os.rename("tmp/SparkDriver.log",dist_file_name)
+                dist_file_name = "/tmp/" + str(application_id) + ".driver.log"
+                os.rename("/tmp/SparkDriver.log",dist_file_name)
                 break
 def submit_job_separate_task1(command_array, slug):
     import subprocess, os
