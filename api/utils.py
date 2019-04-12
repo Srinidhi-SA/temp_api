@@ -1201,7 +1201,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
             'id',
             'config',
-            #'data'
+            'data'
         )
 
 

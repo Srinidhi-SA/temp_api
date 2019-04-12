@@ -293,6 +293,49 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
 
 SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
+            "name":"max_iter",
+            "displayName":"Maximum Solver Iterations",
+            "description": "Maximum number of iterations to be attempted for solver operations",
+            "defaultValue":100,
+            "acceptedValue":None,
+            "valueRange":[10,400],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"n_jobs",
+            "displayName":"No Of Jobs",
+            "description": "Number of CPU cores to be used when parallelizing over classes",
+            "defaultValue":1,
+            "acceptedValue":None,
+            "valueRange":[-1,4],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"tol",
+            "displayName":"Convergence tolerance of iterations(e^-n)",
+           "description": "Tolerance for the stopping criteria",
+            "defaultValue":4,
+            "acceptedValue":None,
+            "valueRange":[3,10],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+
+        },
+        {
             "name":"fit_intercept",
             "displayName":"Fit Intercept",
             "description":"Specifies if a constant(a.k.a bias or intercept) should be added to the decision function",
@@ -340,34 +383,6 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
             "allowedDataType":["string"]
         },
         {
-            "name":"max_iter",
-            "displayName":"Maximum Solver Iterations",
-            "description": "Maximum number of iterations to be attempted for solver operations",
-            "defaultValue":100,
-            "acceptedValue":None,
-            "valueRange":[10,400],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-        },
-        {
-            "name":"n_jobs",
-            "displayName":"No Of Jobs",
-            "description": "Number of CPU cores to be used when parallelizing over classes",
-            "defaultValue":1,
-            "acceptedValue":None,
-            "valueRange":[-1,4],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":False,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-        },
-        {
             "name":"warm_start",
             "displayName":"Warm Start",
             "description": "It reuses the solution of the previous call to fit as initialization",
@@ -403,21 +418,6 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
              "hyperpatameterTuningCandidate":False,
              "expectedDataType": ["int"],
              "allowedDataType":["int"]
-         },
-         {
-             "name":"tol",
-             "displayName":"Convergence tolerance of iterations(e^-n)",
-            "description": "Tolerance for the stopping criteria",
-             "defaultValue":4,
-             "acceptedValue":None,
-             "valueRange":[3,10],
-             "paramType":"number",
-             "uiElemType":"slider",
-             "display":True,
-             "hyperpatameterTuningCandidate":True,
-             "expectedDataType": ["int"],
-             "allowedDataType":["int"]
-
          },
          {
              "name":"C",
