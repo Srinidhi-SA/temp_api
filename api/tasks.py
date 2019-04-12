@@ -5,6 +5,7 @@ import random
 import signal
 
 import os
+import time
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
@@ -45,20 +46,27 @@ def submit_job_separate_task(command_array, slug):
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
     # TODO: @Ankush need to write the error to error log and standard out to normal log
-    for line in iter(lambda: cur_process.stderr.readline(), ''):
-        # print(line.strip())
-        match = re.search('Submitted application (.*)$', line)
-        if match:
-            application_id = match.groups()[0]
-            from api.helper import get_db_object
+    exists = os.path.isfile('/tmp/SparkDriver.log')
+    while( exists != True):
+      exists = os.path.isfile('/tmp/SparkDriver.log')
+      time.sleep(10)
 
-            model_instance = get_db_object(model_name=Job.__name__,
+    with open("/tmp/SparkDriver.log") as file:  
+        data = file.readlines() 
+        for line in data:
+            match = re.search('Submitted application (.*)$', line)
+            if match:
+                application_id = match.groups()[0]
+                print ("############################## Application ID ################################# ", application_id)
+                from api.helper import get_db_object
+                model_instance = get_db_object(model_name=Job.__name__,
                                            model_slug=slug
                                            )
-            model_instance.url = application_id
-            model_instance.save()
-            break
-
+                model_instance.url = application_id
+                model_instance.save()
+                dist_file_name = "tmp/" + str(application_id) + "driver.log"
+                os.rename("tmp/SparkDriver.log",dist_file_name)
+                break
 def submit_job_separate_task1(command_array, slug):
     import subprocess, os
     my_env = os.environ.copy()
