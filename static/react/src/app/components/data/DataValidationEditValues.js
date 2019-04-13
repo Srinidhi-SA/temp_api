@@ -67,7 +67,6 @@ export class DataValidationEditValues extends React.Component {
 	  return optionList;
   }	
 	render() {
-		debugger;
 	  var that = this;
 	  let transformationSettings = store.getState().datasets.dataTransformSettings;
 	  let replaceTypeList = "";
@@ -88,7 +87,7 @@ export class DataValidationEditValues extends React.Component {
           var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
           return optionValues;
         })();
-			}debugger;
+			}
 		  return (
 				<div className="form-group" id={data.id} key={id}>
 					<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
@@ -113,7 +112,7 @@ export class DataValidationEditValues extends React.Component {
 			 		var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
 		    	return optionValues;
 		 		})();
-	    }debugger;
+	    }
 		  return (
 				<div className="form-group" id={data.replaceId} key={data.replaceId}>
 					<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
