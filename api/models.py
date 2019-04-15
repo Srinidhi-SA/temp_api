@@ -77,15 +77,17 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.tasks import kill_application_using_fabric
+        #from api.tasks import kill_application_using_fabric
+        from api.yarn_job_api import kill_application
+        print "*********   Inside  KILL in models ***************"
         if self.url == "":
             return False
 
         if self.url is None:
             return False
-
-        kill_application_using_fabric.delay(self.url)
-
+        print "calling kill Application ******************************>>>>>>>>>>>"
+        kill_application(self.url)
+        print "$$$$$$ Hi im back from kill_application in yarn"
         original_object = self.get_original_object()
 
         if original_object is not None:
