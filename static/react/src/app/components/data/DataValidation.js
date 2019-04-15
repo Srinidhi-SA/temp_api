@@ -60,7 +60,7 @@ export class DataValidation extends React.Component {
                                </div>
                        </li>)
 
-                       else
+											 else
                   return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
 
 
