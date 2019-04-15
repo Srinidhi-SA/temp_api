@@ -1424,11 +1424,11 @@ export function addComponents(colSlug){
 
         if(dataColumnRemoveValues.length == 0){
             dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 
         }if(dataColumnReplaceValues.length == 0){
             dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
         }
 
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
