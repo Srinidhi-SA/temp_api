@@ -1118,21 +1118,26 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         title: 'Rename Column',
         body: customBody,
         actions: [
-                  Dialog.CancelAction(),
-                  Dialog.OKAction(() => {
-                      var colName = ($("#idRenameMetaCloumn").val()).toUpperCase();
-                      let newCol =  headers.filter(head => head.name== colName);
-                      if(newCol && newCol.length!=0){
+                    Dialog.CancelAction(),
+                    Dialog.OKAction(() => {
+                    var newColName = ($("#idRenameMetaCloumn").val()).toUpperCase();
+
+                    let colNames = headers.map(e => e.name);
+                    let colNames2 = colNames.map(function(x){ return x.toUpperCase() });
+
+                    let colName =  colNames2.filter(head => head.name != newColName);
+
+                    if(colName && newColName != ""){
                         bootbox.alert(statusMessages("warning","There is another column with same name.","small_mascot"));
-                      }
-                      else if($("#idRenameMetaCloumn").val().trim()=="")
-                      {
+                    }
+                    else if($("#idRenameMetaCloumn").val().trim()=="")
+                    {
                         bootbox.alert(statusMessages("warning","Please enter the valid column name.","small_mascot"));
-                      }
-                      else{
-                      updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
-                      updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
-                      }
+                    }
+                    else{
+                        updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
+                        updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
+                    }
                   })
                   ],
                   bsSize: 'medium',
