@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
+from api.utils import name_check
 from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
@@ -66,6 +67,9 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         if 'input_file' in data:
             data['input_file'] =  request.FILES.get('input_file')
             data['datasource_type'] = 'fileUpload'
@@ -98,12 +102,14 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Dataset.__name__)
