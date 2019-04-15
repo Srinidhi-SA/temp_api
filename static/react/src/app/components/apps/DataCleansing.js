@@ -94,7 +94,7 @@ export class DataCleansing extends React.Component {
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
       if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1)
         return "";
-      this.props.dispatch(variableSelectedAction(item.name, true));
+      this.props.dispatch(variableSelectedAction(item.name,item.slug, true));
     });   
   }
 
@@ -145,7 +145,7 @@ export class DataCleansing extends React.Component {
 
 
   variableCheckboxOnChange(event,item){
-    this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.checked));
+    this.props.dispatch(variableSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.checked));
     if(Object.values(this.props.datasets.selectedVariables).includes(false)){
         this.props.dispatch(checkedAllAction(false));
     }
@@ -163,13 +163,13 @@ export class DataCleansing extends React.Component {
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1 )
         return "";
-      this.props.dispatch(variableSelectedAction(item.name, false));
+      this.props.dispatch(variableSelectedAction(item.name,item.slug, false));
       });
     }else{
       this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         if(removedVariables.indexOf(item.name)!= -1|| considerItems.indexOf(item.name)!= -1)
         return "";
-      this.props.dispatch(variableSelectedAction(item.name, true));
+      this.props.dispatch(variableSelectedAction(item.name,item.slug, true));
       });
     }
   }
@@ -282,6 +282,7 @@ dcTableSorter() {
 
 
     if(this.props.dataPreview!=null)  {
+      debugger;
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
@@ -292,7 +293,7 @@ dcTableSorter() {
           <tr className={('all ' + item.columnType)} id="mssg">
             <td  class="filter-false sorter-false">
               <div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
               </div>
             </td>

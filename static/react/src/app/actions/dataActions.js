@@ -1097,6 +1097,9 @@ export function updateSubSetting(updatedSubSetting){
 
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
+    debugger;
+    let headers = store.getState().datasets.dataPreview.meta_data.uiMetaData.headersUI;
+    console.log(headers);
     const customBody = (
 		<div className="row">
 			<div className="col-md-4">
@@ -1105,7 +1108,7 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 			<div className="col-md-8">
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new Name</label>
-            <input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
+            <input className="form-control"  name="idRenameMetaCloumn" id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
             </div>
 			</div>
 		</div>
@@ -1117,7 +1120,12 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      if($("#idRenameMetaCloumn").val().trim()=="")
+                      var colName = ($("#idRenameMetaCloumn").val()).toUpperCase();
+                      let newCol =  headers.filter(head => head.name== colName);
+                      if(newCol && newCol.length!=0){
+                        bootbox.alert(statusMessages("warning","There is another column with same name.","small_mascot"));
+                      }
+                      else if($("#idRenameMetaCloumn").val().trim()=="")
                       {
                         bootbox.alert(statusMessages("warning","Please enter the valid column name.","small_mascot"));
                       }
@@ -1160,7 +1168,7 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
             //updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
         }else if(actionName == UNIQUE_IDENTIFIER){
             if(!colStatus){
-				let prevUniqueid = statusMessages("warning","Setting this column as unique identifier will unset previous selection.","small_mascot");
+				let prevUniqueid = statusMessages("warning","Are you sure you want to make this column as unique identifier?","small_mascot");
                 bootbox.confirm(prevUniqueid,
                         function(result){
                     if(result){
@@ -1295,6 +1303,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 }
 
 function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
+    debugger;
     dispatch(showLoading());
     var slug = store.getState().datasets.selectedDataSet;
     var transformSettings = store.getState().datasets.dataTransformSettings.slice();
@@ -1423,11 +1432,11 @@ export function addComponents(colSlug){
 
         if(dataColumnRemoveValues.length == 0){
             dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 
         }if(dataColumnReplaceValues.length == 0){
             dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
         }
 
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
