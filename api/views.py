@@ -25,6 +25,7 @@ from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
 from api.utils import \
     convert_to_string, \
+    name_check, \
     InsightSerializer, \
     TrainerSerlializer, \
     ScoreSerlializer, \
@@ -92,6 +93,9 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         if 'config' in data:
             ui_config = data['config']
             ui_config = json.loads(ui_config)
@@ -117,6 +121,9 @@ class SignalView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()
@@ -192,6 +199,9 @@ class TrainerView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainerSerlializer(data=data, context={"request": self.request})
@@ -207,6 +217,9 @@ class TrainerView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
@@ -440,6 +453,10 @@ class ScoreView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
+
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
@@ -458,6 +475,8 @@ class ScoreView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         # instance = self.get_object()
+        if 'name' in data and not name_check(data['name']):
+            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()
@@ -5015,7 +5034,9 @@ def get_chart_or_small_data(request, slug=None):
     from django.http import HttpResponse
     import csv
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(slug)
+    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(
+        'chart_' + data_object.object_slug + '_' + data_object.slug
+    )
     writer = csv.writer(response)
     for row in csv_data:
         writer.writerow(row)

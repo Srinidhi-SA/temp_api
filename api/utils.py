@@ -52,7 +52,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
         '''
-        command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
+        command_array = ["spark-submit", "--driver-java-options", "\"-Dlog4j.configuration=file:/tmp/log4j.properties\"" , "--master", "yarn", "--py-files", egg_file_path,
                             # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
                              driver_file,
                              json.dumps(config)]
@@ -295,7 +295,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        # get_job_status(instance)
+        get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -1137,6 +1137,25 @@ def get_all_view_permission(user):
 def get_random_true_false():
     import random
     return True if random.randint(0, 1) else False
+
+
+def name_check(name):
+    return check_for_empty(name) and check_for_length(name) and check_for_special_chars(name)
+
+
+def check_for_length(name):
+    return True if len(name) < settings.MAX_LENGTH_OF_NAME else False
+
+def check_for_special_chars(name):
+    import string
+    KEEP_CHARACTERS_IN_NAME = string.digits + string.ascii_letters + settings.ALLOWED_SPECIAL_CHARS_IN_NAME
+    for chr in name:
+        if chr not in KEEP_CHARACTERS_IN_NAME:
+            return False
+    return True
+
+def check_for_empty(name):
+    return False if len(name) == 0 else True
 
 # model management
 

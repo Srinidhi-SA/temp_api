@@ -55,7 +55,7 @@ def set_fabric_env(configuration_detail=None):
 
 def get_branch_details(branch=None):
     configuration_detail = configuration_details()
-    print configuration_detail.keys()
+    # print(configuration_detail.keys())
     return configuration_detail[branch]
 
 
@@ -66,7 +66,7 @@ def deploy_react(branch="dev"):
     """
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    # print details
     path_details= details['path_details']
     server_details= details['server_details']
     k = details['type']
@@ -87,7 +87,7 @@ def deploy_api(branch="dev"):
     """
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    # print details
     path_details= details['path_details']
     server_details= details['server_details']
     # change_config_file(branch)
@@ -102,7 +102,7 @@ def change_config_file(branch='dev'):
     import random
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    # print details
     path_details= details['path_details']
     server_details= details['server_details']
     deployment_config= details['deployment_config']
@@ -152,7 +152,7 @@ def deploy_api_and_migrate(branch="dev"):
 
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    # print details
     path_details= details['path_details']
     server_details= details['server_details']
 
@@ -205,7 +205,7 @@ def npm_install_and_deploy(server_details, path_details, type="development"):
         react_path=path_details['react_path']
     )
 
-    print path_details['base_remote_path'], path_details['react_path']
+    # print path_details['base_remote_path'], path_details['react_path']
     deploy_dist_to_destination(
         base_remote_path=path_details['base_remote_path'],
         react_path=path_details['react_path']
@@ -225,7 +225,7 @@ def pull_ui_and_merge_to_api():
     try:
         with lcd(BASE_DIR):
             capture = local("git status", capture=True)
-            print capture
+            # print capture
             if "Changes not staged for commit" in capture:
                 abort("Unstaged changes. Please commit or stash.")
                 # local("git stash")
@@ -257,7 +257,7 @@ def push_api_to_remote(api_branch):
         with lcd(BASE_DIR):
 
             capture = local("git status", capture=True)
-            print capture
+            # print capture
             if "Changes not staged for commit" in capture:
                 abort("Unstaged changes. Please commit or stash.")
                 local("git stash")
@@ -265,7 +265,7 @@ def push_api_to_remote(api_branch):
             local("git checkout {0}".format(api_branch))
 
             capture = local("git push origin {0}".format(api_branch))
-            print capture
+            # print capture
     except Exception as err:
         print err
 

@@ -312,7 +312,7 @@ export class VariableSelection extends React.Component {
 				<label for="signalVariableList" className="col-lg-2 control-label cst-fSize">I want to analyze </label>
 				<div className="col-lg-4">                 
                 <select className="form-control" id="signalVariableList"  onChange={this.setPossibleList.bind(this)}>
-                <option value=""></option>
+                <option value="">--Select--</option>
                 {renderSelectBox}
                 </select>                 
                 </div>

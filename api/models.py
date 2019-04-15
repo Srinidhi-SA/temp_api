@@ -164,7 +164,7 @@ class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
     subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
@@ -172,7 +172,7 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -579,14 +579,14 @@ class Insight(models.Model):
     data = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False, )
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -815,13 +815,13 @@ class Trainer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
@@ -872,6 +872,8 @@ class Trainer(models.Model):
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
             configUI = self.get_config()
+
+            # Unselect original
             if 'featureEngineering' in configUI:
                 for colSlug in self.collect_column_slugs_which_all_got_transformations:
                         for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -880,8 +882,26 @@ class Trainer(models.Model):
                                     i['selected'] = False
                                     break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
-        except:
+
+            # Updating datatypes
+            if 'newDataType' in configUI:
+                for colSlug in configUI['newDataType']:
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            i['columnType'] = configUI['newDataType'][colSlug]['newColType']
+                            break
+
+            # Select or not to Select
+            if 'selectedVariables' in configUI:
+                for colSlug in configUI['selectedVariables']:
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            i['selected'] = configUI['selectedVariables'][colSlug]
+                            break
+        except Exception as err:
+            print(err)
             pass
+
         # first UI config was saved <-> this is ML config got saved in place of UI config
         self.config = json.dumps(config)
         self.save()
@@ -1289,7 +1309,7 @@ class Trainer(models.Model):
             "multiply_specific_value", "divide_specific_value",
             "perform_standardization", "variable_transformation",
             # Dimension Transformations
-            "encoding_dimensions", "is_custom_string_in", "return_character_count"
+            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling"
         ]
 
         for key in list_of_transformations:
@@ -1351,6 +1371,21 @@ class Trainer(models.Model):
 
             if key == "perform_standardization":
 
+                colStructure = {
+                    "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
+                }
+
+                name_mapping = {
+                    'standardization': 'standardized',
+                    'normalization': 'normalized'
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                                        variable_selection_column_data,
+                                        key,
+                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                                    )
+            if key == "feature_scaling":
+                key = "perform_standardization"
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
@@ -1570,6 +1605,10 @@ class Trainer(models.Model):
             'perform_standardization': {
                 'name': 'fs',
                 'type': 'measure'
+            },
+            'feature_scaling': {
+                'name': 'fs',
+                'type': 'measure'
             }
         }
         original_col_nam = variable_selection_column_data['name']
@@ -1606,7 +1645,6 @@ class Trainer(models.Model):
         custom_dict.update(temp)
         self.add_newly_generated_column_names.append(custom_dict)
 
-
     def delete(self):
         try:
             self.deleted=True
@@ -1615,8 +1653,8 @@ class Trainer(models.Model):
             for iter in train_algo_instance:
                 iter.delete()
 
-        except:
-            return creation_failed_exception("File Doesn't exist.")
+        except Exception as err:
+            print(err)
 
 
 # TODO: Add generate config
@@ -1635,13 +1673,13 @@ class Score(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
@@ -4809,7 +4847,7 @@ class TrainAlgorithmMapping(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
@@ -4832,7 +4870,6 @@ class TrainAlgorithmMapping(models.Model):
         self.generate_slug()
         super(TrainAlgorithmMapping, self).save(*args, **kwargs)
 
-
     def delete(self):
         try:
             self.deleted=True
@@ -4840,9 +4877,8 @@ class TrainAlgorithmMapping(models.Model):
             deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
             for iter in deploy_instance:
                 iter.terminate_periodic_task()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
+        except Exception as err:
+            raise(err)
 
 # Deployment for Model management
 class ModelDeployment(models.Model):
@@ -4853,13 +4889,13 @@ class ModelDeployment(models.Model):
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
-    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
@@ -5039,13 +5075,13 @@ class DatasetScoreDeployment(models.Model):
     config = models.TextField(default="{}")
 
     data = models.TextField(default="{}")
-    status = models.CharField(max_length=100, null=True, default="NOT STARTED", db_index=True)
+    status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False, db_index=True)
+    deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)

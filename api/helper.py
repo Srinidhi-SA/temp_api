@@ -1065,10 +1065,15 @@ def get_job_status_from_jobserver(instance=None):
         return err
 
 def get_job_status(instance=None):
-    return
 
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
+    else:
+        if instance.job:
+            if instance.job.status in ['SUCCESS', 'FAILED']:
+                instance.status = instance.job.status
+                instance.save()
+                return instance.status
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
         try:
@@ -1382,4 +1387,6 @@ def get_random_model_id(algo_name):
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number ])
+
+
 
