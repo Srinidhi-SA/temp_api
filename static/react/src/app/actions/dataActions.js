@@ -1121,11 +1121,8 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
                     Dialog.CancelAction(),
                     Dialog.OKAction(() => {
                     var newColName = ($("#idRenameMetaCloumn").val()).toUpperCase();
-
-                    let colNames = headers.map(e => e.name);
-                    let colNames2 = colNames.map(function(x){ return x.toUpperCase() });
-
-                    let colName =  colNames2.filter(head => head.name != newColName);
+                    let colNames = headers.map(e => (e.name).toUpperCase());
+                    let colName =  colNames.filter(head => head.name != newColName);
 
                     if(colName && newColName != ""){
                         bootbox.alert(statusMessages("warning","There is another column with same name.","small_mascot"));
