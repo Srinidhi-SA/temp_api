@@ -107,7 +107,7 @@ export class AppsCreateScore extends React.Component {
 				  <label>Select an existing dataset</label>
 	              {renderSelectBox}
 	              <br/>
-	              <label>Select an Algorithm</label>
+	              <label>Select a Model</label>
 	              {algorithmNames}
 				</div>
 				</Modal.Body>
