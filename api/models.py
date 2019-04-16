@@ -85,7 +85,7 @@ class Job(models.Model):
         if self.url is None:
             return False
         print '######## Calling kill appl using fabric ##########'
-        kill_application_using_fabric(self.url)
+        kill_application_using_fabric.delay(self.url)
         print "%%%%%%%% Done with fabric %%%%%%%%%%%%%%"
         original_object = self.get_original_object()
 
