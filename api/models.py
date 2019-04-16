@@ -5043,9 +5043,9 @@ class ModelDeployment(models.Model):
         print(self.periodic_task_id)
         periodic_object = PeriodicTask.objects.filter(id=self.periodic_task_id)
         print(periodic_object)
-        print(periodic_object.id)
-        periodic_object.enabled = False
-        periodic_object.status = 'STOPPED'
+        print(periodic_object.periodic_task.id)
+        periodic_object.periodic_task.enabled = False
+        periodic_object.periodic_task.status = 'STOPPED'
         self.save()
         print("Enabled : ",self.periodic_task.enabled )
         print("Status : ",self.status )
