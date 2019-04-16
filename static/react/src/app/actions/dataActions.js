@@ -1124,7 +1124,7 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
                     let colNames = headers.map(e => (e.name).toUpperCase());
                     let colName =  colNames.filter(head => head.name != newColName);
 
-                    if(colName && newColName != ""){
+                    if(colName && newColName == ""){
                         bootbox.alert(statusMessages("warning","There is another column with same name.","small_mascot"));
                     }
                     else if($("#idRenameMetaCloumn").val().trim()=="")
