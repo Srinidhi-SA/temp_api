@@ -5039,8 +5039,13 @@ class ModelDeployment(models.Model):
         :return:
         '''
         print"------------> Inside disable_periodic_task <---------------"
-        self.periodic_task.enabled = False
-        self.status = 'STOPPED'
+        from django_celery_beat.models import PeriodicTask
+        print(self.periodic_task_id)
+        periodic_object = PeriodicTask.objects.filter(id=self.periodic_task_id)
+        print(periodic_object)
+        print(periodic_object.id)
+        periodic_object.enabled = False
+        periodic_object.status = 'STOPPED'
         self.save()
         print("Enabled : ",self.periodic_task.enabled )
         print("Status : ",self.status )
