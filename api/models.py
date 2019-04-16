@@ -6,6 +6,7 @@ import json
 import os
 import random
 import string
+import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -1307,7 +1308,8 @@ class Trainer(models.Model):
             "multiply_specific_value", "divide_specific_value",
             "perform_standardization", "variable_transformation",
             # Dimension Transformations
-            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling"
+            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling",
+            "is_date_weekend", "extract_time_feature", "time_since"
         ]
 
         for key in list_of_transformations:
@@ -1317,6 +1319,35 @@ class Trainer(models.Model):
             colStructure = {}
             user_given_name = ''
             # Measures Transformations
+
+            if key == 'is_date_weekend':
+                colStructure = {
+
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key
+                )
+
+            if key == 'extract_time_feature':
+                colStructure = {
+                    'time_feature_to_extract': uiJson.get("extract_time_feature_select", "day_of_week"),
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("extract_time_feature_select", "day_of_week"))
+                )
+
+            if key == 'time_since':
+                colStructure = {
+                    'time_since': uiJson.get("time_since_input", datetime.datetime.now().date().strftime('%d/%m/%Y')),
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key
+                )
+
             if key == "replace_values_with":
                 colStructure = {
                     "replace_by": uiJson.get("replace_values_with_selected", "Mean"),
@@ -1577,12 +1608,16 @@ class Trainer(models.Model):
                 'type': 'dimension'
             },
             'is_date_weekend': {
-                'name': 'is_w',
+                'name': 'is_weekend',
                 'type': 'boolean'
             },
             'extract_time_feature': {
-                'name': 'e_t_f',
+                'name': 'etf',
                 'type': 'dimension'
+            },
+            'time_since': {
+                'name': 'time_since',
+                'type': 'measure'
             },
             'standardization': {
                 'name': 'fs',
