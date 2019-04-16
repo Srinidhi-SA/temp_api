@@ -4987,6 +4987,15 @@ class ModelDeployment(models.Model):
             'username': self.created_by.username
         }
 
+    def delete(self):
+        try:
+            self.deleted=True
+            self.disable_periodic_task()
+
+        except Exception as err:
+            print(err)
+
+
     def disable_periodic_task(self):
         '''
             >>> periodic_task.enabled = False
@@ -4995,7 +5004,6 @@ class ModelDeployment(models.Model):
         '''
         self.periodic_task.enabled = False
         self.status = 'STOPPED'
-        self.save()
         self.save()
 
     def resume_periodic_task(self):
