@@ -5046,6 +5046,7 @@ def get_chart_or_small_data(request, slug=None):
 
 @api_view(['GET'])
 def get_job_kill(request, slug=None):
+    print("********* Inside get_job_kill in views ************")
 
     job_object = Job.objects.filter(object_id=slug).first()
 
@@ -5067,6 +5068,7 @@ def get_job_kill(request, slug=None):
 
     original_object.deleted = True
     original_object.save()
+    print("****** Calling kill function from views ************")
     if job_object.kill() is True:
         return JsonResponse({
             'message': 'killed. and Deleted'

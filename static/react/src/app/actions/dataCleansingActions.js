@@ -20,10 +20,11 @@ export function outlierRemovalSelectedAction(colName,colType,colSlug, treatment,
     treatment
 	}
 }
-export function variableSelectedAction(colName, selecteOrNot, dispatch){
+export function variableSelectedAction(colName,colSlug, selecteOrNot, dispatch){
   return {
 		type: "VARIABLE_SELECTED",
-		colName,
+    colName,
+    colSlug,
     selecteOrNot
 	}
 }

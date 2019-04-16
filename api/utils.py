@@ -52,7 +52,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
         '''
-        command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
+        command_array = ["spark-submit", "--driver-java-options", "\"-Dlog4j.configuration=file:/tmp/log4j.properties\"" , "--master", "yarn", "--py-files", egg_file_path,
                             # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
                              driver_file,
                              json.dumps(config)]

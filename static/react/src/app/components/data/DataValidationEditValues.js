@@ -67,7 +67,6 @@ export class DataValidationEditValues extends React.Component {
 	  return optionList;
   }	
 	render() {
-		debugger;
 	  var that = this;
 	  let transformationSettings = store.getState().datasets.dataTransformSettings;
 	  let replaceTypeList = "";
@@ -167,7 +166,7 @@ export class DataValidationEditValues extends React.Component {
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 
 		<div id="removeValues">
-		<form role="form" className="form-horizontal">
+		<form role="form" className="form-horizontal" autocomplete="off">
 		{templateTextBoxes}
 		<div className="dataTransformValues">
 		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REMOVE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
@@ -189,7 +188,7 @@ export class DataValidationEditValues extends React.Component {
 		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 		<div id="replaceValues">
-		<form role="form" className="form-horizontal">
+		<form role="form" className="form-horizontal" autocomplete="off">
 		{replaceTextBoxes}
 		<div className="dataTransformValues">
 		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REPLACE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>

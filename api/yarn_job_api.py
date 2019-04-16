@@ -45,11 +45,12 @@ def get_brief_application_info(app_id=None):
 
 
 def kill_application(app_id=None):
-
+    print "################## Inside Kill Application ####################"
     if None == app_id:
         return -1
 
     kill_status = yap.kill(app_id=app_id)
+    print ("Kill Status",kill_status)
 
     if kill_status is True:
         print("Killed Application.")
@@ -104,5 +105,3 @@ def start_yarn_application_again(command_array=None):
     except Exception as e:
         from smtp_email import send_alert_through_email
         send_alert_through_email(e)
-
-
