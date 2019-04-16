@@ -5025,6 +5025,7 @@ class ModelDeployment(models.Model):
     def delete(self):
         try:
             self.deleted=True
+            print"----------> Calling Disable_periodic_task function <------------"
             self.disable_periodic_task()
 
         except Exception as err:
@@ -5037,9 +5038,13 @@ class ModelDeployment(models.Model):
             >>> periodic_task.save()
         :return:
         '''
+        print"------------> Inside disable_periodic_task <---------------"
         self.periodic_task.enabled = False
         self.status = 'STOPPED'
         self.save()
+        print("Enabled : ",self.periodic_task.enabled )
+        print("Status : ",self.status )
+        print"-----------> periodic tasks disabled <--------------"
 
     def resume_periodic_task(self):
         '''

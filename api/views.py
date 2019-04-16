@@ -5766,8 +5766,10 @@ class ModelDeployementView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-## Modification for periodic task delete   
+## Modification for periodic task delete
+                    print"$$$$ Lets delete and Stop all Periodic tasks $$$$$"
                     instance.delete()
+                    print"***** Deleted and Stopped all Periodic Tasks ******"
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
