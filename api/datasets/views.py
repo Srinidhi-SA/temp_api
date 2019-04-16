@@ -226,7 +226,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     pass
                 else:
                     object_details['meta_data']["uiMetaData"]['SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
-        
+
 
         return Response(object_details)
 
