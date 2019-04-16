@@ -51,8 +51,8 @@ def submit_job_separate_task(command_array, slug):
       exists = os.path.isfile('/tmp/SparkDriver.log')
       time.sleep(10)
 
-    with open("/tmp/SparkDriver.log") as file:  
-        data = file.readlines() 
+    with open("/tmp/SparkDriver.log") as file:
+        data = file.readlines()
         for line in data:
             match = re.search('Submitted application (.*)$', line)
             if match:
@@ -446,7 +446,7 @@ def clean_up_on_delete(slug, model_name):
 
 @task(name='kill_job_using_application_id', queue=CONFIG_FILE_NAME)
 def kill_application_using_fabric(app_id=None):
-
+    print("************** Inside fabric ***********")
     if None == app_id:
         return -1
 
@@ -459,11 +459,14 @@ def kill_application_using_fabric(app_id=None):
 
     env.key_filename = [emr_file]
     if CONFIG_FILE_NAME == 'cwpoc':
+        print("$$$$$ Inside cwpoc $$$$$$$$$")
         env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
     else:
+        print("&&&&& Outside cwpoc @@@@@@@")
         env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
 
     try:
+        print("Going to kill yarn !!!!!!!!!!!!!!!!!!!!!!!!!")
         capture = run("yarn application --kill {0}".format(app_id))
 
         if 'finished' in capture:
@@ -471,6 +474,7 @@ def kill_application_using_fabric(app_id=None):
         else:
             return True
     except:
+        print("Returning")
         return True
 
 #
@@ -568,8 +572,8 @@ def call_dataset_then_score(*args, **kwrgs):
 '''
 Things to do
 - call dataset object create function (uncomment in above code)
-- Once dataset is completed from ML side they will 
-    -> call set_result API 
+- Once dataset is completed from ML side they will
+    -> call set_result API
     -> which will call write_into_database
     -> where we need to check if database is part of DatasetScore Table
     -> if yes, trigger score object create function
@@ -655,5 +659,3 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             return
     except Exception as err:
         print(err)
-
-
