@@ -1184,7 +1184,7 @@ feture_engineering_static = {
                 {
                   "name": "is_date_weekend",
                   "displayName": "Is Date Weekend",
-                  "selected": True,"display": False,
+                  "selected": True,"display": True,
                   "columns": [],
                     "column_structure":
                     {
@@ -1196,7 +1196,7 @@ feture_engineering_static = {
                 {
                   "name": "extract_time_feature",
                   "displayName": "Extract Time Feature",
-                  "selected": True,"display": False,
+                  "selected": True,"display": True,
                   "columns": [],
                     "column_structure":
                     {
@@ -1209,7 +1209,7 @@ feture_engineering_static = {
                 {
                   "name": "time_since",
                   "displayName": "Time Since Some Event",
-                  "selected": True,"display": False,
+                  "selected": True,"display": True,
                   "columns": [],
                     "column_structure":
                     {
