@@ -5041,14 +5041,16 @@ class ModelDeployment(models.Model):
         print"------------> Inside disable_periodic_task <---------------"
         from django_celery_beat.models import PeriodicTask
         print(self.periodic_task_id)
-        periodic_object = PeriodicTask.objects.filter(id=self.periodic_task_id)
+        periodic_objects = PeriodicTask.objects.filter(id=self.periodic_task_id)
         print(periodic_object)
-        print(periodic_object.periodic_task.id)
-        periodic_object.periodic_task.enabled = False
-        periodic_object.periodic_task.status = 'STOPPED'
-        self.save()
-        print("Enabled : ",self.periodic_task.enabled )
-        print("Status : ",self.status )
+        #print(periodic_object.periodic_task.id)
+        for periodic_task in periodic_objects:
+            if periodic_task.name == 'celery.backend_cleanup':
+                pass
+            else:
+                periodic_task.enabled = False
+                periodic_task.save()
+        
         print"-----------> periodic tasks disabled <--------------"
 
     def resume_periodic_task(self):
