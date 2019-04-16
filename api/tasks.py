@@ -456,17 +456,17 @@ def kill_application_using_fabric(app_id=None):
     HDFS = settings.HDFS
     BASEDIR = settings.BASE_DIR
     emr_file = BASEDIR + settings.PEM_KEY
-    print("Emr file name : "emr_file)
+    print("Emr file name : ",emr_file)
 
     env.key_filename = [emr_file]
-    print("env.key_filename : " env.key_filename)
+    print("env.key_filename : ", env.key_filename)
     if CONFIG_FILE_NAME == 'cwpoc':
         print("$$$$$ Inside cwpoc $$$$$$$$$")
         env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
     else:
         print("&&&&& Outside cwpoc @@@@@@@")
         env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
-        print("env.host_string : " env.host_string)
+        print("env.host_string : ", env.host_string)
 
     try:
         print("Going to kill yarn !!!!!!!!!!!!!!!!!!!!!!!!!")
