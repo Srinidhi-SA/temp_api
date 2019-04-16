@@ -446,41 +446,44 @@ def clean_up_on_delete(slug, model_name):
 
 @task(name='kill_job_using_application_id', queue=CONFIG_FILE_NAME)
 def kill_application_using_fabric(app_id=None):
-    print("************** Inside fabric ***********")
     if None == app_id:
         return -1
-
     from fabric.api import env, run
     from django.conf import settings
-
-    HDFS = settings.HDFS
-    BASEDIR = settings.BASE_DIR
-    emr_file = BASEDIR + settings.PEM_KEY
-    print("Emr file name : ",emr_file)
-
-    env.key_filename = [emr_file]
-    print("env.key_filename : ", env.key_filename)
-    if CONFIG_FILE_NAME == 'cwpoc':
-        print("$$$$$ Inside cwpoc $$$$$$$$$")
-        env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
+    MODE = settings.MODE
+    print ("MODE", MODE)
+    if MODE == 'docker':
+      HDFS = settings.KILL_JOB
+      BASEDIR = settings.BASE_DIR
+      env.key_filename = settings.PEM_KEY
+      env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+      try:
+         capture = run("sudo docker exec -it hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id))
+         if 'finished' in capture:
+             return False
+         else:
+             return True
+      except:
+         return True
     else:
-        print("&&&&& Outside cwpoc @@@@@@@")
-        env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
-        print("env.host_string : ", env.host_string)
+      HDFS = settings.HDFS
+      BASEDIR = settings.BASE_DIR
+      emr_file = BASEDIR + settings.PEM_KEY
+      env.key_filename = [emr_file]
 
-    try:
-        print("Going to kill yarn !!!!!!!!!!!!!!!!!!!!!!!!!")
-        capture = run("yarn application --kill {0}".format(app_id))
+      if CONFIG_FILE_NAME == 'cwpoc':
+          env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
+      else:
+          env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+      try:
+          capture = run("yarn application --kill {0}".format(app_id))
+          if 'finished' in capture:
+              return False
+          else:
+              return True
+      except:
+          return True
 
-        if 'finished' in capture:
-            return False
-        else:
-            return True
-    except:
-        print("Returning")
-        return True
-
-#
 # @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 # def stock_sense_crawl(object_slug):
 #

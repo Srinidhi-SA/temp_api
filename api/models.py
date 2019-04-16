@@ -77,24 +77,19 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        print("&&&&&&&& KiLL function called &&&&&&&&&&")
         from api.tasks import kill_application_using_fabric
         if self.url == "":
             return False
 
         if self.url is None:
             return False
-        print '######## Calling kill appl using fabric ##########'
         kill_application_using_fabric.delay(self.url)
-        print "%%%%%%%% Done with fabric %%%%%%%%%%%%%%"
         original_object = self.get_original_object()
 
         if original_object is not None:
             original_object.status = 'FAILED'
-            print("@@@@@@@@@@@@@@@@@@",original_object.status)
             original_object.save()
         self.status = 'KILLED'
-        print("@@@@@@@@@@@@@@",self.status)
         self.save()
         return True
 

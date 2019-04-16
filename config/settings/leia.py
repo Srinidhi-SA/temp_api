@@ -31,6 +31,7 @@ DATABASES = {
         }
 }
 
+MODE = 'normal'
 
 PROJECT_APP = [
 ]
