@@ -1,3 +1,5 @@
+import { displayName } from "react-bootstrap-dialog";
+
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
@@ -102,8 +104,7 @@ export default function reducer(state = {
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
-        
-                
+        metricSelected:{},
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -1041,6 +1042,7 @@ export default function reducer(state = {
     break;
     case "RESET_REGRESSION_VARIABLES":
     {
+        debugger;
         return{
             ...state,
             regression_algorithm_data:[],
@@ -1102,6 +1104,17 @@ export default function reducer(state = {
         }
     }
     break;
+    case "SET_EVALUATION_METRIC":
+    { 
+        return{
+            ...state,
+            metricSelected :{
+                "selected" : action.selected,
+                "name" : action.name,
+                "displayName" : action.displayName
+            }
+        }
+    }
     }
     return state
 }
