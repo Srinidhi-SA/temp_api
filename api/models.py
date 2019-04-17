@@ -5037,11 +5037,11 @@ class ModelDeployment(models.Model):
             periodic_object = PeriodicTask.objects.get(pk=self.periodic_task_id)
             if periodic_object.enabled == False:
                 pass
-            else
+            else:
                 periodic_object.enabled = False
                 periodic_object.save()
         except:
-            print("Unable to stop Periodic Task !!!")    
+            print("Unable to stop Periodic Task !!!")
         self.save()
 
     def resume_periodic_task(self):
