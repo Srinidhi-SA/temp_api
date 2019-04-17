@@ -12,6 +12,7 @@ import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
 import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
+import { options } from "react-bootstrap-dialog";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -102,6 +103,7 @@ export class ModelVariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if(dataPrev && store.getState().apps.currentAppDetails != null ){
+            debugger;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
@@ -218,14 +220,23 @@ export class ModelVariableSelection extends React.Component {
                 </FormGroup>
 
 				<FormGroup role="form">
-					<div class="col-md-8">
-					{modelValidation}
-					</div>
-					<div class="col-md-4">
-					<h4 class="xs-pb-30"></h4>
-					<div class="xs-pb-40">
-					</div>
+					<div class="col-md-12">
+                    {modelValidation}
+                    </div>
+                    <div>
+                    <label class="col-lg-2 control-label" for="selectEvaluation">Evaluation Metric :</label>
+                        <div class="col-lg-4">
+                        <select className="form-control" id="selectEvaluation" name="evaluationMetric" value="evaluationMetric">
+                            <option>Accuracy</option>
+                            <option>Precision</option>
+                        </select>
+                            
+                        </div>
 
+
+					</div>
+                   
+					<div class="col-md-4">
 					<div class="input-group xs-mb-15">
 					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control" placeholder="Create Model Name"/><span class="input-group-btn">
 					  <button type="submit" class="btn btn-primary">{buttonName}</button></span>

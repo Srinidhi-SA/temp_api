@@ -2156,6 +2156,7 @@ export function saveRegressionAppAlgorithmData(data) {
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
 export function updateAlgorithmData(algSlug, parSlug, parVal,type) {
+  debugger;
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
