@@ -1083,7 +1083,7 @@ class Trainer(models.Model):
                             if len(params) > 0:
                                 params_0 = params[0]
                                 if 'defaultValue' in params_0:
-                                    default_value = ['defaultValue']
+                                    default_value = params_0['defaultValue']
                                     for default in default_value:
                                         if default['name'] == metric_name:
                                             default['selected'] = True
