@@ -5033,15 +5033,17 @@ class ModelDeployment(models.Model):
 
     def disable_periodic_task(self):
         from django_celery_beat.models import PeriodicTask
-        periodic_objects = PeriodicTask.objects.filter(pk=self.periodic_task_id)
-        for periodic_task in periodic_objects:
-            if periodic_task.name == 'celery.backend_cleanup':
+        try:
+            periodic_object = PeriodicTask.objects.get(pk=self.periodic_task_id)
+            if periodic_object.enabled == False:
                 pass
-            else:
-                periodic_task.enabled = False
-                periodic_task.save()
+            else
+                periodic_object.enabled = False
+                periodic_object.save()
+        except:
+            print("Unable to stop Periodic Task !!!")    
         self.save()
-        
+
     def resume_periodic_task(self):
         '''
             >>> periodic_task.enabled = True
