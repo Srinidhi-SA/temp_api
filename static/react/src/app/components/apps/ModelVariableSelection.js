@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 
 import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables, selectMetricAction} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
@@ -23,6 +23,7 @@ import { options } from "react-bootstrap-dialog";
         currentAppDetails:store.apps.currentAppDetails,
         regression_selectedTechnique:store.apps.regression_selectedTechnique,
         regression_crossvalidationvalue:store.apps.regression_crossvalidationvalue,
+        metricSelected :store.apps.metricSelected,
     };
 })
 
@@ -76,6 +77,10 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(showLevelCountsForTarget(event))
         this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(updateSelectedVariable(event));
+    }
+
+    setEvaluationMetric(event){
+        this.props.dispatch(selectMetricAction(event,true));
     }
         handleOptionChange(e){
         this.props.dispatch(updateRegressionTechnique(e.target.value));
@@ -175,6 +180,20 @@ export class ModelVariableSelection extends React.Component {
                         </div>
                     }
         }
+        let metric = "";
+        let metricValues ="";
+        metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
+            if(metric){
+                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
+                                    <option>--select--</option>
+                                    {metric.map((mItem,mIndex) =>{
+                                       return(<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)  
+                                      })
+                                    }
+                                </select>
+                }else{
+                metricValues = <option>No Options</option>
+            }
         return(
                 <div className="side-body">
                 <div className="page-head">
@@ -226,10 +245,7 @@ export class ModelVariableSelection extends React.Component {
                     <div>
                     <label class="col-lg-2 control-label" for="selectEvaluation">Evaluation Metric :</label>
                         <div class="col-lg-4">
-                        <select className="form-control" id="selectEvaluation" name="evaluationMetric" value="evaluationMetric">
-                            <option>Accuracy</option>
-                            <option>Precision</option>
-                        </select>
+                           {metricValues}
                             
                         </div>
 
