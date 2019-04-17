@@ -1067,7 +1067,30 @@ class Trainer(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
     def make_config_algorithm_setting(self):
+        '''
+        If grid search is True for an Algo.
+        make metric_name  True in that Algo.
+        :return:
+        '''
         config = self.get_config()
+        if 'metric' in config:
+            metric_name = config['metric']['name']
+            for algo in config['ALGORITHM_SETTING']:
+                for hps in algo['hyperParameterSetting']:
+                    if hps['name'] == 'gridsearchcv':
+                        if hps['selected'] == True:
+                            params = hps['params']
+                            if len(params) > 0:
+                                params_0 = params[0]
+                                if 'defaultValue' in params_0:
+                                    default_value = ['defaultValue']
+                                    for default in default_value:
+                                        if default['name'] == metric_name:
+                                            default['selected'] = True
+                                            break
+
+                            break
+
         return config['ALGORITHM_SETTING']
 
     def create_configuration_fe_settings(self):
