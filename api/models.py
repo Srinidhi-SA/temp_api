@@ -5045,15 +5045,26 @@ class ModelDeployment(models.Model):
             'username': self.created_by.username
         }
 
+    def delete(self):
+        try:
+            self.deleted=True
+            self.disable_periodic_task()
+
+        except Exception as err:
+            print(err)
+
+
     def disable_periodic_task(self):
-        '''
-            >>> periodic_task.enabled = False
-            >>> periodic_task.save()
-        :return:
-        '''
-        self.periodic_task.enabled = False
-        self.status = 'STOPPED'
-        self.save()
+        from django_celery_beat.models import PeriodicTask
+        try:
+            periodic_object = PeriodicTask.objects.get(pk=self.periodic_task_id)
+            if periodic_object.enabled == False:
+                pass
+            else:
+                periodic_object.enabled = False
+                periodic_object.save()
+        except:
+            print("Unable to stop Periodic Task !!!")
         self.save()
 
     def resume_periodic_task(self):
