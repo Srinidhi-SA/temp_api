@@ -220,6 +220,14 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         }
                     })
 
+        if 'meta_data' in object_details:
+            if "uiMetaData" in object_details['meta_data']:
+                if object_details['meta_data']["uiMetaData"] is None:
+                    pass
+                else:
+                    object_details['meta_data']["uiMetaData"]['SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
+
+
         return Response(object_details)
 
     def subsetting(self, request, instance=None):

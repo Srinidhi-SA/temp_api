@@ -5766,9 +5766,8 @@ class ModelDeployementView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
+                    ## Modification for periodic task delete
+                    instance.delete()
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")

@@ -6,6 +6,7 @@ import json
 import os
 import random
 import string
+import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -83,7 +84,7 @@ class Job(models.Model):
 
         if self.url is None:
             return False
-        kill_application_using_fabric(self.url)
+        kill_application_using_fabric.delay(self.url)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -1066,7 +1067,30 @@ class Trainer(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
     def make_config_algorithm_setting(self):
+        '''
+        If grid search is True for an Algo.
+        make metric_name  True in that Algo.
+        :return:
+        '''
         config = self.get_config()
+        if 'metric' in config:
+            metric_name = config['metric']['name']
+            for algo in config['ALGORITHM_SETTING']:
+                for hps in algo['hyperParameterSetting']:
+                    if hps['name'] == 'gridsearchcv':
+                        if hps['selected'] == True:
+                            params = hps['params']
+                            if len(params) > 0:
+                                params_0 = params[0]
+                                if 'defaultValue' in params_0:
+                                    default_value = params_0['defaultValue']
+                                    for default in default_value:
+                                        if default['name'] == metric_name:
+                                            default['selected'] = True
+                                            break
+
+                            break
+
         return config['ALGORITHM_SETTING']
 
     def create_configuration_fe_settings(self):
@@ -1307,7 +1331,8 @@ class Trainer(models.Model):
             "multiply_specific_value", "divide_specific_value",
             "perform_standardization", "variable_transformation",
             # Dimension Transformations
-            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling"
+            "encoding_dimensions", "is_custom_string_in", "return_character_count", "feature_scaling",
+            "is_date_weekend", "extract_time_feature", "time_since"
         ]
 
         for key in list_of_transformations:
@@ -1317,6 +1342,35 @@ class Trainer(models.Model):
             colStructure = {}
             user_given_name = ''
             # Measures Transformations
+
+            if key == 'is_date_weekend':
+                colStructure = {
+
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key
+                )
+
+            if key == 'extract_time_feature':
+                colStructure = {
+                    'time_feature_to_extract': uiJson.get("extract_time_feature_select", "day_of_week"),
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("extract_time_feature_select", "day_of_week"))
+                )
+
+            if key == 'time_since':
+                colStructure = {
+                    'time_since': uiJson.get("time_since_input", datetime.datetime.now().date().strftime('%d/%m/%Y')),
+                }
+                user_given_name = self.generate_new_column_name_based_on_transformation(
+                    variable_selection_column_data,
+                    key
+                )
+
             if key == "replace_values_with":
                 colStructure = {
                     "replace_by": uiJson.get("replace_values_with_selected", "Mean"),
@@ -1577,12 +1631,16 @@ class Trainer(models.Model):
                 'type': 'dimension'
             },
             'is_date_weekend': {
-                'name': 'is_w',
+                'name': 'is_weekend',
                 'type': 'boolean'
             },
             'extract_time_feature': {
-                'name': 'e_t_f',
+                'name': 'etf',
                 'type': 'dimension'
+            },
+            'time_since': {
+                'name': 'time_since',
+                'type': 'measure'
             },
             'standardization': {
                 'name': 'fs',
@@ -4987,15 +5045,26 @@ class ModelDeployment(models.Model):
             'username': self.created_by.username
         }
 
+    def delete(self):
+        try:
+            self.deleted=True
+            self.disable_periodic_task()
+
+        except Exception as err:
+            print(err)
+
+
     def disable_periodic_task(self):
-        '''
-            >>> periodic_task.enabled = False
-            >>> periodic_task.save()
-        :return:
-        '''
-        self.periodic_task.enabled = False
-        self.status = 'STOPPED'
-        self.save()
+        from django_celery_beat.models import PeriodicTask
+        try:
+            periodic_object = PeriodicTask.objects.get(pk=self.periodic_task_id)
+            if periodic_object.enabled == False:
+                pass
+            else:
+                periodic_object.enabled = False
+                periodic_object.save()
+        except:
+            print("Unable to stop Periodic Task !!!")
         self.save()
 
     def resume_periodic_task(self):
