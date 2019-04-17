@@ -5025,7 +5025,6 @@ class ModelDeployment(models.Model):
     def delete(self):
         try:
             self.deleted=True
-            print"----------> Calling Disable_periodic_task function <------------"
             self.disable_periodic_task()
 
         except Exception as err:
@@ -5033,26 +5032,16 @@ class ModelDeployment(models.Model):
 
 
     def disable_periodic_task(self):
-        '''
-            >>> periodic_task.enabled = False
-            >>> periodic_task.save()
-        :return:
-        '''
-        print"------------> Inside disable_periodic_task <---------------"
         from django_celery_beat.models import PeriodicTask
-        print(self.periodic_task_id)
         periodic_objects = PeriodicTask.objects.filter(pk=self.periodic_task_id)
-        print(periodic_objects)
-        #print(periodic_object.periodic_task.id)
         for periodic_task in periodic_objects:
             if periodic_task.name == 'celery.backend_cleanup':
                 pass
             else:
                 periodic_task.enabled = False
                 periodic_task.save()
-
-        print"-----------> periodic tasks disabled <--------------"
-
+        self.save()
+        
     def resume_periodic_task(self):
         '''
             >>> periodic_task.enabled = True
