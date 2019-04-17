@@ -184,8 +184,8 @@ export class ModelVariableSelection extends React.Component {
         let metricValues ="";
         metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
         if(metric){           
-                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" name="evaluationMetric" value="evaluationMetric" required={true}>
-                                    <option>--select--</option>
+                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
+                                    <option value="">--select--</option>
                                     {metric.map((mItem,mIndex) =>{
                                        return(<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)  
                                       })

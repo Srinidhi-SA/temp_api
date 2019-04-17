@@ -2045,9 +2045,10 @@ export function updateSelectedVariable(event) {
 
 export function selectMetricAction(event,selectedOrNot){
   var evalMet = event.target.childNodes[event.target.selectedIndex]; 
+  var displayName = evalMet.getAttribute("name");
   var name = evalMet.getAttribute("value");
   var selected = selectedOrNot
-  return {type:"SET_EVALUATION_METRIC",name};
+  return {type:"SET_EVALUATION_METRIC",name,displayName,selected};
 }
 
 export function checkCreateScoreToProceed(selectedDataset) {

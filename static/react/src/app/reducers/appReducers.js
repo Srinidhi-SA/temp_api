@@ -1109,7 +1109,9 @@ export default function reducer(state = {
         return{
             ...state,
             metricSelected :{
-                "name" : action.name
+                "selected" : action.selected,
+                "name" : action.name,
+                "displayName" : action.displayName
             }
         }
     }
