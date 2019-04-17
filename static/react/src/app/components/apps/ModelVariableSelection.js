@@ -183,8 +183,8 @@ export class ModelVariableSelection extends React.Component {
         let metric = "";
         let metricValues ="";
         metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
-            if(metric){
-                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
+        if(metric){           
+                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" name="evaluationMetric" value="evaluationMetric" required={true}>
                                     <option>--select--</option>
                                     {metric.map((mItem,mIndex) =>{
                                        return(<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)  
@@ -239,25 +239,27 @@ export class ModelVariableSelection extends React.Component {
                 </FormGroup>
 
 				<FormGroup role="form">
-					<div class="col-md-12">
+					<div class="col-md-8">
                     {modelValidation}
                     </div>
-                    <div>
-                    <label class="col-lg-2 control-label" for="selectEvaluation">Evaluation Metric :</label>
-                        <div class="col-lg-4">
-                           {metricValues}
-                            
+                    <div class="clearfix"></div>
+                   <div class="col-md-8">
+					<div class="col-md-8">
+					<div class="form-group">
+					  <label class="col-lg-4 control-label" for="selectEvaluation">Evaluation Metric :</label>
+                        <div class="col-lg-8">
+                        {metricValues}
                         </div>
-
-
 					</div>
-                   
+					</div>
+					</div>
 					<div class="col-md-4">
+					<div class="form-group xs-ml-10 xs-mr-10">
 					<div class="input-group xs-mb-15">
 					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control" placeholder="Create Model Name"/><span class="input-group-btn">
 					  <button type="submit" class="btn btn-primary">{buttonName}</button></span>
 					</div>
-
+					</div>
 					</div>
 					<div className="clearfix"></div>
                 </FormGroup>
