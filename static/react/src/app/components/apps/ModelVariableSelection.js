@@ -220,28 +220,34 @@ export class ModelVariableSelection extends React.Component {
                 </FormGroup>
 
 				<FormGroup role="form">
-					<div class="col-md-12">
+					<div class="col-md-8">
                     {modelValidation}
+					
+					
+					
                     </div>
-                    <div>
-                    <label class="col-lg-2 control-label" for="selectEvaluation">Evaluation Metric :</label>
-                        <div class="col-lg-4">
+                    <div class="clearfix"></div>
+                   <div class="col-md-8">
+					<div class="col-md-8">
+					<div class="form-group">
+					  <label class="col-lg-4 control-label" for="selectEvaluation">Evaluation Metric :</label>
+                        <div class="col-lg-8">
                         <select className="form-control" id="selectEvaluation" name="evaluationMetric" value="evaluationMetric">
                             <option>Accuracy</option>
                             <option>Precision</option>
                         </select>
                             
                         </div>
-
-
 					</div>
-                   
+					</div>
+					</div>
 					<div class="col-md-4">
+					<div class="form-group">
 					<div class="input-group xs-mb-15">
 					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control" placeholder="Create Model Name"/><span class="input-group-btn">
 					  <button type="submit" class="btn btn-primary">{buttonName}</button></span>
 					</div>
-
+					</div>
 					</div>
 					<div className="clearfix"></div>
                 </FormGroup>
