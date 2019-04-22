@@ -58,7 +58,7 @@ class JobserverDetails(object):
                 "job_url" : "https://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
-                "kill_url": "https://{0}/api/job/{2}/end_of_this_world/".format(THIS_SERVER_DETAILS.get('host'),
+                "kill_url": "https://{0}/api/job/{2}/rest_in_peace/".format(THIS_SERVER_DETAILS.get('host'),
                                                              THIS_SERVER_DETAILS.get('port'),
                                                              slug),
                 "message_url": "https://{0}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
