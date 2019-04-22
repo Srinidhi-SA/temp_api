@@ -1090,6 +1090,63 @@ from api import tasks
 
 
 @csrf_exempt
+def end_of_this_world(request, slug=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+
+    job.status = 'FAILED'
+    job.save()
+    from api.helper import get_db_object
+    job_type = job.job_type
+    object_id = job.object_id
+    if job_type in ["metadata", "subSetting"]:
+        dataset_object = get_db_object(model_name=Dataset.__name__,
+                                           model_slug=object_id
+                                           )
+
+        dataset_object.status = "FAILED"
+        dataset_object.save()
+    elif job_type == "master":
+        insight_object = get_db_object(model_name=Insight.__name__,
+                                           model_slug=object_id
+                                           )
+
+        insight_object.status = "FAILED"
+        insight_object.save()
+    elif job_type == "model":
+        trainer_object = get_db_object(model_name=Trainer.__name__,
+                                           model_slug=object_id
+                                           )
+
+        trainer_object.status = "FAILED"
+        trainer_object.save()
+    elif job_type == 'score':
+        score_object = get_db_object(model_name=Score.__name__,
+                                           model_slug=object_id
+                                           )
+
+        score_object.status = "FAILED"
+        score_object.save()
+    elif job_type == 'robo':
+        robo_object = get_db_object(model_name=Robo.__name__,
+                                    model_slug=object_id
+                                    )
+
+        robo_object.status = "FAILED"
+        robo_object.save()
+    elif job_type == 'stockAdvisor':
+        stock_objects = get_db_object(model_name=StockDataset.__name__,
+                                           model_slug=object_id
+                                           )
+        stock_objects.status = 'FAILED'
+        stock_objects.save()
+
+    return JsonResponse({'result': "success"})
+
+
+@csrf_exempt
 def set_result(request, slug=None):
     job = Job.objects.get(slug=slug)
 
