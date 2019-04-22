@@ -15291,6 +15291,7 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   display: flex;
   flex-wrap: wrap; }
 .p-multiselect-item label {text-overflow:ellipsis; white-space: nowrap; overflow:hidden; width:130px; }
+.form-horizontal .control-label { text-align:left; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
