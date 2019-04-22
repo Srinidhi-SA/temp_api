@@ -242,7 +242,6 @@ function deleteAlgo(slug, dialog, dispatch) {
 
 
 function deleteAlgoAPI(slug) {
-  debugger;
   // return fetch(API + '/api/trainalgomapping/' + slug +'/clone/', {
   // api/trainalgomapping/<some-slug>/clone/
   return fetch(API + '/api/trainalgomapping/' + slug + '/', {
@@ -385,7 +384,6 @@ function cloneAlgo(slug, dialog, dispatch) {
 }
 
 function cloneAlgoAPI(slug) {
-  debugger;
   return fetch(API + '/api/trainalgomapping/' + slug + '/clone/', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -474,7 +472,6 @@ export function createModel(modelName, targetVariable, targetLevel) {
 }
 
 function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
-  debugger;
   var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
@@ -588,9 +585,6 @@ export function getAppsScoreList(pageNo) {
     })
   }
 }
-
-
-
 
 function fetchScoreList(pageNo, token) {
   let search_element = store.getState().apps.score_search_element;
@@ -2162,7 +2156,6 @@ export function saveRegressionAppAlgorithmData(data) {
   return { type: "SAVE_REGRESSION_ALGORITHM_DATA", data }
 }
 export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
-  debugger;
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function (key, val) {
@@ -2460,7 +2453,6 @@ export function refreshRoboInsightsList(props) {
 }
 
 export function getDeployPreview(pageNo, filtername) {
-  debugger;
   return (dispatch) => {
 
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken, filtername).then(([response, json]) => {
