@@ -386,7 +386,12 @@ dcTableSorter() {
                         </div>
                       </div>
                     </div>
-                  <div className="table-responsive ">
+                  <div className="table-responsive noSwipe xs-pb-10">
+                        <Scrollbars style={{
+                          height: 855
+                        }}>
+                          
+                       
 
                     <table  id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
                       <thead>
@@ -410,6 +415,7 @@ dcTableSorter() {
                         {cleansingHtml}
                       </tbody>
                     </table>
+                    </Scrollbars>
                   </div>
 
                   <div class="buttonRow text-right">
