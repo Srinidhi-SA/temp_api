@@ -314,7 +314,8 @@ class TrainerView(viewsets.ModelViewSet):
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
-        proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+        # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+        proceedFlag = t_d_c_s.issuperset(d_d_c_s)
 
         if proceedFlag != True:
             missing = t_d_c_s.difference(d_d_c_s)
