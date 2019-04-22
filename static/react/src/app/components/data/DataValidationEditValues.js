@@ -100,15 +100,20 @@ export class DataValidationEditValues extends React.Component {
 			</div>
 			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REMOVE)}><i className="fa fa-minus-square-o text-muted"></i></div>
 			</div>);
-	  });
-	 const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
-	     if(that.columnData != null){
-	     replaceTypeList  = (function(){
-			 var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
-		    return optionValues;
-		 })();
-	     }
-		  return (<div className="form-group" id={data.replaceId} key={data.replaceId}>
+		});
+		
+			const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
+					if(that.columnData != null){
+					replaceTypeList  = (function(){
+					var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+					console.log(optionValues);
+					return optionValues;
+				})();
+			 }
+			 debugger;
+			 
+		  return (
+			<div className="form-group" id={data.replaceId} key={data.replaceId}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-3">
 			<input  id={data.replaceId} placeholder="Current Value" type="text" autocomplete="off" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,CURRENTVALUE)} value={data.valueToReplace} className="form-control"/>
@@ -118,9 +123,7 @@ export class DataValidationEditValues extends React.Component {
 			</div>
 			<div className="col-sm-3">
 			 <select className="form-control" id={data.replaceId} onChange={this.handleInputChangeReplace.bind(this,data.replaceId)}>
-
 			 {replaceTypeList}
-
 			 </select>
 			</div>
 

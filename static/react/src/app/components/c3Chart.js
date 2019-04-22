@@ -208,7 +208,7 @@ export class C3Chart extends React.Component {
       //console.log(this.props.xdata);
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
-          return xdata[x].substr(0, 13) + "..";
+          return xdata[x].substr(0, 9) + "..";
         } else {
           return xdata[x];
         }

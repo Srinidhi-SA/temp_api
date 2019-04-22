@@ -57,7 +57,7 @@ export class ExportAsPMML extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                 <div class="form-group">
-                <label>Select an Algorithm</label>
+                <label>Select a Model</label>
 
                 {algorithmNames}
 

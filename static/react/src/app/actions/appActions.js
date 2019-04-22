@@ -504,8 +504,8 @@ export function createModel(modelName, targetVariable, targetLevel) {
                                                       "remove_duplicate_observations":store.getState().datasets.removeDuplicateObservations,
                                    },
                                   }
-
             var details = {
+                "metric" : store.getState().apps.metricSelected,
                 "selectedVariables" : store.getState().datasets.selectedVariables,
                 "newDataType" : store.getState().datasets.dataTypeChangedTo,
                 "ALGORITHM_SETTING":AlgorithmSettings,
@@ -2043,6 +2043,14 @@ export function updateSelectedVariable(event) {
   return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
 }
 
+export function selectMetricAction(event,selectedOrNot){
+  var evalMet = event.target.childNodes[event.target.selectedIndex]; 
+  var displayName = evalMet.getAttribute("name");
+  var name = evalMet.getAttribute("value");
+  var selected = selectedOrNot
+  return {type:"SET_EVALUATION_METRIC",name,displayName,selected};
+}
+
 export function checkCreateScoreToProceed(selectedDataset) {
   var modelSlug = store.getState().apps.modelSlug;
   var response = "";
@@ -2053,7 +2061,6 @@ export function checkCreateScoreToProceed(selectedDataset) {
       }
     });
   }
-
 }
 
 function triggerAPI(modelSlug, selectedDataset) {
@@ -2156,6 +2163,7 @@ export function saveRegressionAppAlgorithmData(data) {
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
 export function updateAlgorithmData(algSlug, parSlug, parVal,type) {
+  debugger;
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {

@@ -7,11 +7,12 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 
 import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables, selectMetricAction} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
 import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
+import { options } from "react-bootstrap-dialog";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -22,6 +23,7 @@ import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
         currentAppDetails:store.apps.currentAppDetails,
         regression_selectedTechnique:store.apps.regression_selectedTechnique,
         regression_crossvalidationvalue:store.apps.regression_crossvalidationvalue,
+        metricSelected :store.apps.metricSelected,
     };
 })
 
@@ -76,6 +78,10 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(updateSelectedVariable(event));
     }
+
+    setEvaluationMetric(event){
+        this.props.dispatch(selectMetricAction(event,true));
+    }
         handleOptionChange(e){
         this.props.dispatch(updateRegressionTechnique(e.target.value));
         //this.setState({ selectedTechnique: e.target.value});
@@ -102,6 +108,7 @@ export class ModelVariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if(dataPrev && store.getState().apps.currentAppDetails != null ){
+            debugger;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
@@ -173,6 +180,20 @@ export class ModelVariableSelection extends React.Component {
                         </div>
                     }
         }
+        let metric = "";
+        let metricValues ="";
+        metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
+        if(metric){           
+                metricValues =  <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
+                                    <option value="">--select--</option>
+                                    {metric.map((mItem,mIndex) =>{
+                                       return(<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)  
+                                      })
+                                    }
+                                </select>
+                }else{
+                metricValues = <option>No Options</option>
+            }
         return(
                 <div className="side-body">
                 <div className="page-head">
@@ -219,18 +240,26 @@ export class ModelVariableSelection extends React.Component {
 
 				<FormGroup role="form">
 					<div class="col-md-8">
-					{modelValidation}
+                    {modelValidation}
+                    </div>
+                    <div class="clearfix"></div>
+                   <div class="col-md-8">
+					<div class="col-md-8">
+					<div class="form-group">
+					  <label class="col-lg-4 control-label" for="selectEvaluation">Evaluation Metric :</label>
+                        <div class="col-lg-8">
+                        {metricValues}
+                        </div>
+					</div>
+					</div>
 					</div>
 					<div class="col-md-4">
-					<h4 class="xs-pb-30"></h4>
-					<div class="xs-pb-40">
-					</div>
-
+					<div class="form-group xs-ml-10 xs-mr-10">
 					<div class="input-group xs-mb-15">
 					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control" placeholder="Create Model Name"/><span class="input-group-btn">
 					  <button type="submit" class="btn btn-primary">{buttonName}</button></span>
 					</div>
-
+					</div>
 					</div>
 					<div className="clearfix"></div>
                 </FormGroup>
