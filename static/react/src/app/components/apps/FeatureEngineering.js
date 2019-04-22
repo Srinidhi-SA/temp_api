@@ -514,9 +514,12 @@ export class FeatureEngineering extends React.Component {
                         </table>
                       </Scrollbars>
                     </div>
+                  </div>
+                  <div className="panel-body box-shadow">
                     <div className="buttonRow text-right" id="dataPreviewButton">
                       <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
+                    <div class="xs-p-10"></div>
                   </div>
                 </div>
               </div>
