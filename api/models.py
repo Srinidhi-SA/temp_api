@@ -846,10 +846,15 @@ class Trainer(models.Model):
         self.add_to_job()
 
     def generate_config(self, *args, **kwargs):
+
+
+        #changes in UI given config
+        self.apply_changes_of_selectedVariables_into_variable_selection()
+
         config = {
             "config": {}
         }
-
+        #creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
         try:
@@ -890,7 +895,7 @@ class Trainer(models.Model):
                             i['columnType'] = configUI['newDataType'][colSlug]['newColType']
                             break
 
-            # Select or not to Select
+            # Select or not to Select columns on basis of selectedVariables given on UI config
             if 'selectedVariables' in configUI:
                 for colSlug in configUI['selectedVariables']:
                     for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -905,6 +910,20 @@ class Trainer(models.Model):
         self.config = json.dumps(config)
         self.save()
         return config
+
+    # Changes to be done on variable_selection of UI given config before using it for ML/API config
+    # In selectedVariables key of UI config, we selected/unselected columns
+    def apply_changes_of_selectedVariables_into_variable_selection(self):
+        config = self.get_config()
+        selectedVariables = config['selectedVariables']
+        variablesSelection = config['variablesSelection']
+        for col_slug in selectedVariables:
+            for col_json in variablesSelection:
+                if col_slug == col_json['slug']:
+                    col_json['selected'] = selectedVariables[col_slug]
+                    break
+        self.config = json.dumps(config)
+        self.save()
 
     def make_config_for_colum_setting(self):
         config = self.get_config()
