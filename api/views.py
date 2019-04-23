@@ -314,7 +314,8 @@ class TrainerView(viewsets.ModelViewSet):
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
-        proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+        # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+        proceedFlag = t_d_c_s.issuperset(d_d_c_s)
 
         if proceedFlag != True:
             missing = t_d_c_s.difference(d_d_c_s)
@@ -329,7 +330,7 @@ class TrainerView(viewsets.ModelViewSet):
             else:
                 message = ""
 
-        proceedFlag = True
+        # proceedFlag = True
         return JsonResponse({
             'proceed': proceedFlag,
             'message': message
@@ -1086,6 +1087,63 @@ def get_config(request, slug=None):
 
 from django.views.decorators.csrf import csrf_exempt
 from api import tasks
+
+
+@csrf_exempt
+def end_of_this_world(request, slug=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+
+    job.status = 'FAILED'
+    job.save()
+    from api.helper import get_db_object
+    job_type = job.job_type
+    object_id = job.object_id
+    if job_type in ["metadata", "subSetting"]:
+        dataset_object = get_db_object(model_name=Dataset.__name__,
+                                           model_slug=object_id
+                                           )
+
+        dataset_object.status = "FAILED"
+        dataset_object.save()
+    elif job_type == "master":
+        insight_object = get_db_object(model_name=Insight.__name__,
+                                           model_slug=object_id
+                                           )
+
+        insight_object.status = "FAILED"
+        insight_object.save()
+    elif job_type == "model":
+        trainer_object = get_db_object(model_name=Trainer.__name__,
+                                           model_slug=object_id
+                                           )
+
+        trainer_object.status = "FAILED"
+        trainer_object.save()
+    elif job_type == 'score':
+        score_object = get_db_object(model_name=Score.__name__,
+                                           model_slug=object_id
+                                           )
+
+        score_object.status = "FAILED"
+        score_object.save()
+    elif job_type == 'robo':
+        robo_object = get_db_object(model_name=Robo.__name__,
+                                    model_slug=object_id
+                                    )
+
+        robo_object.status = "FAILED"
+        robo_object.save()
+    elif job_type == 'stockAdvisor':
+        stock_objects = get_db_object(model_name=StockDataset.__name__,
+                                           model_slug=object_id
+                                           )
+        stock_objects.status = 'FAILED'
+        stock_objects.save()
+
+    return JsonResponse({'result': "success"})
 
 
 @csrf_exempt
@@ -5766,9 +5824,8 @@ class ModelDeployementView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
-                    instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
+                    ## Modification for periodic task delete
+                    instance.delete()
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")

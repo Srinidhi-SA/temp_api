@@ -369,8 +369,6 @@ export class FeatureEngineering extends React.Component {
     //         });
     //     }
     // }
-
-
     if (this.props.dataPreview != null) {
       debugger;
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, key) => {

@@ -1177,8 +1177,8 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
             {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
              "replaceTypeList":[
-                {"name":"contains","displayName":"Contains"},
                 {"name":"equals","displayName":"Equal To"},
+                {"name":"contains","displayName":"Contains"},
                 {"name":"startsWith","displayName":"Starts With"},
                 {"name":"endsWith","displayName":"Ends With"}
             ]},
