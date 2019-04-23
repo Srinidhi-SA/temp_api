@@ -5529,7 +5529,7 @@ def get_algorithm_config_list(request):
             metric_obj = i
             metric_obj['selected'] = True
             break
-    for algo in algorithm_config_list:
+    for algo in algorithm_config_list['ALGORITHM_SETTING']:
         algo["hyperParameterSetting"][0]["params"][0]["defaultValue"] = [metric_obj]
 
     return JsonResponse(algorithm_config_list)
