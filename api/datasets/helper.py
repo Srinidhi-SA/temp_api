@@ -693,6 +693,9 @@ def add_transformation_setting_to_ui_metadata(meta_data, permissions_dict=None):
                     datatype_element['listOfActions'][0]["status"] = True
                     columnSettingCopy[5]['listOfActions'][0]["status"] = True
                     columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                    replace_element = columnSettingCopy[4]
+                    replace_element['replaceTypeList'] = replace_element['replaceTypeList'][:1]
                     temp['columnSetting'] = columnSettingCopy
 
             elif "datetime" == columnType:
