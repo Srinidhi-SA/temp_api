@@ -1264,13 +1264,16 @@ class Trainer(models.Model):
             overall_data = feature_engineering_config_ui['overallSettings']
 
 
-            if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
-            #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+            # if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
+            if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 feature_engineering_ml_config['selected'] = True
-                #overall_settings[0]['selected'] = True
-                overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
+                overall_settings[0]['selected'] = True
+                if 'numberOfBins' in overall_data:
+                    overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
+                else:
+                    overall_settings[0]['number_of_bins'] = 4
                 for col in column_data:
-                    if column_data[col]['columnType'] == 'measure' and (column_data[col]['selected'] == True or column_data[col]['selected']== 'true'):
+                    if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
                         self.collect_column_slugs_which_all_got_transformations.append(col)
                         self.generate_new_column_name_based_on_transformation(
                             column_data[col],
