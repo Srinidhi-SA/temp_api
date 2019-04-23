@@ -5527,6 +5527,7 @@ def get_algorithm_config_list(request):
     for i in metrics_list:
         if i['name'] == metric:
             metric_obj = i
+            metric_obj['selected'] = True
             break
     for algo in algorithm_config_list:
         algo["hyperParameterSetting"][0]["params"][0]["defaultValue"] = [metric_obj]
