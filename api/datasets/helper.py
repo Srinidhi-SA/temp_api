@@ -452,6 +452,9 @@ class MetaDataChange(object):
                         datatype_element['listOfActions'][0]["status"] = True
                         columnSettingCopy[5]['listOfActions'][0]["status"] = True
                         columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                        replace_element = columnSettingCopy[4]
+                        replace_element['replaceTypeList'] = replace_element['replaceTypeList'][:1]
                         head_columnSetting = columnSettingCopy
 
                 elif "datetime" == columnType:
