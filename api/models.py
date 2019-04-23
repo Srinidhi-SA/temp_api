@@ -1267,10 +1267,10 @@ class Trainer(models.Model):
             if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
             #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 feature_engineering_ml_config['selected'] = True
-                overall_settings[0]['selected'] = True
+                #overall_settings[0]['selected'] = True
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                 for col in column_data:
-                    if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
+                    if column_data[col]['columnType'] == 'measure' and (column_data[col]['selected'] == True or column_data[col]['selected']== 'true'):
                         self.collect_column_slugs_which_all_got_transformations.append(col)
                         self.generate_new_column_name_based_on_transformation(
                             column_data[col],
