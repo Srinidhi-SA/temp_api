@@ -184,7 +184,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g. 1-3, 4, 5-10"/>
+                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
