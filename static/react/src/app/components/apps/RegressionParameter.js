@@ -87,7 +87,6 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     selecthandleChange(e){
-        debugger;
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
@@ -126,7 +125,6 @@ export class RegressionParameter extends React.Component {
             var cls = "form-control single";
             //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
             let options = parameterData.defaultValue;
-            debugger;
             let mName = this.props.metricSelected.name;
             let mDispName = this.props.metricSelected.displayName;
             let mselected = this.props.metricSelected.selected;
@@ -150,8 +148,9 @@ export class RegressionParameter extends React.Component {
                return(
                    <div className="row">
                   <div className="col-md-6 for_multiselect">
-                 <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} /*multiple={tune?"multiple":false}*/ disabled>
-                 {/* {optionsTemp} */}<option value={mName} selected={mselected}>{mDispName}</option>
+                 <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
+                 {optionsTemp}
+                 {/* <option value={mName} selected={mselected}>{mDispName}</option> */}
                  </select>
 				</div>
                   <div className="clearfix"></div>
