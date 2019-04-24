@@ -846,10 +846,15 @@ class Trainer(models.Model):
         self.add_to_job()
 
     def generate_config(self, *args, **kwargs):
+
+
+        #changes in UI given config
+        self.apply_changes_of_selectedVariables_into_variable_selection()
+
         config = {
             "config": {}
         }
-
+        #creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
         try:
@@ -890,7 +895,7 @@ class Trainer(models.Model):
                             i['columnType'] = configUI['newDataType'][colSlug]['newColType']
                             break
 
-            # Select or not to Select
+            # Select or not to Select columns on basis of selectedVariables given on UI config
             if 'selectedVariables' in configUI:
                 for colSlug in configUI['selectedVariables']:
                     for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -905,6 +910,20 @@ class Trainer(models.Model):
         self.config = json.dumps(config)
         self.save()
         return config
+
+    # Changes to be done on variable_selection of UI given config before using it for ML/API config
+    # In selectedVariables key of UI config, we selected/unselected columns
+    def apply_changes_of_selectedVariables_into_variable_selection(self):
+        config = self.get_config()
+        selectedVariables = config['selectedVariables']
+        variablesSelection = config['variablesSelection']
+        for col_slug in selectedVariables:
+            for col_json in variablesSelection:
+                if col_slug == col_json['slug']:
+                    col_json['selected'] = selectedVariables[col_slug]
+                    break
+        self.config = json.dumps(config)
+        self.save()
 
     def make_config_for_colum_setting(self):
         config = self.get_config()
@@ -1244,20 +1263,25 @@ class Trainer(models.Model):
 
             overall_data = feature_engineering_config_ui['overallSettings']
 
-
-            if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
-            #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
-                feature_engineering_ml_config['selected'] = True
-                overall_settings[0]['selected'] = True
-                overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
-                for col in column_data:
-                    if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
-                        self.collect_column_slugs_which_all_got_transformations.append(col)
-                        self.generate_new_column_name_based_on_transformation(
-                            column_data[col],
-                            'binning_all_measures',
-                            # overall_data['numberOfBins']
-                        )
+            # if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
+            if 'yesNoValue' in overall_data:
+                if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+                    feature_engineering_ml_config['selected'] = True
+                    overall_settings[0]['selected'] = True
+                    if 'numberOfBins' in overall_data:
+                        try:
+                            overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
+                            for col in column_data:
+                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
+                                    self.collect_column_slugs_which_all_got_transformations.append(col)
+                                    self.generate_new_column_name_based_on_transformation(
+                                        column_data[col],
+                                        'binning_all_measures',
+                                        # overall_data['numberOfBins']
+                                    )
+                        except Exception as err:
+                            print(err)
+                            
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
@@ -1699,6 +1723,7 @@ class Trainer(models.Model):
             'slug': slug
         }
         custom_dict.update(temp)
+        custom_dict['dateSuggestionFlag'] = False
         self.add_newly_generated_column_names.append(custom_dict)
 
     def delete(self):

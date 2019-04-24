@@ -5499,7 +5499,10 @@ def get_algorithm_config_list(request):
         levels = int(request.GET['levels'])
     except:
         levels = 2
+
     user = request.user
+
+    # changes for app_type
     if app_type =="CLASSIFICATION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
         algoArray = algorithm_config_list["ALGORITHM_SETTING"]
@@ -5513,6 +5516,22 @@ def get_algorithm_config_list(request):
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
     else:
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+
+    # changes for metrics
+    metric_obj = None
+    try:
+        metric = request.GET['metric']
+    except:
+        metric = "accuracy"
+    metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+    for i in metrics_list:
+        if i['name'] == metric:
+            metric_obj = i
+            metric_obj['selected'] = True
+            break
+    for algo in algorithm_config_list['ALGORITHM_SETTING']:
+        algo["hyperParameterSetting"][0]["params"][0]["defaultValue"] = [metric_obj]
+
     return JsonResponse(algorithm_config_list)
 
 def get_appID_appName_map(request):
