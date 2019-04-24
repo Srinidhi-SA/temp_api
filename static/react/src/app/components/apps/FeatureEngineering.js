@@ -78,6 +78,7 @@ export class FeatureEngineering extends React.Component {
         }
       });
     });
+    this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton,0));
   }
 
   clearBinsAndIntervals(event) {

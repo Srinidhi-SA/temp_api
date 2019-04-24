@@ -110,7 +110,6 @@ export class ModelVariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
-            debugger;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if (metaData) {
                 renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">

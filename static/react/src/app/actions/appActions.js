@@ -2143,11 +2143,13 @@ export function getRegressionAppAlgorithmData(slug, appType) {
 }
 
 function triggerRegressionAppAlgorithmAPI(appType) {
+  let metricVal = store.getState().apps.metricSelected.name;
+  debugger;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));*/
-  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType, {
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
