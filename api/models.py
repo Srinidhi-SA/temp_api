@@ -1723,6 +1723,7 @@ class Trainer(models.Model):
             'slug': slug
         }
         custom_dict.update(temp)
+        custom_dict['dateSuggestionFlag'] = False
         self.add_newly_generated_column_names.append(custom_dict)
 
     def delete(self):
