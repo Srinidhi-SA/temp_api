@@ -256,7 +256,7 @@ debugger;
 		let renderSelectBox = null;
     let algorithmNames = null;
 		if(dataSets != ""){
-      var options= dataSets.data.filter(datacount => datacount.count>>0).map(dataSet => 
+      var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
         <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
         )
 			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
