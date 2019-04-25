@@ -257,7 +257,7 @@ export class ModelVariableSelection extends React.Component {
                                     <div class="col-md-4">
                                         <div class="form-group xs-ml-10 xs-mr-10">
                                             <div class="input-group xs-mb-15">
-                                                <input type="text" name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
+                                                <input type="text" name="createModelName" required={true} id="createModelName" autocomplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
                                                     <button type="submit" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>

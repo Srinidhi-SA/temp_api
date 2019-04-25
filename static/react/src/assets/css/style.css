@@ -15599,7 +15599,7 @@ visibility:hidden !important;
     padding: 0 5px;
 }
 .dataTransformModalWidth{
-	width:750px !important;
+	width:750px !important;	
 }
 .stockDropzone{
     padding-left: 20px;
@@ -16029,4 +16029,7 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 	white-space: nowrap;
 	width: 180px;
 	overflow: hidden;
+}
+div#replaceValues {
+    padding: 0 10px;
 }
