@@ -241,11 +241,11 @@ componentDidMount() {
 		overviewCard=(
 			<div class="row">
 				<div class="col-md-6">
-					{headSummaryTable}
+					<div class="col-md-12">{headSummaryTable}</div>
 					{summaryTable}
 				</div>
 				<div class="col-md-6">
-					{headSettingsTable}
+					<div class="col-md-12">{headSettingsTable}</div>
 					{settingsTable}
 				</div>
 			</div>
