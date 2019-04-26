@@ -68,7 +68,14 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
 
         if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
 
         if 'input_file' in data:
             data['input_file'] =  request.FILES.get('input_file')

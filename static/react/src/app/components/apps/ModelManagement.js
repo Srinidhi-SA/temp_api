@@ -252,19 +252,19 @@ getAllDeployPreview()
     var none =none;
 debugger;
     const dataSets = this.props.allProjects;
-    var options= dataSets.data.filter(datacount => datacount.count>>0).map(dataSet =>
-  
-			<option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
-			)
+    
 		let renderSelectBox = null;
     let algorithmNames = null;
-		if(dataSets){
+		if(dataSets != ""){
+      var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
+        <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
+        )
 			renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
        <option value="">All</option>
          {options}
 			</select>
 		}else{
-			renderSelectBox = "No Datasets"
+			renderSelectBox = ""
 		}
 
       mmTable = this.props.algoList.data.map((item,key )=> {

@@ -203,8 +203,8 @@ export class Levels extends React.Component {
     else {
       var dtlevels = "";
 
-      var cname = this.props.datasets.dataPreview.meta_data.scriptMetaData.columnData.filter(function (items) { return items.actualColumnType == "datetime" }).map((names) => {
-        return (<span>{names.name}</span>);
+      var cname = this.props.datasets.dataPreview.meta_data.scriptMetaData.columnData.filter(item => (item.slug == this.props.selectedItem.slug)).map(name => {
+        return (<span>{name.name}</span>);
       })
 
       var startDate = this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug)[0].columnStats.filter(options => (options.name == "firstDate"))[0].value

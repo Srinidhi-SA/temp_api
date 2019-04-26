@@ -92,6 +92,7 @@ export class RegressionParameter extends React.Component {
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
         var validateResult = {"iserror":false,"errmsg":""};
+        debugger;
         validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;

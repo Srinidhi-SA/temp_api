@@ -46,11 +46,11 @@ def submit_job_separate_task(command_array, slug):
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
     # TODO: @Ankush need to write the error to error log and standard out to normal log
+    time.sleep(10)
     exists = os.path.isfile('/tmp/SparkDriver.log')
     while( exists != True):
       exists = os.path.isfile('/tmp/SparkDriver.log')
-      time.sleep(10)
-
+      time.sleep(1)
     with open("/tmp/SparkDriver.log") as file:
         data = file.readlines()
         for line in data:
