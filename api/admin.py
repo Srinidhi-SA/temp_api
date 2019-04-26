@@ -169,7 +169,6 @@ class ProfileAdmin(admin.ModelAdmin):
     # search_fields = ["name"]
 
     def name(self, instance):
-
         return instance.user
 
 
@@ -178,7 +177,6 @@ admin.site.register(Insight, InsightAdmin)
 admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
-admin.site.register(CustomApps, CustomAppsAdmin)
 
 
 from django.contrib.auth.admin import GroupAdmin
@@ -196,7 +194,7 @@ class PermissionAdmin(admin.ModelAdmin):
     model = Permission
     fields = ['name']
 
-admin.site.register(Permission, PermissionAdmin)
+
 
 # from guardian.admin import GuardedModelAdmin
 # from guardian.backends import ObjectPermissionBackend
@@ -243,16 +241,29 @@ admin.site.register(User, MyUserAdmin)
 admin.site.register(ModelDeployment, ModelDeploymentAdmin)
 
 import django_celery_beat.admin
+import auditlog.admin
+from auditlog.models import LogEntry
+'''
+HIDE_FROM_CELERY_FROM_ADMIN = True
+KEEP_OTHERS_IN_ADMIN = False
+'''
 
-if settings.HIDE_FROM_ADMIN:
+if settings.HIDE_FROM_CELERY_FROM_ADMIN:
     admin.site.unregister(IntervalSchedule)
     admin.site.unregister(CrontabSchedule)
     admin.site.unregister(SolarSchedule)
-else:
+    admin.site.unregister(PeriodicTask)
+    
+if settings.HIDE_AUDIT_LOGS:
+    admin.site.unregister(LogEntry)
+
+if not settings.KEEP_OTHERS_IN_ADMIN:
     admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
+    admin.site.register(CustomApps, CustomAppsAdmin)
     admin.site.register(StockDataset, StockDatasetAdmin)
     admin.site.register(Robo, RoboAdmin)
     admin.site.register(Profile, ProfileAdmin)
+    admin.site.register(Permission, PermissionAdmin)
 
 
 
