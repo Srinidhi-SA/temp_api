@@ -273,7 +273,7 @@ export class RegressionParameter extends React.Component {
     }
     
     validateTextboxValue(textboxVal,min,max,type){
-        const regex = /^\s*([0-9]?\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
+        const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
