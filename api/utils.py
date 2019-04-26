@@ -1140,7 +1140,13 @@ def get_random_true_false():
 
 
 def name_check(name):
-    return check_for_empty(name) and check_for_length(name) and check_for_special_chars(name)
+    if not check_for_empty(name):
+        return -1
+    if not check_for_length(name):
+        return -2
+    if not check_for_special_chars(name):
+        return -3
+    return 1
 
 
 def check_for_length(name):
