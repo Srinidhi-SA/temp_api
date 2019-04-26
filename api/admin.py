@@ -253,11 +253,11 @@ if settings.HIDE_FROM_CELERY_FROM_ADMIN:
     admin.site.unregister(CrontabSchedule)
     admin.site.unregister(SolarSchedule)
     admin.site.unregister(PeriodicTask)
-    
+
 if settings.HIDE_AUDIT_LOGS:
     admin.site.unregister(LogEntry)
 
-if not settings.KEEP_OTHERS_IN_ADMIN:
+if settings.HIDE_OTHERS_IN_ADMIN:
     admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
     admin.site.register(CustomApps, CustomAppsAdmin)
     admin.site.register(StockDataset, StockDatasetAdmin)
