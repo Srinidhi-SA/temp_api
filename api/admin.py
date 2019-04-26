@@ -9,7 +9,7 @@ from api.models import Dataset, Insight, Job, Score, Trainer,\
     CustomApps, CustomAppsUserMapping, StockDataset, \
     Robo, TrainAlgorithmMapping, DatasetScoreDeployment, ModelDeployment
 from api.user_helper import Profile
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule, SolarSchedule
 
 
 class DatasetAdmin(admin.ModelAdmin):
@@ -17,7 +17,7 @@ class DatasetAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
-    readonly_fields = ["created_at", "deleted", "created_by", "job"]
+    readonly_fields = ["created_at", "deleted", "created_by", "job", "slug"]
 
 
 class InsightAdmin(admin.ModelAdmin):
@@ -27,7 +27,7 @@ class InsightAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
                     "created_by"]
     list_filter = ["status", "analysis_done"]
-    readonly_fields = ["created_at", "created_by", "job", "dataset"]
+    readonly_fields = ["created_at", "created_by", "job", "dataset", "slug"]
 
 
 class JobAdmin(admin.ModelAdmin):
@@ -37,7 +37,8 @@ class JobAdmin(admin.ModelAdmin):
                     "msg_count", "time_difference", "script_time_difference"
                     ]
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
+    # readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
+    readonly_fields = ("created_at", "submitted_by", "slug")
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def config_prettified(self, instance):
@@ -178,7 +179,7 @@ admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(CustomApps, CustomAppsAdmin)
-admin.site.register(Profile, ProfileAdmin)
+
 
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
@@ -237,12 +238,19 @@ class ModelDeploymentAdmin(admin.ModelAdmin):
 # class PeriodicTaskAdmin(admin.ModelAdmin):
 #     pass
 
-admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
-admin.site.register(StockDataset, StockDatasetAdmin)
-admin.site.register(Robo, RoboAdmin)
+
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ModelDeployment, ModelDeploymentAdmin)
-# admin.site.register(PeriodicTask, PeriodicTaskAdmin)
+
+if settings.HIDE_FROM_ADMIN:
+    admin.site.unregister(IntervalSchedule)
+    admin.site.unregister(CrontabSchedule)
+    admin.site.unregister(SolarSchedule)
+else:
+    admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
+    admin.site.register(StockDataset, StockDatasetAdmin)
+    admin.site.register(Robo, RoboAdmin)
+    admin.site.register(Profile, ProfileAdmin)
 
 
 
