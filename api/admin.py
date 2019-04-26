@@ -11,6 +11,7 @@ from api.models import Dataset, Insight, Job, Score, Trainer,\
 from api.user_helper import Profile
 from django_celery_beat.models import PeriodicTask, IntervalSchedule, CrontabSchedule, SolarSchedule
 
+admin.site.disable_action('delete_selected')
 
 class DatasetAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">cloud_done</i>'
