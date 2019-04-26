@@ -17,6 +17,7 @@ class DatasetAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
+    list_filter = ["status", "deleted", "created_by"]
     readonly_fields = ["created_at", "deleted", "created_by", "job", "slug"]
 
 
@@ -26,7 +27,7 @@ class InsightAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug", "target_column"]
     list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
                     "created_by"]
-    list_filter = ["status", "analysis_done"]
+    list_filter = ["status", "deleted", "created_by"]
     readonly_fields = ["created_at", "created_by", "job", "dataset", "slug"]
 
 
@@ -142,8 +143,8 @@ class JobAdmin(admin.ModelAdmin):
 class ScoreAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">assessment</i>'
     search_fields = ["name", "slug"]
-    list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
-    list_filter = ["analysis_done", ]
+    list_display = ["name", "slug", "analysis_done", "created_at", "created_by", "status"]
+    list_filter = ["status", "deleted", "created_by"]
     readonly_fields = ["created_at", "trainer",  "created_by", "job", "dataset"]
 
 
@@ -151,8 +152,8 @@ class TrainerAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">tune</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
-                    "created_by", "deleted"]
-    list_filter = ["analysis_done"]
+                    "created_by", "deleted", "status"]
+    list_filter = ["deleted", "created_by", "status"]
     readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
@@ -230,8 +231,8 @@ class ModelDeploymentAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">assessment</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "created_by", "status", "deleted", "config"]
-    list_filter = ["deleted", ]
-    readonly_fields = ["created_at", "created_by"]
+    list_filter = ["status", "deleted", "created_by"]
+    readonly_fields = ["created_at", "created_by", "slug"]
 
 # class PeriodicTaskAdmin(admin.ModelAdmin):
 #     pass
