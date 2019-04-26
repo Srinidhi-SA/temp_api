@@ -242,6 +242,8 @@ class ModelDeploymentAdmin(admin.ModelAdmin):
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ModelDeployment, ModelDeploymentAdmin)
 
+import django_celery_beat.admin
+
 if settings.HIDE_FROM_ADMIN:
     admin.site.unregister(IntervalSchedule)
     admin.site.unregister(CrontabSchedule)
