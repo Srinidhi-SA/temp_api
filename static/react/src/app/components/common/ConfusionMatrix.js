@@ -22,7 +22,7 @@ export class ConfusionMatrix extends React.Component {
    var rowComponents = generateRows(data);
    return (
            <div className="table-style">
-		   <Scrollbars style={{ height: 420 }}>
+		   <Scrollbars style={{ height: 250 }}>
            <table className="table table-bordered apps_table_style">
                <thead><tr>
 				<th colSpan={data.tableData.length+3} class="text-center">Actual</th>

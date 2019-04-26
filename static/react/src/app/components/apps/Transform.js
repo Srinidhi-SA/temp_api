@@ -234,7 +234,7 @@ export class Transform extends React.Component {
                     <select class="form-control" id="extract_time_feature_select" name="extract_time_feature_select" defaultValue={this.getTranformDataValue("extract_time_feature_select")} onChange={this.pickValue}>
                       <option value="" selected> None</option>
                       <option value="day_of_week" >Day of week</option>
-                      <option value="month_of_Year">Month of Year</option>
+                      <option value="month_of_year">Month of Year</option>
                     </select>
                   </div>
                 </div>
