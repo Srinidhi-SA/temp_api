@@ -246,6 +246,7 @@ from auditlog.models import LogEntry
 '''
 HIDE_FROM_CELERY_FROM_ADMIN = True
 KEEP_OTHERS_IN_ADMIN = False
+HIDE_AUDIT_LOGS = True
 '''
 
 if settings.HIDE_FROM_CELERY_FROM_ADMIN:
@@ -257,7 +258,7 @@ if settings.HIDE_FROM_CELERY_FROM_ADMIN:
 if settings.HIDE_AUDIT_LOGS:
     admin.site.unregister(LogEntry)
 
-if settings.HIDE_OTHERS_IN_ADMIN:
+if settings.KEEP_OTHERS_IN_ADMIN:
     admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
     admin.site.register(CustomApps, CustomAppsAdmin)
     admin.site.register(StockDataset, StockDatasetAdmin)
