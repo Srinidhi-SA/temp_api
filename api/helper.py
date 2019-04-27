@@ -456,11 +456,19 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['table_c3'] =  chart_data
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
-        c3 = ScatterChart(
-            data=chart_data,
-            data_type='columns',
-            title=title
-        )
+        if 'point' in data:
+            c3 = ScatterChart(
+                data=chart_data,
+                data_type='columns',
+                title=title,
+                point=data['point']
+            )
+        else:
+            c3 = ScatterChart(
+                data=chart_data,
+                data_type='columns',
+                title=title,
+            )
         c3.set_xs(xs)
 
         c3.set_axis_label_simple(
