@@ -390,7 +390,7 @@ export class DataCleansing extends React.Component {
                   </div>
                   <div className="table-responsive noSwipe xs-pb-10">
                     <Scrollbars style={{
-                      height: 855
+                      height: 500
                     }}>
 
 
