@@ -303,6 +303,7 @@ export class RegressionParameter extends React.Component {
                 if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const singleNumber = parseFloat(parts[i], 10);
+                debugger;
                 if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 var checkType = this.checkType(parts[i],type,min,max);
@@ -312,7 +313,7 @@ export class RegressionParameter extends React.Component {
         }
     }
     isPositiveInteger(value) {
-        return parseInt(value, 10) >= 0;
+        return (parseInt(value), 10) >= 0;
     }
     isInteger(toTest) {
         const numericExp = /^\s*[0-9]+\s*$/;

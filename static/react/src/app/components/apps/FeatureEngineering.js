@@ -371,7 +371,6 @@ export class FeatureEngineering extends React.Component {
     //     }
     // }
     if (this.props.dataPreview != null) {
-      debugger;
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, key) => {
         if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1)
           return "";
@@ -497,9 +496,9 @@ export class FeatureEngineering extends React.Component {
                         </div>
                       </div>
                     </div>
-                    <div className="table-responsive noSwipe xs-pb-10">
+                    <div className="table-responsive noSwipe xs-pb-5">
                       <Scrollbars style={{
-                        height: 855
+                        height: 500
                       }}>
                         <table id="fetable" className="table table-striped table-bordered break-if-longText">
                           <thead>
