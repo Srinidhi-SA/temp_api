@@ -89,8 +89,32 @@ export class DataValidationEditValues extends React.Component {
 					else{
 						this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug));
 					}
+		}else if(replen == 1 && remlen != 1){
+					if(replace[0].replacedValue != "" && replace[0].valueToReplace == ""){
+						this.props.dispatch(replaceValuesErrorAction("Please fill the values to replace and save"));							
+					}else if(replace[0].replacedValue == "" && replace[0].valueToReplace != ""){
+						this.props.dispatch(replaceValuesErrorAction("Please fill the values to replace and save"));							
+					}else{
+						for(let i=0;i<remlen;i++){
+							if(remove[i].valueToReplace == ""){
+								this.props.dispatch(replaceValuesErrorAction("Please fill the values to remove and save"));							
+							}else{
+								this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug));
+							}
+						}
+					}
+		}else if(replen != 1 && remlen == 1){
+					for(let i=0;i<replen;i++){
+						if(replace[i].replacedValue == "" && replace[i].valueToReplace == ""){
+							this.props.dispatch(replaceValuesErrorAction("Please fill the values to replace and save"));							
+						}else if(replace[i].replacedValue != "" && replace[i].valueToReplace != "" ){
+							this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug));															
+						}else{
+							this.props.dispatch(replaceValuesErrorAction("Few fields were empty, Saved only completely filled values"));																				
+						}
+					}
 		}else{
-			this.props.dispatch(replaceValuesErrorAction("No changes are made. Please Close"));
+			this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug));
 		}
 	}
 	
