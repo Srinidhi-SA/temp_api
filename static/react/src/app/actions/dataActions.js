@@ -1331,7 +1331,12 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
     dispatch(handleColumnActions(transformSettings,slug,false))
 }
 
-
+export function replaceValuesErrorAction(errMsg){
+    return(dispatch)=>{
+    let msg=statusMessages("error",errMsg,"small_mascot")
+    bootbox.alert(msg);
+    }
+}
 export function handleSaveEditValues(colSlug){
     return (dispatch) => {
         updateColumnStatus(dispatch,colSlug,"",REPLACE,"");
@@ -1524,6 +1529,7 @@ export function removeComponents(data,editType){
     }
 }
 export function handleInputChange(event){
+    debugger;
     return (dispatch) => {
         var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
         for (var i=0;i<dataColumnRemoveValues.length;i++) {
