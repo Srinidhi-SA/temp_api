@@ -169,16 +169,40 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         {
             "name":"n_jobs",
             "displayName":"No Of Jobs",
-            "description":"The number of jobs to run in parallel for both fit and predict",
-            "defaultValue":1,
-            "acceptedValue":None,
-            "valueRange":[-1,4],
-            "paramType":"number",
-            "uiElemType":"slider",
+            "description": "Number of CPU cores to be used when parallelizing over classes",
+            "defaultValue":[
+                {
+                     "name":"-1",
+                     "selected":True,
+                     "displayName":"-1"
+                },
+                {
+                    "name": "1",
+                    "selected": False,
+                    "displayName": "1"
+                },
+                {
+                    "name": "2",
+                    "selected": False,
+                    "displayName": "2"
+                },
+                {
+                    "name": "3",
+                    "selected": False,
+                    "displayName": "3"
+                },
+                {
+                    "name": "4",
+                    "selected": False,
+                    "displayName": "4"
+                },
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["int"],
-            "allowedDataType": ["int"]
+            "allowedDataType":["int"]
         },
         {
             "name":"criterion",
@@ -310,11 +334,35 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
             "name":"n_jobs",
             "displayName":"No Of Jobs",
             "description": "Number of CPU cores to be used when parallelizing over classes",
-            "defaultValue":1,
-            "acceptedValue":None,
-            "valueRange":[-1,4],
-            "paramType":"number",
-            "uiElemType":"slider",
+            "defaultValue":[
+                {
+                     "name":"-1",
+                     "selected":True,
+                     "displayName":"-1"
+                },
+                {
+                    "name": "1",
+                    "selected": False,
+                    "displayName": "1"
+                },
+                {
+                    "name": "2",
+                    "selected": False,
+                    "displayName": "2"
+                },
+                {
+                    "name": "3",
+                    "selected": False,
+                    "displayName": "3"
+                },
+                {
+                    "name": "4",
+                    "selected": False,
+                    "displayName": "4"
+                },
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["int"],

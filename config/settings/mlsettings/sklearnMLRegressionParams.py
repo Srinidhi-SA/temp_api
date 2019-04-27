@@ -1,17 +1,42 @@
 ############################      Regression      ###############################
 SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
             {
-                "name":"n_jobs",
-                "displayName":"No Of Jobs",
-                "description":"Number of CPU cores used when parallelizing over classes",
-                "acceptedValue":None,
-                "valueRange":[-1,4],
-                "paramType":"number",
-                "uiElemType":"slider",
-                "display":True,
-                "hyperpatameterTuningCandidate":False,
+                "name": "n_jobs",
+                "displayName": "No Of Jobs",
+                "description": "Number of CPU cores to be used when parallelizing over classes",
+                "defaultValue": [
+                    {
+                        "name": "-1",
+                        "selected": True,
+                        "displayName": "-1"
+                    },
+                    {
+                        "name": "1",
+                        "selected": False,
+                        "displayName": "1"
+                    },
+                    {
+                        "name": "2",
+                        "selected": False,
+                        "displayName": "2"
+                    },
+                    {
+                        "name": "3",
+                        "selected": False,
+                        "displayName": "1"
+                    },
+                    {
+                        "name": "4",
+                        "selected": False,
+                        "displayName": "4"
+                    },
+                ],
+                "paramType": "list",
+                "uiElemType": "checkbox",
+                "display": True,
+                "hyperpatameterTuningCandidate": False,
                 "expectedDataType": ["int"],
-                "allowedDataType":["int"]
+                "allowedDataType": ["int"]
             },
             {
                  "name":"fit_intercept",
@@ -378,19 +403,42 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
         "allowedDataType": ["bool"]
     },
     {
-        "name":"n_jobs",
-        "displayName":"No Of Jobs",
-        "description":"The number of jobs to run in parallel for both fit and predict",
-        "defaultValue":1,
-        "acceptedValue":None,
-        "valueRange":[-1,4],
-        "paramType":"number",
-        "uiElemType":"slider",
-        "display":True,
-        "hyperpatameterTuningCandidate":False,
+        "name": "n_jobs",
+        "displayName": "No Of Jobs",
+        "description": "Number of CPU cores to be used when parallelizing over classes",
+        "defaultValue": [
+            {
+                "name": "-1",
+                "selected": True,
+                "displayName": "-1"
+            },
+            {
+                "name": "1",
+                "selected": False,
+                "displayName": "1"
+            },
+            {
+                "name": "2",
+                "selected": False,
+                "displayName": "2"
+            },
+            {
+                "name": "3",
+                "selected": False,
+                "displayName": "1"
+            },
+            {
+                "name": "4",
+                "selected": False,
+                "displayName": "4"
+            },
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
-
     },
     {
         "name":"warm_start",
