@@ -50,6 +50,10 @@ class C3Chart(object):
         self._donutChartFormat = kwargs.get('yAxisNumberFormat',".2s")
         self._pieChartFormat = kwargs.get('yAxisNumberFormat',".2s")
 
+        self.point_details_passed_in_arguments = None
+        if 'point' in kwargs:
+            self.point_details_passed_in_arguments = kwargs.get('point')
+
         self.set_data_and_type()
         self.set_basic_chart_setting()
 
@@ -348,6 +352,9 @@ class C3Chart(object):
                     self._axis[axis_name]['label']['text'] = label_text.get(axis_name, "")
 
     def get_point_radius(self):
+
+        if self.point_details_passed_in_arguments is not None:
+            return self.point_details_passed_in_arguments
 
         if self._total_data_count is None:
             self._total_data_count = self.find_and_set_total_data_count()
