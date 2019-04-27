@@ -32,6 +32,7 @@ export class Transform extends React.Component {
 
   componentWillMount() {
     console.log("Transform componentWillMount method is called...");
+
   }
 
   getTransformationata(){
@@ -58,8 +59,23 @@ export class Transform extends React.Component {
   }
 
   onchangeInput(event){
+debugger;
+document.getElementsByName("encoding_type").value = "";
+if(document.getElementById('encoding_dimensions').checked){
+  document.getElementById("one_hot_encoding").removeAttribute('disabled');
+  document.getElementById("label_encoding").removeAttribute('disabled');
+}
+else{
+  
+  document.getElementById('one_hot_encoding').checked = false;
+  document.getElementById('label_encoding').checked = false ;
+  document.getElementById("one_hot_encoding").disabled = true;
+  document.getElementById("label_encoding").disabled = true;
+  // this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
+  //   this.setState({ state: this.state });
+    }
     //disable CREATEMODEL
-    return event.target.value;
+    return "";
   }
 
   handleEncodingRadioButtonOnchange(event){
@@ -166,11 +182,11 @@ export class Transform extends React.Component {
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding_type"  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding_type"  disabled  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
+                      <input type="radio" id="label_encoding" name="encoding_type"  disabled  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>

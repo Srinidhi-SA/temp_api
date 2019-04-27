@@ -21,6 +21,7 @@ export class DataBox extends React.Component {
 		let  columnsTemplates = dataBox.map((data,index)=>{
 			return (<div className="col-md-2 col-sm-8 col-xs-12 bgStockBox">
 			<h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
+			<p>{data.description}</p>
 			</div>);
 		});
 		return (

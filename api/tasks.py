@@ -43,9 +43,25 @@ def submit_job_separate_task(command_array, slug):
     if settings.HADOOP_CONF_DIR:
         my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
-    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
+    cur_process = subprocess.Popen(command_array, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,bufsize=-1,universal_newlines=True,env=my_env)
     print cur_process
-    # TODO: @Ankush need to write the error to error log and standard out to normal log
+    for line in iter(lambda: cur_process.stdout.readline(), ''):
+        print(line.strip())
+        line = line.strip()
+        match = re.search('Submitted application (.*)$', line)
+        if match:
+            application_id = match.groups()[0]
+            print("<------------------------ YARN APPLICATION ID ---------------------->",application_id)
+            from api.helper import get_db_object
+
+            model_instance = get_db_object(model_name=Job.__name__,
+                                           model_slug=slug
+                                           )
+            model_instance.url = application_id
+            model_instance.save()
+            break
+
+'''
     time.sleep(10)
     exists = os.path.isfile('/tmp/SparkDriver.log')
     while( exists != True):
@@ -67,6 +83,7 @@ def submit_job_separate_task(command_array, slug):
                 dist_file_name = "/tmp/" + str(application_id) + ".driver.log"
                 os.rename("/tmp/SparkDriver.log",dist_file_name)
                 break
+'''
 def submit_job_separate_task1(command_array, slug):
     import subprocess, os
     my_env = os.environ.copy()
