@@ -6,29 +6,29 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                 "description": "Number of CPU cores to be used when parallelizing over classes",
                 "defaultValue": [
                     {
-                        "name": "-1",
+                        "name": -1,
                         "selected": True,
-                        "displayName": "-1"
+                        "displayName": "All"
                     },
                     {
-                        "name": "1",
+                        "name": 1,
                         "selected": False,
-                        "displayName": "1"
+                        "displayName": "1 core"
                     },
                     {
-                        "name": "2",
+                        "name": 2,
                         "selected": False,
-                        "displayName": "2"
+                        "displayName": "2 cores"
                     },
                     {
-                        "name": "3",
+                        "name": 3,
                         "selected": False,
-                        "displayName": "1"
+                        "displayName": "3 cores"
                     },
                     {
-                        "name": "4",
+                        "name": 4,
                         "selected": False,
-                        "displayName": "4"
+                        "displayName": "4 cores"
                     },
                 ],
                 "paramType": "list",
@@ -403,43 +403,43 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
         "allowedDataType": ["bool"]
     },
     {
-        "name": "n_jobs",
-        "displayName": "No Of Jobs",
-        "description": "Number of CPU cores to be used when parallelizing over classes",
-        "defaultValue": [
-            {
-                "name": "-1",
-                "selected": True,
-                "displayName": "-1"
+                "name": "n_jobs",
+                "displayName": "No Of Jobs",
+                "description": "Number of CPU cores to be used when parallelizing over classes",
+                "defaultValue": [
+                    {
+                        "name": -1,
+                        "selected": True,
+                        "displayName": "All"
+                    },
+                    {
+                        "name": 1,
+                        "selected": False,
+                        "displayName": "1 core"
+                    },
+                    {
+                        "name": 2,
+                        "selected": False,
+                        "displayName": "2 cores"
+                    },
+                    {
+                        "name": 3,
+                        "selected": False,
+                        "displayName": "3 cores"
+                    },
+                    {
+                        "name": 4,
+                        "selected": False,
+                        "displayName": "4 cores"
+                    },
+                ],
+                "paramType": "list",
+                "uiElemType": "checkbox",
+                "display": True,
+                "hyperpatameterTuningCandidate": False,
+                "expectedDataType": ["int"],
+                "allowedDataType": ["int"]
             },
-            {
-                "name": "1",
-                "selected": False,
-                "displayName": "1"
-            },
-            {
-                "name": "2",
-                "selected": False,
-                "displayName": "2"
-            },
-            {
-                "name": "3",
-                "selected": False,
-                "displayName": "1"
-            },
-            {
-                "name": "4",
-                "selected": False,
-                "displayName": "4"
-            },
-        ],
-        "paramType": "list",
-        "uiElemType": "checkbox",
-        "display": True,
-        "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["int"],
-        "allowedDataType": ["int"]
-    },
     {
         "name":"warm_start",
         "displayName":"Warm Start",
