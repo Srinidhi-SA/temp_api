@@ -546,8 +546,10 @@ class Dataset(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'dataset')
 
     def get_metadata_url_config(self):
-        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
-                                   THIS_SERVER_DETAILS.get('port'))
+        if settings.USE_HTTPS:
+            ip_port = "https://{0}".format(THIS_SERVER_DETAILS.get('host'))
+        else:
+            ip_port = "http://{0}".format(THIS_SERVER_DETAILS.get('host'))
         url = "/api/get_metadata_for_mlscripts/"
         slug_list = [
             self.slug
