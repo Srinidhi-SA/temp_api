@@ -129,7 +129,7 @@ class SignalView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
@@ -224,7 +224,7 @@ class TrainerView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     instance.delete()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
@@ -483,7 +483,7 @@ class ScoreView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
@@ -648,7 +648,7 @@ class RoboView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
 
                     instance.data = '{}'
                     instance.deleted = True
@@ -761,7 +761,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
@@ -5725,7 +5725,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us delete')
                     instance.delete()
                     return JsonResponse({'message':'Deleted'})
         except:
@@ -5842,7 +5842,7 @@ class ModelDeployementView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     ## Modification for periodic task delete
                     instance.delete()
                     return JsonResponse({'message':'Deleted'})
@@ -6002,7 +6002,7 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us deleted')
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
