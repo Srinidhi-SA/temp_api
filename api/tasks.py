@@ -59,7 +59,8 @@ def submit_job_separate_task(command_array, slug):
                                            )
             model_instance.url = application_id
             model_instance.save()
-            break
+            # Break statement is commented in order to get the complete log of the subprocess
+            #break
 
 '''
     time.sleep(10)
