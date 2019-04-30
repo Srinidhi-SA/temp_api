@@ -203,6 +203,8 @@ componentDidMount() {
 
 		var c0 = top.map(fun => fun[0].cardData[0])
 		var w0 = top.map(fun => fun[0].cardWidth)[0]
+
+
 		var h1 = top.map(fun => fun[1].cardData[0])
 		var c1 = top.map(fun => fun[1].cardData[1])
 		var w1 = top.map(fun => fun[1].cardWidth)[0]
@@ -215,9 +217,9 @@ componentDidMount() {
 		var h4 = top.map(fun => fun[4].cardData[0])
 		var c4 = top.map(fun => fun[4].cardData[1])
 		var w4 = top.map(fun => fun[4].cardWidth)[0]
-		var h5 = top.map(fun => fun[5].cardData[0])
-		var c5 = top.map(fun => fun[5].cardData[1])
-		var w5 = top.map(fun => fun[5].cardWidth)[0]
+		// var h5 = top.map(fun => fun[5].cardData[0])
+		// var c5 = top.map(fun => fun[5].cardData[1])
+		// var w5 = top.map(fun => fun[5].cardWidth)[0]
 		
 		const summaryTable = this.renderCardData(tdata1,tw1);
 		const headSummaryTable = this.renderCardData(th1,tw1);
@@ -226,16 +228,18 @@ componentDidMount() {
 		const headSettingsTable = this.renderCardData(th2,tw2);
 
 		const topCards = this.renderCardData(c0,w0);
+
+
 		const headconfusionMatrix = this.renderCardData(h1,w1);
 		const confusionMatrix = this.renderCardData(c1,w1);
-		const headksChart = this.renderCardData(h2,w2);
-		const ksChart = this.renderCardData(c2,w2);
-		const headgainChart = this.renderCardData(h3,w3);
-		const gainChart = this.renderCardData(c3,w3);
-		const headliftChart = this.renderCardData(h4,w4);
-		const liftChart = this.renderCardData(c4,w4);
-		const headROCChart = this.renderCardData(h5,w5);
-		const ROCChart = this.renderCardData(c5,w5);
+		const headROCChart = this.renderCardData(h2,w2);
+		const ROCChart = this.renderCardData(c2,w2);
+		const headksChart = this.renderCardData(h3,w3);
+		const ksChart = this.renderCardData(c3,w3);
+		const headgainChart = this.renderCardData(h4,w4);
+		const gainChart = this.renderCardData(c4,w4);
+		// const headROCChart = this.renderCardData(h5,w5);
+		// const ROCChart = this.renderCardData(c5,w5);
  
  
 		overviewCard=(
