@@ -902,7 +902,12 @@ class Trainer(models.Model):
                 for colSlug in configUI['selectedVariables']:
                     for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
                         if i['slug'] == colSlug:
-                            i['selected'] = configUI['selectedVariables'][colSlug]
+
+                            # If selectedVariable has got any transformation, it should be kept selected False. else True
+                            if colSlug in self.collect_column_slugs_which_all_got_transformations:
+                                pass
+                            else:
+                                i['selected'] = configUI['selectedVariables'][colSlug]
                             break
         except Exception as err:
             print(err)
