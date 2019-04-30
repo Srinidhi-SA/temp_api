@@ -59,7 +59,8 @@ def submit_job_separate_task(command_array, slug):
                                            )
             model_instance.url = application_id
             model_instance.save()
-            break
+            # Break statement is commented in order to get the complete log of the subprocess
+            #break
 
 '''
     time.sleep(10)
@@ -467,16 +468,19 @@ def kill_application_using_fabric(app_id=None):
         return -1
     from fabric.api import env, run
     from django.conf import settings
+    import subprocess
     MODE = settings.MODE
     print ("MODE", MODE)
     if MODE == 'docker':
-      HDFS = settings.KILL_JOB
-      BASEDIR = settings.BASE_DIR
-      env.key_filename = settings.PEM_KEY
-      env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+      #HDFS = settings.KILL_JOB
+      #BASEDIR = settings.BASE_DIR
+      #env.key_filename = settings.PEM_KEY
+      #env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+      
       try:
-         capture = run("sudo docker exec -it hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id))
-         if 'finished' in capture:
+         capture = subprocess.Popen("sudo docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+         stdout,stderr = capture.communicate()
+         if 'finished' in stdout:
              return False
          else:
              return True
