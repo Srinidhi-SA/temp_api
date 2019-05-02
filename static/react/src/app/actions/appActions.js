@@ -189,7 +189,6 @@ function fetchAlgoList(pageNo, token, filtername) {
     }).then(response => Promise.all([response, response.json()]));
   }
   //   }else if (filtername) {
-  //     debugger;
   //     return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
 
   //       method: 'get',
@@ -2144,7 +2143,6 @@ export function getRegressionAppAlgorithmData(slug, appType) {
 
 function triggerRegressionAppAlgorithmAPI(appType) {
   let metricVal = store.getState().apps.metricSelected.name;
-  debugger;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)

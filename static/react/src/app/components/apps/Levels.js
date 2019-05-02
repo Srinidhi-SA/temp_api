@@ -50,7 +50,6 @@ export class Levels extends React.Component {
 
 
   getMultiSelectOptions(idx) {
-    debugger;
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
     return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function (elem) {
       return { "label": elem, "value": elem };

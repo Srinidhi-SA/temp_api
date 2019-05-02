@@ -52,12 +52,10 @@ export class DataValidationEditValues extends React.Component {
 	  this.props.dispatch(handleInputChangeReplace(targetBox,event))
   }
   handleSaveEditValues(){
-		debugger;
 		let remove = this.props.dataSetColumnRemoveValues;
 		let remlen = remove.length;
 		let replace = this.props.dataSetColumnReplaceValues;
 		let replen = replace.length;
-		debugger;
 		if(replen == 1 && remlen == 1){
 					if(replace[0].replacedValue == "" && replace[0].valueToReplace == "" && remove[0].valueToReplace == ""){
 						this.props.dispatch(replaceValuesErrorAction("Please fill in the fields to save"));

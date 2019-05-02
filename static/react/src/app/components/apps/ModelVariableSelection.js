@@ -101,7 +101,6 @@ export class ModelVariableSelection extends React.Component {
         noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function (elements) {
             return elements;
         }).value;
-        console.log(noOfROws, "no of rows ++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         if (store.getState().apps.modelSummaryFlag) {
             let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);

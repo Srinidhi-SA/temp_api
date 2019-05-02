@@ -288,7 +288,6 @@ export class ModelAlgorithmSelection extends React.Component {
     checkRangeValidation(){
         var isGo = true;
         $('.range-validate').each(function(){
-            debugger;
             if($(this)[0].innerHTML != "")
             isGo =false;
         });
@@ -297,7 +296,6 @@ export class ModelAlgorithmSelection extends React.Component {
     checkMultiSelectValidation(){
         var isGo = true;
         $('.check-multiselect').each(function(){
-            debugger;
             if($(this)[0].innerHTML != "")
             isGo =false;
         });
