@@ -167,7 +167,6 @@ export class ModelManagement extends React.Component {
   }
 
   onChangeOfSearchBox(e){
-    debugger;
     if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeAlgoSearchElement(""));
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
@@ -189,7 +188,6 @@ export class ModelManagement extends React.Component {
     }
 }
 getDeployPreview(e){
-  debugger;
   var pageNo =1;
   this.selectedData = $("#project_all").val();
   this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
@@ -214,7 +212,6 @@ getAllDeployPreview()
     }
     // else{
   //     if(this.props.algoList.current_item_count == 0){
-  //       console.log("+++++++++++++++++++++++++++++====");
         
   //       return (
   //         <div class="side-body">
@@ -250,7 +247,6 @@ getAllDeployPreview()
     var Details="Details"
     const algoList = store.getState().apps.algoList.data;
     var none =none;
-debugger;
     const dataSets = this.props.allProjects;
     
 		let renderSelectBox = null;
@@ -455,7 +451,6 @@ debugger;
    }
   }
 // }
-  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
   openDeployModal(slug) {
     console.log("open ---openDeployModal");

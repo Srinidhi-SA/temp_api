@@ -32,8 +32,6 @@ export class Levels extends React.Component {
     super(props);
     this.pickValue = this.pickValue.bind(this);
     this.state = { levelsArray: this.props.levelsData, }
-
-
     // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
   }
 
@@ -46,11 +44,7 @@ export class Levels extends React.Component {
     return levelOptions
   }
 
-  // datasets.dataPreview.meta_data.scriptMetaData.columnData[3].columnStats[""0""].value
-
-
   getMultiSelectOptions(idx) {
-    debugger;
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
     return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function (elem) {
       return { "label": elem, "value": elem };
@@ -80,14 +74,9 @@ export class Levels extends React.Component {
     if ($('#dimSEdate').hasClass('wide-modal')) {
       $('.modal-colored-header').addClass('modal-lg-dimSEdate');
     }
-
     $('.p-multiselect-item label').prop('title', function () { return $(this).text(); });
 
   }
-
-  handleLevelSubmit = evt => {
-
-  };
 
   addNewLevel() {
     var newObj = { "inputValue": "", "multiselectValue": "", "startDate": "", "endDate": "" };

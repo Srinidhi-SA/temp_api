@@ -92,7 +92,6 @@ export class RegressionParameter extends React.Component {
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
         var validateResult = {"iserror":false,"errmsg":""};
-        debugger;
         validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
@@ -303,7 +302,6 @@ export class RegressionParameter extends React.Component {
                 if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const singleNumber = parseFloat(parts[i], 10);
-                debugger;
                 if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 var checkType = this.checkType(parts[i],type,min,max);

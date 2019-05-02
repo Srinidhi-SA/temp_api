@@ -46,7 +46,6 @@ export class Card extends React.Component {
         let divClass="col-md-"+colWidth;
         return divClass;
     }
-    debugger;
     renderCardData(cardData,toggleTable,cardWidth){
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
@@ -156,7 +155,6 @@ export class Card extends React.Component {
 		let stockClassName = "";
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)
 		stockClassName = "stockClassName";
-		debugger;
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
         return (

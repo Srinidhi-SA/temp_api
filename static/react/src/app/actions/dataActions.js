@@ -1097,7 +1097,6 @@ export function updateSubSetting(updatedSubSetting){
 
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
-    debugger;
     let headers = store.getState().datasets.dataPreview.meta_data.uiMetaData.headersUI;
     console.log(headers);
     const customBody = (
@@ -1305,7 +1304,6 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 }
 
 function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
-    debugger;
     dispatch(showLoading());
     var slug = store.getState().datasets.selectedDataSet;
     var transformSettings = store.getState().datasets.dataTransformSettings.slice();
@@ -1529,7 +1527,6 @@ export function removeComponents(data,editType){
     }
 }
 export function handleInputChange(event){
-    debugger;
     return (dispatch) => {
         var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
         for (var i=0;i<dataColumnRemoveValues.length;i++) {

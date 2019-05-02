@@ -134,7 +134,6 @@ export class Deployment extends React.Component {
     var viewPopup = "";
     var viewData = "";
     console.log("Deployment render method is called...");
-    console.log(this.props.algoAnalysis.slug, +"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		var deploymentList = this.props.deploymentList;
     var deploymentTable = "";
     deployData = "deployData";
