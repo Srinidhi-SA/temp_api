@@ -203,9 +203,13 @@ export class DataCleansing extends React.Component {
     return <select className="form-control" onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
   }
 
-  getOutlierRemovalOptions(dataType, colName, colSlug) {
+  getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
+    let disble = true;
+    if((outnum || missingnum)==0){
+      disble = false;
+    }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
-    if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]) {
+    if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]  && disble) {
       var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.outlierRemoval) {
@@ -226,9 +230,13 @@ export class DataCleansing extends React.Component {
     this.props.dispatch(handelSort(variableType, sortOrder))
   }
 
-  getMissingValueTreatmentOptions(dataType, colName, colSlug) {
+  getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
+    let disble = true;
+    if((outnum || missingnum)==0){
+      disble = false;
+    }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
-    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]) {
+    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && disble) {
       var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.missingValueTreatment) {
@@ -271,17 +279,11 @@ export class DataCleansing extends React.Component {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    debugger;
     var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
-
-
     // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
-
-
-
-
+    let outnum = "";
+    let missingnum ="";
     if (this.props.dataPreview != null) {
-      debugger;
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
@@ -310,6 +312,7 @@ export class DataCleansing extends React.Component {
                 {item.columnStats.filter(function (items) {
                   return items.name == "Outliers"
                 }).map((option) => {
+                  outnum = option.value;
                   return (<span>{option.value}</span>);
                 }
                 )}
@@ -318,12 +321,13 @@ export class DataCleansing extends React.Component {
                 {item.columnStats.filter(function (items) {
                   return items.name == "numberOfNulls"
                 }).map((option) => {
+                  missingnum = option.value;
                   return (<span>{option.value}</span>);
                 }
                 )}
               </td>
-              <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)} </td>
-              <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)} </td>
+              <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
+              <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
             </tr>
           );
         }
