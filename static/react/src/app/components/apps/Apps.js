@@ -103,7 +103,6 @@ export class Apps extends React.Component {
     console.log("apps is called##########3");
     console.log(this.props);
     var appId = this.props.currentAppId;
-    console.log(appId,"++++++++++++++++++++++++++++++++++++++++++++++++")
     if (store.getState().apps.modelSummaryFlag) {
       let _link = "/apps/" + this.props.match.params.AppId + '/models/' + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);

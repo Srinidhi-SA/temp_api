@@ -72,7 +72,6 @@ export class Bins extends React.Component {
   }
 
   pickValue(event) {
-    debugger;
     this.props.parentPickValue("binData", event);
   }
 

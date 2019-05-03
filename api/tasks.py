@@ -478,7 +478,7 @@ def kill_application_using_fabric(app_id=None):
       #env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
       
       try:
-         capture = subprocess.Popen("sudo docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+         capture = subprocess.Popen("docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
          stdout,stderr = capture.communicate()
          if 'finished' in stdout:
              return False

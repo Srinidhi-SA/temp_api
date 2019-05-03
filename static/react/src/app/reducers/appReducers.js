@@ -1042,7 +1042,6 @@ export default function reducer(state = {
     break;
     case "RESET_REGRESSION_VARIABLES":
     {
-        debugger;
         return{
             ...state,
             regression_algorithm_data:[],

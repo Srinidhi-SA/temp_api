@@ -59,7 +59,6 @@ export class Transform extends React.Component {
   }
 
   onchangeInput(event){
-debugger;
 document.getElementsByName("encoding_type").value = "";
 if(document.getElementById('encoding_dimensions').checked){
   document.getElementById("one_hot_encoding").removeAttribute('disabled');
