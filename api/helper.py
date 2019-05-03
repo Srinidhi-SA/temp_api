@@ -55,6 +55,9 @@ class JobserverDetails(object):
         return {
             "job_config": {
                 "job_type": job_type[class_name],
+                "config_url": "https://{0}/api/job/{2}/get_config".format(THIS_SERVER_DETAILS.get('host'),
+                                                             THIS_SERVER_DETAILS.get('port'),
+                                                             slug),
                 "job_url" : "https://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
