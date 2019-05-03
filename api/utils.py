@@ -63,7 +63,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     # Why is the subprocess.Popen argument length limit smaller than what the OS reports?
     # xargs --show-limits < /dev/null
     # limit in 131071
-    if len(config['job_config']['config'][-1]) > 100000:
+    if len(json.dumps(config['job_config']['config'])) > 100000:
         import copy
         temp_config = copy.deepcopy(config)
         temp_config['job_config']['config'] = None
