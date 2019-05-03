@@ -87,7 +87,7 @@ PYSPARK_ML_LINEAR_REGRESSION_PARAMS = PYSPARK_ML_REGRESSION_PARAMS + [
                         },
                         {
                             "name":"auto",
-                            "selected":True,
+                            "selected":False,
                             "displayName":"Automatic Selection"
                         },
                         {

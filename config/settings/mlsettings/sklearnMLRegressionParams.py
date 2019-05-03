@@ -50,7 +50,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                      },
                      {
                          "name":"true",
-                         "selected":True,
+                         "selected":False,
                          "displayName":"True"
                      }
                     ],
