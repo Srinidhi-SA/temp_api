@@ -59,8 +59,21 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              json.dumps(config)]
 
         '''
-        command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
-                            # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+
+        # Why is the subprocess.Popen argument length limit smaller than what the OS reports?
+        # xargs --show-limits < /dev/null
+        # limit in 131071
+        if len(config['job_config']['config'][-1]) > 100000:
+            import copy
+            temp_config = copy.deepcopy(config)
+            temp_config['job_config']['config'] = None
+            command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
+                                # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+                                 driver_file,
+                                 json.dumps(temp_config)]
+        else:
+            command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
+                             # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
                              driver_file,
                              json.dumps(config)]
 
