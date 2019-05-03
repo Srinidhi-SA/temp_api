@@ -28,71 +28,64 @@ from django.utils.safestring import mark_safe
 def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,app_id= None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
-    try:
-        if hasattr(settings, 'CELERY_SCRIPTS_DIR'):
-            scripts_dir = settings.CELERY_SCRIPTS_DIR
-        else:
-            base_dir = correct_base_dir()
-            scripts_dir = os.path.join(base_dir, "scripts")
+    # try:
+    if hasattr(settings, 'CELERY_SCRIPTS_DIR'):
+        scripts_dir = settings.CELERY_SCRIPTS_DIR
+    else:
+        base_dir = correct_base_dir()
+        scripts_dir = os.path.join(base_dir, "scripts")
 
-        egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
-        driver_file = os.path.join(scripts_dir, "driver.py")
+    egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
+    driver_file = os.path.join(scripts_dir, "driver.py")
 
-        print("About to submit job through YARN")
-        # Submit_job to YARN
-        print queue_name
+    print("About to submit job through YARN")
+    # Submit_job to YARN
+    print queue_name
 
-        '''
-        if queue_name is None:
-            command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--py-files", egg_file_path,
-                             driver_file,
-                             json.dumps(config)]
-        else:
-            command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--queue", queue_name,
-                             "--py-files", egg_file_path, driver_file,
-                             json.dumps(config)]
-        '''
-        '''
-        command_array = ["spark-submit", "--driver-java-options", "\"-Dlog4j.configuration=file:/tmp/log4j.properties\"" , "--master", "yarn", "--py-files", egg_file_path,
+    '''
+    if queue_name is None:
+        command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--py-files", egg_file_path,
+                         driver_file,
+                         json.dumps(config)]
+    else:
+        command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--queue", queue_name,
+                         "--py-files", egg_file_path, driver_file,
+                         json.dumps(config)]
+    '''
+    '''
+    command_array = ["spark-submit", "--driver-java-options", "\"-Dlog4j.configuration=file:/tmp/log4j.properties\"" , "--master", "yarn", "--py-files", egg_file_path,
+                        # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+                         driver_file,
+                         json.dumps(config)]
+
+    '''
+
+    # Why is the subprocess.Popen argument length limit smaller than what the OS reports?
+    # xargs --show-limits < /dev/null
+    # limit in 131071
+    if len(config['job_config']['config'][-1]) > 100000:
+        import copy
+        temp_config = copy.deepcopy(config)
+        temp_config['job_config']['config'] = None
+        command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
                             # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
                              driver_file,
-                             json.dumps(config)]
+                             json.dumps(temp_config)]
+    else:
+        command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
+                         # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+                         driver_file,
+                         json.dumps(config)]
 
-        '''
+    application_id = ""
 
-        # Why is the subprocess.Popen argument length limit smaller than what the OS reports?
-        # xargs --show-limits < /dev/null
-        # limit in 131071
-        if len(config['job_config']['config'][-1]) > 100000:
-            import copy
-            temp_config = copy.deepcopy(config)
-            temp_config['job_config']['config'] = None
-            command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
-                                # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
-                                 driver_file,
-                                 json.dumps(temp_config)]
-        else:
-            command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
-                             # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
-                             driver_file,
-                             json.dumps(config)]
+    from tasks import submit_job_separate_task1, submit_job_separate_task
 
-        application_id = ""
-
-        from tasks import submit_job_separate_task1, submit_job_separate_task
-
-        if settings.SUBMIT_JOB_THROUGH_CELERY:
-            # pass
-            submit_job_separate_task.delay(command_array, slug)
-        else:
-            submit_job_separate_task1(command_array, slug)
-
-    except Exception as e:
-        print 'Error-->submit_job_through_yarn--->'
-        print e
-        pass
-        # from smtp_email import send_alert_through_email
-        # send_alert_through_email(e)
+    if settings.SUBMIT_JOB_THROUGH_CELERY:
+        # pass
+        submit_job_separate_task.delay(command_array, slug)
+    else:
+        submit_job_separate_task1(command_array, slug)
 
     return {
         "application_id": application_id,
@@ -102,6 +95,15 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         "driver_py_file_path": driver_file,
         "config": config
     }
+
+    # except Exception as e:
+    #     print 'Error-->submit_job_through_yarn--->'
+    #     print e
+    #     pass
+        # from smtp_email import send_alert_through_email
+        # send_alert_through_email(e)
+
+
 
 
 def generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id=None):
