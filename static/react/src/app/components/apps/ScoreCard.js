@@ -28,7 +28,7 @@ import {
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
@@ -67,6 +67,8 @@ export class ScoreCard extends React.Component {
                         }else if(data.status == SUCCESS && !data.viewed){
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                        }else if(data.status == FAILED){
+                            percentageDetails =  <div class=""><font color="red">Failed</font></div>
                         }
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_score || permissionDetails.rename_score; 

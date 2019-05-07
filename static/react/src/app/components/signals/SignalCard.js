@@ -12,7 +12,7 @@ import {
   } from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
-import {isEmpty, SUCCESS,INPROGRESS,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart} from "../../helpers/helper";
 import {
     getList,
     emptySignalAnalysis,
@@ -84,13 +84,16 @@ export class SignalCard extends React.Component {
             var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
               {story.name}
               </Link>
+              debugger;
               if(story.status == INPROGRESS){
                   percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
                   percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
-              }
+              }else if(story.status == FAILED){
+                percentageDetails =   <div class=""><font color="red">Failed</font></div>
+            }
 
               if (story.type == "dimension") {
                   var imgLink = STATIC_URL + "assets/images/s_d_carIcon.png"
