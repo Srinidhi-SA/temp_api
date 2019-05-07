@@ -10,7 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
     updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
+    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
     import Dialog from 'react-bootstrap-dialog'
     import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -63,6 +63,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         }else if(data.status == SUCCESS && !data.viewed){
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                        }else if(data.status == FAILED){
+                            percentageDetails =  <div class=""><font color="red">Failed</font></div>
                         }
                     var permissionDetails = data.permission_details;
                     var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 

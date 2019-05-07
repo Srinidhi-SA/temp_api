@@ -19,7 +19,7 @@ import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRen
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 import {clearDataPreview} from "../../actions/dataUploadActions";
@@ -91,6 +91,8 @@ export class DataCard extends React.Component {
             }else if(data.status == SUCCESS && !data.viewed){
                 data.completed_percentage = 100;
                 percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+            }else if(data.status == FAILED){
+                percentageDetails =  <div class=""><font color="red">Failed</font></div>
             }
             
             
