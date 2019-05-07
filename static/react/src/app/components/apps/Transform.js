@@ -260,8 +260,8 @@ else{
                       <label for="time_since">Time Since Some Event:</label>
                     </div>
                   </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                  <div class="col-md-4 col-sm-3">
+                    <input type="date" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div className="row form-group">
