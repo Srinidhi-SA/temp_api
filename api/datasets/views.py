@@ -67,7 +67,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
+        if 'name' in data:
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
