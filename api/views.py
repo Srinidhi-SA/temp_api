@@ -66,7 +66,7 @@ class SignalView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             # analysis_done=True
-            status__in=['SUCCESS','INPROGRESS']
+            status__in=['SUCCESS','INPROGRESS','FAILED']
         ).select_related('created_by', 'job', 'dataset')
         return queryset
 
