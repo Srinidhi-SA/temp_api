@@ -204,12 +204,13 @@ export class DataCleansing extends React.Component {
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
-    let disble = true;
+    debugger;
+    let disble = false;
     if((outnum || missingnum)==0){
-      disble = false;
+      disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
-    if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]  && disble) {
+    if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType] && !disble) {
       var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.outlierRemoval) {
@@ -220,7 +221,7 @@ export class DataCleansing extends React.Component {
       );
     }
     else return ""
-  }
+    }
 
   proceedFeatureEngineering() {
     var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');
@@ -231,12 +232,13 @@ export class DataCleansing extends React.Component {
   }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
-    let disble = true;
+    debugger;
+    let disble = false;
     if((outnum || missingnum)==0){
-      disble = false;
+      disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
-    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && disble) {
+    if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && !disble) {
       var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.missingValueTreatment) {
@@ -269,11 +271,8 @@ export class DataCleansing extends React.Component {
           $("#myCheckAll").prop('checked', isChecked);
         }
       });
-
     });
-
   }
-
 
   render() {
     this.dcTableSorter();
@@ -281,12 +280,12 @@ export class DataCleansing extends React.Component {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
     // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
-    let outnum = "";
-    let missingnum ="";
     if (this.props.dataPreview != null) {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        let outnum = 1;
+        let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
           return "";
         else {
@@ -313,6 +312,7 @@ export class DataCleansing extends React.Component {
                   return items.name == "Outliers"
                 }).map((option) => {
                   outnum = option.value;
+                  console.log(outnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
@@ -322,6 +322,7 @@ export class DataCleansing extends React.Component {
                   return items.name == "numberOfNulls"
                 }).map((option) => {
                   missingnum = option.value;
+                  console.log(missingnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
