@@ -19,7 +19,7 @@ import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRen
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED, statusMessages} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 import {clearDataPreview} from "../../actions/dataUploadActions";
@@ -47,14 +47,19 @@ export class DataCard extends React.Component {
         super(props);
     }
     
-    getPreviewData(e) {
-        var that = this;
-        this.selectedData = e.target.id;
-        //alert(this.selectedData);
-        this.props.dispatch(clearDataPreview());
-        this.props.dispatch(storeSignalMeta(null, that.props.match.url));
-        this.props.dispatch(getDataSetPreview(this.selectedData));
-        this.props.dispatch(resetSubsetting(this.selectedData));
+    getPreviewData(status,e) {
+        debugger;
+        if(status==FAILED){
+            bootbox.alert(statusMessages("error","The uploaded file does not contain data in readable format. Please check the source file and try uploading again.","small_mascot"));            
+        }else{
+            var that = this;
+            this.selectedData = e.target.id;
+            //alert(this.selectedData);
+            this.props.dispatch(clearDataPreview());
+            this.props.dispatch(storeSignalMeta(null, that.props.match.url));
+            this.props.dispatch(getDataSetPreview(this.selectedData));
+            this.props.dispatch(resetSubsetting(this.selectedData));
+        }
     }
     
     handleDelete(slug,evt) {
@@ -79,10 +84,14 @@ export class DataCard extends React.Component {
 
         const dataSetList = dataSets.map((data, i) => { 
             var iconDetails = "";
+            if(data.status == FAILED){
+            var dataSetLink = "/data/";
+            }else{
             var dataSetLink = "/data/" + data.slug;
+            }
             var percentageDetails = "";
             
-            var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
+            var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this,data.status)}>
             {data.name}
             </Link>
             if(data.status == INPROGRESS){
