@@ -1135,7 +1135,7 @@ class Trainer(models.Model):
 
             # only checking for logistic regression
             # if algo['name'] == 'Logistic Regression':
-            for params in hps['parameters']:
+            for params in algo['parameters']:
 
                 # checking for fit_intercept
                 if params['name'] == 'fit_intercept':
