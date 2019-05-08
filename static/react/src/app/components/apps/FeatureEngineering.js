@@ -294,6 +294,8 @@ export class FeatureEngineering extends React.Component {
       }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
       this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
     }
