@@ -186,7 +186,7 @@ class TrainerView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True,
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
 
         ).select_related('created_by', 'job', 'dataset')
         return queryset
@@ -458,7 +458,7 @@ class ScoreView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         ).select_related('created_by', 'job', 'dataset', 'trainer')
         return queryset
 
@@ -616,7 +616,7 @@ class RoboView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return query_set
 
@@ -739,7 +739,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return queryset
 
@@ -879,7 +879,7 @@ class AudiosetView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return queryset
 
