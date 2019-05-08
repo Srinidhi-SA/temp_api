@@ -206,7 +206,7 @@ export class DataCleansing extends React.Component {
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
     debugger;
     let disble = false;
-    if((outnum || missingnum)==0){
+    if((outnum && missingnum)==0){
       disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
@@ -234,7 +234,7 @@ export class DataCleansing extends React.Component {
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
     debugger;
     let disble = false;
-    if((outnum || missingnum)==0){
+    if((outnum && missingnum)==0){
       disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
@@ -309,20 +309,20 @@ export class DataCleansing extends React.Component {
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
-                  return items.name == "Outliers"
+                  return items.name == "numberOfNulls"
                 }).map((option) => {
-                  outnum = option.value;
-                  console.log(outnum);
+                  missingnum = option.value;
+                  console.log(missingnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
-                  return items.name == "numberOfNulls"
+                  return items.name == "Outliers"
                 }).map((option) => {
-                  missingnum = option.value;
-                  console.log(missingnum);
+                  outnum = option.value;
+                  console.log(outnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
@@ -412,8 +412,8 @@ export class DataCleansing extends React.Component {
                             <th><b>Variable name</b></th>
                             <th><b>Data type</b></th>
                             <th><b>No of unique values</b></th>
-                            <th ><b>No of outliers</b></th>
                             <th ><b>No of missing values</b></th>
+                            <th ><b>No of outliers</b></th>
                             <th className="hideSortImg"><b>Missing value treatment</b></th>
                             <th className="hideSortImg"><b>Outlier removal</b></th>
                           </tr>

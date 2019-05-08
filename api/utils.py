@@ -502,7 +502,10 @@ class ScoreListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
-        ret['job_status'] = instance.job.status
+        if instance.job:
+            ret['job_status'] = instance.job.status
+        else:
+            ret['job_status'] = 'Unknown! Job is None.'
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),

@@ -1099,6 +1099,10 @@ class Trainer(models.Model):
         :return:
         '''
         config = self.get_config()
+
+        # only checks if fit_intercept and solver has atleast something selected=True
+        self.check_if_fit_intercept_is_true()
+
         if 'metric' in config:
             metric_name = config['metric']['name']
             for algo in config['ALGORITHM_SETTING']:
@@ -1118,6 +1122,45 @@ class Trainer(models.Model):
                             break
 
         return config['ALGORITHM_SETTING']
+
+    def check_if_fit_intercept_is_true(self):
+        '''
+        If grid search is True for an Algo.
+        make metric_name  True in that Algo.
+        :return:
+        '''
+        config = self.get_config()
+
+        for algo in config['ALGORITHM_SETTING']:
+
+            # only checking for logistic regression
+            # if algo['name'] == 'Logistic Regression':
+            for params in algo['parameters']:
+
+                # checking for fit_intercept
+                if params['name'] == 'fit_intercept':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for solver
+                if params['name'] == 'solver':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
 
     def create_configuration_fe_settings(self):
         config = self.get_config()
@@ -1394,8 +1437,20 @@ class Trainer(models.Model):
                 )
 
             if key == 'time_since':
+
+                uiJson.get("time_since_input")
+                time_since_input_date = None
+                if "time_since_input" in uiJson:
+                    try:
+                        time_since_input_date = uiJson.get("time_since_input")
+                        time_since_input_date = convert_fe_date_format(time_since_input_date)
+                    except:
+                        time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
+                else:
+                    time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
+                    
                 colStructure = {
-                    'time_since': uiJson.get("time_since_input", datetime.datetime.now().date().strftime('%d/%m/%Y')),
+                    'time_since': time_since_input_date,
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
                     variable_selection_column_data,
