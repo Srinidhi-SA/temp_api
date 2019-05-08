@@ -1135,32 +1135,31 @@ class Trainer(models.Model):
 
             # only checking for logistic regression
             # if algo['name'] == 'Logistic Regression':
-            for hps in algo['hyperParameterSetting']:
-                for params in hps['parameters']:
+            for params in hps['parameters']:
 
-                    # checking for fit_intercept
-                    if params['name'] == 'fit_intercept':
-                        make_some_one_false = True
+                # checking for fit_intercept
+                if params['name'] == 'fit_intercept':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
                         for default_values in params['defaultValue']:
-                            if default_values['selected'] == True:
-                                make_some_one_false = False
-                                break
-                        if make_some_one_false == True:
-                            for default_values in params['defaultValue']:
-                                default_values['selected'] = True
-                                break
+                            default_values['selected'] = True
+                            break
 
-                    # checking for solver
-                    if params['name'] == 'solver':
-                        make_some_one_false = True
+                # checking for solver
+                if params['name'] == 'solver':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
                         for default_values in params['defaultValue']:
-                            if default_values['selected'] == True:
-                                make_some_one_false = False
-                                break
-                        if make_some_one_false == True:
-                            for default_values in params['defaultValue']:
-                                default_values['selected'] = True
-                                break
+                            default_values['selected'] = True
+                            break
 
 
     def create_configuration_fe_settings(self):
