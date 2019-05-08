@@ -71,6 +71,7 @@ export class VariableSelection extends React.Component {
     }
     createSignal(event){
         event.preventDefault();
+        let letters = /^[0-9a-zA-Z\d-_\s]+$/;
         var isAnalysisChecked = checkAnalysisIsChecked();
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
@@ -81,6 +82,13 @@ export class VariableSelection extends React.Component {
             bootbox.alert(statusMessages("warning","Please enter a valid signal name.","small_mascot"));
             $('#createSname').val("").focus();
             return false;
+        }
+        else if (letters.test(document.getElementById("createSname").value) == false){
+
+            bootbox.alert(statusMessages("warning", "Please enter correct format signal name. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
+            $('#createSname').val("").focus();
+            return false;
+
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
