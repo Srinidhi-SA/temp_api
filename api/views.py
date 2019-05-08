@@ -66,7 +66,7 @@ class SignalView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             # analysis_done=True
-            status__in=['SUCCESS','INPROGRESS']
+            status__in=['SUCCESS','INPROGRESS','FAILED']
         ).select_related('created_by', 'job', 'dataset')
         return queryset
 
@@ -93,8 +93,15 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
 
         if 'config' in data:
             ui_config = data['config']
@@ -122,8 +129,15 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
 
         try:
             instance = self.get_object_from_all()
@@ -172,7 +186,7 @@ class TrainerView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True,
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
 
         ).select_related('created_by', 'job', 'dataset')
         return queryset
@@ -199,8 +213,15 @@ class TrainerView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
 
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
@@ -218,8 +239,16 @@ class TrainerView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
+
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
@@ -429,7 +458,7 @@ class ScoreView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         ).select_related('created_by', 'job', 'dataset', 'trainer')
         return queryset
 
@@ -455,8 +484,15 @@ class ScoreView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
 
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
 
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
@@ -476,9 +512,16 @@ class ScoreView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         # instance = self.get_object()
-        if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
+        if 'name' in data:
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
@@ -573,7 +616,7 @@ class RoboView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return query_set
 
@@ -696,7 +739,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return queryset
 
@@ -836,7 +879,7 @@ class AudiosetView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS']
+            status__in=['SUCCESS', 'INPROGRESS','FAILED']
         )
         return queryset
 

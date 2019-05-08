@@ -50,6 +50,8 @@ export class ModelVariableSelection extends React.Component {
     createModel(event) {
         event.preventDefault();
         console.log("came here: ================================");
+        let letters = /^[0-9a-zA-Z]+$/;
+
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
@@ -64,6 +66,12 @@ export class ModelVariableSelection extends React.Component {
             bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
+        } else if (letters.test(document.getElementById("createModelName").value) == false){
+
+            bootbox.alert(statusMessages("warning", "Please enter correct format model name.", "small_mascot"));
+            $('#createModelName').val("").focus();
+            return false;
+
         }
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {

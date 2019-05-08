@@ -72,7 +72,9 @@ else{
   document.getElementById("label_encoding").disabled = true;
   // this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
   //   this.setState({ state: this.state });
-    }
+  this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
+  this.setState({ state: this.state });
+  }
     //disable CREATEMODEL
     return "";
   }
@@ -181,11 +183,11 @@ else{
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding_type"  disabled  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding_type" disabled={!this.getTranformDataValue("encoding_dimensions")}  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding_type"  disabled  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
+                      <input type="radio" id="label_encoding" name="encoding_type"  disabled={!this.getTranformDataValue("encoding_dimensions")}  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
@@ -260,8 +262,8 @@ else{
                       <label for="time_since">Time Since Some Event:</label>
                     </div>
                   </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                  <div class="col-md-4 col-sm-3">
+                    <input type="date" name="time_since_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("time_since_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div className="row form-group">
