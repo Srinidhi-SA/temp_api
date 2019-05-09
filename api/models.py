@@ -1098,10 +1098,10 @@ class Trainer(models.Model):
         make metric_name  True in that Algo.
         :return:
         '''
-        config = self.get_config()
+        # config = self.get_config()
 
         # only checks if fit_intercept and solver has atleast something selected=True
-        self.check_if_fit_intercept_is_true()
+        config = self.check_if_fit_intercept_is_true()
 
         if 'metric' in config:
             metric_name = config['metric']['name']
@@ -1134,34 +1134,33 @@ class Trainer(models.Model):
         for algo in config['ALGORITHM_SETTING']:
 
             # only checking for logistic regression
-            if algo['name'] == 'Logistic Regression':
-                for hps in algo['hyperParameterSetting']:
-                    for params in hps['parameters']:
+            # if algo['name'] == 'Logistic Regression':
+            for params in algo['parameters']:
 
-                        # checking for fit_intercept
-                        if params['name'] == 'fit_intercept':
-                            make_some_one_false = True
-                            for default_values in params['defaultValue']:
-                                if default_values['selected'] == True:
-                                    make_some_one_false = False
-                                    break
-                            if make_some_one_false == True:
-                                for default_values in params['defaultValue']:
-                                    default_values['selected'] = True
-                                    break
+                # checking for fit_intercept
+                if params['name'] == 'fit_intercept':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
 
-                        # checking for solver
-                        if params['name'] == 'solver':
-                            make_some_one_false = True
-                            for default_values in params['defaultValue']:
-                                if default_values['selected'] == True:
-                                    make_some_one_false = False
-                                    break
-                            if make_some_one_false == True:
-                                for default_values in params['defaultValue']:
-                                    default_values['selected'] = True
-                                    break
-
+                # checking for solver
+                if params['name'] == 'solver':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+        return config
 
     def create_configuration_fe_settings(self):
         config = self.get_config()

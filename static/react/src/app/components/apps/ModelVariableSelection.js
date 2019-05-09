@@ -50,7 +50,7 @@ export class ModelVariableSelection extends React.Component {
     createModel(event) {
         event.preventDefault();
         console.log("came here: ================================");
-        let letters = /^[0-9a-zA-Z]+$/;
+        let letters = /^[0-9a-zA-Z\-_\s]+$/;
 
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
@@ -68,7 +68,7 @@ export class ModelVariableSelection extends React.Component {
             return false;
         } else if (letters.test(document.getElementById("createModelName").value) == false){
 
-            bootbox.alert(statusMessages("warning", "Please enter correct format model name.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter correct format model name. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
 
