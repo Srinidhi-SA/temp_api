@@ -1119,7 +1119,6 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         actions: [
                     Dialog.CancelAction(),
                     Dialog.OKAction(() => {
-                        debugger;
                     var newColName = ($("#idRenameMetaCloumn").val()).toUpperCase();
                     let colNames = headers.map(e => (e.name).toUpperCase());
 

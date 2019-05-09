@@ -68,7 +68,7 @@ export class ModelVariableSelection extends React.Component {
             return false;
         } else if (letters.test(document.getElementById("createModelName").value) == false){
 
-            bootbox.alert(statusMessages("warning", "Please enter correct format model name. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
 
