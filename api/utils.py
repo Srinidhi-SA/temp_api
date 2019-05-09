@@ -348,7 +348,12 @@ class TrainerSerlializer(serializers.ModelSerializer):
             except:
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
-        ret['job_status'] = instance.job.status
+
+        if instance.job:
+            ret['job_status'] = instance.job.status
+        else:
+            ret['job_status'] = None
+
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
