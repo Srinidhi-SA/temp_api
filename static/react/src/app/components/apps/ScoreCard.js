@@ -28,7 +28,7 @@ import {
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
@@ -48,8 +48,12 @@ export class ScoreCard extends React.Component {
     handleScoreRename(slug, name) {
         this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
-    getScoreSummary(slug) {
-        this.props.dispatch(updateScoreSlug(slug))
+    getScoreSummary(slug,status) {
+        if(status==FAILED){
+            bootbox.alert(statusMessages("error","Unable to create Score. Please check your connection and try again.","small_mascot"));            
+        }else{
+            this.props.dispatch(updateScoreSlug(slug));
+        }
     }
     openDataLoaderScreen(data){
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
@@ -58,8 +62,12 @@ export class ScoreCard extends React.Component {
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
+            if(data.status==FAILED){
+                var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/";
+            }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
-            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug)}>{data.name}</Link>;
+            }
+            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;
@@ -68,7 +76,7 @@ export class ScoreCard extends React.Component {
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }else if(data.status == FAILED){
-                            percentageDetails =  <div class=""><font color="red">Failed</font></div>
+                            percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                         }
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_score || permissionDetails.rename_score; 

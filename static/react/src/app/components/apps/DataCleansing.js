@@ -204,7 +204,6 @@ export class DataCleansing extends React.Component {
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
-    debugger;
     let disble = false;
     if((outnum && missingnum)==0){
       disble = true;
@@ -232,7 +231,6 @@ export class DataCleansing extends React.Component {
   }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
-    debugger;
     let disble = false;
     if((outnum && missingnum)==0){
       disble = true;

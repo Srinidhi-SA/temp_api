@@ -46,7 +46,6 @@ export class SignalCard extends React.Component {
         this.props=props;
     }
     getSignalAnalysis(status) {
-      debugger;
       if(status==FAILED){
         bootbox.alert(statusMessages("error","We are unable to process the request. Please check your connection and try again.","small_mascot"));
       }else{
@@ -93,7 +92,6 @@ export class SignalCard extends React.Component {
             var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this,story.status)} className="title">
               {story.name}
               </Link>
-              debugger;
               if(story.status == INPROGRESS){
                   percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>

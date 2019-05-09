@@ -10,7 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
     updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED} from  "../../helpers/helper"
+    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
     import Dialog from 'react-bootstrap-dialog'
     import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -49,13 +49,23 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
-        
+        getFailedMsg(status) {
+            if(status==FAILED){
+                bootbox.alert(statusMessages("error","Unable to create Modal. Please check your connection and try again.","small_mascot"));            
+            }
+            else
+                return;
+        }
         render() {
 
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
-                    var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
-                    var modelLink1 = <Link id={data.slug} to={modelLink}>{data.name}</Link>
+                    if(data.status==FAILED){
+                        var modelLink = "/apps/"+this.props.match.params.AppId+"/models/";
+                    }else{
+                        var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
+                    }
+                    var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
@@ -64,7 +74,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }else if(data.status == FAILED){
-                            percentageDetails =  <div class=""><font color="red">Failed</font></div>
+                            percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                         }
                     var permissionDetails = data.permission_details;
                     var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 

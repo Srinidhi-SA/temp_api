@@ -1098,10 +1098,10 @@ class Trainer(models.Model):
         make metric_name  True in that Algo.
         :return:
         '''
-        config = self.get_config()
+        # config = self.get_config()
 
         # only checks if fit_intercept and solver has atleast something selected=True
-        self.check_if_fit_intercept_is_true()
+        config = self.check_if_fit_intercept_is_true()
 
         if 'metric' in config:
             metric_name = config['metric']['name']
@@ -1160,7 +1160,7 @@ class Trainer(models.Model):
                         for default_values in params['defaultValue']:
                             default_values['selected'] = True
                             break
-
+        return config
 
     def create_configuration_fe_settings(self):
         config = self.get_config()

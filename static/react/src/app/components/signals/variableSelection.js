@@ -85,7 +85,7 @@ export class VariableSelection extends React.Component {
         }
         else if (letters.test(document.getElementById("createSname").value) == false){
 
-            bootbox.alert(statusMessages("warning", "Please enter correct format signal name. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter signal name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
             $('#createSname').val("").focus();
             return false;
 
