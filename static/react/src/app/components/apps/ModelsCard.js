@@ -50,7 +50,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
         getFailedMsg(status) {
-            debugger;
             if(status==FAILED){
                 bootbox.alert(statusMessages("error","Unable to create Modal. Please check your connection and try again.","small_mascot"));            
             }
