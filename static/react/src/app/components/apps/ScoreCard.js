@@ -76,7 +76,7 @@ export class ScoreCard extends React.Component {
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }else if(data.status == FAILED){
-                            percentageDetails =  <div class=""><font color="red">Failed</font></div>
+                            percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                         }
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_score || permissionDetails.rename_score; 
