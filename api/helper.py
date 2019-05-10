@@ -1346,7 +1346,8 @@ def get_timing_details(timing_type=None):
                             "period": "seconds"
                         }
                     }
-
+    if timing_type == 'daily':
+        timing_details['crontab']['hour'] = 24
     if timing_type == 'weekly':
         timing_details['crontab']['day_of_week'] = 1
     elif timing_type == 'monthly':
@@ -1403,6 +1404,3 @@ def get_random_model_id(algo_name):
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number ])
-
-
-

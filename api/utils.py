@@ -1207,6 +1207,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ####################################################################
         ret['created_on'] = ret['created_at']
         raw_data = json.loads(instance.data)
+        ret['total_deployment']=ret['deployment']+len(ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=True))
         #Fetching Data from ML
         if raw_data is not dict():
             try:
