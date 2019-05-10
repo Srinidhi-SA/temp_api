@@ -36,7 +36,7 @@ class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by',
-                    "msg_count", "time_difference", "script_time_difference"
+                    "msg_count", "time_difference", "script_time_difference", 'created_at'
                     ]
     list_filter = ["job_type", "status", "submitted_by"]
     # readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
