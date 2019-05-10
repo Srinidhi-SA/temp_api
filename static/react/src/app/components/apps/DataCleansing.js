@@ -257,7 +257,7 @@ tableHead.addEventListener('click', function (e) {
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
     let disble = false;
-    if((outnum && missingnum)==0){
+    if((outnum)==0){
       disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
@@ -284,7 +284,7 @@ tableHead.addEventListener('click', function (e) {
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
     let disble = false;
-    if((outnum && missingnum)==0){
+    if((missingnum)==0){
       disble = true;
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;

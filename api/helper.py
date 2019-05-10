@@ -973,7 +973,7 @@ def get_db_object(model_name, model_slug):
     return obj
 
 
-@task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME)
+@task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME+'_yarn')
 def get_job_from_yarn(model_name=None, model_slug=None):
 
     try:
@@ -1211,6 +1211,8 @@ def round_sig(x, sig=3):
 
 
 def get_message(instance):
+    if instance is None:
+        return None
     from api.redis_access import AccessFeedbackMessage
     import json
     ac = AccessFeedbackMessage()
@@ -1344,7 +1346,8 @@ def get_timing_details(timing_type=None):
                             "period": "seconds"
                         }
                     }
-
+    if timing_type == 'daily':
+        timing_details['crontab']['hour'] = 24
     if timing_type == 'weekly':
         timing_details['crontab']['day_of_week'] = 1
     elif timing_type == 'monthly':
@@ -1401,6 +1404,3 @@ def get_random_model_id(algo_name):
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number ])
-
-
-

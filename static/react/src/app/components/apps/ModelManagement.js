@@ -273,10 +273,12 @@ getAllDeployPreview()
       <td className="text-left"> {item.model_id}</td>
       <td  class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
       <td className="text-left"> {item.algorithm}</td>
-      <td ><span className="text-success"></span> {item.training_status}</td>
+      {/* <td ><span className="text-success"></span> {item.training_status}</td> */}
       <td > {item.accuracy}</td>
       <td > {dateFormat( item.created_at, " mmm d,yyyy")}</td>
       <td > {item.deployment}</td>
+      <td > {item.total_deployment}</td>
+
       <td > {item.runtime}</td>
       <td> <Button >
               <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
@@ -313,10 +315,12 @@ getAllDeployPreview()
         <th class="text-left"><b>Model ID</b></th>
         <th class="text-left"><b>Project Name</b></th>
         <th class="text-left"><b>Algorithm</b></th>
-        <th><b>Status</b></th>
+        {/* <th><b>Status</b></th> */}
         <th><b>Accuracy</b></th>
         <th><b>Created On</b></th>
-        <th><b>Deployment</b></th>
+        <th><b>Active Deployment</b></th>
+
+        <th><b>Total Deployments</b></th>
         <th><b>Runtime</b></th>
         <th><b>Summary</b></th>
         <th><b>Action</b></th>

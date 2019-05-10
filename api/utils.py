@@ -348,7 +348,12 @@ class TrainerSerlializer(serializers.ModelSerializer):
             except:
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
-        ret['job_status'] = instance.job.status
+
+        if instance.job:
+            ret['job_status'] = instance.job.status
+        else:
+            ret['job_status'] = None
+
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -1202,6 +1207,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ####################################################################
         ret['created_on'] = ret['created_at']
         raw_data = json.loads(instance.data)
+        ret['total_deployment']=ret['deployment']+len(ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=True))
         #Fetching Data from ML
         if raw_data is not dict():
             try:

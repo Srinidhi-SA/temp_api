@@ -43,8 +43,21 @@ def submit_job_separate_task(command_array, slug):
     if settings.HADOOP_CONF_DIR:
         my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
-    cur_process = subprocess.Popen(command_array, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,bufsize=-1,universal_newlines=True,env=my_env)
-    print cur_process
+
+    try:
+        cur_process = subprocess.Popen(command_array, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,bufsize=-1,universal_newlines=True,env=my_env)
+        print(cur_process)
+    except Exception as e:
+        from api.helper import get_db_object
+        model_instance = get_db_object(model_name=Job.__name__,
+                                       model_slug=slug
+                                       )
+        model_instance.status = "KILLED"
+        model_instance.message = json.dumps({'message': 'Killed while submitting job',
+                                             'error': e})
+        model_instance.save()
+        return "Failed"
+
     for line in iter(lambda: cur_process.stdout.readline(), ''):
         print(line.strip())
         line = line.strip()
@@ -148,6 +161,7 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         print("Every thing went well. Lets see if more can be done")
         check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object.id)
+        return "Done Succesfully."
         return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
@@ -164,6 +178,7 @@ def write_into_databases(job_type, object_slug, results):
         insight_object.analysis_done = True
         insight_object.status = 'SUCCESS'
         insight_object.save()
+        return "Done Succesfully."
         return results
     elif job_type == "model":
         trainer_object = get_db_object(model_name=Trainer.__name__,
@@ -205,6 +220,7 @@ def write_into_databases(job_type, object_slug, results):
                         train_algo_object = serializer.save()
                     else:
                         print(serializer.errors)
+        return "Done Succesfully."
         return results
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
@@ -221,6 +237,7 @@ def write_into_databases(job_type, object_slug, results):
         score_object.analysis_done = True
         score_object.status = 'SUCCESS'
         score_object.save()
+        return "Done Succesfully."
         return results
     elif job_type == 'robo':
         robo_object = get_db_object(model_name=Robo.__name__,
