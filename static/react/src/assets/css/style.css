@@ -16033,3 +16033,34 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 div#replaceValues {
     padding: 0 10px;
 }
+
+#dctable th:first-child {
+  background:none !important;
+}
+
+#dctable th:last-child {
+  background:none !important;
+}
+
+#dctable th:nth-last-child(2) {
+  background:none !important;
+}
+
+#dctable th.asc{
+	background: url(../images/ice-asc.gif)no-repeat;
+	background-position: 97%;
+}
+
+#dctable th.desc{
+	background: url(../images/ice-desc.gif)no-repeat;
+	background-position: 97%;
+}
+
+#dctable th{
+	background: url(../images/ice-unsorted.gif)no-repeat;
+	background-position: 97%;
+}
+.sorttable_img{
+	display: none;
+}
+

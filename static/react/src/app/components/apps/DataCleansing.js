@@ -1,5 +1,6 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
+import tinysort from 'tinysort';
 import { Provider } from "react-redux";
 import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
@@ -99,6 +100,55 @@ export class DataCleansing extends React.Component {
   }
 
   componentDidMount() {
+
+
+    var table = document.getElementById('dctable'),
+    tableHead = table.querySelector('thead'),
+    tableHeaders = tableHead.querySelectorAll('th'),
+    tableBody = table.querySelector('tbody');
+
+debugger;
+tableHead.addEventListener('click', function (e) {
+  console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+    var tableHeader = e.target,
+        textContent = tableHeader.textContent,
+        tableHeaderIndex, isAscending, order;
+    while (tableHeader.nodeName !== 'TH') {
+        tableHeader = tableHeader.parentNode;
+    }
+    tableHeaderIndex = Array.prototype.indexOf.call(tableHeaders, tableHeader);
+    isAscending = tableHeader.getAttribute('data-order') === 'asc';
+    order = isAscending ? 'desc' : 'asc';
+
+    //reset other columns
+    $('#backpackGrid').find('th').removeClass('asc desc').attr('data-order','none').attr('aria-sort','none');
+
+
+    //set order on clicked header
+    tableHeader.setAttribute('data-order', order);
+
+    /* accessibility */
+    //set aria sort attr
+    tableHeader.setAttribute('aria-sort', order);
+    tableHeader.setAttribute("class", order);
+    // build aria-live message
+    var sortOrder;
+    if (isAscending) {
+        sortOrder = "Ascending order";
+    } else {
+        sortOrder = "Descending order";
+    }
+    
+    /* end accessibility */
+    
+    // call tinysort
+    tinysort(
+    tableBody.querySelectorAll('tr'), {
+        selector: 'td:nth-child(' + (tableHeaderIndex + 1) + ')',
+        order: order
+    });
+});
+
     $("#sdataType").change(function () {
       $("#dctable tbody tr").hide();
       $("#dctable tbody tr." + $(this).val()).show('fast');
@@ -123,6 +173,8 @@ export class DataCleansing extends React.Component {
     });
 
     $("#dctable").addSortWidget();
+
+
 
   }
   componentWillUpdate() {
@@ -271,6 +323,8 @@ export class DataCleansing extends React.Component {
       });
     });
   }
+
+    
 
   render() {
     this.dcTableSorter();
