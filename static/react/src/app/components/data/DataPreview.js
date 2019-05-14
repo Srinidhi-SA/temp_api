@@ -479,7 +479,7 @@ export class DataPreview extends React.Component {
           if (isDataValidationAllowed)
             dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
-            cls = cls + " greyout-col";
+            // cls = cls + " greyout-col";
 
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
@@ -517,11 +517,14 @@ export class DataPreview extends React.Component {
         const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
 
           const tds = trElement.map((tdElement, tdIndex) => {
-            if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider) {
+            debugger;
+            if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider ) {
+              if(dataPrev.uiMetaData.columnDataUI[tdIndex].ignoreSuggestionPreviewFlag){//to be removed after unc release
               let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
               return (
                 <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
               );
+              }
             } else {
               return (
                 <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
