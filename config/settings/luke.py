@@ -2,11 +2,14 @@ from base import *
 import datetime
 
 
+import environ
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env()
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DEBUG = False
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -15,14 +18,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
-    "default": {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'madvisor',
-        'USER': 'root',
-        'PASSWORD': 'Marlabs@123',
-        'HOST': '172.31.53.141',
-        'PORT': '',
-        }
+    "default":  env.db()
 }
 
 # DATABASES = {
@@ -43,7 +39,7 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
-HADOOP_MASTER = '172.31.50.84'
+HADOOP_MASTER = env('HADOOP_MASTER')
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -90,15 +86,15 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "madvisor.marlabsai.com",
-    "port": "80",
+    "host": env('THIS_SERVER_HOST'),
+    "port": env('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -138,13 +134,13 @@ FUNNY_EMAIL_LIST = [
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-DEPLOYMENT_ENV = "prod"
+DEPLOYMENT_ENV = env('DEPLOYMENT_ENV')
 
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
-CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
+CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
+CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -164,12 +160,13 @@ CELERY_QUEUES = {
 
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-ENABLE_KYLO = True
-KYLO_UI_URL = "http://data-management.marlabsai.com"
+ENABLE_KYLO = env('ENABLE_KYLO')
+KYLO_UI_URL = env('KYLO_UI_URL')
+KYLO_UI_AUTH_URL= env('KYLO_UI_AUTH_URL')
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
 KYLO_SERVER_DETAILS = {
-    "host": "34.200.233.5",
-    "port" : 8088,
+    "host": env('KYLO_SERVER_HOST'),
+    "port" : env('KYLO_SERVER_PORT'),
     "user": "ankush",
     "key_path": "~/.ssh/ankush.pem",
     "group_propertie_quote": "madvisor,user",
@@ -179,7 +176,7 @@ KYLO_SERVER_DETAILS = {
 CELERY_ONCE_CONFIG = {
   'backend': 'celery_once.backends.Redis',
   'settings': {
-    'url': 'redis://172.31.53.141:6379/',
+    'url': "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/",
     'default_timeout': 60 * 60
   }
 }

@@ -32,3 +32,4 @@ celery-once==2.0.0
 psycopg2
 psycopg2-binary
 django_celery_beat==1.4.0
+django-environ
