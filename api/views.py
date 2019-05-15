@@ -5645,41 +5645,41 @@ def updateFromNifi(request):
 @csrf_exempt
 def all_apps_for_users(request):
     from django.contrib.auth.models import User
+    try:
+        if 'username' in request.GET:
+            username = request.GET['username']
+        else:
+            username = None
 
-    if 'username' in request.GET:
-        username = request.GET['username']
-    else:
-        username = None
-
-    if username is not None:
-        try:
-            user = User.objects.filter(username=username).first()
-        except:
-            return JsonResponse({"message": "User doesn't exist."})
+        if username is not None:
+            try:
+                user = User.objects.filter(username=username).first()
+            except:
+                return JsonResponse({"message": "User doesn't exist."})
+            all_apps = CustomApps.objects.all()
+            from api.models import CustomAppsUserMapping
+            CustomAppsUserMapping.objects.filter(user=user).delete()
+            for app in all_apps:
+                caum = CustomAppsUserMapping()
+                caum.user = user
+                caum.app = app
+                caum.rank = app.rank
+                caum.save()
+            return JsonResponse({'message': 'done'})
+    except:
+        all_users = User.objects.all()
         all_apps = CustomApps.objects.all()
         from api.models import CustomAppsUserMapping
-        CustomAppsUserMapping.objects.filter(user=user).delete()
-        for app in all_apps:
-            caum = CustomAppsUserMapping()
-            caum.user = user
-            caum.app = app
-            caum.rank = app.rank
-            caum.save()
+        CustomAppsUserMapping.objects.all().delete()
+        for user in all_users:
+            for app in all_apps:
+                caum = CustomAppsUserMapping()
+                caum.user = user
+                caum.app = app
+                caum.rank = app.rank
+                caum.save()
+
         return JsonResponse({'message': 'done'})
-
-    all_users = User.objects.all()
-    all_apps = CustomApps.objects.all()
-    from api.models import CustomAppsUserMapping
-    CustomAppsUserMapping.objects.all().delete()
-    for user in all_users:
-        for app in all_apps:
-            caum = CustomAppsUserMapping()
-            caum.user = user
-            caum.app = app
-            caum.rank = app.rank
-            caum.save()
-
-    return JsonResponse({'message': 'done'})
 
 
 #model management changes
