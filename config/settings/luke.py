@@ -11,6 +11,7 @@ environ.Env.read_env()
 
 DEBUG = env('DEBUG')
 
+MODE=env('MODE')
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {
@@ -182,5 +183,6 @@ CELERY_ONCE_CONFIG = {
 }
 
 SUBMIT_JOB_THROUGH_CELERY = True
-CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
+#CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
+CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True

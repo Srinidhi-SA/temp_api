@@ -10,7 +10,7 @@ environ.Env.read_env()
 
 DEBUG = env('DEBUG')
 
-
+MODE=env('MODE')
 ALLOWED_HOSTS = ['*']
 
 # DATABASES = {
@@ -194,7 +194,8 @@ AUTHENTICATION_BACKENDS = (
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 
-CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+#CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
 
 CELERY_ONCE_CONFIG = {
