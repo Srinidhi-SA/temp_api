@@ -52,10 +52,10 @@ HDFS = {
 
     # Give host name without http
     'host': HADOOP_MASTER,
-    'port': '14000', #webhdfs port
+    'port': env('WEB_HADOOP_PORT'), #webhdfs port
     'uri': '/webhdfs/v1',
-    'user.name': 'hadoop',
-    'hdfs_port': '8020', #hdfs port
+    'user.name': env(HADOOP_USER),
+    'hdfs_port': env('HADOOP_PORT'), #hdfs port
     'base_path' : '/dev/dataset/'
 }
 
