@@ -40,6 +40,51 @@ function fetchPosts(username,password) {
     });
 }
 
+export function authenticateFuncSso() {
+  return (dispatch) => {
+  return fetchPostsSso().then(([response, json]) =>{
+      if(response.status === 200){
+      dispatch(fetchPostsSuccessSso(json))
+    }
+    else{
+      dispatch(fetchPostsErrorSso(json))
+    }
+  })
+}
+}
+
+function fetchPostsSso() {
+  return fetch(API+'/api-token-auth/',{
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		// body: JSON.stringify({
+		// 		username: username,
+		// 		password: password,
+		//  })
+	}).then( response => Promise.all([response, response.json()])).catch(function(error) {
+        console.log(error);
+        $("#errormsg").html("Login unsuccessful. Please try again in sometime.")
+    });
+}
+
+function fetchPostsSuccessSso(payload) {
+  var token = payload.token;
+  //sessionObject.manageSession(payload);
+  cookieObj.storeCookies(payload)
+    return {
+      type: "AUTHENTICATE_USER",
+      payload
+    }
+  }
+
+  function fetchPostsErrorSso(json) {
+    return {
+      type: "ERROR",
+      json
+    }
+  }
 
 function fetchPostsSuccess(payload) {
 var token = payload.token;

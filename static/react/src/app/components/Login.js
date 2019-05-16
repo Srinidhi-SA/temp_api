@@ -2,8 +2,9 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
-import {authenticateFunc} from "../actions/loginActions";
+import {authenticateFunc,authenticateFuncSso} from "../actions/loginActions";
 import store from "../store";
+import {Link} from 'react-router-dom';
 import {STATIC_URL} from "../helpers/env";
 import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
@@ -21,6 +22,7 @@ export class Login extends React.Component {
       uId: '',
       pwd: '',
       errmsg:""
+      // token:"",
     };
   }
   onChangeUId(e) {
@@ -35,8 +37,24 @@ export class Login extends React.Component {
     hidechatbot()
   }
 
-  doAuth() {
+  doAuthSSO(){
+    debugger;
+    console.log("login is called!!");
+   //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
+   console.log("checking login form fields");
+   // console.log(this.state.uId);
+  //  if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
+  //  this.state.errmsg = "Please enter the username!"
+  //  $("#errormsg").text(this.state.errmsg);
+//  }else if(this.state.pwd==""||this.state.pwd==null){
+  //  this.state.errmsg = "Please enter the password!"
+  //  $("#errormsg").text(this.state.errmsg);
+//  if(this.state.token){
+   this.props.dispatch(authenticateFuncSso())
+  //  $("#errormsg").text(this.state.errmsg);
+}
 
+  doAuth() {
     //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
     console.log("checking login form fields");
     // console.log(this.state.uId);
@@ -114,6 +132,8 @@ export class Login extends React.Component {
                         </div>
 						<a href="#" className="xs-mt-20 pull-left">Forgot Password?</a>
                         <div className="form-group login-submit pull-right">
+                        <button onClick={this.doAuthSSO.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5"><a href="https://ping.kenan.ai:9031/idp/startSSO.ping?PartnerSpId=advisor.kenan.ai" target="_blank" >SSO SIGN IN</a></button>
+                          
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
                         </div>
 						<div className="clearfix"></div>
