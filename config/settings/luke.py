@@ -54,7 +54,7 @@ HDFS = {
     'host': HADOOP_MASTER,
     'port': env('WEB_HADOOP_PORT'), #webhdfs port
     'uri': '/webhdfs/v1',
-    'user.name': env(HADOOP_USER),
+    'user.name': env('HADOOP_USER'),
     'hdfs_port': env('HADOOP_PORT'), #hdfs port
     'base_path' : '/dev/dataset/'
 }
@@ -186,3 +186,4 @@ SUBMIT_JOB_THROUGH_CELERY = True
 #CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
 CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True
+USE_HTTPS= env('USE_HTTPS')

@@ -215,6 +215,8 @@ KYLO_SERVER_DETAILS = {
     "kylo_file_path":"/opt/kylo/"
 }
 
+USE_HTTPS= env('USE_HTTPS')
+
 # if DEBUG == False:
 #     from logger_config import *
 #     server_log = BASE_DIR + '/server_log'
