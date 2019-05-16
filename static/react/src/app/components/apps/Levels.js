@@ -41,23 +41,37 @@ export class Levels extends React.Component {
     // datasets.dataPreview.meta_data.uiMetaData.columnDataUI[8].columnStats[5].value.Arkansas
     let levelOptions = Object.keys(this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug)[0].columnStats.filter(options => (options.name == "LevelCount"))[0].value)
     levelOptions.sort();
+    console.log(levelOptions,"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
     return levelOptions
+    
   }
 
   getMultiSelectOptions(idx) {
+    if(this.getAllOptions().length == this.state.levelsArray.flatMap(i=>i.multiselectValue).length
+    ){
+      $(".addn").css("display","none");
+    }
+    else{
+       $(".addn").css("display","inline");
+    }
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
+    debugger;
     return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function (elem) {
       return { "label": elem, "value": elem };
     });
   }
 
   getAllSelectedOptionsExceptCurrent(idx) {
+    this.getAllOptions();
     var allSelectedItems = new Set();
     this.state.levelsArray.map(function (elem, elemIdx) {
       if (elemIdx != idx) {
+      console.log("hellooooo", elem);
         allSelectedItems = new Set([...allSelectedItems, ...elem.multiselectValue])
       }
     });
+    console.log(this.getAllOptions().length,"mmmmmmmmmmmmmmmmmmm");
+    console.log(allSelectedItems.size,"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
     return allSelectedItems;
   }
 
@@ -79,10 +93,14 @@ export class Levels extends React.Component {
   }
 
   addNewLevel() {
+    // this.getAllSelectedOptionsExceptCurrent(idx);
+    this.getAllOptions();
+    // if(this.getAllOptions().length != allSelectedItems.size){
     var newObj = { "inputValue": "", "multiselectValue": "", "startDate": "", "endDate": "" };
     this.setState({
       levelsArray: this.state.levelsArray.concat([newObj,])
     });
+  
   };
 
   handleRemoveLevel(idx, event) {

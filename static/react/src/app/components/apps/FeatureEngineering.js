@@ -210,7 +210,7 @@ export class FeatureEngineering extends React.Component {
         }
         else if (inputValue == undefined || inputValue == null || inputValue == "") {
           $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Please enter the new column name");
+          $("#fileErrorMsg").html("Please enter the requird input");
           $("input[name='inputValue']").focus();
           return;
         }
