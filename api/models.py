@@ -2028,7 +2028,10 @@ class Score(models.Model):
         config = config.get('config')
 
         model_data = json.loads(self.trainer.data)
-        model_config_from_results = model_data['model_dropdown']
+        if 'model_dropdown' in model_data:
+            model_config_from_results = model_data['model_dropdown']
+        else:
+            model_config_from_results = []
 
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
