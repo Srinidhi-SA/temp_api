@@ -65,7 +65,7 @@ YARN = {
     "port": 8088,
     "timeout": 30
 }
-
+'''
 HDFS = {
 
     # Give host name without http
@@ -76,7 +76,13 @@ HDFS = {
     'hdfs_port': '9000', #hdfs port
     'base_path' : '/dev/dataset/'
 }
+'''
 
+import os
+import json
+hdfs_config_key=json.loads(os.environ['HADOOP_CONFIG_KEY'])
+hdfs_config_value=json.loads(os.environ['HADOOP_CONFIG_VALUE'])
+HDFS=dict(zip(hdfs_config_key,hdfs_config_value))
 
 EMR = {
     "emr_pem_path": "",
@@ -214,6 +220,9 @@ KYLO_SERVER_DETAILS = {
     "group_propertie_quote": "madvisor,user",
     "kylo_file_path":"/opt/kylo/"
 }
+
+USE_HTTPS=env.bool('USE_HTTPS',default=False)
+
 
 # if DEBUG == False:
 #     from logger_config import *

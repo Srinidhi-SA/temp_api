@@ -47,7 +47,7 @@ YARN = {
     "port": 8088,
     "timeout": 30
 }
-
+'''
 HDFS = {
 
     # Give host name without http
@@ -58,6 +58,12 @@ HDFS = {
     'hdfs_port': '8020', #hdfs port
     'base_path' : '/dev/dataset/'
 }
+'''
+import os
+import json
+hdfs_config_key=json.loads(os.environ['HADOOP_CONFIG_KEY'])
+hdfs_config_value=json.loads(os.environ['HADOOP_CONFIG_VALUE'])
+HDFS=dict(zip(hdfs_config_key,hdfs_config_value))
 
 EMR = {
     "emr_pem_path": "",
@@ -186,3 +192,4 @@ SUBMIT_JOB_THROUGH_CELERY = True
 #CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
 CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True
+USE_HTTPS=env.bool('USE_HTTPS',default=False)
