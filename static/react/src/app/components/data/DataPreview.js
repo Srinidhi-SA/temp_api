@@ -480,7 +480,6 @@ export class DataPreview extends React.Component {
             dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
             // cls = cls + " greyout-col";
-
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
@@ -515,15 +514,19 @@ export class DataPreview extends React.Component {
         });
         //  data.splice(0,1);
         const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
-
           const tds = trElement.map((tdElement, tdIndex) => {
             debugger;
             if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider ) {
-              if(dataPrev.uiMetaData.columnDataUI[tdIndex].ignoreSuggestionPreviewFlag){//to be removed after unc release
-              let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
-              return (
-                <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
-              );
+              //to be removed after unc release
+              if(dataPrev.uiMetaData.columnDataUI[tdIndex].ignoreSuggestionPreviewFlag){
+                let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
+                return (
+                  <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
+                );
+              }else{
+                return (
+                  <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
+                );
               }
             } else {
               return (
