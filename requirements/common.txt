@@ -29,6 +29,6 @@ django-guardian==1.4.9
 deprecation
 newsapi-python
 celery-once==2.0.0
-django_celery_beat==1.0.0
 psycopg2
 psycopg2-binary
+django_celery_beat==1.4.0

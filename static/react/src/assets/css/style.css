@@ -3953,7 +3953,7 @@ td.visible-print,  th.visible-print {
 .visible-print-inline-block {
 	display: inline-block!important
 }
-.hidden-print {
+.hidden-print, div#side-menu {
 	display: none!important
 }
 }

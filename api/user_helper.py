@@ -168,6 +168,11 @@ def create_profile(sender, **kwargs):
     user = kwargs["instance"]
     if kwargs["created"]:
         user_profile = Profile(user=user)
+        #Loading all customapps for the user
+        ########################################
+        from api.views import all_apps_for_users
+        all_apps_for_users(user)
+        ########################################
         user_profile.save()
 
     if settings.ENABLE_KYLO:
