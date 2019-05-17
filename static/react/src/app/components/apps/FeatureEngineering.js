@@ -16,6 +16,7 @@ import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Transform } from "./Transform";
+import { statusMessages } from "../../helpers/helper";
 
 @connect((store) => {
   return {
@@ -40,7 +41,8 @@ export class FeatureEngineering extends React.Component {
     console.log("FeatureEngineering constructor method is called...");
     console.log(props);
     this.buttons = {};
-    this.state = {};
+    this.state = {
+    };
     this.state.topLevelRadioButton = "false";
     this.prevState = this.state;
     this.pickValue = this.pickValue.bind(this);
@@ -121,6 +123,7 @@ export class FeatureEngineering extends React.Component {
   }
 
   handleCreateClicked(actionType, event) {
+    
     if (actionType == "binData") {
       this.validateBinData(actionType);
     } else if (actionType == "levelData") {
@@ -133,6 +136,13 @@ export class FeatureEngineering extends React.Component {
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
     }
+
+    if ($('.levelrequired').val() == "") {
+      bootbox.alert(statusMessages("warning", "Please enter level name", "small_mascot"));
+      return false;
+
+            
+  }
   }
 
   validateBinData(actionType) {
@@ -539,7 +549,8 @@ export class FeatureEngineering extends React.Component {
   openBinsOrLevelsModal(item) {
     console.log("open ---openBinsOrLevelsModal");
     this.props.dispatch(openBinsOrLevelsModalAction(item));
-  }
+    //this.setState({NoModal: this.state.NoModal + 1});
+   }
 
   closeBinsOrLevelsModal(event) {
     console.log("closeddddd ---closeBinsOrLevelsModal");
