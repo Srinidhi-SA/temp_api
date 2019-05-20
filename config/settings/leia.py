@@ -185,7 +185,7 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/ankush.pem"
-ENABLE_KYLO = env('ENABLE_KYLO')
+ENABLE_KYLO = env.bool('ENABLE_KYLO')
 KYLO_UI_URL = env('KYLO_UI_URL')
 KYLO_UI_AUTH_URL= env('KYLO_UI_AUTH_URL')
 
@@ -222,12 +222,7 @@ KYLO_SERVER_DETAILS = {
     "kylo_file_path":"/opt/kylo/"
 }
 
-<<<<<<< HEAD
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
-
-=======
-USE_HTTPS= env('USE_HTTPS')
->>>>>>> 3862a512877842cd4c6259eecc1e6bd0169aadb1
 
 # if DEBUG == False:
 #     from logger_config import *
