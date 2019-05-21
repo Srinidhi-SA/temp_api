@@ -71,9 +71,12 @@ export class Levels extends React.Component {
    
     $(".addn").addClass("noDisplay");
 
-    if((($('ul').last().find('li')).length == 0 ) ){
-    $(".form_withrowlabels").last().css("display","none");
-    }
+    // if((($('ul').last().find('li')).length == 0 ) ){
+    // $(".form_withrowlabels").last().css("display","none");
+    // }
+  }
+  else{
+    $(".addn").removeClass("noDisplay");
   }
     return allSelectedItems;
   }
@@ -186,7 +189,7 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")}required/>
+                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
                </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
