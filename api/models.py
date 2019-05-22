@@ -1160,6 +1160,42 @@ class Trainer(models.Model):
                         for default_values in params['defaultValue']:
                             default_values['selected'] = True
                             break
+
+                # checking for booster
+                if params['name'] == 'booster':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for criterion
+                if params['name'] == 'criterion':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for tree_method
+                if params['name'] == 'tree_method':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
         return config
 
     def create_configuration_fe_settings(self):
