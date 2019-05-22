@@ -90,7 +90,7 @@ export class DataCleansing extends React.Component {
     }
 
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
     this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
       if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
@@ -208,7 +208,7 @@ tableHead.addEventListener('click', function (e) {
   checkedAllOnChange(event) {
     this.props.dispatch(checkedAllAction(event.target.checked));
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
 
     if (!event.target.checked) {
@@ -330,7 +330,7 @@ tableHead.addEventListener('click', function (e) {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
     var removedVariables = getRemovedVariableNames(this.props.datasets);
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
     // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
     if (this.props.dataPreview != null) {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
@@ -338,6 +338,7 @@ tableHead.addEventListener('click', function (e) {
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         let outnum = 1;
         let missingnum = 1;
+        debugger;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
           return "";
         else {

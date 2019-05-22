@@ -353,7 +353,7 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;
 
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true))).map(j => j.name);
+    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables) {

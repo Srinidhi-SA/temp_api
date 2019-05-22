@@ -296,7 +296,7 @@ $('.dimension[type="checkbox"]').click(function(){
 
 
 	render() {
-		//const dataSets = store.getState().datasets.dataList.data;
+    //const dataSets = store.getState().datasets.dataList.data;
     const metaData = dataSelection.columnData;
     var measures =[], dimensions =[],datetime =[];
     metaData.map((metaItem,metaIndex)=>{
@@ -308,6 +308,8 @@ $('.dimension[type="checkbox"]').click(function(){
          //m={};
          break;
         case "dimension":
+    debugger;
+
          dimensions.push(metaItem.name);
         break;
         case "datetime":

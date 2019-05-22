@@ -116,7 +116,7 @@ export class DataVariableSelection extends React.Component {
     render() {
 
         console.log( "data variableSelection is called##########3" );
-        var variableSelectionMsg = <label>Including the follwing variables:</label>;
+        var variableSelectionMsg = <label>Including the following variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
         let modelSummary = this.props.modelSummary;
@@ -217,6 +217,7 @@ export class DataVariableSelection extends React.Component {
                     var dimensionTemplate = <label>No dimension variable present</label>
                 }
                 else{
+                    debugger;
                     var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
                         if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
@@ -345,7 +346,7 @@ export class DataVariableSelection extends React.Component {
                             <div className="panel panel-primary-p2 cst-panel-shadow">
 
 
-                                <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
+                                <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensionsssss</div>
 
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
