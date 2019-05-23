@@ -29,7 +29,7 @@ import { Transform } from "./Transform";
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     featureEngineering: store.datasets.featureEngineering,
-    selectedVariables: store.datasets.selectedVariables
+    selectedVariables: store.datasets.selectedVariables,
   };
 })
 
@@ -39,6 +39,7 @@ export class FeatureEngineering extends React.Component {
     super(props);
     console.log("FeatureEngineering constructor method is called...");
     console.log(props);
+    debugger;
     this.buttons = {};
     this.state = {};
     this.state.topLevelRadioButton = "false";
@@ -191,6 +192,27 @@ export class FeatureEngineering extends React.Component {
   }
 
   validateLevelData(actionType) {
+    debugger;
+    var lvlar;
+    if(this.props.selectedItem.columnType == "dimension"){
+      let totalOptions=0;
+      lvlar = this.state[this.props.selectedItem.slug];
+      var lvl = lvlar.levelData;
+      let lvllen=lvl.length;
+      for(i in lvl){ 
+        totalOptions+=lvl.map(j=>j)[i].multiselectValue.length
+      }
+      var noOfRows = this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0];
+      var rowCount = Math.round(Math.sqrt(noOfRows));
+      var noOfLvls = this.props.selectedItem.columnStats.filter(lc=>lc.name=="numberOfUniqueValues").map(i=>i.value)[0];
+      var lvlCount = noOfLvls-totalOptions+lvllen;
+      if(lvlCount>Math.min(200,rowCount)){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Add more levels so that total level count is less than "+lvlCount);
+        return;
+      }
+    }
+    debugger;
     console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
@@ -200,8 +222,6 @@ export class FeatureEngineering extends React.Component {
         var endDate = levelData[i].endDate;
         var inputValue = levelData[i].inputValue;
         var multiselect = levelData[i].multiselectValue;
-
-
         if ((Date.parse(startDate) > Date.parse(endDate))) {
           console.log('start date is greater');
           $("#fileErrorMsg").removeClass("visibilityHidden");

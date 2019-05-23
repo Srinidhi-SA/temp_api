@@ -346,7 +346,7 @@ export class DataVariableSelection extends React.Component {
                             <div className="panel panel-primary-p2 cst-panel-shadow">
 
 
-                                <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensionsssss</div>
+                                <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
 
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
