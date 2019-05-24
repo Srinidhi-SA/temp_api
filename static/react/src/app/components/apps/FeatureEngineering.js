@@ -218,7 +218,7 @@ export class FeatureEngineering extends React.Component {
       var lvlCount = noOfLvls-totalOptions+lvllen;
       if(lvlCount>Math.min(200,rowCount)){
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Add more levels so that total level count is less than "+lvlCount);
+        $("#fileErrorMsg").html("Add more levels so that total level count is less than "+ Math.min(200,rowCount));
         return;
       }
     }

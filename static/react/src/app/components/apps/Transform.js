@@ -35,6 +35,27 @@ export class Transform extends React.Component {
 
   }
 
+componentDidMount(){
+  this.checkCount();
+}
+
+checkCount(){
+  debugger;
+  let rowCount =  this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0];
+console.log(rowCount,"count============================");
+  if(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i=>((i.ignoreSuggestionFlag==true) && (i.ignoreSuggestionPreviewFlag==false)))){
+    if(rowCount >= 200){
+console.log(rowCount,"count=======::::::::::::::::::::");
+
+     $(".oneHot").addClass("noDisplay");
+    }
+    else{ 
+      ""
+    }
+  }
+}
+  
+
   getTransformationata(){
       var transformationData = {};
       if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
@@ -182,7 +203,7 @@ else{
                   </div>
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
-                    <div class="ma-checkbox inline">
+                  <div class="ma-checkbox inline oneHot" id="oneHot">
                       <input type="radio" id="one_hot_encoding" name="encoding_type" disabled={!this.getTranformDataValue("encoding_dimensions")}  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
