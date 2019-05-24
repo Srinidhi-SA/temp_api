@@ -43,15 +43,14 @@ checkCount(){
   debugger;
   let rowCount =  this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0];
 console.log(rowCount,"count============================");
-  if(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i=>((i.ignoreSuggestionFlag==true) && (i.ignoreSuggestionPreviewFlag==false)))){
+  // if(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i=>((i.ignoreSuggestionFlag==true) && (i.ignoreSuggestionPreviewFlag==false)))){
+    if((this.props.selectedItem.ignoreSuggestionFlag) && (!this.props.selectedItem.ignoreSuggestionPreviewFlag)){
     if(rowCount >= 200){
 console.log(rowCount,"count=======::::::::::::::::::::");
 
      $(".oneHot").addClass("noDisplay");
     }
-    else{ 
-      ""
-    }
+
   }
 }
   
