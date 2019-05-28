@@ -17,7 +17,8 @@ THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 class JobserverDetails(object):
     @classmethod
     def get_jobserver_url(cls):
-        return "http://" + JOBSERVER.get('host') + ":" + JOBSERVER.get('port')
+        protocol = "https://" if settings.USE_HTTPS else "http://"
+        return protocol + JOBSERVER.get('host') + ":" + JOBSERVER.get('port')
 
     @classmethod
     def get_app(cls):
@@ -52,27 +53,32 @@ class JobserverDetails(object):
             "stockAdvisor": "stockAdvisor"
         }
 
+        if settings.USE_HTTPS:
+            protocol = 'https'
+        else:
+            protocol = 'http'
+
         return {
             "job_config": {
                 "job_type": job_type[class_name],
-                "config_url": "https://{0}/api/job/{2}/get_config".format(THIS_SERVER_DETAILS.get('host'),
+                "config_url": "{3}://{0}/api/job/{2}/get_config".format(THIS_SERVER_DETAILS.get('host'),
                                                              THIS_SERVER_DETAILS.get('port'),
-                                                             slug),
-                "job_url" : "https://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                             slug, protocol),
+                "job_url" : "{3}://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
-                                                                    slug),
-                "kill_url": "https://{0}/api/job/{2}/rest_in_peace/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    slug, protocol),
+                "kill_url": "{3}://{0}/api/job/{2}/rest_in_peace/".format(THIS_SERVER_DETAILS.get('host'),
                                                              THIS_SERVER_DETAILS.get('port'),
-                                                             slug),
-                "message_url": "https://{0}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                             slug, protocol),
+                "message_url": "{3}://{0}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
-                                                                message_slug),
-                "xml_url": "https://{0}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                message_slug, protocol),
+                "xml_url": "{3}://{0}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
-                                                                slug),
-                "error_reporting_url": "https://{0}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                slug, protocol),
+                "error_reporting_url": "{3}://{0}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
-                                                                slug),
+                                                                slug, protocol),
                 "job_name": job_name,
                 "app_id":app_id,
                 "get_config" :

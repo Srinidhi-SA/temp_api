@@ -16063,4 +16063,6 @@ div#replaceValues {
 .sorttable_img{
 	display: none;
 }
-
+.noDisplay{
+ display: none !important;
+}

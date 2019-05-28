@@ -28,11 +28,15 @@ import {
 })
 
 export class Levels extends React.Component {
+  
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-    this.state = { levelsArray: this.props.levelsData, }
+    this.state = { levelsArray: this.props.levelsData,
+    
+    }
     // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
+    
   }
 
   getAllOptions() {
@@ -48,42 +52,71 @@ export class Levels extends React.Component {
     var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
     return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function (elem) {
       return { "label": elem, "value": elem };
+
+
     });
   }
 
   getAllSelectedOptionsExceptCurrent(idx) {
+
+    this.getAllOptions();
+    debugger;
     var allSelectedItems = new Set();
     this.state.levelsArray.map(function (elem, elemIdx) {
       if (elemIdx != idx) {
         allSelectedItems = new Set([...allSelectedItems, ...elem.multiselectValue])
       }
     });
+  if(this.getAllOptions().length == this.state.levelsArray.flatMap(i=>i.multiselectValue).length){
+   
+    $(".addn").addClass("noDisplay");
+
+    // if((($('ul').last().find('li')).length == 0 ) ){
+    // $(".form_withrowlabels").last().css("display","none");
+    // }
+  }
+  else{
+    $(".addn").removeClass("noDisplay");
+  }
     return allSelectedItems;
   }
 
   componentWillMount() {
-    console.log("Levels componentWillMount method is called...");
     this.addNewLevel();
+    console.log("Levels componentWillMount method is called...");
+    
 
   }
   componentWillUpdate() {
+    
     this.props.parentUpdateLevelsData(this.state.levelsArray);
+    
   }
 
   componentDidMount() {
+    
+    if((($('ul').last().find('li')).length == 0 ) ){
+       $(".form_withrowlabels").last().css("display","none");
+    }
+
     if ($('#dimSEdate').hasClass('wide-modal')) {
       $('.modal-colored-header').addClass('modal-lg-dimSEdate');
     }
     $('.p-multiselect-item label').prop('title', function () { return $(this).text(); });
-
+    
   }
 
   addNewLevel() {
+    debugger;
     var newObj = { "inputValue": "", "multiselectValue": "", "startDate": "", "endDate": "" };
-    this.setState({
-      levelsArray: this.state.levelsArray.concat([newObj,])
-    });
+    
+      this.setState({
+        levelsArray: this.state.levelsArray.concat([newObj,])
+      });
+   
   };
+
+  
 
   handleRemoveLevel(idx, event) {
     this.setState({
@@ -156,15 +189,15 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                  <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} />
-                </div>
+                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
+               </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
                 </div>
                 <div className="form-group">
                   <div className="content-section implementation multiselect-demo">
                     <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
-                      style={{ minWidth: '12em' }} tooltip={level.multiselectValue} filter={true} placeholder="choose" />
+                      style={{ minWidth: '12em' }}  filter={true} placeholder="choose" />
                   </div>
                 </div>
                 <div className="form-group">
