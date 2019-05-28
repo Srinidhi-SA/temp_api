@@ -42,8 +42,7 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None, user=None):
 
     if meta_data is not None:
-        #uiMetaData = meta_data
-        uiMetaData=get_metaData_after_checking_ignoreSuggestionFlag(meta_data=meta_data)
+        uiMetaData = meta_data
     else:
         return {}
 
@@ -70,15 +69,6 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     )
     uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
     return uiMetaData
-
-def get_metaData_after_checking_ignoreSuggestionFlag(meta_data):
-    temp_columnDataUI=meta_data['meta_data']['uiMetaData']['columnDataUI']
-    temp_varibaleSelectionArray=meta_data['meta_data']['uiMetaData']['varibaleSelectionArray']
-    for iter in temp_columnDataUI:
-        if(iter['ignoreSuggestionFlag']==True):
-            for i in temp_varibaleSelectionArray:
-                if(iter['slug']==i['slug']):
-                    i['selected']=False
 
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user=None):
 
@@ -814,7 +804,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if x["consider"] == False and x["ignoreSuggestionPreviewFlag"] == False :
                 temp = {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"actualColumnType":x["actualColumnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None}
                 validcols.append(temp)
-                
+
     timeDimensionCols = []
     dateSuggestionCols = []
     validcols1 = []
@@ -829,7 +819,11 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if x["columnType"] == "datetime":
                 x.update({"selected": False})
             else:
-                x.update({"selected": True})
+                if x["columntype"] == "dimension":
+                    x.update({"selected"}:False)
+                else:
+                    x.update({"selected": True})
+
         validcols1.append(x)
     validcols = validcols1
     transformSetting = transformation_settings["existingColumns"]
