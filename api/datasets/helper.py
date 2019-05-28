@@ -42,7 +42,8 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None, user=None):
 
     if meta_data is not None:
-        uiMetaData = meta_data
+        #uiMetaData = meta_data
+        uiMetaData=get_metaData_after_checking_ignoreSuggestionFlag(meta_data=meta_data)
     else:
         return {}
 
@@ -70,6 +71,14 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
     return uiMetaData
 
+def get_metaData_after_checking_ignoreSuggestionFlag(meta_data):
+    temp_columnDataUI=meta_data['meta_data']['uiMetaData']['columnDataUI']
+    temp_varibaleSelectionArray=meta_data['meta_data']['uiMetaData']['varibaleSelectionArray']
+    for iter in temp_columnDataUI:
+        if(iter['ignoreSuggestionFlag']==True):
+            for i in temp_varibaleSelectionArray:
+                if(iter['slug']==i['slug']):
+                    i['selected']=False
 
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user=None):
 
@@ -357,7 +366,6 @@ class MetaDataChange(object):
                 if data['columnType'] == match_in_columnstats[type]:
                     return ""
                 data['columnType'] = match_in_columnstats[type]
-        
         if type == 'numeric':
             for data in self.metaData:
                 if data.get('name') == 'measures':
