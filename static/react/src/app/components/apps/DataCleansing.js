@@ -30,6 +30,7 @@ import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
   variableSelectedAction,
+  ignoredSelectionAction,  
   checkedAllAction,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
@@ -96,6 +97,7 @@ export class DataCleansing extends React.Component {
       if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
         return "";
       this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
+      this.props.dispatch(ignoredSelectionAction(item.slug,item.ignoreSuggestionFlag,item.ignoreSuggestionPreviewFlag));
     });
   }
 
@@ -222,6 +224,7 @@ tableHead.addEventListener('click', function (e) {
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
           return "";
         this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
+      this.props.dispatch(ignoredSelectionAction(item.slug,item.ignoreSuggestionFlag,item.ignoreSuggestionPreviewFlag));
       });
     }
   }

@@ -57,6 +57,7 @@ export default function reducer(state = {
   missingValueTreatment:{},
   featureEngineering:{},
   selectedVariables : {},
+  ignoredVariables : {},
   checkedAll:true,
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
@@ -665,7 +666,18 @@ export default function reducer(state = {
 
     }
     break;
-
+    case "IGNORED_SELECTED":
+      {
+        var allIgnoredVariables = state.ignoredVariables;
+        allIgnoredVariables[action.slug] = {
+          "ignoreSuggestionFlag" : action.suggestion,
+          "ignoreSuggestionPreviewFlag" : action.previewFlag
+        };
+        return{
+          ...state,
+          ignoredVariables : allIgnoredVariables
+        }
+      }
 
     case "CHECKED_ALL_SELECTED":
     {

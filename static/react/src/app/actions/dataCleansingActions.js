@@ -28,6 +28,14 @@ export function variableSelectedAction(colName,colSlug, selecteOrNot, dispatch){
     selecteOrNot
 	}
 }
+export function ignoredSelectionAction(slug,suggestion,previewFlag){
+  return {
+		type: "IGNORED_SELECTED",
+    slug,
+    suggestion,
+    previewFlag
+	}
+}
 export function checkedAllAction( selecteOrNot, dispatch){
   return {
 		type: "CHECKED_ALL_SELECTED",

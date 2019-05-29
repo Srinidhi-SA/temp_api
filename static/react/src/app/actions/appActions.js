@@ -503,6 +503,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
+      "ignoredSelectedVariables" : store.getState().datasets.ignoredVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
       "validationTechnique": validationTechnique,
