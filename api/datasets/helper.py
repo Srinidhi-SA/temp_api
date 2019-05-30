@@ -70,7 +70,6 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
     return uiMetaData
 
-
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user=None):
 
     mdc = MetaDataChange(
@@ -357,7 +356,7 @@ class MetaDataChange(object):
                 if data['columnType'] == match_in_columnstats[type]:
                     return ""
                 data['columnType'] = match_in_columnstats[type]
-        
+
         if type == 'numeric':
             for data in self.metaData:
                 if data.get('name') == 'measures':
@@ -805,7 +804,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if x["consider"] == False and x["ignoreSuggestionPreviewFlag"] == False :
                 temp = {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"actualColumnType":x["actualColumnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None}
                 validcols.append(temp)
-                
+
     timeDimensionCols = []
     dateSuggestionCols = []
     validcols1 = []
@@ -821,6 +820,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
                 x.update({"selected": False})
             else:
                 x.update({"selected": True})
+
         validcols1.append(x)
     validcols = validcols1
     transformSetting = transformation_settings["existingColumns"]
