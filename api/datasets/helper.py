@@ -819,10 +819,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if x["columnType"] == "datetime":
                 x.update({"selected": False})
             else:
-                if x["columntype"] == "dimension":
-                    x.update({"selected"}:False)
-                else:
-                    x.update({"selected": True})
+                x.update({"selected": True})
 
         validcols1.append(x)
     validcols = validcols1
