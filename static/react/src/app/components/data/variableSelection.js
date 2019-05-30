@@ -308,7 +308,6 @@ $('.dimension[type="checkbox"]').click(function(){
          //m={};
          break;
         case "dimension":
-    debugger;
 
          dimensions.push(metaItem.name);
         break;
