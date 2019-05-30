@@ -878,6 +878,7 @@ class Trainer(models.Model):
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
             configUI = self.get_config()
+            configAPI = self.dataset.get_config()
 
             # Unselect original
             if 'featureEngineering' in configUI:
@@ -909,6 +910,35 @@ class Trainer(models.Model):
                             else:
                                 i['selected'] = configUI['selectedVariables'][colSlug]
                             break
+            # Selected value to be True/False on basis of ignoreSuggestionFlag & ignoreSuggestionPreviewFlag
+            if 'featureEngineering' in configUI:
+                for SV_slug in configUI['selectedVariables']:
+                    if len(configUI['featureEngineering']['columnsSettings'])>0:
+                        for fe_slug in configUI['featureEngineering']['columnsSettings']:
+                            if SV_slug == fe_slug:
+                                pass
+                            else:
+                                for i in configAPI['columnData']:
+                                    if SV_slug == i['slug']:
+                                        if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                            for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                                if colSlug['slug'] == i['slug']:
+                                                    colSlug['selected']=False
+                                                    print("Selected Status changed for: ",colSlug['name'])
+                                    else:
+                                        pass
+                    else:
+                        for i in configAPI['columnData']:
+                            if SV_slug == i['slug']:
+                                if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                    for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                        if colSlug['slug'] == i['slug']:
+                                            colSlug['selected']=False
+                                            print("Selected Status changed for: ",colSlug['name'])
+                            else:
+                                pass
+            else:
+                print("Feature featureEngineering config Not found !")
         except Exception as err:
             print(err)
             pass
@@ -1367,7 +1397,6 @@ class Trainer(models.Model):
                                     )
                         except Exception as err:
                             print(err)
-                            
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
@@ -1484,7 +1513,6 @@ class Trainer(models.Model):
                         time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
                 else:
                     time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
-                    
                 colStructure = {
                     'time_since': time_since_input_date,
                 }
