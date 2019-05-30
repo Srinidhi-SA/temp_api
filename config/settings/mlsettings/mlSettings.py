@@ -51,6 +51,11 @@ SKLEARN_REGRESSION_EVALUATION_METRICS = [
         #     "selected":False,
         #     "displayName":"MSE(log)"
         # }
+        {
+            "name":"RMSE",
+            "selected":False,
+            "displayName":"RMSE"
+        },
        ]
 
 SKLEARN_GRIDSEARCH_PARAMS = [
@@ -362,9 +367,9 @@ else:
                 "parameters": SKLEARN_ML_NAIVE_BAYES_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "nb",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-                "description": """The multinomial Naive Bayes classifier is suitable for classification with discrete 
-                features (e.g., word counts for text classification). 
-                The multinomial distribution normally requires integer feature counts. 
+                "description": """The multinomial Naive Bayes classifier is suitable for classification with discrete
+                features (e.g., word counts for text classification).
+                The multinomial distribution normally requires integer feature counts.
                 However, in practice, fractional counts such as tf-idf may also work."""
             },
             # {
