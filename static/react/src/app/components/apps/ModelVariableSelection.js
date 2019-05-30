@@ -190,7 +190,6 @@ export class ModelVariableSelection extends React.Component {
         }
         let metric = "";
         let metricValues = "";
-        debugger;
         if(this.props.currentAppDetails.app_id==2)
         metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
         else{

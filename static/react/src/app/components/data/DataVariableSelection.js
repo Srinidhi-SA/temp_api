@@ -217,7 +217,6 @@ export class DataVariableSelection extends React.Component {
                     var dimensionTemplate = <label>No dimension variable present</label>
                 }
                 else{
-                    debugger;
                     var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
                         if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";

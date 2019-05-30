@@ -107,7 +107,7 @@ export class DataCleansing extends React.Component {
     tableHeaders = tableHead.querySelectorAll('th'),
     tableBody = table.querySelector('tbody');
 
-debugger;
+
 tableHead.addEventListener('click', function (e) {
   console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
     var tableHeader = e.target,
@@ -338,7 +338,6 @@ tableHead.addEventListener('click', function (e) {
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         let outnum = 1;
         let missingnum = 1;
-        debugger;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
           return "";
         else {
