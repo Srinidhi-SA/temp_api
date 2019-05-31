@@ -5571,12 +5571,17 @@ def get_algorithm_config_list(request):
     metric_obj = None
     try:
         metric = request.GET['metric']
+        if app_type =="CLASSIFICATION":
+            metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+        elif app_type =="REGRESSION":
+            metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     except:
-        metric = "accuracy"
-    if app_type =="CLASSIFICATION":
-        metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
-    elif app_type =="REGRESSION":
-        metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)    
+        if app_type =="CLASSIFICATION":
+            metric = "accuracy"
+            metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+        elif app_type =="REGRESSION":
+            metric = "r2"
+            metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     for i in metrics_list:
         if i['name'] == metric:
             metric_obj = i

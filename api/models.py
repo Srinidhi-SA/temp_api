@@ -912,29 +912,37 @@ class Trainer(models.Model):
                             break
             # Selected value to be True/False on basis of ignoreSuggestionFlag & ignoreSuggestionPreviewFlag
             if 'featureEngineering' in configUI:
-                for SV_slug in configUI['selectedVariables']:
-                    if len(configUI['featureEngineering']['columnsSettings'])>0:
-                        for fe_slug in configUI['featureEngineering']['columnsSettings']:
-                            if SV_slug == fe_slug:
-                                pass
-                            else:
-                                for i in configAPI['columnData']:
-                                    if SV_slug == i['slug']:
-                                        if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
-                                            for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                                if colSlug['slug'] == i['slug']:
-                                                    colSlug['selected']=False
-                                                    print("Selected Status changed for: ",colSlug['name'])
-                                    else:
-                                        pass
-                    else:
-                        for i in configAPI['columnData']:
-                            if SV_slug == i['slug']:
-                                if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
-                                    for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                        if colSlug['slug'] == i['slug']:
-                                            colSlug['selected']=False
-                                            print("Selected Status changed for: ",colSlug['name'])
+                if len(configUI['selectedVariables'])>0:
+                    for SV_slug in configUI['selectedVariables']:
+                        #if user perform featureEngineering actions
+                        if len(configUI['featureEngineering']['columnsSettings'])>0:
+                            for fe_slug in configUI['featureEngineering']['columnsSettings']:
+                                if SV_slug == fe_slug:
+                                    pass
+                                else:
+                                    for i in configAPI['columnData']:
+                                        if SV_slug == i['slug']:
+                                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                                    if colSlug['slug'] == i['slug']:
+                                                        colSlug['selected']=False
+                                            else:
+                                                pass
+                        # if featureEngineering config is empty
+                        else:
+                            for i in configAPI['columnData']:
+                                if SV_slug == i['slug']:
+                                    if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                        for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                            if colSlug['slug'] == i['slug']:
+                                                colSlug['selected']=False
+                #For AutoML mode when there will be no Selected Variables
+                else:
+                    for i in configAPI['columnData']:
+                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                    if colSlug['slug'] == i['slug']:
+                                        colSlug['selected']=False
                             else:
                                 pass
             else:
