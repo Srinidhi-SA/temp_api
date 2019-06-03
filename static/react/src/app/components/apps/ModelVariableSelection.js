@@ -190,7 +190,11 @@ export class ModelVariableSelection extends React.Component {
         }
         let metric = "";
         let metricValues = "";
+        if(this.props.currentAppDetails.app_id==2)
         metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
+        else{
+            metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
+        }
         if (metric) {
             metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
                 <option value="">--select--</option>

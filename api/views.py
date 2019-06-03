@@ -5559,6 +5559,13 @@ def get_algorithm_config_list(request):
             obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
     elif app_type =="REGRESSION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+        if levels > 2:
+            tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+        for obj in algoArray:
+            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
     else:
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
@@ -5566,9 +5573,17 @@ def get_algorithm_config_list(request):
     metric_obj = None
     try:
         metric = request.GET['metric']
+        if app_type =="CLASSIFICATION":
+            metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+        elif app_type =="REGRESSION":
+            metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     except:
-        metric = "accuracy"
-    metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+        if app_type =="CLASSIFICATION":
+            metric = "accuracy"
+            metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
+        elif app_type =="REGRESSION":
+            metric = "r2"
+            metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     for i in metrics_list:
         if i['name'] == metric:
             metric_obj = i

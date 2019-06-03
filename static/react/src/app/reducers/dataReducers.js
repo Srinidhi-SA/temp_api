@@ -666,7 +666,6 @@ export default function reducer(state = {
     }
     break;
 
-
     case "CHECKED_ALL_SELECTED":
     {
       return {

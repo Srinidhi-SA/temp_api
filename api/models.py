@@ -878,6 +878,7 @@ class Trainer(models.Model):
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
             configUI = self.get_config()
+            configAPI = self.dataset.get_config()
 
             # Unselect original
             if 'featureEngineering' in configUI:
@@ -909,6 +910,43 @@ class Trainer(models.Model):
                             else:
                                 i['selected'] = configUI['selectedVariables'][colSlug]
                             break
+            # Selected value to be True/False on basis of ignoreSuggestionFlag & ignoreSuggestionPreviewFlag
+            if 'featureEngineering' in configUI:
+                if len(configUI['selectedVariables'])>0:
+                    for SV_slug in configUI['selectedVariables']:
+                        #if user perform featureEngineering actions
+                        if len(configUI['featureEngineering']['columnsSettings'])>0:
+                            for fe_slug in configUI['featureEngineering']['columnsSettings']:
+                                if SV_slug == fe_slug:
+                                    pass
+                                else:
+                                    for i in configAPI['columnData']:
+                                        if SV_slug == i['slug']:
+                                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                                    if colSlug['slug'] == i['slug']:
+                                                        colSlug['selected']=False
+                                            else:
+                                                pass
+                        # if featureEngineering config is empty
+                        else:
+                            for i in configAPI['columnData']:
+                                if SV_slug == i['slug']:
+                                    if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                        for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                            if colSlug['slug'] == i['slug']:
+                                                colSlug['selected']=False
+                #For AutoML mode when there will be no Selected Variables
+                else:
+                    for i in configAPI['columnData']:
+                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                    if colSlug['slug'] == i['slug']:
+                                        colSlug['selected']=False
+                            else:
+                                pass
+            else:
+                print("Feature featureEngineering config Not found !")
         except Exception as err:
             print(err)
             pass
@@ -1160,6 +1198,42 @@ class Trainer(models.Model):
                         for default_values in params['defaultValue']:
                             default_values['selected'] = True
                             break
+
+                # checking for booster
+                if params['name'] == 'booster':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for criterion
+                if params['name'] == 'criterion':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for tree_method
+                if params['name'] == 'tree_method':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
         return config
 
     def create_configuration_fe_settings(self):
@@ -1331,7 +1405,6 @@ class Trainer(models.Model):
                                     )
                         except Exception as err:
                             print(err)
-                            
         self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
 
         for slug in columns_wise_data:
@@ -1448,7 +1521,6 @@ class Trainer(models.Model):
                         time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
                 else:
                     time_since_input_date = datetime.datetime.now().date().strftime('%d/%m/%Y')
-                    
                 colStructure = {
                     'time_since': time_since_input_date,
                 }

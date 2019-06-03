@@ -515,7 +515,6 @@ export class DataPreview extends React.Component {
         //  data.splice(0,1);
         const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
           const tds = trElement.map((tdElement, tdIndex) => {
-            debugger;
             if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider ) {
               //to be removed after unc release
               if(dataPrev.uiMetaData.columnDataUI[tdIndex].ignoreSuggestionPreviewFlag){
