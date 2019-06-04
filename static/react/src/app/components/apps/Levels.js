@@ -60,7 +60,6 @@ export class Levels extends React.Component {
   getAllSelectedOptionsExceptCurrent(idx) {
 
     this.getAllOptions();
-    debugger;
     var allSelectedItems = new Set();
     this.state.levelsArray.map(function (elem, elemIdx) {
       if (elemIdx != idx) {

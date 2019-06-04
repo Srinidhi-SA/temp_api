@@ -40,7 +40,6 @@ export class FeatureEngineering extends React.Component {
     super(props);
     console.log("FeatureEngineering constructor method is called...");
     console.log(props);
-    debugger;
     this.buttons = {};
     this.state = {
     };
@@ -202,7 +201,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   validateLevelData(actionType) {
-    debugger;
     var lvlar;
     if(this.props.selectedItem.columnType == "dimension"){
       let totalOptions=0;
@@ -222,7 +220,6 @@ export class FeatureEngineering extends React.Component {
         return;
       }
     }
-    debugger;
     console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
