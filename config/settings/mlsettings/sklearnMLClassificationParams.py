@@ -257,7 +257,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
              },
              {
                  "name":"true",
-                 "selected":True,
+                 "selected":False,
                  "displayName":"True"
              }
             ],
