@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
+import environ
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env()
 
 import os
 
@@ -24,12 +27,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&j=7xx+szuncx4&!94sjx5p49yjc^drcptwmw#64#z39t(@^65'
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["192.168.33.128"]
+ALLOWED_HOSTS_BASE = tuple(env.list('ALLOWED_HOSTS_BASE', default=[]))
 
 # Application definition
 
@@ -580,14 +583,14 @@ DATA_SOURCES_CONFIG = {"conf": [{
 }
 # dev api http://34.196.204.54:9092
 THIS_SERVER_DETAILS = {
-    "host": "madvisordev.marlabsai.com",  # shoudn't start with http://
-    "port": "80",
+    "host": env('THIS_SERVER_HOST'),"madvisordev.marlabsai.com" # shoudn't start with http://
+    "port": env('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
 
 PAGESIZE = 10
 PAGENUMBER = 1
-
+'''
 HDFS = {
 
     # Give host name without http
@@ -598,10 +601,10 @@ HDFS = {
     'hdfs_port': '8020',  # hdfs port
     'base_path': '/dev/dataset/'
 }
-
+'''
 JOBSERVER = {
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
-    'port': '8090',
+    'host': env('JOBSERVER_HOST'),
+    'port': env('JOBSERVER_PORT'),
     'app-name': 'test_api_1',
     'context': 'pysql-context',
     'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
@@ -611,11 +614,10 @@ JOBSERVER = {
 }
 
 DATASET_HIVE = {
-    'host':'192.168.57.51',
-    'port':'10000',
-    'username':'root',
-    'password':'hadoop'
-
+    'host':env('HIVE_HOST'),
+    'port':env('HIVE_PORT'),
+    'username':env('HIVE_USERNAME'),
+    'password':env('HIVE_PASSWORD'),
 }
 
 ANALYSIS_FOR_TARGET_VARIABLE = {
@@ -794,15 +796,15 @@ ORDER_DICT = {
 }
 
 NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
-    "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
-    "username": "77961f39-ccaa-4cd7-b6cb-68d544f91ffb",
-    "password": "hDbkLtb8rWgh"
+    "url": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_URL')",
+    "username": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_USERNAME'),
+    "password": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_PASSWORD')
 }
 
 VOICE_TO_TEXT_SETTINGS = {
-    "url": "https://stream.watsonplatform.net/speech-to-text/api",
-    "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
-    "password": "UXiMa7qNp68f"
+    "url": env('VOICE_TO_TEXT_SETTINGS_URL'),
+    "username": env('VOICE_TO_TEXT_SETTINGS_USERNAME'),
+    "password": env('VOICE_TO_TEXT_SETTINGS_PASSWORD')
 }
 
 ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
@@ -1308,7 +1310,7 @@ ANALYSIS_LIST_SEQUENCE = [
     "Prediction"
 ]
 
-ML_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
+ML_SECRET_KEY = env('ML_SECRET_KEY')
 
 SIGNATURE_LIFETIME = 30
 
@@ -1455,7 +1457,6 @@ CUSTOM_WORD2_APPS = {
 
 ############# YARN related items
 
-DEPLOYMENT_ENV = "dev"
 # job type to queue name mapping
 METADATA_QUEUE = "meta"
 SIGNALS_QUEUE = "signals"
@@ -1489,13 +1490,7 @@ YARN_QUEUE_NAMES = {
 
 
 SUBMIT_JOB_THROUGH_YARN = True
-LIST_OF_ADMIN_EMAILS = [
-            'ankush.patel@marlabs.com',
-            # 'sabretooth.rog@gmail.com',
-            'vivekananda.tadala@marlabs.com',
-            # 'mitali.sodhi@marlabs.com',
-            # 'gulshan.gaurav@marlabs.com'
-        ]
+LIST_OF_ADMIN_EMAILS = tuple(env.list('LIST_OF_ADMIN_EMAILS', default=[]))
 
 import config_file_name_to_run
 
@@ -1504,15 +1499,14 @@ UI_VERSION = config_file_name_to_run.UI_VERSION
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
 from datetime import timedelta
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 
-HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
+HDFS_SECRET_KEY = env('HDFS_SECRET_KEY')
 
 PERMISSIONS_RELATED_TO_DATASET = (
     ('view_dataset', 'View dataset'),
@@ -1623,7 +1617,6 @@ APPORDERLIST=[
 
 USE_YARN_DEFAULT_QUEUE=False
 
-CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"
 
 REQUEST_CONNECTION_TIMEOUT=30
 REQUEST_READ_TIMEOUT=50
@@ -1635,15 +1628,8 @@ CACHE_BASE_DIR="/tmp"
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
-CELERY_ONCE_CONFIG = {
-  'backend': 'celery_once.backends.Redis',
-  'settings': {
-    'url': 'redis://localhost:6379/0',
-    'default_timeout': 60 * 60
-  }
-}
 
-FILE_UPLOAD_PERMISSIONS = 0777
+FILE_UPLOAD_PERMISSIONS = env.int('FILE_UPLOAD_PERMISSIONS')
 
 # if DEBUG == False:
 #     from logger_config import *
@@ -1662,5 +1648,3 @@ MAX_LENGTH_OF_NAME = 100
 HIDE_FROM_CELERY_FROM_ADMIN = True
 KEEP_OTHERS_IN_ADMIN = False
 HIDE_AUDIT_LOGS = True
-
-USE_HTTPS = True

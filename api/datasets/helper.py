@@ -366,10 +366,6 @@ class MetaDataChange(object):
                 if data['columnType'] == match_in_columnstats[type]:
                     return ""
                 data['columnType'] = match_in_columnstats[type]
-<<<<<<< HEAD
-=======
-
->>>>>>> vivek_fe
         if type == 'numeric':
             for data in self.metaData:
                 if data.get('name') == 'measures':

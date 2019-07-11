@@ -493,7 +493,7 @@ def kill_application_using_fabric(app_id=None):
       #BASEDIR = settings.BASE_DIR
       #env.key_filename = settings.PEM_KEY
       #env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
-      
+
       try:
          capture = subprocess.Popen("docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
          stdout,stderr = capture.communicate()
@@ -506,6 +506,7 @@ def kill_application_using_fabric(app_id=None):
     else:
       HDFS = settings.HDFS
       BASEDIR = settings.BASE_DIR
+      #PEM Key is required if we are not using Docker but different server for hadoopSpark and Api respectively.
       emr_file = BASEDIR + settings.PEM_KEY
       env.key_filename = [emr_file]
 

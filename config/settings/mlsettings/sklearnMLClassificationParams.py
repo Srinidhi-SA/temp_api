@@ -34,7 +34,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "name":"max_depth",
                     "displayName":"Max Depth",
                     "description":"The maximum depth of the tree",
-                    "defaultValue":None,
+                    "defaultValue":5,
                     "acceptedValue":None,
                     "valueRange":[2,20],
                     "paramType":"number",

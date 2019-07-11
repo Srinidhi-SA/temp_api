@@ -12,7 +12,7 @@ environ.Env.read_env()
 DEBUG = env('DEBUG')
 
 MODE=env('MODE')
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[])) #['*']
 
 DATABASES = {
     'default1': {
@@ -22,18 +22,6 @@ DATABASES = {
     "default":  env.db()
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'madvisor',
-#         # 'USER': 'marlabs',
-#         # 'PASSWORD': 'Password@123',
-#         'USER': 'root',
-#         'PASSWORD': 'root',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
 
 PROJECT_APP = [
 ]
@@ -43,22 +31,11 @@ INSTALLED_APPS += PROJECT_APP
 HADOOP_MASTER = env('HADOOP_MASTER')
 
 YARN = {
-    "host": HADOOP_MASTER,
-    "port": 8088,
-    "timeout": 30
+    "host": env('YARN_HOST'),
+    "port": env('YARN_PORT'), #8088,
+    "timeout": env('YARN_TIMEOUT') #30
 }
-'''
-HDFS = {
 
-    # Give host name without http
-    'host': HADOOP_MASTER,
-    'port': env('WEB_HADOOP_PORT'), #webhdfs port
-    'uri': '/webhdfs/v1',
-    'user.name': env('HADOOP_USER'),
-    'hdfs_port': env('HADOOP_PORT'), #hdfs port
-    'base_path' : '/dev/dataset/'
-}
-'''
 import os
 import json
 hdfs_config_key=json.loads(os.environ['HADOOP_CONFIG_KEY'])
@@ -71,15 +48,15 @@ EMR = {
 }
 
 KAFKA = {
-    'host': 'localhost',
-    'port': '9092',
+    'host': env('KAFKA_HOST'), #'localhost',
+    'port': env('KAFKA_PORT'), #'9092',
     'topic': 'my-topic'
 }
 
 
 JOBSERVER = {
-    'host': '172.31.50.84',
-    'port': '8090',
+    'host': env('JOBSERVER_HOST'), #'172.31.50.84',
+    'port': env('JOBSERVER_PORT'), #'8090',
     'app-name': 'luke',
     'context': 'pysql-context',
     'master': 'bi.sparkjobs.JobScript',
@@ -118,33 +95,25 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 SCORES_SCRIPTS_FOLDER = env('SCORES_SCRIPTS_DIR')
 IMAGE_URL = "/api/get_profile_image/"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "smtp.office365.com"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "product@marlabs.com"
-EMAIL_HOST_PASSWORD = "BImarlabs@123"
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = ""
 EMAIL_USE_SSL = ""
 
-JOBSERVER_FROM_EMAIL = "ankush.patel@marlabs.com"
-JOBSERVER_SENDTO_EMAIL_LIST = [
-    'ankush.patel@marlabs.com',
-    'vivekananda.tadala@marlabs.com',
-    'gulshan.gaurav@marlabs.com',
-    'mukesh.kumar@marlabs.com'
-]
-FUNNY_EMAIL_LIST = [
-    'ankush.patel@marlabs.com',
-    'sabretooth.rog@gmail.com'
-]
+JOBSERVER_FROM_EMAIL = env('JOBSERVER_FROM_EMAIL')
+JOBSERVER_SENDTO_EMAIL_LIST = tuple(env.list('JOBSERVER_SENDTO_EMAIL_LIST', default=[]))
 
+FUNNY_EMAIL_LIST = tuple(env.list('FUNNY_EMAIL_LIST', default=[]))
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = env('DEPLOYMENT_ENV')
 
-HADOOP_CONF_DIR= False
-HADOOP_USER_NAME="hduser"
+HADOOP_CONF_DIR= env.bool('HADOOP_CONF_DIR')  #False
+HADOOP_USER_NAME= env('HADOOP_USER_NAME')  #"hduser"
 
 CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
@@ -166,16 +135,16 @@ CELERY_QUEUES = {
 }
 
 
-PEM_KEY = "/keyfiles/TIAA.pem"
-ENABLE_KYLO = env.bool('ENABLE_KYLO') 
+PEM_KEY = env('PEM_KEY')
+ENABLE_KYLO = env.bool('ENABLE_KYLO')
 KYLO_UI_URL = env('KYLO_UI_URL')
 KYLO_UI_AUTH_URL= env('KYLO_UI_AUTH_URL')
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
 KYLO_SERVER_DETAILS = {
     "host": env('KYLO_SERVER_HOST'),
     "port" : env('KYLO_SERVER_PORT'),
-    "user": "ankush",
-    "key_path": "~/.ssh/ankush.pem",
+    "user": env('KYLO_SERVER_USER'),
+    "key_path": env('KYLO_SERVER_KEY'),
     "group_propertie_quote": "madvisor,user",
     "kylo_file_path":"/opt/kylo/"
 }
@@ -189,8 +158,6 @@ CELERY_ONCE_CONFIG = {
 }
 
 SUBMIT_JOB_THROUGH_CELERY = True
-#CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
 CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
-
