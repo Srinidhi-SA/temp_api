@@ -69,7 +69,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                  "defaultValue":[
                      {
                          "name":"false",
-                         "selected":True,
+                         "selected":False,
                          "displayName":"False"
                      },
                      {
@@ -98,7 +98,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                      },
                      {
                          "name":"true",
-                         "selected":True,
+                         "selected":False,
                          "displayName":"True"
                      }
                     ],
@@ -123,13 +123,13 @@ SKLEARN_SGD_LEARNING_RATES = [
 ]
 
 SKLEARN_ML_SUPPORTED_LOSS = [
-    {"name":"ls","selected":True,"displayName":"Least Squares Regression"},
+    {"name":"ls","selected":False,"displayName":"Least Squares Regression"},
     {"name":"lad","selected":False,"displayName":"Least Absolute Deviation"},
     {"name":"huber","selected":False,"displayName":"Huber"},
     {"name":"quantile","selected":False,"displayName":"Quantile Regression"},
 ]
 SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_REGRESSION = [
-    {"name":"friedman_mse","selected":True,"displayName":"Friedman Mse"},
+    {"name":"friedman_mse","selected":False,"displayName":"Friedman Mse"},
     {"name":"mse","selected":False,"displayName":"Mean Squared Error"},
     {"name":"mae","selected":False,"displayName":"Mean Absolute Error"},
 ]
@@ -367,7 +367,7 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
              },
              {
                  "name":"true",
-                 "selected":True,
+                 "selected":False,
                  "displayName":"True"
              }
             ],
@@ -478,7 +478,7 @@ SKLEARN_ML_DTREE_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PAR
              },
              {
                  "name":"random",
-                 "selected":True,
+                 "selected":False,
                  "displayName":"Best random split"
              }
             ],
