@@ -245,6 +245,7 @@ export class ModelManagement extends React.Component {
       }
 
       mmTable = this.props.algoList.data.map((item,key )=> {
+        debugger;
         var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
@@ -281,6 +282,8 @@ export class ModelManagement extends React.Component {
 
       let tablecontent="";
       if (this.props.algoList.data.length != 0){
+        let thead5 = " "
+        if(this.props.currentAppId == 13){thead5 = "Root Mean Square Value";}else thead5 = "Accuracy";
         tablecontent = (
         <table id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
           <thead>
@@ -289,8 +292,7 @@ export class ModelManagement extends React.Component {
               <th class="text-left"><b>Model ID</b></th>
               <th class="text-left"><b>Project Name</b></th>
               <th class="text-left"><b>Algorithm</b></th>
-              {/* <th><b>Status</b></th> */}
-              <th><b>Accuracy</b></th>
+              <th><b>{thead5}</b></th>
               <th><b>Created On</b></th>
               <th><b>Active Deployment</b></th>
               <th><b>Total Deployments</b></th>

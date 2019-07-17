@@ -59,6 +59,7 @@ export class ModelSummary extends React.Component {
   }
   
   renderCardData(c3,cardWidth){
+	  debugger;
 	var htmlData = c3.map((story, i) => {
 		let randomNum = Math.random().toString(36).substr(2,8);
 		switch (story.dataType) {
@@ -107,7 +108,18 @@ export class ModelSummary extends React.Component {
 						break;
 			case "dataBox":
 						let bgStockBox = "bgStockBox"
-						return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
+						if(this.props.currentAppId == 2){
+							return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
+						}else{
+							return( 
+								story.data.map((data,index)=>{
+								return (<div className="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
+								<h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
+								<p>{data.description}</p>
+								</div>);
+							})
+							);
+						}
 						break;
 		}
   	});
@@ -143,14 +155,9 @@ export class ModelSummary extends React.Component {
 		
 		var deploymentList = this.props.deploymentList;
 		console.log(deploymentList,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
 		
-		var top="";
-		top =performancePage.map(card => card.listOfCards);
-
 		var overviewPage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Overview");
 		var oVtop="";
-
 		oVtop =overviewPage.map(card => card.listOfCards);
 		var th1 = oVtop.map(fun => fun[0].cardData[0])
 		var tdata1 = oVtop.map(fun => fun[0].cardData[1])
@@ -159,6 +166,10 @@ export class ModelSummary extends React.Component {
 		var th2 = oVtop.map(fun => fun[1].cardData[0])
 		var tdata2 = oVtop.map(fun => fun[1].cardData[1])
 		var tw2 = oVtop.map(fun => fun[1].cardWidth)[0]
+
+		var performancePage = this.props.algoAnalysis.data.listOfNodes.filter(row => row.name === "Performance");
+		var top="";
+		top =performancePage.map(card => card.listOfCards);
 
 		var c0 = top.map(fun => fun[0].cardData[0])
 		var w0 = top.map(fun => fun[0].cardWidth)[0]
@@ -175,9 +186,9 @@ export class ModelSummary extends React.Component {
 		var c3 = top.map(fun => fun[3].cardData[1])
 		var w3 = top.map(fun => fun[3].cardWidth)[0]
 		
-		var h4 = top.map(fun => fun[4].cardData[0])
-		var c4 = top.map(fun => fun[4].cardData[1])
-		var w4 = top.map(fun => fun[4].cardWidth)[0]
+		// var h4 = top.map(fun => fun[4].cardData[0])
+		// var c4 = top.map(fun => fun[4].cardData[1])
+		// var w4 = top.map(fun => fun[4].cardWidth)[0]
 
 		// var h5 = top.map(fun => fun[5].cardData[0])
 		// var c5 = top.map(fun => fun[5].cardData[1])
@@ -194,8 +205,8 @@ export class ModelSummary extends React.Component {
 		const ROCChart = this.renderCardData(c2,w2);
 		const headksChart = this.renderCardData(h3,w3);
 		const ksChart = this.renderCardData(c3,w3);
-		const headgainChart = this.renderCardData(h4,w4);
-		const gainChart = this.renderCardData(c4,w4);
+		// const headgainChart = this.renderCardData(h4,w4);
+		// const gainChart = this.renderCardData(c4,w4);
 		// const headROCChart = this.renderCardData(h5,w5);
 		// const ROCChart = this.renderCardData(c5,w5);
  
@@ -233,9 +244,9 @@ export class ModelSummary extends React.Component {
 						{headksChart}
 						{ksChart}
 					</div>
-			   		<div class="col-md-6">
-						{headgainChart}
-						{gainChart}
+					<div class="col-md-6">
+						{/* {headgainChart} */}
+						{/* {gainChart} */}
 					</div>
 				</div>
 			</div>
