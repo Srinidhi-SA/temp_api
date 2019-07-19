@@ -1643,7 +1643,7 @@ CELERY_ONCE_CONFIG = {
   }
 }
 
-FILE_UPLOAD_PERMISSIONS = 0777
+FILE_UPLOAD_PERMISSIONS = 0644
 
 # if DEBUG == False:
 #     from logger_config import *
