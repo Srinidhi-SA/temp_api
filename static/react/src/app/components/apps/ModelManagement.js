@@ -410,7 +410,8 @@ export class ModelManagement extends React.Component {
 
   openDeployModal(slug) {
     console.log("open ---openDeployModal");
-    this.props.dispatch(openDeployModalAction(slug));
+    //by commenting below line, removed the action for deploy option
+    // this.props.dispatch(openDeployModalAction(slug));
   }
 
   closeDeployModal() {

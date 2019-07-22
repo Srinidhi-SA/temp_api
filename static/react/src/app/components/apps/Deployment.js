@@ -217,7 +217,7 @@ export class Deployment extends React.Component {
         return(
           <div id="deployment" class="tab-pane">
           {deployPopup} {viewPopup}
-          <button class="btn btn-warning btn-shade4 pull-right"  onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
+          <button class="btn btn-warning btn-shade4 pull-right" disabled  onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
           <div class="clearfix"></div>
           <div>
             {deploymentTable}
@@ -258,7 +258,7 @@ export class Deployment extends React.Component {
     return (
 			<div id="deployment" class="tab-pane">
           {deployPopup} {viewPopup}
-				<button class="btn btn-warning btn-shade4 pull-right"  onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
+				<button class="btn btn-warning btn-shade4 pull-right" disabled onClick={this.openDeployModal.bind(this,this.props.algoAnalysis.slug)}>Add New Deployment</button><br/><br/>
 					<div class="clearfix"></div>
 						<table class="tablesorter table table-striped table-hover table-bordered break-if-longText">
 							<thead>
