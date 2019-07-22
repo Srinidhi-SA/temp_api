@@ -132,7 +132,8 @@ def change_config_file(branch='dev'):
             if 'cannot access' in ls_react_npm_log:
                 pass
             else:
-                local('git checkout {0}'.format(react_npm_log))
+                #local('git checkout {0}'.format(react_npm_log),capture=False)
+                pass
         local('git commit -m "version changed. Automated Deployment."')
 
     only_for_api_push_and_pull(
@@ -194,7 +195,8 @@ def deploy_dist_to_destination(base_remote_path, react_path):
 
     put(
         local_path = BASE_DIR + react_path + "/dist",
-        remote_path = base_remote_path + react_path
+        remote_path = base_remote_path + react_path,
+        use_sudo=True
     )
 
 
