@@ -83,8 +83,7 @@ export class Apps extends React.Component {
 
   proceedToModelManagement(tabId)
   {
-    
-
+    debugger;
     if (tabId == "score")
     {
       this.props.dispatch(getAppsAlgoList(1));
@@ -119,10 +118,9 @@ export class Apps extends React.Component {
     let modelManagement = ""
 
     if(appId==2 || appId == 13){
-     modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="primary">Manage Models</Button>
-    }else
-    {
-     modelManagement = "";
+      modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="primary">Manage Models</Button>
+    }else{
+      modelManagement = "";
     }
 
     return (
