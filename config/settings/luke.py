@@ -12,7 +12,7 @@ environ.Env.read_env()
 DEBUG = env('DEBUG')
 
 MODE=env('MODE')
-ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[])) #['*']
+ALLOWED_HOSTS = ['172.31.50.84','madvisor.marlabsai.com']
 
 DATABASES = {
     'default1': {
