@@ -497,8 +497,10 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
-                "ui_branch": "api_ui_dev_staging",
-                "api_branch": "api_ui_dev_staging"
+                #"ui_branch": "api_ui_dev_staging",
+                #"api_branch": "api_ui_dev_staging"
+                "ui_branch": "env_vivek_fe",
+                "api_branch": "env_vivek_fe"
             },
             'type': 'luke',
             'gunicorn_details': {
