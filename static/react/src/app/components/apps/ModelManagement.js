@@ -42,7 +42,12 @@ export class ModelManagement extends React.Component {
   }
 
  componentWillMount() {
-  this.props.dispatch(getAllProjectList(pageNo));
+  if(this.props.match.params.AppId=="automated-prediction-30vq9q5scd"){
+    var aId=2;
+  }
+   else aId=13;
+  
+  this.props.dispatch(getAllProjectList(pageNo,aId));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];

@@ -83,7 +83,6 @@ export class Apps extends React.Component {
 
   proceedToModelManagement(tabId)
   {
-    debugger;
     if (tabId == "score")
     {
       this.props.dispatch(getAppsAlgoList(1));

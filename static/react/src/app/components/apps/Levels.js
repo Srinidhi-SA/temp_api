@@ -106,7 +106,6 @@ export class Levels extends React.Component {
   }
 
   addNewLevel() {
-    debugger;
     var newObj = { "inputValue": "", "multiselectValue": "", "startDate": "", "endDate": "" };
     
       this.setState({
