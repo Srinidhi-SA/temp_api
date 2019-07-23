@@ -14,6 +14,7 @@ import {CardTable} from "../common/CardTable";
 import {DataBox} from "../common/DataBox";
 import $ from "jquery";
 import { Deployment } from "./Deployment";
+import { ModelSummeryButton } from "../common/ModelSummeryButton";
 
 @connect((store) => {
   return {
@@ -56,7 +57,7 @@ export class ModelSummary extends React.Component {
   }
   
   renderCardData(c3,cardWidth){
-	  debugger;
+	//   debugger;
 	var htmlData = c3.map((story, i) => {
 		let randomNum = Math.random().toString(36).substr(2,8);
 		switch (story.dataType) {
@@ -104,7 +105,6 @@ export class ModelSummary extends React.Component {
 						return (<div className={colClass} key={randomNum}><CardTable  jsonData={story.data} type={story.dataType}/></div>);
 						break;
 			case "dataBox":
-				debugger
 						let bgStockBox = "bgStockBox"
 						if(this.props.algoAnalysis.app_id == 2){
 							return (<DataBox  key={i} jsonData={story.data} type={story.dataType}/>);
@@ -118,6 +118,9 @@ export class ModelSummary extends React.Component {
 							})
 							);
 						}
+						break;
+			case "button":
+						return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
 						break;
 		}
   	});
@@ -184,10 +187,12 @@ export class ModelSummary extends React.Component {
 
 			var chartData = []
 			var chartHeading = []
+			var chartButton = []
 			var h = []			//card heading
 			var cd = []			//card data
 			var w = []			//card width
 			var topCards = ""
+			var button = []
 
 			for(i=0;i<plen;i++){
 				if(i == 0){
@@ -200,10 +205,16 @@ export class ModelSummary extends React.Component {
 						h[i] = top.map(fun => fun[i].cardData[0])
 						cd[i] = top.map(fun => fun[i].cardData[1])
 						w[i] = top.map(fun => fun[i].cardWidth)[0]
+						if(this.props.algoAnalysis.app_id == 13 && count == 1){
+							button[0] = top.map(fun => fun[i].cardData[2])
+						}
 					}
 					if(count == 1){
 						chartHeading[1] = this.renderCardData(h[1],w[1]);
 						chartData[1] = this.renderCardData(cd[1],w[1]);
+						if(this.props.algoAnalysis.app_id == 13 && count == 1){
+							chartButton[1] = this.renderCardData(button[0],w[1]);
+						}
 					}else if(count == 2){
 						chartHeading[2] = this.renderCardData(h[2],w[2]);
 						chartData[2] = this.renderCardData(cd[2],w[2]);
@@ -239,6 +250,7 @@ export class ModelSummary extends React.Component {
 						<div class="col-md-6">
 							{chartHeading[1]}
 							{chartData[1]}
+							{chartButton[1]}
 						</div>
 						<div class="col-md-6">
 							{chartHeading[2]}
