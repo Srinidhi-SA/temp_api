@@ -163,6 +163,7 @@ export class ModelSummary extends React.Component {
 			var tableHeading = [];
 			var tableData = [];
 
+			//Rendering Summary and Settings Tables
 			for(j=0;j<olen;j++){
 				loop ++;
 				if(loop-1 == j){
@@ -194,13 +195,16 @@ export class ModelSummary extends React.Component {
 			var topCards = ""
 			var button = []
 
+			//Rendering Charts
 			for(i=0;i<plen;i++){
 				if(i == 0){
+					//render top cards for first iteration
 					cd[i] = top.map(fun => fun[i].cardData[0])
 					w[i] = top.map(fun => fun[i].cardWidth)[0]
 					topCards = this.renderCardData(cd[i],w[i]);
 				}else{
 					count ++;
+					//pick chart values
 					if(count == i){
 						h[i] = top.map(fun => fun[i].cardData[0])
 						cd[i] = top.map(fun => fun[i].cardData[1])
@@ -209,6 +213,7 @@ export class ModelSummary extends React.Component {
 							button[0] = top.map(fun => fun[i].cardData[2])
 						}
 					}
+					//Render chart values
 					if(count == 1){
 						chartHeading[1] = this.renderCardData(h[1],w[1]);
 						chartData[1] = this.renderCardData(cd[1],w[1]);
@@ -220,7 +225,7 @@ export class ModelSummary extends React.Component {
 						chartData[2] = this.renderCardData(cd[2],w[2]);
 					}else if(count == 3){
 						chartHeading[3] = this.renderCardData(h[3],w[3]);
-						chartData[3] = this.renderCardData(cd[3],w[3]);			
+						chartData[3] = this.renderCardData(cd[3],w[3]);
 					}else if(this.props.algoAnalysis.app_id == 2 && count == 4){
 						chartHeading[4] = this.renderCardData(h[4],w[4]);
 						chartData[4] = this.renderCardData(cd[4],w[4]);
@@ -240,7 +245,13 @@ export class ModelSummary extends React.Component {
 					</div>
 				</div>
 			)
-
+			
+			let newClass = ""
+			if(this.props.algoAnalysis.app_id == 13){
+				newClass = "col-md-12";
+			}else{
+				newClass = "col-md-6"
+			}
 			performanceCard = (
 				<div>
 					<div class="row ov_card_boxes">
@@ -259,11 +270,11 @@ export class ModelSummary extends React.Component {
 					</div>
 					<hr/>
 					<div class="row xs-mt-10">
-						<div class="col-md-6">
+						<div class= {newClass} >	
 							{chartHeading[3]}
 							{chartData[3]}
 						</div>
-						<div class="col-md-6">
+						<div class={newClass}>
 							{chartHeading[4]}
 							{chartData[4]}
 						</div>
