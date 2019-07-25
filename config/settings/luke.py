@@ -31,9 +31,9 @@ INSTALLED_APPS += PROJECT_APP
 HADOOP_MASTER = env('HADOOP_MASTER')
 
 YARN = {
-    "host": env('YARN_HOST'),
-    "port": env('YARN_PORT'), #8088,
-    "timeout": env('YARN_TIMEOUT') #30
+    "host": HADOOP_MASTER,
+    "port": env.int('YARN_PORT'), #8088,
+    "timeout": env.int('YARN_TIMEOUT') #30
 }
 
 import os
@@ -71,7 +71,7 @@ JOBSERVER = {
 
 THIS_SERVER_DETAILS = {
     "host": env('THIS_SERVER_HOST'),
-    "port": env('THIS_SERVER_PORT'),
+    "port": env.int('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
 
