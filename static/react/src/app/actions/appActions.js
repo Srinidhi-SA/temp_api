@@ -273,7 +273,6 @@ export function getAllProjectList(pageNo,aId) {
 }
 
 function fetchAllProjectList(aId,token) {
-  debugger;
   return fetch(API + '/api/trainer/all/?app_id=' + aId + '', {
     method: 'get',
     headers: getHeader(token)

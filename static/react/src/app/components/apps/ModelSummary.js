@@ -57,7 +57,6 @@ export class ModelSummary extends React.Component {
   }
   
   renderCardData(c3,cardWidth){
-	//   debugger;
 	var htmlData = c3.map((story, i) => {
 		let randomNum = Math.random().toString(36).substr(2,8);
 		switch (story.dataType) {
