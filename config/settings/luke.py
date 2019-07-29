@@ -112,8 +112,8 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = env('DEPLOYMENT_ENV')
 
-HADOOP_CONF_DIR= env.bool('HADOOP_CONF_DIR')  #False
-HADOOP_USER_NAME= env('HADOOP_USER_NAME')  #"hduser"
+HADOOP_CONF_DIR=False
+HADOOP_USER_NAME="hduser"
 
 CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
