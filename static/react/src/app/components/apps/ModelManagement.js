@@ -167,7 +167,6 @@ export class ModelManagement extends React.Component {
   }
 
   _handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
       //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
@@ -176,7 +175,6 @@ export class ModelManagement extends React.Component {
         var pageNo =1;
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
         // this.props.dispatch(getAppsAlgoList(1));
-    }
   }
 
   onChangeOfSearchBox(e){
@@ -378,7 +376,7 @@ export class ModelManagement extends React.Component {
                             <div className="input-group">
                               <div className="search-wrapper">
                                 {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
-                                <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
+                                <input type="text" name="algo_search" value={this.props.model_search_element} onInput={this._handleKeyPress.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
                                 <span className="zmdi zmdi-search form-control-feedback"></span>
                                 <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                               </div>
