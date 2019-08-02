@@ -66,6 +66,7 @@ export class ModelManagement extends React.Component {
 
   closeModelmanagement()
   {
+    this.clearSearchElement();
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
@@ -167,6 +168,7 @@ export class ModelManagement extends React.Component {
   }
 
   _handleKeyPress = (e) => {
+    // if (e.key === 'Enter') {
       //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
@@ -175,6 +177,7 @@ export class ModelManagement extends React.Component {
         var pageNo =1;
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
         // this.props.dispatch(getAppsAlgoList(1));
+    // }
   }
 
   onChangeOfSearchBox(e){
@@ -241,6 +244,7 @@ export class ModelManagement extends React.Component {
         )
         renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
           <option value="">All</option>
+
           {options}
         </select>
       }else{
