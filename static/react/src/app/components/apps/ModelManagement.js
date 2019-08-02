@@ -240,7 +240,6 @@ export class ModelManagement extends React.Component {
         )
         renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
           <option value="">All</option>
-
           {options}
         </select>
       }else{
