@@ -66,6 +66,7 @@ export class ModelManagement extends React.Component {
 
   closeModelmanagement()
   {
+    this.clearSearchElement();
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
@@ -167,14 +168,12 @@ export class ModelManagement extends React.Component {
   }
 
   _handleKeyPress = (e) => {
-      //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
         this.selectedData = $("#project_all").val();
         var pageNo =1;
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
-        // this.props.dispatch(getAppsAlgoList(1));
   }
 
   onChangeOfSearchBox(e){
