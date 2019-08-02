@@ -16066,3 +16066,7 @@ div#replaceValues {
 .noDisplay{
  display: none !important;
 }
+.form-filter{width: 18px;
+    float: right;
+		display: inline-block;
+}
