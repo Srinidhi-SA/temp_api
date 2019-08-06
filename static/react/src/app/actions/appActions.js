@@ -258,9 +258,9 @@ export function handleAlgoDelete(slug, dialog) {
 }
 
 
-export function getAllProjectList(pageNo,aId) {
+export function getAllProjectList(pageNo,appId) {
   return (dispatch) => {
-    return fetchAllProjectList(aId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+    return fetchAllProjectList(appId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
         console.log(json)
         dispatch(fetchAllProjectSuccess(json))
@@ -272,8 +272,8 @@ export function getAllProjectList(pageNo,aId) {
   }
 }
 
-function fetchAllProjectList(aId,token) {
-  return fetch(API + '/api/trainer/all/?app_id=' + aId + '', {
+function fetchAllProjectList(appId,token) {
+  return fetch(API + '/api/trainer/all/?app_id=' + appId + '', {
     method: 'get',
     headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));

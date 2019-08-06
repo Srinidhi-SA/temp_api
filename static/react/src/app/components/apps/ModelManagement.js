@@ -42,12 +42,13 @@ export class ModelManagement extends React.Component {
   }
 
  componentWillMount() {
+   this.clearSearchElement();
   if(this.props.match.params.AppId=="automated-prediction-30vq9q5scd"){
-    var aId=2;
+    var appId=2;
   }
-   else aId=13;
+   else appId=13;
   
-  this.props.dispatch(getAllProjectList(pageNo,aId));
+  this.props.dispatch(getAllProjectList(pageNo,appId));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -176,24 +177,7 @@ export class ModelManagement extends React.Component {
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
   }
 
-  onChangeOfSearchBox(e){
-    if(e.target.value==""||e.target.value==null){
-      this.props.dispatch(storeAlgoSearchElement(""));
-      this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
-      // this.props.dispatch(getAppsAlgoList(1));
-      this.selectedData = $("#project_all").val();
-      var pageNo =1;
-      this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
-      // document.getElementById('algo_search').value= "";
-    }else if (e.target.value.length > SEARCHCHARLIMIT) {
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
-        this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        // this.props.dispatch(getAppsAlgoList(1));
-    }
-    else{ 
-      this.props.dispatch(storeAlgoSearchElement(e.target.value));
-    }
-  }
+
 
   handleSelect(eventKey) {
     if (this.props.algo_search_element) {
@@ -207,11 +191,8 @@ export class ModelManagement extends React.Component {
   clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
     this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
-    // this.props.dispatch(getAppsAlgoList(1));
     this.selectedData = $("#project_all").val();
-    // var pageNo =1;
     this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
-    document.getElementById('algo_search').value= "";
   }
 
   render(){
@@ -233,20 +214,42 @@ export class ModelManagement extends React.Component {
       const algoList = store.getState().apps.algoList.data;
       var none = none;
       const dataSets = this.props.allProjects;
-      let renderSelectBox = null;
+      let renderSelectBoxProjects = null;
+      
       if(dataSets != ""){
         var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
           <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
         )
-        renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
+        renderSelectBoxProjects = <select className="select_filter" id="project_all" title="Filter By Project" name="selectbasic" onChange={this.getDeployPreview.bind(this)}>
           <option value="">All</option>
+
           {options}
         </select>
       }else{
-        renderSelectBox = ""
+        renderSelectBoxProjects = ""
       }
 
-      mmTable = this.props.algoList.data.map((item,key )=> {
+
+var renderSelectBoxAlgorithms="";
+this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBoxAlgorithms=(
+ <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+ <option value="">All</option>
+ <option value="DT_">Decision Tree</option>
+ <option value="GB_">GBTree Regression</option>
+ <option value="RFR_">Random Forest Regression</option>
+ <option value="LR_">Linear Regression</option>
+</select>)
+:renderSelectBoxAlgorithms=(
+  <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+  <option value="">All</option>
+  <option value="RF_">Random Forest</option>
+  <option value="XG_">XG Boost</option>
+  <option value="LG_">Linear Regression</option>
+  <option value="NB_">Naive Bayes</option>
+ </select>);
+
+
+   mmTable = this.props.algoList.data.map((item,key )=> {
         var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
@@ -254,7 +257,6 @@ export class ModelManagement extends React.Component {
           <td className="text-left"> {item.model_id}</td>
           <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
           <td className="text-left"> {item.algorithm}</td>
-          {/* <td ><span className="text-success"></span> {item.training_status}</td> */}
           <td > {item.accuracy}</td>
           <td> {dateFormat( item.created_at, " mmm d,yyyy")}</td>
           <td> {item.deployment}</td>
@@ -291,8 +293,8 @@ export class ModelManagement extends React.Component {
             <tr className="myHead">
               <th>#</th>
               <th class="text-left"><b>Model ID</b></th>
-              <th class="text-left"><b>Project Name</b></th>
-              <th class="text-left"><b>Algorithm</b></th>
+              <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
+              <th class="text-left"><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
               <th><b>{thead5}</b></th>
               <th><b>Created On</b></th>
               <th><b>Active Deployment</b></th>
@@ -362,23 +364,11 @@ export class ModelManagement extends React.Component {
                       <div class="row xs-mb-10">
                         <div className="col-md-3">
                           <div class="form-inline" >
-                            <div class="form-group">
-                              <div class="input-group">
-                                <span class="input-group-btn"><label for="sdataType" class="xs-pt-5 xs-pr-10">&nbsp;&nbsp;Filter By:</label></span>
-                                {renderSelectBox}
-                              </div>
-                            </div>
                           </div>
                         </div>
                         <div class="col-md-3 col-md-offset-6">
                           <div className="btn-toolbar pull-right">
                             <div className="input-group">
-                              <div className="search-wrapper">
-                                {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
-                                <input type="text" name="algo_search" value={this.props.model_search_element} onInput={this._handleKeyPress.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
-                                <span className="zmdi zmdi-search form-control-feedback"></span>
-                                <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -420,3 +410,4 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(closeDeployModalAction());
   }
 }
+
