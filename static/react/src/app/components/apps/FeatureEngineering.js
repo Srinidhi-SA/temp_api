@@ -208,6 +208,16 @@ export class FeatureEngineering extends React.Component {
       var lvl = lvlar.levelData;
       let lvllen=lvl.length;
       for(i in lvl){ 
+        if(lvl[i].inputValue == "" || undefined){
+          console.log('Col nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Please enter the new column name");
+          return;
+        }else if(lvl[i].multiselectValue == "" || undefined){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("Please Select Options");
+          return;
+        }
         totalOptions+=lvl.map(j=>j)[i].multiselectValue.length
       }
       var noOfRows = this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0];
@@ -220,26 +230,34 @@ export class FeatureEngineering extends React.Component {
         return;
       }
     }
+    
     console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var levelData = this.state[this.props.selectedItem.slug][actionType];
-      for (var i = 0; i < levelData.length - 1; i++) {
-        var startDate = levelData[i].startDate;
-        var endDate = levelData[i].endDate;
-        var inputValue = levelData[i].inputValue;
-        var multiselect = levelData[i].multiselectValue;
-        if ((Date.parse(startDate) > Date.parse(endDate))) {
-          console.log('start date is greater');
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Start Date should be before End Date");
-          return;
-        }
-        else if (inputValue == undefined || inputValue == null || inputValue == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Please enter the new column name");
-          $("input[name='inputValue']").focus();
-          return;
+      if(this.props.selectedItem.columnType == "datetime"){
+        for (var i = 0; i < levelData.length; i++) {
+          var startDate = levelData[i].startDate;
+          var endDate = levelData[i].endDate;
+          var inputValue = levelData[i].inputValue;
+          var multiselect = levelData[i].multiselectValue;
+          if((startDate == "" || undefined) || (endDate == "" || undefined) ){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Enter Dates");
+            return;
+          }
+          else if ((Date.parse(startDate) > Date.parse(endDate))) {
+            console.log('start date is greater');
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Start Date should be before End Date");
+            return;
+          }
+          else if (inputValue == undefined || inputValue == null || inputValue == "") {
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter the new column name");
+            $("input[name='inputValue']").focus();
+            return;
+          }
         }
       }
       var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
