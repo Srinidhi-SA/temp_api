@@ -211,44 +211,45 @@ export class ModelManagement extends React.Component {
       var deployPopup = "";
       var deployData = "";
       var Details="Details"
+      var thead5 = " "
       const algoList = store.getState().apps.algoList.data;
       var none = none;
       const dataSets = this.props.allProjects;
+
+      //Filter by projectName
       let renderSelectBoxProjects = null;
-      
       if(dataSets != ""){
         var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
           <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
         )
         renderSelectBoxProjects = <select className="select_filter" id="project_all" title="Filter By Project" name="selectbasic" onChange={this.getDeployPreview.bind(this)}>
           <option value="">All</option>
-
-          {options}
-        </select>
+             {options}
+          </select>
       }else{
         renderSelectBoxProjects = ""
       }
 
+    //Filter by algorithm 
+          var renderSelectBoxAlgorithms="";
+          this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBoxAlgorithms=(
+          <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+          <option value="">All</option>
+          <option value="DT_">Decision Tree</option>
+          <option value="GB_">GBTree Regression</option>
+          <option value="RFR_">Random Forest Regression</option>
+          <option value="LR_">Linear Regression</option>
+          </select>)
+          :renderSelectBoxAlgorithms=(
+            <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+            <option value="">All</option>
+            <option value="RF_">Random Forest</option>
+            <option value="XG_">XG Boost</option>
+            <option value="LG_">Linear Regression</option>
+            <option value="NB_">Naive Bayes</option>
+          </select>);
 
-var renderSelectBoxAlgorithms="";
-this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBoxAlgorithms=(
- <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
- <option value="">All</option>
- <option value="DT_">Decision Tree</option>
- <option value="GB_">GBTree Regression</option>
- <option value="RFR_">Random Forest Regression</option>
- <option value="LR_">Linear Regression</option>
-</select>)
-:renderSelectBoxAlgorithms=(
-  <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
-  <option value="">All</option>
-  <option value="RF_">Random Forest</option>
-  <option value="XG_">XG Boost</option>
-  <option value="LG_">Linear Regression</option>
-  <option value="NB_">Naive Bayes</option>
- </select>);
-
-
+    // mapping of list items into table
    mmTable = this.props.algoList.data.map((item,key )=> {
         var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
         return (
@@ -282,42 +283,28 @@ this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBo
         </td>
       </tr>);
       })
-
+    
+      //Jsx element for table body content
       let tablecontent="";
+      tablecontent = (<tbody className="no-border-x"> {mmTable} </tbody>);
+
       if (this.props.algoList.data.length != 0){
-        let thead5 = " "
-        if(this.props.currentAppId == 13){thead5 = "Root Mean Square Error";}else thead5 = "Accuracy";
-        tablecontent = (
-        <table id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-          <thead>
-            <tr className="myHead">
-              <th>#</th>
-              <th class="text-left"><b>Model ID</b></th>
-              <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
-              <th class="text-left"><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
-              <th><b>{thead5}</b></th>
-              <th><b>Created On</b></th>
-              <th><b>Active Deployment</b></th>
-              <th><b>Total Deployments</b></th>
-              <th><b>Runtime</b></th>
-              <th><b>Summary</b></th>
-              <th><b>Action</b></th>
-            </tr>
-          </thead>
-          <tbody className="no-border-x"> {mmTable} </tbody>
-        </table>
-        )
       }else if(this.props.algoList.current_item_count == 0){
-        tablecontent= (
-          <h5><center>There are no models available for this selection</center></h5>
-        )
+        tablecontent= ""
       }else {(
-        tablecontent= (
-          <h5><center>There are no models available for this selection</center></h5>
-        )
+        tablecontent=""
       )}
+      
+      //To show message below the table
+      if(!tablecontent){
+        var NoDataMessage=(
+        <p style={{padding:'21px 0px 0px 478px',fontSize:'13px'}}>There are no models available for your selection</p>);
+      }
+      else NoDataMessage="";
+      this.props.currentAppId == 13?thead5 = "Root Mean Square Error":thead5 = "Accuracy";
 
       deployData = "deployData";
+
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
@@ -337,6 +324,7 @@ this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBo
         </div>
       )
       
+      //Pagination element
       if (algoList) {
         const pages = store.getState().apps.algoList.total_number_of_pages;
         const current_page = store.getState().apps.algoList.current_page;
@@ -344,8 +332,9 @@ this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBo
         if(pages > 1){
           paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
         }
+        
         let appName = this.props.currentAppDetails.displayName;
-        console.log(appName);
+
         return (
           // <!-- Main Content starts with side-body -->
           <div class="side-body">
@@ -374,7 +363,26 @@ this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBo
                         </div>
                       </div>
                       <div class="table-responsive">
+                      <table id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                          <thead>
+                            <tr className="myHead">
+                              <th>#</th>
+                              <th class="text-left"><b>Model ID</b></th>
+                              <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
+                              <th class="text-left"><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
+                              <th><b>{thead5}</b></th>
+                              <th><b>Created On</b></th>
+                              <th><b>Active Deployment</b></th>
+                              <th><b>Total Deployments</b></th>
+                              <th><b>Runtime</b></th>
+                              <th><b>Summary</b></th>
+                              <th><b>Action</b></th>
+                            </tr>
+                          </thead>
+                          {/* <tbody className="no-border-x"> {tablecontent} </tbody> */}
                         {tablecontent}                    
+                      </table>
+                      {NoDataMessage}
                         <div class="col-md-12 text-center">
                           <div className="footer"  id="idPagination">
                             <div className="algo_paginate">
