@@ -222,10 +222,10 @@ export class ModelManagement extends React.Component {
         var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
           <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
         )
-        renderSelectBoxProjects = <select className="select_filter" id="project_all" title="Filter By Project" name="selectbasic" onChange={this.getDeployPreview.bind(this)}>
+        renderSelectBoxProjects = <span className="selectSpan"><select className="select_filter" id="project_all" title="Filter By Project" name="selectbasic" onChange={this.getDeployPreview.bind(this)}>
           <option value="">All</option>
              {options}
-          </select>
+          </select></span>
       }else{
         renderSelectBoxProjects = ""
       }
@@ -369,7 +369,7 @@ export class ModelManagement extends React.Component {
                               <th>#</th>
                               <th class="text-left"><b>Model ID</b></th>
                               <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
-                              <th class="text-left" style={{width:'145px'}}><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
+                              <th class="text-left" style={{width:'145px'}}><b>Algorithm </b> <span className="selectSpan">{renderSelectBoxAlgorithms}</span></th>
                               <th><b>{thead5}</b></th>
                               <th><b>Created On</b></th>
                               <th><b>Active Deployment</b></th>

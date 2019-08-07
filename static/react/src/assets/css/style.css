@@ -16067,12 +16067,24 @@ div#replaceValues {
  display: none !important;
 }
 
-.select_filter{
+.select_filter {
 	float: right;
 	height: 20px;
 	width: 20px;
 	-webkit-appearance: listbox;
+	appearance: listbox;
 	background: url(../images/filter.png) no-repeat;
 	border: none;
 	cursor: pointer;
+	background-position: center;
+	opacity: 0;
+}
+.selectSpan{
+	float: right;
+	height: 20px;
+	width: 20px;
+	background: url(../images/filter.png) no-repeat;
+	border: none;
+	cursor: pointer;
+	background-position: center;
 }
