@@ -298,7 +298,7 @@ export class ModelManagement extends React.Component {
       //To show message below the table
       if(!tablecontent){
         var NoDataMessage=(
-        <p style={{padding:'21px 0px 0px 478px',fontSize:'13px'}}>There are no models available for your selection</p>);
+        <p style={{textAlign:'center',fontSize:'13px'}}>There are no models available for your selection</p>);
       }
       else NoDataMessage="";
       this.props.currentAppId == 13?thead5 = "Root Mean Square Error":thead5 = "Accuracy";
@@ -369,7 +369,7 @@ export class ModelManagement extends React.Component {
                               <th>#</th>
                               <th class="text-left"><b>Model ID</b></th>
                               <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
-                              <th class="text-left"><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
+                              <th class="text-left" style={{width:'145px'}}><b>Algorithm </b> {renderSelectBoxAlgorithms}</th>
                               <th><b>{thead5}</b></th>
                               <th><b>Created On</b></th>
                               <th><b>Active Deployment</b></th>
