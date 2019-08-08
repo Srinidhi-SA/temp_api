@@ -57,9 +57,9 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            deselectAllVariablesDataPrev(false);
-            DisableSelectAllCheckbox();
-            this.props.dispatch( resetSelectedVariables(false) );
+            deselectAllVariablesDataPrev(true);
+            // DisableSelectAllCheckbox();
+            this.props.dispatch( resetSelectedVariables(true) );
         }
         else{
         this.props.dispatch( resetSelectedVariables(true) );
@@ -179,9 +179,9 @@ export class DataVariableSelection extends React.Component {
 
             if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-                this.props.dispatch(resetSelectedVariables(false));
-                deselectAllVariablesDataPrev(false);
-                DisableSelectAllCheckbox();
+                this.props.dispatch(resetSelectedVariables(true));
+                // deselectAllVariablesDataPrev(false);
+                // DisableSelectAllCheckbox();
             }
             else{
                 this.props.dispatch( resetSelectedVariables(true));
