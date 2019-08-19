@@ -663,28 +663,28 @@ export function updateSelectedVariables(evt){
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
         if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 10){
-                $('.measure[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                if(!($("input[name='date_type']:checked").val()))
-                $('.timeDimension').prop("disabled",true);
+            // if(count >= 10){
+                // $('.measure[type="checkbox"]').each(function() {
+                //     if (!$(this).is(":checked"))
+                //     $(this).prop('disabled', true);
+                // });
+                // $('.dimension[type="checkbox"]').each(function() {
+                //     if (!$(this).is(":checked"))
+                //     $(this).prop('disabled', true);
+                // });
+                // if(!($("input[name='date_type']:checked").val()))
+                // $('.timeDimension').prop("disabled",true);
                 //document.getElementById('measure').disabled = true;
-            }
-            else{
-                $('.measure[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.timeDimension').prop("disabled",false);
-            }
+            // }
+            // else{
+            //     $('.measure[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.dimension[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.timeDimension').prop("disabled",false);
+            // }
         }
         if(evt.target.baseURI.includes("/createSignal"))
         dispatch(uncheckHideAnalysisList());
@@ -1054,31 +1054,31 @@ export function handleSelectAll(evt){
                     $(this).prop('disabled', false);
                 });
             }
-            else
-            {
-                if(count >= 10){
-                    if(varType == "dimension"){
-                        $('.measure[type="checkbox"]').each(function() {
-                            if (!$(this).is(":checked"))
-                            $(this).prop('disabled', true);
-                        });
-                    }
-                    if(varType == "measure"){
-                        $('.dimension[type="checkbox"]').each(function() {
-                            if (!$(this).is(":checked"))
-                            $(this).prop('disabled', true);
-                        });
-                    }
-                }
-                else{
-                    $('.measure[type="checkbox"]').each(function() {
-                        $(this).prop('disabled', false);
-                    });
-                    $('.dimension[type="checkbox"]').each(function() {
-                        $(this).prop('disabled', false);
-                    });
-                }
-            }
+            // else
+            // {
+            //     if(count >= 10){
+            //         if(varType == "dimension"){
+            //             $('.measure[type="checkbox"]').each(function() {
+            //                 if (!$(this).is(":checked"))
+            //                 $(this).prop('disabled', true);
+            //             });
+            //         }
+            //         if(varType == "measure"){
+            //             $('.dimension[type="checkbox"]').each(function() {
+            //                 if (!$(this).is(":checked"))
+            //                 $(this).prop('disabled', true);
+            //             });
+            //         }
+            //     }
+            //     else{
+            //         $('.measure[type="checkbox"]').each(function() {
+            //             $(this).prop('disabled', false);
+            //         });
+            //         $('.dimension[type="checkbox"]').each(function() {
+            //             $(this).prop('disabled', false);
+            //         });
+            //     }
+            // }
         }
         if(evt.target.baseURI.includes("/createSignal"))
         dispatch(uncheckHideAnalysisList());
