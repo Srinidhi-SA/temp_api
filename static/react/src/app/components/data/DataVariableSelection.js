@@ -72,28 +72,28 @@ export class DataVariableSelection extends React.Component {
     componentDidUpdate(){
         var count = getTotalVariablesSelected();
         if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 10){
-                $('.measure[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                if(!($("input[name='date_type']:checked").val()))
-                $('.timeDimension').prop("disabled",true);
-                //document.getElementById('measure').disabled = true;
-            }
-            else{
-                $('.measure[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.timeDimension').prop("disabled",false);
-            }
+            // if(count >= 10){
+            //     $('.measure[type="checkbox"]').each(function() {
+            //         if (!$(this).is(":checked"))
+            //         $(this).prop('disabled', true);
+            //     });
+            //     $('.dimension[type="checkbox"]').each(function() {
+            //         if (!$(this).is(":checked"))
+            //         $(this).prop('disabled', true);
+            //     });
+            //     if(!($("input[name='date_type']:checked").val()))
+            //     $('.timeDimension').prop("disabled",true);
+            //     //document.getElementById('measure').disabled = true;
+            // }
+            // else{
+            //     $('.measure[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.dimension[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.timeDimension').prop("disabled",false);
+            // }
         }
     }
 
@@ -114,7 +114,7 @@ export class DataVariableSelection extends React.Component {
     	this.props.dispatch(handleSelectAll(evt))
     }
     render() {
-
+        debugger
         console.log( "data variableSelection is called##########3" );
         var variableSelectionMsg = <label>Including the following variables:</label>;
 
@@ -147,7 +147,6 @@ export class DataVariableSelection extends React.Component {
             metaData.map(( metaItem, metaIndex ) => {
 
                 if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
-
                     switch ( metaItem.columnType ) {
                         case "measure":
                            if(metaItem.setVarAs == null){
@@ -171,8 +170,6 @@ export class DataVariableSelection extends React.Component {
                     }
                     //this.selectedTimeDimension = this.datetime[0];
               }
-
-
             } );
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
@@ -265,24 +262,23 @@ export class DataVariableSelection extends React.Component {
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                     return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false && val.dateSuggestionFlag == false);
                 });
-                if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
-                    if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
-                }
-                else
-                $('.measureAll').prop("disabled",false);
-                if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
-                    if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
-                }
-                else
-                $(".dimensionAll").prop("disabled",false);
+                
+                // if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
+                //     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
+                // }
+                // else
+                // $('.measureAll').prop("disabled",false);
 
-                variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
+                // if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
+                //     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
+                // }
+                // else
+                // $(".dimensionAll").prop("disabled",false);
+
+                // variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
             }
             return (
                 <div>
-
-
-
                         <div className="col-lg-12">
                             {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
