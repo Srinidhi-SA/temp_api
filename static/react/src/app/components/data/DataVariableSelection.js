@@ -239,7 +239,10 @@ export class DataVariableSelection extends React.Component {
 
                     	if(dtItem.columnType != "dimension"){
                         	return (
-                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline">
+                                    <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label>
+
+                                    </div></li>
                         	);
                         }else{
                         	return (
@@ -449,6 +452,10 @@ export class DataVariableSelection extends React.Component {
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
                                                 <ul className="list-unstyled">
+                                                <div class="ma-radio inline">
+
+                                                <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
+                                                </div>
                                                     {datetimeTemplate}
                                                 </ul>
                                             </Scrollbars>
