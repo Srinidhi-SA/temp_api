@@ -410,6 +410,11 @@ export class DataVariableSelection extends React.Component {
                                     <div className="row">
 
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
+                                        {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
+                                        <div class="ma-radio inline">
+                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
+                                        </div>
+                                        }
 
                                             <div class="btn-toolbar pull-right">
 
@@ -448,10 +453,7 @@ export class DataVariableSelection extends React.Component {
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
                                                 <ul className="list-unstyled">
-                                                <div class="ma-radio inline">
-
-                                                <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
-                                                </div>
+                                               
                                                     {datetimeTemplate}
                                                 </ul>
                                             </Scrollbars>
