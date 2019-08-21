@@ -410,13 +410,7 @@ export class DataVariableSelection extends React.Component {
                                     <div className="row">
 
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-                                        {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
-                                        <div class="ma-radio inline">
-                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
-                                        </div>
-                                        }
-
-                                            <div class="btn-toolbar pull-right">
+                                         <div class="btn-toolbar pull-right">
 
                                               {/*  <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                  <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
@@ -453,8 +447,12 @@ export class DataVariableSelection extends React.Component {
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
                                                 <ul className="list-unstyled">
-                                               
-                                                    {datetimeTemplate}
+                                                 {datetimeTemplate}
+                                                 {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
+                                        <div class="ma-radio inline">
+                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
+                                        </div>
+                                        }
                                                 </ul>
                                             </Scrollbars>
                                         </div>
