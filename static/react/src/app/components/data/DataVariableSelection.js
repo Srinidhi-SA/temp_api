@@ -114,7 +114,6 @@ export class DataVariableSelection extends React.Component {
     	this.props.dispatch(handleSelectAll(evt))
     }
     render() {
-        debugger
         console.log( "data variableSelection is called##########3" );
         var variableSelectionMsg = <label>Including the following variables:</label>;
 
