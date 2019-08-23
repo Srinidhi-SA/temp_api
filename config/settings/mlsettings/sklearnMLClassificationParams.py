@@ -34,19 +34,19 @@ SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
     {"name":"identity","selected":False,"displayName":"identity"},
     {"name":"logistic","selected":False,"displayName":"logistic"},
     {"name":"tanh","selected":False,"displayName":"tanh"},
-    {"name":"relu","selected":True,"displayName":"relu"},
+    {"name":"relu","selected":False,"displayName":"relu"},
 
 ]
 
 SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
     {"name":"lbfgs","selected":False,"displayName":"lbfgs"},
     {"name":"sgd","selected":False,"displayName":"sgd"},
-    {"name":"adam","selected":True,"displayName":"adam"},
+    {"name":"adam","selected":False,"displayName":"adam"},
 
 ]
 
 SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION = [
-    {"name":"constant","selected":True,"displayName":"constant"},
+    {"name":"constant","selected":False,"displayName":"constant"},
     {"name":"invscaling","selected":False,"displayName":"invscaling"},
     {"name":"adaptive","selected":False,"displayName":"adaptive"},
 
@@ -572,9 +572,9 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "displayName":"Batch Size",
             "description": "Size of minibatches for stochastic optimizers.",
             # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
-            "defaultValue":None,
+            "defaultValue":"auto",
             "acceptedValue":None,
-            "valueRange":[1,10],
+            "valueRange":[],
             "paramType":"number",
             "uiElemType":"textbox",
             "display":True,
@@ -649,7 +649,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
                  },
                  {
                      "name":"true",
-                     "selected":True,
+                     "selected":False,
                      "displayName":"True"
                  }
             ],
@@ -696,7 +696,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "defaultValue":[
                  {
                      "name":"false",
-                     "selected":True,
+                     "selected":False,
                      "displayName":"False"
                  },
                  {
@@ -719,7 +719,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "defaultValue":[
               {
                   "name":"false",
-                  "selected":True,
+                  "selected":False,
                   "displayName":"False"
               },
               {
@@ -761,7 +761,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
               },
               {
                   "name":"true",
-                  "selected":True,
+                  "selected":False,
                   "displayName":"True"
               }
              ],
@@ -779,7 +779,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "defaultValue":[
               {
                   "name":"false",
-                  "selected":True,
+                  "selected":False,
                   "displayName":"False"
               },
               {

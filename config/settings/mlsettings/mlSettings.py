@@ -331,7 +331,7 @@ else:
             "description":"A meta estimator that uses averaging predictive power of a number of decision tree classification models. This is very effective in predicting the expected values of numeric variables and also to control overfitting."
           },
           {
-            "algorithmName": "NEURAL NETWORK",
+            "algorithmName": "Neural Network",
             "selected": False,
             "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"mlp",
@@ -382,7 +382,7 @@ else:
                 However, in practice, fractional counts such as tf-idf may also work."""
             },
             {
-                "algorithmName": "NEURAL NETWORK",
+                "algorithmName": "Neural Network",
                 "selected": False,
                 "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
