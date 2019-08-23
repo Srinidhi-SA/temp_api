@@ -254,7 +254,8 @@ if MLENVIRONMENT == "spark":
             "algorithmSlug": ALGORITHMRANDOMSLUG+"rfr",
             "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
             "description":"fill in the blanks"
-          }
+          },
+
         ]
     }
     ALGORITHM_LIST_CLASSIFICATION = {
@@ -328,7 +329,15 @@ else:
             "algorithmSlug": ALGORITHMRANDOMSLUG+"rfr",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
             "description":"A meta estimator that uses averaging predictive power of a number of decision tree classification models. This is very effective in predicting the expected values of numeric variables and also to control overfitting."
-          }
+          },
+          {
+            "algorithmName": "NEURAL NETWORK",
+            "selected": False,
+            "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG+"mlp",
+            "hyperParameterSetting":SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+            "description":"A statistical method to predict the likely outcome of any quantitative attribute. It is invariably used for estimating values of any numeric variables like sales, number of products, etc."
+          },
         ]
     }
     ALGORITHM_LIST_CLASSIFICATION = {
@@ -371,6 +380,14 @@ else:
                 features (e.g., word counts for text classification).
                 The multinomial distribution normally requires integer feature counts.
                 However, in practice, fractional counts such as tf-idf may also work."""
+            },
+            {
+                "algorithmName": "NEURAL NETWORK",
+                "selected": False,
+                "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+                "description":"This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
             },
             # {
             #     "algorithmName": "SVM",
