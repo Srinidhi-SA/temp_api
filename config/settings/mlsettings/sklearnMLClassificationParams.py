@@ -567,21 +567,36 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "expectedDataType": ["float"],
             "allowedDataType":["float"]
         },
-        {
+{
             "name":"batch_size",
             "displayName":"Batch Size",
-            "description": "Size of minibatches for stochastic optimizers.",
-            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+	    "description": "Size of minibatches for stochastic optimizers.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj  in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
             "defaultValue":"auto",
             "acceptedValue":None,
             "valueRange":[],
             "paramType":"number",
-            "uiElemType":"textbox",
+            "uiElemType":"textBox",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int","string"],
-            "allowedDataType":["int","string"]
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
         },
+       # {
+           # "name":"batchss_size",
+            #"displayName":"Batchss Size",
+           # "description": "Size of minibaaatches for stochastic optimizers.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+           # "defaultValue":5,
+           # "acceptedValue":None,
+           # "valueRange":[],
+           # "paramType":"number",
+           # "uiElemType":"textbox",
+           # "display":True,
+           # "hyperpatameterTuningCandidate":True,
+           # "expectedDataType": ["int"],
+           # "allowedDataType":["int"]
+       # },
         {
             "name":"learning_rate",
             "displayName":"Learning Rate",
