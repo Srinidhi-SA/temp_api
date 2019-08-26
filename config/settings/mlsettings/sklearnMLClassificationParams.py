@@ -574,13 +574,13 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
             "defaultValue":None,
             "acceptedValue":None,
-            "valueRange":[],
+            "valueRange":[200,350],
             "paramType":"number",
             "uiElemType":"textbox",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int",None],
-            "allowedDataType":["int",None]
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
         },
         {
             "name":"learning_rate",
