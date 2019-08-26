@@ -568,9 +568,9 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["float"]
         },
 {
-            "name":"power_t",
-            "displayName":"Power T",
-            "description": "The exponent for inverse scaling learning rate.",
+            "name":"batch_size",
+            "displayName":"Batch Size",
+            "description": "Size of minibatches for stochastic optimizers.",
             "defaultValue":0.5,
             "acceptedValue":None,
             "valueRange":[0.1,20.0],
@@ -578,13 +578,13 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "uiElemType":"textBox",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["float"],
-            "allowedDataType":["float"]
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
         },
         {
             "name":"batch_size",
             "displayName":"Batch Size",
-            "description": "Size of minibatches for stochastic optimizers.",
+            "description": "Size of minibaaatches for stochastic optimizers.",
             # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
             "defaultValue":"auto",
             "acceptedValue":None,
