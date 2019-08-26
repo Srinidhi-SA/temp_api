@@ -567,6 +567,20 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "expectedDataType": ["float"],
             "allowedDataType":["float"]
         },
+{
+            "name":"power_t",
+            "displayName":"Power T",
+            "description": "The exponent for inverse scaling learning rate.",
+            "defaultValue":0.5,
+            "acceptedValue":None,
+            "valueRange":[0.1,20.0],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType":["float"]
+        },
         {
             "name":"batch_size",
             "displayName":"Batch Size",
