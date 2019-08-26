@@ -587,7 +587,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "displayName":"Batch Size",
             "description": "Size of minibaaatches for stochastic optimizers.",
             # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
-            "defaultValue":0.5,
+            "defaultValue":5,
             "acceptedValue":None,
             "valueRange":[],
             "paramType":"number",
