@@ -583,11 +583,11 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["int"]
         },
        # {
-           # "name":"batchss_size",
-            #"displayName":"Batchss Size",
-           # "description": "Size of minibaaatches for stochastic optimizers.",
+           # "name":"batch_size",
+            #"displayName":"Batch Size",
+           # "description": "Size of minibatches for stochastic optimizers.",
             # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
-           # "defaultValue":5,
+           # "defaultValue":"auto",
            # "acceptedValue":None,
            # "valueRange":[],
            # "paramType":"number",
