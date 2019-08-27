@@ -52,6 +52,8 @@ export class RegressionParameter extends React.Component {
     }
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
+        $(".disNum").prop("disabled",false);
+
     }
     componentDidUpdate(){
         var that = this;
@@ -94,12 +96,16 @@ export class RegressionParameter extends React.Component {
         switch(e.target.value){
             case "sgd":
             $(".learningCls").prop("disabled",false);
-            break;
+            $(".disNum").prop("disabled",true);
+             break;
             case "adam":
+            $(".disNum").prop("disabled",false);
+            $(".learningCls").prop("disabled",true);
+            break;
             case "lbfgs":
             $(".learningCls").prop("disabled",true);
-            case "adam":
-
+            $(".disNum").prop("disabled",true);
+            break;
             default:
             "";
 
@@ -138,7 +144,6 @@ export class RegressionParameter extends React.Component {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             case "list":
-            debugger;
             if(parameterData.name=="learning_rate")
             {
                 console.log("inside learing rate")
@@ -188,10 +193,19 @@ export class RegressionParameter extends React.Component {
             
             case "number":
                 if(parameterData.uiElemType == "textBox"){
+                    switch(parameterData.displayName){
+                        case"Beta 1":
+                        case"Beta 2":
+                        // case"Elipson":
+                        var  classN= "form-control disNum";
+                        break;
+                        default:
+                        classN= "form-control";
+                    }                  
                     return (
                          <div className="row">
                         <div className="col-md-2">
-                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <input type="number" className={classN} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                         </div>
