@@ -579,8 +579,8 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "uiElemType":"textBox",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
+            "expectedDataType": ["int","string"],
+            "allowedDataType":["int","string"]
         },
        # {
            # "name":"batch_size",
