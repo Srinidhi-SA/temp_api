@@ -34,14 +34,14 @@ SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
     {"name":"identity","selected":False,"displayName":"identity"},
     {"name":"logistic","selected":False,"displayName":"logistic"},
     {"name":"tanh","selected":False,"displayName":"tanh"},
-    {"name":"relu","selected":False,"displayName":"relu"},
+    {"name":"relu","selected":True,"displayName":"relu"},
 
 ]
 
 SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
     {"name":"lbfgs","selected":False,"displayName":"lbfgs"},
     {"name":"sgd","selected":False,"displayName":"sgd"},
-    {"name":"adam","selected":False,"displayName":"adam"},
+    {"name":"adam","selected":True,"displayName":"adam"},
 
 ]
 
@@ -664,7 +664,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
                  },
                  {
                      "name":"true",
-                     "selected":False,
+                     "selected":True,
                      "displayName":"True"
                  }
             ],
@@ -776,7 +776,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
               },
               {
                   "name":"true",
-                  "selected":False,
+                  "selected":True,
                   "displayName":"True"
               }
              ],
