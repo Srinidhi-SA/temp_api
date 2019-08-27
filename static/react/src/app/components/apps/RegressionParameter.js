@@ -50,6 +50,9 @@ export class RegressionParameter extends React.Component {
         setTimeout(function(){ $('.single').multiselect('destroy'); }, 0);
        
     }
+    componentDidMount(){
+        $(".learningCls").prop("disabled",true);
+    }
     componentDidUpdate(){
         var that = this;
         if(this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter")
@@ -68,6 +71,7 @@ export class RegressionParameter extends React.Component {
             }
         });
         }
+
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
@@ -87,6 +91,19 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     selecthandleChange(e){
+        switch(e.target.value){
+            case "sgd":
+            $(".learningCls").prop("disabled",false);
+            break;
+            case "adam":
+            case "lbfgs":
+            $(".learningCls").prop("disabled",true);
+            case "adam":
+
+            default:
+            "";
+
+        }
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
@@ -121,8 +138,17 @@ export class RegressionParameter extends React.Component {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             case "list":
+            debugger;
+            if(parameterData.name=="learning_rate")
+            {
+                console.log("inside learing rate")
+                var cls= "form-control single learningCls"
+            }else{
+
+                 var cls = "form-control single";
+            }
+
             var optionsTemp =[];
-            var cls = "form-control single";
             //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
             let options = parameterData.defaultValue;
             let mName = this.props.metricSelected.name;
