@@ -1411,6 +1411,7 @@ def get_random_model_id(algo_name):
         "GBTree Regression": "GB",
         "Random Forest Regression": "RFR",
         "Linear Regression": "LR",
+        "Neural Network": "NN",
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number ])
