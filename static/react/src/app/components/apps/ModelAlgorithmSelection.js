@@ -110,7 +110,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     var checkboxId = "check"+Index;
                     return(
                          
-                        <div className="col-md-3">
+                        <div className="col-md-algo">
 						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
                             <div className="ma-checkbox">
