@@ -39,7 +39,7 @@ SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
 ]
 
 SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
-    {"name":"adam","selected":False,"displayName":"adam"},
+    {"name":"adam","selected":True,"displayName":"adam"},
     {"name":"lbfgs","selected":False,"displayName":"lbfgs"},
     {"name":"sgd","selected":False,"displayName":"sgd"},
 ]
@@ -604,7 +604,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION],
             "paramType":"list",
             "uiElemType":"checkbox",
-            "display":True if SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION[2]["selected"]==True else False,
+            "display":True,
             "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["string"],
             "allowedDataType":["string"]
