@@ -26,12 +26,15 @@ export class MasterSummary extends React.Component {
 
     var noOfDimention;
     var noOfMeasures;
+    var noOfTimeDimention;
     var summary;
     var mText;
     var dText;
+    var tText;
 
     noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
     noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
+    noOfTimeDimention = this.props.signal.listOfCards[0].cardData.noOfTimeDimensions;
     summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
     var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml; //.toString();
 
@@ -45,6 +48,12 @@ export class MasterSummary extends React.Component {
       mText = "Measures";
     } else {
       mText = "Measure";
+    }
+
+    if (noOfTimeDimention > 1) {
+      tText = "Time Dimensions";
+    } else {
+      tText = "Time Dimension";
     }
 
     let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
@@ -73,13 +82,15 @@ export class MasterSummary extends React.Component {
         </div>
         <div className="main-content">
 		
-		<div class="row xs-pt-50">
-		<div class="col-md-3 col-md-offset-1 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
+		<div class="row md-pt-50">
+		<div class="col-md-3 col-md-offset-1 col-xs-3 wow bounceIn hidden-xs" data-wow-offset="10"  data-wow-iteration="10">
 			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
 		</div>
+
 		<div class="col-md-8">
-			<div class="row xs-mt-50">					
-						<div className="col-md-5 col-md-offset-1 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
+			<div class="row xs-mt-20">
+			<div className="clearfix"></div>
+						<div className="col-md-5 col-md-offset-1 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
 							<div className="box-shadow xs-p-10">							
 							 
 								<div className="col-xs-8">
@@ -95,7 +106,7 @@ export class MasterSummary extends React.Component {
 								<div className="clearfix"></div>
 							</div>
 						</div>
-						<div className="col-md-5 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
+						<div className="col-md-5 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
 							<div className="box-shadow xs-p-10">
 							 
 								<div className="col-xs-8">
@@ -104,6 +115,20 @@ export class MasterSummary extends React.Component {
 								<div className="col-xs-4">
 										<h2 className="text-right"> 							
 										{noOfMeasures}
+										</h2>
+								</div>
+							 <div className="clearfix"></div>
+							</div>
+						</div>
+            <div className="col-md-5 col-md-offset-1 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
+							<div className="box-shadow xs-p-10">
+							 
+								<div className="col-xs-8"> 
+									<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_timeDimension.png"}/> {tText}</h4>
+								</div>
+								<div className="col-xs-4">
+										<h2 className="text-right"> 							
+										{noOfTimeDimention}
 										</h2>
 								</div>
 							 <div className="clearfix"></div>
