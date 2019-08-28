@@ -1234,6 +1234,91 @@ class Trainer(models.Model):
                         for default_values in params['defaultValue']:
                             default_values['selected'] = True
                             break
+
+                ## NEURAL NETWORK CONFIG PARAMETERS
+                # checking for activation
+                if params['name'] == 'activation':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for learning_rate
+                if params['name'] == 'learning_rate':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for shuffle
+                if params['name'] == 'shuffle':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for verbose
+                if params['name'] == 'verbose':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for warm_start
+                if params['name'] == 'warm_start':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for nesterovs_momentum
+                if params['name'] == 'nesterovs_momentum':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for early_stopping
+                if params['name'] == 'early_stopping':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
         return config
 
     def create_configuration_fe_settings(self):
