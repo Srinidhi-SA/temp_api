@@ -82,14 +82,15 @@ export class MasterSummary extends React.Component {
         </div>
         <div className="main-content">
 		
-		<div class="row xs-pt-50">
-		<div class="col-md-3 col-md-offset-1 col-xs-3 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
-			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50 hidden-xs"/>
+		<div class="row md-pt-50">
+		<div class="col-md-3 col-md-offset-1 col-xs-3 wow bounceIn hidden-xs" data-wow-offset="10"  data-wow-iteration="10">
+			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
 		</div>
 
 		<div class="col-md-8">
-			<div class="row xs-mt-30">
-						<div className="col-md-5 col-md-offset-1 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
+			<div class="row xs-mt-20">
+			<div className="clearfix"></div>
+						<div className="col-md-5 col-md-offset-1 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
 							<div className="box-shadow xs-p-10">							
 							 
 								<div className="col-xs-8">
@@ -105,7 +106,7 @@ export class MasterSummary extends React.Component {
 								<div className="clearfix"></div>
 							</div>
 						</div>
-						<div className="col-md-5 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
+						<div className="col-md-5 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
 							<div className="box-shadow xs-p-10">
 							 
 								<div className="col-xs-8">
