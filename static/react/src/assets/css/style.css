@@ -16102,3 +16102,7 @@ div#replaceValues {
 	font-size: 12px;
 	line-height: 20px;
 }
+.epsilonDisable{
+	pointer-events:none;
+	opacity: 0.5;
+}

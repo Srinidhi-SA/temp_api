@@ -55,8 +55,9 @@ export class RegressionParameter extends React.Component {
         $(".disNum").prop("disabled",false);
          $(".learningClsInit").prop("disabled",false);
          $(".earlyStop").prop("disabled",false);
+         $(".multi").prop("disabled",false);
          $(".powerT").prop("disabled",true);
-        //  $(".powerT").hide();
+         $(".fractionCls").prop("disabled",true);
 
 
          
@@ -108,6 +109,8 @@ export class RegressionParameter extends React.Component {
             $(".learningClsInit").prop("disabled",false);
             $(".earlyStop").prop("disabled",false);
             $(".powerT").prop("disabled",false);
+            $(".shuffleCls").prop("disabled",false);
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
             // $(".powerT").show();
 
 
@@ -121,6 +124,9 @@ export class RegressionParameter extends React.Component {
             $(".learningClsInit").prop("disabled",false);
             $(".earlyStop").prop("disabled",false);
             $(".powerT").prop("disabled",true);
+            $(".shuffleCls").prop("disabled",false);
+            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
             // $(".powerT").hide();
 
 
@@ -133,6 +139,9 @@ export class RegressionParameter extends React.Component {
             $(".learningClsInit").prop("disabled",true);
             $(".earlyStop").prop("disabled",true);
             $(".powerT").prop("disabled",true);
+            $(".shuffleCls").prop("disabled",true);
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
             // $(".powerT").hide();
 
 
@@ -142,6 +151,15 @@ export class RegressionParameter extends React.Component {
             "";
 
         }
+
+        if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
+            $(".fractionCls").prop("disabled",false);
+        }
+        else{
+            $(".fractionCls").prop("disabled",true);
+        }
+
+
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
@@ -190,9 +208,11 @@ export class RegressionParameter extends React.Component {
                 var cls= "form-control single learningCls"
                 break;
                 case"early_stopping":
-                cls = "form-control single earlyStop  ";
+                cls = "form-control single earlyStop";
                 break;
-                
+                case"shuffle":
+                cls = "form-control single shuffleCls";
+                break;
                 default:
                 cls= "form-control single";
             }        
@@ -248,6 +268,9 @@ export class RegressionParameter extends React.Component {
                         case "Power T":
                         classN = "form-control powerT" ;
                         break;
+                        case"Validation Fraction":
+                        var  classN= "form-control fractionCls"; 
+                        break;
                         default:
                         classN= "form-control";
                     }                  
@@ -291,15 +314,36 @@ export class RegressionParameter extends React.Component {
                     var step = (1 / Math.pow(10, precision));
                     }
                     if(parameterData.expectedDataType)
+                    
                     var dataTypes = parameterData.expectedDataType;
                     else
                     var dataTypes = ["int"];
+                    switch(parameterData.displayName){
+                        case"Epsilon":
+                        var cls= "col-xs-10 epsilonCls";
+                        break;
+                        case"No of Iteration":
+                        var  cls= "col-xs-10 iterationCls";
+                        break;
+                        default:
+                        var cls = "col-xs-10";
+                        break;
+                    }
+
+            //         if(parameterData.displayName=="Epsilon")
+            // {
+            //     console.log("inside learing rateeeeeeeee")
+            //     var cls= "col-xs-10 epsilonCls"
+            // }else{
+
+            //      var cls = "col-xs-10";
+            // }
                     return (
                             <div className="row">                            
                             <div className="col-md-6 col-sm-2">
                                 
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
-                                    <div className="col-xs-10">
+                                    <div className={cls}>
                                     <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
                                     </div>
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
