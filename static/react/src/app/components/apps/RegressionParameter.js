@@ -55,8 +55,8 @@ export class RegressionParameter extends React.Component {
         $(".disNum").prop("disabled",false);
          $(".learningClsInit").prop("disabled",false);
          $(".earlyStop").prop("disabled",false);
-        //  $(".powerT").prop("disabled",true);
-         $(".powerT").hide();
+         $(".powerT").prop("disabled",true);
+        //  $(".powerT").hide();
 
 
          
@@ -107,8 +107,8 @@ export class RegressionParameter extends React.Component {
             $(".disNum").prop("disabled",true);
             $(".learningClsInit").prop("disabled",false);
             $(".earlyStop").prop("disabled",false);
-            // $(".powerT").prop("disabled",false);
-            $(".powerT").show();
+            $(".powerT").prop("disabled",false);
+            // $(".powerT").show();
 
 
 
@@ -120,8 +120,8 @@ export class RegressionParameter extends React.Component {
             $(".learningCls").prop("disabled",true);
             $(".learningClsInit").prop("disabled",false);
             $(".earlyStop").prop("disabled",false);
-            // $(".powerT").prop("disabled",true);
-            $(".powerT").hide();
+            $(".powerT").prop("disabled",true);
+            // $(".powerT").hide();
 
 
 
@@ -132,8 +132,8 @@ export class RegressionParameter extends React.Component {
             $(".disNum").prop("disabled",true);
             $(".learningClsInit").prop("disabled",true);
             $(".earlyStop").prop("disabled",true);
-            // $(".powerT").prop("disabled",true);
-            $(".powerT").hide();
+            $(".powerT").prop("disabled",true);
+            // $(".powerT").hide();
 
 
 
