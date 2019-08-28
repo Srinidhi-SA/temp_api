@@ -56,7 +56,6 @@ export class RegressionParameter extends React.Component {
          $(".learningClsInit").prop("disabled",false);
          $(".earlyStop").prop("disabled",false);
          $(".powerT").prop("disabled",true);
-        //  $(".powerT").hide();
 
 
          
@@ -121,7 +120,6 @@ export class RegressionParameter extends React.Component {
             $(".learningClsInit").prop("disabled",false);
             $(".earlyStop").prop("disabled",false);
             $(".powerT").prop("disabled",true);
-            // $(".powerT").hide();
 
 
 
@@ -133,7 +131,6 @@ export class RegressionParameter extends React.Component {
             $(".learningClsInit").prop("disabled",true);
             $(".earlyStop").prop("disabled",true);
             $(".powerT").prop("disabled",true);
-            // $(".powerT").hide();
 
 
 
@@ -204,11 +201,58 @@ export class RegressionParameter extends React.Component {
             let mDispName = this.props.metricSelected.displayName;
             let mselected = this.props.metricSelected.selected;
             if(tune){
-                cls = "form-control multi";
+                switch(parameterData.name){
+                    case"learning_rate":
+                    var cls= "form-control single learningCls"
+                    break;  
+                    default:
+                    cls= "form-control multi";
+                }  
+                // cls = "form-control multi";
                 var selectedValue =[];
+                debugger
                for (var prop in options) {
                 if(options[prop].selected)
                 selectedValue.push(options[prop].name)
+
+
+                switch(parameterData.name){
+                    case"solver":
+                    if(options.map(i=>i)[1].selected){ //lbfgs
+                        $(".learningCls").prop("disabled",true);
+                        $(".disNum").prop("disabled",true);
+                        $(".learningClsInit").prop("disabled",true);
+                        $(".powerT").prop("disabled",true); 
+                    }
+                    else if(options.map(i=>i)[0].selected){ //adam
+                            $(".learningCls").prop("disabled",true);
+                            $(".disNum").prop("disabled",false);
+                            $(".learningClsInit").prop("disabled",false);
+                            $(".powerT").prop("disabled",true);
+
+                    }
+                    else if(options.map(i=>i)[2].selected){ //sgd
+                        $(".learningCls").prop("disabled",false);
+                        $(".disNum").prop("disabled",true);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+
+                    }
+                    else{
+                        $(".learningCls").prop("disabled",false);
+                        $(".disNum").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".earlyStop").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                    }
+                    break;
+                    default:
+                       "";
+            
+
+                }
+
+
                 optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
             }
