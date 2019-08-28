@@ -31,15 +31,14 @@ SKLEARN_ML_SUPPORTED_MAX_FEATURES = [
 ##### NEURAL NETWORK PARAMETERS    ####
 
 SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
+    {"name":"relu","selected":False,"displayName":"relu"},
     {"name":"identity","selected":False,"displayName":"identity"},
     {"name":"logistic","selected":False,"displayName":"logistic"},
     {"name":"tanh","selected":False,"displayName":"tanh"},
-    {"name":"relu","selected":False,"displayName":"relu"},
-
 ]
 
 SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
-    {"name":"adam","selected":True,"displayName":"adam"},
+    {"name":"adam","selected":False,"displayName":"adam"},
     {"name":"lbfgs","selected":False,"displayName":"lbfgs"},
     {"name":"sgd","selected":False,"displayName":"sgd"},
 ]
@@ -657,14 +656,14 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "description":"Whether to shuffle samples in each iteration.",
             "defaultValue":[
                  {
+                      "name":"true",
+                      "selected":False,
+                      "displayName":"True"
+                 },
+                 {
                      "name":"false",
                      "selected":False,
                      "displayName":"False"
-                 },
-                 {
-                     "name":"true",
-                     "selected":True,
-                     "displayName":"True"
                  }
             ],
             "paramType":"list",
@@ -769,14 +768,14 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "description": "Whether to use Nesterovs momentum.",
              "defaultValue":[
               {
+                  "name":"true",
+                  "selected":False,
+                  "displayName":"True"
+              },
+              {
                   "name":"false",
                   "selected":False,
                   "displayName":"False"
-              },
-              {
-                  "name":"true",
-                  "selected":True,
-                  "displayName":"True"
               }
              ],
              "paramType":"list",
