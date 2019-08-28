@@ -115,8 +115,8 @@ export class CreateSignal extends React.Component {
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
 
-				<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-pencil-square-o fa-4x"></i></div>
-				<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Create Signal</small></div>
+				 <h2 class="text-center"><i class="fa fa-pencil-square-o fa-2x"></i> Create Signal </h2> 
+				 
 				
 				</div>
 				</div>
