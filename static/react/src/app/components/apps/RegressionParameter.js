@@ -53,6 +53,14 @@ export class RegressionParameter extends React.Component {
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
         $(".disNum").prop("disabled",false);
+         $(".learningClsInit").prop("disabled",false);
+         $(".earlyStop").prop("disabled",false);
+        //  $(".powerT").prop("disabled",true);
+         $(".powerT").hide();
+
+
+         
+
 
     }
     componentDidUpdate(){
@@ -97,14 +105,38 @@ export class RegressionParameter extends React.Component {
             case "sgd":
             $(".learningCls").prop("disabled",false);
             $(".disNum").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",false);
+            $(".earlyStop").prop("disabled",false);
+            // $(".powerT").prop("disabled",false);
+            $(".powerT").show();
+
+
+
+
+
              break;
             case "adam":
             $(".disNum").prop("disabled",false);
             $(".learningCls").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",false);
+            $(".earlyStop").prop("disabled",false);
+            // $(".powerT").prop("disabled",true);
+            $(".powerT").hide();
+
+
+
+
             break;
             case "lbfgs":
             $(".learningCls").prop("disabled",true);
             $(".disNum").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",true);
+            $(".earlyStop").prop("disabled",true);
+            // $(".powerT").prop("disabled",true);
+            $(".powerT").hide();
+
+
+
             break;
             default:
             "";
@@ -144,14 +176,26 @@ export class RegressionParameter extends React.Component {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             case "list":
-            if(parameterData.name=="learning_rate")
-            {
-                console.log("inside learing rate")
-                var cls= "form-control single learningCls"
-            }else{
+            // if(parameterData.name=="learning_rate")
+            // {
+            //     console.log("inside learing rate")
+            //     var cls= "form-control single learningCls"
+            // }else{
 
-                 var cls = "form-control single";
-            }
+            //      var cls = "form-control single";
+            // }
+
+            switch(parameterData.name){
+                case"learning_rate":
+                var cls= "form-control single learningCls"
+                break;
+                case"early_stopping":
+                cls = "form-control single earlyStop  ";
+                break;
+                
+                default:
+                cls= "form-control single";
+            }        
 
             var optionsTemp =[];
             //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
@@ -196,8 +240,13 @@ export class RegressionParameter extends React.Component {
                     switch(parameterData.displayName){
                         case"Beta 1":
                         case"Beta 2":
-                        // case"Elipson":
                         var  classN= "form-control disNum";
+                        break;
+                        case"Learning Rate Initialize":
+                         classN= "form-control learningClsInit";
+                        break;
+                        case "Power T":
+                        classN = "form-control powerT" ;
                         break;
                         default:
                         classN= "form-control";
