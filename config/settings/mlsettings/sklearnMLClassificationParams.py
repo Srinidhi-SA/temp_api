@@ -557,7 +557,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "description": "L2 penalty (regularization term) parameter.",
             "defaultValue":0.0001,
             "acceptedValue":None,
-            "valueRange":[0.1,20.0],
+            "valueRange":[0,5],
             "paramType":"number",
             "uiElemType":"textBox",
             "display":True,
