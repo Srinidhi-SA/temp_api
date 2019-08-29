@@ -135,7 +135,7 @@ export class MasterSummary extends React.Component {
 					</div>
 					
 					<div class="row wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">					
-						<div className="col-md-10 col-md-offset-1">
+						<div className="col-md-12">
 							<div className="xs-pt-50">
 							<Card cardData={summary}/>
 							</div>
@@ -143,7 +143,7 @@ export class MasterSummary extends React.Component {
 					</div>
 					
 					<div class="row wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">					
-						<div className="col-md-10 col-md-offset-1">
+						<div className="col-md-12">
 							<div className="xs-pt-50 text-right">
 							 <Link to={overViewLink} className="btn btn-primary btn-md xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10">
                          <i className="fa fa-file-text-o"></i>  View Summary
