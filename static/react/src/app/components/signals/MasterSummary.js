@@ -82,13 +82,13 @@ export class MasterSummary extends React.Component {
         </div>
         <div className="main-content">
 		
-		<div class="row xs-pt-50">
-		<div class="col-md-3 col-md-offset-1 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
+		<div class="row xs-pt-50" >
+		<div class="col-md-3 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
 			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-9">
 			<div class="row xs-mt-30">					
-						<div className="col-md-5 col-md-offset-1 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
+						<div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
 							<div className="box-shadow xs-p-10">							
 							 
 								<div className="col-xs-8">
@@ -104,7 +104,7 @@ export class MasterSummary extends React.Component {
 								<div className="clearfix"></div>
 							</div>
 						</div>
-						<div className="col-md-5 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
+						<div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
 							<div className="box-shadow xs-p-10">
 							 
 								<div className="col-xs-8">
@@ -118,13 +118,13 @@ export class MasterSummary extends React.Component {
 							 <div className="clearfix"></div>
 							</div>
 						</div>
-            <div className="col-md-5 col-md-offset-1 xs-mt-10 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
+            <div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
 							<div className="box-shadow xs-p-10">
 							 
-								<div className="col-xs-8"> 
+								<div className="col-xs-9"> 
 									<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_timeDimension.png"}/> {tText}</h4>
 								</div>
-								<div className="col-xs-4">
+								<div className="col-xs-3">
 										<h2 className="text-right"> 							
 										{noOfTimeDimention}
 										</h2>
