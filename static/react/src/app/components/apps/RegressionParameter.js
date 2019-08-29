@@ -62,6 +62,7 @@ export class RegressionParameter extends React.Component {
 
 
 
+
          
 
 
@@ -281,6 +282,9 @@ export class RegressionParameter extends React.Component {
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
+                        $(".iterationGrid").prop("disabled",true);
+                        $(".epsilonGrid").prop("disabled",true);
+
 
 
                     }
@@ -291,6 +295,8 @@ export class RegressionParameter extends React.Component {
                             // $(".learningGrid .for_multiselect").addClass("disableGrid");
                            $(".learningGrid .multiselect").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
 
 
 
@@ -303,6 +309,8 @@ export class RegressionParameter extends React.Component {
                         // $(".learningGrid .for_multiselect").removeClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",true);
 
 
 
@@ -316,6 +324,8 @@ export class RegressionParameter extends React.Component {
                         // $(".learningGrid .for_multiselect").removeClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
 
 
 
@@ -394,6 +404,16 @@ export class RegressionParameter extends React.Component {
                 }
                 else if(parameterData.uiElemType == "slider"){
                     if(tune){
+                        switch(parameterData.displayName){
+                            case"Epsilon":
+                        var sliderclassN= "form-control epsilonGrid";
+                        break;
+                        case"No of Iteration":
+                           sliderclassN= "form-control iterationGrid";
+                        break;
+                        default:
+                           sliderclassN="form-control";
+                        }
                         return(
                             <div className="row">                            
                             <div className="col-md-12">
@@ -404,7 +424,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
+                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
