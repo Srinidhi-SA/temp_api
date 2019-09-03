@@ -130,14 +130,13 @@ export class SubSetting extends React.Component {
   }
   changeSliderValue(e) {
     //alert("coming")
-    this.state.curmin = e.target.value[0]
-    $("#from_value").val(this.state.curmin)
-    this.state.curmax = e.target.value[1]
-    $("#to_value").val(this.state.curmax)
-    $("#saveButton").removeClass('btn-alt4')
-    $("#saveButton").addClass('btn-primary')
-    $("#saveButton").removeAttr('disabled')
-
+      this.state.curmin = e.target.value[0]
+      $("#from_value").val(this.state.curmin)
+      this.state.curmax = e.target.value[1]
+      $("#to_value").val(this.state.curmax)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled') 
   }
   changeSliderValueFromText(e) {
     if (isNaN(e.target.value))
@@ -372,24 +371,22 @@ export class SubSetting extends React.Component {
     switch (this.props.item.columnType) {
       case "measure":
         {
-          let measureColumnFilter = this.props.updatedSubSetting.measureColumnFilters
-          if (this.state.alreadyUpdated == true) {
-            this.props.updatedSubSetting.measureColumnFilters.map((changeditem, i) => {
-              if (changeditem.colname == this.props.item.name) {
-                measureColumnFilter[i] = {
-                  "colname": this.props.item.name,
-                  "upperBound": Number(this.state.curmax),
-                  "lowerBound": Number(this.state.curmin),
-                  "filterType": "valueRange"
-                };
-              }
-            });
-            this.state.subSettingRs.measureColumnFilters = measureColumnFilter;
-          } else {
-
-              this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": Number(this.state.curmax), "lowerBound": Number(this.state.curmin), "filterType": "valueRange"});
-              this.state.alreadyUpdated = true
-
+        let measureColumnFilter = this.props.updatedSubSetting.measureColumnFilters
+        if (this.state.alreadyUpdated == true) {
+          this.props.updatedSubSetting.measureColumnFilters.map((changeditem, i) => {
+            if (changeditem.colname == this.props.item.name) {
+              measureColumnFilter[i] = {
+                "colname": this.props.item.name,
+                "upperBound": Number(this.state.curmax),
+                "lowerBound": Number(this.state.curmin),
+                "filterType": "valueRange"
+              };
+            }
+          });
+          this.state.subSettingRs.measureColumnFilters = measureColumnFilter;
+        } else {
+            this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": Number(this.state.curmax), "lowerBound": Number(this.state.curmin), "filterType": "valueRange"});
+            this.state.alreadyUpdated = true
           }
         }
         break;
@@ -439,7 +436,12 @@ export class SubSetting extends React.Component {
         break;
 
     }
-    if ((this.state.curmin < this.state.min) || (this.state.curmax > this.state.max)) {
+    if ((this.state.curmin <= this.state.min) || (this.state.curmin >= this.state.max)) {
+      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }else if((this.state.curmax <= this.state.curmin) || (this.state.curmax > this.state.max)){
       bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
