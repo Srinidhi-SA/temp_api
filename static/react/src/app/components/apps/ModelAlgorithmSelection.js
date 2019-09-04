@@ -95,7 +95,12 @@ export class ModelAlgorithmSelection extends React.Component {
         this.props.dispatch(saveParameterTuning());
     }
     changeHyperParameterType(slug,e){
+        
         this.props.dispatch(changeHyperParameterType(slug,e.target.value));
+        if(e.target.value="none"){
+            $(".learningGrid .for_multiselect").removeClass("disableGrid");
+    
+            }
     }
     render() {
         if(store.getState().apps.modelSummaryFlag){
