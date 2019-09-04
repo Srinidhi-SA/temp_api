@@ -1171,8 +1171,21 @@ class Trainer(models.Model):
 
         for algo in config['ALGORITHM_SETTING']:
 
-            # only checking for logistic regression
-            # if algo['name'] == 'Logistic Regression':
+            # only checking for Neural Network
+            if algo['algorithmName'] == 'Neural Network':
+                # checking for learning_rate
+                for params in algo['parameters']:
+                    if params['name'] == 'learning_rate':
+                        make_some_one_false = True
+                        for default_values in params['defaultValue']:
+                            if default_values['selected'] == True:
+                                make_some_one_false = False
+                                break
+                        if make_some_one_false == True:
+                            for default_values in params['defaultValue']:
+                                default_values['selected'] = True
+                                break
+
             for params in algo['parameters']:
 
                 # checking for fit_intercept
@@ -1248,17 +1261,6 @@ class Trainer(models.Model):
                             default_values['selected'] = True
                             break
 
-                # checking for learning_rate
-                if params['name'] == 'learning_rate':
-                    make_some_one_false = True
-                    for default_values in params['defaultValue']:
-                        if default_values['selected'] == True:
-                            make_some_one_false = False
-                            break
-                    if make_some_one_false == True:
-                        for default_values in params['defaultValue']:
-                            default_values['selected'] = True
-                            break
 
                 # checking for shuffle
                 if params['name'] == 'shuffle':
