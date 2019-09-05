@@ -472,7 +472,7 @@ export class OverViewPage extends React.Component {
           :
 		  
 		  <div className="side-body">		 
-			<div class="sticky-container hidden" id="sticky-container">			 
+			<div class="sticky-container hidden-xs hidden" id="sticky-container">			 
 				<div class="btn-group">
 				  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
 				  <ul role="menu" class="dropdown-menu">
