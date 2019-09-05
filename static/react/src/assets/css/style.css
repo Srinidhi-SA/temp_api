@@ -1205,19 +1205,19 @@ a.btn.disabled, fieldset[disabled] a.btn {
 	background-color: #fff
 }
 .btn-info, .btn-info.focus, .btn-info:focus {
-	background-color: #8dcadf;
-	border-color: #8dcadf;
+	background-color: #1cb4e8;
+	border-color: #1cb4e8;
 	color: #fff
 }
 .btn-info:hover {
 	color: #fff;
-	background-color: #a1d3e5;
-	border-color: #a1d3e5
+	background-color: #12afe4;
+	border-color: #12afe4
 }
 .btn-info.active, .btn-info.active.focus, .btn-info.active:focus, .btn-info.active:hover, .btn-info:active, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open>.dropdown-toggle.btn-info, .open>.dropdown-toggle.btn-info.focus, .open>.dropdown-toggle.btn-info:focus, .open>.dropdown-toggle.btn-info:hover {
 	color: #fff;
-	background-color: #79c1d9;
-	border-color: #79c1d9
+	background-color: #12afe4;
+	border-color: #12afe4
 }
 .btn-info.disabled, .btn-info.disabled.active, .btn-info.disabled.focus, .btn-info.disabled:active, .btn-info.disabled:focus, .btn-info.disabled:hover, .btn-info[disabled], .btn-info[disabled].active, .btn-info[disabled].focus, .btn-info[disabled]:active, .btn-info[disabled]:focus, .btn-info[disabled]:hover, fieldset[disabled] .btn-info, fieldset[disabled] .btn-info.active, fieldset[disabled] .btn-info.focus, fieldset[disabled] .btn-info:active, fieldset[disabled] .btn-info:focus, fieldset[disabled] .btn-info:hover {
 	background-color: #8dcadf;
@@ -15259,9 +15259,10 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-.algSelection .bg-highlight-parent { padding: 10px 15px; height: 310px; border: 1px solid #9fece4; }
+.algSelection .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #f7f7f7; }
 div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: capitalize; padding: 10px; }
-.algSelection .ma-checkbox { background: #ffffff; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17); margin-bottom: 15px;}
+.algSelection .ma-checkbox { margin-bottom: 15px;}
+.algSelection .ma-checkbox label { font-weight:bold; }
 .modal-lg-dimSEdate { width:805px; }
 .modal-lg-dimSEdate .modal-content { max-width:inherit; }
 button.btn.btn-cst_button { border: none; background: transparent; color: #0078ff; padding: 2px 5px; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
@@ -15281,7 +15282,7 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .hideSortImg .sorttable_img { display: none; }
 #pDetail .nav-tabs { border-color:#ddd}
 #pDetail table th, #pDetail table td { text-align:left }
-.tab-content .bgStockBox { margin-right: -4px;}
+.tab-content .bgStockBox { margin-right: -4px; vertical-align:top;}
 
 .pos-relative .dropdown-menu.dropdown-menu-right:before { right: 28px; }
 .pos-relative .dropdown-menu.dropdown-menu-right:after { right: 29px; }
@@ -15358,6 +15359,13 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .newStoryCard h2 { font-size: 1.9em; }
 .newStoryCard h2 .fa {
     vertical-align: middle;
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+  /* For portrait layouts only */
+	.side-body { margin-left: 100px; }
+	.navbar-default.navbar-fixed-top .dropdown {
+    float: right !important; }
 }
 
 
@@ -16165,6 +16173,7 @@ div#replaceValues {
 @media (min-width: 768px){
 .col-md-algo {
     width: 20%;
+	    vertical-align: top;
 }
 }
 .col-md-algo p{
