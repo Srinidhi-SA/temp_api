@@ -76,7 +76,7 @@ export class ModelVariableSelection extends React.Component {
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {
             this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()));
-            let regressionProccedUrl = this.props.match.url + '/modeSelection';
+            let regressionProccedUrl = this.props.match.url + '/dataCleansing';
             this.props.history.push(regressionProccedUrl);
         }
         else
