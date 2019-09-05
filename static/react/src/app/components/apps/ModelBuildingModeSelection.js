@@ -30,17 +30,17 @@ import {statusMessages} from "../../helpers/helper";
 export class ModelBuildingModeSelection extends React.Component {
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-            window.history.go(-1);
-        }
+        // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+        //     window.history.go(-1);
+        // }
     }
     componentDidMount() {
     }
 
     handleModeSelected(selectedMode="automl", event){
-      var proccedUrl = this.props.match.url.replace('modeSelection','Proceed');
+      var proccedUrl = this.props.match.url.replace('modeSelection','autoML/models');
       if(selectedMode != "automl"){
-        proccedUrl = this.props.match.url.replace('modeSelection','dataCleansing');
+        proccedUrl = this.props.match.url.replace('modeSelection','analyst/models');
       }
       this.props.history.push(proccedUrl);
 

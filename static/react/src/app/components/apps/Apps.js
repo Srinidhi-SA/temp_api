@@ -66,14 +66,18 @@ export class Apps extends React.Component {
     this.props.dispatch(getAppsScoreList(1));
     this.props.dispatch(getAppsAlgoList(1));
     if (tabId == "score") {
-      this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores')
+      let modelLink= window.location.href.includes("autoML") ? "/autoML/scores" : "/analyst/scores"
+      console.log(modelLink,"value333333333333333333333")
+      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink )
     } 
     //  else if(tabId == "algo"){
     //     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
     //   }
     
     else{
-      this.props.history.push('/apps/' + this.props.match.params.AppId + '/models')
+      
+      let modelLink= window.location.href.includes("autoML") ? "/autoML/models" : "/analyst/models"
+      this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink)
     }
     // else{
     //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
@@ -102,12 +106,15 @@ export class Apps extends React.Component {
     console.log(this.props);
     var appId = this.props.currentAppId;
     if (store.getState().apps.modelSummaryFlag) {
-      let _link = "/apps/" + this.props.match.params.AppId + '/models/' + store.getState().apps.modelSlug;
+      let modelLink= this.window.location.href.includes("autoML") ? "autoML/models" : "analyst/models"
+      let _link = "/apps/" + this.props.match.params.AppId + {modelLink} + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
     }
 
     if (store.getState().apps.scoreSummaryFlag) {
-      let _link1 = "/apps/" + this.props.match.params.AppId + '/scores/' + store.getState().apps.scoreSlug;
+      let modelLink= this.window.location.href.includes("autoML") ? "autoML/scores" : "analyst/scores"
+
+      let _link1 = "/apps/" + this.props.match.params.AppId + {modelLink} + store.getState().apps.scoreSlug;
       return (<Redirect to={_link1}/>);
     }
     let models = <AppsModelList history={this.props.history} match={this.props.match}/>

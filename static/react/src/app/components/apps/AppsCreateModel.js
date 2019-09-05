@@ -63,9 +63,7 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(updateDatasetName(e.target.value));
     }
 	render() {
-		 console.log("apps create model list is called##########3");
-		    console.log(this.props)
-		const dataSets = store.getState().datasets.allDataSets.data;
+	  const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
 		let hideCreate=false
@@ -74,11 +72,22 @@ export class AppsCreateModel extends React.Component {
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
-			renderSelectBox = <select id="model_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)} class="form-control">
+			renderSelectBox = (<div><select id="model_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)} class="form-control">
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
 			</select>
+
+			{window.location.href.includes("autoML")&&
+			<div>
+				<label>Select target variables:</label>
+				<select className="form-control">
+					<option>test1</option>
+					<option>test2</option>
+				</select>
+				</div>
+				}
+					</div>)
 		}else{
 			renderSelectBox = "No Datasets"
 			if(this.props.selectedDataSrcType=="fileUpload")
@@ -110,7 +119,8 @@ export class AppsCreateModel extends React.Component {
                   {renderSelectBox}
                 </div>*/}
 				<DataSourceList type="model" renderDatasets={renderSelectBox}/>
-				</Modal.Body>
+		
+					</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
                 <Button bsStyle="primary" id="modalCreateButton" disabled={hideCreate} onClick={this.getDataSetPreview.bind(this)}>Create</Button>
