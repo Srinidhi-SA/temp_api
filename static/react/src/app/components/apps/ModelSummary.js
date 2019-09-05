@@ -110,7 +110,7 @@ export class ModelSummary extends React.Component {
             }else{
               return( 
                 story.data.map((data,index)=>{
-                return (<div className="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
+                return (<div className="col-md-5ths col-sm-6 col-xs-12 bgStockBox">
                 <h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
                 <p>{data.description}</p>
                 </div>);
@@ -235,11 +235,11 @@ export class ModelSummary extends React.Component {
       overviewCard=(
         <div class="row">
           <div class="col-md-6">
-            {tableHeading[0]}
+            <div className="sm-ml-15 sm-pb-10">{tableHeading[0]}</div>
             {tableData[0]}
           </div>
           <div class="col-md-6">
-            {tableHeading[1]}
+            <div className="sm-ml-15 sm-pb-10">{tableHeading[1]}</div>
             {tableData[1]}
           </div>
         </div>
