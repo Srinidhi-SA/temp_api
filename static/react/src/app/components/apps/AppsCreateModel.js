@@ -1,5 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
+import {API,STATIC_URL} from "../../helpers/env";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../../helpers/helper";
+
+
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
@@ -30,6 +34,16 @@ export class AppsCreateModel extends React.Component {
 		super(props);
 		this.selectedData="";
 		this._link = "";
+		this.state={
+			autoMlVal:""
+		}
+	}
+
+   getHeader(token){
+		return {
+			'Authorization': token,
+			'Content-Type': 'application/json'
+		};
 	}
 	componentWillMount() {
 		this.props.dispatch(getAllDataList());
@@ -39,8 +53,9 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(clearFeatureEngineering());
 	}
 	openModelPopup(){
+		debugger
 		// if(store.getState().datasets.allDataSets.data)
-    	this.props.dispatch(openModelPopup())
+		this.props.dispatch(openModelPopup());
 		// else {
 		// 	bootbox.alert("No datasets available.Please upload some data or connect to a database")
 		//
@@ -50,6 +65,7 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
+		debugger;
         if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
@@ -57,11 +73,55 @@ export class AppsCreateModel extends React.Component {
             //this.props.dispatch(closeModelPopup())
             this.props.dispatch(dataUpload())
         }
-    }
+	}
+	 fetchDataAutoML(slug) {
+		debugger;
+		return fetch(API+'/api/datasets/'+slug+'/',{
+			method: 'get',
+			headers: this.getHeader(getUserDetailsOrRestart.get().userToken)
+		}).then((response) => response.json())
+		.then((responseJson) => {
+			this.setState({
+				autoMlVal:responseJson
+			})
+			console.log(responseJson.meta_data.uiMetaData.varibaleSelectionArray,"555555555555555555");
+		})
+	}
     updateDataset(e){
-    	this.selectedData = e.target.value;
+		debugger;
+		this.selectedData = e.target.value;
+		this.fetchDataAutoML(e.target.value);
+		// this.levelCountsForAutoMl(e.target.value)
     	this.props.dispatch(updateDatasetName(e.target.value));
-    }
+		console.log("sending request");
+		// this.getDataSetPreview();
+		console.log("Data received");
+
+	}
+	
+//  levelCountsForAutoMl(event) {
+// 	 debu
+// 	var selOption = event.target.childNodes[event.target.selectedIndex];
+// 	var varType = selOption.value;
+// 	var varText = selOption.text;
+// 	var varSlug = selOption.getAttribute("name");
+// 	var levelCounts = null;
+// 	var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+// 	var colStats = [];
+// 	if (varType == "dimension") {
+// 	  for (var i = 0; i < colData.length; i++) {
+// 		if (colData[i].slug == varSlug) {
+// 		  var found = colData[i].columnStats.find(function (element) {
+// 			return element.name == "LevelCount";
+// 		  });
+// 		  if (found != undefined) {
+// 			if (found.value != null)
+// 			  levelCounts = Object.keys(found.value);
+// 		  }
+// 		}
+// 	  }
+// 	}
+//   }
 	render() {
 	  const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
@@ -72,7 +132,8 @@ export class AppsCreateModel extends React.Component {
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
-			renderSelectBox = (<div><select id="model_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)} class="form-control">
+			renderSelectBox = (<div><select id="model_Dataset" name="selectbasic"  onChange={this.updateDataset.bind(this)} class="form-control">
+			<option>--Select dataset--</option>
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
@@ -80,10 +141,28 @@ export class AppsCreateModel extends React.Component {
 
 			{window.location.href.includes("autoML")&&
 			<div>
-				<label>Select target variables:</label>
+				<label>Select target variable:</label>
 				<select className="form-control">
-					<option>test1</option>
-					<option>test2</option>
+				<option>--Select--</option>
+			{
+				this.state.autoMlVal!=""?
+			// this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map(dataSet =>
+			// <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+			// )
+			this.props.currentAppDetails.app_id == 13 ?
+			        this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map((metaItem, metaIndex) => {
+                            if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
+                                return (
+								<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+                            }
+                        }) :
+						this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map((metaItem, metaIndex) => {
+                            if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
+                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+                            }
+                        })
+                    
+			:""}
 				</select>
 				</div>
 				}
@@ -123,7 +202,11 @@ export class AppsCreateModel extends React.Component {
 					</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
+				{window.location.href.includes("autoML")?
+                <Button bsStyle="primary" id="modalCreateButtonAutoML">Create Model</Button>
+                :
                 <Button bsStyle="primary" id="modalCreateButton" disabled={hideCreate} onClick={this.getDataSetPreview.bind(this)}>Create</Button>
+                            }
 				</Modal.Footer>
 				</Modal>
 				</div>
