@@ -29,7 +29,6 @@ export class AppsCreateScore extends React.Component {
 		this.selectedData="";
 	}
 	componentWillMount() {
-		debugger
 		console.log("In model summary");
 		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());

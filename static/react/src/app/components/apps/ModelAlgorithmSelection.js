@@ -103,7 +103,6 @@ export class ModelAlgorithmSelection extends React.Component {
             }
     }
     render() {
-        debugger
         if(store.getState().apps.modelSummaryFlag){
             let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);

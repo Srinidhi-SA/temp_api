@@ -82,7 +82,6 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
-	  debugger
 		if(this.state.showHyperparameterSummary)
 		return(<AppsModelHyperDetail match={this.props.match}/>)
     console.log("apps Model Detail View is called##########3");
@@ -90,7 +89,7 @@ export class AppsModelDetail extends React.Component {
 	 	var showExportPmml = true;
 		var showCreateScore = true;
 		var hyperParameterData;
-    const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
+    const modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
