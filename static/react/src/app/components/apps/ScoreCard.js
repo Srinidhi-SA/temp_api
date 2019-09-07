@@ -63,7 +63,7 @@ export class ScoreCard extends React.Component {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
             if(data.status==FAILED){
-                var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/";
+                var scoreLink = "/apps/" + this.props.match.params.AppId + "/analyst/scores/";
             }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + "/analyst/scores/" + data.slug;
             }

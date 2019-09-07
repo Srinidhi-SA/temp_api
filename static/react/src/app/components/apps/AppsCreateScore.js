@@ -32,7 +32,7 @@ export class AppsCreateScore extends React.Component {
 		console.log("In model summary");
 		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());
-		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/scores"));
+		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/analyst/scores"));
 		this.props.dispatch(hideCreateScorePopup());
 		this.props.dispatch(updateModelSummaryFlag(false));
 	}
@@ -65,7 +65,7 @@ export class AppsCreateScore extends React.Component {
     }
 	render() {
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/scores/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		const dataSets = store.getState().datasets.allDataSets.data;

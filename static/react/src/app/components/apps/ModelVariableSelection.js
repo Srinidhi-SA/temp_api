@@ -110,7 +110,7 @@ export class ModelVariableSelection extends React.Component {
             return elements;
         }).value;
         if (store.getState().apps.modelSummaryFlag) {
-            let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/models/' + store.getState().apps.modelSlug;
+            let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/analyst/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);
         }
         let dataPrev = store.getState().datasets.dataPreview;

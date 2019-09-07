@@ -170,7 +170,7 @@ export class ModelManagement extends React.Component {
 
   _handleKeyPress = (e) => {
       if (e.target.value != "" && e.target.value != null)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
         this.selectedData = $("#project_all").val();
         var pageNo =1;
@@ -181,16 +181,16 @@ export class ModelManagement extends React.Component {
 
   handleSelect(eventKey) {
     if (this.props.algo_search_element) {
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?page='+eventKey+'')
          this.selectedData = $("#project_all").val();
         this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
 
   clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
-    this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
+    this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement');
     this.selectedData = $("#project_all").val();
     this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
@@ -251,7 +251,7 @@ export class ModelManagement extends React.Component {
 
     // mapping of list items into table
    mmTable = this.props.algoList.data.map((item,key )=> {
-        var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
+        var AlgoLink = '/apps/' + this.props.match.params.AppId + '/analyst/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
           <td><label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>

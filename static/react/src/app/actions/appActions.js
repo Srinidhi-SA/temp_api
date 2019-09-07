@@ -566,7 +566,7 @@ export function refreshAppsScoreList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
