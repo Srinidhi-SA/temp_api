@@ -8,11 +8,13 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup} from "../../actions/appActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 import {ACCESSDENIED} from "../../helpers/helper";
+import { hideTargetVariable } from "../../actions/signalActions";
+
 
 
 @connect((store) => {
@@ -35,7 +37,8 @@ export class AppsCreateModel extends React.Component {
 		this.selectedData="";
 		this._link = "";
 		this.state={
-			autoMlVal:""
+			autoMlVal:"",
+			countVal:'',
 		}
 	}
 
@@ -92,36 +95,46 @@ export class AppsCreateModel extends React.Component {
 		this.selectedData = e.target.value;
 		this.fetchDataAutoML(e.target.value);
 		// this.levelCountsForAutoMl(e.target.value)
-    	this.props.dispatch(updateDatasetName(e.target.value));
+		// this.props.dispatch(updateDatasetName(e.target.value));
+		this.levelCountsForAutoMl(e)
 		console.log("sending request");
 		// this.getDataSetPreview();
 		console.log("Data received");
 
 	}
 	
-//  levelCountsForAutoMl(event) {
-// 	 debu
-// 	var selOption = event.target.childNodes[event.target.selectedIndex];
-// 	var varType = selOption.value;
-// 	var varText = selOption.text;
-// 	var varSlug = selOption.getAttribute("name");
-// 	var levelCounts = null;
-// 	var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
-// 	var colStats = [];
-// 	if (varType == "dimension") {
-// 	  for (var i = 0; i < colData.length; i++) {
-// 		if (colData[i].slug == varSlug) {
-// 		  var found = colData[i].columnStats.find(function (element) {
-// 			return element.name == "LevelCount";
-// 		  });
-// 		  if (found != undefined) {
-// 			if (found.value != null)
-// 			  levelCounts = Object.keys(found.value);
-// 		  }
-// 		}
-// 	  }
-// 	}
-//   }
+ levelCountsForAutoMl(event) {
+	 debugger;
+	var selOption = event.target.childNodes[event.target.selectedIndex];
+	var varType = selOption.value;
+	var varText = selOption.text;
+	var varSlug = selOption.getAttribute("name");
+	var levelCounts = null;
+	var colData = this.state.autoMlVal.meta_data.scriptMetaData.columnData;
+	var colStats = [];
+	if (varType == "dimension") {
+	  for (var i = 0; i < colData.length; i++) {
+		if (colData[i].slug == varSlug) {
+		  var found = colData[i].columnStats.find(function (element) {
+			return element.name == "LevelCount";
+		  });
+		  if (found != undefined) {
+			if (found.value != null)
+			//   levelCounts = Object.keys(found.value);
+			  this.setState({
+				countVal:Object.keys(found.value),
+			  })
+			//   console.log(this.state.countVal,"111111122222222222")
+
+		  }
+		}
+	  }
+	}
+  }
+  setPossibleList(event) {
+	this.levelCountsForAutoMl(event);
+	this.props.dispatch(updateSelectedVariable(event));
+}
 	render() {
 	  const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
@@ -142,7 +155,7 @@ export class AppsCreateModel extends React.Component {
 			{window.location.href.includes("autoML")&&
 			<div>
 				<label>Select target variable:</label>
-				<select className="form-control">
+				<select className="form-control" onChange={this.setPossibleList.bind(this)}>
 				<option>--Select--</option>
 			{
 				this.state.autoMlVal!=""?
@@ -164,6 +177,20 @@ export class AppsCreateModel extends React.Component {
                     
 			:""}
 				</select>
+				</div>
+				}
+
+				{window.location.href.includes("autoML")&&
+			<div>
+				<label>Select subvalue:</label>
+				<select className="form-control" id="createModelLevelCount">
+                    <option value="">--Select--</option>
+                    {this.state.countVal!=""?this.state.countVal.map((item, index) => {
+
+                        return (<option key={item} name={item} value={item}>{item}</option>)
+                    }
+                    ):""}
+                </select>
 				</div>
 				}
 					</div>)
