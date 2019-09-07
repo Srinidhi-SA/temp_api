@@ -75,7 +75,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "description":"The minimum number of samples required to split an internal node",
                     "defaultValue":2,
                     "acceptedValue":None,
-                    "valueRange":[2,10],
+                    "valueRange":[0,100],
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True,
@@ -339,6 +339,29 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "expectedDataType": ["bool"],
             "allowedDataType": ["bool"]
         },
+        {
+            "name":"class_weight",
+            "displayName":"Class Weight",
+            "description": "Weights associated with classes of the target column",
+            "defaultValue":[
+             {
+                 "name":"None",
+                 "selected":True,
+                 "displayName":"None"
+             },
+             {
+                 "name":"balanced",
+                 "selected":False,
+                 "displayName":"balanced"
+             }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+        }
 ]
 
 SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
@@ -508,6 +531,29 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
              "expectedDataType": ["float","int"],
              "allowedDataType":["float"]
          },
+         {
+             "name":"class_weight",
+             "displayName":"Class Weight",
+             "description": "Weights associated with classes of the target column",
+             "defaultValue":[
+              {
+                  "name":"None",
+                  "selected":True,
+                  "displayName":"None"
+              },
+              {
+                  "name":"balanced",
+                  "selected":False,
+                  "displayName":"balanced"
+              }
+             ],
+             "paramType":"list",
+             "uiElemType":"checkbox",
+             "display":True,
+             "hyperpatameterTuningCandidate":False,
+             "expectedDataType": ["bool"],
+             "allowedDataType":["bool"]
+         }
 ]
 
 SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
@@ -522,7 +568,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "uiElemType":"slider",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
+            "expectedDataType": ["tuple"],
             "allowedDataType":["int"]
         },
         {
@@ -1062,6 +1108,29 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
+    {
+        "name":"class_weight",
+        "displayName":"Class Weight",
+        "description": "Weights associated with classes of the target column",
+        "defaultValue":[
+         {
+             "name":"None",
+             "selected":True,
+             "displayName":"None"
+         },
+         {
+             "name":"balanced",
+             "selected":False,
+             "displayName":"balanced"
+         }
+        ],
+        "paramType":"list",
+        "uiElemType":"checkbox",
+        "display":True,
+        "hyperpatameterTuningCandidate":False,
+        "expectedDataType": ["bool"],
+        "allowedDataType":["bool"]
+    }
 ]
 
 SKLEARN_ML_NAIVE_BAYES_PARAMS = [
