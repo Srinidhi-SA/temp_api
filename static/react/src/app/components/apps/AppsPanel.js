@@ -210,8 +210,8 @@ export class AppsPanel extends React.Component {
             <div>
 
               <div className="app-block">
-                <Link onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} className="app-link" to={data.app_url}>
-
+                {/* <Link onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} className="app-link" to={data.app_url}> */}
+                <Link className="app-link" to={data.app_url.replace("/models","") + "/modeSelection"}>
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
                   </div>

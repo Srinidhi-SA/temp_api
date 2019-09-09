@@ -182,21 +182,36 @@ class App extends React.Component {
     const trainer = (props) => {
       if (this.hasTrainerRoutePermission()) {
         switch (props.match.path) {
-          case "/apps/:AppId/models":
+          case "/apps/:AppId/analyst/models":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/models?page=:slug":
+            case "/apps/:AppId/autoML/models":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/models?page=:slug":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/models/:slug":
+            case "/apps/:AppId/autoML/models?page=:slug":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/models/:slug":
             {
               return (<AppsModelHyperDetail {...props}/>)
             }
             break;
+            case "/apps/:AppId/autoML/models/:slug":
+              {
+                return (<AppsModelHyperDetail {...props}/>)
+              }
+              break;
 
         }
 
@@ -213,26 +228,46 @@ class App extends React.Component {
     const score = (props) =>  {
       if (this.hasScoreRoutePermission()) {
         switch (props.match.path) {
-          case "/apps/:AppId/scores":
+          case "/apps/:AppId/analyst/scores":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores?page=:slug":
+            case "/apps/:AppId/autoML/scores":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/scores?page=:slug":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores/:slug":
+            case "/apps/:AppId/autoML/scores?page=:slug":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/analyst/scores/:slug":
             {
               return (<AppsScoreDetail {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores/:slug/dataPreview":
+            case "/apps/:AppId/autoML/scores/:slug":
+            {
+              return (<AppsScoreDetail {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/analyst/scores/:slug/dataPreview":
             {
               return (<DataPreviewLeftPanel {...props}/>)
             }
             break;
+            case "/apps/:AppId/autoML/scores/:slug/dataPreview":
+              {
+                return (<DataPreviewLeftPanel {...props}/>)
+              }
+              break;
         }
 
       } else if (this.hasTrainerRoutePermission()) {
@@ -293,8 +328,10 @@ class App extends React.Component {
             <Route exact path="/data/:slug" render={data}/>
             <Route exact path="/apps" component={AppsPanel}/>
             <Route exact path="/apps?page=:slug" component={AppsPanel}/>
-            <Route exact path="/apps/:AppId/models" render={trainer}/>
-            <Route exact path="/apps/:AppId/scores" render={score}/>
+            <Route exact path="/apps/:AppId/autoML/models" render={trainer}/>
+            <Route exact path="/apps/:AppId/analyst/models" render={trainer}/>
+            <Route exact path="/apps/:AppId/autoML/scores" render={score}/>
+            <Route exact path="/apps/:AppId/analyst/scores" render={score}/>
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
@@ -329,7 +366,8 @@ class App extends React.Component {
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
+            {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/> */}
+            <Route exact path="/apps/:AppId/modeSelection" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
