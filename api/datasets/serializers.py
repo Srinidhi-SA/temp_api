@@ -129,6 +129,8 @@ class DataNameListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(DataNameListSerializer, self).to_representation(instance)
+        #metadata=json.loads(instance.meta_data)
+        #ret['Target']=metadata['headers']
         return ret
 
     class Meta:
