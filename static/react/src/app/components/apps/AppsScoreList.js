@@ -75,7 +75,7 @@ export class AppsScoreList extends React.Component {
             //console.log('searching in data list');
             
             if (e.target.value != "" && e.target.value != null)
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/scores?search=' + e.target.value + '')
                 
                 this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
@@ -86,10 +86,10 @@ export class AppsScoreList extends React.Component {
         if (e.target.value == "" || e.target.value == null) {
             this.props.dispatch(storeScoreSearchElement(""));
             this.props.dispatch(getAppsScoreList(1));
-            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores'+ '')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/scores'+ '')
             
         } else if (e.target.value.length > SEARCHCHARLIMIT) {
-            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores?search=' + e.target.value+'')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/scores?search=' + e.target.value+'')
             this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
         }
@@ -99,7 +99,7 @@ export class AppsScoreList extends React.Component {
     }
     
     doSorting(sortOn, type){
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?sort=' + sortOn + '&type='+type);
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/scores?sort=' + sortOn + '&type='+type);
         
         this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
         this.props.dispatch(getAppsScoreList(1));
@@ -221,11 +221,11 @@ export class AppsScoreList extends React.Component {
     }
     handleSelect(eventKey) {
         if (this.props.score_search_element) {
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
         }  else if(this.props.apps_score_sorton){
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
         }else
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/scores?page=' + eventKey + '')
             
           //  this.props.dispatch(activateModelScoreTabs(2));
         this.props.dispatch(getAppsScoreList(eventKey));
@@ -233,9 +233,9 @@ export class AppsScoreList extends React.Component {
     clearSearchElement(e){
         this.props.dispatch(storeScoreSearchElement(""));
         if(this.props.apps_score_sorton)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
         else
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores');
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/scores');
         this.props.dispatch(getAppsScoreList(1));
     }
 }
