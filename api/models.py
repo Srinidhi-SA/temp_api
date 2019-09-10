@@ -879,7 +879,12 @@ class Trainer(models.Model):
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
-        config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
+        if self.mode=='autoML':
+            fe_default_settings=copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
+            dc_default_settings=copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+            config['config']['FEATURE_SETTINGS']={"DATA_CLEANSING":fe_default_settings,"FEATURE_ENGINEERING":dc_default_settings}
+        else:
+            config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
@@ -973,7 +978,7 @@ class Trainer(models.Model):
                 variable['targetColumn'] = True
                 break
         self.config = json.dumps(config)
-        self.save()        
+        self.save()
 
     def apply_changes_of_selectedVariables_into_variable_selection(self):
         config = self.get_config()
