@@ -445,7 +445,7 @@ export function updateTrainAndTest(trainValue) {
   return { type: "UPDATE_MODEL_RANGE", trainValue, testValue }
 }
 
-export function createModel(modelName, targetVariable, targetLevel) {
+export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {
   console.log(modelName);
   console.log(targetVariable);
   /*if($('#createModelAnalysisList option:selected').val() == ""){
@@ -456,7 +456,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
 
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
-    return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel, dispatch).then(([response, json]) => {
+    return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
         console.log(json)
         dispatch(createModelSuccess(json, dispatch))
@@ -470,10 +470,16 @@ export function createModel(modelName, targetVariable, targetLevel) {
   }
 }
 
-function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
-  var datasetSlug = store.getState().datasets.dataPreview.slug;
+function triggerCreateModel(token, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch) {
+  if(mode=="autoML"){
+   var  datasetSlug=datasetSlug
+  }else{
+   var datasetSlug = store.getState().datasets.dataPreview.slug;
+  }
+
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
+  if(mode!="autoML"){
   if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
     if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
       var validationTechnique = {
@@ -522,6 +528,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
       "trainValue": store.getState().apps.trainValue,
       "testValue": store.getState().apps.testValue,
       "targetLevel": targetLevel,
+      "targetColumn":targetVariable,
       "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
       /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
@@ -538,6 +545,74 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
     dispatch(updateModelSummaryFlag(false));
     bootbox.alert("Unable to connect to server. Check your connection please try again.")
   });
+}else{
+    if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
+    if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
+      var validationTechnique = {
+        "name": "kFold",
+        "displayName": "K Fold Validation",
+        "value": 2
+      }
+    }
+    else {
+      var validationTechnique = {
+        "name": "trainAndtest",
+        "displayName": "Train and Test",
+        "value": (50/100)
+      }
+    }
+		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+		 debugger;
+    var details = {
+      "ALGORITHM_SETTING": AlgorithmSettings,
+      "validationTechnique": validationTechnique,
+			"targetLevel": targetLevel,
+			"targetColumn":targetVariable,
+      "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+    }
+  }
+  else {
+    var details = {
+      "trainValue":50,
+      "testValue": 50,
+			"targetColumn":targetVariable,
+      "targetLevel": targetLevel,
+      "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+    }
+  }
+  
+		return fetch(API+'/api/trainer/',{
+			method: 'POST',
+			headers: getHeader(token),
+			body: JSON.stringify({ "name":modelName, "dataset": datasetSlug, "app_id":app_id, "config": details,"mode":mode })
+  }).then(response => Promise.all([response, response.json()])).catch(function (error) {
+      dispatch(closeAppsLoaderValue());
+      dispatch(updateModelSummaryFlag(false));
+      bootbox.alert("Unable to connect to server. Check your connection please try again.")
+    });
+//   .then((response) => response.json())
+// 	.then((responseJson) => {
+// 	console.log(responseJson,"99999999009090909090909")
+// 	if (responseJson.status === 200) {
+// 		console.log(json,"pop should")
+// 		dispatch(createModelSuccess(responseJson, dispatch))
+// 	}
+// })
+
+// return fetch(API + '/api/trainer/', {
+//   method: 'post',
+//   headers: getHeader(token),
+//   body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "config": details })
+// }).then(response => Promise.all([response, response.json()])).catch(function (error) {
+//   dispatch(closeAppsLoaderValue());
+//   dispatch(updateModelSummaryFlag(false));
+//   bootbox.alert("Unable to connect to server. Check your connection please try again.")
+// }
+		
+
+
+
+}
 }
 function createModelSuccess(data, dispatch) {
   var slug = data.slug;
@@ -2131,9 +2206,10 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
   return { type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName, targetType, levelCount }
 }
 
-export function getRegressionAppAlgorithmData(slug, appType) {
+export function getRegressionAppAlgorithmData(slug, appType,mode) {
+  debugger;
   return (dispatch) => {
-    return triggerRegressionAppAlgorithmAPI(appType).then(([response, json]) => {
+    return triggerRegressionAppAlgorithmAPI(appType,mode).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(saveRegressionAppAlgorithmData(json));
       }
@@ -2141,13 +2217,13 @@ export function getRegressionAppAlgorithmData(slug, appType) {
   }
 }
 
-function triggerRegressionAppAlgorithmAPI(appType) {
+function triggerRegressionAppAlgorithmAPI(appType,mode) {
   let metricVal = store.getState().apps.metricSelected.name;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));*/
-  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal, {
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal+'&mode='+mode, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));

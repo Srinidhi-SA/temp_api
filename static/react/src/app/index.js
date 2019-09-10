@@ -335,7 +335,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
-            <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/analyst/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
