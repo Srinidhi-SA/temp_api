@@ -810,6 +810,7 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
+    mode = models.CharField(max_length=10, null=True,blank=True)
 
     data = models.TextField(default="{}")
 
@@ -851,11 +852,16 @@ class Trainer(models.Model):
 
 
         #changes in UI given config
-        self.apply_changes_of_selectedVariables_into_variable_selection()
+        if self.mode=='analyst':
+            self.apply_changes_of_selectedVariables_into_variable_selection()
 
         config = {
             "config": {}
         }
+
+        if self.mode=='autoML':
+            self.get_targetColumn_for_variableSelection_autoML()
+
         #creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
@@ -958,6 +964,17 @@ class Trainer(models.Model):
 
     # Changes to be done on variable_selection of UI given config before using it for ML/API config
     # In selectedVariables key of UI config, we selected/unselected columns
+    def get_targetColumn_for_variableSelection_autoML(self):
+        config = self.get_config()
+        targetColumn = config['targetColumn']
+        variablesSelection = config['variablesSelection']
+        for variable in variablesSelection:
+            if variable['name'] == targetColumn:
+                variable['targetColumn'] = True
+                break
+        self.config = json.dumps(config)
+        self.save()        
+
     def apply_changes_of_selectedVariables_into_variable_selection(self):
         config = self.get_config()
         selectedVariables = config['selectedVariables']

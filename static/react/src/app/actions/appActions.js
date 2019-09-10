@@ -566,7 +566,7 @@ export function refreshAppsScoreList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -2142,12 +2142,13 @@ export function getRegressionAppAlgorithmData(slug, appType) {
 }
 
 function triggerRegressionAppAlgorithmAPI(appType) {
+  let modeType = window.location.href.includes("analyst")? "analyst" : "autoML"
   let metricVal = store.getState().apps.metricSelected.name;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));*/
-  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal, {
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal +'&mode=' +modeType, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));

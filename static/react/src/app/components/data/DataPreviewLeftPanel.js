@@ -32,7 +32,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	render() {
 		console.log("score data preview is called##########3");
 		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + this.props.match.params.slug;
+		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/analyst/scores/" + this.props.match.params.slug;
 		const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";

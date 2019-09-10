@@ -32,7 +32,7 @@ export class AppsCreateScore extends React.Component {
 		console.log("In model summary");
 		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());
-		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/scores"));
+		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/analyst/scores"));
 		this.props.dispatch(hideCreateScorePopup());
 		this.props.dispatch(updateModelSummaryFlag(false));
 	}

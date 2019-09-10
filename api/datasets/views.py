@@ -67,6 +67,14 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = request.data
         data = convert_to_string(data)
 
+        if data['mode']=='autoML':
+            self.mode='autoML'
+        elif data['mode']=='analyst':
+            self.mode='analyst'
+        else:
+            self.mode='analyst'
+        self.save()
+
         if 'name' in data:
             should_proceed = name_check(data['name'])
             if should_proceed < 0:

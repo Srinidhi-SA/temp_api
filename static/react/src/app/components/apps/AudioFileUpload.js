@@ -51,12 +51,8 @@ export class AudioFileUpload extends React.Component {
 				<div class="col-md-3 top20 list-boxes" onClick={this.showAudioFUPopup.bind(this)}>
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
-				<div class="card-center newStoryCard">
-				
-				 
-				<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-file-audio-o fa-4x"></i></div>
-				<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Analyse Speech</small></div>
-				
+				<div class="card-center newStoryCard">				
+				 <h2 class="text-center"><i class="fa fa-file-audio-o fa-2x"></i> Analyse Speech </h2> 				
 				</div>
 				</div>
 				

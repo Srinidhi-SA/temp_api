@@ -110,7 +110,7 @@ export class SignalDocumentMode extends React.Component {
       let cardModeLink = "/signals/" + this.props.match.params.slug + "/" + firstOverviewSlug;
       if(regression_app){
       var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
-      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/analyst/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
       }
       if (objs) {
         return (

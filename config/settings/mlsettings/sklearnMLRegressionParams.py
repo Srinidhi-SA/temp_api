@@ -184,7 +184,7 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                     "description":"The minimum number of samples required to split an internal node",
                     "defaultValue":2,
                     "acceptedValue":None,
-                    "valueRange":[2,10],
+                    "valueRange":[0,100],
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True,
