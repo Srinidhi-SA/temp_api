@@ -858,6 +858,10 @@ class Trainer(models.Model):
         config = {
             "config": {}
         }
+
+        if self.mode=='autoML':
+            self.get_targetColumn_for_variableSelection_autoML()
+
         #creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
@@ -960,6 +964,17 @@ class Trainer(models.Model):
 
     # Changes to be done on variable_selection of UI given config before using it for ML/API config
     # In selectedVariables key of UI config, we selected/unselected columns
+    def get_targetColumn_for_variableSelection_autoML(self):
+        config = self.get_config()
+        targetColumn = config['targetColumn']
+        variablesSelection = config['variablesSelection']
+        for variable in variablesSelection:
+            if variable['name'] == targetColumn:
+                variable['targetColumn'] = True
+                break
+        self.config = json.dumps(config)
+        self.save()        
+
     def apply_changes_of_selectedVariables_into_variable_selection(self):
         config = self.get_config()
         selectedVariables = config['selectedVariables']

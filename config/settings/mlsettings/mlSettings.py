@@ -440,7 +440,7 @@ AUTOML_ALGORITHM_LIST_REGRESSION={
       },
       {
         "algorithmName": "Neural Network",
-        "selected": False,
+        "selected": True,
         "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
         "algorithmSlug": ALGORITHMRANDOMSLUG+"mlp",
         "hyperParameterSetting":SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
@@ -491,7 +491,7 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
         },
         {
             "algorithmName": "Neural Network",
-            "selected": False,
+            "selected": True,
             "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
