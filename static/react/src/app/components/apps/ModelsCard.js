@@ -61,9 +61,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
                     if(data.status==FAILED){
-                        var modelLink = "/apps/"+this.props.match.params.AppId+"/models/";
-                    }else{
-                        var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
+                        var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/";
+                    }else{   
+                        var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/" + data.slug;
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";

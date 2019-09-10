@@ -89,7 +89,7 @@ export class DataPreview extends React.Component {
         text: "Close"
       };
       this.buttons['create'] = {
-        url: "/apps/" + this.props.match.params.AppId + "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+        url: "/apps/" + this.props.match.params.AppId + "/analyst/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
         text: CREATESCORE
       };
     } else if (this.props.match.path.includes("models") && this.props.match.path.includes("slug")) {
@@ -98,7 +98,7 @@ export class DataPreview extends React.Component {
         text: "Close"
       };
       this.buttons['create'] = {
-        url: "/apps/" + this.props.match.params.AppId + "/models/data/" + this.props.match.params.slug + "/createModel",
+        url: "/apps/" + this.props.match.params.AppId + "/analyst/models/data/" + this.props.match.params.slug + "/createModel",
         text: CREATEMODEL
       };
     } else if (this.props.match.path.includes("robo")) {

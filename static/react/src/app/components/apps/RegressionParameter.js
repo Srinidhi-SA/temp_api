@@ -187,7 +187,6 @@ export class RegressionParameter extends React.Component {
     changeTextboxValue(e){
         console.log($(".momentumCls").val(),"above statement class")
 
-        debugger;
         // if(($(".momentumCls").val())<0){
         //     $(".nesterovsCls").prop("disabled",true);
         // }
