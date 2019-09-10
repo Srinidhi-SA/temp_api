@@ -810,6 +810,7 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
+    mode = models.CharField(max_length=10, null=True,blank=True)
 
     data = models.TextField(default="{}")
 
@@ -851,7 +852,8 @@ class Trainer(models.Model):
 
 
         #changes in UI given config
-        self.apply_changes_of_selectedVariables_into_variable_selection()
+        if self.mode=='analyst':
+            self.apply_changes_of_selectedVariables_into_variable_selection()
 
         config = {
             "config": {}

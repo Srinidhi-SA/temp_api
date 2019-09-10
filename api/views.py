@@ -5571,7 +5571,6 @@ def get_algorithm_config_list(request):
         #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
         elif app_type =="CLASSIFICATION" and mode=='analyst':
-            print "I am here"
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
             algoArray = algorithm_config_list["ALGORITHM_SETTING"]
             tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
@@ -5581,7 +5580,6 @@ def get_algorithm_config_list(request):
             for obj in algoArray:
                 obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
         elif app_type =="REGRESSION" and mode=='analyst':
-            print "I am here too"
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
             algoArray = algorithm_config_list["ALGORITHM_SETTING"]
             tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
@@ -5593,7 +5591,7 @@ def get_algorithm_config_list(request):
         else:
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
     except Exception as e:
-        print e        
+        print e
 
     # changes for metrics
     metric_obj = None

@@ -346,7 +346,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "defaultValue":[
              {
                  "name":"None",
-                 "selected":True,
+                 "selected":False,
                  "displayName":"None"
              },
              {
@@ -538,7 +538,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
              "defaultValue":[
               {
                   "name":"None",
-                  "selected":True,
+                  "selected":False,
                   "displayName":"None"
               },
               {
@@ -1115,7 +1115,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "defaultValue":[
          {
              "name":"None",
-             "selected":True,
+             "selected":False,
              "displayName":"None"
          },
          {

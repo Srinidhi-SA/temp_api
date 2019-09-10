@@ -676,7 +676,7 @@ AUTOML_SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
              "defaultValue":[
               {
                   "name":"None",
-                  "selected":True,
+                  "selected":False,
                   "displayName":"None"
               },
               {
@@ -923,7 +923,7 @@ AUTOML_SKLEANR_ML_RF_CLASSIFICATION_PARAMS = AUTOML_SKLEARN_ML_TREE_BASED_CLASSI
             "defaultValue":[
              {
                  "name":"None",
-                 "selected":True,
+                 "selected":False,
                  "displayName":"None"
              },
              {
