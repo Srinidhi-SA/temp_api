@@ -284,7 +284,7 @@ class App extends React.Component {
       } else if (this.hasTrainerRoutePermission()) {
         let model_url = "/apps"
         if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "analyst/models"
+          model_url = "/apps/" + props.match.params.AppId + "/analyst/models"
         return (<Redirect to={model_url}/>)
       } else {
         return (<Redirect to="/apps"/>)
