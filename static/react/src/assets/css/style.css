@@ -16187,3 +16187,12 @@ div#replaceValues {
 	pointer-events:none;
 	opacity: 0.5;
 }
+.pt-10{
+	padding-top: 10px;
+}
+.pb-2{
+	margin-bottom: 2px;
+}
+.pt-10{
+	margin-top: 10px;
+}

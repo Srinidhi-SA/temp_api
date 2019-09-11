@@ -8,8 +8,8 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess} from "../../actions/appActions";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering} from "../../actions/dataActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel} from "../../actions/appActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering,dispatchDataPreviewAutoML} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 import {ACCESSDENIED} from "../../helpers/helper";
@@ -54,13 +54,14 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(closeModelPopup());
 		this.props.dispatch(clearDataCleansing());
 		this.props.dispatch(clearFeatureEngineering());
-		// if(window.location.href.includes("autoML")){
-		// 	this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type,'autoML'));
-		// }
+		if(window.location.href.includes("autoML")){
+			this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type,'autoML'));
+		}
 
 
 	}
 	openModelPopup(){
+		debugger
 		// if(store.getState().datasets.allDataSets.data)
 		this.props.dispatch(openModelPopup());
 		// else {
@@ -72,6 +73,7 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
+		debugger;
         if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
@@ -82,63 +84,67 @@ export class AppsCreateModel extends React.Component {
 	}
 // function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
 
-	submitAutoMlVal(val){
+	submitAutoMlVal(mode){
 		var target=store.getState().signals.getVarText;
-		var dataset=model_Dataset.value;
+		var datasetSlug=model_Dataset.value;
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
-	  console.log(val,dataset,target,levelCount,"passed the string")
-  if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
-    if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
-      var validationTechnique = {
-        "name": "kFold",
-        "displayName": "K Fold Validation",
-        "value": 2
-      }
-    }
-    else {
-      var validationTechnique = {
-        "name": "trainAndtest",
-        "displayName": "Train and Test",
-        "value": (50/100)
-      }
-    }
-		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-    var details = {
-      "ALGORITHM_SETTING": AlgorithmSettings,
-      "validationTechnique": validationTechnique,
-			"targetLevel": levelCount,
-			"targetColumn":target,
-      "variablesSelection": this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
-    }
-  }
-  else {
-    var details = {
-      "trainValue":50,
-      "testValue": 50,
-			"targetColumn":target,
-      "targetLevel": levelCount,
-      "variablesSelection":this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
-    }
-  }
+		debugger;
+	 this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
+		// console.log(val,dataset,target,levelCount,"passed the string")
+//   if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
+//     if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
+//       var validationTechnique = {
+//         "name": "kFold",
+//         "displayName": "K Fold Validation",
+//         "value": 2
+//       }
+//     }
+//     else {
+//       var validationTechnique = {
+//         "name": "trainAndtest",
+//         "displayName": "Train and Test",
+//         "value": (50/100)
+//       }
+//     }
+// 		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+// 		 debugger;
+//     var details = {
+//       "ALGORITHM_SETTING": AlgorithmSettings,
+//       "validationTechnique": validationTechnique,
+// 			"targetLevel": levelCount,
+// 			"targetColumn":target,
+//       "variablesSelection": this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
+//     }
+//   }
+//   else {
+//     var details = {
+//       "trainValue":50,
+//       "testValue": 50,
+// 			"targetColumn":target,
+//       "targetLevel": levelCount,
+//       "variablesSelection":this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
+//     }
+//   }
   
-		return fetch(API+'/api/trainer/',{
-			method: 'POST',
-			headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-			body: JSON.stringify({ "name":modelName, "dataset": dataset, "app_id":app_id, "config": details,"mode":"autoML" })
-	}).then((response) => response.json())
-	.then((responseJson) => {
-	console.log(responseJson,"99999999009090909090909")
-	if (responseJson.status === 200) {
-		console.log(json,"pop should")
-		dispatch(createModelSuccess(responseJson, dispatch))
-	}
-})
+// 		return fetch(API+'/api/trainer/',{
+// 			method: 'POST',
+// 			headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+// 			body: JSON.stringify({ "name":modelName, "dataset": dataset, "app_id":app_id, "config": details,"mode":"autoML" })
+// 	}).then((response) => response.json())
+// 	.then((responseJson) => {
+// 	console.log(responseJson,"99999999009090909090909")
+// 	if (responseJson.status === 200) {
+// 		console.log(json,"pop should")
+// 		dispatch(createModelSuccess(responseJson, dispatch))
+// 	}
+// })
 		
 
 	}
 	 fetchDataAutoML(slug) {
+		debugger;
 		return fetch(API+'/api/datasets/'+slug+'/',{
 			method: 'get',
 			headers: this.getHeader(getUserDetailsOrRestart.get().userToken)
@@ -147,14 +153,21 @@ export class AppsCreateModel extends React.Component {
 			this.setState({
 				autoMlVal:responseJson
 			})
+			
 			console.log(responseJson.meta_data.uiMetaData.varibaleSelectionArray,"555555555555555555");
+			this.props.dispatch(dispatchDataPreviewAutoML(responseJson,"1dnjnsj"));
 		})
 	}
     updateDataset(e){
+		debugger;
 		this.selectedData = e.target.value;
 		this.fetchDataAutoML(e.target.value);
+		// this.levelCountsForAutoMl(e.target.value)
+		// this.props.dispatch(updateDatasetName(e.target.value));
 		this.levelCountsForAutoMl(e)
-		console.log("sending request")
+		console.log("sending request");
+		// this.getDataSetPreview();
+		console.log("Data received");
 
 	}
 	
@@ -171,12 +184,15 @@ export class AppsCreateModel extends React.Component {
 	this.props.dispatch(updateSelectedVariable(event));
 }
 	render() {
+		debugger;
 	  const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
 		let hideCreate=false
-		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
+		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")){
+			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
+			debugger;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"analyst/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
@@ -189,13 +205,16 @@ export class AppsCreateModel extends React.Component {
 
 			{window.location.href.includes("autoML")&&
 			<div>
-				<label>Model Name</label>
+				<label className="pb-2 pt-10">Model Name</label>
             <input type="text" className="form-control" placeholder="model name" id="modelName"></input>
-				<label>Select target variable:</label>
+				<label className="pb-2 pt-10">Select target variable:</label>
 				<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
 				<option>--Select--</option>
 			{
 				this.state.autoMlVal!=""?
+			// this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map(dataSet =>
+			// <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+			// )
 			this.props.currentAppDetails.app_id == 13 ?
 			        this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map((metaItem, metaIndex) => {
                             if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
@@ -213,7 +232,7 @@ export class AppsCreateModel extends React.Component {
 				</select>
 {this.state.countVal!=""&&
 <div>
-				<label>Select subvalue:</label>
+				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
                     <option value="">--Select--</option>
                     {this.state.countVal!=""?this.state.countVal.map((item, index) => {

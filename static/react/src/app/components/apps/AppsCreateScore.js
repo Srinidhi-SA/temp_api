@@ -104,7 +104,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 				  <div class="form-group">
-				  <label>Select an existing dataset</label>
+				  <label className="pb-2">Select an existing dataset</label>
 	              {renderSelectBox}
 	              <br/>
 	              <label>Select a Model</label>

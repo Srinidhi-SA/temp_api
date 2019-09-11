@@ -62,7 +62,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 var appsModelList = modelList.map((data, i) => {
                     if(data.status==FAILED){
                         var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/";
-                    }else{   
+                    }else{
                         var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/" + data.slug;
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>

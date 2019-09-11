@@ -228,6 +228,13 @@ function dispatchDataPreview(dataPreview,slug){
         slug,
     }
 }
+export function dispatchDataPreviewAutoML(dataPreview,slug){
+    return {
+        type: "DATA_PREVIEW_AUTOML",
+        dataPreview,
+        slug,
+    }
+}
 
 function dispatchDataPreviewLoadingMsg(dataPreview){
     let message = dataPreview.message
