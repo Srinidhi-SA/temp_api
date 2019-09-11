@@ -1,6 +1,7 @@
 import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
@@ -18,6 +19,7 @@ class LeftPanel extends React.Component {
     console.log(props);
   }
   componentDidMount() {
+    // this.props.dispatch(updateAnalystModeSelectedFlag(false));
     console.log("Main side navbar props:::");
     console.log(this);
     if(this.props.location.pathname.indexOf("/apps-") >= 0)
@@ -28,6 +30,8 @@ class LeftPanel extends React.Component {
   }
 
   hideDataPrev(e) {
+    debugger;
+    this.props.dispatch(updateAnalystModeSelectedFlag(false));
     this.props.dispatch(hideDataPreview());
     this.props.dispatch(emptySignalAnalysis());
     //clear all search elements

@@ -19,7 +19,8 @@ import {
   updateAudioFileSummaryFlag,
   updateAppsFilterList,
   getAppsFilteredList,
-  clearDataPreview
+  clearDataPreview,
+  updateAnalystModeSelectedFlag,
 } from "../../actions/appActions";
 import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import {
@@ -73,7 +74,9 @@ export class AppsPanel extends React.Component {
     } else
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
+    // this.props.dispatch(updateAnalystModeSelectedFlag(false));
   }
+
   onChangeAppsSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(appsStoreSearchEle(""));
@@ -211,7 +214,7 @@ export class AppsPanel extends React.Component {
 
               <div className="app-block">
                 {/* <Link onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} className="app-link" to={data.app_url}> */}
-                <Link className="app-link" to={data.app_url.replace("/models","") + "/modeSelection"}>
+                <Link className="app-link" onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to={data.app_url.replace("/models","") + "/modeSelection"}>
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
                   </div>
