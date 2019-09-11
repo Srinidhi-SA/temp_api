@@ -162,7 +162,7 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False, db_index=True)
+    created_by = models.ForeignKey(User, null=True, db_index=True)
     deleted = models.BooleanField(default=False)
     subsetting = models.BooleanField(default=False, blank=True)
 
@@ -201,6 +201,8 @@ class Dataset(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
+        if self.created_by is None:
+            self.created_by = User.objects.get(id=4)
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
@@ -860,6 +862,11 @@ class Trainer(models.Model):
         }
 
         if self.mode=='autoML':
+            #import pdb;pdb.set_trace()
+            dataset_slug=self.dataset.slug
+            #print "#############################"
+            #print dataset_slug
+            #print "#############################"
             self.get_targetColumn_for_variableSelection_autoML()
 
         #creating new config for ML/API using UI given config
@@ -873,16 +880,25 @@ class Trainer(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-        if (self.app_id in settings.REGRESSION_APP_ID):
-            config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
-        elif self.app_id in settings.CLASSIFICATION_APP_ID:
-            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
+        try:
+            if self.mode == 'autoML' and (self.app_id in settings.CLASSIFICATION_APP_ID):
+                algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)
+                config['config'] = algorithm_config_list
+            elif self.mode == 'autoML' and (self.app_id in settings.REGRESSION_APP_ID):
+                algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
+                config['config'] = algorithm_config_list
+        except:
+            if (self.app_id in settings.REGRESSION_APP_ID):
+                config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+            elif self.app_id in settings.CLASSIFICATION_APP_ID:
+                config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
         if self.mode=='autoML':
+            from config.settings import feature_engineering_settings
             fe_default_settings=copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
             dc_default_settings=copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
-            config['config']['FEATURE_SETTINGS']={"DATA_CLEANSING":fe_default_settings,"FEATURE_ENGINEERING":dc_default_settings}
+            config['config']['FEATURE_SETTINGS']={"DATA_CLEANSING":dc_default_settings,"FEATURE_ENGINEERING":fe_default_settings}
         else:
             config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
