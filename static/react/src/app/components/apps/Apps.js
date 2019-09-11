@@ -108,16 +108,15 @@ export class Apps extends React.Component {
     if (store.getState().apps.modelSummaryFlag) {
       //Checking for flag and routing
       debugger;
-      let modelLink= this.props.match.path.includes("autoML") ? "autoML/models" : "analyst/models"
-      let _link = "/apps/" + this.props.match.params.AppId + {modelLink} + store.getState().apps.modelSlug;
+      let modelLink= this.props.match.path.includes("autoML") ? "/autoML/models/" : "/analyst/models/"
+      let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
     }
 
     if (store.getState().apps.scoreSummaryFlag) {
       //Checking for flag and routing
-      let modelLink= this.props.match.path.includes("autoML") ? "autoML/scores" : "analyst/scores"
-
-      let _link1 = "/apps/" + this.props.match.params.AppId + {modelLink} + store.getState().apps.scoreSlug;
+      let modelLink= this.props.match.path.includes("autoML") ? "/autoML/scores/" : "/analyst/scores/"
+      let _link1 = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.scoreSlug;
       return (<Redirect to={_link1}/>);
     }
     let models = <AppsModelList history={this.props.history} match={this.props.match}/>
