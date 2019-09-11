@@ -189,9 +189,9 @@ export class AppsCreateModel extends React.Component {
 
 			{window.location.href.includes("autoML")&&
 			<div>
-				<label>Model Name</label>
+				<label className="pb-2 pt-10">Model Name</label>
             <input type="text" className="form-control" placeholder="model name" id="modelName"></input>
-				<label>Select target variable:</label>
+				<label className="pb-2 pt-10">Select target variable:</label>
 				<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
 				<option>--Select--</option>
 			{
@@ -213,7 +213,7 @@ export class AppsCreateModel extends React.Component {
 				</select>
 {this.state.countVal!=""&&
 <div>
-				<label>Select subvalue:</label>
+				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
                     <option value="">--Select--</option>
                     {this.state.countVal!=""?this.state.countVal.map((item, index) => {

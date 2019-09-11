@@ -95,7 +95,7 @@ export class DataSourceList extends React.Component {
         let formList = null;
         var divId = "data_upload_" + i;
         var dataSrcType = data.dataSourceType
-				let msg=<div><label>Select an existing dataset</label>{this.props.renderDatasets}</div>
+				let msg=<div><label className="pb-2">Select an existing dataset</label>{this.props.renderDatasets}</div>
 				if(this.props.renderDatasets == "No Datasets")
 				msg=<div><label>No datasets available.Please upload some data or connect to a database</label></div>
         const fieldsList = fields.map((field, j) => {
@@ -103,7 +103,7 @@ export class DataSourceList extends React.Component {
             if (this.props.renderDatasets) {
               return (
                 <div>
-                  <div class="form-group col-md-10 xs-pt-50 xs-pl-30">
+                  <div class="form-group col-md-10 pt-10 xs-pl-30">
                     {msg}
                   </div>
                   <div className="clearfix"></div>
