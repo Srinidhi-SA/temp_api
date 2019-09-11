@@ -89,7 +89,7 @@ export class AppsModelDetail extends React.Component {
 	 	var showExportPmml = true;
 		var showCreateScore = true;
 		var hyperParameterData;
-    const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
+    const modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;

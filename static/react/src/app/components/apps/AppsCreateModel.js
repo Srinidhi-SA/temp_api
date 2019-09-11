@@ -172,33 +172,12 @@ export class AppsCreateModel extends React.Component {
 	}
 	
  levelCountsForAutoMl(event) {
-	 debugger;
 	var selOption = event.target.childNodes[event.target.selectedIndex];
-	var varType = selOption.value;
 	var varText = selOption.text;
-	var varSlug = selOption.getAttribute("name");
-	var levelCounts = null;
-	var colData = this.state.autoMlVal.meta_data.scriptMetaData.columnData;
-	var colStats = [];
-	if (varType == "dimension") {
-	  for (var i = 0; i < colData.length; i++) {
-		if (colData[i].slug == varSlug) {
-		  var found = colData[i].columnStats.find(function (element) {
-			return element.name == "LevelCount";
-		  });
-		  if (found != undefined) {
-			if (found.value != null)
-			//   levelCounts = Object.keys(found.value);
-			  this.setState({
-				countVal:Object.keys(found.value),
-			  })
-			//   console.log(this.state.countVal,"111111122222222222")
-
+	var option = this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
+	var category= Object.keys(option);	
+	this.setState({countVal:category});
 		  }
-		}
-	  }
-	}
-	}
 	
   setPossibleList(event) {
 	this.levelCountsForAutoMl(event);
@@ -213,7 +192,7 @@ export class AppsCreateModel extends React.Component {
 		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")){
 			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
 			debugger;
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/models/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"analyst/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
@@ -226,9 +205,9 @@ export class AppsCreateModel extends React.Component {
 
 			{window.location.href.includes("autoML")&&
 			<div>
-				<label>Model Name</label>
+				<label className="pb-2 pt-10">Model Name</label>
             <input type="text" className="form-control" placeholder="model name" id="modelName"></input>
-				<label>Select target variable:</label>
+				<label className="pb-2 pt-10">Select target variable:</label>
 				<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
 				<option>--Select--</option>
 			{
@@ -251,12 +230,9 @@ export class AppsCreateModel extends React.Component {
                     
 			:""}
 				</select>
-				</div>
-				}
-
-				{window.location.href.includes("autoML")&&
-			<div>
-				<label>Select subvalue:</label>
+{this.state.countVal!=""&&
+<div>
+				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
                     <option value="">--Select--</option>
                     {this.state.countVal!=""?this.state.countVal.map((item, index) => {
@@ -265,8 +241,11 @@ export class AppsCreateModel extends React.Component {
                     }
                     ):""}
                 </select>
+								</div>
+}
 				</div>
 				}
+
 					</div>)
 		}else{
 			renderSelectBox = "No Datasets"

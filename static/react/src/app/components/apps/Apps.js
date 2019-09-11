@@ -91,11 +91,11 @@ export class Apps extends React.Component {
     {
       this.props.dispatch(getAppsAlgoList(1));
       this.props.dispatch(refreshAppsAlgoList(this.props));
-     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
+     this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/modelManagement');
     }else{
       this.props.dispatch(getAppsAlgoList(1));
       this.props.dispatch(refreshAppsAlgoList(this.props));
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement');
+    this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/modelManagement');
     }
   }
 

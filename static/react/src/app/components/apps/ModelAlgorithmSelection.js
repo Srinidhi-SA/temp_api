@@ -104,7 +104,7 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     render() {
         if(store.getState().apps.modelSummaryFlag){
-            let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/models/'+store.getState().apps.modelSlug;
+            let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/analyst/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
         }
         var algorithmData = this.props.manualAlgorithmData;
