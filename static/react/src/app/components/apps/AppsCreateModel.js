@@ -155,9 +155,11 @@ export class AppsCreateModel extends React.Component {
 	}
     updateDataset(e){
 		this.selectedData = e.target.value;
-		this.fetchDataAutoML(e.target.value);
+		if(!store.getState().apps.analystModeSelectedFlag){
+			this.fetchDataAutoML(e.target.value);
+		}
 		// this.levelCountsForAutoMl(e.target.value)
-		// this.props.dispatch(updateDatasetName(e.target.value));
+		this.props.dispatch(updateDatasetName(e.target.value));
 		this.levelCountsForAutoMl(e)
 		console.log("sending request");
 		// this.getDataSetPreview();
