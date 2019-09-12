@@ -89,8 +89,8 @@ export class AppsModelDetail extends React.Component {
 	 	var showExportPmml = true;
 		var showCreateScore = true;
 		var hyperParameterData;
-	let link = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
-	const modelLink = "/apps/"+this.props.match.params.AppId+ link + "/models";
+	let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
+	const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
