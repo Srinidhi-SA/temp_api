@@ -105,11 +105,11 @@ export class Apps extends React.Component {
     console.log(this.props);
     var appId = this.props.currentAppId;
     if (store.getState().apps.modelSummaryFlag && this.props.location.pathname.includes("models")) {
-      let modelLink = this.props.location.pathname.includes("autoML") ? "autoML/models" : "/analyst/models/";
+      let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML/models/" : "/analyst/models/";
       let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
     }else if (store.getState().apps.scoreSummaryFlag) {
-      let modelLink= this.props.location.pathname.includes("autoML") ? "autoML/scores" : "/analyst/scores/"
+      let modelLink= this.props.location.pathname.includes("autoML") ? "/autoML/scores/" : "/analyst/scores/"
       let _link1 = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.scoreSlug;
       return (<Redirect to={_link1}/>);
     }
