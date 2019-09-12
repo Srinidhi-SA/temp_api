@@ -61,7 +61,6 @@ export class AppsCreateModel extends React.Component {
 
 	}
 	openModelPopup(){
-		debugger
 		// if(store.getState().datasets.allDataSets.data)
 		this.props.dispatch(openModelPopup());
 		// else {
@@ -73,7 +72,6 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
-		debugger;
         if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
@@ -90,7 +88,6 @@ export class AppsCreateModel extends React.Component {
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
-		debugger;
 	 this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
 		// console.log(val,dataset,target,levelCount,"passed the string")
 //   if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
@@ -109,7 +106,6 @@ export class AppsCreateModel extends React.Component {
 //       }
 //     }
 // 		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-// 		 debugger;
 //     var details = {
 //       "ALGORITHM_SETTING": AlgorithmSettings,
 //       "validationTechnique": validationTechnique,
@@ -144,7 +140,6 @@ export class AppsCreateModel extends React.Component {
 
 	}
 	 fetchDataAutoML(slug) {
-		debugger;
 		return fetch(API+'/api/datasets/'+slug+'/',{
 			method: 'get',
 			headers: this.getHeader(getUserDetailsOrRestart.get().userToken)
@@ -159,7 +154,6 @@ export class AppsCreateModel extends React.Component {
 		})
 	}
     updateDataset(e){
-		debugger;
 		this.selectedData = e.target.value;
 		this.fetchDataAutoML(e.target.value);
 		// this.levelCountsForAutoMl(e.target.value)
@@ -184,14 +178,12 @@ export class AppsCreateModel extends React.Component {
 	this.props.dispatch(updateSelectedVariable(event));
 }
 	render() {
-		debugger;
 	  const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
 		let hideCreate=false
 		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")){
 			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
-			debugger;
 			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
