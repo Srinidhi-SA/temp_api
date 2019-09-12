@@ -50,8 +50,9 @@ export class AppsScoreDetail extends React.Component {
   render() {
     console.log("apps Score Detail View is called##########3");
 	let scoreSummary = store.getState().apps.scoreSummary;
-    let scoreLink = "/apps/"+this.props.match.params.AppId+"/analyst/scores";
-    let scoreDataLink = "/apps/"+this.props.match.params.AppId+"/analyst/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+	let slink = window.location.pathname.includes("analyst")?"/analyst":"/autoML";
+    let scoreLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores";
+    let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
     var showViewButton = true;
     var showDownloadButton = true;
     console.log(scoreSummary)

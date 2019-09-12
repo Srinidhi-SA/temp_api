@@ -473,13 +473,9 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
   }
 }
 
-function triggerCreateModel(token, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch) {
-  if(mode=="autoML"){
-   var  datasetSlug=datasetSlug
-  }else{
-   var datasetSlug = store.getState().datasets.dataPreview.slug;
-  }
-
+function triggerCreateModel(token, modelName, targetVariable, targetLevel, datasetSlug,mode,dispatch) {
+  // let modeType = window.location.pathname.includes("analyst")? "analyst":"autoML";
+  var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
   if(mode!="autoML"){
@@ -542,7 +538,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel,datase
   return fetch(API + '/api/trainer/', {
     method: 'post',
     headers: getHeader(token),
-    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "config": details })
+    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "mode": mode, "config": details })
   }).then(response => Promise.all([response, response.json()])).catch(function (error) {
     dispatch(closeAppsLoaderValue());
     dispatch(updateModelSummaryFlag(false));
