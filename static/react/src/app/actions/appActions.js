@@ -44,6 +44,9 @@ function getHeader(token) {
   return { 'Authorization': token, 'Content-Type': 'application/json' };
 }
 
+export function onModeSelection() {
+  return { type: "MODE_SELECTION" }
+}
 export function openModelPopup() {
   return { type: "APPS_MODEL_SHOW_POPUP" }
 }

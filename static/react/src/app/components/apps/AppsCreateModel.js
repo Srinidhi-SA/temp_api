@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel} from "../../actions/appActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel,onModeSelection} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering,dispatchDataPreviewAutoML} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
@@ -192,7 +192,7 @@ export class AppsCreateModel extends React.Component {
 		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")){
 			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
 			debugger;
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"analyst/models/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
