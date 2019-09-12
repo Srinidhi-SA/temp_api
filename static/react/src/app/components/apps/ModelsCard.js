@@ -60,10 +60,11 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
+                    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
                     if(data.status==FAILED){
-                        var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/";
+                        var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/";
                     }else{
-                        var modelLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/" + data.slug;
+                        var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/" + data.slug;
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
