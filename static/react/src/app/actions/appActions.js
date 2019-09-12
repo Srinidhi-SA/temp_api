@@ -471,6 +471,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
 }
 
 function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
+  let modeType = window.location.pathname.includes("analyst")? "analyst":"autoML";
   var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
@@ -532,7 +533,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
   return fetch(API + '/api/trainer/', {
     method: 'post',
     headers: getHeader(token),
-    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "config": details })
+    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "mode": modeType, "config": details })
   }).then(response => Promise.all([response, response.json()])).catch(function (error) {
     dispatch(closeAppsLoaderValue());
     dispatch(updateModelSummaryFlag(false));
