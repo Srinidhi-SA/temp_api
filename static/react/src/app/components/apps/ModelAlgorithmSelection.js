@@ -70,8 +70,9 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(msg);
                 return false;
             }
-            else
-            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,"analyst"));
+            else{
+            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
+            }
         }
 
     }

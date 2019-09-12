@@ -880,18 +880,10 @@ class Trainer(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-        try:
-            if self.mode == 'autoML' and (self.app_id in settings.CLASSIFICATION_APP_ID):
-                algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)
-                config['config'] = algorithm_config_list
-            elif self.mode == 'autoML' and (self.app_id in settings.REGRESSION_APP_ID):
-                algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
-                config['config'] = algorithm_config_list
-        except:
-            if (self.app_id in settings.REGRESSION_APP_ID):
-                config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
-            elif self.app_id in settings.CLASSIFICATION_APP_ID:
-                config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
+        if (self.app_id in settings.REGRESSION_APP_ID):
+            config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
         if self.mode=='autoML':
