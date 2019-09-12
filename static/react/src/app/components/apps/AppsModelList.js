@@ -73,24 +73,26 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
         }
         _handleKeyPress = (e) => {
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             if (e.key === 'Enter') {
                 //console.log('searching in data list');
                 if (e.target.value != "" && e.target.value != null)
-                    this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?search=' + e.target.value + '')
-                    
+                    this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/models?search=' + e.target.value + '')
                     this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
                 
             }
         }
         onChangeOfSearchBox(e){
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+
             if(e.target.value==""||e.target.value==null){
                 this.props.dispatch(storeModelSearchElement(""));
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models'+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models'+'')
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + e.target.value + '')
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
@@ -100,7 +102,9 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
         }
         
         doSorting(sortOn, type){
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?sort=' + sortOn + '&type='+type);
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+            
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
             
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
@@ -218,20 +222,24 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }
         }
         handleSelect(eventKey) {
+            debugger;
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if (this.props.model_search_element) {
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?page='+eventKey+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?page='+eventKey+'')
                 this.props.dispatch(getAppsModelList(eventKey));
         }
         clearSearchElement(e){
+            debugger;
             this.props.dispatch(storeModelSearchElement(""));
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if(this.props.apps_model_sorton)
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
             else
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/models');
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models');
             this.props.dispatch(getAppsModelList(1));
         }
     }
