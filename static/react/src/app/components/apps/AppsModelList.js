@@ -222,7 +222,6 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }
         }
         handleSelect(eventKey) {
-            debugger;
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if (this.props.model_search_element) {
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
@@ -233,7 +232,6 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
                 this.props.dispatch(getAppsModelList(eventKey));
         }
         clearSearchElement(e){
-            debugger;
             this.props.dispatch(storeModelSearchElement(""));
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if(this.props.apps_model_sorton)

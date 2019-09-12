@@ -30,7 +30,6 @@ class LeftPanel extends React.Component {
   }
 
   hideDataPrev(e) {
-    debugger;
     this.props.dispatch(updateAnalystModeSelectedFlag(false));
     this.props.dispatch(hideDataPreview());
     this.props.dispatch(emptySignalAnalysis());

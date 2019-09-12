@@ -107,7 +107,6 @@ export class Apps extends React.Component {
     var appId = this.props.currentAppId;
     if (store.getState().apps.modelSummaryFlag) {
       //Checking for flag and routing
-      debugger;
       let modelLink= this.props.match.path.includes("autoML") ? "/autoML/models/" : "/analyst/models/"
       let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);

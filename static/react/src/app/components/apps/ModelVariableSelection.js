@@ -80,7 +80,7 @@ export class ModelVariableSelection extends React.Component {
             this.props.history.push(regressionProccedUrl);
         }
         else
-            this.props.dispatch(createModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()))
+            this.props.dispatch(createModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val(),'analyst'))
     }
     setPossibleList(event) {
         this.props.dispatch(showLevelCountsForTarget(event))

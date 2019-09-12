@@ -48,7 +48,6 @@ export class AppsScoreList extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
     componentWillMount() {
-        debugger;
      if(this.props.match.path.includes("analyst")) {
     this.props.dispatch(updateAnalystModeSelectedFlag(true));
       }

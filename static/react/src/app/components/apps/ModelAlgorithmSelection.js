@@ -71,7 +71,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 return false;
             }
             else
-            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
+            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,"analyst"));
         }
 
     }
@@ -104,7 +104,6 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     render() {
         if(store.getState().apps.modelSummaryFlag){ 
-            debugger;
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+modeSelected+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);

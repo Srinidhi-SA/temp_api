@@ -82,7 +82,6 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
-		debugger;
 		if(this.state.showHyperparameterSummary)
 		return(<AppsModelHyperDetail match={this.props.match}/>)
     console.log("apps Model Detail View is called##########3");

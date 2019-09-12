@@ -565,7 +565,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel,datase
       }
     }
 		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-		 debugger;
     var details = {
       "ALGORITHM_SETTING": AlgorithmSettings,
       "validationTechnique": validationTechnique,
@@ -2213,7 +2212,6 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
 }
 
 export function getRegressionAppAlgorithmData(slug, appType,mode) {
-  debugger;
   return (dispatch) => {
     return triggerRegressionAppAlgorithmAPI(appType,mode).then(([response, json]) => {
       if (response.status === 200) {
