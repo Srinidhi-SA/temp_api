@@ -99,8 +99,6 @@ export class DataPreview extends React.Component {
         text: "Close"
       };
       var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-
-      
       this.buttons['create'] = {
         url: "/apps/" + this.props.match.params.AppId + modeSelected+"/models/data/" + this.props.match.params.slug + "/createModel",
         text: CREATEMODEL
