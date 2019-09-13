@@ -83,7 +83,7 @@ export class AppsCreateModel extends React.Component {
 // function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
 
 	submitAutoMlVal(mode){
-		var target=store.getState().signals.getVarText;
+		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
