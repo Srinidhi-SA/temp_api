@@ -88,8 +88,19 @@ export class AppsCreateModel extends React.Component {
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
-	  this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
-    this.props.dispatch(closeModelPopup())
+		if ($("#model_Dataset").val() === "--Select dataset--") {
+			bootbox.alert("Please select dataset");
+		} else if (modelName === "") {
+			bootbox.alert("Please enter model name");
+		} else if ($("#createModelTarget").val() === "--Select--") {
+			bootbox.alert("Please select target variable");
+		} else if (levelCount === "--Select--") {
+			bootbox.alert("Please select sub value");
+		} else {
+			this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
+			this.props.dispatch(closeModelPopup())
+		}
+    
 		
 
 	}
@@ -181,7 +192,7 @@ export class AppsCreateModel extends React.Component {
 <div>
 				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
-                    <option value="">--Select--</option>
+                    <option>--Select--</option>
                     {this.state.countVal!=""?this.state.countVal.map((item, index) => {
 
                         return (<option key={item} name={item} value={item}>{item}</option>)
