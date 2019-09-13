@@ -62,10 +62,12 @@ export class ScoreCard extends React.Component {
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+           
             if(data.status==FAILED){
-                var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/";
+                var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "scores/";
             }else{
-            var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
+            var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
             var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status)}>{data.name}</Link>;
             var percentageDetails = "";

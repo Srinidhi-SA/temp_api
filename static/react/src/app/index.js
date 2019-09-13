@@ -165,10 +165,26 @@ class App extends React.Component {
               return (<DataPreview {...props}/>)
             }
             break;
+            case "/apps/:AppId/analyst/models/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+            break;
           case "/apps/:AppId/models/:modelSlug/data/:slug":
             {
               return (<DataPreview {...props}/>)
             }
+            break;
+          case "/apps/:AppId/analyst/models/:modelSlug/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+            break;
+            case "/apps/:AppId/autoML/models/:modelSlug/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+            break;
         }
 
       } else if (this.hasSignalRoutePermission()) {
@@ -182,28 +198,43 @@ class App extends React.Component {
     const trainer = (props) => {
       if (this.hasTrainerRoutePermission()) {
         switch (props.match.path) {
-          case "/apps/:AppId/models":
+          case "/apps/:AppId/analyst/models":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/models?page=:slug":
+            case "/apps/:AppId/autoML/models":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/models?page=:slug":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/models/:slug":
+            case "/apps/:AppId/autoML/models?page=:slug":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/models/:slug":
             {
               return (<AppsModelHyperDetail {...props}/>)
             }
             break;
+            case "/apps/:AppId/autoML/models/:slug":
+              {
+                return (<AppsModelHyperDetail {...props}/>)
+              }
+              break;
 
         }
 
       } else if (this.hasScoreRoutePermission()) {
         let score_url = "/apps"
         if (props.match.params.AppId)
-          score_url = "/apps/" + props.match.params.AppId + "/scores"
+          score_url = "/apps/" + props.match.params.AppId + "/analyst/scores"
         return (<Redirect to={score_url}/>)
       } else {
         return (<Redirect to="/apps"/>)
@@ -213,32 +244,53 @@ class App extends React.Component {
     const score = (props) =>  {
       if (this.hasScoreRoutePermission()) {
         switch (props.match.path) {
-          case "/apps/:AppId/scores":
+          case "/apps/:AppId/analyst/scores":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores?page=:slug":
+            case "/apps/:AppId/autoML/scores":
+              {
+                return (<Apps {...props}/>)
+              }
+              break;
+          case "/apps/:AppId/analyst/scores?page=:slug":
             {
               return (<Apps {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores/:slug":
+            case "/apps/:AppId/autoML/scores?page=:slug":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/analyst/scores/:slug":
             {
               return (<AppsScoreDetail {...props}/>)
             }
             break;
-          case "/apps/:AppId/scores/:slug/dataPreview":
+            case "/apps/:AppId/autoML/scores/:slug":
+            {
+              return (<AppsScoreDetail {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/analyst/scores/:slug/dataPreview":
             {
               return (<DataPreviewLeftPanel {...props}/>)
             }
             break;
+            case "/apps/:AppId/autoML/scores/:slug/dataPreview":
+              {
+                return (<DataPreviewLeftPanel {...props}/>)
+              }
+              break;
         }
 
       } else if (this.hasTrainerRoutePermission()) {
         let model_url = "/apps"
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
         if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "/models"
+          model_url = "/apps/" + props.match.params.AppId +modeSelected+"/models"
         return (<Redirect to={model_url}/>)
       } else {
         return (<Redirect to="/apps"/>)
@@ -250,22 +302,23 @@ class App extends React.Component {
     const modelmanagement = (props) => {
       if (this.hasScoreRoutePermission()) {
         switch (props.match.path) {
-          case "/apps/" + props.match.params.AppId + "/modelManagement/:slug":
+          case "/apps/" + props.match.params.AppId + "/analyst/modelManagement/:slug":
             {
               return (<ModelSummary {...props}/>)
             }
             break;
-            case "/apps/" + props.match.params.AppId + "/modelManagement":
+            case "/apps/" + props.match.params.AppId + "/analyst/modelManagement":
             {
               return (<ModelManagement {...props}/>)
             }
             break;
+            
         }
 
       } else if (this.hasTrainerRoutePermission()) {
         let model_url = "/apps"
         if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "/modelManagement"
+          model_url = "/apps/" + props.match.params.AppId + "/analyst/modelManagement"
         return (<Redirect to={model_url}/>)
       } else {
         return (<Redirect to="/apps"/>)
@@ -293,13 +346,22 @@ class App extends React.Component {
             <Route exact path="/data/:slug" render={data}/>
             <Route exact path="/apps" component={AppsPanel}/>
             <Route exact path="/apps?page=:slug" component={AppsPanel}/>
-            <Route exact path="/apps/:AppId/models" render={trainer}/>
-            <Route exact path="/apps/:AppId/scores" render={score}/>
+            <Route exact path="/apps/:AppId/autoML/models" render={trainer}/>
+            <Route exact path="/apps/:AppId/analyst/models" render={trainer}/>
+            <Route exact path="/apps/:AppId/autoML/scores" render={score}/>
+            <Route exact path="/apps/:AppId/analyst/scores" render={score}/>
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
+            <Route exact path="/apps/:AppId/analyst/scores?page=:slug" render={score}/>
+            <Route exact path="/apps/:AppId/autoML/models/data/:slug/createModel" component={ModelVariableSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel" component={ModelVariableSelection}/>
             <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
-            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/autoML/models/:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/autoML/scores/:slug" render={score}/>
+            <Route exact path="/apps/:AppId/analyst/scores/:slug" render={score}/>
+            <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
             <Route exact path="/feature-engineering/:slug" render={data}/>
@@ -307,14 +369,15 @@ class App extends React.Component {
             <Route exact path="/data/:slug/createSignal" render={data}/>
             <Route exact path="/signals?page=:slug" render={signals}/>
             <Route exact path="/signals?search=:slug" render={signals}/>
-            <Route exact path="/apps/:AppId/models/data/:slug" render={data}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug" render={data}/>
             <Route exact path="/apps-robo" component={RoboInsightList}/>
             <Route exact path="/apps-robo-list/:roboSlug/:tabName/data/:slug" component={RoboDataUploadPreview}/>
             <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode}/>
-            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" render={data}/>
+            <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug" render={data}/>
+            <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug" render={data}/>
             <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview}/>
             <Route exact path="/apps-robo-list" component={RoboInsightList}/>
             <Route exact path="/apps/audio" component={AudioFileList}/>
@@ -328,12 +391,20 @@ class App extends React.Component {
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
+            <Route exact path="/apps/:AppId/analyst/scores/:slug/dataPreview" render={score}/>
+            <Route exact path="/apps/:AppId/autoML/scores/:slug/dataPreview" render={score}/>
+             {/* above line was not added for autoMl*/}
+
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
+            {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/> */}
+            <Route exact path="/apps/:AppId/modeSelection" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
-            <Route exact path="/apps/:AppId/modelManagement" component={ModelManagement}/>
-            <Route exact path="/apps/:AppId/modelManagement/:slug" component={ModelSummary}/> 
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
+            <Route exact path="/apps/:AppId/analyst/modelManagement" component={ModelManagement}/>
+            <Route exact path="/apps/:AppId/analyst/modelManagement/:slug" component={ModelSummary}/> 
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>

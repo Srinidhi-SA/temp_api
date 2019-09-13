@@ -162,7 +162,7 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False, db_index=True)
+    created_by = models.ForeignKey(User, null=True, db_index=True)
     deleted = models.BooleanField(default=False)
     subsetting = models.BooleanField(default=False, blank=True)
 
@@ -201,6 +201,8 @@ class Dataset(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
+        if self.created_by is None:
+            self.created_by = User.objects.get(id=4)
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
@@ -810,6 +812,7 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
+    mode = models.CharField(max_length=10, null=True,blank=True)
 
     data = models.TextField(default="{}")
 
@@ -851,11 +854,21 @@ class Trainer(models.Model):
 
 
         #changes in UI given config
-        self.apply_changes_of_selectedVariables_into_variable_selection()
+        if self.mode=='analyst':
+            self.apply_changes_of_selectedVariables_into_variable_selection()
 
         config = {
             "config": {}
         }
+
+        if self.mode=='autoML':
+            #import pdb;pdb.set_trace()
+            dataset_slug=self.dataset.slug
+            #print "#############################"
+            #print dataset_slug
+            #print "#############################"
+            self.get_targetColumn_for_variableSelection_autoML()
+
         #creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
@@ -873,7 +886,13 @@ class Trainer(models.Model):
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
-        config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
+        if self.mode=='autoML':
+            from config.settings import feature_engineering_settings
+            fe_default_settings=copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
+            dc_default_settings=copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+            config['config']['FEATURE_SETTINGS']={"DATA_CLEANSING":dc_default_settings,"FEATURE_ENGINEERING":fe_default_settings}
+        else:
+            config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
@@ -958,6 +977,17 @@ class Trainer(models.Model):
 
     # Changes to be done on variable_selection of UI given config before using it for ML/API config
     # In selectedVariables key of UI config, we selected/unselected columns
+    def get_targetColumn_for_variableSelection_autoML(self):
+        config = self.get_config()
+        targetColumn = config['targetColumn']
+        variablesSelection = config['variablesSelection']
+        for variable in variablesSelection:
+            if variable['name'] == targetColumn:
+                variable['targetColumn'] = True
+                break
+        self.config = json.dumps(config)
+        self.save()
+
     def apply_changes_of_selectedVariables_into_variable_selection(self):
         config = self.get_config()
         selectedVariables = config['selectedVariables']
@@ -1171,8 +1201,21 @@ class Trainer(models.Model):
 
         for algo in config['ALGORITHM_SETTING']:
 
-            # only checking for logistic regression
-            # if algo['name'] == 'Logistic Regression':
+            # only checking for Neural Network
+            if algo['algorithmName'] == 'Neural Network':
+                # checking for learning_rate
+                for params in algo['parameters']:
+                    if params['name'] == 'learning_rate':
+                        make_some_one_false = True
+                        for default_values in params['defaultValue']:
+                            if default_values['selected'] == True:
+                                make_some_one_false = False
+                                break
+                        if make_some_one_false == True:
+                            for default_values in params['defaultValue']:
+                                default_values['selected'] = True
+                                break
+
             for params in algo['parameters']:
 
                 # checking for fit_intercept
@@ -1225,6 +1268,80 @@ class Trainer(models.Model):
 
                 # checking for tree_method
                 if params['name'] == 'tree_method':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                ## NEURAL NETWORK CONFIG PARAMETERS
+                # checking for activation
+                if params['name'] == 'activation':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+
+                # checking for shuffle
+                if params['name'] == 'shuffle':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for verbose
+                if params['name'] == 'verbose':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for warm_start
+                if params['name'] == 'warm_start':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for nesterovs_momentum
+                if params['name'] == 'nesterovs_momentum':
+                    make_some_one_false = True
+                    for default_values in params['defaultValue']:
+                        if default_values['selected'] == True:
+                            make_some_one_false = False
+                            break
+                    if make_some_one_false == True:
+                        for default_values in params['defaultValue']:
+                            default_values['selected'] = True
+                            break
+
+                # checking for early_stopping
+                if params['name'] == 'early_stopping':
                     make_some_one_false = True
                     for default_values in params['defaultValue']:
                         if default_values['selected'] == True:

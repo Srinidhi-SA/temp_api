@@ -5538,6 +5538,9 @@ def delete_and_keep_only_ten_from_all_models(request):
 def get_algorithm_config_list(request):
     try:
         app_type=request.GET['app_type']
+        print app_type
+        mode=request.GET['mode']
+        print mode
     except:
         app_type="CLASSIFICATION"
     try:
@@ -5547,27 +5550,50 @@ def get_algorithm_config_list(request):
 
     user = request.user
 
-    # changes for app_type
-    if app_type =="CLASSIFICATION":
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-        if levels > 2:
-            tempArray.append(settings.SKLEARN_ROC_OBJ)
+    try:
+        if app_type =="CLASSIFICATION" and mode=='autoML':
+            algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
 
-        for obj in algoArray:
-            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
-    elif app_type =="REGRESSION":
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
-        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-        if levels > 2:
-            tempArray.append(settings.SKLEARN_ROC_OBJ)
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        elif app_type =="REGRESSION" and mode=='autoML':
+            algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
 
-        for obj in algoArray:
-            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
-    else:
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        #else:
+        #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+
+        elif app_type =="CLASSIFICATION" and mode=='analyst':
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        elif app_type =="REGRESSION" and mode=='analyst':
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        else:
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+    except Exception as e:
+        print e
 
     # changes for metrics
     metric_obj = None

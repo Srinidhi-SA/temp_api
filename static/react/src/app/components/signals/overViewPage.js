@@ -462,7 +462,7 @@ export class OverViewPage extends React.Component {
 
       if(regression_app){
       var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
-      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/analyst/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
       }
       return (
         <div>
@@ -472,7 +472,7 @@ export class OverViewPage extends React.Component {
           :
 		  
 		  <div className="side-body">		 
-			<div class="sticky-container hidden" id="sticky-container">			 
+			<div class="sticky-container hidden-xs hidden" id="sticky-container">			 
 				<div class="btn-group">
 				  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
 				  <ul role="menu" class="dropdown-menu">

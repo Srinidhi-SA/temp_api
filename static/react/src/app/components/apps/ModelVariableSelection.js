@@ -76,11 +76,11 @@ export class ModelVariableSelection extends React.Component {
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {
             this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()));
-            let regressionProccedUrl = this.props.match.url + '/modeSelection';
+            let regressionProccedUrl = this.props.match.url + '/dataCleansing';
             this.props.history.push(regressionProccedUrl);
         }
         else
-            this.props.dispatch(createModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()))
+            this.props.dispatch(createModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val(),'analyst'))
     }
     setPossibleList(event) {
         this.props.dispatch(showLevelCountsForTarget(event))
@@ -110,7 +110,7 @@ export class ModelVariableSelection extends React.Component {
             return elements;
         }).value;
         if (store.getState().apps.modelSummaryFlag) {
-            let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/models/' + store.getState().apps.modelSlug;
+            let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/analyst/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);
         }
         let dataPrev = store.getState().datasets.dataPreview;

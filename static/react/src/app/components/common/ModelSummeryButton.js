@@ -235,11 +235,14 @@ export class ModelSummeryButton extends React.Component {
 			that.updateChart();
 		});
 		return (
-				<div className="xs-mb-40">
+      <div className="col-md-12">
+      <div className="xs-mb-40 clearfix">
+				
 				<button type="button" className="btn btn-info pull-right" onClick={this.show.bind(this)} title="Print Document"><i class="fa fa-eye"></i> View Residuals</button>
 				<div className="clearfix"></div>
 				<ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} tableDownload={this.props.tabledownload}/>
 				</div>
+        </div>
 		);
 
 	}

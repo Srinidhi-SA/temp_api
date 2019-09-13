@@ -57,9 +57,9 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            deselectAllVariablesDataPrev(false);
-            DisableSelectAllCheckbox();
-            this.props.dispatch( resetSelectedVariables(false) );
+            deselectAllVariablesDataPrev(true);
+            // DisableSelectAllCheckbox();
+            this.props.dispatch( resetSelectedVariables(true) );
         }
         else{
         this.props.dispatch( resetSelectedVariables(true) );
@@ -72,28 +72,28 @@ export class DataVariableSelection extends React.Component {
     componentDidUpdate(){
         var count = getTotalVariablesSelected();
         if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 10){
-                $('.measure[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    if (!$(this).is(":checked"))
-                    $(this).prop('disabled', true);
-                });
-                if(!($("input[name='date_type']:checked").val()))
-                $('.timeDimension').prop("disabled",true);
-                //document.getElementById('measure').disabled = true;
-            }
-            else{
-                $('.measure[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.dimension[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', false);
-                });
-                $('.timeDimension').prop("disabled",false);
-            }
+            // if(count >= 10){
+            //     $('.measure[type="checkbox"]').each(function() {
+            //         if (!$(this).is(":checked"))
+            //         $(this).prop('disabled', true);
+            //     });
+            //     $('.dimension[type="checkbox"]').each(function() {
+            //         if (!$(this).is(":checked"))
+            //         $(this).prop('disabled', true);
+            //     });
+            //     if(!($("input[name='date_type']:checked").val()))
+            //     $('.timeDimension').prop("disabled",true);
+            //     //document.getElementById('measure').disabled = true;
+            // }
+            // else{
+            //     $('.measure[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.dimension[type="checkbox"]').each(function() {
+            //         $(this).prop('disabled', false);
+            //     });
+            //     $('.timeDimension').prop("disabled",false);
+            // }
         }
     }
 
@@ -114,7 +114,6 @@ export class DataVariableSelection extends React.Component {
     	this.props.dispatch(handleSelectAll(evt))
     }
     render() {
-
         console.log( "data variableSelection is called##########3" );
         var variableSelectionMsg = <label>Including the following variables:</label>;
 
@@ -147,7 +146,6 @@ export class DataVariableSelection extends React.Component {
             metaData.map(( metaItem, metaIndex ) => {
 
                 if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
-
                     switch ( metaItem.columnType ) {
                         case "measure":
                            if(metaItem.setVarAs == null){
@@ -171,17 +169,15 @@ export class DataVariableSelection extends React.Component {
                     }
                     //this.selectedTimeDimension = this.datetime[0];
               }
-
-
             } );
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
 
             if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-                this.props.dispatch(resetSelectedVariables(false));
-                deselectAllVariablesDataPrev(false);
-                DisableSelectAllCheckbox();
+                this.props.dispatch(resetSelectedVariables(true));
+                // deselectAllVariablesDataPrev(false);
+                // DisableSelectAllCheckbox();
             }
             else{
                 this.props.dispatch( resetSelectedVariables(true));
@@ -239,7 +235,10 @@ export class DataVariableSelection extends React.Component {
 
                     	if(dtItem.columnType != "dimension"){
                         	return (
-                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline">
+                                    <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label>
+
+                                    </div></li>
                         	);
                         }else{
                         	return (
@@ -262,24 +261,23 @@ export class DataVariableSelection extends React.Component {
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                     return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false && val.dateSuggestionFlag == false);
                 });
-                if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
-                    if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
-                }
-                else
-                $('.measureAll').prop("disabled",false);
-                if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
-                    if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
-                }
-                else
-                $(".dimensionAll").prop("disabled",false);
+                
+                // if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
+                //     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
+                // }
+                // else
+                // $('.measureAll').prop("disabled",false);
 
-                variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
+                // if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
+                //     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
+                // }
+                // else
+                // $(".dimensionAll").prop("disabled",false);
+
+                // variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
             }
             return (
                 <div>
-
-
-
                         <div className="col-lg-12">
                             {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
@@ -411,8 +409,7 @@ export class DataVariableSelection extends React.Component {
                                     <div className="row">
 
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-
-                                            <div class="btn-toolbar pull-right">
+                                         <div class="btn-toolbar pull-right">
 
                                               {/*  <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                  <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
@@ -449,7 +446,12 @@ export class DataVariableSelection extends React.Component {
                                         <div className="col-md-12 cst-scroll-panel">
                                             <Scrollbars>
                                                 <ul className="list-unstyled">
-                                                    {datetimeTemplate}
+                                                 {datetimeTemplate}
+                                                 {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
+                                        <div class="ma-radio inline">
+                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
+                                        </div>
+                                        }
                                                 </ul>
                                             </Scrollbars>
                                         </div>

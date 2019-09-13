@@ -10,7 +10,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404, JsonResponse
-
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
 from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
@@ -67,6 +67,17 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = request.data
         data = convert_to_string(data)
 
+        try:
+            if data['mode']=='autoML':
+                self.mode='autoML'
+            elif data['mode']=='analyst':
+                self.mode='analyst'
+            else:
+                self.mode='analyst'
+            self.save()
+        except:
+            pass
+
         if 'name' in data:
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
@@ -94,7 +105,11 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        data['created_by'] = request.user.id
+        try:
+            data['created_by'] = request.user.id
+        except:
+            #data['created_by'] = None
+            pass
 
         serializer = DatasetSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():

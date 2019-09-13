@@ -70,8 +70,9 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(msg);
                 return false;
             }
-            else
-            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
+            else{
+            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
+            }
         }
 
     }
@@ -95,11 +96,17 @@ export class ModelAlgorithmSelection extends React.Component {
         this.props.dispatch(saveParameterTuning());
     }
     changeHyperParameterType(slug,e){
+        
         this.props.dispatch(changeHyperParameterType(slug,e.target.value));
+        if(e.target.value="none"){
+            $(".learningGrid .for_multiselect").removeClass("disableGrid");
+    
+            }
     }
     render() {
-        if(store.getState().apps.modelSummaryFlag){
-            let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/models/'+store.getState().apps.modelSlug;
+        if(store.getState().apps.modelSummaryFlag){ 
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+            let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+modeSelected+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
         }
         var algorithmData = this.props.manualAlgorithmData;
@@ -110,7 +117,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     var checkboxId = "check"+Index;
                     return(
                          
-                        <div className="col-md-3">
+                        <div className="col-md-algo">
 						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
                             <div className="ma-checkbox">

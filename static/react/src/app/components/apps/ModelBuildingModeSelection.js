@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType} from "../../actions/appActions";
+import {updateAnalystModeSelectedFlag} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -30,17 +30,18 @@ import {statusMessages} from "../../helpers/helper";
 export class ModelBuildingModeSelection extends React.Component {
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-            window.history.go(-1);
-        }
+        // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+        //     window.history.go(-1);
+        // }
     }
     componentDidMount() {
     }
 
     handleModeSelected(selectedMode="automl", event){
-      var proccedUrl = this.props.match.url.replace('modeSelection','Proceed');
+      var proccedUrl = this.props.match.url.replace('modeSelection','autoML/models');
       if(selectedMode != "automl"){
-        proccedUrl = this.props.match.url.replace('modeSelection','dataCleansing');
+        proccedUrl = this.props.match.url.replace('modeSelection','analyst/models');
+       this.props.dispatch(updateAnalystModeSelectedFlag(true));
       }
       this.props.history.push(proccedUrl);
 

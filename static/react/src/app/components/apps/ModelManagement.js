@@ -42,7 +42,13 @@ export class ModelManagement extends React.Component {
   }
 
  componentWillMount() {
-  this.props.dispatch(getAllProjectList(pageNo));
+   this.clearSearchElement();
+  if(this.props.match.params.AppId=="automated-prediction-30vq9q5scd"){
+    var appId=2;
+  }
+   else appId=13;
+  
+  this.props.dispatch(getAllProjectList(pageNo,appId));
   var pageNo = 1;
     if(this.props.history.location.search.indexOf("page") != -1){
         pageNo = this.props.history.location.search.split("page=")[1];
@@ -61,6 +67,7 @@ export class ModelManagement extends React.Component {
 
   closeModelmanagement()
   {
+    this.clearSearchElement();
     var proccedUrl = this.props.match.url.replace('modelManagement','models');
     this.props.history.push(proccedUrl);
   }
@@ -162,54 +169,30 @@ export class ModelManagement extends React.Component {
   }
 
   _handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
         this.selectedData = $("#project_all").val();
         var pageNo =1;
         this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
-        // this.props.dispatch(getAppsAlgoList(1));
-    }
   }
 
-  onChangeOfSearchBox(e){
-    if(e.target.value==""||e.target.value==null){
-      this.props.dispatch(storeAlgoSearchElement(""));
-      this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement'+'')
-      // this.props.dispatch(getAppsAlgoList(1));
-      this.selectedData = $("#project_all").val();
-      var pageNo =1;
-      this.props.dispatch(getDeployPreview(pageNo,this.selectedData));
-      // document.getElementById('algo_search').value= "";
-    }else if (e.target.value.length > SEARCHCHARLIMIT) {
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
-        this.props.dispatch(storeAlgoSearchElement(e.target.value));
-        // this.props.dispatch(getAppsAlgoList(1));
-    }
-    else{ 
-      this.props.dispatch(storeAlgoSearchElement(e.target.value));
-    }
-  }
+
 
   handleSelect(eventKey) {
     if (this.props.algo_search_element) {
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement?page='+eventKey+'')
          this.selectedData = $("#project_all").val();
         this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
 
   clearSearchElement(eventKey){
     this.props.dispatch(storeAlgoSearchElement(""));
-    this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
-    // this.props.dispatch(getAppsAlgoList(1));
+    this.props.history.push('/apps/'+this.props.match.params.AppId+'/analyst/modelManagement');
     this.selectedData = $("#project_all").val();
-    // var pageNo =1;
     this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
-    document.getElementById('algo_search').value= "";
   }
 
   render(){
@@ -228,31 +211,53 @@ export class ModelManagement extends React.Component {
       var deployPopup = "";
       var deployData = "";
       var Details="Details"
+      var thead5 = " "
       const algoList = store.getState().apps.algoList.data;
       var none = none;
       const dataSets = this.props.allProjects;
-      let renderSelectBox = null;
+
+      //Filter by projectName
+      let renderSelectBoxProjects = null;
       if(dataSets != ""){
         var options= dataSets.data.filter(datacount => (datacount.count)>0).map(dataSet => 
           <option key={dataSet.slug} value={dataSet.slug} >{dataSet.name}</option>
         )
-        renderSelectBox = <select className="form-control" id="project_all" name="selectbasic" onChange={this.getDeployPreview.bind(this)} class="form-control">
+        renderSelectBoxProjects = <span className="selectSpan"><select className="select_filter" id="project_all" title="Filter By Project" name="selectbasic" onChange={this.getDeployPreview.bind(this)}>
           <option value="">All</option>
-          {options}
-        </select>
+             {options}
+          </select></span>
       }else{
-        renderSelectBox = ""
+        renderSelectBoxProjects = ""
       }
 
-      mmTable = this.props.algoList.data.map((item,key )=> {
-        var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
+    //Filter by algorithm 
+          var renderSelectBoxAlgorithms="";
+          this.props.match.params.AppId!="automated-prediction-30vq9q5scd"? renderSelectBoxAlgorithms=(
+          <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+          <option value="">All</option>
+          <option value="DT_">Decision Tree</option>
+          <option value="GB_">GBTree Regression</option>
+          <option value="RFR_">Random Forest Regression</option>
+          <option value="LR_">Linear Regression</option>
+          </select>)
+          :renderSelectBoxAlgorithms=(
+            <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
+            <option value="">All</option>
+            <option value="RF_">Random Forest</option>
+            <option value="XG_">XG Boost</option>
+            <option value="LG_">Linear Regression</option>
+            <option value="NB_">Naive Bayes</option>
+          </select>);
+
+    // mapping of list items into table
+   mmTable = this.props.algoList.data.map((item,key )=> {
+        var AlgoLink = '/apps/' + this.props.match.params.AppId + '/analyst/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
           <td><label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>
           <td className="text-left"> {item.model_id}</td>
           <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
           <td className="text-left"> {item.algorithm}</td>
-          {/* <td ><span className="text-success"></span> {item.training_status}</td> */}
           <td > {item.accuracy}</td>
           <td> {dateFormat( item.created_at, " mmm d,yyyy")}</td>
           <td> {item.deployment}</td>
@@ -278,42 +283,28 @@ export class ModelManagement extends React.Component {
         </td>
       </tr>);
       })
-
+    
+      //Jsx element for table body content
       let tablecontent="";
+      tablecontent = (<tbody className="no-border-x"> {mmTable} </tbody>);
+
       if (this.props.algoList.data.length != 0){
-        let thead5 = " "
-        if(this.props.currentAppId == 13){thead5 = "Root Mean Square Error";}else thead5 = "Accuracy";
-        tablecontent = (
-        <table id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
-          <thead>
-            <tr className="myHead">
-              <th>#</th>
-              <th class="text-left"><b>Model ID</b></th>
-              <th class="text-left"><b>Project Name</b></th>
-              <th class="text-left"><b>Algorithm</b></th>
-              <th><b>{thead5}</b></th>
-              <th><b>Created On</b></th>
-              <th><b>Active Deployment</b></th>
-              <th><b>Total Deployments</b></th>
-              <th><b>Runtime</b></th>
-              <th><b>Summary</b></th>
-              <th><b>Action</b></th>
-            </tr>
-          </thead>
-          <tbody className="no-border-x"> {mmTable} </tbody>
-        </table>
-        )
       }else if(this.props.algoList.current_item_count == 0){
-        tablecontent= (
-          <h5><center>There are no models available for this selection</center></h5>
-        )
+        tablecontent= ""
       }else {(
-        tablecontent= (
-          <h5><center>There are no models available for this selection</center></h5>
-        )
+        tablecontent=""
       )}
+      
+      //To show message below the table
+      if(!tablecontent){
+        var NoDataMessage=(
+        <p style={{textAlign:'center',fontSize:'13px'}}>There are no models available for your selection</p>);
+      }
+      else NoDataMessage="";
+      this.props.currentAppId == 13?thead5 = "Root Mean Square Error":thead5 = "Accuracy";
 
       deployData = "deployData";
+
       deployPopup = (
         <div class="col-md-3 xs-mb-15 list-boxes" >
           <div id="deployPopup" role="dialog" className="modal fade modal-colored-header">
@@ -333,6 +324,7 @@ export class ModelManagement extends React.Component {
         </div>
       )
       
+      //Pagination element
       if (algoList) {
         const pages = store.getState().apps.algoList.total_number_of_pages;
         const current_page = store.getState().apps.algoList.current_page;
@@ -340,8 +332,9 @@ export class ModelManagement extends React.Component {
         if(pages > 1){
           paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
         }
+        
         let appName = this.props.currentAppDetails.displayName;
-        console.log(appName);
+
         return (
           // <!-- Main Content starts with side-body -->
           <div class="side-body">
@@ -360,29 +353,36 @@ export class ModelManagement extends React.Component {
                       <div class="row xs-mb-10">
                         <div className="col-md-3">
                           <div class="form-inline" >
-                            <div class="form-group">
-                              <div class="input-group">
-                                <span class="input-group-btn"><label for="sdataType" class="xs-pt-5 xs-pr-10">&nbsp;&nbsp;Filter By:</label></span>
-                                {renderSelectBox}
-                              </div>
-                            </div>
                           </div>
                         </div>
                         <div class="col-md-3 col-md-offset-6">
                           <div className="btn-toolbar pull-right">
                             <div className="input-group">
-                              <div className="search-wrapper">
-                                {/* <input type="text" id="search" className="form-control" placeholder="Search variables..."></input> */}
-                                <input type="text" name="algo_search" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Algorithm Search" id="algo_search" className="form-control search-box" placeholder="Search Algorithm..." required />
-                                <span className="zmdi zmdi-search form-control-feedback"></span>
-                                <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
-                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="table-responsive">
+                      <table id="mmtable" class="tablesorter table table-striped table-hover table-bordered break-if-longText">
+                          <thead>
+                            <tr className="myHead">
+                              <th>#</th>
+                              <th class="text-left"><b>Model ID</b></th>
+                              <th class="text-left"><b>Project Name</b>{renderSelectBoxProjects}</th>
+                              <th class="text-left" style={{width:'145px'}}><b>Algorithm </b> <span className="selectSpan">{renderSelectBoxAlgorithms}</span></th>
+                              <th><b>{thead5}</b></th>
+                              <th><b>Created On</b></th>
+                              <th><b>Active Deployment</b></th>
+                              <th><b>Total Deployments</b></th>
+                              <th><b>Runtime</b></th>
+                              <th><b>Summary</b></th>
+                              <th><b>Action</b></th>
+                            </tr>
+                          </thead>
+                          {/* <tbody className="no-border-x"> {tablecontent} </tbody> */}
                         {tablecontent}                    
+                      </table>
+                      {NoDataMessage}
                         <div class="col-md-12 text-center">
                           <div className="footer"  id="idPagination">
                             <div className="algo_paginate">
@@ -410,8 +410,7 @@ export class ModelManagement extends React.Component {
 
   openDeployModal(slug) {
     console.log("open ---openDeployModal");
-    //by commenting below line, removed the action for deploy option
-    // this.props.dispatch(openDeployModalAction(slug));
+    this.props.dispatch(openDeployModalAction(slug));
   }
 
   closeDeployModal() {
@@ -419,3 +418,4 @@ export class ModelManagement extends React.Component {
     this.props.dispatch(closeDeployModalAction());
   }
 }
+

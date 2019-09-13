@@ -50,6 +50,23 @@ export class RegressionParameter extends React.Component {
         setTimeout(function(){ $('.single').multiselect('destroy'); }, 0);
        
     }
+    componentDidMount(){
+        $(".learningCls").prop("disabled",true);
+        $(".disNum").prop("disabled",false);
+         $(".learningClsInit").prop("disabled",false);
+         $(".earlyStop").prop("disabled",false);
+         $(".multi").prop("disabled",false);
+         $(".powerT").prop("disabled",true);
+         $(".fractionCls").prop("disabled",true);
+         $(".nesterovsCls").prop("disabled",true);
+
+
+
+
+         
+
+
+    }
     componentDidUpdate(){
         var that = this;
         if(this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter")
@@ -68,6 +85,7 @@ export class RegressionParameter extends React.Component {
             }
         });
         }
+
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
@@ -87,6 +105,70 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     selecthandleChange(e){
+        switch(e.target.value){
+            case "sgd":
+            $(".learningCls").prop("disabled",false);
+            $(".disNum").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",false);
+            $(".earlyStop").prop("disabled",false);
+            $(".powerT").prop("disabled",false);
+            $(".shuffleCls").prop("disabled",false);
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            // $(".powerT").show();
+            $(".nesterovsCls").prop("disabled",false);
+
+
+
+
+
+
+             break;
+            case "adam":
+            $(".disNum").prop("disabled",false);
+            $(".learningCls").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",false);
+            $(".earlyStop").prop("disabled",false);
+            $(".powerT").prop("disabled",true);
+            $(".shuffleCls").prop("disabled",false);
+            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+            // $(".powerT").hide();
+            $(".nesterovsCls").prop("disabled",true);
+
+
+
+
+
+            break;
+            case "lbfgs":
+            $(".learningCls").prop("disabled",true);
+            $(".disNum").prop("disabled",true);
+            $(".learningClsInit").prop("disabled",true);
+            $(".earlyStop").prop("disabled",true);
+            $(".powerT").prop("disabled",true);
+            $(".shuffleCls").prop("disabled",true);
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+            // $(".powerT").hide();
+            $(".nesterovsCls").prop("disabled",true);
+
+
+
+
+            break;
+            default:
+            "";
+
+        }
+
+        if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
+            $(".fractionCls").prop("disabled",false);
+        }
+        else{
+            $(".fractionCls").prop("disabled",true);
+        }
+
+
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
@@ -103,6 +185,13 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     changeTextboxValue(e){
+        console.log($(".momentumCls").val(),"above statement class")
+
+        // if(($(".momentumCls").val())<0){
+        //     $(".nesterovsCls").prop("disabled",true);
+        // }
+        ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",true):$(".nesterovsCls").prop("disabled",false);
+
         if(e.target.parentElement.lastElementChild != null)
         e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
@@ -121,19 +210,133 @@ export class RegressionParameter extends React.Component {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             case "list":
+
+            switch(parameterData.name){
+                case"learning_rate":
+                var cls= "form-control single learningCls"
+                break;
+                case"early_stopping":
+                cls = "form-control single earlyStop";
+                break;
+                case"shuffle":
+                cls = "form-control single shuffleCls";
+                break;
+                case"nesterovs_momentum":
+                cls = "form-control single nesterovsCls";
+                break;
+                default:
+                cls= "form-control single";
+            }        
+
             var optionsTemp =[];
-            var cls = "form-control single";
             //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
             let options = parameterData.defaultValue;
             let mName = this.props.metricSelected.name;
             let mDispName = this.props.metricSelected.displayName;
             let mselected = this.props.metricSelected.selected;
             if(tune){
-                cls = "form-control multi";
+
+
+
+                switch(parameterData.displayName){
+                    case"Activation":
+                    var rowCls = "row activation";
+                    break;
+                    case"Solver Used":
+                    rowCls = "row solverGrid";
+                    break;
+                    case"Learning Rate":
+                    rowCls = "row learningGrid";
+                    break;
+                    case"Shuffle":
+                    rowCls = "row shuffleGrid";
+                    break;
+                    case "Verbose":
+                    rowCls = "row verboseGrid";
+                    break;
+                    default:
+                    rowCls = "row";
+                }  
+                
+                
+                var cls="form-control multi"
+
                 var selectedValue =[];
                for (var prop in options) {
                 if(options[prop].selected)
                 selectedValue.push(options[prop].name)
+
+
+                switch(parameterData.name){
+                    case"solver":
+                    //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
+                    //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
+                    //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
+
+                    if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                        // $(".learningGrid .for_multiselect").addClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",true);
+                        
+                        $(".disNum").prop("disabled",true);
+                        $(".learningClsInit").prop("disabled",true);
+                        $(".powerT").prop("disabled",true);
+                        $(".shuffleGrid .multiselect").prop("disabled",true);
+                        $(".iterationGrid").prop("disabled",true);
+                        $(".epsilonGrid").prop("disabled",true);
+
+
+
+                    }
+                    else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
+                            $(".disNum").prop("disabled",false);
+                            $(".learningClsInit").prop("disabled",false);
+                            $(".powerT").prop("disabled",true);
+                            // $(".learningGrid .for_multiselect").addClass("disableGrid");
+                           $(".learningGrid .multiselect").prop("disabled",true);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+
+
+
+
+                    }
+                    else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
+                        $(".disNum").prop("disabled",true);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",true);
+
+
+
+
+                    }
+                    else{
+                        $(".disNum").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".earlyStop").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+
+
+
+                    }
+                    break;
+                    default:
+                       "";
+            
+
+                }
+
+
                 optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
             }
@@ -146,7 +349,7 @@ export class RegressionParameter extends React.Component {
             }
             }
                return(
-                   <div className="row">
+                   <div className={rowCls}>
                   <div className="col-md-6 for_multiselect">
                  <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
                  {optionsTemp}
@@ -162,10 +365,36 @@ export class RegressionParameter extends React.Component {
             
             case "number":
                 if(parameterData.uiElemType == "textBox"){
+                    switch(parameterData.displayName){
+                        case"Beta 1":
+                        case"Beta 2":
+                        var  classN= "form-control disNum";
+                        break;
+                        case"Learning Rate Initialize":
+                         classN= "form-control learningClsInit";
+                        break;
+                        case "Power T":
+                        classN = "form-control powerT" ;
+                        break;
+                        case"Validation Fraction":
+                        var  classN= "form-control fractionCls"; 
+                        break;
+                        case"Momentum":
+                        var  classN= "form-control momentumCls"; 
+                        break;
+                        case"Alpha":
+                        var type= "text";
+                        classN= "form-control";
+                        break;
+                        default:
+                        classN= "form-control";
+                        var type= "number";
+
+                    }                  
                     return (
                          <div className="row">
                         <div className="col-md-2">
-                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <input type={type} className={classN} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                         </div>
@@ -174,6 +403,16 @@ export class RegressionParameter extends React.Component {
                 }
                 else if(parameterData.uiElemType == "slider"){
                     if(tune){
+                        switch(parameterData.displayName){
+                            case"Epsilon":
+                        var sliderclassN= "form-control epsilonGrid";
+                        break;
+                        case"No of Iteration":
+                           sliderclassN= "form-control iterationGrid";
+                        break;
+                        default:
+                           sliderclassN="form-control";
+                        }
                         return(
                             <div className="row">                            
                             <div className="col-md-12">
@@ -184,7 +423,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
+                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
@@ -202,15 +441,29 @@ export class RegressionParameter extends React.Component {
                     var step = (1 / Math.pow(10, precision));
                     }
                     if(parameterData.expectedDataType)
+                    
                     var dataTypes = parameterData.expectedDataType;
                     else
                     var dataTypes = ["int"];
+                    switch(parameterData.displayName){
+                        case"Epsilon":
+                        var cls= "col-xs-10 epsilonCls";
+                        break;
+                        case"No of Iteration":
+                        var  cls= "col-xs-10 iterationCls";
+                        break;
+                        default:
+                        var cls = "col-xs-10";
+                        break;
+                    }
+
+           
                     return (
                             <div className="row">                            
                             <div className="col-md-6 col-sm-2">
                                 
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
-                                    <div className="col-xs-10">
+                                    <div className={cls}>
                                     <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
                                     </div>
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>

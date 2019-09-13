@@ -28,6 +28,31 @@ SKLEARN_ML_SUPPORTED_MAX_FEATURES = [
     {"name":None,"selected":False,"displayName":"n_features"}
 ]
 
+##### NEURAL NETWORK PARAMETERS    ####
+
+SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
+    {"name":"relu","selected":False,"displayName":"relu"},
+    {"name":"identity","selected":False,"displayName":"identity"},
+    {"name":"logistic","selected":False,"displayName":"logistic"},
+    {"name":"tanh","selected":False,"displayName":"tanh"},
+]
+
+SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
+    {"name":"adam","selected":False,"displayName":"adam"},
+    {"name":"lbfgs","selected":False,"displayName":"lbfgs"},
+    {"name":"sgd","selected":False,"displayName":"sgd"},
+]
+
+SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION = [
+    {"name":"constant","selected":False,"displayName":"constant"},
+    {"name":"invscaling","selected":False,"displayName":"invscaling"},
+    {"name":"adaptive","selected":False,"displayName":"adaptive"},
+
+]
+
+
+
+#########################################################
 
 SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                {
@@ -50,7 +75,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "description":"The minimum number of samples required to split an internal node",
                     "defaultValue":2,
                     "acceptedValue":None,
-                    "valueRange":[2,10],
+                    "valueRange":[0,100],
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True,
@@ -314,6 +339,29 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "expectedDataType": ["bool"],
             "allowedDataType": ["bool"]
         },
+        {
+            "name":"class_weight",
+            "displayName":"Class Weight",
+            "description": "Weights associated with classes of the target column",
+            "defaultValue":[
+             {
+                 "name":"None",
+                 "selected":False,
+                 "displayName":"None"
+             },
+             {
+                 "name":"balanced",
+                 "selected":False,
+                 "displayName":"balanced"
+             }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+        }
 ]
 
 SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
@@ -483,6 +531,400 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
              "expectedDataType": ["float","int"],
              "allowedDataType":["float"]
          },
+         {
+             "name":"class_weight",
+             "displayName":"Class Weight",
+             "description": "Weights associated with classes of the target column",
+             "defaultValue":[
+              {
+                  "name":"None",
+                  "selected":False,
+                  "displayName":"None"
+              },
+              {
+                  "name":"balanced",
+                  "selected":False,
+                  "displayName":"balanced"
+              }
+             ],
+             "paramType":"list",
+             "uiElemType":"checkbox",
+             "display":True,
+             "hyperpatameterTuningCandidate":False,
+             "expectedDataType": ["bool"],
+             "allowedDataType":["bool"]
+         }
+]
+
+SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
+        {
+            "name":"hidden_layer_sizes",
+            "displayName":"Hidden Layer Size",
+            "description": "Number of neurons in the ith hidden layer.",
+            "defaultValue":100,
+            "acceptedValue":None,
+            "valueRange":[0,100],
+            "paramType":"tuple",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["tuple"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"activation",
+            "displayName":"Activation",
+            "description": "Activation function for the hidden layer.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+            "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["string"],
+            "allowedDataType":["string"]
+        },
+        {
+            "name":"solver",
+            "displayName":"Solver Used",
+            "description": "The solver for weight optimization.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+            "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["string"],
+            "allowedDataType":["string"]
+        },
+        {
+            "name":"alpha",
+            "displayName":"Alpha",
+            "description": "L2 penalty (regularization term) parameter.",
+            "defaultValue":0.0001,
+            "acceptedValue":None,
+            "valueRange":[0,5],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType":["float"]
+        },
+        {
+            "name":"batch_size",
+            "displayName":"Batch Size",
+	        "description": "Size of minibatches for stochastic optimizers.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj  in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+            "defaultValue":"auto",
+            "acceptedValue":None,
+            "valueRange":[],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int","string"],
+            "allowedDataType":["int","string"]
+        },
+       # {
+           # "name":"batch_size",
+            #"displayName":"Batch Size",
+           # "description": "Size of minibatches for stochastic optimizers.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+           # "defaultValue":"auto",
+           # "acceptedValue":None,
+           # "valueRange":[],
+           # "paramType":"number",
+           # "uiElemType":"textbox",
+           # "display":True,
+           # "hyperpatameterTuningCandidate":True,
+           # "expectedDataType": ["int"],
+           # "allowedDataType":["int"]
+       # },
+        {
+            "name":"learning_rate",
+            "displayName":"Learning Rate",
+            "description": "Learning rate schedule for weight updates.",
+            # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+            "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["string"],
+            "allowedDataType":["string"]
+        },
+        {
+            "name":"learning_rate_init",
+            "displayName":"Learning Rate Initialize",
+            "description": "Controls the step-size in updating the weights.",
+            "defaultValue":0.001,
+            "acceptedValue":None,
+            "valueRange":[0.1,20.0],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["double"],
+            "allowedDataType":["double"]
+        },
+        {
+            "name":"power_t",
+            "displayName":"Power T",
+            "description": "The exponent for inverse scaling learning rate.",
+            "defaultValue":0.5,
+            "acceptedValue":None,
+            "valueRange":[0.1,20.0],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType":["float"]
+        },
+        {
+            "name":"max_iter",
+            "displayName":"Maximum Solver Iterations",
+            "description": "Maximum number of iterations to be attempted for solver operations",
+            "defaultValue":200,
+            "acceptedValue":None,
+            "valueRange":[10,400],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"shuffle",
+            "displayName":"Shuffle",
+            "description":"Whether to shuffle samples in each iteration.",
+            "defaultValue":[
+                 {
+                      "name":"true",
+                      "selected":False,
+                      "displayName":"True"
+                 },
+                 {
+                     "name":"false",
+                     "selected":False,
+                     "displayName":"False"
+                 }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+         },
+        {
+            "name":"random_state",
+            "displayName":"Random Seed",
+           "description": "The seed of the pseudo random number generator to use when shuffling the data",
+            "defaultValue":None,
+            "acceptedValue":None,
+            "valueRange":[1,100],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"tol",
+            "displayName":"Convergence tolerance of iterations(e^-n)",
+            "description": "Tolerance for the stopping criteria",
+            "defaultValue":4,
+            "acceptedValue":None,
+            "valueRange":[3,10],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+
+        },
+        {
+            "name":"verbose",
+            "displayName":"Verbose",
+            "description":"Whether to print progress messages to stdout.",
+            "defaultValue":[
+                 {
+                     "name":"false",
+                     "selected":False,
+                     "displayName":"False"
+                 },
+                 {
+                     "name":"true",
+                     "selected":False,
+                     "displayName":"True"
+                 }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+         },
+         {
+             "name":"warm_start",
+             "displayName":"Warm Start",
+             "description": "It reuses the solution of the previous call to fit as initialization",
+             "defaultValue":[
+              {
+                  "name":"false",
+                  "selected":False,
+                  "displayName":"False"
+              },
+              {
+                  "name":"true",
+                  "selected":False,
+                  "displayName":"True"
+              }
+             ],
+             "paramType":"list",
+             "uiElemType":"checkbox",
+             "display":True,
+             "hyperpatameterTuningCandidate":False,
+             "expectedDataType": ["bool"],
+             "allowedDataType":["bool"]
+         },
+         {
+             "name":"momentum",
+             "displayName":"Momentum",
+             "description": "Momentum for gradient descent update.",
+             "defaultValue":0.9,
+             "acceptedValue":None,
+             "valueRange":[0,1],
+             "paramType":"number",
+             "uiElemType":"textBox",
+             "display":True,
+             "hyperpatameterTuningCandidate":True,
+             "expectedDataType": ["float"],
+             "allowedDataType":["float"]
+         },
+         {
+             "name":"nesterovs_momentum",
+             "displayName":"Nesterovs momentum",
+             "description": "Whether to use Nesterovs momentum.",
+             "defaultValue":[
+              {
+                  "name":"true",
+                  "selected":False,
+                  "displayName":"True"
+              },
+              {
+                  "name":"false",
+                  "selected":False,
+                  "displayName":"False"
+              }
+             ],
+             "paramType":"list",
+             "uiElemType":"checkbox",
+             "display":True,
+             "hyperpatameterTuningCandidate":False,
+             "expectedDataType": ["bool"],
+             "allowedDataType":["bool"]
+         },
+         {
+             "name":"early_stopping",
+             "displayName":"Early Stop",
+             "description": "Whether to use early stopping to terminate training when validation score is not improving.",
+             "defaultValue":[
+              {
+                  "name":"false",
+                  "selected":False,
+                  "displayName":"False"
+              },
+              {
+                  "name":"true",
+                  "selected":False,
+                  "displayName":"True"
+              }
+             ],
+             "paramType":"list",
+             "uiElemType":"checkbox",
+             "display":True,
+             "hyperpatameterTuningCandidate":False,
+             "expectedDataType": ["bool"],
+             "allowedDataType":["bool"]
+         },
+         {
+             "name":"validation_fraction",
+             "displayName":"Validation Fraction",
+             "description": "The proportion of training data to set aside as validation set for early stopping.",
+             "defaultValue":0.1,
+             "acceptedValue":None,
+             "valueRange":[0,1],
+             "paramType":"number",
+             "uiElemType":"textBox",
+             "display":True,
+             "hyperpatameterTuningCandidate":True,
+             "expectedDataType": ["float"],
+             "allowedDataType":["float"]
+         },
+         {
+             "name":"beta_1 ",
+             "displayName":"Beta 1",
+             "description": "Exponential decay rate for estimates of first moment vector in adam.",
+             "defaultValue":0.9,
+             "acceptedValue":None,
+             "valueRange":[0,1],
+             "paramType":"number",
+             "uiElemType":"textBox",
+             "display":True,
+             "hyperpatameterTuningCandidate":True,
+             "expectedDataType": ["float"],
+             "allowedDataType":["float"]
+         },
+         {
+             "name":"beta_2 ",
+             "displayName":"Beta 2",
+             "description": "Exponential decay rate for estimates of second moment vector in adam.",
+             "defaultValue":0.999,
+             "acceptedValue":None,
+             "valueRange":[0,1],
+             "paramType":"number",
+             "uiElemType":"textBox",
+             "display":True,
+             "hyperpatameterTuningCandidate":True,
+             "expectedDataType": ["float"],
+             "allowedDataType":["float"]
+         },
+         {
+             "name":"epsilon",
+             "displayName":"Epsilon",
+             "description": "Value for numerical stability in adam.",
+             "defaultValue":8,
+             "acceptedValue":None,
+             "valueRange":[3,10],
+             "paramType":"number",
+             "uiElemType":"slider",
+             "display":True,
+             "hyperpatameterTuningCandidate":True,
+             "expectedDataType": ["int"],
+             "allowedDataType":["int"]
+         },
+          {
+              "name":"n_iter_no_change",
+              "displayName":"No of Iteration",
+              "description": "Maximum number of epochs to not meet tol improvement.",
+              "defaultValue":10,
+              "acceptedValue":None,
+              "valueRange":[3,10],
+              "paramType":"number",
+              "uiElemType":"slider",
+              "display":True,
+              "hyperpatameterTuningCandidate":True,
+              "expectedDataType": ["int"],
+              "allowedDataType":["int"]
+          },
+
 ]
 
 SKLEARN_ML_SUPPORTED_XGB_BOOSTER = [
@@ -666,6 +1108,29 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
+    {
+        "name":"class_weight",
+        "displayName":"Class Weight",
+        "description": "Weights associated with classes of the target column",
+        "defaultValue":[
+         {
+             "name":"None",
+             "selected":False,
+             "displayName":"None"
+         },
+         {
+             "name":"balanced",
+             "selected":False,
+             "displayName":"balanced"
+         }
+        ],
+        "paramType":"list",
+        "uiElemType":"checkbox",
+        "display":True,
+        "hyperpatameterTuningCandidate":False,
+        "expectedDataType": ["bool"],
+        "allowedDataType":["bool"]
+    }
 ]
 
 SKLEARN_ML_NAIVE_BAYES_PARAMS = [

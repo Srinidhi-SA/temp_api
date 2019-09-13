@@ -41,12 +41,13 @@ export class AppsLoader extends React.Component {
   	this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
 		//if(this.props.app_type == "REGRESSION")
+		//if(this.props.app_type == "REGRESSION")
     //this.props.dispatch(reSetRegressionVariables());
   }
   cancelCreateModel(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
-		if((this.props.match.url).indexOf("/createScore") > 0 || (this.props.match.url).indexOf("/scores") > 0)
+		if((this.props.match.url).indexOf("/createScore") > 0 || (this.props.match.url).indexOf("/analyst/scores") > 0)
 		this.props.dispatch(handleJobProcessing(this.props.scoreSlug));
 		else if((this.props.match.url).indexOf("/apps-stock-advisor") >=0 )
 		this.props.dispatch(handleJobProcessing(this.props.stockSlug));
@@ -60,8 +61,17 @@ export class AppsLoader extends React.Component {
   render() {
 		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
 		var hideUrl = "";
-		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0)
-		store.getState().apps.currentAppDetails != null ? hideUrl = "/"+store.getState().apps.currentAppDetails.app_url:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/models";
+		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0){
+		let	appURL = "/"+store.getState().apps.currentAppDetails.app_url;
+		let mURL;
+		if(window.location.href.includes("analyst")){
+			mURL = appURL.replace("models","analyst/models/")
+		}else{
+			mURL = appURL.replace("models","autoML/models/")
+		}
+
+		store.getState().apps.currentAppDetails != null ? hideUrl = mURL:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/analyst/models";
+		}
 		else if((this.props.match.url).includes("/apps-stock-advisor-analyze"))hideUrl = "/apps-stock-advisor";
 		else
 		hideUrl = this.props.match.url;

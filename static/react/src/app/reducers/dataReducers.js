@@ -102,6 +102,18 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DATA_PREVIEW_AUTOML":
+      {
+        return {
+          ...state,
+          dataPreview: action.dataPreview,
+          dataPreviewFlag: true,
+          selectedDataSet: action.slug,
+        }
+      }
+      break;
+
+
     case "DATA_PREVIEW_FOR_LOADER":
       {
         return {
