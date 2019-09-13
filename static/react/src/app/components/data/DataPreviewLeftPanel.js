@@ -31,9 +31,11 @@ export class DataPreviewLeftPanel extends React.Component {
 	 }
 	render() {
 		console.log("score data preview is called##########3");
-		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/analyst/scores/" + this.props.match.params.slug;
-		const scoreData = this.props.scoreCSVData;
+         var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+         var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+		 var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected+"/scores/" + this.props.match.params.slug;
+        
+         const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
 		if(scoreData.length > 0){

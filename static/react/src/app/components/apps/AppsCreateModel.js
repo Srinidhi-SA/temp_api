@@ -88,54 +88,8 @@ export class AppsCreateModel extends React.Component {
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
-	 this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
-		// console.log(val,dataset,target,levelCount,"passed the string")
-//   if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
-//     if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
-//       var validationTechnique = {
-//         "name": "kFold",
-//         "displayName": "K Fold Validation",
-//         "value": 2
-//       }
-//     }
-//     else {
-//       var validationTechnique = {
-//         "name": "trainAndtest",
-//         "displayName": "Train and Test",
-//         "value": (50/100)
-//       }
-//     }
-// 		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-//     var details = {
-//       "ALGORITHM_SETTING": AlgorithmSettings,
-//       "validationTechnique": validationTechnique,
-// 			"targetLevel": levelCount,
-// 			"targetColumn":target,
-//       "variablesSelection": this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
-//     }
-//   }
-//   else {
-//     var details = {
-//       "trainValue":50,
-//       "testValue": 50,
-// 			"targetColumn":target,
-//       "targetLevel": levelCount,
-//       "variablesSelection":this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray
-//     }
-//   }
-  
-// 		return fetch(API+'/api/trainer/',{
-// 			method: 'POST',
-// 			headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-// 			body: JSON.stringify({ "name":modelName, "dataset": dataset, "app_id":app_id, "config": details,"mode":"autoML" })
-// 	}).then((response) => response.json())
-// 	.then((responseJson) => {
-// 	console.log(responseJson,"99999999009090909090909")
-// 	if (responseJson.status === 200) {
-// 		console.log(json,"pop should")
-// 		dispatch(createModelSuccess(responseJson, dispatch))
-// 	}
-// })
+	  this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
+    this.props.dispatch(closeModelPopup())
 		
 
 	}
@@ -155,9 +109,10 @@ export class AppsCreateModel extends React.Component {
 	}
     updateDataset(e){
 		this.selectedData = e.target.value;
-		this.fetchDataAutoML(e.target.value);
-		// this.levelCountsForAutoMl(e.target.value)
-		// this.props.dispatch(updateDatasetName(e.target.value));
+		if(!store.getState().apps.analystModeSelectedFlag){
+			this.fetchDataAutoML(e.target.value);
+		}
+		this.props.dispatch(updateDatasetName(e.target.value));
 		this.levelCountsForAutoMl(e)
 		console.log("sending request");
 		// this.getDataSetPreview();
