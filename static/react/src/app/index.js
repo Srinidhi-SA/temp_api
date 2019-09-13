@@ -404,6 +404,8 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
             <Route exact path="/apps/:AppId/analyst/modelManagement" component={ModelManagement}/>
+            <Route exact path="/apps/:AppId/autoML/modelManagement" component={ModelManagement}/>
+            <Route exact path="/apps/:AppId/autoML/modelManagement/:slug" component={ModelSummary}/> 
             <Route exact path="/apps/:AppId/analyst/modelManagement/:slug" component={ModelSummary}/> 
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
