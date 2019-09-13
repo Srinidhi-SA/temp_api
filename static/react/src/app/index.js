@@ -332,7 +332,8 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home}/>
             <Route exact path="/user-profile" component={Profile}/>
-            <Route exact path="/signals" render={signals}/> {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
+            <Route exact path="/signals" render={signals}/> 
+            {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
             <Route exact path="/signals/:slug" render={signals}/>
             <Route exact path="/signals/:slug/:l1" render={signals}/>
             <Route exact path="/signals/:slug/:l1/:l2/:l3" render={signals}/>
@@ -355,13 +356,13 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel" component={ModelVariableSelection}/>
             <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
-            <Route exact path="/apps/:AppId/analyst/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/autoML/models/:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/analyst/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/autoML/scores/:slug" render={score}/>
             <Route exact path="/apps/:AppId/analyst/scores/:slug" render={score}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
-            <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
             <Route exact path="/feature-engineering/:slug" render={data}/>
@@ -370,6 +371,7 @@ class App extends React.Component {
             <Route exact path="/signals?page=:slug" render={signals}/>
             <Route exact path="/signals?search=:slug" render={signals}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug" render={data}/>
+            <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug" render={data}/>
             <Route exact path="/apps-robo" component={RoboInsightList}/>
             <Route exact path="/apps-robo-list/:roboSlug/:tabName/data/:slug" component={RoboDataUploadPreview}/>
             <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage}/>

@@ -56,7 +56,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
             }else{
                 this.props.dispatch(getAppsAlgoList(pageNo));
             }
-           
+           this.props.dispatch(updateModelSummaryFlag(false));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));

@@ -62,7 +62,7 @@ export class ScoreVariableSelection extends React.Component {
     render() {
         console.log("Create Score Variable Selection  is called##########3");
         if(store.getState().apps.scoreSummaryFlag){
-            let mod = window.location.pathname.includes("analyst")?"/analyst":"autoML"
+            let mod = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
             let _link = "/apps/"+this.props.match.params.AppId+mod+'/scores/'+store.getState().apps.scoreSlug;
             return(<Redirect to={_link}/>);
         }

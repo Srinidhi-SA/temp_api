@@ -25,7 +25,9 @@ import {
   getAppsScoreList,
   getAppsAlgoList,
   refreshAppsAlgoList,
-  updateSelectedApp
+  updateSelectedApp,
+  updateModelSummaryFlag,
+  updateScoreSummaryFlag
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 
@@ -55,6 +57,8 @@ export class Apps extends React.Component {
     } else if (this.props.match.url.indexOf("score") != -1) {
       this.props.dispatch(activateModelScoreTabs("score"));
     }
+    this.props.dispatch(updateModelSummaryFlag(false));
+    this.props.dispatch(updateScoreSummaryFlag(false));
   }
   modifyUrl(tabId) {
     this.props.dispatch(activateModelScoreTabs(tabId));
