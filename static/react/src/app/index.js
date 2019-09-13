@@ -180,6 +180,11 @@ class App extends React.Component {
               return (<DataPreview {...props}/>)
             }
             break;
+          case "/apps/:AppId/autoML/models/:modelSlug/data/:slug":
+          {
+            return (<DataPreview {...props}/>)
+          }
+          break;
         }
 
       } else if (this.hasSignalRoutePermission()) {
@@ -356,6 +361,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/analyst/scores/:slug" render={score}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
             <Route exact path="/feature-engineering/:slug" render={data}/>
@@ -371,6 +377,7 @@ class App extends React.Component {
             <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" render={data}/>
+            <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug" render={data}/>
             <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview}/>
             <Route exact path="/apps-robo-list" component={RoboInsightList}/>
             <Route exact path="/apps/audio" component={AudioFileList}/>
