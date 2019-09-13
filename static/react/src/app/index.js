@@ -287,7 +287,6 @@ class App extends React.Component {
         }
 
       } else if (this.hasTrainerRoutePermission()) {
-        debugger;
         let model_url = "/apps"
         var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
         if (props.match.params.AppId)

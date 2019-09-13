@@ -59,7 +59,6 @@ export class AppsLoader extends React.Component {
 		clearAppsIntervel();
 	}
   render() {
-		debugger;
 		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
 		var hideUrl = "";
 		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0){
