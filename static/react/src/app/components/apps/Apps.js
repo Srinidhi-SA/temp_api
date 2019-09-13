@@ -105,6 +105,7 @@ export class Apps extends React.Component {
 
 
   render() {
+    //Here is the error with routing need to debug it
     console.log("apps is called##########3");
     console.log(this.props);
     var appId = this.props.currentAppId;

@@ -65,8 +65,8 @@ export class AppsCreateScore extends React.Component {
     }
 	render() {
 		if(store.getState().datasets.dataPreviewFlag){
-			let mod = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+mod+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
+			var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+modeSelected+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		const dataSets = store.getState().datasets.allDataSets.data;
