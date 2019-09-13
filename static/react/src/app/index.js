@@ -287,9 +287,11 @@ class App extends React.Component {
         }
 
       } else if (this.hasTrainerRoutePermission()) {
+        debugger;
         let model_url = "/apps"
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
         if (props.match.params.AppId)
-          model_url = "/apps/" + props.match.params.AppId + "/analyst/models"
+          model_url = "/apps/" + props.match.params.AppId +modeSelected+"/models"
         return (<Redirect to={model_url}/>)
       } else {
         return (<Redirect to="/apps"/>)
@@ -352,14 +354,14 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
             <Route exact path="/apps/:AppId/analyst/scores?page=:slug" render={score}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
+            <Route exact path="/apps/:AppId/autoML/models/data/:slug/createModel" component={ModelVariableSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel" component={ModelVariableSelection}/>
             <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/analyst/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/autoML/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/autoML/scores/:slug" render={score}/>
             <Route exact path="/apps/:AppId/analyst/scores/:slug" render={score}/>
-            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/apps/:AppId/autoML/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
