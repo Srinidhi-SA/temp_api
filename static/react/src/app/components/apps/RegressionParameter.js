@@ -60,9 +60,6 @@ export class RegressionParameter extends React.Component {
          $(".fractionCls").prop("disabled",true);
          $(".nesterovsCls").prop("disabled",true);
 
-
-
-
          
 
 
@@ -236,23 +233,21 @@ export class RegressionParameter extends React.Component {
             let mselected = this.props.metricSelected.selected;
             if(tune){
 
-
-
                 switch(parameterData.displayName){
                     case"Activation":
-                    var rowCls = "row activation";
+                    var rowCls = "activation";
                     break;
                     case"Solver Used":
-                    rowCls = "row solverGrid";
+                    rowCls = "solverGrid";
                     break;
                     case"Learning Rate":
-                    rowCls = "row learningGrid";
+                    rowCls = "learningGrid";
                     break;
                     case"Shuffle":
-                    rowCls = "row shuffleGrid";
+                    rowCls = "shuffleGrid";
                     break;
                     case "Verbose":
-                    rowCls = "row verboseGrid";
+                    rowCls = "verboseGrid";
                     break;
                     default:
                     rowCls = "row";
@@ -349,7 +344,7 @@ export class RegressionParameter extends React.Component {
             }
             }
                return(
-                   <div className={rowCls}>
+                   <div className="row + {rowCls}">
                   <div className="col-md-6 for_multiselect">
                  <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
                  {optionsTemp}
