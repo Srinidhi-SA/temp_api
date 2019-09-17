@@ -194,7 +194,7 @@ export class RegressionParameter extends React.Component {
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         if(($(".hiddenLayerCls").val()) < 0){
-            document.getElementById("error").innerHTML="negative value";
+            document.getElementById("error").innerHTML="negative value not allowed";
         }
     }
     handleCheckboxEvents(e){
