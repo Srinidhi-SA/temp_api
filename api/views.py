@@ -6158,3 +6158,11 @@ def disable_all_periodic_tasks(request):
                          'count_already_diabled':count_already_diabled,
                          'count_just_disabled':count_just_disabled
                          })
+@csrf_exempt
+def request_from_alexa(request):
+    print "#######################"
+    request.data = json.loads(request.body)
+    print request
+    print request.data
+    print request.data['target']
+    return JsonResponse({'message':'Done'})
