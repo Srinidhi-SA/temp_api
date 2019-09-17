@@ -185,6 +185,7 @@ export class RegressionParameter extends React.Component {
         // if(($(".momentumCls").val())<0){
         //     $(".nesterovsCls").prop("disabled",true);
         // }
+       
         ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
         if(e.target.parentElement.lastElementChild != null)
         e.target.parentElement.lastElementChild.innerHTML="";
@@ -192,6 +193,9 @@ export class RegressionParameter extends React.Component {
         defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        if(($(".hiddenLayerCls").val()) < 0){
+            document.getElementById("error").innerHTML="negative value";
+        }
     }
     handleCheckboxEvents(e){
         this.setState({
@@ -513,6 +517,7 @@ export class RegressionParameter extends React.Component {
                     <div className="row">
                     <div className="col-md-6">
                     <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <div className="text-danger" id="error"></div>
                     </div>
                     </div>
                 );
