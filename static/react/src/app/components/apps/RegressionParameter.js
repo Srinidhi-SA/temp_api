@@ -185,13 +185,10 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     changeTextboxValue(e){
-        console.log($(".momentumCls").val(),"above statement class")
-
         // if(($(".momentumCls").val())<0){
         //     $(".nesterovsCls").prop("disabled",true);
         // }
-        ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",true):$(".nesterovsCls").prop("disabled",false);
-
+        ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
         if(e.target.parentElement.lastElementChild != null)
         e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
@@ -209,6 +206,15 @@ export class RegressionParameter extends React.Component {
      
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
+
+            // case "tuple":
+            //     switch(parameterData.name){
+            //         case"hidden_layer_sizes":
+            //         var cls= "form-control single hiddenLayerCls"
+            //         break;
+            //     }
+
+                
             case "list":
 
             switch(parameterData.name){
@@ -499,10 +505,19 @@ export class RegressionParameter extends React.Component {
             
             break;
             default:
+                switch(parameterData.name){
+                    case"hidden_layer_sizes":
+                    var defaultCls= "form-control single hiddenLayerCls"
+                    break;
+                    default:
+                    defaultCls= "form-control"
+
+
+                }
                 return (
                     <div className="row">
                     <div className="col-md-6">
-                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
                     </div>
                     </div>
                 );
@@ -551,12 +566,13 @@ export class RegressionParameter extends React.Component {
             else{
                 var isSingleNumber = parts[i].split(/-|\u3001/);
                 if(isSingleNumber.length > 1)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 const singleNumber = parseFloat(parts[i], 10);
                 if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                //1310
                 var checkType = this.checkType(parts[i],type,min,max);
                 if(checkType.iserror == true)
                 return {"iserror":true,"errmsg":checkType.errmsg};
