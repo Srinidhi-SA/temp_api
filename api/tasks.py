@@ -11,6 +11,7 @@ from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
 import datetime
 import json
+import copy
 from api.helper import get_random_model_id
 
 
@@ -493,7 +494,7 @@ def kill_application_using_fabric(app_id=None):
       #BASEDIR = settings.BASE_DIR
       #env.key_filename = settings.PEM_KEY
       #env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
-      
+
       try:
          capture = subprocess.Popen("docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
          stdout,stderr = capture.communicate()
@@ -703,3 +704,67 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             return
     except Exception as err:
         print(err)
+
+@task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
+def create_model_autoML(*args, **kwrgs):
+    try:
+        config = args
+        print config
+        data = json.loads(config[0])
+        dataset_object=Dataset.objects.get(name=data['dataset_name'])
+        print dataset_object
+
+        model_config={
+            "name":data['model_name'],
+            "app_id":2,
+            "mode":"autoML",
+            "config":{}
+        }
+        validationTechnique={
+            "displayName":"K Fold Validation",
+            "name":"kFold",
+            "value":2,
+        }
+
+        original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
+        print("Got metedata from dataset")
+
+        from django.contrib.auth.models import User
+        user_object = dataset_object.created_by
+
+        if original_meta_data_from_scripts is None:
+            uiMetaData = dict()
+        if original_meta_data_from_scripts == {}:
+            uiMetaData = dict()
+        else:
+            permissions_dict = {
+                'create_signal': user_object.has_perm('api.create_signal'),
+                'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+            }
+            from api.datasets.helper import add_ui_metadata_to_metadata
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
+                                                     permissions_dict=permissions_dict)
+            print("Got uiMetaData from dataset")
+
+        model_config['dataset'] = dataset_object.id
+        model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+        model_config['config']['targetColumn']=data['target']
+        model_config['config']['targetLevel']=data['subtarget']
+        model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+        model_config['config']['validationTechnique'] = validationTechnique
+        model_config['created_by'] = user_object.id
+
+        from api.utils import convert_to_string
+        model_config = convert_to_string(model_config)
+        print("Constructed model_config")
+
+        from api.utils import TrainerSerlializer
+        trainer_serializer = TrainerSerlializer(data=model_config, context={})
+        if trainer_serializer.is_valid():
+            trainer_object = trainer_serializer.save()
+            trainer_object.create()
+        else:
+            print(trainer_serializer.errors)
+
+    except Exception as err:
+        print err
