@@ -33,8 +33,6 @@ export class HeatMapTable extends React.Component {
    console.log("checking circular chart tabletable element");
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
-   //<Scrollbars className="heatMap" autoHeight autoHeightMin={100} autoHeightMax={800}>
-   //</Scrollbars>
    return (
           <div className={this.props.classId}>
          <Scrollbars style={{height:400}} >
