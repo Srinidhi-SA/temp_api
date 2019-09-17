@@ -25,7 +25,9 @@ import {
   getAppsScoreList,
   getAppsAlgoList,
   refreshAppsAlgoList,
-  updateSelectedApp
+  updateSelectedApp,
+  updateModelSummaryFlag,
+  updateScoreSummaryFlag
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 
@@ -49,14 +51,20 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount() {
+       this.props.dispatch(updateModelSummaryFlag(false));
+       this.props.dispatch(updateScoreSummaryFlag(false));
+
     //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {
       this.props.dispatch(activateModelScoreTabs("model"));
     } else if (this.props.match.url.indexOf("score") != -1) {
       this.props.dispatch(activateModelScoreTabs("score"));
     }
+    
   }
   modifyUrl(tabId) {
+    this.props.dispatch(updateModelSummaryFlag(false));
+
     this.props.dispatch(activateModelScoreTabs(tabId));
     //cleat Model Filters
     this.props.dispatch(storeModelSearchElement(""));
@@ -87,15 +95,16 @@ export class Apps extends React.Component {
 
   proceedToModelManagement(tabId)
   {
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
     if (tabId == "score")
     {
       this.props.dispatch(getAppsAlgoList(1));
       this.props.dispatch(refreshAppsAlgoList(this.props));
-     this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/modelManagement');
+     this.props.history.push('/apps/' + this.props.match.params.AppId +modeSelected +'/modelManagement');
     }else{
       this.props.dispatch(getAppsAlgoList(1));
       this.props.dispatch(refreshAppsAlgoList(this.props));
-    this.props.history.push('/apps/' + this.props.match.params.AppId + '/analyst/modelManagement');
+    this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected +'/modelManagement');
     }
   }
 
@@ -105,11 +114,14 @@ export class Apps extends React.Component {
     console.log("apps is called##########3");
     console.log(this.props);
     var appId = this.props.currentAppId;
-    if (store.getState().apps.modelSummaryFlag && this.props.location.pathname.includes("models")) {
+    // if (store.getState().apps.modelSummaryFlag && this.props.location.pathname.includes("models")) {
+
+    if (store.getState().apps.modelSummaryFlag) {  
       let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML/models/" : "/analyst/models/";
       let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
       return (<Redirect to={_link}/>);
-    }else if (store.getState().apps.scoreSummaryFlag) {
+    }
+     if (store.getState().apps.scoreSummaryFlag) {
       let modelLink= this.props.location.pathname.includes("autoML") ? "/autoML/scores/" : "/analyst/scores/"
       let _link1 = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.scoreSlug;
       return (<Redirect to={_link1}/>);

@@ -83,13 +83,24 @@ export class AppsCreateModel extends React.Component {
 // function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
 
 	submitAutoMlVal(mode){
-		var target=store.getState().signals.getVarText;
+		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
 		var app_id = store.getState().apps.currentAppId;
 		var levelCount=$("#createModelLevelCount").val();
 		var modelName= $("#modelName").val();
-	  this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
-    this.props.dispatch(closeModelPopup())
+		if ($("#model_Dataset").val() === "--Select dataset--") {
+			bootbox.alert("Please select dataset");
+		} else if (modelName === "") {
+			bootbox.alert("Please enter model name");
+		} else if ($("#createModelTarget").val() === "--Select--") {
+			bootbox.alert("Please select target variable");
+		} else if (levelCount === "--Select--") {
+			bootbox.alert("Please select sub value");
+		} else {
+			this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
+			this.props.dispatch(closeModelPopup())
+		}
+    
 		
 
 	}
@@ -123,7 +134,7 @@ export class AppsCreateModel extends React.Component {
  levelCountsForAutoMl(event) {
 	var selOption = event.target.childNodes[event.target.selectedIndex];
 	var varText = selOption.text;
-	var option = this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
+	var option = this.state.autoMlVal !="" && this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
 	var category= Object.keys(option);	
 	this.setState({countVal:category});
 		  }
@@ -181,7 +192,7 @@ export class AppsCreateModel extends React.Component {
 <div>
 				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
-                    <option value="">--Select--</option>
+                    <option>--Select--</option>
                     {this.state.countVal!=""?this.state.countVal.map((item, index) => {
 
                         return (<option key={item} name={item} value={item}>{item}</option>)

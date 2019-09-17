@@ -109,7 +109,6 @@ export class DataCleansing extends React.Component {
 
 
 tableHead.addEventListener('click', function (e) {
-  console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
     var tableHeader = e.target,
         textContent = tableHeader.textContent,
         tableHeaderIndex, isAscending, order;
