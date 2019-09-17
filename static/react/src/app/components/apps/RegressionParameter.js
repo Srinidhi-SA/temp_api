@@ -196,6 +196,9 @@ export class RegressionParameter extends React.Component {
         defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        if(($(".hiddenLayerCls").val()) < 0){
+            document.getElementById("error").innerHTML="negative value not allowed";
+        }
     }
     handleCheckboxEvents(e){
         this.setState({
@@ -525,6 +528,7 @@ export class RegressionParameter extends React.Component {
                     <div className="row">
                     <div className="col-md-6">
                     <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <div className="text-danger" id="error"></div>
                     </div>
                     </div>
                 );
