@@ -48,7 +48,7 @@ from api.utils import \
     # RegressionSerlializer, \
     # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
-from api.tasks import clean_up_on_delete
+from api.tasks import clean_up_on_delete,create_model_autoML
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
     SignalsRelatedPermission, StocksRelatedPermission ,DatasetRelatedPermission
@@ -6160,3 +6160,16 @@ def disable_all_periodic_tasks(request):
                          'count_already_diabled':count_already_diabled,
                          'count_just_disabled':count_just_disabled
                          })
+@csrf_exempt
+def request_from_alexa(request):
+    print "####  Got Request from Alexa ####"
+    request.data = json.loads(request.body)
+    print request.data
+    dataset_obj=Dataset.objects.filter(name=request.data['dataset_name'])
+    if len(dataset_obj)>0:
+        config=json.dumps(request.data)
+        print type(config)
+        create_model_autoML.delay(config)
+        return JsonResponse({'message':'Done'})
+    else:
+        return JsonResponse({'message':'Dataset not found.'})

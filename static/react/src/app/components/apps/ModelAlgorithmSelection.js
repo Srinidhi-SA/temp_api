@@ -66,6 +66,27 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             if(!isContinueRange || !isContinueMulticheck){
+                if(document.getElementsByClassName("activation")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Activation...","small_mascot");
+                    bootbox.alert(msg);
+                    return false;
+                }else if(document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Solver Used...","small_mascot");
+                    bootbox.alert(msg);
+                    return false;
+                }else if(document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
+                    bootbox.alert(msg);
+                    return false;
+                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Shuffle...","small_mascot");
+                    bootbox.alert(msg);
+                    return false;
+                }else if(document.getElementsByClassName("verboseGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Verbose...","small_mascot");
+                    bootbox.alert(msg);
+                    return false;
+                }
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
                 return false;

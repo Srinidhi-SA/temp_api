@@ -2,9 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-
 import { Scrollbars } from 'react-custom-scrollbars';
-
 import {decimalPlaces} from "../../helpers/helper";
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import {updateAlgorithmData} from "../../actions/appActions";
@@ -24,11 +22,11 @@ export class RegressionParameter extends React.Component {
     constructor(props) {
         super(props);
         if(this.props.parameterData.paramType == "number")
-        this.state = {
-            min: this.props.parameterData.valueRange[0],
-            max: this.props.parameterData.valueRange[1],
-            defaultVal:this.props.parameterData.defaultValue,
-        };
+            this.state = {
+                min: this.props.parameterData.valueRange[0],
+                max: this.props.parameterData.valueRange[1],
+                defaultVal:this.props.parameterData.defaultValue,
+            };
         else
         this.state = {
             defaultVal:this.props.parameterData.defaultValue,
@@ -38,7 +36,7 @@ export class RegressionParameter extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.parameterData.acceptedValue !== nextProps.parameterData.acceptedValue && nextProps.parameterData.acceptedValue == null) {
             this.setState({
-            defaultVal:this.props.parameterData.defaultValue,
+                defaultVal:this.props.parameterData.defaultValue,
             });
         }
         if (this.props.tuneName != "none" && nextProps.tuneName != "none" && this.props.tuneName !== nextProps.tuneName && this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter")
@@ -53,39 +51,32 @@ export class RegressionParameter extends React.Component {
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
         $(".disNum").prop("disabled",false);
-         $(".learningClsInit").prop("disabled",false);
-         $(".earlyStop").prop("disabled",false);
-         $(".multi").prop("disabled",false);
-         $(".powerT").prop("disabled",true);
-         $(".fractionCls").prop("disabled",true);
-         $(".nesterovsCls").prop("disabled",true);
-
-
-
-
-         
-
-
+        $(".learningClsInit").prop("disabled",false);
+        $(".earlyStop").prop("disabled",false);
+        $(".multi").prop("disabled",false);
+        $(".powerT").prop("disabled",true);
+        $(".fractionCls").prop("disabled",true);
+        $(".nesterovsCls").prop("disabled",true);
+        $(".momentumCls").prop("disabled",true);
     }
+
     componentDidUpdate(){
         var that = this;
         if(this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter")
         {
-            
-        $(this.eleSel).multiselect({
-            onChange: function(option, checked, select) {
-            that.props.dispatch(updateAlgorithmData(that.props.algorithmSlug,that.props.parameterData.name,$(option).val(),that.props.type));
-           },
-            onDropdownHide: function(event) {
-               if(this.getSelected().length == 0)
-                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select at least one";
-            },
-            onDropdownShow: function(event) {
-                event.target.parentElement.parentElement.lastElementChild.innerHTML = "";
-            }
-        });
+            $(this.eleSel).multiselect({
+                onChange: function(option, checked, select) {
+                    that.props.dispatch(updateAlgorithmData(that.props.algorithmSlug,that.props.parameterData.name,$(option).val(),that.props.type));
+                },
+                onDropdownHide: function(event) {
+                if(this.getSelected().length == 0)
+                    event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select at least one";
+                },
+                onDropdownShow: function(event) {
+                    event.target.parentElement.parentElement.lastElementChild.innerHTML = "";
+                }
+            });
         }
-
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
@@ -93,7 +84,7 @@ export class RegressionParameter extends React.Component {
         else {
             e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
-            defaultVal: e.target.value
+                defaultVal: e.target.value
             })
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
@@ -107,68 +98,53 @@ export class RegressionParameter extends React.Component {
     selecthandleChange(e){
         switch(e.target.value){
             case "sgd":
-            $(".learningCls").prop("disabled",false);
-            $(".disNum").prop("disabled",true);
-            $(".learningClsInit").prop("disabled",false);
-            $(".earlyStop").prop("disabled",false);
-            $(".powerT").prop("disabled",false);
-            $(".shuffleCls").prop("disabled",false);
-            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-            // $(".powerT").show();
-            $(".nesterovsCls").prop("disabled",false);
+                $(".learningCls").prop("disabled",false);
+                $(".disNum").prop("disabled",true);
+                $(".learningClsInit").prop("disabled",false);
+                $(".earlyStop").prop("disabled",false);
+                $(".powerT").prop("disabled",false);
+                $(".shuffleCls").prop("disabled",false);
+                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                // $(".powerT").show();
+                $(".nesterovsCls").prop("disabled",false);
+                $(".momentumCls").prop("disabled",false);
+                break;
 
-
-
-
-
-
-             break;
             case "adam":
-            $(".disNum").prop("disabled",false);
-            $(".learningCls").prop("disabled",true);
-            $(".learningClsInit").prop("disabled",false);
-            $(".earlyStop").prop("disabled",false);
-            $(".powerT").prop("disabled",true);
-            $(".shuffleCls").prop("disabled",false);
-            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
-            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-            // $(".powerT").hide();
-            $(".nesterovsCls").prop("disabled",true);
+                $(".disNum").prop("disabled",false);
+                $(".learningCls").prop("disabled",true);
+                $(".learningClsInit").prop("disabled",false);
+                $(".earlyStop").prop("disabled",false);
+                $(".powerT").prop("disabled",true);
+                $(".shuffleCls").prop("disabled",false);
+                $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                // $(".powerT").hide();
+                $(".nesterovsCls").prop("disabled",true);
+                $(".momentumCls").prop("disabled",true);
+                break;
 
-
-
-
-
-            break;
             case "lbfgs":
-            $(".learningCls").prop("disabled",true);
-            $(".disNum").prop("disabled",true);
-            $(".learningClsInit").prop("disabled",true);
-            $(".earlyStop").prop("disabled",true);
-            $(".powerT").prop("disabled",true);
-            $(".shuffleCls").prop("disabled",true);
-            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-            // $(".powerT").hide();
-            $(".nesterovsCls").prop("disabled",true);
-
-
-
-
-            break;
-            default:
-            "";
-
+                $(".learningCls").prop("disabled",true);
+                $(".disNum").prop("disabled",true);
+                $(".learningClsInit").prop("disabled",true);
+                $(".earlyStop").prop("disabled",true);
+                $(".powerT").prop("disabled",true);
+                $(".shuffleCls").prop("disabled",true);
+                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+                // $(".powerT").hide();
+                $(".nesterovsCls").prop("disabled",true);
+                $(".momentumCls").prop("disabled",true);
+                break;
+            default : "";
         }
-
         if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
             $(".fractionCls").prop("disabled",false);
         }
         else{
             $(".fractionCls").prop("disabled",true);
         }
-
-
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
@@ -180,109 +156,114 @@ export class RegressionParameter extends React.Component {
             //e.target.focus();
         }
         this.setState({
-        defaultVal: e.target.value
+          defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     changeTextboxValue(e){
-        console.log($(".momentumCls").val(),"above statement class")
-
-        // if(($(".momentumCls").val())<0){
-        //     $(".nesterovsCls").prop("disabled",true);
-        // }
-        ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",true):$(".nesterovsCls").prop("disabled",false);
-
+        ($(".momentumCls").val())>=0.1?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
         if(e.target.parentElement.lastElementChild != null)
-        e.target.parentElement.lastElementChild.innerHTML="";
+          e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
-        defaultVal: e.target.value
+            defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        var numbers = /^[0-9\s]*$/;
+        if(($(".hiddenLayerCls").val()) < 0){
+            document.getElementById("error").innerHTML="negative value not allowed";
+        }
+        else if(!numbers.test($(".hiddenLayerCls").val())){
+            document.getElementById("error").innerHTML="only number allowed";
+        }
+        // else if(!numbers.test($(".fractionCls").val())){
+        //     document.getElementsByClassName("fractionCls .clearfix").innerHTML="only number allowed";
+        // }
+        else if($(".hiddenLayerCls").val() == ""){
+            document.getElementById("error").innerHTML="mandatory field";
+        }
     }
     handleCheckboxEvents(e){
         this.setState({
-        defaultVal: e.target.checked
+            defaultVal: e.target.checked
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.checked,this.props.type));
     }
-    renderParameterData(parameterData,tune){
-     
-            let randomNum = Math.random().toString(36).substr(2,8);
+    renderParameterData(parameterData,tune){ 
+        let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
+            // case "tuple":
+            //     switch(parameterData.name){
+            //         case"hidden_layer_sizes":
+            //         var cls= "form-control single hiddenLayerCls"
+            //         break;
+            //     }
+
             case "list":
-
-            switch(parameterData.name){
-                case"learning_rate":
-                var cls= "form-control single learningCls"
-                break;
-                case"early_stopping":
-                cls = "form-control single earlyStop";
-                break;
-                case"shuffle":
-                cls = "form-control single shuffleCls";
-                break;
-                case"nesterovs_momentum":
-                cls = "form-control single nesterovsCls";
-                break;
-                default:
-                cls= "form-control single";
-            }        
-
-            var optionsTemp =[];
-            //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
-            let options = parameterData.defaultValue;
-            let mName = this.props.metricSelected.name;
-            let mDispName = this.props.metricSelected.displayName;
-            let mselected = this.props.metricSelected.selected;
-            if(tune){
-
-
-
-                switch(parameterData.displayName){
-                    case"Activation":
-                    var rowCls = "row activation";
-                    break;
-                    case"Solver Used":
-                    rowCls = "row solverGrid";
-                    break;
-                    case"Learning Rate":
-                    rowCls = "row learningGrid";
-                    break;
-                    case"Shuffle":
-                    rowCls = "row shuffleGrid";
-                    break;
-                    case "Verbose":
-                    rowCls = "row verboseGrid";
-                    break;
-                    default:
-                    rowCls = "row";
-                }  
-                
-                
-                var cls="form-control multi"
-
-                var selectedValue =[];
-               for (var prop in options) {
-                if(options[prop].selected)
-                selectedValue.push(options[prop].name)
-
-
                 switch(parameterData.name){
-                    case"solver":
-                    //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
-                    //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
-                    //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
+                    case"learning_rate":
+                        var cls= "form-control single learningCls"
+                        break;
+                    case"early_stopping":
+                        cls = "form-control single earlyStop";
+                        break;
+                    case"shuffle":
+                        cls = "form-control single shuffleCls";
+                        break;
+                    case"nesterovs_momentum":
+                        cls = "form-control single nesterovsCls";
+                        break;
+                    default:
+                        cls= "form-control single";
+                }
 
-                    if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                var optionsTemp =[];
+                //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
+                let options = parameterData.defaultValue;
+                let mName = this.props.metricSelected.name;
+                let mDispName = this.props.metricSelected.displayName;
+                let mselected = this.props.metricSelected.selected;
+                if(tune){
+                    switch(parameterData.displayName){
+                        case"Activation":
+                            var rowCls = "activation";
+                            break;
+                        case"Solver Used":
+                            rowCls = "solverGrid";
+                            break;
+                        case"Learning Rate":
+                            rowCls = "learningGrid";
+                            break;
+                        case"Shuffle":
+                            rowCls = "shuffleGrid";
+                            break;
+                        case "Verbose":
+                            rowCls = "verboseGrid";
+                            break;
+                        default:
+                            rowCls = "row";
+                    }  
+
+                    var cls="form-control multi"
+                    var selectedValue =[];
+                    for (var prop in options) {
+                        if(options[prop].selected)
+                            selectedValue.push(options[prop].name)
+                        switch(parameterData.name){
+                            case"solver":
+                            //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
+                            //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
+                            //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
+                            if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         // $(".learningGrid .for_multiselect").addClass("disableGrid");
-                        $(".learningGrid .multiselect").prop("disabled",true);
-                        
+                        $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -296,6 +277,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -310,6 +293,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",false);
+
 
 
 
@@ -325,6 +310,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -349,7 +336,7 @@ export class RegressionParameter extends React.Component {
             }
             }
                return(
-                   <div className={rowCls}>
+                   <div className= {"row" + " " + rowCls}>
                   <div className="col-md-6 for_multiselect">
                  <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
                  {optionsTemp}
@@ -383,6 +370,10 @@ export class RegressionParameter extends React.Component {
                         var  classN= "form-control momentumCls"; 
                         break;
                         case"Alpha":
+                        var type= "text";
+                        classN= "form-control";
+                        break;
+                        case"Batch Size":
                         var type= "text";
                         classN= "form-control";
                         break;
@@ -499,10 +490,20 @@ export class RegressionParameter extends React.Component {
             
             break;
             default:
+                switch(parameterData.name){
+                    case"hidden_layer_sizes":
+                    var defaultCls= "form-control single hiddenLayerCls"
+                    break;
+                    default:
+                    defaultCls= "form-control"
+
+
+                }
                 return (
                     <div className="row">
                     <div className="col-md-6">
-                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <div className="text-danger" id="error"></div>
                     </div>
                     </div>
                 );
@@ -526,6 +527,10 @@ export class RegressionParameter extends React.Component {
     
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
+        var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
+        if(!numbers.test(textboxVal)){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
@@ -551,12 +556,13 @@ export class RegressionParameter extends React.Component {
             else{
                 var isSingleNumber = parts[i].split(/-|\u3001/);
                 if(isSingleNumber.length > 1)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 const singleNumber = parseFloat(parts[i], 10);
                 if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                //1310
                 var checkType = this.checkType(parts[i],type,min,max);
                 if(checkType.iserror == true)
                 return {"iserror":true,"errmsg":checkType.errmsg};
