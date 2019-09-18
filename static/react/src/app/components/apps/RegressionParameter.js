@@ -59,6 +59,8 @@ export class RegressionParameter extends React.Component {
          $(".powerT").prop("disabled",true);
          $(".fractionCls").prop("disabled",true);
          $(".nesterovsCls").prop("disabled",true);
+         $(".momentumCls").prop("disabled",true);
+
 
          
 
@@ -113,6 +115,8 @@ export class RegressionParameter extends React.Component {
             $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
             // $(".powerT").show();
             $(".nesterovsCls").prop("disabled",false);
+         $(".momentumCls").prop("disabled",false);
+
 
 
 
@@ -131,6 +135,8 @@ export class RegressionParameter extends React.Component {
             $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
             // $(".powerT").hide();
             $(".nesterovsCls").prop("disabled",true);
+            $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -148,6 +154,7 @@ export class RegressionParameter extends React.Component {
             $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
             // $(".powerT").hide();
             $(".nesterovsCls").prop("disabled",true);
+            $(".momentumCls").prop("disabled",true);
 
 
 
@@ -182,11 +189,7 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     changeTextboxValue(e){
-        // if(($(".momentumCls").val())<0){
-        //     $(".nesterovsCls").prop("disabled",true);
-        // }
-       
-        ($(".momentumCls").val())<0?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
+        ($(".momentumCls").val())>=0.1?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
         if(e.target.parentElement.lastElementChild != null)
         e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
@@ -295,6 +298,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",true);
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -308,6 +313,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
@@ -322,6 +329,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",false);
+
 
 
 
@@ -337,6 +346,8 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",true);
+
 
 
 
