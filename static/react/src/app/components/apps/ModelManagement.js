@@ -251,6 +251,7 @@ export class ModelManagement extends React.Component {
             <option value="XG_">XG Boost</option>
             <option value="LG_">Linear Regression</option>
             <option value="NB_">Naive Bayes</option>
+            <option value="NN_">Neural Network</option>
           </select>);
 
     // mapping of list items into table
