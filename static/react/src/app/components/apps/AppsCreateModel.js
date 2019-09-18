@@ -134,7 +134,7 @@ export class AppsCreateModel extends React.Component {
  levelCountsForAutoMl(event) {
 	var selOption = event.target.childNodes[event.target.selectedIndex];
 	var varText = selOption.text;
-	var option = this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
+	var option = this.state.autoMlVal !="" && this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
 	var category= Object.keys(option);	
 	this.setState({countVal:category});
 		  }

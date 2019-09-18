@@ -15367,6 +15367,10 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
     float: right !important; }
 }
 
+ 
+
+ 
+:-ms-lang(x), .col-md-6 .col-md-12 .CircularProgressbar {  width:90px; }
 
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
