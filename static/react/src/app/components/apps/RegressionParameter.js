@@ -193,8 +193,15 @@ export class RegressionParameter extends React.Component {
         defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        var numbers = /^[0-9\s]*$/;
         if(($(".hiddenLayerCls").val()) < 0){
             document.getElementById("error").innerHTML="negative value not allowed";
+        }
+        else if(!numbers.test($(".hiddenLayerCls").val())){
+            document.getElementById("error").innerHTML="only number allowed";
+        }
+        else if($(".hiddenLayerCls").val() == ""){
+            document.getElementById("error").innerHTML="mandatory field";
         }
     }
     handleCheckboxEvents(e){
@@ -388,6 +395,10 @@ export class RegressionParameter extends React.Component {
                         var  classN= "form-control momentumCls"; 
                         break;
                         case"Alpha":
+                        var type= "text";
+                        classN= "form-control";
+                        break;
+                        case"Batch Size":
                         var type= "text";
                         classN= "form-control";
                         break;
