@@ -284,7 +284,7 @@ export class DataVariableSelection extends React.Component {
 
                     {/*<!-------------------------------------------------------------------------------->*/}
 
-                        <div className="col-lg-4">
+                        <div className="col-md-4">
                             <div className="panel panel-primary-p1 cst-panel-shadow">
                                 <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
                                 <div className="panel-body">
@@ -339,7 +339,7 @@ export class DataVariableSelection extends React.Component {
                             </div>
 
                         </div>{/*<!-- /.col-lg-4 -->*/}
-                        <div className="col-lg-4">
+                        <div className="col-md-4">
                             <div className="panel panel-primary-p2 cst-panel-shadow">
 
 
@@ -400,7 +400,7 @@ export class DataVariableSelection extends React.Component {
 
 
                         </div>{/*<!-- /.col-lg-4 -->*/}
-                        <div className="col-lg-4">
+                        <div className="col-md-4">
                             <div className="panel panel-primary-p3 cst-panel-shadow">
                                 <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
                                 <div className="panel-body">

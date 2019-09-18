@@ -215,7 +215,8 @@ export class AppsCreateModel extends React.Component {
 	    if(!this.props.isEnableCreate){
 	        cls += " disable-card";
 	        title= ACCESSDENIED
-	    }
+		}
+		var modeType = store.getState().apps.analystModeSelectedFlag?'Analyst' :'AutoML'
 		return (
 				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
 				<div className={cls} onClick={this.openModelPopup.bind(this)}>
@@ -228,7 +229,7 @@ export class AppsCreateModel extends React.Component {
 				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 				<Modal.Header closeButton>
-				<h3 className="modal-title">Create Model</h3>
+				<h3 className="modal-title">Create Model - {modeType}</h3>
 				</Modal.Header>
 				<Modal.Body>
 				 {/* <div class="form-group">
