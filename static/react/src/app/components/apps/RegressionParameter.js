@@ -175,6 +175,9 @@ export class RegressionParameter extends React.Component {
         else if(!numbers.test($(".hiddenLayerCls").val())){
             document.getElementById("error").innerHTML="only number allowed";
         }
+        // else if(!numbers.test($(".fractionCls").val())){
+        //     document.getElementsByClassName("fractionCls .clearfix").innerHTML="only number allowed";
+        // }
         else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
         }
@@ -333,7 +336,7 @@ export class RegressionParameter extends React.Component {
             }
             }
                return(
-                   <div className="row + {rowCls}">
+                   <div className= {"row" + " " + rowCls}>
                   <div className="col-md-6 for_multiselect">
                  <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
                  {optionsTemp}
@@ -524,6 +527,10 @@ export class RegressionParameter extends React.Component {
     
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
+        var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
+        if(!numbers.test(textboxVal)){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
