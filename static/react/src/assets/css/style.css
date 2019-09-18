@@ -15367,10 +15367,16 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
     float: right !important; }
 }
 
- 
-
- 
 :-ms-lang(x), .col-md-6 .col-md-12 .CircularProgressbar {  width:90px; }
+
+/* iPad Landscape */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) { 
+	.btn-toolbar>.input-group { margin-left: 0px; }
+	.panel-primary-p1 .panel-body, .panel-primary-p2 .panel-body, .panel-primary-p3 .panel-body { min-height: 290px; }
+	.app-block a.app-link { min-height: 184px; }
+	.sticky-container { top: 36% !important; }
+}
+
 
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
