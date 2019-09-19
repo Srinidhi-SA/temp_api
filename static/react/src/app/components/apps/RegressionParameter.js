@@ -105,6 +105,7 @@ export class RegressionParameter extends React.Component {
                 $(".powerT").prop("disabled",false);
                 $(".shuffleCls").prop("disabled",false);
                 $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
                 // $(".powerT").show();
                 $(".nesterovsCls").prop("disabled",false);
                 $(".momentumCls").prop("disabled",false);
@@ -250,10 +251,32 @@ export class RegressionParameter extends React.Component {
                             selectedValue.push(options[prop].name)
                         switch(parameterData.name){
                             case"solver":
-                            //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
-                            //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
-                            //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
-                            if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+
+                            if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                                (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                                (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
+                        $(".disNum").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",false);
+
+
+
+
+
+                    }
+                            
+                                                                                   
+
+
+
+
+                         else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         // $(".learningGrid .for_multiselect").addClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
@@ -310,7 +333,7 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",false);
 
 
 
