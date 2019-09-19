@@ -23,6 +23,7 @@ from api.datasets.serializers import DatasetSerializer
 from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
+from django.contrib.auth.models import User
 from api.utils import \
     convert_to_string, \
     name_check, \
@@ -6163,11 +6164,72 @@ def request_from_alexa(request):
     print "####  Got Request from Alexa ####"
     request.data = json.loads(request.body)
     print request.data
-    dataset_obj=Dataset.objects.filter(name=request.data['dataset_name'])
+    ###################################  Hard-code Alexa User with username alexa ###############################
+    '''
+    Create one user with Username "alexa" in order to use alexa for AutoML model creation.
+
+    Question: Why are we hard-coding "alexa" user for the same and why it cann't be generic?
+
+    Answer: User 'alexa' is hard-coded so that anyone using alexa for AutoML job can use Datasets uploaded by Alexa user only.
+            User Alexa can also see the results in UI if credentials are known for Alexa, although we will be sending results in email as well.
+
+    '''
+    user_id=User.objects.get(username="alexa")
+    ###################################  Filter Datasets uploaded by alexa user  ################################
+    dataset_obj=Dataset.objects.filter(name=request.data['dataset_name'],created_by=user_id)
+    ###################################            Conditional checks           #################################
     if len(dataset_obj)>0:
-        config=json.dumps(request.data)
-        print type(config)
-        create_model_autoML.delay(config)
-        return JsonResponse({'message':'Done'})
+        # Dataset with the requested name exists (May be multiple datasets)
+        ##############    Check for the Target variable in first dataset   ####################
+        for dataset in dataset_obj:
+            Target = request.data['target']
+            Subtarget = request.data['subtarget']
+            Target_flag = check_for_target_and_subtarget_variable_in_dataset(dataset,Target,Subtarget)
+            break
+        if Target_flag == True:
+            # Target and Sub-Target Value Exists
+            #######################    Go for Email-id Validation Check   ##############################
+            email = request.data['email_id']
+            from api.helper import check_email_id
+            email_check = check_email_id(email)
+            if email_check == True:
+                # email provided is valid
+                #################     Check for Valid Model Name   ######################
+                model_name = request.data['model_name']
+                from api.utils import name_check
+                model_name_check = name_check(model_name)
+                if model_name_check < 0:
+                    if model_name_check == -1:
+                        return JsonResponse({'message':'Model name is empty.'})
+                    elif model_name_check == -2:
+                        return JsonResponse({'message':'Model name is very large.'})
+                    elif model_name_check == -3:
+                        return JsonResponse({'message':'Model name with special_characters not allowed.'})
+                else:
+                    # Done with all validations. Proceed to trigger AutoML Job for Alexa
+                    config=json.dumps(request.data)
+                    # Trigget autoML job
+                    create_model_autoML.delay(config)
+                    return JsonResponse({'message':'Done'})
+            else:
+                return JsonResponse({'message':'Invalid Email-id.'})
+        else:
+            return JsonResponse({'message':'Target/Sub-Target not found.'})
     else:
         return JsonResponse({'message':'Dataset not found.'})
+
+def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None,Target=None,Subtarget=None):
+    meta_data = json.loads(dataset_object.meta_data)
+    if 'columnData'in meta_data:
+        for obj in meta_data['columnData']:
+            # Check if Target exists
+            if obj['actualColumnType'] == "dimension" and  obj['name'] == Target:
+                # Check if Sub-Target exists
+                for data in obj['chartData']['chart_c3']['data']['columns'][0]:
+                    if data == Subtarget:
+                        return True
+                        break
+            else:
+                pass
+    else:
+        return False

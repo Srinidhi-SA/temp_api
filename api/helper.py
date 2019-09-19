@@ -1415,3 +1415,16 @@ def get_random_model_id(algo_name):
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number ])
+
+def check_email_id(email=None):
+    try:
+        import re
+        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+        if(re.search(regex,email)):
+            print("Valid Email")
+            return True
+        else:
+            print("Invalid Email")
+            return False
+    except Exception as e:
+        print e    
