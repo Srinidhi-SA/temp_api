@@ -140,10 +140,16 @@ export class RegressionParameter extends React.Component {
                 break;
             default : "";
         }
-        if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
+        if(e.target.className=="form-control single earlyStop" && e.target.value == "true"){
             $(".fractionCls").prop("disabled",false);
         }
-        else{
+        else if(e.target.className=="form-control single earlyStop" && e.target.value == "false"){
+            $(".fractionCls").prop("disabled",true);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "sgd" || e.target.value == "adam") ){
+            $(".fractionCls").prop("disabled",false);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "lbfgs") ){
             $(".fractionCls").prop("disabled",true);
         }
         console.log(e.target.value);
@@ -377,6 +383,8 @@ export class RegressionParameter extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     switch(parameterData.displayName){
                         case"Beta 1":
+                        var  classN= "form-control beta1";
+                        break;
                         case"Beta 2":
                         var  classN= "form-control disNum";
                         break;
@@ -483,7 +491,7 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)} disabled/>
+                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -551,7 +559,13 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!numbers.test(textboxVal)){
+        if(!numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.fractionCls').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.beta1').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         const parts = textboxVal.split(/,|\u3001/);
