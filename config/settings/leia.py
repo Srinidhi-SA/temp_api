@@ -181,7 +181,7 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/ankush.pem"
-ENABLE_KYLO = True
+ENABLE_KYLO = False
 KYLO_UI_URL = "http://data-management.marlabsai.com"
 
 
