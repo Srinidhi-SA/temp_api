@@ -58,9 +58,11 @@ export class StocksCard extends React.Component {
                 if(data.status == INPROGRESS){
                     percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
                     stockLink = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
-                }else if(data.status == SUCCESS && !data.viewed){
+                }else if(data.status == SUCCESS){
                     data.completed_percentage = 100;
                     percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                }else if(data.status == FAILED){
+                    percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                 }
                 var permissionDetails = data.permission_details;
                 var isDropDown = permissionDetails.remove_stock || permissionDetails.rename_stock; 
@@ -70,16 +72,12 @@ export class StocksCard extends React.Component {
                         <div className="card-header"></div>
                         <div className="card-center-tile">
                         <div className="row">
-                        
                         <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
                         {stockLink}
                         </h5>
 						<div className="pull-right"><img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/></div>
 						<div className="clearfix"></div>
-					
-						
-                        
                         <div className="clearfix"></div>
                         {percentageDetails}
 

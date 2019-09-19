@@ -50,6 +50,16 @@ export class AudioFileCard extends React.Component {
     
         const appsAudioList = audioList.map((data, i) => {
             var modelLink = "/apps/audio/" + data.slug;
+            var percentageDetails = "";
+                if(data.status == INPROGRESS){
+                    percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
+                    stockLink = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                }else if(data.status == SUCCESS){
+                    data.completed_percentage = 100;
+                    percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                }else if(data.status == FAILED){
+                    percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
+                }
             return (
                     <div className="col-md-3 top20 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>
@@ -61,7 +71,9 @@ export class AudioFileCard extends React.Component {
                     <h5 className="title newCardTitle pull-left">
                     <Link to={modelLink} id= {data.slug} onClick={this.getAudioFileSummary.bind(this,data.slug)}>{data.name}</Link>
                     </h5>
-                    
+                    <div className="clearfix"></div>
+                    {percentageDetails}
+
                     <div class="btn-toolbar pull-right">
                     {/*<!-- Rename and Delete BLock  -->*/}
                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
