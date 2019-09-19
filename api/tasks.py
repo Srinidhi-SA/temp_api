@@ -711,7 +711,7 @@ def create_model_autoML(*args, **kwrgs):
         config = args
         print config
         data = json.loads(config[0])
-        dataset_object=Dataset.objects.get(name=data['dataset_name'])
+        dataset_object=Dataset.objects.filter(name=data['dataset_name']).first()
         print dataset_object
 
         model_config={

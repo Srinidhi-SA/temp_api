@@ -36,7 +36,7 @@ class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by',
-                    "msg_count", "time_difference", "script_time_difference", 'created_at'
+                    "msg_count", "time_difference", 'created_at'
                     ]
     list_filter = ["job_type", "status", "submitted_by"]
     # readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
@@ -152,9 +152,9 @@ class ScoreAdmin(admin.ModelAdmin):
 class TrainerAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">tune</i>'
     search_fields = ["name", "slug"]
-    list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
+    list_display = ["name", "slug", "mode", "app_id", "analysis_done", "created_at",
                     "created_by", "deleted", "status"]
-    list_filter = ["deleted", "created_by", "status"]
+    list_filter = ["deleted", "created_by", "status", "mode"]
     readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
@@ -267,6 +267,3 @@ if settings.KEEP_OTHERS_IN_ADMIN:
     admin.site.register(Robo, RoboAdmin)
     admin.site.register(Profile, ProfileAdmin)
     admin.site.register(Permission, PermissionAdmin)
-
-
-

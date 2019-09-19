@@ -468,7 +468,7 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)} disabled/>
+                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
