@@ -51,6 +51,8 @@ export class RegressionParameter extends React.Component {
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
         $(".disNum").prop("disabled",false);
+        $(".beta1").prop("disabled",false);
+
         $(".learningClsInit").prop("disabled",false);
         $(".earlyStop").prop("disabled",false);
         $(".multi").prop("disabled",false);
@@ -100,11 +102,14 @@ export class RegressionParameter extends React.Component {
             case "sgd":
                 $(".learningCls").prop("disabled",false);
                 $(".disNum").prop("disabled",true);
+                $(".beta1").prop("disabled",true);
+
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
                 $(".powerT").prop("disabled",false);
                 $(".shuffleCls").prop("disabled",false);
                 $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
                 // $(".powerT").show();
                 $(".nesterovsCls").prop("disabled",false);
                 $(".momentumCls").prop("disabled",false);
@@ -112,6 +117,8 @@ export class RegressionParameter extends React.Component {
 
             case "adam":
                 $(".disNum").prop("disabled",false);
+                $(".beta1").prop("disabled",false);
+
                 $(".learningCls").prop("disabled",true);
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
@@ -127,6 +134,8 @@ export class RegressionParameter extends React.Component {
             case "lbfgs":
                 $(".learningCls").prop("disabled",true);
                 $(".disNum").prop("disabled",true);
+                $(".beta1").prop("disabled",true);
+
                 $(".learningClsInit").prop("disabled",true);
                 $(".earlyStop").prop("disabled",true);
                 $(".powerT").prop("disabled",true);
@@ -139,10 +148,16 @@ export class RegressionParameter extends React.Component {
                 break;
             default : "";
         }
-        if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
+        if(e.target.className=="form-control single earlyStop" && e.target.value == "true"){
             $(".fractionCls").prop("disabled",false);
         }
-        else{
+        else if(e.target.className=="form-control single earlyStop" && e.target.value == "false"){
+            $(".fractionCls").prop("disabled",true);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "sgd" || e.target.value == "adam") ){
+            $(".fractionCls").prop("disabled",false);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "lbfgs") ){
             $(".fractionCls").prop("disabled",true);
         }
         console.log(e.target.value);
@@ -250,13 +265,39 @@ export class RegressionParameter extends React.Component {
                             selectedValue.push(options[prop].name)
                         switch(parameterData.name){
                             case"solver":
-                            //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
-                            //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
-                            //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
-                            if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+
+                            if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                                (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                                (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",false);
+
+
+
+
+
+                    }
+                            
+                                                                                   
+
+
+
+
+                         else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         // $(".learningGrid .for_multiselect").addClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
+                        $(".beta1").prop("disabled",true);
+
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
@@ -270,6 +311,8 @@ export class RegressionParameter extends React.Component {
                     }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
                             $(".disNum").prop("disabled",false);
+                            $(".beta1").prop("disabled",false);
+
                             $(".learningClsInit").prop("disabled",false);
                             $(".powerT").prop("disabled",true);
                             // $(".learningGrid .for_multiselect").addClass("disableGrid");
@@ -286,6 +329,8 @@ export class RegressionParameter extends React.Component {
                     }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
+                        $(".beta1").prop("disabled",true);
+
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
                         // $(".learningGrid .for_multiselect").removeClass("disableGrid");
@@ -302,6 +347,8 @@ export class RegressionParameter extends React.Component {
                     }
                     else{
                         $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+
                         $(".learningClsInit").prop("disabled",false);
                         $(".earlyStop").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
@@ -310,7 +357,7 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",false);
 
 
 
@@ -354,6 +401,8 @@ export class RegressionParameter extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     switch(parameterData.displayName){
                         case"Beta 1":
+                        var  classN= "form-control beta1";
+                        break;
                         case"Beta 2":
                         var  classN= "form-control disNum";
                         break;
@@ -460,7 +509,7 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)} disabled/>
+                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -528,7 +577,13 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!numbers.test(textboxVal)){
+        if(!numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.fractionCls').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.beta1').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         const parts = textboxVal.split(/,|\u3001/);
@@ -548,10 +603,10 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const from = match[1] ? parseFloat(match[1], 10) : min;
                 const to = match[3] ? parseFloat(match[3], 10) : max;
-                if (from > to || from < min || from > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
-                if (to > max || to < min || to > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                if (from > to || from < min || from > max) //ex:grid search 10-400 "check for both values range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                if (to > max || to < min || to > max)//ex:grid search  10-400 "if right value is more then range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
             }
             else{
                 var isSingleNumber = parts[i].split(/-|\u3001/);

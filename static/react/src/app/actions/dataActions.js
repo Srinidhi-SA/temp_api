@@ -171,7 +171,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
+    if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
@@ -1442,12 +1442,12 @@ export function addComponents(colSlug){
         }
 
         if(dataColumnRemoveValues.length == 0){
-            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
         }if(dataColumnReplaceValues.length == 0){
-            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
         }
 
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
@@ -1484,10 +1484,10 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.id+1;
-                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
             }else{
-                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
@@ -1499,9 +1499,9 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.replaceId+1;
-                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }else{
-                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
