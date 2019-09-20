@@ -229,7 +229,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div className="form-group">
                                     <label class="col-md-3 control-label">Hyperparameter Tuning :</label>
                                     <div className="col-md-3">
-                                        <select  class="form-control" onChange={this.changeHyperParameterType.bind(this,data.algorithmSlug)} value={selectedValue}>
+                                        <select  class="form-control hyperTune" onChange={this.changeHyperParameterType.bind(this,data.algorithmSlug)} value={selectedValue}>
                                         {hyperParameterTypes}
                                         </select>
                                     </div>

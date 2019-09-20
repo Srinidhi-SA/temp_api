@@ -307,10 +307,7 @@ export class RegressionParameter extends React.Component {
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
 
-
-
-
-                    }
+                  }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
                             $(".disNum").prop("disabled",false);
                             $(".beta1").prop("disabled",false);
@@ -351,6 +348,7 @@ export class RegressionParameter extends React.Component {
 
 
                     }
+                  
                     else{
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
@@ -372,12 +370,9 @@ export class RegressionParameter extends React.Component {
                     break;
                     default:
                        "";
-            
+             }
 
-                }
-
-
-                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
+       optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
             }
             else{
@@ -583,12 +578,14 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!numbers.test($('.disNum').val())){
+        if(!($('.fractionCls').val()== undefined)){
+       if(!numbers.test($('.fractionCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
-        else if(!numbers.test($('.fractionCls').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
+    }
+      if(!numbers.test($('.disNum').val())){
+        return {"iserror":true,"errmsg":"only number allowed"};
+    }
         else if(!numbers.test($('.beta1').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
