@@ -51,6 +51,8 @@ export class RegressionParameter extends React.Component {
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
         $(".disNum").prop("disabled",false);
+        $(".beta1").prop("disabled",false);
+
         $(".learningClsInit").prop("disabled",false);
         $(".earlyStop").prop("disabled",false);
         $(".multi").prop("disabled",false);
@@ -100,11 +102,14 @@ export class RegressionParameter extends React.Component {
             case "sgd":
                 $(".learningCls").prop("disabled",false);
                 $(".disNum").prop("disabled",true);
+                $(".beta1").prop("disabled",true);
+
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
                 $(".powerT").prop("disabled",false);
                 $(".shuffleCls").prop("disabled",false);
                 $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
                 // $(".powerT").show();
                 $(".nesterovsCls").prop("disabled",false);
                 $(".momentumCls").prop("disabled",false);
@@ -112,6 +117,8 @@ export class RegressionParameter extends React.Component {
 
             case "adam":
                 $(".disNum").prop("disabled",false);
+                $(".beta1").prop("disabled",false);
+
                 $(".learningCls").prop("disabled",true);
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
@@ -127,6 +134,8 @@ export class RegressionParameter extends React.Component {
             case "lbfgs":
                 $(".learningCls").prop("disabled",true);
                 $(".disNum").prop("disabled",true);
+                $(".beta1").prop("disabled",true);
+
                 $(".learningClsInit").prop("disabled",true);
                 $(".earlyStop").prop("disabled",true);
                 $(".powerT").prop("disabled",true);
@@ -256,13 +265,39 @@ export class RegressionParameter extends React.Component {
                             selectedValue.push(options[prop].name)
                         switch(parameterData.name){
                             case"solver":
-                            //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
-                            //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
-                            //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
-                            if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+
+                            if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                                (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                                (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",false);
+
+
+
+
+
+                    }
+                            
+                                                                                   
+
+
+
+
+                         else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         // $(".learningGrid .for_multiselect").addClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
+                        $(".beta1").prop("disabled",true);
+
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
@@ -273,6 +308,8 @@ export class RegressionParameter extends React.Component {
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
                             $(".disNum").prop("disabled",false);
+                            $(".beta1").prop("disabled",false);
+
                             $(".learningClsInit").prop("disabled",false);
                             $(".powerT").prop("disabled",true);
                             // $(".learningGrid .for_multiselect").addClass("disableGrid");
@@ -284,6 +321,8 @@ export class RegressionParameter extends React.Component {
                  }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
+                        $(".beta1").prop("disabled",true);
+
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
                         // $(".learningGrid .for_multiselect").removeClass("disableGrid");
@@ -296,6 +335,8 @@ export class RegressionParameter extends React.Component {
                   
                     else{
                         $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+
                         $(".learningClsInit").prop("disabled",false);
                         $(".earlyStop").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
@@ -304,8 +345,12 @@ export class RegressionParameter extends React.Component {
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
-                     }
+                        $(".momentumCls").prop("disabled",false);
+
+
+
+
+                    }
                     break;
                     default:
                        "";
@@ -545,10 +590,10 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const from = match[1] ? parseFloat(match[1], 10) : min;
                 const to = match[3] ? parseFloat(match[3], 10) : max;
-                if (from > to || from < min || from > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
-                if (to > max || to < min || to > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                if (from > to || from < min || from > max) //ex:grid search 10-400 "check for both values range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                if (to > max || to < min || to > max)//ex:grid search  10-400 "if right value is more then range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
             }
             else{
                 var isSingleNumber = parts[i].split(/-|\u3001/);

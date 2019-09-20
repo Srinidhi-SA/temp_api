@@ -660,7 +660,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "description": "Controls the step-size in updating the weights.",
             "defaultValue":0.001,
             "acceptedValue":None,
-            "valueRange":[0.1,20.0],
+            "valueRange":[0.0001,20.0],
             "paramType":"number",
             "uiElemType":"textBox",
             "display":True,
@@ -864,7 +864,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "paramType":"number",
              "uiElemType":"textBox",
              "display":True,
-             "hyperpatameterTuningCandidate":True,
+             "hyperpatameterTuningCandidate":False,
              "expectedDataType": ["float"],
              "allowedDataType":["float"]
          },
