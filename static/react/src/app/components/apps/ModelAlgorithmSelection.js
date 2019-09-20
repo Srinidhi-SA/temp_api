@@ -73,12 +73,12 @@ export class ModelAlgorithmSelection extends React.Component {
                 }else if(document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Solver Used...","small_mascot");
                     bootbox.alert(msg);
-                    return false;
-                }else if(document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")){
+                    return false;   
+                }else if((document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
                     let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
                     bootbox.alert(msg);
                     return false;
-                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected") && (document.getElementsByClassName("solverGrid")[0].innerText.includes("adam") || document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd") ) ){
                     let msg= statusMessages("warning","Please select Shuffle...","small_mascot");
                     bootbox.alert(msg);
                     return false;

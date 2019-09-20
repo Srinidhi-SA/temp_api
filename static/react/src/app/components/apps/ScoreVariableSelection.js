@@ -33,13 +33,13 @@ export class ScoreVariableSelection extends React.Component {
         event.preventDefault();
         let letters = /^[0-9a-zA-Z\d-_\s]+$/;
 
-        if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(this.props.selectedVariablesCount < 4 || this.props.selectedVariablesCount > 10){
-                let msg= statusMessages("warning","Number of variables selected should be 4 to 10","small_mascot");
-                bootbox.alert(msg);
-                return false;
-            }
-        }
+        // if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+        //     if(this.props.selectedVariablesCount < 4 || this.props.selectedVariablesCount > 10){
+        //         let msg= statusMessages("warning","Number of variables selected should be 4 to 10","small_mascot");
+        //         bootbox.alert(msg);
+        //         return false;
+        //     }
+        // }
        if (letters.test(document.getElementById("createScoreName").value) == false){
 
             bootbox.alert(statusMessages("warning", "Please enter score name in a correct format.It should not contain special characters @,#,$,%,!,&.", "small_mascot"));

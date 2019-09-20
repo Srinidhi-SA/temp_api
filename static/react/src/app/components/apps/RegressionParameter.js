@@ -304,6 +304,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",true);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
 
 
 
@@ -321,6 +323,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
 
 
 
@@ -339,6 +343,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
 
 
 
