@@ -60,6 +60,7 @@ export class RegressionParameter extends React.Component {
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
         $(".momentumCls").prop("disabled",true);
+
     }
 
     componentDidUpdate(){
@@ -578,7 +579,8 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!($('.fractionCls').val()== undefined)){
+        // if(!($('.fractionCls').val()== undefined)){
+        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
        if(!numbers.test($('.fractionCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
@@ -587,6 +589,9 @@ export class RegressionParameter extends React.Component {
         return {"iserror":true,"errmsg":"only number allowed"};
     }
         else if(!numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.learningClsInit').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         const parts = textboxVal.split(/,|\u3001/);
