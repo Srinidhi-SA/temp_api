@@ -143,7 +143,7 @@ export class SubSetting extends React.Component {
       alert("please enter a valid number")
     else {
       this.setState({
-        curmin: e.target.value,
+        curmin: parseInt(e.target.value),
         textboxUpdated: true
       })
       //this.state.curmin = Number(e.target.value)
@@ -158,7 +158,7 @@ export class SubSetting extends React.Component {
       alert("please enter a valid number")
     else {
       this.setState({
-        curmax: e.target.value,
+        curmax: parseInt(e.target.value),
         textboxUpdated: true
       })
       //this.state.curmin = Number(e.target.value)
