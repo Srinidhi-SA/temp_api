@@ -103,7 +103,7 @@ export class DataSourceList extends React.Component {
             if (this.props.renderDatasets) {
               return (
                 <div>
-                  <div class="form-group col-md-10 pt-10 xs-pl-30">
+                  <div class="form-group col-md-12 pt-10">
                     {msg}
                   </div>
                   <div className="clearfix"></div>
@@ -170,19 +170,28 @@ export class DataSourceList extends React.Component {
         <div>
           <Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
 		  <div className="container-fluid">
-            <Row className="clearfix">
+      <Row className="clearfix">
+            {window.location.href.includes("analyst")&&
               <Col sm={3}>
                 <Nav bsStyle="pills" stacked>
                   {navTabs}
                 </Nav>
               </Col>
+            }
 
-              <Col sm={9}>
+            {window.location.href.includes("analyst")? 
+            <Col sm={9}>
                 <Tab.Content animation>
                   {navTabContent}
                 </Tab.Content>
               </Col>
-
+              :
+              <Col sm={12}>
+                <Tab.Content animation>
+                  {navTabContent}
+                </Tab.Content>
+              </Col>
+            }
             </Row>
 			</div>
           </Tab.Container>

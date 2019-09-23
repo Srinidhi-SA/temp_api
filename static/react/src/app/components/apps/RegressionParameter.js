@@ -60,6 +60,7 @@ export class RegressionParameter extends React.Component {
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
         $(".momentumCls").prop("disabled",true);
+
     }
 
     componentDidUpdate(){
@@ -289,6 +290,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",true);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
 
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
@@ -301,7 +304,14 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
-                 }
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+
+
+
+
+                    }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
@@ -312,6 +322,13 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+
+
+
+
                     }
                   
                     else{
@@ -543,7 +560,8 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!($('.fractionCls').val()== undefined)){
+        // if(!($('.fractionCls').val()== undefined)){
+        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
        if(!numbers.test($('.fractionCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
@@ -552,6 +570,9 @@ export class RegressionParameter extends React.Component {
         return {"iserror":true,"errmsg":"only number allowed"};
     }
         else if(!numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.learningClsInit').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         const parts = textboxVal.split(/,|\u3001/);
