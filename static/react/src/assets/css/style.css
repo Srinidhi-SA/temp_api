@@ -16052,7 +16052,7 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 
 /*** Geo Chart from VELUM ***/
 .geoChart .domain{ stroke:  #b2b2b2 !important; stroke-width: 2;}
-.geoChart svg  text.label{ font-size: 100%; fill: #333333; text-transform: capitalize; transform: translateY(-10px);}
+.geoChart svg  text.label{ font-size: 85%; fill: #2f988d; text-transform: capitalize; transform: translateY(-10px) rotate3d(1, 1, 1, -18deg);}
 .geoChart .tick line{stroke:  #ddd !important; stroke-width: 2;  }
 .geoChart .brush{ margin-top: 10px;}
 .geoChart .tick text{ font-size: 12px; color: #333333;  }

@@ -60,6 +60,7 @@ export class RegressionParameter extends React.Component {
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
         $(".momentumCls").prop("disabled",true);
+
     }
 
     componentDidUpdate(){
@@ -271,33 +272,18 @@ export class RegressionParameter extends React.Component {
                                 (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
-
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-
-
-
-
-
                     }
-                            
-                                                                                   
-
-
-
-
                          else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
-                        // $(".learningGrid .for_multiselect").addClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
-
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
@@ -309,13 +295,11 @@ export class RegressionParameter extends React.Component {
 
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
-                            $(".disNum").prop("disabled",false);
-                            $(".beta1").prop("disabled",false);
-
-                            $(".learningClsInit").prop("disabled",false);
-                            $(".powerT").prop("disabled",true);
-                            // $(".learningGrid .for_multiselect").addClass("disableGrid");
-                           $(".learningGrid .multiselect").prop("disabled",true);
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",true);
+                        $(".learningGrid .multiselect").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
@@ -331,10 +315,8 @@ export class RegressionParameter extends React.Component {
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
-
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
@@ -578,7 +560,8 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!($('.fractionCls').val()== undefined)){
+        // if(!($('.fractionCls').val()== undefined)){
+        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
        if(!numbers.test($('.fractionCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
@@ -587,6 +570,9 @@ export class RegressionParameter extends React.Component {
         return {"iserror":true,"errmsg":"only number allowed"};
     }
         else if(!numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.learningClsInit').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         const parts = textboxVal.split(/,|\u3001/);
