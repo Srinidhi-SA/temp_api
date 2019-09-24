@@ -15258,8 +15258,9 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-.algSelection .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #f7f7f7; }
-div.algSelection .checkbox .ma-checkbox label { font-size: 15px; text-transform: capitalize; padding: 10px; }
+.algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #f7f7f7; }
+.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #f7f7f7; }
+div.algSelection .checkbox .ma-checkbox label { font-size: 14px; text-transform: capitalize; padding: 10px; }
 .algSelection .ma-checkbox { margin-bottom: 15px;}
 .algSelection .ma-checkbox label { font-weight:bold; }
 .modal-lg-dimSEdate { width:805px; }

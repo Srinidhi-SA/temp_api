@@ -164,7 +164,7 @@ export class AppsCreateModel extends React.Component {
 			{window.location.href.includes("autoML")&&
 			<div>
 				<label className="pb-2 pt-10">Model Name</label>
-            <input type="text" className="form-control" placeholder="model name" id="modelName"></input>
+            <input type="text" className="form-control" autoComplete="off" placeholder="model name" id="modelName"></input>
 				<label className="pb-2 pt-10">Select target variable:</label>
 				<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
 				<option>--Select--</option>
