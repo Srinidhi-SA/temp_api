@@ -269,33 +269,59 @@ export class RegressionParameter extends React.Component {
                                 (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
-
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",false);
+                    }
+                    else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                    (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                        $(".disNum").prop("disabled",true);
+                        $(".beta1").prop("disabled",true);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
+                        $(".learningGrid .multiselect").prop("disabled",false);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",true);
+                        $(".momentumCls").prop("disabled",false);
+
+
+                    }
+                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                    (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",true);
+                        $(".learningGrid .multiselect").prop("disabled",true);
+                        $(".shuffleGrid .multiselect").prop("disabled",false);
+                        $(".iterationGrid").prop("disabled",false);
+                        $(".epsilonGrid").prop("disabled",false);
+                        $(".momentumCls").prop("disabled",true);
+
+
+                    }
+                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                    (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",false);
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
 
-
-
-
-
                     }
-                            
-                                                                                   
-
-
-
-
                          else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
-                        // $(".learningGrid .for_multiselect").addClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
-
                         $(".learningClsInit").prop("disabled",true);
                         $(".powerT").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",true);
@@ -307,13 +333,11 @@ export class RegressionParameter extends React.Component {
 
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
-                            $(".disNum").prop("disabled",false);
-                            $(".beta1").prop("disabled",false);
-
-                            $(".learningClsInit").prop("disabled",false);
-                            $(".powerT").prop("disabled",true);
-                            // $(".learningGrid .for_multiselect").addClass("disableGrid");
-                           $(".learningGrid .multiselect").prop("disabled",true);
+                        $(".disNum").prop("disabled",false);
+                        $(".beta1").prop("disabled",false);
+                        $(".learningClsInit").prop("disabled",false);
+                        $(".powerT").prop("disabled",true);
+                        $(".learningGrid .multiselect").prop("disabled",true);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
@@ -329,10 +353,8 @@ export class RegressionParameter extends React.Component {
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
-
                         $(".learningClsInit").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
                         $(".learningGrid .multiselect").prop("disabled",false);
                         $(".shuffleGrid .multiselect").prop("disabled",false);
                         $(".iterationGrid").prop("disabled",false);
@@ -346,6 +368,7 @@ export class RegressionParameter extends React.Component {
 
 
                     }
+                    
                   
                     else{
                         $(".disNum").prop("disabled",false);
