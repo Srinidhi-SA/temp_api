@@ -189,11 +189,8 @@ export class RegressionParameter extends React.Component {
             document.getElementById("error").innerHTML="negative value not allowed";
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
-            document.getElementById("error").innerHTML="only number allowed";
+           document.getElementById("error").innerHTML="only number allowed";
         }
-        // else if(!numbers.test($(".fractionCls").val())){
-        //     document.getElementsByClassName("fractionCls .clearfix").innerHTML="only number allowed";
-        // }
         else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
         }
@@ -422,7 +419,7 @@ export class RegressionParameter extends React.Component {
                         break;
                         case"Alpha":
                         var type= "text";
-                        classN= "form-control";
+                        classN= "form-control alphaCls";
                         break;
                         case"Batch Size":
                         var type= "text";
@@ -554,7 +551,7 @@ export class RegressionParameter extends React.Component {
                     <div className="row">
                     <div className="col-md-6">
                     <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
-                    <div className="text-danger" id="error"></div>
+                    <div className="text-danger range-validate" id="error"></div>
                     </div>
                     </div>
                 );
@@ -564,7 +561,6 @@ export class RegressionParameter extends React.Component {
        
     }
     render() {
-        console.log("card is called!!!! with data:----");
         let parameterData = this.props.parameterData;
         let tune = this.props.isTuning;
         const parameterElements = this.renderParameterData(parameterData,tune);
@@ -581,19 +577,26 @@ export class RegressionParameter extends React.Component {
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
-       if(!numbers.test($('.fractionCls').val())){
+         if(!numbers.test($('.fractionCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
-        }
-    }
+         }
+       }
       if(!numbers.test($('.disNum').val())){
         return {"iserror":true,"errmsg":"only number allowed"};
-    }
+        }
         else if(!numbers.test($('.beta1').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         else if(!numbers.test($('.learningClsInit').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
+        else if(!numbers.test($('.momentumCls').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.alphaCls').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
