@@ -275,8 +275,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
                     }
                     else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
@@ -289,8 +289,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
@@ -304,8 +304,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
@@ -319,8 +319,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
                     }
                          else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         $(".learningGrid .multiselect").prop("disabled",true); 
