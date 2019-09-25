@@ -272,6 +272,8 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
                     }
                     else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
@@ -284,6 +286,12 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
+<<<<<<< HEAD
+=======
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+>>>>>>> 7e4e037b1d069c83cb32d8f23273274e7c8c2d81
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
@@ -296,6 +304,12 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
+<<<<<<< HEAD
+=======
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+>>>>>>> 7e4e037b1d069c83cb32d8f23273274e7c8c2d81
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
                             (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
@@ -308,9 +322,16 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
+<<<<<<< HEAD
                     }                  
                      else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                             // else if(options.map(i=>i)[1].selected && this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){ //lbfgs
+=======
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                    }
+                         else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+>>>>>>> 7e4e037b1d069c83cb32d8f23273274e7c8c2d81
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
