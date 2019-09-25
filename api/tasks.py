@@ -705,6 +705,21 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
     except Exception as err:
         print(err)
 
+from celery.task.schedules import crontab
+from celery.decorators import periodic_task
+
+@periodic_task(run_every=(crontab(minute='*/5')), name="get_outlook_mails", ignore_result=False,queue=CONFIG_FILE_NAME)
+def get_outlook_mails():
+    print "looking for outlook mail"
+    '''
+    Task1: Look for auth Code, Access Token and Refresh Token
+    Task2: Get mails from outlook
+    Task3: Extract Text Data and attachments from mail
+    Task4: Put Attachments in HDFS
+    Task5: Prepare config for Data Upload.
+    Task6: Trigger model Once Task5 is done.
+    '''
+
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
 def create_model_autoML(*args, **kwrgs):
     try:

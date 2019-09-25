@@ -201,8 +201,6 @@ class Dataset(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        if self.created_by is None:
-            self.created_by = User.objects.get(id=4)
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
