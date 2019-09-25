@@ -104,46 +104,44 @@ export class RegressionParameter extends React.Component {
                 $(".learningCls").prop("disabled",false);
                 $(".disNum").prop("disabled",true);
                 $(".beta1").prop("disabled",true);
-
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
                 $(".powerT").prop("disabled",false);
                 $(".shuffleCls").prop("disabled",false);
+                $(".epsilonCls").prop("disabled",true);
                 $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls").prop("disabled",false);
                 $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                // $(".powerT").show();
                 $(".nesterovsCls").prop("disabled",false);
                 $(".momentumCls").prop("disabled",false);
                 break;
-
             case "adam":
                 $(".disNum").prop("disabled",false);
                 $(".beta1").prop("disabled",false);
-
                 $(".learningCls").prop("disabled",true);
                 $(".learningClsInit").prop("disabled",false);
                 $(".earlyStop").prop("disabled",false);
                 $(".powerT").prop("disabled",true);
                 $(".shuffleCls").prop("disabled",false);
+                $(".epsilonCls").prop("disabled",false);
                 $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+                $(".iterationCls").prop("disabled",false);
                 $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                // $(".powerT").hide();
                 $(".nesterovsCls").prop("disabled",true);
                 $(".momentumCls").prop("disabled",true);
                 break;
-
             case "lbfgs":
                 $(".learningCls").prop("disabled",true);
                 $(".disNum").prop("disabled",true);
                 $(".beta1").prop("disabled",true);
-
                 $(".learningClsInit").prop("disabled",true);
                 $(".earlyStop").prop("disabled",true);
                 $(".powerT").prop("disabled",true);
                 $(".shuffleCls").prop("disabled",true);
+                $(".epsilonCls").prop("disabled",true);
                 $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls").prop("disabled",true);
                 $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-                // $(".powerT").hide();
                 $(".nesterovsCls").prop("disabled",true);
                 $(".momentumCls").prop("disabled",true);
                 break;
@@ -261,12 +259,13 @@ export class RegressionParameter extends React.Component {
                     for (var prop in options) {
                         if(options[prop].selected)
                             selectedValue.push(options[prop].name)
+
+                            if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){//to run below switch conditon  only for ANN, #1363      
                         switch(parameterData.name){
                             case"solver":
-
-                            if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
-                                (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
-                                (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
+                    if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                           (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                           (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
                         $(".learningClsInit").prop("disabled",false);
@@ -280,7 +279,7 @@ export class RegressionParameter extends React.Component {
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
                     }
                     else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
-                    (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
                         $(".learningClsInit").prop("disabled",false);
@@ -295,7 +294,7 @@ export class RegressionParameter extends React.Component {
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
-                    (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
                         $(".learningClsInit").prop("disabled",false);
@@ -310,7 +309,7 @@ export class RegressionParameter extends React.Component {
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
-                    (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
+                            (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
                         $(".learningClsInit").prop("disabled",false);
@@ -333,9 +332,10 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",true);
+                        // if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
-
+                        // }
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
                         $(".disNum").prop("disabled",false);
@@ -349,11 +349,6 @@ export class RegressionParameter extends React.Component {
                         $(".momentumCls").prop("disabled",true);
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
-
-
-
-
-
                     }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
@@ -367,18 +362,10 @@ export class RegressionParameter extends React.Component {
                         $(".momentumCls").prop("disabled",false);
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
-
-
-
-
-
-                    }
-                    
-                  
+                    }              
                     else{
                         $(".disNum").prop("disabled",false);
                         $(".beta1").prop("disabled",false);
-
                         $(".learningClsInit").prop("disabled",false);
                         $(".earlyStop").prop("disabled",false);
                         $(".powerT").prop("disabled",false);
@@ -388,15 +375,12 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-
-
-
-
                     }
                     break;
                     default:
                        "";
              }
+            }
 
        optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
@@ -515,12 +499,18 @@ export class RegressionParameter extends React.Component {
                     switch(parameterData.displayName){
                         case"Epsilon":
                         var cls= "col-xs-10 epsilonCls";
+                        var sliderTextCls="form-control inputWidth epsilonCls"
+                    
                         break;
                         case"No of Iteration":
                         var  cls= "col-xs-10 iterationCls";
+                        var sliderTextCls="form-control inputWidth iterationCls"
+
                         break;
                         default:
                         var cls = "col-xs-10";
+                        var sliderTextCls="form-control inputWidth"
+
                         break;
                     }
 
@@ -536,7 +526,7 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
+                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
