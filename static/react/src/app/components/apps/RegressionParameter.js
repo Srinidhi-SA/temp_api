@@ -527,6 +527,7 @@ export class RegressionParameter extends React.Component {
                                  
                             </div>
                             <div className="col-md-4 col-sm-4"><input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
+                           {/* #1361 added onKeyDown to prevent e */}
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -599,19 +600,19 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only number allowed"};
          }
        }
-      if(!numbers.test($('.disNum').val())){
+     if(!numbers.test($('.learningClsInit').val())){
+           return {"iserror":true,"errmsg":"only number allowed"};
+       }
+       else if(!numbers.test($('.alphaCls').val())){
         return {"iserror":true,"errmsg":"only number allowed"};
-        }
-        else if(!numbers.test($('.beta1').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
-        else if(!numbers.test($('.learningClsInit').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
         }
         else if(!numbers.test($('.momentumCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
-        else if(!numbers.test($('.alphaCls').val())){
+        else if(!numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(!numbers.test($('.disNum').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         // else if(!numbers.test($('.epsilonCls').val())){
@@ -672,6 +673,7 @@ export class RegressionParameter extends React.Component {
             var allowedTypes = "";
             var wrongCount = 0;
             var that = this;
+            if(!this.props.algorithmData[4]){
             $.each(type,function(k,v){
                 if(v == "float"){
                     (k == 0)?allowedTypes = "Decimals" : allowedTypes+= ", Decimals";
@@ -688,6 +690,7 @@ export class RegressionParameter extends React.Component {
                     that.checkType(val,type,min,max);
                 }
             });
+        }
             if(wrongCount != 0 && wrongCount == type.length)
             return {"iserror":true,"errmsg":"Only "+allowedTypes+" are allowed"};
             else
