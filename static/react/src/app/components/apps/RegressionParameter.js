@@ -275,8 +275,15 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                    
                     }
                     else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
@@ -289,8 +296,14 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
-                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
@@ -304,8 +317,12 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
-                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
-                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
@@ -319,10 +336,17 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",false);
-                        // document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        // document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                        
                     }
-                         else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                        else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
                         $(".learningGrid .multiselect").prop("disabled",true); 
                         $(".disNum").prop("disabled",true);
                         $(".beta1").prop("disabled",true);
@@ -332,10 +356,9 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",true);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",true);
-                        // if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){
+                        
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
-                        // }
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
                         $(".disNum").prop("disabled",false);
@@ -347,8 +370,12 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",false);
                         $(".momentumCls").prop("disabled",true);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+                        
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
                     }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
                         $(".disNum").prop("disabled",true);
@@ -360,8 +387,15 @@ export class RegressionParameter extends React.Component {
                         $(".iterationGrid").prop("disabled",false);
                         $(".epsilonGrid").prop("disabled",true);
                         $(".momentumCls").prop("disabled",false);
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";
+
+                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                        
                     }              
                     else{
                         $(".disNum").prop("disabled",false);
