@@ -624,6 +624,20 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["int"]
         },
         {
+            "name":"hidden_layer_sizes",
+            "displayName":"Hidden Layer Size",
+            "description": "Number of neurons in the ith hidden layer.",
+            "defaultValue":100,
+            "acceptedValue":None,
+            "valueRange":[0,100],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
             "name":"solver",
             "displayName":"Solver Used",
             "description": "The solver for weight optimization.",
@@ -701,18 +715,73 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["int","string"]
         },
         {
-            "name":"hidden_layer_sizes",
-            "displayName":"Hidden Layer Size",
-            "description": "Number of neurons in the ith hidden layer.",
-            "defaultValue":100,
-            "acceptedValue":None,
-            "valueRange":[0,100],
-            "paramType":"number",
-            "uiElemType":"textbox",
+            "name":"nesterovs_momentum",
+            "displayName":"Nesterovs momentum",
+            "description": "Whether to use Nesterovs momentum.",
+            "defaultValue":[
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             },
+             {
+                 "name":"false",
+                 "selected":False,
+                 "displayName":"False"
+             }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
             "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["tuple"],
-            "allowedDataType":["int"]
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+        },
+        {
+            "name":"early_stopping",
+            "displayName":"Early Stop",
+            "description": "Whether to use early stopping to terminate training when validation score is not improving.",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":False,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
+        },
+        {
+            "name":"warm_start",
+            "displayName":"Warm Start",
+            "description": "It reuses the solution of the previous call to fit as initialization",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":False,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
+            "expectedDataType": ["bool"],
+            "allowedDataType":["bool"]
         },
         {
             "name":"learning_rate_init",
@@ -775,7 +844,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "name":"random_state",
             "displayName":"Random Seed",
            "description": "The seed of the pseudo random number generator to use when shuffling the data",
-            "defaultValue":None,
+            "defaultValue":42,
             "acceptedValue":None,
             "valueRange":[1,100],
             "paramType":"number",
@@ -809,29 +878,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["bool"]
          },
          {
-             "name":"warm_start",
-             "displayName":"Warm Start",
-             "description": "It reuses the solution of the previous call to fit as initialization",
-             "defaultValue":[
-              {
-                  "name":"false",
-                  "selected":False,
-                  "displayName":"False"
-              },
-              {
-                  "name":"true",
-                  "selected":False,
-                  "displayName":"True"
-              }
-             ],
-             "paramType":"list",
-             "uiElemType":"checkbox",
-             "display":True,
-             "hyperpatameterTuningCandidate":False,
-             "expectedDataType": ["bool"],
-             "allowedDataType":["bool"]
-         },
-         {
              "name":"momentum",
              "displayName":"Momentum",
              "description": "Momentum for gradient descent update.",
@@ -844,52 +890,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "hyperpatameterTuningCandidate":True,
              "expectedDataType": ["float"],
              "allowedDataType":["float"]
-         },
-         {
-             "name":"nesterovs_momentum",
-             "displayName":"Nesterovs momentum",
-             "description": "Whether to use Nesterovs momentum.",
-             "defaultValue":[
-              {
-                  "name":"true",
-                  "selected":False,
-                  "displayName":"True"
-              },
-              {
-                  "name":"false",
-                  "selected":False,
-                  "displayName":"False"
-              }
-             ],
-             "paramType":"list",
-             "uiElemType":"checkbox",
-             "display":True,
-             "hyperpatameterTuningCandidate":False,
-             "expectedDataType": ["bool"],
-             "allowedDataType":["bool"]
-         },
-         {
-             "name":"early_stopping",
-             "displayName":"Early Stop",
-             "description": "Whether to use early stopping to terminate training when validation score is not improving.",
-             "defaultValue":[
-              {
-                  "name":"false",
-                  "selected":False,
-                  "displayName":"False"
-              },
-              {
-                  "name":"true",
-                  "selected":False,
-                  "displayName":"True"
-              }
-             ],
-             "paramType":"list",
-             "uiElemType":"checkbox",
-             "display":True,
-             "hyperpatameterTuningCandidate":False,
-             "expectedDataType": ["bool"],
-             "allowedDataType":["bool"]
          },
          {
              "name":"validation_fraction",
