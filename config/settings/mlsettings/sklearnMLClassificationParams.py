@@ -558,6 +558,63 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
 
 SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
         {
+            "name":"max_iter",
+            "displayName":"Maximum Solver Iterations",
+            "description": "Maximum number of iterations to be attempted for solver operations",
+            "defaultValue":200,
+            "acceptedValue":None,
+            "valueRange":[10,400],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"tol",
+            "displayName":"Convergence tolerance of iterations(e^-n)",
+            "description": "Tolerance for the stopping criteria",
+            "defaultValue":4,
+            "acceptedValue":None,
+            "valueRange":[3,10],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+
+        },
+        {
+            "name":"epsilon",
+            "displayName":"Epsilon",
+            "description": "Value for numerical stability in adam.",
+            "defaultValue":8,
+            "acceptedValue":None,
+            "valueRange":[3,10],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
+            "name":"n_iter_no_change",
+            "displayName":"No of Iteration",
+            "description": "Maximum number of epochs to not meet tol improvement.",
+            "defaultValue":10,
+            "acceptedValue":None,
+            "valueRange":[3,10],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int"],
+            "allowedDataType":["int"]
+        },
+        {
             "name":"hidden_layer_sizes",
             "displayName":"Hidden Layer Size",
             "description": "Number of neurons in the ith hidden layer.",
@@ -683,20 +740,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["float"]
         },
         {
-            "name":"max_iter",
-            "displayName":"Maximum Solver Iterations",
-            "description": "Maximum number of iterations to be attempted for solver operations",
-            "defaultValue":200,
-            "acceptedValue":None,
-            "valueRange":[10,400],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-        },
-        {
             "name":"shuffle",
             "displayName":"Shuffle",
             "description":"Whether to shuffle samples in each iteration.",
@@ -718,7 +761,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["bool"],
             "allowedDataType":["bool"]
-         },
+        },
         {
             "name":"random_state",
             "displayName":"Random Seed",
@@ -732,21 +775,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["int"],
             "allowedDataType":["int"]
-        },
-        {
-            "name":"tol",
-            "displayName":"Convergence tolerance of iterations(e^-n)",
-            "description": "Tolerance for the stopping criteria",
-            "defaultValue":4,
-            "acceptedValue":None,
-            "valueRange":[3,10],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-
         },
         {
             "name":"verbose",
@@ -766,7 +794,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             ],
             "paramType":"list",
             "uiElemType":"checkbox",
-            "display":True,
+            "display":False,
             "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["bool"],
             "allowedDataType":["bool"]
@@ -896,34 +924,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
              "expectedDataType": ["float"],
              "allowedDataType":["float"]
          },
-         {
-             "name":"epsilon",
-             "displayName":"Epsilon",
-             "description": "Value for numerical stability in adam.",
-             "defaultValue":8,
-             "acceptedValue":None,
-             "valueRange":[3,10],
-             "paramType":"number",
-             "uiElemType":"slider",
-             "display":True,
-             "hyperpatameterTuningCandidate":True,
-             "expectedDataType": ["int"],
-             "allowedDataType":["int"]
-         },
-          {
-              "name":"n_iter_no_change",
-              "displayName":"No of Iteration",
-              "description": "Maximum number of epochs to not meet tol improvement.",
-              "defaultValue":10,
-              "acceptedValue":None,
-              "valueRange":[3,10],
-              "paramType":"number",
-              "uiElemType":"slider",
-              "display":True,
-              "hyperpatameterTuningCandidate":True,
-              "expectedDataType": ["int"],
-              "allowedDataType":["int"]
-          },
 
 ]
 

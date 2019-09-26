@@ -560,7 +560,7 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
+                            <div className="col-md-4 col-sm-4"><input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -648,6 +648,9 @@ export class RegressionParameter extends React.Component {
         else if(!numbers.test($('.alphaCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
+        // else if(!numbers.test($('.epsilonCls').val())){
+        //     return {"iserror":true,"errmsg":"only number allowed"};
+        // }
 
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
