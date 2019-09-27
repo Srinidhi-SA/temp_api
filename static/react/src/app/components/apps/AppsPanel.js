@@ -209,10 +209,9 @@ export class AppsPanel extends React.Component {
           )
         });
         return (
-          <div class="col-md-4 xs-mb-20" key={index}>
-            <div>
-
-              <div className="app-block">
+          <div class="col-md-4 xs-mb-20">
+           <div key={index}>
+             <div className="app-block">
                 {/* <Link onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} className="app-link" to={data.app_url}> */}
                 <Link className="app-link" onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
@@ -393,6 +392,35 @@ export class AppsPanel extends React.Component {
 
         <div className="main-content">
           <div className="row">
+            <div className="col-md-4">
+          <div className="app-block">
+                <Link className="app-link"  to= "/apps/lex">
+                  <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                    <img src= "/assets/images/app_lex.png" className="img-responsive"/>
+                  </div>
+                  <div className="col-md-8 col-sm-9 col-xs-7">
+                    <h4>
+                      Lex
+                    </h4>
+                    <p>
+                    To extract sentiments, emotions and context from audio/voice
+                    </p>
+                  </div>
+                  <div class="clearfix"></div>
+                </Link>
+
+                <div className="card-footer">
+                  <ul className="app_labels">
+                  <li><a href="#"><i class="fa fa-tag"></i>Marketing</a></li>
+                  <li><a href="#"><i class="fa fa-tag"></i>Customer Service</a></li>
+                  </ul>
+
+                  <div id="myPopover" className="pop_box hide">
+                    <p>Info</p>
+                  </div>
+                </div>
+              </div>
+              </div>
             {appListTemplate}
             <div className="clearfix"></div>
           </div>

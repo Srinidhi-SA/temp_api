@@ -446,7 +446,7 @@ export class RegressionParameter extends React.Component {
                         break;
                         case"Batch Size":
                         var type= "text";
-                        classN= "form-control";
+                        classN= "form-control batchCls";
                         break;
                         default:
                         classN= "form-control";
@@ -604,10 +604,18 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only number allowed"};
          }
        }
-      if(!numbers.test($('.disNum').val())){
+      
+    //    if(($(".batchCls").val() != "auto")){
+    //     return {"iserror":true,"errmsg":"only number and auto allowed"};
+    //    }
+       if(($('.batchCls').val()) < 0 ){
+        return {"iserror":true,"errmsg":"only number and auto allowed"};
+       }
+       
+        if(!numbers.test($('.disNum').val())){
         return {"iserror":true,"errmsg":"only number allowed"};
         }
-        else if(!numbers.test($('.beta1').val())){
+         else if(!numbers.test($('.beta1').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         else if(!numbers.test($('.learningClsInit').val())){
@@ -619,6 +627,8 @@ export class RegressionParameter extends React.Component {
         else if(!numbers.test($('.alphaCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
+        
+
 
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
