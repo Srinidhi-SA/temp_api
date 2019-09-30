@@ -495,6 +495,12 @@ export class RegressionParameter extends React.Component {
                         case"No of Iteration":
                            sliderclassN= "form-control iterationGrid";
                         break;
+                        case"Maximum Solver Iterations":
+                           sliderclassN= "form-control maxSolverGrid";
+                        break;
+                        case"Convergence tolerance of iterations(e^-n)":
+                           sliderclassN= "form-control convergGrid";
+                        break;
                         default:
                            sliderclassN="form-control";
                         }
@@ -628,6 +634,7 @@ export class RegressionParameter extends React.Component {
     validateTextboxValue(textboxVal,min,max,type){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
+        var letter = /[a-zA-Z]/;
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
          if(!numbers.test($('.fractionCls').val())){
@@ -649,9 +656,18 @@ export class RegressionParameter extends React.Component {
         else if(!numbers.test($('.disNum').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
-        // else if(!numbers.test($('.epsilonCls').val())){
-        //     return {"iserror":true,"errmsg":"only number allowed"};
-        // }
+        else if(letter.test($('.maxSolverGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.convergGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.epsilonGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.iterationGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
 
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
