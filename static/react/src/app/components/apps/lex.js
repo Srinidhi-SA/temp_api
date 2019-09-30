@@ -2,7 +2,7 @@ import React from "react";;
 import {STATIC_URL} from "../../helpers/env.js";
 
 export class LexClass extends React.Component {
- 
+
     componentDidMount() {
         var waveform = window.Waveform();
         var message = document.getElementById('message');
@@ -36,27 +36,37 @@ export class LexClass extends React.Component {
             conversation.advanceConversation();
         };
 
-        // document.getElementById('pauseLex').onclick = function () {
-        //     AWS.config.credentials = new AWS.Credentials(document.getElementById('ACCESS_ID').value, document.getElementById('SECRET_KEY').value, null);
-        //     AWS.config.region = 'us-east-1';
+        document.getElementById('pauseLex').onclick = function () {
+        //     // AWS.config.credentials = new AWS.Credentials(document.getElementById('ACCESS_ID').value, document.getElementById('SECRET_KEY').value, null);
+        //     // AWS.config.region = 'us-east-1';
             
-        //     config = {
-        //         lexConfig: { botName: document.getElementById('BOT').value }
-        //     };
+        //     // config = {
+        //     //     lexConfig: { botName: document.getElementById('BOT').value }
+        //     // };
 
-        //     conversation = new LexAudio.conversation(config, function (state) {
-        //         message.textContent = 'Passive';
-        //     });
-        //     conversation.reset();
-        // }
+        //     // conversation = new LexAudio.conversation(config, function (state) {
+        //     //     message.textContent = 'Passive';
+        //     // });
+        //     // conversation.advanceConversation();
+        //     // conversation.reset();
+        //     // document.getElementById("message").innerHTML = "Passive"; 
+            window.location.reload();
+        //     // global.LexAudio.audioControl.stopRecording();
+        //     // global.LexAudio.audioControl.clear();
+        //     // var audioControl = new LexAudio.audioControl();
+        //     // audioControl.stopRecording();
+
+        }
     }
-
   
     render() {
-        return (
+      
+      return (
 		 <div>
              <div style={{fontWeight:600, marginTop: 8,top: 80,left:105,position:"absolute"}}>Please Click on the below icon to trigger model creation :</div>
-             {/* <button style={{fontWeight:600,top: 180,left:150,position:"absolute"}} id="pauseLex">pause</button> */}
+              <button className="lexBtn" id="pauseLex">
+               <span class="glyphicon glyphicon-refresh" style={{paddingRight:5}}></span>Reset
+              </button> 
             <div className="audio-control">
                 <p id="audio-control" className="white-circle">
                     <img style={{height:55,marginTop:6}} src= { STATIC_URL + "assets/images/LexIcon.png"} />
@@ -78,5 +88,7 @@ export class LexClass extends React.Component {
 
 
     }
+
+
 
 }

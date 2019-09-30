@@ -16213,4 +16213,21 @@ div#replaceValues {
 }
 .visualizer{
  width: 100%;
+ margin-left: 81px;
+}
+.lexBtn{
+    font-weight: 600;
+    top: 80px;
+    right: 15px;
+    position: absolute;
+    background-color: #3b998c;
+    border: transparent;
+    box-shadow: none;
+    color: #ffffff;
+		padding: 5px 10px;
+		cursor: pointer;
+		}
+
+.lexBtn:hover{
+	box-shadow: 3px 2px 8px 0px #457b74;
 }

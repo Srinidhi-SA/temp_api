@@ -46,6 +46,7 @@
       }
       recorder = audioRecorder.createRecorder(silenceDetectionConfig);
       recorder.record(onSilence, visualizer);
+      console.log("xxxxxxxxxxxx");
     };
 
     /**
@@ -307,6 +308,7 @@
     };
 
     this.reset = function() {
+      audioControl.stopRecording();
       audioControl.clear();
       currentState = new Initial(currentState.state);
     };
