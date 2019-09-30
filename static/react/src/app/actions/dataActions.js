@@ -399,7 +399,14 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 if(analysisList[i].name == evt.name){
                     for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                         if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-                            analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                            let cusNum =  $("#"+evt.id).val();
+                            if((cusNum^0) != cusNum){
+                                let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else{
+                                analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                            }
                         }
                     }
                     break;

@@ -436,23 +436,43 @@ export class SubSetting extends React.Component {
         break;
 
     }
-    if ((this.state.curmin < this.state.min) || (this.state.curmin > this.state.max)) {
-      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
-    }else if((this.state.curmax <= this.state.curmin) || (this.state.curmax > this.state.max)){
-      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
-    }else{
-    $('#saveButton').removeClass('btn-primary')
-    $('#saveButton').addClass('btn-alt4')
-    $('#saveButton').attr('disabled', true);
-    this.props.dispatch(updateSubSetting(this.state.subSettingRs));
-  }
-
+    if(this.props.item.columnType == "measure"){
+      if ((this.state.curmin < this.state.min) || (this.state.curmin > this.state.max)) {
+        bootbox.alert("Please select a range between " + this.state.min + " and " + this.state.max)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }else if((this.state.curmax <= this.state.curmin) || (this.state.curmax > this.state.max)){
+        bootbox.alert("Please select a range between " + this.state.min + " and " + this.state.max)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }else{
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled', true);
+        this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+      }
+    }else if(this.props.item.columnType == "datetime"){
+      if( Date.parse(this.state.curstartDate) < Date.parse(this.state.startDate) || Date.parse(this.state.curstartDate) > Date.parse(this.state.endDate) ){
+        bootbox.alert("Please select a range between " + this.state.startDate + " and " + this.state.endDate)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }
+      else if(Date.parse(this.state.curendDate) < Date.parse(this.state.curstartDate) || Date.parse(this.state.curendDate) > Date.parse(this.state.endDate)){
+        bootbox.alert("Please select a range between " + this.state.startDate + " and " + this.state.endDate)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }
+      else{
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled', true);
+        this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+      }
+    }
   }
   callSubsetTableSorter() {
     $(function() {
