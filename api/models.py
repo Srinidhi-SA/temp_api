@@ -403,7 +403,7 @@ class Dataset(models.Model):
 
     def get_input_file(self):
 
-        if self.datasource_type in ['file', 'fileUpload']:
+        if self.datasource_type in ['file', 'fileUpload','emailfileUpload']:
             type = self.file_remote
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)

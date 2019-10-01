@@ -66,7 +66,7 @@ SKLEARN_GRIDSEARCH_PARAMS = [
                 "defaultValue":None,
                 "paramType":"list",
                 "uiElemType":"dropDown",
-                "display":True,
+                "display":False,
                 "expectedDataType":[None,"string"]
             },
             # {
