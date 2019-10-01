@@ -624,20 +624,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["int"]
         },
         {
-            "name":"hidden_layer_sizes",
-            "displayName":"Hidden Layer Size",
-            "description": "Number of neurons in the ith hidden layer.",
-            "defaultValue":100,
-            "acceptedValue":None,
-            "valueRange":[1,100],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-        },
-        {
             "name":"solver",
             "displayName":"Solver Used",
             "description": "The solver for weight optimization.",
@@ -782,6 +768,20 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["bool"],
             "allowedDataType":["bool"]
+        },
+        {
+            "name":"hidden_layer_sizes",
+            "displayName":"Hidden Layer Size",
+            "description": "Number of neurons in the ith hidden layer.",
+            "defaultValue":100,
+            "acceptedValue":None,
+            "valueRange":[1,100],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int","tuple"],
+            "allowedDataType":["int","string"]
         },
         {
             "name":"learning_rate_init",
