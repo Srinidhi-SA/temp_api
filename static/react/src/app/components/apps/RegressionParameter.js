@@ -471,6 +471,10 @@ export class RegressionParameter extends React.Component {
                         var type= "text";
                         classN= "form-control batchCls";
                         break;
+                        case"Hidden Layer Size":
+                        var type= "text";
+                        classN= "form-control hiddenCls";
+                        break;
                         default:
                         classN= "form-control";
                         var type= "number";
@@ -669,6 +673,9 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         else if(!numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.hiddenCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
         
