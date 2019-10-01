@@ -84,13 +84,15 @@ export class RegressionParameter extends React.Component {
     changeFoldCheck(min,max,e){
         if(e.target.value < min || e.target.value > max){
             e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
-        }else e.target.parentElement.lastElementChild.innerHTML = ""
+        }else if(!Number.isInteger(parseFloat(e.target.value))){
+            e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
+        } else e.target.parentElement.lastElementChild.innerHTML = ""
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
             alert("please enter a valid number")
         else {
-            e.target.parentElement.lastElementChild.innerHTML="";
+            // e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
                 defaultVal: e.target.value
             })
