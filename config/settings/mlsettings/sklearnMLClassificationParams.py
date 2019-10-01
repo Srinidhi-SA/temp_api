@@ -631,11 +631,11 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "acceptedValue":None,
             "valueRange":[1,100],
             "paramType":"number",
-            "uiElemType":"slider",
+            "uiElemType":"textBox",
             "display":True,
             "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
+            "expectedDataType": ["int","tuple"],
+            "allowedDataType":["int","string"]
         },
         {
             "name":"solver",
