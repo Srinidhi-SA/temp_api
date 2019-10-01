@@ -226,3 +226,21 @@ KYLO_SERVER_DETAILS = {
 #         os.mkdir(server_log)
 # else:
 #     pass
+###################  OUTLOOK EMAIL CONFIG  ##########
+OUTLOOK_DETAILS = {
+    "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',
+    "client_secret": '=Ogz4[AHfGM[eBX.f1wtdkakrzTPht85',
+    #"authority":'https://login.microsoftonline.com',
+    #"authorize_url" : 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    "tenant_id" : 'cc6b2eea-c864-4839-85f5-94736facc3be',
+    "redirect_uri" : 'http://localhost:8000/get_request/'
+}
+OUTLOOK_SCOPES = [ 'openid',
+           'User.Read',
+           'Mail.Read',
+           'offline_access']
+
+
+OUTLOOK_AUTH_CODE = '''OAQABAAIAAAAP0wLlqdLVToOpA4kwzSnxuMzf06ukB8YGHgrrB6P0sZv7ioiNkujbogCt9xlu8oncpxnGdqY_Ul5zyZBSLu5hr_t4VASe3z1ARXCz4APz2kooiwluohGk4LyHwSR2BqasKR-4g3glmOMZLFmFwkrfA3HPBKecmrcglPjDMKkOThTDoD4_z0p1wOXXFT25MqNNWUp7dDQIQMyDKMGFOOnFEGr2aYGYSGr83OqbvG2nwnGT7M9snWUfoFnJHo7m2eakDt9wJkFZ_BnLgPmsWqMw49IalaWhLkYxgehGZfPPv0cjM7wbGmsiMFbATKkalad39Pjl1TOlKuqPjSSRJGrDHKBAD5x0FDLxJh6BMgpZcVqUAoAfIzOf5Lo0q1TkV-roJsyIkLMURG2F2U8iGC25h9t43OPVL75NxFeIkJrG2EWHR9Tw1Ati9YafdeLzjsqv0o3RUv-ZA6t_OXebyTj5boK94pkXdNg8tiLpUummEzk1T3ab7Zvr3jf2Awo9jYKocJ3IdNQg4T4GEcjtoj6h5kgqfM7gYLuRD0XAS19lY_AvU4dH9gjvxppJn4H50xYpFRN85hBgwARzDGBXSIlVdpuyVTKqT3uzVPr3SMsV_0GyBJdLzOH1Hu0VAWnekWVg_Z2m7hYcS1U-6NY2aXov8e1xfAnhhGcRErJV4YgeZZ6kQBp190BkJ1XamA-TpBsuTmO37B3Xn3-ApcJqXFMCgE9F7m5lWluag3WXQL46vjgqZjTM7F-eMi5Ae04WEtvWa6JNDYVTyjg9mBmIb_ib87ir0QjQDWcgXfF8D5eYNWMMTq0K1E_eWiaWeclekDcSiyk5ZoG0ndXB4c4li7Nj7-fBb9VXdLUTiC9XYKnB4PmlpY1IAvmZ4H-aAob9YT4gAA'''
+
+OUTLOOK_REFRESH_TOKEN = '''OAQABAAAAAAAP0wLlqdLVToOpA4kwzSnxXKOZKksakC-oYbcSU8oVfMuIPIsAInN0EJ1ZPP-tUD27lnHiuAjyoIkIbnJ5_wEKPJsJvuCO3IZjkXLVBUgk6b9EwYeV50H9qmo99Qw8a8iYN0g8YWfE03d3EPeJAZX9j32qW5Svdvs6rZI-8CmzPDSAJ6mGhOnJviFn9fQRmz8tZ3YwfHmvGWBEtZZadfQzqTnoKnmrKN_23sONNKtNq6HQK7npX9MhpHJ0HV_s-MIUeg-KLavIcHrpqPm6wxbhwn04uQcpSvDmqTbPaH-8LUWksGm12YYJA5KBK8TYrtmNV8FWnHzLe-hw6_k6Dy62A6ghwtbkgbAptqCmXGAY_gHEHocu4bGMMTED9lpm9Kt3uSvL_kiLmC4UX1FkjlqMUAQihyiHsv43dJ9glC8WazvaWso5DE2oLqTjC1-AIBNHRhDF8bdFeDZxRt_n-oLVzt_O-rBLJOBKMSp5tqfNKEMnhmynYRSTd18LPKT3Lty0WJm_SPd0YFSLLeDT0L27MBZFdJPjUY3uYSFOkQvQKCWMh-Lyg0-F735sSQO2o4nUjlCMCAoRHVaSIE_wSix0BQDddrC9E5e9rFpeLOcKV_jb3H52UX1eUoeHrStlFRXX7kZsr6SovnFprwLGOLIq26vXZmqbNXV6qGHkcHVn_ZgsM6tVjMIckALsICSB5MoHsZCbIYIL2jdGVOI4IKVVnfq_lX79WcVG92k9S0A76kEx36YxbmoqnbmTJd7Ta4MuPQzehKciibCdhxDnyG_qb6sLRGi901m8i4UrRMGDyly5D0B-jYfb04zHx6xo2o7kMg6TqCgBWogJXTQySCwUqB9U1kFQAgOzwABwRRU30SAA'''

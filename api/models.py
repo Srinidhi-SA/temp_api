@@ -204,7 +204,7 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        if self.datasource_type in ['file', 'fileUpload']:
+        if self.datasource_type in ['file', 'fileUpload','emailfileUpload']:
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
