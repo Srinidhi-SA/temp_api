@@ -45,9 +45,10 @@ import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection
 import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
-import {APPS_ALLOWED} from "./helpers/env.js"
-import {SampleFrame} from "./components/common/SampleFrame"
-import {KyloMenuList} from "./components/common/KyloMenuList"
+import {APPS_ALLOWED} from "./helpers/env.js";
+import {SampleFrame} from "./components/common/SampleFrame";
+import {KyloMenuList} from "./components/common/KyloMenuList";
+import {LexClass} from "./components/apps/lex";
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -332,6 +333,7 @@ class App extends React.Component {
           <Route exact path="/login" component={Login}/>
           <Main>
             <Route exact path="/" component={Home}/>
+            <Route exact path="/apps/lex" component={LexClass}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
             {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
