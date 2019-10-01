@@ -204,7 +204,7 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        if self.datasource_type in ['file', 'fileUpload','emailfileUpload']:
+        if self.datasource_type in ['file', 'fileUpload']:
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
@@ -403,7 +403,7 @@ class Dataset(models.Model):
 
     def get_input_file(self):
 
-        if self.datasource_type in ['file', 'fileUpload','emailfileUpload']:
+        if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)

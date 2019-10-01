@@ -764,7 +764,7 @@ def trigger_metaData_autoML(data):
     local_file = open(settings.BASE_DIR+'/media/datasets/'+data['datasetName'])
     f=File(local_file)
     data['input_file']=f
-    data['datasource_type']='emailfileUpload'
+    data['datasource_type']='fileUpload'
     ###################################################################
     print data
     from api.datasets.helper import convert_to_string
