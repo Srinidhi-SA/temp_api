@@ -629,7 +629,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "description": "Number of neurons in the ith hidden layer.",
             "defaultValue":100,
             "acceptedValue":None,
-            "valueRange":[0,100],
+            "valueRange":[1,100],
             "paramType":"number",
             "uiElemType":"slider",
             "display":True,
@@ -809,7 +809,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "display":True,
             "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["float"],
-            "allowedDataType":["float"]
+            "allowedDataType":["int","float"]
         },
         # {
            # "name":"batch_size",
@@ -849,7 +849,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "valueRange":[1,100],
             "paramType":"number",
             "uiElemType":"textBox",
-            "display":True,
+            "display":False,
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["int"],
             "allowedDataType":["int"]

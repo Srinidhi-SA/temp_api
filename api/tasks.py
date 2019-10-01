@@ -12,7 +12,7 @@ from django.conf import settings
 import datetime
 import json
 import copy
-from api.helper import get_random_model_id
+from api.helper import get_random_model_id,get_mails_from_outlook
 
 
 @task(name="sum_two_numbers")
@@ -162,6 +162,13 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         print("Every thing went well. Lets see if more can be done")
         check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object.id)
+        ####   Check if model job needs to be triggered for email AutoML   ###
+        if dataset_object.datasource_type == 'emailfileUpload':
+            data={}
+            data['dataset_name']=dataset_object.name
+            data['model_name']=dataset_object.name+"_model"
+            print "AutoML Model job triggered."
+            create_model_autoML.delay(data)
         return "Done Succesfully."
         return results
     elif job_type == "master":
@@ -708,17 +715,71 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
 from celery.task.schedules import crontab
 from celery.decorators import periodic_task
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="get_outlook_mails", ignore_result=False,queue=CONFIG_FILE_NAME)
-def get_outlook_mails():
-    print "looking for outlook mail"
+@periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,queue=CONFIG_FILE_NAME)
+def trigger_outlook_periodic_job():
+    mails = get_mails_from_outlook(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+    if mails is not None:
+        print "All set to proceed to upload dataset."
+
+        for configkey, configvalue in mails.iteritems():
+            for key,value in configvalue.iteritems():
+                try:
+                    #print key,value
+                    # value is a dict
+                    if 'input_file' in key:
+                        input_file = value
+                        data={}
+                        data['datasetName'] = input_file
+                        data['name'] = configkey
+                        trigger_metaData_autoML.delay(data)
+                    else:
+                        pass
+                except:
+                    print "Email doesn't have input file."
+                    pass
+    else:
+        print "No mails."
     '''
-    Task1: Look for auth Code, Access Token and Refresh Token
+    Task1: Look for auth Code, Access Token and Refresh Token : DONE
     Task2: Get mails from outlook
     Task3: Extract Text Data and attachments from mail
     Task4: Put Attachments in HDFS
     Task5: Prepare config for Data Upload.
     Task6: Trigger model Once Task5 is done.
     '''
+@task(name='trigger_metaData_autoML', queue=CONFIG_FILE_NAME)
+def trigger_metaData_autoML(data):
+    print "metaData job triggered for autoML"
+    ######################  User id for Email AutoML   ################
+    '''
+    Create one user with Username "email" in order to use email for AutoML model creation.
+
+    '''
+    from django.contrib.auth.models import User
+    user_id=User.objects.get(username="email")
+    data['created_by'] = user_id.id
+    ###################################################################
+    ####################   Upload file from local  ####################
+    from django.core.files import File
+    local_file = open(settings.BASE_DIR+'/media/datasets/'+data['datasetName'])
+    f=File(local_file)
+    data['input_file']=f
+    data['datasource_type']='emailfileUpload'
+    ###################################################################
+    print data
+    from api.datasets.helper import convert_to_string
+    from api.datasets.serializers import DatasetSerializer
+
+    dataset_details = convert_to_string(data)
+    serializer = DatasetSerializer(data=dataset_details)
+    if serializer.is_valid():
+        dataset_object = serializer.save()
+        #dataset_score_deployment_object.dataset = dataset_object
+        #dataset_score_deployment_object.save()
+        print(dataset_object)
+        dataset_object.create()
+    else:
+        print(serializer.errors)
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
 def create_model_autoML(*args, **kwrgs):
