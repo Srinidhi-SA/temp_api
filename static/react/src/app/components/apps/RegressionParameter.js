@@ -641,6 +641,21 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only number allowed"};
          }
        }
+       if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
+        if(letter.test($('.maxSolverGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.convergGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.epsilonGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+        else if(letter.test($('.iterationGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed"};
+        }
+
+       }
      if(!numbers.test($('.learningClsInit').val())){
            return {"iserror":true,"errmsg":"only number allowed"};
        }
@@ -656,18 +671,7 @@ export class RegressionParameter extends React.Component {
         else if(!numbers.test($('.disNum').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
         }
-        else if(letter.test($('.maxSolverGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
-        else if(letter.test($('.convergGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
-        else if(letter.test($('.epsilonGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
-        else if(letter.test($('.iterationGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
-        }
+        
 
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
