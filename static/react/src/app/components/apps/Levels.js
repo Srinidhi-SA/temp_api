@@ -66,17 +66,18 @@ export class Levels extends React.Component {
         allSelectedItems = new Set([...allSelectedItems, ...elem.multiselectValue])
       }
     });
-  if(this.getAllOptions().length == this.state.levelsArray.flatMap(i=>i.multiselectValue).length){
-   
-    $(".addn").addClass("noDisplay");
-
-    // if((($('ul').last().find('li')).length == 0 ) ){
-    // $(".form_withrowlabels").last().css("display","none");
-    // }
-  }
-  else{
-    $(".addn").removeClass("noDisplay");
-  }
+    var storeValue = this.state.levelsArray.map(i=>i.multiselectValue);
+    var reducestoreValue = storeValue.reduce((acc, val) => acc.concat(val), []);
+    if(this.getAllOptions().length == reducestoreValue.length){
+        $(".addn").addClass("noDisplay");
+        
+      // if((($('ul').last().find('li')).length == 0 ) ){
+      // $(".form_withrowlabels").last().css("display","none");
+      // }
+    }
+    else{
+      $(".addn").removeClass("noDisplay");
+    }
     return allSelectedItems;
   }
 
