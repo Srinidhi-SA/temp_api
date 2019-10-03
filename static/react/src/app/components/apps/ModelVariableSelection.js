@@ -105,6 +105,8 @@ export class ModelVariableSelection extends React.Component {
             document.getElementById("noOfFolds").innerText = "Please enter a number";
         }else if(foldVal>20 || foldVal <2){
             document.getElementById("noOfFolds").innerText = "Value Should be between 2 to 20";
+        }else if((foldVal^0) != foldVal){
+            document.getElementById("noOfFolds").innerText = "Decimals are not allowed";
         }else{
             document.getElementById("noOfFolds").innerText = "";
         }
