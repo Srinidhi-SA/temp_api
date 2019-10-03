@@ -717,21 +717,29 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
             }
             else{
-                var isSingleNumber = parts[i].split(/-|\u3001/);
-                if(isSingleNumber.length > 1)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
-                return {"iserror":true,"errmsg":"Decimals are not allowed"};
-                if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                const singleNumber = parseFloat(parts[i], 10);
-                // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
-                if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                //1310
-                var checkType = this.checkType(parts[i],type,min,max);
-                if(checkType.iserror == true)
-                return {"iserror":true,"errmsg":checkType.errmsg};
+                if(this.props.parameterData.name != "max_leaf_nodes"){
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if(isSingleNumber.length > 1)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
+                    return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    const singleNumber = parseFloat(parts[i], 10);
+                    // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
+                    if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    //1310
+                    var checkType = this.checkType(parts[i],type,min,max);
+                    if(checkType.iserror == true)
+                    return {"iserror":true,"errmsg":checkType.errmsg};
+                }else{
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if((parts[i]^0) != parts[i])
+                        return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if(parts[i] <= 0)
+                        return {"iserror":true,"errmsg":"Value should be greater than zero"};
+                }
             }
         }
     }
