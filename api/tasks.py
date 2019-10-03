@@ -756,7 +756,11 @@ def trigger_outlook_periodic_job():
                         data['target'] = value.capitalize()
                     if 'train_dataset' in key:
                         input_file = value
-                        data['Trainerdataset'] = input_file
+                        data['Traindataset'] = input_file
+                        data['name'] = configkey
+                    if 'test_dataset' in key:
+                        input_file = value
+                        data['Testdataset'] = input_file
                         data['name'] = configkey
                 except Exception as error:
                     print error
@@ -779,6 +783,7 @@ def trigger_outlook_periodic_job():
 def trigger_metaData_autoML(data):
     print "metaData job triggered for autoML"
     ######################  User id for Email AutoML   ################
+    print data
     '''
     Create one user with Username "email" in order to use email for AutoML model creation.
 
@@ -788,22 +793,41 @@ def trigger_metaData_autoML(data):
     ###################################################################
     ####################   Upload file from local  ####################
     from django.core.files import File
-    local_file = open(settings.BASE_DIR+'/media/datasets/'+data['Trainerdataset'])
-    f=File(local_file)
-    dataset_config={}
-    dataset_config['name']=data['name']
-    dataset_config['input_file']=f
-    dataset_config['datasource_type']='fileUpload'
-    dataset_config['created_by'] = user_id.id
-    ###################################################################
     from api.datasets.helper import convert_to_string
     from api.datasets.serializers import DatasetSerializer
+    try:
+        #########  Trainer dataset config   #########
+        train_file = open(settings.BASE_DIR+'/media/datasets/'+data['Traindataset'])
+        train_f=File(train_file)
+        train_dataset_config={}
+        train_dataset_config['name']=data['name']+'_Train'
+        train_dataset_config['input_file']=train_f
+        train_dataset_config['datasource_type']='fileUpload'
+        train_dataset_config['created_by'] = user_id.id
+        train_dataset_details = convert_to_string(train_dataset_config)
+        train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
+        ###################################################################
+    except:
+        pass
+    try:
+        #########  Test dataset config   #########
+        test_file = open(settings.BASE_DIR+'/media/datasets/'+data['Testdataset'])
+        test_f=File(test_file)
+        test_dataset_config={}
+        test_dataset_config['name']=data['name']+'_Test'
+        test_dataset_config['input_file']=test_f
+        test_dataset_config['datasource_type']='fileUpload'
+        test_dataset_config['created_by'] = user_id.id
+        test_dataset_details = convert_to_string(test_dataset_config)
+        test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
+        ###################################################################
+    except:
+        pass
 
-    dataset_details = convert_to_string(dataset_config)
-    dataset_serializer = DatasetSerializer(data=dataset_details)
-    if dataset_serializer.is_valid():
-        dataset_object = dataset_serializer.save()
-        print(dataset_object)
+    if train_dataset_serializer.is_valid():
+        print "Saving train dataset Serializer"
+        train_dataset_object = train_dataset_serializer.save()
+        print(train_dataset_object)
         ################################   Create config for model object that to be triggered after metedata job  ##################
         try:
             model_config={
@@ -812,7 +836,7 @@ def trigger_metaData_autoML(data):
                 "mode":"autoML",
                 "config":{}
             }
-            model_config['dataset'] = dataset_object.id
+            model_config['dataset'] = train_dataset_object.id
             model_config['config']['targetColumn']=data['target']
             model_config['config']['targetLevel']=data['sub_target']
             model_config['created_by'] = user_id.id
@@ -825,16 +849,46 @@ def trigger_metaData_autoML(data):
             from api.utils import TrainerSerlializer
             trainer_serializer = TrainerSerlializer(data=model_config, context={})
             if trainer_serializer.is_valid():
+                print "Saving trainer Serializer"
                 trainer_object = trainer_serializer.save()
                 print trainer_object
+                try:
+                    if test_dataset_serializer.is_valid():
+                        print "Saving test dataset Serializer"
+                        test_dataset_object = test_dataset_serializer.save()
+                        print(test_dataset_object)
+                        ################ Create config for Score object that to be triggered after model job   ##############
+                        score_config={
+                            "name":data['name']+"_Score",
+                            "app_id":2,
+                            #"config":{}
+                        }
+                        score_config['trainer'] = trainer_object.id
+                        score_config['dataset'] = test_dataset_object.id
+                        score_config['created_by'] = user_id.id
+
+                        from api.utils import ScoreSerlializer
+                        score_serializer = ScoreSerlializer(data=score_config, context={})
+                        if score_serializer.is_valid():
+                            print "Saving score Serializer"
+                            score_object = score_serializer.save()
+                            print score_object
+                            test_dataset_object.create()
+                        else:
+                            print(score_serializer.errors)
+                    else:
+                        print(test_dataset_serializer.errors)
+                except:
+                    pass
+                    #print e
             else:
                 print(trainer_serializer.errors)
             ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
-            dataset_object.create()
+            train_dataset_object.create()
         except Exception as err:
             print err
     else:
-        print(dataset_serializer.errors)
+        print(train_dataset_serializer.errors)
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
 def create_model_autoML(config=None,dataset_object=None):

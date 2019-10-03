@@ -585,6 +585,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "displayName":"Convergence tolerance of iterations(e^-n)",
             "description": "Tolerance for the stopping criteria",
             "defaultValue":4,
+            "neural":True,
             "acceptedValue":None,
             "valueRange":[3,10],
             "paramType":"number",
