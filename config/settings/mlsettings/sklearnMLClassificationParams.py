@@ -585,6 +585,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "displayName":"Convergence tolerance of iterations(e^-n)",
             "description": "Tolerance for the stopping criteria",
             "defaultValue":4,
+            "neural":True,
             "acceptedValue":None,
             "valueRange":[3,10],
             "paramType":"number",
@@ -616,20 +617,6 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "defaultValue":10,
             "acceptedValue":None,
             "valueRange":[3,10],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["int"],
-            "allowedDataType":["int"]
-        },
-        {
-            "name":"hidden_layer_sizes",
-            "displayName":"Hidden Layer Size",
-            "description": "Number of neurons in the ith hidden layer.",
-            "defaultValue":100,
-            "acceptedValue":None,
-            "valueRange":[0,100],
             "paramType":"number",
             "uiElemType":"slider",
             "display":True,
@@ -784,6 +771,20 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "allowedDataType":["bool"]
         },
         {
+            "name":"hidden_layer_sizes",
+            "displayName":"Hidden Layer Size",
+            "description": "Number of neurons in the ith hidden layer.",
+            "defaultValue":100,
+            "acceptedValue":None,
+            "valueRange":[1,100],
+            "paramType":"number",
+            "uiElemType":"textBox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["int","tuple"],
+            "allowedDataType":["int","string"]
+        },
+        {
             "name":"learning_rate_init",
             "displayName":"Learning Rate Initialize",
             "description": "Controls the step-size in updating the weights.",
@@ -809,7 +810,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "display":True,
             "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["float"],
-            "allowedDataType":["float"]
+            "allowedDataType":["int","float"]
         },
         # {
            # "name":"batch_size",
@@ -849,7 +850,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
             "valueRange":[1,100],
             "paramType":"number",
             "uiElemType":"textBox",
-            "display":True,
+            "display":False,
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["int"],
             "allowedDataType":["int"]

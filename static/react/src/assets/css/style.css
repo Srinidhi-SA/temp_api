@@ -15258,8 +15258,8 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-.algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #f7f7f7; }
-.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #f7f7f7; }
+.algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #71e8db; }
+.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #71e8db; }
 div.algSelection .checkbox .ma-checkbox label { font-size: 14px; text-transform: capitalize; padding: 10px; }
 .algSelection .ma-checkbox { margin-bottom: 15px;}
 .algSelection .ma-checkbox label { font-weight:bold; }
@@ -16203,4 +16203,31 @@ div#replaceValues {
 }
 .pb-2{
 	margin-bottom: 2px;
+}
+.lexIcon{
+	  position: fixed;
+    bottom: 6px;
+    right: 0px;
+    height: 75px;
+    cursor: pointer;
+}
+.visualizer{
+ width: 100%;
+ margin-left: 81px;
+}
+.lexBtn{
+    font-weight: 600;
+    top: 80px;
+    right: 15px;
+    position: absolute;
+    background-color: #3b998c;
+    border: transparent;
+    box-shadow: none;
+    color: #ffffff;
+		padding: 5px 10px;
+		cursor: pointer;
+		}
+
+.lexBtn:hover{
+	box-shadow: 3px 2px 8px 0px #457b74;
 }

@@ -3,6 +3,10 @@ import time
 from math import floor, log10
 import datetime
 import random
+import requests
+import base64
+import json
+import re
 
 from django.conf import settings
 import yarn_api_client
@@ -1427,4 +1431,197 @@ def check_email_id(email=None):
             print("Invalid Email")
             return False
     except Exception as e:
-        print e    
+        print e
+
+def get_mails_from_outlook(auth_code,refresh_token,outlook_data):
+
+  token_url = 'https://login.microsoftonline.com/'+outlook_data['tenant_id']+'/oauth2/v2.0/token'
+
+  print token_url
+
+  post_data_auth_code = {
+                'grant_type': 'authorization_code',
+                # 'Content-Type': 'application/x-www-form-urlencoded',
+                'code': auth_code,
+                'redirect_uri': outlook_data['redirect_uri'],
+                'scope': settings.OUTLOOK_SCOPES,
+                'client_id': outlook_data['client_id'],
+                'client_secret': outlook_data['client_secret']
+              }
+  post_data_refresh_token = { 'grant_type': 'refresh_token',
+                # 'code': auth_code,
+                'redirect_uri': outlook_data['redirect_uri'],
+                'scope': 'https://graph.microsoft.com/.default',
+                'refresh_token': refresh_token,
+                'client_id': outlook_data['client_id'],
+                'client_secret': outlook_data['client_secret']
+              }
+  if refresh_token is not None:
+      r = requests.post(token_url, data = post_data_refresh_token)
+  else:
+      r = requests.post(token_url, data = post_data_auth_code)
+
+  try:
+    result = r.json()
+    refresh_token = result['refresh_token']
+    access_token = result['access_token']
+
+    print "Access token received."
+    ### Trigger mail receive action  ###
+    result_message = get_outlook_mails(access_token)
+    #print result_message
+    if result_message == None:
+        print "result message not found."
+        return None
+    else:
+        try:
+            print "result message found"
+            return result_message
+        except Exception as error:
+            print error
+            return None
+
+  except:
+    return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+
+def get_outlook_mails(access_token):
+  # access_token = access_token
+  # If there is no token in the session, redirect to home
+  if not access_token:
+      print "Access token not found"
+      return None
+  else:
+      info_dict = {}
+      info_dict = get_my_messages(access_token,info_dict)
+      return info_dict
+
+
+def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_element=None):
+
+    # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
+    graph_endpoint = 'https://graph.microsoft.com/v1.0'
+    if message_id is None and id_element is None:
+        get_messages_url = graph_endpoint+'/me/messages/'
+    else:
+        get_messages_url = graph_endpoint+'/me/messages/'+str(message_id)+'/attachments'
+
+  # get_messages_url = graph_endpoint+'/me/messages/AAMkADI5ODU5MDllLTM5ZmQtNDk1Zi1iNzcxLTRmN2JlZjk2Zjc4NQBGAAAAAADGdZQ1rmo2RYpnFmn4OfBhBwAMw_MOyTI_RbDqXK9C1L0dAAAA4WFOAAB_HCNKDCWjR5dEFB9ADyJdAAEafcuCAAA=/attachments'
+  # Use OData query parameters to control the results
+  #  - Only first 10 results returned
+  #  - Only return the ReceivedDateTime, Subject, and From fields
+  #  - Sort the results by the ReceivedDateTime field in descending order
+    '''
+    it is taking Only top 10 or all since given time
+    '''
+    if last_seen is None:
+        query_parameters = {
+                          # '$top': '1',
+                          # '$filter': 'isRead eq false',
+                          # '$select': 'receivedDateTime,subject,from',
+                          # '$orderby': 'receivedDateTime DESC'
+                          }
+                          # '$select': 'receivedDateTime,subject,from',
+                          # '$orderby': 'receivedDateTime DESC'}
+    else:
+        query_parameters = {
+                          # '$top': '1',
+                                '$filter': 'isRead eq false and  receivedDateTime gt '+last_seen,
+                          # '$select': 'receivedDateTime,subject,from',
+                          # '$orderby': 'receivedDateTime DESC'
+                          }
+                          # '$select': 'receivedDateTime,subject,from',
+                          # '$orderby': 'receivedDateTime DESC'}
+
+    r = make_api_call('GET', get_messages_url, access_token,parameters = query_parameters)
+    #settings.OUTLOOK_LAST_SEEN=str(datetime.datetime.now())
+    #print r.text
+    try:
+        if (r.status_code == requests.codes.ok):
+            if message_id is None and id_element is None:
+                jsondata=r.json()
+                for i in range(len(jsondata['value'])):
+                    if jsondata['value'][i]['hasAttachments']:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id]={}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        id = jsondata['value'][i]['id']
+                        if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
+                                info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
+
+                        if 'target' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'target: (\S+)',info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['target'] = check.group(1).replace('"','')
+                                info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
+
+                        get_my_messages(access_token,info_dict,message_id = id,id_element = u_id)
+                    else:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id]={}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        if 'from' in jsondata['value'][i].keys():
+                            info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        else:
+                            info_dict[u_id]['emailAddress'] = 'External Sender'
+            else:
+                print "Downloading Attachments ."
+                jsondata=r.json()
+                try:
+                    for i in range(len(jsondata['value'])):
+
+                        # subject = jsondata['value'][i]['subject']
+                        # mail = jsondata['value'][i]['bodyPreview']
+                        # emailAddress = jsondata['value'][i]['emailAddress']
+                        # print subject, mail, emailAddress
+                        if jsondata['value'][i]["name"][-3:] == 'csv':
+                            f = open('config/media/datasets/'+id_element+'_'+jsondata['value'][i]["name"], 'w+b')
+                            f.write(base64.b64decode(jsondata['value'][i]['contentBytes']))
+                            f.close()
+                            if 'train' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['train_dataset'] = id_element+'_'+jsondata['value'][i]["name"]
+                            if 'test' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['test_dataset'] = id_element+'_'+jsondata['value'][i]["name"]
+
+                except Exception as e:
+                    print e
+            return info_dict
+        else:
+            return "{0}: {1}".format(r.status_code, r.text)
+    except Exception as err:
+        print err
+
+# Generic API Sending
+def make_api_call(method, url, token, payload = None, parameters = None):
+  '''
+    establishes connection with the API
+  '''
+  # Send these headers with all API calls
+  headers = {'Authorization' : 'Bearer %s' % (token)}
+  # Use these headers to instrument calls. Makes it easier
+  # to correlate requests and responses in case of problems
+  # and is a recommended best practice.
+  #request_id = str(uuid.uuid4())
+  #instrumentation = { 'client-request-id' : request_id,
+   #                   'return-client-request-id' : 'true' }
+
+  #headers.update(instrumentation)
+  response = None
+
+  if (method.upper() == 'GET'):
+      response = requests.get(url, headers = headers, params = parameters)
+  elif (method.upper() == 'DELETE'):
+      response = requests.delete(url, headers = headers, params = parameters)
+  elif (method.upper() == 'PATCH'):
+      headers.update({ 'Content-Type' : 'application/json' })
+      response = requests.patch(url, headers = headers, data = json.dumps(payload), params = parameters)
+  elif (method.upper() == 'POST'):
+      headers.update({ 'Content-Type' : 'application/json' })
+      response = requests.post(url, headers = headers, data = json.dumps(payload), params = parameters)
+
+  return response
