@@ -54,7 +54,7 @@ export default function reducer(state = {
         appsSelectedTabId:"model",
         audioFileUploadShowFlag:false,
         audioFileUpload:{},
-        appsLoaderImage:"assets/images/Processing.gif",
+        appsLoaderImage:"assets/images/Processing_mAdvisor.gif",
         audioFileSummary:{},
         audioFileSlug :"",
         audioFileSummaryFlag:false,
