@@ -978,11 +978,17 @@ def create_model_autoML(dataset_object_id=None,config=None):
                 uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
                                                          permissions_dict=permissions_dict)
                 print("Got uiMetaData from dataset")
-            model_config = {}
-            model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
-            model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
-            model_config['config']['validationTechnique'] = validationTechnique
-            model_config['created_by'] = user_object.id
+            try:
+                trainer_obj = Trainer.objects.filter(dataset=dataset_object_id).first()
+                model_config = json.dumps(trainer_obj.config)
+                print type(model_config)
+
+                model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+                model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+                model_config['config']['validationTechnique'] = validationTechnique
+                model_config['created_by'] = user_object.id
+            except Exception as e:
+                print e
 
             from api.utils import convert_to_string
             model_config = convert_to_string(model_config)
