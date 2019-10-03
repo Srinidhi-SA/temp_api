@@ -724,7 +724,7 @@ def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
             # fetch modeldeployment instance
             print("Found the dataset in trainer table.")
             ###########  Trigger autoML model job ##############
-            create_model_autoML.delay(dataset_object)
+            create_model_autoML.delay(dataset_object.id)
         else:
             print('Its not a email autoML job.')
             return
@@ -891,7 +891,7 @@ def trigger_metaData_autoML(data):
         print(train_dataset_serializer.errors)
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
-def create_model_autoML(config=None,dataset_object=None):
+def create_model_autoML(dataset_object_id=None,config=None):
     #####################  Configs for Trainer ##################
     validationTechnique={
         "displayName":"K Fold Validation",
@@ -958,6 +958,7 @@ def create_model_autoML(config=None,dataset_object=None):
             print err
     else:
         try:
+            dataset_object = Dataset.objects.get(id=dataset_object_id)
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
             print("Got metedata from dataset")
 
@@ -977,7 +978,7 @@ def create_model_autoML(config=None,dataset_object=None):
                 uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
                                                          permissions_dict=permissions_dict)
                 print("Got uiMetaData from dataset")
-
+            model_config = {}
             model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
             model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
             model_config['config']['validationTechnique'] = validationTechnique
