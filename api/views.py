@@ -6226,11 +6226,12 @@ def request_from_alexa(request):
     if request.method == 'GET':
         print "####  Got GET Request from Alexa ####"
         if request.GET['data'] == 'dataset':
-            user_id = request.user.id
+            #user_id = request.user.id
+            user_id = User.objects.get(username="alexa")
             dataset_obj = Dataset.objects.filter(created_by=user_id)
             for index, obj in enumerate(dataset_obj):
                 response[index] = {"name": obj.name, "slug": obj.slug}
-            return JsonResponse(json.loads(json.dumps(response)))
+            return JsonResponse(response)
 
     if request.method == 'POST':
         print "####  Got POST Request from Alexa ####"
