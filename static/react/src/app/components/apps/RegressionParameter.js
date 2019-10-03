@@ -194,9 +194,9 @@ export class RegressionParameter extends React.Component {
             document.getElementById("error").innerHTML="negative value not allowed";
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
-           document.getElementById("error").innerHTML="only number allowed";
-        }
-        else if($(".hiddenLayerCls").val() == ""){
+            document.getElementById("error").innerHTML="only number allowed";
+         }
+         else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
         }
     }
@@ -532,7 +532,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<=0 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"} />
+                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<1 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"} />
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
@@ -656,41 +656,41 @@ export class RegressionParameter extends React.Component {
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
          if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Validation Fraction"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
          }
        }
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Maximum Solver Iteration "};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed  for Convergence tolerance of iterations(e^-n)"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Epsilon"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for No of Iteration"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
 
        }
      if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
-          return {"iserror":true,"errmsg":"only numbers allowed for Learning Rate Initialize"};
+          return {"iserror":true,"errmsg":"only numbers allowed"};
        }
        else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
-        return {"iserror":true,"errmsg":"only numbers allowed for Alpha"};
+        return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Momentum"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Beta1"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Beta2"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed for Hidden Layer Size"};
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         
 
@@ -720,10 +720,13 @@ export class RegressionParameter extends React.Component {
                 var isSingleNumber = parts[i].split(/-|\u3001/);
                 if(isSingleNumber.length > 1)
                 return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
+                return {"iserror":true,"errmsg":"Decimals are not allowed"};
                 if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 const singleNumber = parseFloat(parts[i], 10);
-                if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
+                // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
+                if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
                 return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
                 //1310
                 var checkType = this.checkType(parts[i],type,min,max);
