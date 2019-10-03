@@ -8,6 +8,8 @@ import store from "../store";
 import {isEmpty,setUserDetails,getUserDetailsOrRestart,enableChatbot,checkChatbotPresent,hidechatbot} from "../helpers/helper";
 import {cookieObj} from '../helpers/cookiesHandler';
 import Notifications, {notify} from 'react-notify-toast';
+import {STATIC_URL} from "../helpers/env.js";
+import {LexClass} from "./apps/lex";
 
 @connect((store) => {
   return {
@@ -20,6 +22,7 @@ export class Main extends React.Component {
 	console.log("props in main:::");
 	console.log(props);
   }
+  
   addChatbotScript() {
     //for chatbot
       if(!checkChatbotPresent()){
@@ -47,6 +50,34 @@ export class Main extends React.Component {
           <TopPanel/>
           <Notifications options={{zIndex: 200, top: '70px'}} />
             {this.props.children}
+
+
+  {/* <div class="container">
+	<div class="row">
+	 <div id="Smallchat">
+    <div class="Layout Layout-open Layout-expand Layout-right" >
+      <div class="Messenger_messenger">
+        <div class="Messenger_header">
+          <h4 class="Messenger_prompt">How can we help you?</h4> <span class="chat_close_icon"> <span class="glyphicon glyphicon-remove"></span></span> </div>
+        <div class="Messenger_content">
+          <div class="Messages">
+            <div class="Messages_list">
+            <div>djieh</div>
+            </div>
+          </div>
+          <div class="Input Input-blank">
+            <textarea class="Input_field" placeholder="Send a message..."></textarea>
+           
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat_on"> <span class="chat_on_icon"><i class="fa fa-comments" aria-hidden="true"></i></span> </div>
+    
+  </div>
+        
+       </div>  */}
         </div>
       );
     } else {

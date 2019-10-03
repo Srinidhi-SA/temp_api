@@ -12,7 +12,7 @@ from django.conf import settings
 import datetime
 import json
 import copy
-from api.helper import get_random_model_id
+from api.helper import get_random_model_id,get_mails_from_outlook
 
 
 @task(name="sum_two_numbers")
@@ -162,6 +162,8 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         print("Every thing went well. Lets see if more can be done")
         check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object.id)
+        ####   Check if model job needs to be triggered for email AutoML   ###
+        check_if_autoML_model_job_needs_to_be_triggered(dataset_object.id)
         return "Done Succesfully."
         return results
     elif job_type == "master":
@@ -705,81 +707,294 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
     except Exception as err:
         print(err)
 
+def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
+    print('received this dataset_object_id : ', dataset_object_id)
+
+    if dataset_object_id is None:
+        print("No dataset id given found")
+
+        return
+
+    from api.models import Trainer
+    try:
+        dataset_object = Dataset.objects.get(id=dataset_object_id)
+        trainer_object = Trainer.objects.filter(dataset=dataset_object_id).first()
+
+        if trainer_object is not None:
+            # fetch modeldeployment instance
+            print("Found the dataset in trainer table.")
+            ###########  Trigger autoML model job ##############
+            create_model_autoML.delay(dataset_object.id)
+        else:
+            print('Its not a email autoML job.')
+            return
+
+    except Exception as err:
+        print(err)
+
+
 from celery.task.schedules import crontab
 from celery.decorators import periodic_task
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="get_outlook_mails", ignore_result=False,queue=CONFIG_FILE_NAME)
-def get_outlook_mails():
-    print "looking for outlook mail"
+@periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,queue=CONFIG_FILE_NAME)
+def trigger_outlook_periodic_job():
+    mails = get_mails_from_outlook(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+    print mails
+    if mails is not None:
+        print "All set to proceed to upload dataset."
+
+        for configkey, configvalue in mails.iteritems():
+            data={}
+            for key,value in configvalue.iteritems():
+                try:
+                    #print key,value
+                    # value is a dict
+            #############  Create config and trigger metadata job for train and test Dataset  #################
+                    if 'sub_target' in key:
+                        data['sub_target'] = value.capitalize()
+                    if 'target' in key:
+                        data['target'] = value.capitalize()
+                    if 'train_dataset' in key:
+                        input_file = value
+                        data['Traindataset'] = input_file
+                        data['name'] = configkey
+                    if 'test_dataset' in key:
+                        input_file = value
+                        data['Testdataset'] = input_file
+                        data['name'] = configkey
+                except Exception as error:
+                    print error
+            if len(data) > 0:
+                trigger_metaData_autoML.delay(data)
+            ##########################################################################################
+
+                    #pass
+    else:
+        print "No mails."
     '''
-    Task1: Look for auth Code, Access Token and Refresh Token
+    Task1: Look for auth Code, Access Token and Refresh Token : DONE
     Task2: Get mails from outlook
     Task3: Extract Text Data and attachments from mail
     Task4: Put Attachments in HDFS
     Task5: Prepare config for Data Upload.
     Task6: Trigger model Once Task5 is done.
     '''
+@task(name='trigger_metaData_autoML', queue=CONFIG_FILE_NAME)
+def trigger_metaData_autoML(data):
+    print "metaData job triggered for autoML"
+    ######################  User id for Email AutoML   ################
+    print data
+    '''
+    Create one user with Username "email" in order to use email for AutoML model creation.
+
+    '''
+    from django.contrib.auth.models import User
+    user_id=User.objects.get(username="email")
+    ###################################################################
+    ####################   Upload file from local  ####################
+    from django.core.files import File
+    from api.datasets.helper import convert_to_string
+    from api.datasets.serializers import DatasetSerializer
+    try:
+        #########  Trainer dataset config   #########
+        train_file = open(settings.BASE_DIR+'/media/datasets/'+data['Traindataset'])
+        train_f=File(train_file)
+        train_dataset_config={}
+        train_dataset_config['name']=data['name']+'_Train'
+        train_dataset_config['input_file']=train_f
+        train_dataset_config['datasource_type']='fileUpload'
+        train_dataset_config['created_by'] = user_id.id
+        train_dataset_details = convert_to_string(train_dataset_config)
+        train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
+        ###################################################################
+    except:
+        pass
+    try:
+        #########  Test dataset config   #########
+        test_file = open(settings.BASE_DIR+'/media/datasets/'+data['Testdataset'])
+        test_f=File(test_file)
+        test_dataset_config={}
+        test_dataset_config['name']=data['name']+'_Test'
+        test_dataset_config['input_file']=test_f
+        test_dataset_config['datasource_type']='fileUpload'
+        test_dataset_config['created_by'] = user_id.id
+        test_dataset_details = convert_to_string(test_dataset_config)
+        test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
+        ###################################################################
+    except:
+        pass
+
+    if train_dataset_serializer.is_valid():
+        print "Saving train dataset Serializer"
+        train_dataset_object = train_dataset_serializer.save()
+        print(train_dataset_object)
+        ################################   Create config for model object that to be triggered after metedata job  ##################
+        try:
+            model_config={
+                "name":data['name']+"_Trainer",
+                "app_id":2,
+                "mode":"autoML",
+                "config":{}
+            }
+            model_config['dataset'] = train_dataset_object.id
+            model_config['config']['targetColumn']=data['target']
+            model_config['config']['targetLevel']=data['sub_target']
+            model_config['created_by'] = user_id.id
+
+            from api.utils import convert_to_string
+            model_config = convert_to_string(model_config)
+            print("Constructed model_config")
+            print model_config
+
+            from api.utils import TrainerSerlializer
+            trainer_serializer = TrainerSerlializer(data=model_config, context={})
+            if trainer_serializer.is_valid():
+                print "Saving trainer Serializer"
+                trainer_object = trainer_serializer.save()
+                print trainer_object
+                try:
+                    if test_dataset_serializer.is_valid():
+                        print "Saving test dataset Serializer"
+                        test_dataset_object = test_dataset_serializer.save()
+                        print(test_dataset_object)
+                        ################ Create config for Score object that to be triggered after model job   ##############
+                        score_config={
+                            "name":data['name']+"_Score",
+                            "app_id":2,
+                            #"config":{}
+                        }
+                        score_config['trainer'] = trainer_object.id
+                        score_config['dataset'] = test_dataset_object.id
+                        score_config['created_by'] = user_id.id
+
+                        from api.utils import ScoreSerlializer
+                        score_serializer = ScoreSerlializer(data=score_config, context={})
+                        if score_serializer.is_valid():
+                            print "Saving score Serializer"
+                            score_object = score_serializer.save()
+                            print score_object
+                            test_dataset_object.create()
+                        else:
+                            print(score_serializer.errors)
+                    else:
+                        print(test_dataset_serializer.errors)
+                except:
+                    pass
+                    #print e
+            else:
+                print(trainer_serializer.errors)
+            ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
+            train_dataset_object.create()
+        except Exception as err:
+            print err
+    else:
+        print(train_dataset_serializer.errors)
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
-def create_model_autoML(*args, **kwrgs):
-    try:
-        config = args
-        print config
-        data = json.loads(config[0])
-        dataset_object=Dataset.objects.filter(name=data['dataset_name']).first()
-        print dataset_object
+def create_model_autoML(dataset_object_id=None,config=None):
+    #####################  Configs for Trainer ##################
+    validationTechnique={
+        "displayName":"K Fold Validation",
+        "name":"kFold",
+        "value":2,
+    }
 
-        model_config={
-            "name":data['model_name'],
-            "app_id":2,
-            "mode":"autoML",
-            "config":{}
-        }
-        validationTechnique={
-            "displayName":"K Fold Validation",
-            "name":"kFold",
-            "value":2,
-        }
+    if config is not None:
+        try:
+            print config
+            data = json.loads(config[0])
+            dataset_object=Dataset.objects.filter(name=data['dataset_name']).first()
+            print dataset_object
 
-        original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
-        print("Got metedata from dataset")
-
-        from django.contrib.auth.models import User
-        user_object = dataset_object.created_by
-
-        if original_meta_data_from_scripts is None:
-            uiMetaData = dict()
-        if original_meta_data_from_scripts == {}:
-            uiMetaData = dict()
-        else:
-            permissions_dict = {
-                'create_signal': user_object.has_perm('api.create_signal'),
-                'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+            model_config={
+                "name":data['model_name'],
+                "app_id":2,
+                "mode":"autoML",
+                "config":{}
             }
-            from api.datasets.helper import add_ui_metadata_to_metadata
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
-                                                     permissions_dict=permissions_dict)
-            print("Got uiMetaData from dataset")
 
-        model_config['dataset'] = dataset_object.id
-        model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
-        model_config['config']['targetColumn']=data['target']
-        model_config['config']['targetLevel']=data['subtarget']
-        model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
-        model_config['config']['validationTechnique'] = validationTechnique
-        model_config['created_by'] = user_object.id
 
-        from api.utils import convert_to_string
-        model_config = convert_to_string(model_config)
-        print("Constructed model_config")
+            original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
+            print("Got metedata from dataset")
 
-        from api.utils import TrainerSerlializer
-        trainer_serializer = TrainerSerlializer(data=model_config, context={})
-        if trainer_serializer.is_valid():
-            trainer_object = trainer_serializer.save()
-            trainer_object.create()
-        else:
-            print(trainer_serializer.errors)
+            from django.contrib.auth.models import User
+            user_object = dataset_object.created_by
 
-    except Exception as err:
-        print err
+            if original_meta_data_from_scripts is None:
+                uiMetaData = dict()
+            if original_meta_data_from_scripts == {}:
+                uiMetaData = dict()
+            else:
+                permissions_dict = {
+                    'create_signal': user_object.has_perm('api.create_signal'),
+                    'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+                }
+                from api.datasets.helper import add_ui_metadata_to_metadata
+                uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
+                                                         permissions_dict=permissions_dict)
+                print("Got uiMetaData from dataset")
+
+            model_config['dataset'] = dataset_object.id
+            model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+            model_config['config']['targetColumn']=data['target']
+            model_config['config']['targetLevel']=data['subtarget']
+            model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+            model_config['config']['validationTechnique'] = validationTechnique
+            model_config['created_by'] = user_object.id
+
+            from api.utils import convert_to_string
+            model_config = convert_to_string(model_config)
+            print("Constructed model_config")
+
+            from api.utils import TrainerSerlializer
+            trainer_serializer = TrainerSerlializer(data=model_config, context={})
+            if trainer_serializer.is_valid():
+                trainer_object = trainer_serializer.save()
+                trainer_object.create()
+            else:
+                print(trainer_serializer.errors)
+
+        except Exception as err:
+            print err
+    else:
+        try:
+            dataset_object = Dataset.objects.get(id=dataset_object_id)
+            original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
+            print("Got metedata from dataset")
+
+            from django.contrib.auth.models import User
+            user_object = dataset_object.created_by
+
+            if original_meta_data_from_scripts is None:
+                uiMetaData = dict()
+            if original_meta_data_from_scripts == {}:
+                uiMetaData = dict()
+            else:
+                permissions_dict = {
+                    'create_signal': user_object.has_perm('api.create_signal'),
+                    'subsetting_dataset': user_object.has_perm('api.subsetting_dataset')
+                }
+                from api.datasets.helper import add_ui_metadata_to_metadata
+                uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts,
+                                                         permissions_dict=permissions_dict)
+                print("Got uiMetaData from dataset")
+            model_config = {}
+            model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+            model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
+            model_config['config']['validationTechnique'] = validationTechnique
+            model_config['created_by'] = user_object.id
+
+            from api.utils import convert_to_string
+            model_config = convert_to_string(model_config)
+            print("Constructed model_config")
+
+            from api.utils import TrainerSerlializer
+            trainer_serializer = TrainerSerlializer(data=model_config, context={})
+            if trainer_serializer.is_valid():
+                trainer_object = trainer_serializer.save()
+                trainer_object.create()
+            else:
+                print(trainer_serializer.errors)
+
+        except Exception as err:
+            print err
