@@ -404,6 +404,14 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                                 let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
                                 bootbox.alert(errormsg);
                                 return;
+                            }else if(parseFloat(cusNum)<0){
+                                let errormsg = statusMessages("warning", "Negative Values are not allowed", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else if(parseFloat(cusNum)== 0){
+                                let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
                             }else{
                                 analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
                             }
