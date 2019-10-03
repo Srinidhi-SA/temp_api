@@ -164,7 +164,7 @@ export class RegressionParameter extends React.Component {
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
         var validateResult = {"iserror":false,"errmsg":""};
-        validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType);
+        validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType,e);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
             //e.target.focus();
@@ -500,10 +500,17 @@ export class RegressionParameter extends React.Component {
                            sliderclassN= "form-control iterationGrid";
                         break;
                         case"Maximum Solver Iterations":
+                        if(parameterData.defaultValue==200)
                            sliderclassN= "form-control maxSolverGrid";
+                           else 
+                           sliderclassN="form-control";
                         break;
                         case"Convergence tolerance of iterations(e^-n)":
-                           sliderclassN= "form-control convergGrid";
+                        if(parameterData.neural)
+                            sliderclassN= "form-control convergGrid";
+                            else 
+                            sliderclassN= "form-control";
+
                         break;
                         default:
                            sliderclassN="form-control";
@@ -635,7 +642,7 @@ export class RegressionParameter extends React.Component {
 
     }
     
-    validateTextboxValue(textboxVal,min,max,type){
+    validateTextboxValue(textboxVal,min,max,type,e){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
@@ -646,34 +653,34 @@ export class RegressionParameter extends React.Component {
          }
        }
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
-        if(letter.test($('.maxSolverGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed for maxSolverGrid "};
         }
-        else if(letter.test($('.convergGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed  for convergGrid"};
         }
-        else if(letter.test($('.epsilonGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed for epsilonGrid"};
         }
-        else if(letter.test($('.iterationGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
+            return {"iserror":true,"errmsg":"only number allowed for iterationGrid"};
         }
 
        }
-     if(!numbers.test($('.learningClsInit').val())){
-           return {"iserror":true,"errmsg":"only number allowed"};
+     if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
+          return {"iserror":true,"errmsg":"only number allowed for learningClsInit"};
        }
-       else if(!numbers.test($('.alphaCls').val())){
-        return {"iserror":true,"errmsg":"only number allowed"};
+       else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
+        return {"iserror":true,"errmsg":"only number allowed for Alpha"};
         }
-        else if(!numbers.test($('.momentumCls').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
+            return {"iserror":true,"errmsg":"only number allowed for Momentum"};
         }
-        else if(!numbers.test($('.beta1').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only number allowed for Bate1"};
         }
-        else if(!numbers.test($('.disNum').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only number allowed for Beta2"};
         }
         else if(letter.test($('.hiddenCls').val())){
             return {"iserror":true,"errmsg":"only number allowed"};
