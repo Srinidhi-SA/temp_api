@@ -648,42 +648,42 @@ export class RegressionParameter extends React.Component {
         var letter = /[a-zA-Z]/;
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
-         if(!numbers.test($('.fractionCls').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+         if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed for Validation Fraction"};
          }
        }
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed for maxSolverGrid "};
+            return {"iserror":true,"errmsg":"only numbers allowed for Maximum Solver Iteration "};
         }
         else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed  for convergGrid"};
+            return {"iserror":true,"errmsg":"only numbers allowed  for Convergence tolerance of iterations(e^-n)"};
         }
         else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed for epsilonGrid"};
+            return {"iserror":true,"errmsg":"only numbers allowed for Epsilon"};
         }
         else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
-            return {"iserror":true,"errmsg":"only number allowed for iterationGrid"};
+            return {"iserror":true,"errmsg":"only numbers allowed for No of Iteration"};
         }
 
        }
      if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
-          return {"iserror":true,"errmsg":"only number allowed for learningClsInit"};
+          return {"iserror":true,"errmsg":"only numbers allowed for Learning Rate Initialize"};
        }
        else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
-        return {"iserror":true,"errmsg":"only number allowed for Alpha"};
+        return {"iserror":true,"errmsg":"only numbers allowed for Alpha"};
         }
         else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
-            return {"iserror":true,"errmsg":"only number allowed for Momentum"};
+            return {"iserror":true,"errmsg":"only numbers allowed for Momentum"};
         }
         else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
-            return {"iserror":true,"errmsg":"only number allowed for Bate1"};
+            return {"iserror":true,"errmsg":"only numbers allowed for Beta1"};
         }
         else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
-            return {"iserror":true,"errmsg":"only number allowed for Beta2"};
+            return {"iserror":true,"errmsg":"only numbers allowed for Beta2"};
         }
-        else if(letter.test($('.hiddenCls').val())){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed for Hidden Layer Size"};
         }
         
 
