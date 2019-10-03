@@ -99,6 +99,16 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(updateCrossValidationValue(e.target.value));
         //this.setState({ crossvalidationvalue: e.target.value});
     }
+    noOfFolds(e){
+        let foldVal = parseFloat(e.target.value);
+        if(e.target.value == "" || e.target.value == "NaN"){
+            document.getElementById("noOfFolds").innerText = "Please enter a number";
+        }else if(foldVal>20 || foldVal <2){
+            document.getElementById("noOfFolds").innerText = "Value Should be between 2 to 20";
+        }else{
+            document.getElementById("noOfFolds").innerText = "";
+        }
+    }
     render() {
         console.log("Create Model Variable Selection  is called##########3");
         let custom_word1 = "";
@@ -165,8 +175,8 @@ export class ModelVariableSelection extends React.Component {
                         <div class="form-group">
                             <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                             <div class="col-lg-8">
-                                <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={20} value={store.getState().apps.regression_crossvalidationvalue} />
-
+                                <input type="number" name="" class="form-control" required={true} id="noOffolds" onInput={this.noOfFolds.bind(this)} onChange={this.changecrossValidationValue.bind(this)} min={2} max={20} value={store.getState().apps.regression_crossvalidationvalue} />
+                            <div className="text-danger" id="noOfFolds"></div>                            
                             </div>
                         </div> :
                         <div id="range">

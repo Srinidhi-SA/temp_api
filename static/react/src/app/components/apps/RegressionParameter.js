@@ -81,11 +81,18 @@ export class RegressionParameter extends React.Component {
             });
         }
     }
+    changeFoldCheck(min,max,e){
+        if(e.target.value < min || e.target.value > max){
+            e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
+        }else if(!Number.isInteger(parseFloat(e.target.value))){
+            e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
+        } else e.target.parentElement.lastElementChild.innerHTML = ""
+    }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
             alert("please enter a valid number")
         else {
-            e.target.parentElement.lastElementChild.innerHTML="";
+            // e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
                 defaultVal: e.target.value
             })
@@ -94,10 +101,10 @@ export class RegressionParameter extends React.Component {
     }
     changeSliderValue(e) {
         this.setState({
-        defaultVal: e.target.value
-        });
-        this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
-    }
+            defaultVal: e.target.value
+            });
+            this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        }
     selecthandleChange(e){
         switch(e.target.value){
             case "sgd":
@@ -525,7 +532,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
+                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<=0 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"} />
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
@@ -568,16 +575,16 @@ export class RegressionParameter extends React.Component {
            
                     return (
                             <div className="row">                            
-                            <div className="col-md-6 col-sm-2">
-                                
+                                <div className="col-md-6 col-sm-2">
+
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
                                     <div className={cls}>
-                                    <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
+                                        <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
                                     </div>
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
-                                 
+                            
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
+                            <div className="col-md-4 col-sm-4"><input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onInput={this.changeFoldCheck.bind(this,this.state.min,this.state.max)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
                            {/* #1361 added onKeyDown to prevent e */}
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>

@@ -6,6 +6,7 @@ import random
 import requests
 import base64
 import json
+import re
 
 from django.conf import settings
 import yarn_api_client
@@ -1486,7 +1487,6 @@ def get_mails_from_outlook(auth_code,refresh_token,outlook_data):
 def get_outlook_mails(access_token):
   # access_token = access_token
   # If there is no token in the session, redirect to home
-
   if not access_token:
       print "Access token not found"
       return None
@@ -1496,7 +1496,7 @@ def get_outlook_mails(access_token):
       return info_dict
 
 
-def get_my_messages(access_token,info_dict,message_id = None,last_seen=None,id_element=None):
+def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_element=None):
 
     # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
     graph_endpoint = 'https://graph.microsoft.com/v1.0'
@@ -1533,57 +1533,68 @@ def get_my_messages(access_token,info_dict,message_id = None,last_seen=None,id_e
                           # '$orderby': 'receivedDateTime DESC'}
 
     r = make_api_call('GET', get_messages_url, access_token,parameters = query_parameters)
+    #settings.OUTLOOK_LAST_SEEN=str(datetime.datetime.now())
     #print r.text
-
-    if (r.status_code == requests.codes.ok):
-        if message_id is None and id_element is None:
-            jsondata=r.json()
-            for i in range(len(jsondata['value'])):
-                if jsondata['value'][i]['hasAttachments']:
-                    u_id = str(datetime.datetime.now())
-                    info_dict[u_id]={}
-                    info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
-                    info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
-                    info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
-                    id = jsondata['value'][i]['id']
-                    get_my_messages(access_token,info_dict,message_id = id,id_element = u_id)
-                else:
-                    u_id = str(datetime.datetime.now())
-                    info_dict[u_id]={}
-                    info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
-                    info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
-                    if 'from' in jsondata['value'][i].keys():
-                        info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
-                    else:
-                        info_dict[u_id]['emailAddress'] = 'External Sender'
-        else:
-            print "Downloading Attachments ."
-            jsondata=r.json()
-            try:
+    try:
+        if (r.status_code == requests.codes.ok):
+            if message_id is None and id_element is None:
+                jsondata=r.json()
                 for i in range(len(jsondata['value'])):
+                    if jsondata['value'][i]['hasAttachments']:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id]={}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        id = jsondata['value'][i]['id']
+                        if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
+                                info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
 
-                    # subject = jsondata['value'][i]['subject']
-                    # mail = jsondata['value'][i]['bodyPreview']
-                    # emailAddress = jsondata['value'][i]['emailAddress']
-                    # print subject, mail, emailAddress
-                    f = open('config/media/datasets/'+id_element+'_'+jsondata['value'][i]["name"], 'w+b')
-                    #print f
-                    #info_dict[u_id]['input_file']=f
+                        if 'target' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'target: (\S+)',info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['target'] = check.group(1).replace('"','')
+                                info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
 
-                    '''
-                    send name of the file_with_slug in info_dict
-                    send target and subtarget
-                    '''
-                    f.write(base64.b64decode(jsondata['value'][i]['contentBytes']))
-                    f.close()
-                    for key in info_dict:
-                        if key == id_element:
-                            info_dict[key]['input_file']=id_element+'_'+jsondata['value'][i]["name"]
-            except Exception as e:
-                print e
-        return info_dict
-    else:
-        return "{0}: {1}".format(r.status_code, r.text)
+                        get_my_messages(access_token,info_dict,message_id = id,id_element = u_id)
+                    else:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id]={}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        if 'from' in jsondata['value'][i].keys():
+                            info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        else:
+                            info_dict[u_id]['emailAddress'] = 'External Sender'
+            else:
+                print "Downloading Attachments ."
+                jsondata=r.json()
+                try:
+                    for i in range(len(jsondata['value'])):
+
+                        # subject = jsondata['value'][i]['subject']
+                        # mail = jsondata['value'][i]['bodyPreview']
+                        # emailAddress = jsondata['value'][i]['emailAddress']
+                        # print subject, mail, emailAddress
+                        if jsondata['value'][i]["name"][-3:] == 'csv':
+                            f = open('config/media/datasets/'+id_element+'_'+jsondata['value'][i]["name"], 'w+b')
+                            f.write(base64.b64decode(jsondata['value'][i]['contentBytes']))
+                            f.close()
+                            if 'train' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['train_dataset'] = id_element+'_'+jsondata['value'][i]["name"]
+                            if 'test' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['test_dataset'] = id_element+'_'+jsondata['value'][i]["name"]
+
+                except Exception as e:
+                    print e
+            return info_dict
+        else:
+            return "{0}: {1}".format(r.status_code, r.text)
+    except Exception as err:
+        print err
 
 # Generic API Sending
 def make_api_call(method, url, token, payload = None, parameters = None):
