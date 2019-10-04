@@ -692,6 +692,9 @@ export class RegressionParameter extends React.Component {
         else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
+        else if(e.target.classList[1]=="hiddenCls" && ($('.hiddenCls').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
         
 
         const parts = textboxVal.split(/,|\u3001/);
