@@ -653,6 +653,9 @@ export class RegressionParameter extends React.Component {
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
+        if(letter.test(textboxVal)){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
          if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
