@@ -653,8 +653,6 @@ export class RegressionParameter extends React.Component {
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
-         
-
         // if(!($('.fractionCls').val()== undefined)){
         if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
          if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
@@ -662,57 +660,39 @@ export class RegressionParameter extends React.Component {
          }
        }
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
-        var sliderTextBoxesGrid=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"];
-        for(var i=0;i<=sliderTextBoxesGrid.length;i++){
-         if(e.target.classList[1]==sliderTextBoxesGrid[i] && letter.test($("."+sliderTextBoxesGrid[i]).val())){
-             return {"iserror":true,"errmsg":"only numbers allowed"};
-         }
-     }   //Code Refactor Done for sliderTextBoxesGrid validation(numbers)
-        
-     // if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
-        //     return {"iserror":true,"errmsg":"only numbers allowed"};
-        // }
-        // else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
-        //     return {"iserror":true,"errmsg":"only numbers allowed"};
-        // }
-        // else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
-        //     return {"iserror":true,"errmsg":"only numbers allowed"};
-        // }
-        // else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
-        //     return {"iserror":true,"errmsg":"only numbers allowed"};
-        // }
-        // else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
-        //     return {"iserror":true,"errmsg":"only numbers allowed"};
-        // }
+        //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
+        if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
 
        }
-       
-       var allTextBoxes=["learningClsInit","alphaCls","momentumCls","beta1","disNum"];
-       for(var i=0;i<=allTextBoxes.length;i++){
-           if(e.target.classList[1]==allTextBoxes[i] && !numbers.test($('.'+allTextBoxes[i]).val())){
-               return {"iserror":true,"errmsg":"only numbers allowed"};
-            }     
+     if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
+          return {"iserror":true,"errmsg":"only numbers allowed"};
+       }
+       else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
+        return {"iserror":true,"errmsg":"only numbers allowed"};
         }
-        if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
+        else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
-        }     //Code Refactor Done for TextBoxes validation(numbers)
-        
-    //  if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
-    //       return {"iserror":true,"errmsg":"only numbers allowed"};
-    //    }
-    //    else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
-    //     return {"iserror":true,"errmsg":"only numbers allowed"};
-    //     }
-    //     else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
-    //         return {"iserror":true,"errmsg":"only numbers allowed"};
-    //     }
-    //     else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
-    //         return {"iserror":true,"errmsg":"only numbers allowed"};
-    //     }
-    //     else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
-    //         return {"iserror":true,"errmsg":"only numbers allowed"};
-    //     }
-       
+        }
+        else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
         
 
         const parts = textboxVal.split(/,|\u3001/);
