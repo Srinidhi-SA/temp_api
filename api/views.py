@@ -6226,11 +6226,12 @@ def request_from_alexa(request):
     if request.method == 'GET':
         print "####  Got GET Request from Alexa ####"
         if request.GET['data'] == 'dataset':
-            user_id = request.user.id
+            #user_id = request.user.id
+            user_id = User.objects.get(username="alexa")
             dataset_obj = Dataset.objects.filter(created_by=user_id)
             for index, obj in enumerate(dataset_obj):
                 response[index] = {"name": obj.name, "slug": obj.slug}
-            return JsonResponse(json.loads(json.dumps(response)))
+            return JsonResponse(response)
 
     if request.method == 'POST':
         print "####  Got POST Request from Alexa ####"
@@ -6242,7 +6243,7 @@ def request_from_alexa(request):
             if meta_info["name"] == "dimensionColumns":
                 dimension_column_list = meta_info["value"]
         response.update(enumerate(dimension_column_list))
-        return JsonResponse(json.loads(json.dumps(response)))
+        return JsonResponse(response)
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):

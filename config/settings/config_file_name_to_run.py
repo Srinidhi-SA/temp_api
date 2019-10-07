@@ -1,3 +1,7 @@
 CONFIG_FILE_NAME = 'leia'
+<<<<<<< HEAD
 UI_VERSION = '9316358'
+=======
+UI_VERSION = '8866360'
+>>>>>>> 911b63c58ba34c8304f8733c93c996780e61508c
     
