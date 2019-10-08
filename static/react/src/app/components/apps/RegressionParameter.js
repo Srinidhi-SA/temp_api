@@ -103,7 +103,7 @@ export class RegressionParameter extends React.Component {
         var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
-            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false]
+            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false] //caution:true/false Order should be same as paramsArray order
             for(var i=0;i<=paramsArray.length;i++){
                 for(var j=0;j<1;j++){
                 $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
@@ -114,7 +114,7 @@ export class RegressionParameter extends React.Component {
                    // code refactored
                 break;
             case "adam":
-           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];
+           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];//caution:true/false Order should be same as paramsArray order
            for(i=0;i<=paramsArray.length;i++){
                for(j=0;j<1;j++){
                 $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
@@ -125,7 +125,7 @@ export class RegressionParameter extends React.Component {
                    // code refactored
                 break;
             case "lbfgs":
-            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];
+            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];//caution:true/false Order should be same as paramsArray order
             for(var i=0;i<=paramsArray.length;i++){
                 for(var j=0;j<1;j++){
                 $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
