@@ -50,17 +50,11 @@ export class RegressionParameter extends React.Component {
     }
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
-        $(".disNum").prop("disabled",false);
-        $(".beta1").prop("disabled",false);
-
-        $(".learningClsInit").prop("disabled",false);
-        $(".earlyStop").prop("disabled",false);
-        $(".multi").prop("disabled",false);
+        $(".multi").prop("disabled",false); // had doubt,y to add this line; 
         $(".powerT").prop("disabled",true);
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
         $(".momentumCls").prop("disabled",true);
-
     }
 
     componentDidUpdate(){
@@ -106,51 +100,40 @@ export class RegressionParameter extends React.Component {
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
     selecthandleChange(e){
+        var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
-                $(".learningCls").prop("disabled",false);
-                $(".disNum").prop("disabled",true);
-                $(".beta1").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",false);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls").prop("disabled",true);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",false);
-                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",false);
-                $(".momentumCls").prop("disabled",false);
+            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false]
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
+                }
+              }
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
             case "adam":
-                $(".disNum").prop("disabled",false);
-                $(".beta1").prop("disabled",false);
-                $(".learningCls").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls").prop("disabled",false);
-                $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",false);
-                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];
+           for(i=0;i<=paramsArray.length;i++){
+               for(j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
+               }
+              }
+            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
             case "lbfgs":
-                $(".learningCls").prop("disabled",true);
-                $(".disNum").prop("disabled",true);
-                $(".beta1").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",true);
-                $(".earlyStop").prop("disabled",true);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",true);
-                $(".epsilonCls").prop("disabled",true);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",true);
-                $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
+                }
+             }
+            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                   // code refactored
                 break;
             default : "";
         }
@@ -654,14 +637,14 @@ export class RegressionParameter extends React.Component {
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
         if(letter.test(textboxVal)){
-            return {"iserror":true,"errmsg":"only numbers allowed"};
+            return {"iserror":true,"errmsg":"only numbers allowed here"};
         }
-        // if(!($('.fractionCls').val()== undefined)){
-        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
-         if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed"};
-         }
-       }
+            if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
+                if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
+                    return {"iserror":true,"errmsg":"only numbers allowed"};
+                }
+            }
+         //(Review it)Changes from here to 
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
         //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
@@ -678,6 +661,7 @@ export class RegressionParameter extends React.Component {
         }
 
        }
+       //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
      if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
           return {"iserror":true,"errmsg":"only numbers allowed"};
        }
