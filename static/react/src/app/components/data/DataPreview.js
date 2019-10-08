@@ -588,7 +588,7 @@ export class DataPreview extends React.Component {
               <div className="row">
                 <div className="col-md-8">
                   <span><h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview</h3>
-                 <h4 >{this.props.dataPreview.name}</h4></span>
+                 <h4 style={{"marginTop":"-20px","paddingLeft":"133px"}}>{"("+this.props.dataPreview.name.replace(".csv","")+")"}</h4></span>
                  {/* style={{"color":"#5bc0de"}}/margin-top: -20px; padding-left: 133px; to allign next to data preview*/}
                 </div>
               </div>
