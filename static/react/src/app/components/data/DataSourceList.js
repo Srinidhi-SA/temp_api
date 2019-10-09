@@ -15,9 +15,10 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize} from "../../helpers/helper";
+import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize,statusMessages} from "../../helpers/helper";
 
 import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetails} from "../../actions/dataSourceListActions";
+import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
   return {
@@ -29,7 +30,8 @@ import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetai
     db_username: store.dataSource.db_host,
     db_port: store.dataSource.db_port,
     db_password: store.dataSource.db_host,
-    selectedDataset: store.datasets.selectedDataSet
+    selectedDataset: store.datasets.selectedDataSet,
+    allDataList:store.datasets.allDataSets  ,
   };
 })
 
@@ -42,22 +44,45 @@ export class DataSourceList extends React.Component {
   }
   componentWillMount() {
     this.props.dispatch(getDataSourceList());
+    this.props.dispatch(getAllDataList());
   }
   onDrop(files) {
+    $("#showList").removeClass("visibilityHidden");
+    
+    
     if (files.length > 0) {
       if (files[0].size == 0) {
         $("#fileErrorMsg").removeClass("visibilityHidden");
         $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
       } else {
-        $("#fileErrorMsg").addClass("visibilityHidden");
-        this.props.dispatch(saveFileToStore(files))
+        for(var i=0;i<this.props.allDataList.data.length;i++){
+          if( this.props.allDataList.data[i].name==files[0].name)
+          var duplicateName=true
+        }
+        if(duplicateName){
+          console.log("error repetedname");
+          // $("#fileErrorMsg").removeClass("visibilityHidden");
+          // $("#fileErrorMsg").html("File name must be unique");
+          //  bootbox.alert("File name must be unique.")
+          bootbox.alert(statusMessages("warning","File name must be unique ."));
+          $("#showList").addClass("visibilityHidden");
+          
+          
+        }
+        else { 
+          $("#fileErrorMsg").addClass("visibilityHidden");
+          this.props.dispatch(saveFileToStore(files))
+          
+        }
       }
     } else {
+      // $("#showList").addClass("visibilityHidden");
       files[0] = {
         "name": "",
         "size": ""
       };
       this.props.dispatch(saveFileToStore(files))
+      console.log(this.props.dataSourceList.getAllDataList,"all data list fetch")
     }
 
   }
@@ -125,7 +150,7 @@ export class DataSourceList extends React.Component {
                       <p>Please drag and drop your file here or browse.</p>
                     </Dropzone>
                     <aside>
-                      <ul className={fileName != ""
+                      <ul id="showList" className={fileName != ""
                         ? "list-unstyled bullets_primary"
                         : "list-unstyled"}>
                         <li>{fileName}{fileName != ""
