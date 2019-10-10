@@ -9,14 +9,15 @@ import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstra
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
     updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
-    import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
-    import {STATIC_URL} from "../../helpers/env.js";
-    import Dialog from 'react-bootstrap-dialog'
-    import {DataUploadLoader} from "../common/DataUploadLoader";
-    import {ModelsCard} from "./ModelsCard";
-    import {LatestModels} from "./LatestModels";
-    var dateFormat = require('dateformat');
+import {updateSelectedVariablesAction} from "../../actions/dataActions";
+import {DetailOverlay} from "../common/DetailOverlay";
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {STATIC_URL} from "../../helpers/env.js";
+import Dialog from 'react-bootstrap-dialog'
+import {DataUploadLoader} from "../common/DataUploadLoader";
+import {ModelsCard} from "./ModelsCard";
+import {LatestModels} from "./LatestModels";
+var dateFormat = require('dateformat');
     
     
     @connect((store) => {
@@ -57,6 +58,7 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
                 this.props.dispatch(getAppsAlgoList(pageNo));
             }
            this.props.dispatch(updateModelSummaryFlag(false));
+           this.props.dispatch(updateSelectedVariablesAction(false));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));

@@ -677,6 +677,14 @@ export default function reducer(state = {
 
     }
     break;
+    case "CLEAR_SELECTED_VARIABLES":
+      {
+        return{
+          ...state,
+          selectedVariables : {}
+        }
+      }
+      break;
 
     case "CHECKED_ALL_SELECTED":
     {

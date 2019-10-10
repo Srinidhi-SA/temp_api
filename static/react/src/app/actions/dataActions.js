@@ -725,7 +725,12 @@ export function updateSelectedVariables(evt){
 
 }
 
-
+export function updateSelectedVariablesAction(value, dispatch){
+    return {
+        type: "CLEAR_SELECTED_VARIABLES",
+        value
+      }
+  }
 
 export function showDataPreview() {
     return {
