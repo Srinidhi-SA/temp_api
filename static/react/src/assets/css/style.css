@@ -14750,7 +14750,7 @@ table.apps_table_style thead th { font-weight:bold }
 .for-docs {}
 .for-docs h2.text-center { width:50%; float: left; margin-top: 40px; margin-bottom: 20px; }
 
-.dropzone div { width: inherit !important; text-align: center; height: 130px !important; display: table-cell; vertical-align: middle; padding: 30px; font-size: 16px; color: #c1c1c1; }
+.dropzone div { width: inherit !important; cursor: pointer; text-align: center; height: 130px !important; display: table-cell; vertical-align: middle; padding: 30px; font-size: 16px; color: #c1c1c1; }
 .dropzone div:hover{ border-color: rgb(0, 153, 140) !important;}
 
 .data-info h3 img { display: inline-block; vertical-align: bottom; }
@@ -15454,7 +15454,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
     top: 3px;
     color: #dcdcdc;
 }
- 
+
+img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
+    width: 45px;
+}
+
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{

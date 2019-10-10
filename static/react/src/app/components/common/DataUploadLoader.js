@@ -226,13 +226,13 @@ export class DataUploadLoader extends React.Component {
 							
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white">{store.getState().datasets.dULoaderValue}%</h2>:<h2 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h2>}
+							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white">{store.getState().datasets.dULoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h5>}
 						</div>
 					</div>
 					</div>
 					  
 			
-				{store.getState().datasets.dULoaderValue >= 0?<div className="p_bar_body">
+				{store.getState().datasets.dULoaderValue >= 0?<div className="p_bar_body hidden">
                       <progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max={95}></progress>
 					  
                       {/*<div className="progress-value">
