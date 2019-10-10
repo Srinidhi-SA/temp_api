@@ -6226,7 +6226,7 @@ def request_from_alexa(request):
     if request.method == 'GET':
         print "####  Got GET Request from Alexa ####"
         if request.GET['data'] == 'dataset':
-            #user_id = request.user.id
+            # user_id = request.user.id
             user_id = User.objects.get(username="alexa")
             dataset_obj = Dataset.objects.filter(created_by=user_id)
             for index, obj in enumerate(dataset_obj):
@@ -6235,15 +6235,23 @@ def request_from_alexa(request):
 
     if request.method == 'POST':
         print "####  Got POST Request from Alexa ####"
-        dimension_column_list = []
         request.data = json.loads(request.body)
         dataset_obj = Dataset.objects.filter(slug=request.data['slug'])
         meta_data = json.loads(dataset_obj[0].meta_data)
-        for meta_info in meta_data['metaData']:
-            if meta_info["name"] == "dimensionColumns":
-                dimension_column_list = meta_info["value"]
-        response.update(enumerate(dimension_column_list))
-        return JsonResponse(response)
+        if request.data['attribute'] == 'target':
+            dimension_column_list = []
+            for meta_info in meta_data['metaData']:
+                if meta_info["name"] == "dimensionColumns":
+                    dimension_column_list = meta_info["value"]
+            response.update(enumerate(dimension_column_list))
+            return JsonResponse(response)
+        if request.data['attribute'] == 'subtarget':
+            subtarget_column_list = []
+            for meta_info in meta_data['columnData']:
+                if meta_info['name'] == request.data['target']:
+                    subtarget_column_list = meta_info['chartData']['chart_c3']['data']['columns'][0][1:]
+            response.update(enumerate(subtarget_column_list))
+            return JsonResponse(response)
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
@@ -6256,7 +6264,7 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 for data in obj['chartData']['chart_c3']['data']['columns'][0]:
                     if data == Subtarget:
                         return True
-                        break
+                    break
             else:
                 pass
     else:
