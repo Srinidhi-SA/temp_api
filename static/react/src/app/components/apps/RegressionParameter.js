@@ -50,17 +50,11 @@ export class RegressionParameter extends React.Component {
     }
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
-        $(".disNum").prop("disabled",false);
-        $(".beta1").prop("disabled",false);
-
-        $(".learningClsInit").prop("disabled",false);
-        $(".earlyStop").prop("disabled",false);
-        $(".multi").prop("disabled",false);
+        $(".multi").prop("disabled",false); // had doubt,y to add this line; 
         $(".powerT").prop("disabled",true);
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
         $(".momentumCls").prop("disabled",true);
-
     }
 
     componentDidUpdate(){
@@ -106,51 +100,40 @@ export class RegressionParameter extends React.Component {
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
     selecthandleChange(e){
+        var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
-                $(".learningCls").prop("disabled",false);
-                $(".disNum").prop("disabled",true);
-                $(".beta1").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",false);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls").prop("disabled",true);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",false);
-                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",false);
-                $(".momentumCls").prop("disabled",false);
+            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false] //caution:true/false Order should be same as paramsArray order
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
+                }
+              }
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
             case "adam":
-                $(".disNum").prop("disabled",false);
-                $(".beta1").prop("disabled",false);
-                $(".learningCls").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls").prop("disabled",false);
-                $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",false);
-                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];//caution:true/false Order should be same as paramsArray order
+           for(i=0;i<=paramsArray.length;i++){
+               for(j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
+               }
+              }
+            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
             case "lbfgs":
-                $(".learningCls").prop("disabled",true);
-                $(".disNum").prop("disabled",true);
-                $(".beta1").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",true);
-                $(".earlyStop").prop("disabled",true);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",true);
-                $(".epsilonCls").prop("disabled",true);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                $(".iterationCls").prop("disabled",true);
-                $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];//caution:true/false Order should be same as paramsArray order
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
+                }
+             }
+            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                   // code refactored
                 break;
             default : "";
         }
@@ -266,163 +249,144 @@ export class RegressionParameter extends React.Component {
                     for (var prop in options) {
                         if(options[prop].selected)
                             selectedValue.push(options[prop].name)
-
                             if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){//to run below switch conditon  only for ANN, #1363      
+                            var paramsArrayGrid=[".disNum",".beta1",".learningClsInit",".powerT",".iterationGrid",".epsilonGrid",".momentumCls",
+                            ".learningGrid .multiselect",".shuffleGrid .multiselect"];
+
                         switch(parameterData.name){
                             case"solver":
-                    if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
-                           (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
-                           (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd
-                        $(".disNum").prop("disabled",false);
-                        $(".beta1").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",false);
-                        
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                     if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                              (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                              (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd                       
+                            var flagsToSolverAll=[false,false,false,false,false,false,false,false,false,]
+                            
+                            for(var i=0;i<=paramsArrayGrid.length;i++){
+                              for(var j=0;j<1;j++){
+                                 $(paramsArrayGrid[i]).prop("disabled",flagsToSolverAll[i]);
+                                }
+                           } 
+
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
                     
                     }
                     else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
-                        $(".disNum").prop("disabled",true);
-                        $(".beta1").prop("disabled",true);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",true);
-                        $(".momentumCls").prop("disabled",false);
+                               
+                                var solverSgdLbfgs=[true,true,false,false,false,true,false,false,false,]
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverSgdLbfgs[i]);
+                                      }
+                                 }
+
+                             if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                             document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                              }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
                         
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
                             document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                             }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
                             (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
-                        $(".disNum").prop("disabled",false);
-                        $(".beta1").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",true);
-                        $(".learningGrid .multiselect").prop("disabled",true);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
-
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                                
+                                var solverAdamLbfgs=[false,false,false,true,false,false,true,true,false,];
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamLbfgs[i]);
+                                      }
+                                 }
+                                 
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
 
                     }
                     else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
                             (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
-                        $(".disNum").prop("disabled",false);
-                        $(".beta1").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",false);
-                        
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-                        
+                               
+                                var solverAdamSgd=[false,false,false,false,false,false,false,false,false,];
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamSgd[i]);
+                                      }
+                                 }
+
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                            
                     }
-                        else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
-                        $(".learningGrid .multiselect").prop("disabled",true); 
-                        $(".disNum").prop("disabled",true);
-                        $(".beta1").prop("disabled",true);
-                        $(".learningClsInit").prop("disabled",true);
-                        $(".powerT").prop("disabled",true);
-                        $(".shuffleGrid .multiselect").prop("disabled",true);
-                        $(".iterationGrid").prop("disabled",true);
-                        $(".epsilonGrid").prop("disabled",true);
-                        $(".momentumCls").prop("disabled",true);
-                        
+                    else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                            
+                        var solverLbfgs=[true,true,true,true,true,true,true,true,true,];
+                            for(var i=0;i<=paramsArrayGrid.length;i++){
+                                for(var j=0;j<1;j++){
+                                   $(paramsArrayGrid[i]).prop("disabled",solverLbfgs[i]);
+                                  }
+                             }
+
                         document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
                         document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
                   }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
-                        $(".disNum").prop("disabled",false);
-                        $(".beta1").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",true);
-                        $(".learningGrid .multiselect").prop("disabled",true);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
                         
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                        var solverAdam=[false,false,false,true,false,false,true,true,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverAdam[i]);
+                              }
+                         }
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
                     }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
-                        $(".disNum").prop("disabled",true);
-                        $(".beta1").prop("disabled",true);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",true);
-                        $(".momentumCls").prop("disabled",false);
-
-                        if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                        }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
                         
-                        if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                        }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-                        
+                        var solverSgd=[true,true,false,false,false,true,false,false,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverSgd[i]);
+                              }
+                         }
+                       
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                                                   
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";                          
                     }              
                     else{
-                        $(".disNum").prop("disabled",false);
-                        $(".beta1").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
+                        
+                        var solverdefault=[false,false,false,false,false,false,false,false,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverdefault[i]);
+                              }
+                         }
                         $(".earlyStop").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",false);
                     }
                     break;
                     default:
                        "";
              }
             }
-
        optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
             }
@@ -490,7 +454,7 @@ export class RegressionParameter extends React.Component {
                     return (
                          <div className="row">
                         <div className="col-md-2">
-                            <input type={type} className={classN} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                         </div>
@@ -653,13 +617,17 @@ export class RegressionParameter extends React.Component {
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
-        // if(!($('.fractionCls').val()== undefined)){
-        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
-         if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
-            return {"iserror":true,"errmsg":"only numbers allowed"};
-         }
-       }
+        if(letter.test(textboxVal)){
+            return {"iserror":true,"errmsg":"only numbers allowed here"};
+        }
+            if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
+                if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
+                    return {"iserror":true,"errmsg":"only numbers allowed"};
+                }
+            }
+         //(Review it)Changes from here to 
        if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
+        //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
@@ -674,6 +642,7 @@ export class RegressionParameter extends React.Component {
         }
 
        }
+       //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
      if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
           return {"iserror":true,"errmsg":"only numbers allowed"};
        }
@@ -690,6 +659,9 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="hiddenCls" && ($('.hiddenCls').val()=="")){
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         
@@ -717,21 +689,29 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
             }
             else{
-                var isSingleNumber = parts[i].split(/-|\u3001/);
-                if(isSingleNumber.length > 1)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
-                return {"iserror":true,"errmsg":"Decimals are not allowed"};
-                if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                const singleNumber = parseFloat(parts[i], 10);
-                // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
-                if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                //1310
-                var checkType = this.checkType(parts[i],type,min,max);
-                if(checkType.iserror == true)
-                return {"iserror":true,"errmsg":checkType.errmsg};
+                if(this.props.parameterData.name != "max_leaf_nodes"){
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if(isSingleNumber.length > 1)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
+                    return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    const singleNumber = parseFloat(parts[i], 10);
+                    // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
+                    if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    //1310
+                    var checkType = this.checkType(parts[i],type,min,max);
+                    if(checkType.iserror == true)
+                    return {"iserror":true,"errmsg":checkType.errmsg};
+                }else{
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if((parts[i]^0) != parts[i])
+                        return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if(parts[i] <= 0)
+                        return {"iserror":true,"errmsg":"Value should be greater than zero"};
+                }
             }
         }
     }

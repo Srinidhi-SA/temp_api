@@ -25,6 +25,7 @@ import { options } from "react-bootstrap-dialog";
         regression_selectedTechnique: store.apps.regression_selectedTechnique,
         regression_crossvalidationvalue: store.apps.regression_crossvalidationvalue,
         metricSelected: store.apps.metricSelected,
+        modelList: store.apps.modelList,
     };
 })
 
@@ -51,7 +52,7 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-
+        let modelLst = this.props.modelList.data.map(j=>(j.name).toLowerCase());
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
@@ -67,11 +68,17 @@ export class ModelVariableSelection extends React.Component {
             $('#createModelName').val("").focus();
             return false;
         } else if (letters.test(document.getElementById("createModelName").value) == false){
-
             bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
-
+        } else if(modelLst){
+            for (var i=0;i<modelLst.length;i++){
+                if($('#createModelName').val().toLowerCase() == (modelLst[i])){
+                    bootbox.alert(statusMessages("warning", "A model with the same name exists.Please enter a different model name"));
+                    $('#createModelName').val("").focus();
+                    return false;
+                }
+            }
         }
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {
