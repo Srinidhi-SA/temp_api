@@ -132,7 +132,7 @@ urlpatterns = [
     url(r'^all_apps_for_users', views.all_apps_for_users, name="all_apps_for_users"),
     url(r'^disable_all_periodic_tasks', views.disable_all_periodic_tasks, name="disable_all_periodic_tasks"),
     url(r'^request_from_alexa', views.request_from_alexa, name="request_from_alexa"),
-
+    url(r'^get_all_models', views.get_all_models, name="get_all_models"),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
 
