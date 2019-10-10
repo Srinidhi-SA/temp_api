@@ -6254,6 +6254,17 @@ def request_from_alexa(request):
             return JsonResponse(response)
 
 
+def get_all_models(request):
+    if request.method == 'GET':
+        user_id = request.user.id
+        print user_id
+        modelList = list()
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
+        for i in job_obj:
+            modelList.append(i.name)
+        return JsonResponse({'models': modelList})
+
+
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
     meta_data = json.loads(dataset_object.meta_data)
     if 'columnData' in meta_data:
