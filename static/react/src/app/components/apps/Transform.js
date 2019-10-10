@@ -80,15 +80,20 @@ console.log(rowCount,"count=======::::::::::::::::::::");
   onchangeInput(event){
 document.getElementsByName("encoding_type").value = "";
 if(document.getElementById('encoding_dimensions').checked){
-  document.getElementById("one_hot_encoding").removeAttribute('disabled');
-  document.getElementById("label_encoding").removeAttribute('disabled');
+	$("#one_hot_encoding").parent().removeClass("disabled");
+	$("#label_encoding").parent().removeClass("disabled");
+ // document.getElementById("one_hot_encoding").removeAttribute('disabled');
+ // document.getElementById("label_encoding").removeAttribute('disabled');
 }
 else{
   
   document.getElementById('one_hot_encoding').checked = false;
   document.getElementById('label_encoding').checked = false ;
-  document.getElementById("one_hot_encoding").disabled = true;
-  document.getElementById("label_encoding").disabled = true;
+  //document.getElementById("one_hot_encoding").disabled = true;
+  //document.getElementById("label_encoding").disabled = true;
+  $("#one_hot_encoding").parent().addClass("disabled");
+	$("#label_encoding").parent().addClass("disabled");
+	
   // this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
   //   this.setState({ state: this.state });
   this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
@@ -201,12 +206,12 @@ else{
                   </div>
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
-                  <div class="ma-checkbox inline oneHot" id="oneHot">
-                      <input type="radio" id="one_hot_encoding" name="encoding_type" disabled={!this.getTranformDataValue("encoding_dimensions")}  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
+                  <div class="ma-checkbox inline oneHot disabled" id="oneHot">
+                      <input type="radio" id="one_hot_encoding" name="encoding_type"  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
-                    <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding_type"  disabled={!this.getTranformDataValue("encoding_dimensions")}  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
+                    <div class="ma-checkbox inline disabled">
+                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
@@ -229,7 +234,7 @@ else{
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" id="is_custom_string_in_input" name="is_custom_string_in_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("is_custom_string_in_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                    <input type="text" id="is_custom_string_in_input" name="is_custom_string_in_input" class="form-control" placeholder="Please Type" defaultValue={this.getTranformDataValue("is_custom_string_in_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue} />
                   </div>
                 </div>
                 <div className="row form-group">
