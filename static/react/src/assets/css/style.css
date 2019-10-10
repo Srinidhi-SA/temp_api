@@ -15453,7 +15453,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
     top: 3px;
     color: #dcdcdc;
 }
- 
+
+img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
+    width: 45px;
+}
+
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
