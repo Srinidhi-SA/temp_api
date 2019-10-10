@@ -52,11 +52,7 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-<<<<<<< HEAD
         var modelLst = this.props.modelList.data.map(j=>(j.name).toLowerCase());
-=======
-        let modelLst = this.props.modelList.data.map(j=>(j.name).toLowerCase());
->>>>>>> a759a1f929c1d34a22bfac793ec3bbf7d740c357
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
@@ -72,7 +68,7 @@ export class ModelVariableSelection extends React.Component {
             $('#createModelName').val("").focus();
             return false;
         } else if (letters.test(document.getElementById("createModelName").value) == false){
-            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
         } else if(modelLst){
