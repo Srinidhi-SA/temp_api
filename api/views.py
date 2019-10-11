@@ -6261,7 +6261,7 @@ def get_all_models(request):
         modelList = dict()
         job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
         for index, i in enumerate(job_obj):
-            modelList.update({index: [i.name, i.slug, i.status]})
+            modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse(modelList)
 
 
