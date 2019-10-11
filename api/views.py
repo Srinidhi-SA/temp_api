@@ -6262,7 +6262,7 @@ def get_all_models(request):
         job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
         for index, i in enumerate(job_obj):
             modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
-        return JsonResponse(modelList)
+        return JsonResponse({'allModelList': modelList})
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
