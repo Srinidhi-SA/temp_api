@@ -98,8 +98,8 @@ function fetchAllModelError(json) {
 }
 export function fetchAllModelSuccess(doc){
   var data = ""
-  if(doc.data[0] != undefined){
-      data = doc;
+  if(doc.allModelList[0]!= undefined){
+      data = allModelList;
   }
   return {
       type: "MODEL_ALL_LIST",
