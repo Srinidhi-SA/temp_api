@@ -71,6 +71,46 @@ export function refreshAppsModelList(props) {
 }
 
 
+export function getAllModelList() {
+  return (dispatch) => {
+    return fetchAllModelList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            console.log(json)
+            dispatch(fetchAllModelSuccess(json))
+        }else{
+          dispatch(fetchAllModelError(json))
+        }
+    })
+  }
+}
+function fetchAllModelList(token) {
+  return fetch(API + '/api/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchAllModelError(json) {
+  return {
+      type: "MODEL_ALL_LIST_ERROR",
+      json
+  }
+}
+export function fetchAllModelSuccess(doc){
+  var data = ""
+  if(doc.data[0] != undefined){
+      data = doc;
+  }
+  return {
+      type: "MODEL_ALL_LIST",
+      data,
+  }
+}
+
+
+
+
+
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {

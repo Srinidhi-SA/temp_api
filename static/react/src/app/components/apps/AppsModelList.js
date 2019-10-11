@@ -8,15 +8,16 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList} from "../../actions/appActions";
-    import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
-    import {STATIC_URL} from "../../helpers/env.js";
-    import Dialog from 'react-bootstrap-dialog'
-    import {DataUploadLoader} from "../common/DataUploadLoader";
-    import {ModelsCard} from "./ModelsCard";
-    import {LatestModels} from "./LatestModels";
-    var dateFormat = require('dateformat');
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList} from "../../actions/appActions";
+import {updateSelectedVariablesAction} from "../../actions/dataActions";
+import {DetailOverlay} from "../common/DetailOverlay";
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {STATIC_URL} from "../../helpers/env.js";
+import Dialog from 'react-bootstrap-dialog'
+import {DataUploadLoader} from "../common/DataUploadLoader";
+import {ModelsCard} from "./ModelsCard";
+import {LatestModels} from "./LatestModels";
+var dateFormat = require('dateformat');
     
     
     @connect((store) => {
@@ -57,6 +58,8 @@ import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,upd
                 this.props.dispatch(getAppsAlgoList(pageNo));
             }
            this.props.dispatch(updateModelSummaryFlag(false));
+           this.props.dispatch(updateSelectedVariablesAction(false));
+           this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
