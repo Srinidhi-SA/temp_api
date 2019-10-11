@@ -31,7 +31,7 @@ import {getAllDataList} from "../../actions/dataActions";
     db_port: store.dataSource.db_port,
     db_password: store.dataSource.db_host,
     selectedDataset: store.datasets.selectedDataSet,
-    allDataList:store.datasets.allDataSets  ,
+    allDataList:store.datasets.allDataSets,
   };
 })
 
@@ -46,10 +46,15 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(getDataSourceList());
     this.props.dispatch(getAllDataList());
   }
+  // componentDidUpdate(){
+  //   this.props.dispatch(getAllDataList());  
+  // }
   onDrop(files) {
     if (files.length > 0) {
       for(var i=0;i<this.props.allDataList.data.length;i++){
-                if( this.props.allDataList.data[i].name==files[0].name)
+                if( this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase())
+                // if( this.props.allDataList.data[i]==files[0].name)
+                
                 var duplicateName=true
               }
 
@@ -65,7 +70,7 @@ export class DataSourceList extends React.Component {
         this.props.dispatch(saveFileToStore(files))
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("File name must be unique");
+        $("#fileErrorMsg").html("Dataset with this name already exists");
       }
        else {
         $("#fileErrorMsg").addClass("visibilityHidden");

@@ -14,7 +14,8 @@ import {
   renameMetaDataColumn,
   updateTranformColumns,
   hideDataPreviewDropDown,
-  popupAlertBox
+  popupAlertBox,
+  getAllDataList
 } from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
@@ -27,6 +28,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+
 
 @connect((store) => {
   return {
@@ -43,7 +45,9 @@ import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed: store.apps.scoreToProceed,
-    currentAppDetails: store.apps.currentAppDetails
+    currentAppDetails: store.apps.currentAppDetails,
+    allDataList:store.datasets.allDataSets,
+
   };
 })
 
@@ -73,6 +77,7 @@ export class DataPreview extends React.Component {
   // }
 
   componentWillMount() {
+    this.props.dispatch(getAllDataList());
     console.log("------------------");
     console.log(this.props);
     console.log("data prevvvvvvvvvvvvvvvvvvvv$$$$$$$$$$$5555555555555555555555555555555555555555555555$$$$$");
@@ -333,7 +338,18 @@ export class DataPreview extends React.Component {
     }
 
   applyDataSubset() {
-    //alert("working");
+    // alert("working");
+    debugger;
+    for(var i=0;i<this.props.allDataList.data.length;i++){
+      if( this.props.allDataList.data[i].name.toLowerCase()==$("#newSubsetName").val().toLowerCase())
+      var duplicateName=true
+    }
+if(duplicateName){
+        // bootbox.alert(statusMessages("warning","File name must be unique ."));
+      bootbox.alert("Config name should be unique, Please try changing name!")
+    
+}
+else{
     this.new_subset = $("#newSubsetName").val()
     if (this.new_subset == "" || this.new_subset == null) {
       bootbox.alert("Please enter new config name!")
@@ -364,6 +380,7 @@ export class DataPreview extends React.Component {
       this.props.dispatch(dataSubsetting(subSettingRq, this.props.dataPreview.slug))
     }
   }
+};
   shouldComponentUpdate(nextProps) {
     toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
     return true;
@@ -700,7 +717,7 @@ export class DataPreview extends React.Component {
                             {(this.isSubsetted)
                               ? (
                                 <div className="form-group">
-                                  <input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm col-sm-12" placeholder="New Datset Name"/>
+                                  <input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm col-sm-12" placeholder="New Dataset Name"/>
                                 </div>
                               )
                               : (<div/>)
