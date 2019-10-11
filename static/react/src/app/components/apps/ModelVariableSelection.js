@@ -52,7 +52,9 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-        var modelLst = this.props.allModelList.map(j=>(j.name).toLowerCase());
+        let allModlLst = []
+        Object.entries(this.props.allModelList).forEach(([key,value])=> allModlLst.push(value))
+        var modelLst = allModlLst.map(j=>(j.name).toLowerCase());
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
