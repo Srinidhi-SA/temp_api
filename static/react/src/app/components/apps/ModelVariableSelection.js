@@ -25,7 +25,7 @@ import { options } from "react-bootstrap-dialog";
         regression_selectedTechnique: store.apps.regression_selectedTechnique,
         regression_crossvalidationvalue: store.apps.regression_crossvalidationvalue,
         metricSelected: store.apps.metricSelected,
-        modelList: store.apps.modelList,
+        allModelList: store.apps.allModelList,
     };
 })
 
@@ -52,7 +52,7 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-        var modelLst = this.props.modelList.data.map(j=>(j.name).toLowerCase());
+        var modelLst = this.props.allModelList.map(j=>(j.name).toLowerCase());
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
