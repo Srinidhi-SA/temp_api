@@ -74,14 +74,16 @@ export class MasterSummary extends React.Component {
                 }
               ]}/>
             </div>
-            <div class="col-md-8">
-              <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> {heading}</h3>
-            </div>
+            
           </div>
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-		
+		<div class="row">
+			<div class="col-md-12">
+              <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> {heading}</h3>
+            </div>
+		</div>
 		<div class="row xs-pt-50" >
 		<div class="col-md-3 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
 			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
