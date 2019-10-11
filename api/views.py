@@ -6259,10 +6259,10 @@ def get_all_models(request):
         user_id = request.user.id
         print user_id
         modelList = dict()
-        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'], status='SUCCESS')
-        for i in job_obj:
-            modelList.update({i.name: [i.slug, i.config]})
-        return JsonResponse({'models': modelList})
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
+        for index, i in enumerate(job_obj):
+            modelList.update({index: [i.name, i.slug, i.status]})
+        return JsonResponse(modelList)
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
