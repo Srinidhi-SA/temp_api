@@ -6258,10 +6258,10 @@ def get_all_models(request):
     if request.method == 'GET':
         user_id = request.user.id
         print user_id
-        modelList = list()
+        modelList = dict()
         job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'], status='SUCCESS')
         for i in job_obj:
-            modelList.append(i)
+            modelList.update({i.name: [i.slug, i.config]})
         return JsonResponse({'models': modelList})
 
 
