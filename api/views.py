@@ -6259,9 +6259,9 @@ def get_all_models(request):
         user_id = request.user.id
         print user_id
         modelList = list()
-        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'], status='SUCCESS')
         for i in job_obj:
-            modelList.append(i.name)
+            modelList.append(i)
         return JsonResponse({'models': modelList})
 
 
