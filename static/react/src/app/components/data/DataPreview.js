@@ -47,6 +47,8 @@ import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions
     scoreToProceed: store.apps.scoreToProceed,
     currentAppDetails: store.apps.currentAppDetails,
     allDataList:store.datasets.allDataSets,
+    datasets:store.datasets.dataList.data,
+
 
   };
 })
@@ -339,8 +341,11 @@ export class DataPreview extends React.Component {
 
   applyDataSubset() {
     // alert("working");
-    debugger;
-    if(this.props.allDataList.data){
+    if(this.props.datasets.length>0){
+      this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes($("#newSubsetName").val().toLowerCase())?
+     duplicateName=true:"";     
+    }
+    if(this.props.allDataList.data!=""){
     for(var i=0;i<this.props.allDataList.data.length;i++){
       if( this.props.allDataList.data[i].name.toLowerCase()==$("#newSubsetName").val().toLowerCase())
       var duplicateName=true

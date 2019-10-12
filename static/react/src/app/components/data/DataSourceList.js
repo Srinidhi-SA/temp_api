@@ -54,7 +54,8 @@ export class DataSourceList extends React.Component {
     console.log(this.props.datasets)
     if (files.length > 0) {
       if(this.props.datasets.length>0){
-        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())
+        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+       duplicateName=true:"";     
       }
     if(this.props.allDataList!=""){
 
