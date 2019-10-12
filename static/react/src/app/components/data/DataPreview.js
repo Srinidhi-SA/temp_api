@@ -340,13 +340,15 @@ export class DataPreview extends React.Component {
   applyDataSubset() {
     // alert("working");
     debugger;
+    if(this.props.allDataList.data){
     for(var i=0;i<this.props.allDataList.data.length;i++){
       if( this.props.allDataList.data[i].name.toLowerCase()==$("#newSubsetName").val().toLowerCase())
       var duplicateName=true
     }
+  }
 if(duplicateName){
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
-      bootbox.alert("Config name should be unique, Please try changing name!")
+      bootbox.alert("Same config name exists, Please try changing name!")
     
 }
 else{
