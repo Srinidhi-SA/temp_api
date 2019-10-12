@@ -59,12 +59,11 @@ var dateFormat = require('dateformat');
             }
            this.props.dispatch(updateModelSummaryFlag(false));
            this.props.dispatch(updateSelectedVariablesAction(false));
-           this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
             // this.props.dispatch(refreshAppsAlgoList(this.props));
-
+           this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
