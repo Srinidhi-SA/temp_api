@@ -15,7 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting,getAllDataList} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -39,6 +39,8 @@ var dateFormat = require('dateformat');
         data_sorton:store.datasets.data_sorton,
         data_sorttype:store.datasets.data_sorttype,
         dialogBox:store.datasets.dataDialogBox,
+        allDataList:store.datasets.allDataSets,
+
     };
 })
 
@@ -46,6 +48,9 @@ export class DataCard extends React.Component {
     constructor(props) {
         super(props);
     }
+    componentWillMount() {
+        this.props.dispatch(getAllDataList());
+      }
     
     getPreviewData(status,e) {
         if(status==FAILED){
@@ -64,8 +69,10 @@ export class DataCard extends React.Component {
     handleDelete(slug,evt) {
         this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
-    handleRename(slug, name) {
-        this.props.dispatch(handleRename(slug, this.dialog, name));
+    handleRename(slug, name,dataList) {
+        // console.log(this.props.allDataList)
+        var allDataList=this.props.allDataList
+        this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
     openDataLoaderScreen(slug, percentage, message, e){
         var dataUpload = {};
@@ -80,6 +87,7 @@ export class DataCard extends React.Component {
         
         
         const dataSets = this.props.data;
+        const dataList=this.props.dataList;
 
         const dataSetList = dataSets.map((data, i) => { 
             var iconDetails = "";
@@ -163,7 +171,7 @@ export class DataCard extends React.Component {
                             <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
 							<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
 							<li className="xs-pl-20 xs-pr-20 xs-pb-10">
-								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name)}>
+								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name,dataList.data)}>
 								<a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
 								<i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
 								</span>:""}

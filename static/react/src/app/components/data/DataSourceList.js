@@ -51,19 +51,21 @@ export class DataSourceList extends React.Component {
   //   this.props.dispatch(getAllDataList());  
   // }
   onDrop(files) {
+    var duplicateName="";
     console.log(this.props.datasets)
     if (files.length > 0) {
       if(this.props.datasets.length>0){
         this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
-       duplicateName=true:"";     
+      duplicateName=true:"";     
       }
     if(this.props.allDataList!=""){
-
-      for(var i=0;i<this.props.allDataList.data.length;i++){//datasets.dataList.data[""0""].name
-                if(this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase()||
-                this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase()))
-                var duplicateName=true
-              }
+      // for(var i=0;i<this.props.allDataList.data.length;i++){//datasets.dataList.data[""0""].name
+      //           if(this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase())
+      //           var duplicateName=true
+      //         } 
+      // refactored
+      this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+      duplicateName=true:"";  
 
             }
 
