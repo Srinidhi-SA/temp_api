@@ -852,7 +852,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
-            <div className="ErrorMsg" id="ErrorMsg"></div>
+            <div className="text-danger" id="ErrorMsg"></div>
             </div>
 			</div>
 		</div>
@@ -864,10 +864,13 @@ function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      if(allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())  ||
-                      dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())                       ){
-                        dialog.showAlert("Dataset with same name already exists.");
-                        // document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                     if(dataList!="" && dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
+                      }
+                      else if(allDataList!="" && allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)  
                       }
                       else{
                       renameDataset(slug,dialog,$("#idRenameDataset").val(),allDataList,dataList,dispatch)
