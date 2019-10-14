@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel,onModeSelection} from "../../actions/appActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel,onModeSelection,getAllModelList} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering,dispatchDataPreviewAutoML,resetSelectedVariables} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
@@ -28,6 +28,7 @@ import { hideTargetVariable } from "../../actions/signalActions";
 		currentAppId:store.apps.currentAppId,
 		selectedDataSrcType:store.dataSource.selectedDataSrcType,
 		currentAppDetails:store.apps.currentAppDetails,
+		allModelList: store.apps.allModelList,
 		};
 })
 
@@ -57,8 +58,9 @@ export class AppsCreateModel extends React.Component {
 		if(window.location.href.includes("autoML")){
 			this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type,'autoML'));
 		}
-
-
+	}
+	componentDidMount(){
+		this.props.dispatch(getAllModelList(this.props.currentAppId));
 	}
 	openModelPopup(){
 		// if(store.getState().datasets.allDataSets.data)
@@ -84,6 +86,10 @@ export class AppsCreateModel extends React.Component {
 // function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
 
 	submitAutoMlVal(mode){
+		let letters = /^[0-9a-zA-Z\-_\s]+$/;
+        
+        let allModlLst = Object.values(this.props.allModelList)
+		
 		var target=$("#createModelTarget option:selected").text();
 		var datasetSlug=model_Dataset.value;
 		var app_id = store.getState().apps.currentAppId;
@@ -91,18 +97,28 @@ export class AppsCreateModel extends React.Component {
 		var modelName= $("#modelName").val();
 		if ($("#model_Dataset").val() === "--Select dataset--") {
 			bootbox.alert("Please select dataset");
+            return false;
 		} else if (modelName === "") {
 			bootbox.alert("Please enter model name");
+            return false;
 		} else if ($("#createModelTarget").val() === "--Select--") {
 			bootbox.alert("Please select target variable");
+            return false;
 		} else if (levelCount === "--Select--") {
 			bootbox.alert("Please select sub value");
-		} else {
-			this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
-			this.props.dispatch(closeModelPopup())
+            return false;
+		} else if (modelName != "" && modelName.trim() == "") {
+            bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
+            return false;
+        } else if (letters.test(modelName) == false){
+            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
+            return false;
+		} else if(!(allModlLst.filter(i=>i.name == modelName) == "") ){
+			bootbox.alert(statusMessages("warning", "Model by name \""+ modelName +"\" already exists. Please enter a new name.", "small_mascot"));
+			return false;
 		}
-    
-		
+		this.props.dispatch(createModel(modelName,target,levelCount,datasetSlug,mode))
+		this.props.dispatch(closeModelPopup())
 
 	}
 	 fetchDataAutoML(slug) {
