@@ -6226,7 +6226,7 @@ def request_from_alexa(request):
     if request.method == 'GET':
         print "####  Got GET Request from Alexa ####"
         if request.GET['data'] == 'dataset':
-            #user_id = request.user.id
+            # user_id = request.user.id
             user_id = User.objects.get(username="alexa")
             dataset_obj = Dataset.objects.filter(created_by=user_id)
             for index, obj in enumerate(dataset_obj):
@@ -6235,15 +6235,61 @@ def request_from_alexa(request):
 
     if request.method == 'POST':
         print "####  Got POST Request from Alexa ####"
-        dimension_column_list = []
         request.data = json.loads(request.body)
         dataset_obj = Dataset.objects.filter(slug=request.data['slug'])
         meta_data = json.loads(dataset_obj[0].meta_data)
-        for meta_info in meta_data['metaData']:
-            if meta_info["name"] == "dimensionColumns":
-                dimension_column_list = meta_info["value"]
-        response.update(enumerate(dimension_column_list))
-        return JsonResponse(response)
+        if request.data['attribute'] == 'target':
+            print "####  Fetching list of Dimension Columns ####"
+            dimension_column_list = []
+            for meta_info in meta_data['metaData']:
+                if meta_info["name"] == "dimensionColumns":
+                    dimension_column_list = meta_info["value"]
+            response.update(enumerate(dimension_column_list))
+            return JsonResponse(response)
+        if request.data['attribute'] == 'subtarget':
+            print "####  Fetching the list of subtarget values ####"
+            subtarget_column_list = []
+            for meta_info in meta_data['columnData']:
+                if meta_info['name'] == request.data['target']:
+                    subtarget_column_list = meta_info['chartData']['chart_c3']['data']['columns'][0][1:]
+            response.update(enumerate(subtarget_column_list))
+            return JsonResponse(response)
+        if request.data['attribute'] == 'createmodel':
+            print "####  Trying to create AutoML model ####"
+            email = request.data['email']
+            from api.helper import check_email_id
+            email_check = check_email_id(email)
+            if email_check:
+                model_name = request.data['model_name']
+                from api.utils import name_check
+                model_name_check = name_check(model_name)
+                if model_name_check < 0:
+                    if model_name_check == -1:
+                        return JsonResponse({'message': 'Model name is empty.'})
+                    elif model_name_check == -2:
+                        return JsonResponse({'message': 'Model name is very large.'})
+                    elif model_name_check == -3:
+                        return JsonResponse({'message': 'Model name with special_characters not allowed.'})
+                else:
+                    # Done with all validations. Proceed to trigger AutoML Job for Alexa
+                    config = json.dumps(request.data)
+                    print config
+                    # Trigger autoML job
+                    create_model_autoML.delay(config=config)
+                    return JsonResponse({'message': 'Done'})
+            else:
+                return JsonResponse({'message': 'Invalid Email-id.'})
+
+
+def get_all_models(request):
+    if request.method == 'GET':
+        user_id = request.user.id
+        print user_id
+        modelList = dict()
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
+        for index, i in enumerate(job_obj):
+            modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
+        return JsonResponse({'allModelList': modelList})
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
@@ -6256,7 +6302,7 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 for data in obj['chartData']['chart_c3']['data']['columns'][0]:
                     if data == Subtarget:
                         return True
-                        break
+                    break
             else:
                 pass
     else:

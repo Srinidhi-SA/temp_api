@@ -725,7 +725,12 @@ export function updateSelectedVariables(evt){
 
 }
 
-
+export function updateSelectedVariablesAction(value, dispatch){
+    return {
+        type: "CLEAR_SELECTED_VARIABLES",
+        value
+      }
+  }
 
 export function showDataPreview() {
     return {
@@ -832,12 +837,12 @@ function deleteDatasetAPI(slug){
 
 
 
-export function handleRename(slug,dialog,name){
+export function handleRename(slug,dialog,name,allDataList,dataList){
     return (dispatch) => {
-        showRenameDialogBox(slug,dialog,dispatch,name)
+        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)
     }
 }
-function showRenameDialogBox(slug,dialog,dispatch,name){
+function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
     const customBody = (
 			<div className="row">
 			<div className="col-md-4">
@@ -847,6 +852,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+            <div className="text-danger" id="ErrorMsg"></div>
             </div>
 			</div>
 		</div>
@@ -858,7 +864,17 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+                     if(dataList!="" && dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
+                      }
+                      else if(allDataList!="" && allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)  
+                      }
+                      else{
+                      renameDataset(slug,dialog,$("#idRenameDataset").val(),allDataList,dataList,dispatch)
+                      }
                   })
                   ],
                   bsSize: 'medium',
@@ -869,7 +885,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
     });
 }
 
-function renameDataset(slug,dialog,newName,dispatch){
+function renameDataset(slug,dialog,newName,allDataList,dataList,dispatch){
     dispatch(showLoading());
     Dialog.resetOptions();
     return renameDatasetAPI(slug,newName).then(([response, json]) =>{

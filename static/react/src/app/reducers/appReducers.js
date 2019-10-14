@@ -4,6 +4,7 @@ export default function reducer(state = {
         analystModeSelectedFlag:false,
         appsModelShowModal:false,
         modelList: {},
+        allModelList: {},
         algoList:{},
         deploymentData:{},
         viewDeploymentFlag:false,
@@ -156,8 +157,19 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model list!!");
     }
     break;
-
-
+    case "MODEL_ALL_LIST":
+      {
+        return {
+          ...state,
+          allModelList: action.data,
+        }
+      }
+      break;
+      case "MODEL_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch model list!!");
+      }
+      break;
     case "DEPLOY_PREVIEW":
     {
         return {
