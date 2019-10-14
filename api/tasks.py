@@ -914,7 +914,7 @@ def create_model_autoML(dataset_object_id=None, config=None):
     if config is not None:
         try:
             data = json.loads(config)
-            dataset_object = Dataset.objects.filter(slug=data['slug'])
+            dataset_object = Dataset.objects.get(slug=data['slug'])
 
             model_config = {
                 "name": data['model_name'],
