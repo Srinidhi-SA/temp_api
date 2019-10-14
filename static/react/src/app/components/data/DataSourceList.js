@@ -31,7 +31,8 @@ import {getAllDataList} from "../../actions/dataActions";
     db_port: store.dataSource.db_port,
     db_password: store.dataSource.db_host,
     selectedDataset: store.datasets.selectedDataSet,
-    allDataList:store.datasets.allDataSets  ,
+    allDataList:store.datasets.allDataSets,
+    datasets:store.datasets.dataList.data,
   };
 })
 
@@ -46,12 +47,27 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(getDataSourceList());
     this.props.dispatch(getAllDataList());
   }
+  // componentDidUpdate(){
+  //   this.props.dispatch(getAllDataList());  
+  // }
   onDrop(files) {
+    var duplicateName="";
+    console.log(this.props.datasets)
     if (files.length > 0) {
-      for(var i=0;i<this.props.allDataList.data.length;i++){
-                if( this.props.allDataList.data[i].name==files[0].name)
-                var duplicateName=true
-              }
+      if(this.props.datasets.length>0){
+        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+      duplicateName=true:"";     
+      }
+    if(this.props.allDataList!=""){
+      // for(var i=0;i<this.props.allDataList.data.length;i++){//datasets.dataList.data[""0""].name
+      //           if(this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase())
+      //           var duplicateName=true
+      //         } 
+      // refactored
+      this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+      duplicateName=true:"";  
+
+            }
 
       if (files[0].size == 0) {
         $("#fileErrorMsg").removeClass("visibilityHidden");
@@ -65,7 +81,7 @@ export class DataSourceList extends React.Component {
         this.props.dispatch(saveFileToStore(files))
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("File name must be unique");
+        $("#fileErrorMsg").html("Dataset with this name already exists");
       }
        else {
         $("#fileErrorMsg").addClass("visibilityHidden");

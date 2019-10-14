@@ -837,12 +837,12 @@ function deleteDatasetAPI(slug){
 
 
 
-export function handleRename(slug,dialog,name){
+export function handleRename(slug,dialog,name,allDataList,dataList){
     return (dispatch) => {
-        showRenameDialogBox(slug,dialog,dispatch,name)
+        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)
     }
 }
-function showRenameDialogBox(slug,dialog,dispatch,name){
+function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
     const customBody = (
 			<div className="row">
 			<div className="col-md-4">
@@ -852,6 +852,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+            <div className="ErrorMsg" id="ErrorMsg"></div>
             </div>
 			</div>
 		</div>
@@ -863,7 +864,14 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+                      if(allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())  ||
+                      dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())                       ){
+                        dialog.showAlert("Dataset with same name already exists.");
+                        // document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                      }
+                      else{
+                      renameDataset(slug,dialog,$("#idRenameDataset").val(),allDataList,dataList,dispatch)
+                      }
                   })
                   ],
                   bsSize: 'medium',
@@ -874,7 +882,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
     });
 }
 
-function renameDataset(slug,dialog,newName,dispatch){
+function renameDataset(slug,dialog,newName,allDataList,dataList,dispatch){
     dispatch(showLoading());
     Dialog.resetOptions();
     return renameDatasetAPI(slug,newName).then(([response, json]) =>{
