@@ -1433,56 +1433,62 @@ def check_email_id(email=None):
     except Exception as e:
         print e
 
-def get_mails_from_outlook(auth_code,refresh_token,outlook_data):
+def get_mails_from_outlook():
 
-  token_url = 'https://login.microsoftonline.com/'+outlook_data['tenant_id']+'/oauth2/v2.0/token'
-
-  print token_url
-
-  post_data_auth_code = {
-                'grant_type': 'authorization_code',
-                # 'Content-Type': 'application/x-www-form-urlencoded',
-                'code': auth_code,
-                'redirect_uri': outlook_data['redirect_uri'],
-                'scope': settings.OUTLOOK_SCOPES,
-                'client_id': outlook_data['client_id'],
-                'client_secret': outlook_data['client_secret']
-              }
-  post_data_refresh_token = { 'grant_type': 'refresh_token',
-                # 'code': auth_code,
-                'redirect_uri': outlook_data['redirect_uri'],
-                'scope': 'https://graph.microsoft.com/.default',
-                'refresh_token': refresh_token,
-                'client_id': outlook_data['client_id'],
-                'client_secret': outlook_data['client_secret']
-              }
-  if refresh_token is not None:
-      r = requests.post(token_url, data = post_data_refresh_token)
-  else:
-      r = requests.post(token_url, data = post_data_auth_code)
-
+  ###############################################################################################################
+  r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+  ###############################################################################################################
   try:
-    result = r.json()
-    refresh_token = result['refresh_token']
-    access_token = result['access_token']
+      result = r.json()
+      refresh_token = result['refresh_token']
+      access_token = result['access_token']
 
-    print "Access token received."
-    ### Trigger mail receive action  ###
-    result_message = get_outlook_mails(access_token)
-    #print result_message
-    if result_message == None:
-        print "result message not found."
-        return None
-    else:
-        try:
-            print "result message found"
-            return result_message
-        except Exception as error:
-            print error
-            return None
+      print "Access token received."
+      ### Trigger mail receive action  ###
+      result_message = get_outlook_mails(access_token)
+      #print result_message
+      if result_message == None:
+          print "result message not found."
+          return None
+      else:
+          try:
+              print "result message found"
+              return result_message
+          except Exception as error:
+              print error
+              return None
 
   except:
     return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+
+def get_outlook_auth(auth_code,refresh_token,outlook_data):
+    token_url = 'https://login.microsoftonline.com/'+outlook_data['tenant_id']+'/oauth2/v2.0/token'
+
+    print token_url
+
+    post_data_auth_code = {
+                  'grant_type': 'authorization_code',
+                  # 'Content-Type': 'application/x-www-form-urlencoded',
+                  'code': auth_code,
+                  'redirect_uri': outlook_data['redirect_uri'],
+                  'scope': settings.OUTLOOK_SCOPES,
+                  'client_id': outlook_data['client_id'],
+                  'client_secret': outlook_data['client_secret']
+                }
+    post_data_refresh_token = { 'grant_type': 'refresh_token',
+                  # 'code': auth_code,
+                  'redirect_uri': outlook_data['redirect_uri'],
+                  'scope': 'https://graph.microsoft.com/.default',
+                  'refresh_token': refresh_token,
+                  'client_id': outlook_data['client_id'],
+                  'client_secret': outlook_data['client_secret']
+                }
+    if refresh_token is not None:
+        r = requests.post(token_url, data = post_data_refresh_token)
+    else:
+        r = requests.post(token_url, data = post_data_auth_code)
+
+    return r
 
 def get_outlook_mails(access_token):
   # access_token = access_token
@@ -1548,7 +1554,9 @@ def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_e
                         info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
                         id = jsondata['value'][i]['id']
                         if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            print "i got sub-label"
                             check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
+                            print check
                             if check:
                                 info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
                                 info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
@@ -1590,6 +1598,7 @@ def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_e
 
                 except Exception as e:
                     print e
+            print info_dict
             return info_dict
         else:
             return "{0}: {1}".format(r.status_code, r.text)

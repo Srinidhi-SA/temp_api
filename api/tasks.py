@@ -223,6 +223,7 @@ def write_into_databases(job_type, object_slug, results):
                         train_algo_object = serializer.save()
                     else:
                         print(serializer.errors)
+        outlook_autoML_success_mail(trainer_object.id)
         return "Done Succesfully."
         return results
     elif job_type == 'score':
@@ -738,7 +739,7 @@ from celery.decorators import periodic_task
 
 @periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
-    mails = get_mails_from_outlook(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+    mails = get_mails_from_outlook()
     print mails
     if mails is not None:
         print "All set to proceed to upload dataset."
@@ -762,9 +763,13 @@ def trigger_outlook_periodic_job():
                         input_file = value
                         data['Testdataset'] = input_file
                         data['name'] = configkey
+                    if 'emailAddress' in key:
+                        data['email'] = value['emailAddress']['address']
                 except Exception as error:
                     print error
             if len(data) > 0:
+                print "Here is the collected data"
+                print data
                 trigger_metaData_autoML.delay(data)
             ##########################################################################################
 
@@ -807,8 +812,8 @@ def trigger_metaData_autoML(data):
         train_dataset_details = convert_to_string(train_dataset_config)
         train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
         ###################################################################
-    except:
-        pass
+    except Exception as err:
+        print err
     try:
         #########  Test dataset config   #########
         test_file = open(settings.BASE_DIR+'/media/datasets/'+data['Testdataset'])
@@ -834,6 +839,7 @@ def trigger_metaData_autoML(data):
                 "name":data['name']+"_Trainer",
                 "app_id":2,
                 "mode":"autoML",
+                "email":data['email'],
                 "config":{}
             }
             model_config['dataset'] = train_dataset_object.id
@@ -902,14 +908,15 @@ def create_model_autoML(dataset_object_id=None,config=None):
     if config is not None:
         try:
             print config
-            data = json.loads(config[0])
-            dataset_object=Dataset.objects.filter(name=data['dataset_name']).first()
+            data = json.loads(config)
+            dataset_object=Dataset.objects.get(slug=data['slug'])
             print dataset_object
 
             model_config={
                 "name":data['model_name'],
                 "app_id":2,
                 "mode":"autoML",
+                "email": config['email'],
                 "config":{}
             }
 
@@ -984,6 +991,7 @@ def create_model_autoML(dataset_object_id=None,config=None):
                     "name":trainer_obj.name,
                     "app_id":2,
                     "mode":"autoML",
+                    "email":trainer_obj.email,
                     "config":{}
                 }
                 config = json.loads(trainer_obj.config)
@@ -1011,3 +1019,81 @@ def create_model_autoML(dataset_object_id=None,config=None):
 
         except Exception as err:
             print err
+
+@task(name='outlook_autoML_success_mail', queue=CONFIG_FILE_NAME)
+def outlook_autoML_success_mail(trainer_object_id=None):
+    if trainer_object_id is None:
+        return
+    else:
+        trainer_object = Trainer.objects.get(id=trainer_object_id)
+        if trainer_object.mode == 'autoML':
+            if trainer_object.email is not None:
+                from api.helper import get_outlook_auth
+                r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+                result = r.json()
+                access_token = result['access_token']
+                content = "AutoML Dataupload successful. Model is created."
+                mail('send',access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
+            else:
+                pass
+        else:
+            pass
+
+def mail(action_type,**kwargs):
+  # access_token = access_token
+  # If there is no token in the session, redirect to home
+  if not access_token:
+    return HttpResponseRedirect(reverse('tutorial:home'))
+  else:
+      if action_type == 'receive':
+          # ,last_seen = '2019-09-19T04:25:09Z'
+          messages = get_my_messages(access_token,info_dict)
+          messages = json.dumps(messages)
+          return messages
+      elif action_type == 'send':
+          try:
+              messages = send_my_messages(access_token,**kwargs)
+              if messages[:3] == '202':
+                  print "Mail Sent"
+          except:
+              print "Some issue with mail sending module..."
+      else:
+          return "Please enter proper command"
+
+def send_my_messages(access_token,return_mail_id,subject,content,file_name=None):
+  '''
+  Replies to the mail with attachments
+  '''
+  # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
+  get_messages_url = 'https://graph.microsoft.com/v1.0'+'/users/'+return_mail_id+'/sendmail'
+  # Use OData query parameters to control the results
+  #  - Only first 10 results returned
+  #  - Only return the ReceivedDateTime, Subject, and From fields
+  #  - Sort the results by the ReceivedDateTime field in descending order
+  payload = {
+
+        "Message": {
+
+            "Subject": subject,
+            "Body": {
+
+                "ContentType": "Text",
+                "Content": content
+            },
+            "ToRecipients": [
+                {
+                    "EmailAddress": {
+                        "Address": return_mail_id
+                    }
+                }
+            ]
+        },
+        "SaveToSentItems": "true",
+  }
+
+  r = make_api_call('POST', get_messages_url, access_token,payload = payload)
+  if (r.status_code == requests.codes.ok):
+    print "Mail Sent"
+    return r.json()
+  else:
+    return "{0}: {1}".format(r.status_code, r.text)
