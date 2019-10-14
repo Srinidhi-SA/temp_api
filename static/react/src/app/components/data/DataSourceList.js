@@ -81,7 +81,7 @@ export class DataSourceList extends React.Component {
         this.props.dispatch(saveFileToStore(files))
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Dataset with this name already exists");
+        $("#fileErrorMsg").html("Dataset with same name already exists");
       }
        else {
         $("#fileErrorMsg").addClass("visibilityHidden");
