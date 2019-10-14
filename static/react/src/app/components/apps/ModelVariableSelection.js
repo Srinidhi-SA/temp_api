@@ -52,9 +52,10 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-        let allModlLst = []
-        Object.entries(this.props.allModelList).forEach(([key,value])=> allModlLst.push(value))
-        var modelLst = allModlLst.map(j=>(j.name).toLowerCase());
+        
+        let allModlLst = Object.values(this.props.allModelList)
+        
+        var creatModelName = $('#createModelName').val();
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
@@ -65,23 +66,18 @@ export class ModelVariableSelection extends React.Component {
         } else if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        } else if ($('#createModelName').val() != "" && $('#createModelName').val().trim() == "") {
+        } else if (creatModelName != "" && creatModelName.trim() == "") {
             bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
-        } else if (letters.test(document.getElementById("createModelName").value) == false){
+        } else if (letters.test(creatModelName) == false){
             bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
-        } else if(modelLst){
-            for(var j=0;j<modelLst.length;j++){
-                if($('#createModelName').val().toLowerCase() == modelLst[j]){
-                    bootbox.alert(statusMessages("warning", "Model by name \""+ $('#createModelName').val() +"\" already exists. Please enter a new name.", "small_mascot"));
-                    $('#createModelName').val("").focus();
-                    return false;
-                }
-            }
-        }
+        } else if(!(allModlLst.filter(i=>i.name == creatModelName) == "") ){
+			bootbox.alert(statusMessages("warning", "Model by name \""+ creatModelName +"\" already exists. Please enter a new name.", "small_mascot"));
+			return false;
+		}
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {
             this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()));
