@@ -847,12 +847,12 @@ def trigger_metaData_autoML(data):
         print(train_dataset_object)
         ################################   Create config for model object that to be triggered after metedata job  ##################
         try:
-            model_config={
-                "name":data['name']+"_Trainer",
-                "app_id":2,
-                "mode":"autoML",
-                "email":data['email'],
-                "config":{}
+            model_config = {
+                "name": data['name'] + "_Trainer",
+                "app_id": 2,
+                "mode": "autoML",
+                "email": data['email'],
+                "config": {}
             }
             model_config['dataset'] = train_dataset_object.id
             model_config['config']['targetColumn'] = data['target']
@@ -921,15 +921,15 @@ def create_model_autoML(dataset_object_id=None, config=None):
         try:
             print config
             data = json.loads(config)
-            dataset_object=Dataset.objects.get(slug=data['slug'])
+            dataset_object = Dataset.objects.get(slug=data['slug'])
             print dataset_object
 
-            model_config={
-                "name":data['model_name'],
-                "app_id":2,
-                "mode":"autoML",
-                "email": config['email'],
-                "config":{}
+            model_config = {
+                "name": data['model_name'],
+                "app_id": 2,
+                "mode": "autoML",
+                "email": data['email'],
+                "config": {}
             }
 
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
@@ -999,12 +999,12 @@ def create_model_autoML(dataset_object_id=None, config=None):
                 print("Got uiMetaData from dataset")
             try:
                 trainer_obj = Trainer.objects.filter(dataset=dataset_object_id).first()
-                model_config={
-                    "name":trainer_obj.name,
-                    "app_id":2,
-                    "mode":"autoML",
-                    "email":trainer_obj.email,
-                    "config":{}
+                model_config = {
+                    "name": trainer_obj.name,
+                    "app_id": 2,
+                    "mode": "autoML",
+                    "email": trainer_obj.email,
+                    "config": {}
                 }
                 config = json.loads(trainer_obj.config)
                 model_config['dataset'] = dataset_object.id
@@ -1033,6 +1033,7 @@ def create_model_autoML(dataset_object_id=None, config=None):
         except Exception as err:
             print err
 
+
 @task(name='outlook_autoML_success_mail', queue=CONFIG_FILE_NAME)
 def outlook_autoML_success_mail(trainer_object_id=None):
     if trainer_object_id is None:
@@ -1042,48 +1043,52 @@ def outlook_autoML_success_mail(trainer_object_id=None):
         if trainer_object.mode == 'autoML':
             if trainer_object.email is not None:
                 from api.helper import get_outlook_auth
-                r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+                r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
+                                     settings.OUTLOOK_DETAILS)
                 result = r.json()
                 access_token = result['access_token']
                 content = "AutoML Dataupload successful. Model is created."
-                mail('send',access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
+                mail('send', access_token, return_mail_id=trainer_object.email, subject='Marlabs-AutoML Success',
+                     content=content)
             else:
                 pass
         else:
             pass
 
-def mail(action_type,**kwargs):
-  # access_token = access_token
-  # If there is no token in the session, redirect to home
-  if not access_token:
-    return HttpResponseRedirect(reverse('tutorial:home'))
-  else:
-      if action_type == 'receive':
-          # ,last_seen = '2019-09-19T04:25:09Z'
-          messages = get_my_messages(access_token,info_dict)
-          messages = json.dumps(messages)
-          return messages
-      elif action_type == 'send':
-          try:
-              messages = send_my_messages(access_token,**kwargs)
-              if messages[:3] == '202':
-                  print "Mail Sent"
-          except:
-              print "Some issue with mail sending module..."
-      else:
-          return "Please enter proper command"
 
-def send_my_messages(access_token,return_mail_id,subject,content,file_name=None):
-  '''
+def mail(action_type, **kwargs):
+    # access_token = access_token
+    # If there is no token in the session, redirect to home
+    if not access_token:
+        return HttpResponseRedirect(reverse('tutorial:home'))
+    else:
+        if action_type == 'receive':
+            # ,last_seen = '2019-09-19T04:25:09Z'
+            messages = get_my_messages(access_token, info_dict)
+            messages = json.dumps(messages)
+            return messages
+        elif action_type == 'send':
+            try:
+                messages = send_my_messages(access_token, **kwargs)
+                if messages[:3] == '202':
+                    print "Mail Sent"
+            except:
+                print "Some issue with mail sending module..."
+        else:
+            return "Please enter proper command"
+
+
+def send_my_messages(access_token, return_mail_id, subject, content, file_name=None):
+    '''
   Replies to the mail with attachments
   '''
-  # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
-  get_messages_url = 'https://graph.microsoft.com/v1.0'+'/users/'+return_mail_id+'/sendmail'
-  # Use OData query parameters to control the results
-  #  - Only first 10 results returned
-  #  - Only return the ReceivedDateTime, Subject, and From fields
-  #  - Sort the results by the ReceivedDateTime field in descending order
-  payload = {
+    # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
+    get_messages_url = 'https://graph.microsoft.com/v1.0' + '/users/' + return_mail_id + '/sendmail'
+    # Use OData query parameters to control the results
+    #  - Only first 10 results returned
+    #  - Only return the ReceivedDateTime, Subject, and From fields
+    #  - Sort the results by the ReceivedDateTime field in descending order
+    payload = {
 
         "Message": {
 
@@ -1102,11 +1107,11 @@ def send_my_messages(access_token,return_mail_id,subject,content,file_name=None)
             ]
         },
         "SaveToSentItems": "true",
-  }
+    }
 
-  r = make_api_call('POST', get_messages_url, access_token,payload = payload)
-  if (r.status_code == requests.codes.ok):
-    print "Mail Sent"
-    return r.json()
-  else:
-    return "{0}: {1}".format(r.status_code, r.text)
+    r = make_api_call('POST', get_messages_url, access_token, payload=payload)
+    if (r.status_code == requests.codes.ok):
+        print "Mail Sent"
+        return r.json()
+    else:
+        return "{0}: {1}".format(r.status_code, r.text)
