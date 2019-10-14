@@ -12,12 +12,12 @@ from django.conf import settings
 import datetime
 import json
 import copy
-from api.helper import get_random_model_id,get_mails_from_outlook
+from api.helper import get_random_model_id, get_mails_from_outlook
 
 
 @task(name="sum_two_numbers")
 def add(x, y):
-    print "crazy bird {0}{1}".format(x,y)
+    print "crazy bird {0}{1}".format(x, y)
     return x + y
 
 
@@ -46,7 +46,8 @@ def submit_job_separate_task(command_array, slug):
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
 
     try:
-        cur_process = subprocess.Popen(command_array, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,bufsize=-1,universal_newlines=True,env=my_env)
+        cur_process = subprocess.Popen(command_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1,
+                                       universal_newlines=True, env=my_env)
         print(cur_process)
     except Exception as e:
         from api.helper import get_db_object
@@ -65,7 +66,7 @@ def submit_job_separate_task(command_array, slug):
         match = re.search('Submitted application (.*)$', line)
         if match:
             application_id = match.groups()[0]
-            print("<------------------------ YARN APPLICATION ID ---------------------->",application_id)
+            print("<------------------------ YARN APPLICATION ID ---------------------->", application_id)
             from api.helper import get_db_object
 
             model_instance = get_db_object(model_name=Job.__name__,
@@ -74,7 +75,8 @@ def submit_job_separate_task(command_array, slug):
             model_instance.url = application_id
             model_instance.save()
             # Break statement is commented in order to get the complete log of the subprocess
-            #break
+            # break
+
 
 '''
     time.sleep(10)
@@ -99,6 +101,8 @@ def submit_job_separate_task(command_array, slug):
                 os.rename("/tmp/SparkDriver.log",dist_file_name)
                 break
 '''
+
+
 def submit_job_separate_task1(command_array, slug):
     import subprocess, os
     my_env = os.environ.copy()
@@ -122,6 +126,7 @@ def submit_job_separate_task1(command_array, slug):
             model_instance.save()
             break
 
+
 @task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
     from api import helper
@@ -131,8 +136,8 @@ def write_into_databases(job_type, object_slug, results):
 
     if job_type in ["metadata", "subSetting"]:
         dataset_object = get_db_object(model_name=Dataset.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results:
             dataset_object.status = "FAILED"
@@ -168,8 +173,8 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results:
             insight_object.status = "FAILED"
@@ -185,15 +190,15 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == "model":
         trainer_object = get_db_object(model_name=Trainer.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
             return results
 
-        results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
+        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.status = 'SUCCESS'
@@ -227,8 +232,8 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
-                                           model_slug=object_slug
-                                           )
+                                     model_slug=object_slug
+                                     )
 
         if "error_message" in results:
             score_object.status = "FAILED"
@@ -260,8 +265,8 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'stockAdvisor':
         stock_objects = get_db_object(model_name=StockDataset.__name__,
-                                           model_slug=object_slug
-                                           )
+                                      model_slug=object_slug
+                                      )
         results['name'] = stock_objects.name
         results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
@@ -281,8 +286,8 @@ def write_into_databases1(job_type, object_slug, results):
 
     if job_type in ["metadata", "subSetting"]:
         dataset_object = get_db_object(model_name=Dataset.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results:
             dataset_object.status = "FAILED"
@@ -313,8 +318,8 @@ def write_into_databases1(job_type, object_slug, results):
         return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results:
             insight_object.status = "FAILED"
@@ -329,15 +334,15 @@ def write_into_databases1(job_type, object_slug, results):
         return results
     elif job_type == "model":
         trainer_object = get_db_object(model_name=Trainer.__name__,
-                                           model_slug=object_slug
-                                           )
+                                       model_slug=object_slug
+                                       )
 
         if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
             return results
 
-        results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
+        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.status = 'SUCCESS'
@@ -369,8 +374,8 @@ def write_into_databases1(job_type, object_slug, results):
         return results
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
-                                           model_slug=object_slug
-                                           )
+                                     model_slug=object_slug
+                                     )
 
         if "error_message" in results:
             score_object.status = "FAILED"
@@ -401,8 +406,8 @@ def write_into_databases1(job_type, object_slug, results):
         return results
     elif job_type == 'stockAdvisor':
         stock_objects = get_db_object(model_name=StockDataset.__name__,
-                                           model_slug=object_slug
-                                           )
+                                      model_slug=object_slug
+                                      )
         results['name'] = stock_objects.name
         results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
@@ -420,8 +425,8 @@ def save_results_to_job(slug, results):
     import json
 
     job = get_db_object(model_name=Job.__name__,
-                                   model_slug=slug
-                                   )
+                        model_slug=slug
+                        )
 
     if isinstance(results, str) or isinstance(results, unicode):
         job.results = results
@@ -437,8 +442,8 @@ def save_results_to_job1(slug, results):
     import json
 
     job = get_db_object(model_name=Job.__name__,
-                                   model_slug=slug
-                                   )
+                        model_slug=slug
+                        )
 
     if isinstance(results, str) or isinstance(results, unicode):
         job.results = results
@@ -446,13 +451,11 @@ def save_results_to_job1(slug, results):
         results = json.dumps(results)
         job.results = results
     job.save()
-    print "save hogaya "*100
-
+    print "save hogaya " * 100
 
 
 @task(name='cleanup_logentry')
 def clean_up_logentry():
-
     from auditlog.models import LogEntry
     from django.contrib.auth.models import User
 
@@ -492,38 +495,41 @@ def kill_application_using_fabric(app_id=None):
     MODE = settings.MODE
     print ("MODE", MODE)
     if MODE == 'docker':
-      #HDFS = settings.KILL_JOB
-      #BASEDIR = settings.BASE_DIR
-      #env.key_filename = settings.PEM_KEY
-      #env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+        # HDFS = settings.KILL_JOB
+        # BASEDIR = settings.BASE_DIR
+        # env.key_filename = settings.PEM_KEY
+        # env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
 
-      try:
-         capture = subprocess.Popen("docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(app_id),shell = True ,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-         stdout,stderr = capture.communicate()
-         if 'finished' in stdout:
-             return False
-         else:
-             return True
-      except:
-         return True
+        try:
+            capture = subprocess.Popen(
+                "docker exec -t hadoop_spark_compose_hadoop_1 sh -c '/opt/hadoop/bin/yarn application --kill {0}'".format(
+                    app_id), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = capture.communicate()
+            if 'finished' in stdout:
+                return False
+            else:
+                return True
+        except:
+            return True
     else:
-      HDFS = settings.HDFS
-      BASEDIR = settings.BASE_DIR
-      emr_file = BASEDIR + settings.PEM_KEY
-      env.key_filename = [emr_file]
+        HDFS = settings.HDFS
+        BASEDIR = settings.BASE_DIR
+        emr_file = BASEDIR + settings.PEM_KEY
+        env.key_filename = [emr_file]
 
-      if CONFIG_FILE_NAME == 'cwpoc':
-          env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
-      else:
-          env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
-      try:
-          capture = run("yarn application --kill {0}".format(app_id))
-          if 'finished' in capture:
-              return False
-          else:
-              return True
-      except:
-          return True
+        if CONFIG_FILE_NAME == 'cwpoc':
+            env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
+        else:
+            env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+        try:
+            capture = run("yarn application --kill {0}".format(app_id))
+            if 'finished' in capture:
+                return False
+            else:
+                return True
+        except:
+            return True
+
 
 # @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 # def stock_sense_crawl(object_slug):
@@ -542,15 +548,14 @@ def kill_application_using_fabric(app_id=None):
 
 @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
-
     from api import helper
     import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
-    print "stock_sense_crawl"*2
+    print "stock_sense_crawl" * 2
     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
-                                   model_slug=object_slug
-                                   )
+                                         model_slug=object_slug
+                                         )
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
     # stock_dataset_object.call_mlscripts()
@@ -584,7 +589,7 @@ def call_dataset_then_score(*args, **kwrgs):
     # fetch trainer model
     # trainer_object = model_deployment_object.deploytrainer.trainer
     dataset_score_deployment_details = {
-        'name': model_deployment_object.name + ' - ' +  str(datetime.datetime.now().time()),
+        'name': model_deployment_object.name + ' - ' + str(datetime.datetime.now().time()),
         'deployment': model_deployment_object.id,
         'created_by': user_object.id,
         'config': '{}',
@@ -615,6 +620,7 @@ def call_dataset_then_score(*args, **kwrgs):
         dataset_object.create()
     else:
         print(serializer.errors)
+
 
 '''
 Things to do
@@ -682,7 +688,8 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             print("Got model_deployment_object config")
 
             # dataset_metadata = json.loads(dataset_object.meta_data)
-            score_details = model_deployment_object.get_trainer_details_for_score(datasetscore_deployment_object.name + "_score")
+            score_details = model_deployment_object.get_trainer_details_for_score(
+                datasetscore_deployment_object.name + "_score")
             score_details['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
             score_details['trainer'] = trainer_object.id
             score_details['dataset'] = dataset_object.id
@@ -706,6 +713,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             return
     except Exception as err:
         print(err)
+
 
 def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
     print('received this dataset_object_id : ', dataset_object_id)
@@ -736,20 +744,22 @@ def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
 from celery.task.schedules import crontab
 from celery.decorators import periodic_task
 
-@periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,queue=CONFIG_FILE_NAME)
+
+@periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,
+               queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
-    mails = get_mails_from_outlook(settings.OUTLOOK_AUTH_CODE,settings.OUTLOOK_REFRESH_TOKEN,settings.OUTLOOK_DETAILS)
+    mails = get_mails_from_outlook(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN, settings.OUTLOOK_DETAILS)
     print mails
     if mails is not None:
         print "All set to proceed to upload dataset."
 
         for configkey, configvalue in mails.iteritems():
-            data={}
-            for key,value in configvalue.iteritems():
+            data = {}
+            for key, value in configvalue.iteritems():
                 try:
-                    #print key,value
+                    # print key,value
                     # value is a dict
-            #############  Create config and trigger metadata job for train and test Dataset  #################
+                    #############  Create config and trigger metadata job for train and test Dataset  #################
                     if 'sub_target' in key:
                         data['sub_target'] = value.capitalize()
                     if 'target' in key:
@@ -768,7 +778,7 @@ def trigger_outlook_periodic_job():
                 trigger_metaData_autoML.delay(data)
             ##########################################################################################
 
-                    #pass
+            # pass
     else:
         print "No mails."
     '''
@@ -779,6 +789,8 @@ def trigger_outlook_periodic_job():
     Task5: Prepare config for Data Upload.
     Task6: Trigger model Once Task5 is done.
     '''
+
+
 @task(name='trigger_metaData_autoML', queue=CONFIG_FILE_NAME)
 def trigger_metaData_autoML(data):
     print "metaData job triggered for autoML"
@@ -789,7 +801,7 @@ def trigger_metaData_autoML(data):
 
     '''
     from django.contrib.auth.models import User
-    user_id=User.objects.get(username="email")
+    user_id = User.objects.get(username="email")
     ###################################################################
     ####################   Upload file from local  ####################
     from django.core.files import File
@@ -797,12 +809,12 @@ def trigger_metaData_autoML(data):
     from api.datasets.serializers import DatasetSerializer
     try:
         #########  Trainer dataset config   #########
-        train_file = open(settings.BASE_DIR+'/media/datasets/'+data['Traindataset'])
-        train_f=File(train_file)
-        train_dataset_config={}
-        train_dataset_config['name']=data['name']+'_Train'
-        train_dataset_config['input_file']=train_f
-        train_dataset_config['datasource_type']='fileUpload'
+        train_file = open(settings.BASE_DIR + '/media/datasets/' + data['Traindataset'])
+        train_f = File(train_file)
+        train_dataset_config = {}
+        train_dataset_config['name'] = data['name'] + '_Train'
+        train_dataset_config['input_file'] = train_f
+        train_dataset_config['datasource_type'] = 'fileUpload'
         train_dataset_config['created_by'] = user_id.id
         train_dataset_details = convert_to_string(train_dataset_config)
         train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
@@ -811,12 +823,12 @@ def trigger_metaData_autoML(data):
         pass
     try:
         #########  Test dataset config   #########
-        test_file = open(settings.BASE_DIR+'/media/datasets/'+data['Testdataset'])
-        test_f=File(test_file)
-        test_dataset_config={}
-        test_dataset_config['name']=data['name']+'_Test'
-        test_dataset_config['input_file']=test_f
-        test_dataset_config['datasource_type']='fileUpload'
+        test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
+        test_f = File(test_file)
+        test_dataset_config = {}
+        test_dataset_config['name'] = data['name'] + '_Test'
+        test_dataset_config['input_file'] = test_f
+        test_dataset_config['datasource_type'] = 'fileUpload'
         test_dataset_config['created_by'] = user_id.id
         test_dataset_details = convert_to_string(test_dataset_config)
         test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
@@ -830,15 +842,15 @@ def trigger_metaData_autoML(data):
         print(train_dataset_object)
         ################################   Create config for model object that to be triggered after metedata job  ##################
         try:
-            model_config={
-                "name":data['name']+"_Trainer",
-                "app_id":2,
-                "mode":"autoML",
-                "config":{}
+            model_config = {
+                "name": data['name'] + "_Trainer",
+                "app_id": 2,
+                "mode": "autoML",
+                "config": {}
             }
             model_config['dataset'] = train_dataset_object.id
-            model_config['config']['targetColumn']=data['target']
-            model_config['config']['targetLevel']=data['sub_target']
+            model_config['config']['targetColumn'] = data['target']
+            model_config['config']['targetLevel'] = data['sub_target']
             model_config['created_by'] = user_id.id
 
             from api.utils import convert_to_string
@@ -858,10 +870,10 @@ def trigger_metaData_autoML(data):
                         test_dataset_object = test_dataset_serializer.save()
                         print(test_dataset_object)
                         ################ Create config for Score object that to be triggered after model job   ##############
-                        score_config={
-                            "name":data['name']+"_Score",
-                            "app_id":2,
-                            #"config":{}
+                        score_config = {
+                            "name": data['name'] + "_Score",
+                            "app_id": 2,
+                            # "config":{}
                         }
                         score_config['trainer'] = trainer_object.id
                         score_config['dataset'] = test_dataset_object.id
@@ -880,7 +892,7 @@ def trigger_metaData_autoML(data):
                         print(test_dataset_serializer.errors)
                 except:
                     pass
-                    #print e
+                    # print e
             else:
                 print(trainer_serializer.errors)
             ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
@@ -890,29 +902,26 @@ def trigger_metaData_autoML(data):
     else:
         print(train_dataset_serializer.errors)
 
-@task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
-def create_model_autoML(dataset_object_id=None,config=None):
-    #####################  Configs for Trainer ##################
-    validationTechnique={
-        "displayName":"K Fold Validation",
-        "name":"kFold",
-        "value":2,
-    }
 
+@task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
+def create_model_autoML(dataset_object_id=None, config=None):
+    print '#####################  Configs for Trainer ##################'
+    validationTechnique = {
+        "displayName": "K Fold Validation",
+        "name": "kFold",
+        "value": 2,
+    }
     if config is not None:
         try:
-            print config
-            data = json.loads(config[0])
-            dataset_object=Dataset.objects.filter(name=data['dataset_name']).first()
-            print dataset_object
+            data = json.loads(config)
+            dataset_object = Dataset.objects.filter(slug=data['slug'])
 
-            model_config={
-                "name":data['model_name'],
-                "app_id":2,
-                "mode":"autoML",
-                "config":{}
+            model_config = {
+                "name": data['model_name'],
+                "app_id": 2,
+                "mode": "autoML",
+                "config": {}
             }
-
 
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
             print("Got metedata from dataset")
@@ -935,9 +944,10 @@ def create_model_autoML(dataset_object_id=None,config=None):
                 print("Got uiMetaData from dataset")
 
             model_config['dataset'] = dataset_object.id
-            model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
-            model_config['config']['targetColumn']=data['target']
-            model_config['config']['targetLevel']=data['subtarget']
+            model_config['config']['ALGORITHM_SETTING'] = copy.deepcopy(
+                settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+            model_config['config']['targetColumn'] = data['target']
+            model_config['config']['targetLevel'] = data['subtarget']
             model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
             model_config['config']['validationTechnique'] = validationTechnique
             model_config['created_by'] = user_object.id
@@ -980,15 +990,16 @@ def create_model_autoML(dataset_object_id=None,config=None):
                 print("Got uiMetaData from dataset")
             try:
                 trainer_obj = Trainer.objects.filter(dataset=dataset_object_id).first()
-                model_config={
-                    "name":trainer_obj.name,
-                    "app_id":2,
-                    "mode":"autoML",
-                    "config":{}
+                model_config = {
+                    "name": trainer_obj.name,
+                    "app_id": 2,
+                    "mode": "autoML",
+                    "config": {}
                 }
                 config = json.loads(trainer_obj.config)
                 model_config['dataset'] = dataset_object.id
-                model_config['config']['ALGORITHM_SETTING']= copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
+                model_config['config']['ALGORITHM_SETTING'] = copy.deepcopy(
+                    settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION['ALGORITHM_SETTING'])
                 model_config['config']['validationTechnique'] = validationTechnique
                 model_config['config']['targetLevel'] = config['targetLevel']
                 model_config['config']['targetColumn'] = config['targetColumn']
@@ -999,7 +1010,7 @@ def create_model_autoML(dataset_object_id=None,config=None):
 
             from api.utils import convert_to_string
             model_config = convert_to_string(model_config)
-            print("Constructed model_config")
+            print("Constructed model_config", model_config)
 
             from api.utils import TrainerSerlializer
             trainer_serializer = TrainerSerlializer(data=model_config, context={})

@@ -6273,8 +6273,9 @@ def request_from_alexa(request):
                 else:
                     # Done with all validations. Proceed to trigger AutoML Job for Alexa
                     config = json.dumps(request.data)
+                    print config
                     # Trigger autoML job
-                    create_model_autoML.delay(config)
+                    create_model_autoML.delay(config=config)
                     return JsonResponse({'message': 'Done'})
             else:
                 return JsonResponse({'message': 'Invalid Email-id.'})
