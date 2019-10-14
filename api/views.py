@@ -6239,6 +6239,7 @@ def request_from_alexa(request):
         dataset_obj = Dataset.objects.filter(slug=request.data['slug'])
         meta_data = json.loads(dataset_obj[0].meta_data)
         if request.data['attribute'] == 'target':
+            print "####  Fetching list of Dimension Columns ####"
             dimension_column_list = []
             for meta_info in meta_data['metaData']:
                 if meta_info["name"] == "dimensionColumns":
@@ -6246,12 +6247,37 @@ def request_from_alexa(request):
             response.update(enumerate(dimension_column_list))
             return JsonResponse(response)
         if request.data['attribute'] == 'subtarget':
+            print "####  Fetching the list of subtarget values ####"
             subtarget_column_list = []
             for meta_info in meta_data['columnData']:
                 if meta_info['name'] == request.data['target']:
                     subtarget_column_list = meta_info['chartData']['chart_c3']['data']['columns'][0][1:]
             response.update(enumerate(subtarget_column_list))
             return JsonResponse(response)
+        if request.data['attribute'] == 'createmodel':
+            print "####  Trying to create AutoML model ####"
+            email = request.data['email']
+            from api.helper import check_email_id
+            email_check = check_email_id(email)
+            if email_check:
+                model_name = request.data['model_name']
+                from api.utils import name_check
+                model_name_check = name_check(model_name)
+                if model_name_check < 0:
+                    if model_name_check == -1:
+                        return JsonResponse({'message': 'Model name is empty.'})
+                    elif model_name_check == -2:
+                        return JsonResponse({'message': 'Model name is very large.'})
+                    elif model_name_check == -3:
+                        return JsonResponse({'message': 'Model name with special_characters not allowed.'})
+                else:
+                    # Done with all validations. Proceed to trigger AutoML Job for Alexa
+                    config = json.dumps(request.data)
+                    # Trigger autoML job
+                    create_model_autoML.delay(config)
+                    return JsonResponse({'message': 'Done'})
+            else:
+                return JsonResponse({'message': 'Invalid Email-id.'})
 
 
 def get_all_models(request):
