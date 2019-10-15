@@ -1271,8 +1271,26 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
     body: customBody,
     actions: [
       Dialog.CancelAction(), Dialog.OKAction(() => {
-        if (title == RENAMEMODEL)
+        if (title == RENAMEMODEL){
+          getAllModelList(store.getState().apps.currentAppId,dispatch)
+          
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allModlLst = Object.values(store.getState().apps.allModelList)
+          if ($("#idRenameModel").val() === "") {
+            bootbox.alert("Please enter model name");
+                  return false;
+          } else if ($("#idRenameModel").val() != "" && $("#idRenameModel").val().trim() == "") {
+                  bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
+                  return false;
+          } else if (letters.test($("#idRenameModel").val()) == false){
+              bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
+              return false;
+          } else if(!(allModlLst.filter(i=>i.name == $("#idRenameModel").val()) == "") ){
+              bootbox.alert(statusMessages("warning", "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.", "small_mascot"));
+              return false;
+          }
           renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
+        }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
