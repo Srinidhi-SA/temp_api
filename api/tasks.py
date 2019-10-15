@@ -1057,34 +1057,27 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             pass
 
 
-def mail(action_type, **kwargs):
+def mail(action_type=None,access_token=None,return_mail_id=None,subject=None,content=None):
     # access_token = access_token
     # If there is no token in the session, redirect to home
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
-        if action_type == 'receive':
-            # ,last_seen = '2019-09-19T04:25:09Z'
-            messages = get_my_messages(access_token, info_dict)
-            messages = json.dumps(messages)
-            return messages
-        elif action_type == 'send':
             try:
-                messages = send_my_messages(access_token, **kwargs)
+                messages = send_my_messages(access_token, return_mail_id, subject, content)
                 if messages[:3] == '202':
                     print "Mail Sent"
-            except:
+            except Exception as e:
+                print e
                 print "Some issue with mail sending module..."
-        else:
-            return "Please enter proper command"
 
-
-def send_my_messages(access_token, return_mail_id, subject, content, file_name=None):
+def send_my_messages(access_token, return_mail_id, subject, content):
     '''
   Replies to the mail with attachments
   '''
     # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
-    get_messages_url = 'https://graph.microsoft.com/v1.0' + '/users/' + return_mail_id + '/sendmail'
+    # get_messages_url = 'https://graph.microsoft.com/v1.0' + '/users/' + settings.OUTLOOK_ID + '/sendmail'
+    get_messages_url = 'https://graph.microsoft.com/v1.0/me/' + '/sendmail'
     # Use OData query parameters to control the results
     #  - Only first 10 results returned
     #  - Only return the ReceivedDateTime, Subject, and From fields
@@ -1118,5 +1111,4 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_name=N
         print "Mail Sent"
         return r.json()
     else:
-
         return "{0}: {1}".format(r.status_code, r.text)
