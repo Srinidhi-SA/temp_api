@@ -6299,7 +6299,7 @@ def get_all_signals(request):
         job_obj = Signals.objects.filter(created_by_id=user_id)
         for index, i in enumerate(job_obj):
             signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
-        return JsonResponse({'allSignalList': signalList)
+        return JsonResponse({'allSignalList': signalList})
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
