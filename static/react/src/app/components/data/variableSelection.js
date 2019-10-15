@@ -587,7 +587,7 @@ if(datetime.length>0){
   <hr/>
   <div className="row">
     <div className="col-md-12 text-right">
-      <button className="btn btn-primary">CREAsdsdTE SIGNAL</button>
+      <button className="btn btn-primary">CREATE SIGNAL</button>
     </div>
   </div>
 

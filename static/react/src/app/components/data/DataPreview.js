@@ -15,7 +15,8 @@ import {
   updateTranformColumns,
   hideDataPreviewDropDown,
   popupAlertBox,
-  getAllDataList
+  getAllDataList,
+  getDataList,
 } from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
@@ -80,9 +81,7 @@ export class DataPreview extends React.Component {
 
   componentWillMount() {
     // this.props.dispatch(getAllDataList());
-    console.log("------------------");
-    console.log(this.props);
-    console.log("data prevvvvvvvvvvvvvvvvvvvv$$$$$$$$$$$5555555555555555555555555555555555555555555555$$$$$");
+    this.props.dispatch(getDataList(1));
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
@@ -196,6 +195,9 @@ export class DataPreview extends React.Component {
   }
 
   componentDidMount() {
+    // this.props.dispatch(getAllDataList());
+
+
 
     {/*}$(function(){
 			console.log($(".cst_table"));
@@ -353,7 +355,7 @@ export class DataPreview extends React.Component {
   }
 if(duplicateName){
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
-      bootbox.alert("Same config name exists, Please try changing name!")
+      bootbox.alert("Same dataset name already exists, Please try changing name!")
     
 }
 else{
