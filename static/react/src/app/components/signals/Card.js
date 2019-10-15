@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,doToggle} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
@@ -25,8 +25,12 @@ yformat = null,
 cardData = {};
 
 @connect((store) => {
-    return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
-        chartObject: store.chartObject.chartObj,currentAppDetails: store.apps.currentAppDetails};
+    return {login_response: store.login.login_response,
+        signal: store.signals.signalAnalysis,
+        chartObject: store.chartObject.chartObj,
+        currentAppDetails: store.apps.currentAppDetails,
+        doToggleFlag: store.signals.doToggleFlag,
+    };
 })
 
 export class Card extends React.Component {
@@ -34,12 +38,20 @@ export class Card extends React.Component {
         super();
 
     }
+    componentWillMount(){
+        doToggle(this.props.doToggleFlag);
+    }
     componentDidMount() {
 	  if(this.props.currentAppDetails&&this.props.currentAppDetails.app_type&&this.props.currentAppDetails.app_type == "REGRESSION")
       $('#box0').parent('div').addClass('text-center');
     }
     handleCheckBoxEvent(event){
-        handleSignalToggleButton();
+        if ($(".toggleOn").is(":visible")) {
+            this.props.dispatch(doToggle(true));
+          } else {
+            this.props.dispatch(doToggle(false));
+          }
+        // handleSignalToggleButton();
     }
     calculateWidth(width){
         let colWidth  = parseInt((width/100)*12)
@@ -106,34 +118,43 @@ export class Card extends React.Component {
                 return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
             case "toggle":
-            var tableData = [];
-            tableData.push(story.data.toggleon);
-            var toggleData =  this.renderCardData(tableData,"toggleOn");
-            tableData = [];
-            tableData.push(story.data.toggleoff);
-             var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
-             var randomChk = randomNum+"_chk"
-            var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-            <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)}/><span>
-            <label for={randomChk}></label></span>
-            </div>
-            return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);
-            break;
+                var togOn;
+                var togOff;
+                if(this.props.doToggleFlag){
+                    togOn = "toggleOn hidden"
+                    togOff = "toggleOff"
+                }else{
+                    togOn = "toggleOn"
+                    togOff = "toggleOff hidden"
+                }
+                var tableData = [];
+                tableData.push(story.data.toggleon);
+                var toggleData =  this.renderCardData(tableData,togOn);
+                tableData = [];
+                tableData.push(story.data.toggleoff);
+                 var toggleData1 = this.renderCardData(tableData,togOff);
+                var randomChk = randomNum+"_chk"
+                var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
+                                    <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)} checked={this.props.doToggleFlag}/><span>
+                                    <label for={randomChk}></label></span>
+                                </div>
+                return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);                    
+                break;
             case "kpi":
             let boxData = story.data;
             let divClass = "text-center";
-              if(story.widthPercent &&  story.widthPercent != 100){
+            if(story.widthPercent &&  story.widthPercent != 100){
                         //let width  = parseInt((story.widthPercent/100)*20);
                         divClass="col-md-4 bgStockBox";
-              }
-			 return(
-			<div className={divClass}>
-               
-			    <h3 className="text-center xs-m-0">{boxData.value}
-				<br/>
-				<small>{boxData.text}</small>
-				</h3>
-			    
+            }
+            return(
+            <div className={divClass}>
+            
+                <h3 className="text-center xs-m-0">{boxData.value}
+                <br/>
+                <small>{boxData.text}</small>
+                </h3>
+                
                 
             </div>
 			);
