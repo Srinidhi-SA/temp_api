@@ -928,7 +928,7 @@ def create_model_autoML(dataset_object_id=None, config=None):
                 "name":data['model_name'],
                 "app_id":2,
                 "mode":"autoML",
-                "email": config['email'],
+                "email": data['email'],
                 "config":{}
             }
 
@@ -1046,7 +1046,7 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                 result = r.json()
                 access_token = result['access_token']
                 content = "AutoML Dataupload successful. Model is created."
-                mail('send',access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
+                mail('send',access_token=access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
             else:
                 pass
         else:
@@ -1103,7 +1103,9 @@ def send_my_messages(access_token,return_mail_id,subject,content,file_name=None)
         },
         "SaveToSentItems": "true",
   }
-
+  from api.helper import make_api_call
+  import requests
+  
   r = make_api_call('POST', get_messages_url, access_token,payload = payload)
   if (r.status_code == requests.codes.ok):
     print "Mail Sent"
