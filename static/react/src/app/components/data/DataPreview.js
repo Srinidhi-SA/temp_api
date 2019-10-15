@@ -79,7 +79,7 @@ export class DataPreview extends React.Component {
   // }
 
   componentWillMount() {
-    this.props.dispatch(getAllDataList());
+    // this.props.dispatch(getAllDataList());
     console.log("------------------");
     console.log(this.props);
     console.log("data prevvvvvvvvvvvvvvvvvvvv$$$$$$$$$$$5555555555555555555555555555555555555555555555$$$$$");
