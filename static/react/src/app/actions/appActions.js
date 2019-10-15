@@ -1256,6 +1256,7 @@ export function handleModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -1273,23 +1274,24 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
       Dialog.CancelAction(), Dialog.OKAction(() => {
         if (title == RENAMEMODEL){
           getAllModelList(store.getState().apps.currentAppId,dispatch)
-          
           let letters = /^[0-9a-zA-Z\-_\s]+$/;
-          let allModlLst = Object.values(store.getState().apps.allModelList)
+          let allModlLst = Object.values(store.getState().apps.allModelList);
+
           if ($("#idRenameModel").val() === "") {
-            bootbox.alert("Please enter model name");
-                  return false;
-          } else if ($("#idRenameModel").val() != "" && $("#idRenameModel").val().trim() == "") {
-                  bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
-                  return false;
-          } else if (letters.test($("#idRenameModel").val()) == false){
-              bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
-              return false;
-          } else if(!(allModlLst.filter(i=>i.name == $("#idRenameModel").val()) == "") ){
-              bootbox.alert(statusMessages("warning", "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.", "small_mascot"));
-              return false;
+            document.getElementById("ErrorMsg").innerHTML = "Please enter a model name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)          
+          }else if ($("#idRenameModel").val() != "" && $("#idRenameModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid model name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if (letters.test($("#idRenameModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == $("#idRenameModel").val().toLowerCase()) == "") ){
+            document.getElementById("ErrorMsg").innerHTML = "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else{
+            renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
           }
-          renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
         }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
