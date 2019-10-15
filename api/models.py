@@ -826,6 +826,7 @@ class Trainer(models.Model):
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
+    email = models.EmailField(null=True, blank=True)
 
 
 
