@@ -6296,7 +6296,7 @@ def get_all_signals(request):
         user_id = request.user.id
         print user_id
         signalList = dict()
-        job_obj = Signals.objects.filter(created_by_id=user_id)
+        job_obj = Insight.objects.filter(created_by_id=user_id)
         for index, i in enumerate(job_obj):
             signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allSignalList': signalList})
