@@ -752,15 +752,20 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
     actions: [
       Dialog.CancelAction(), 
       Dialog.OKAction(() => {
+        let letters = /^[0-9a-zA-Z\-_\s]+$/;
         var allSignalList=store.getState().signals.allSignalList;
         console.log(allSignalList,"inside ok action")
         if($("#idRenameSignal").val()==""){
               document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
               showRenameDialogBox(slug, dialog, dispatch, name)
         }
+        else if (!letters.test($("#idRenameSignal").val())){
+              document.getElementById("ErrorMsg").innerHTML = "Please enter name in a correct format. It should not contain special characters @,#,$,%,!,&.";
+              showRenameDialogBox(slug, dialog, dispatch, name)
+        }
        else if(Object.values(allSignalList).map(i=>i.name.toLowerCase()).includes($("#idRenameSignal").val().toLowerCase())){
-          document.getElementById("ErrorMsg").innerHTML = "Signal with same name already exists.";
-          showRenameDialogBox(slug, dialog, dispatch, name)
+              document.getElementById("ErrorMsg").innerHTML = "Signal with same name already exists.";
+              showRenameDialogBox(slug, dialog, dispatch, name)
         }else{
           renameSignal(slug, dialog, $("#idRenameSignal").val(), dispatch)
         }

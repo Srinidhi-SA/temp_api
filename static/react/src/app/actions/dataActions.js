@@ -864,12 +864,17 @@ function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
+                    let letters = /^[0-9a-zA-Z\-_\s]+$/;
                     var datalist=store.getState().datasets.dataList.data;
                     var alldataSets=store.getState().datasets.allDataSets.data;
-                    if($("#idRenameSignal").val()==""){
+                    if($("#idRenameDataset").val()==""){
                         document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
                         showRenameDialogBox(slug, dialog, dispatch, name)
                   }
+                  else if (!letters.test($("#idRenameDataset").val())){
+                    document.getElementById("ErrorMsg").innerHTML = "Please enter name in a correct format. It should not contain special characters @,#,$,%,!,&.";
+                    showRenameDialogBox(slug, dialog, dispatch, name)
+                   }
                      else if(datalist!="" && datalist.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
                         document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
                         showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
