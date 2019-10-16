@@ -25,6 +25,7 @@ import { options } from "react-bootstrap-dialog";
         regression_selectedTechnique: store.apps.regression_selectedTechnique,
         regression_crossvalidationvalue: store.apps.regression_crossvalidationvalue,
         metricSelected: store.apps.metricSelected,
+        allModelList: store.apps.allModelList,
     };
 })
 
@@ -51,7 +52,10 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-
+        
+        let allModlLst = Object.values(this.props.allModelList)
+        
+        var creatModelName = $('#createModelName').val();
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
@@ -62,17 +66,18 @@ export class ModelVariableSelection extends React.Component {
         } else if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        } else if ($('#createModelName').val() != "" && $('#createModelName').val().trim() == "") {
+        } else if (creatModelName != "" && creatModelName.trim() == "") {
             bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
-        } else if (letters.test(document.getElementById("createModelName").value) == false){
-
-            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters @,#,$,%,!,&.", "small_mascot"));
+        } else if (letters.test(creatModelName) == false){
+            bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
             $('#createModelName').val("").focus();
             return false;
-
-        }
+        } else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == creatModelName.toLowerCase()) == "") ){
+			bootbox.alert(statusMessages("warning", "Model by name \""+ creatModelName +"\" already exists. Please enter a new name.", "small_mascot"));
+			return false;
+		}
 
         if (this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION") {
             this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()));
@@ -98,6 +103,18 @@ export class ModelVariableSelection extends React.Component {
     changecrossValidationValue(e) {
         this.props.dispatch(updateCrossValidationValue(e.target.value));
         //this.setState({ crossvalidationvalue: e.target.value});
+    }
+    noOfFolds(e){
+        let foldVal = parseFloat(e.target.value);
+        if(e.target.value == "" || e.target.value == "NaN"){
+            document.getElementById("noOfFolds").innerText = "Please enter a number";
+        }else if(foldVal>20 || foldVal <2){
+            document.getElementById("noOfFolds").innerText = "Value Should be between 2 to 20";
+        }else if((foldVal^0) != foldVal){
+            document.getElementById("noOfFolds").innerText = "Decimals are not allowed";
+        }else{
+            document.getElementById("noOfFolds").innerText = "";
+        }
     }
     render() {
         console.log("Create Model Variable Selection  is called##########3");
@@ -165,8 +182,8 @@ export class ModelVariableSelection extends React.Component {
                         <div class="form-group">
                             <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                             <div class="col-lg-8">
-                                <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={20} value={store.getState().apps.regression_crossvalidationvalue} />
-
+                                <input type="number" name="" class="form-control" required={true} id="noOffolds" onInput={this.noOfFolds.bind(this)} onChange={this.changecrossValidationValue.bind(this)} min={2} max={20} value={store.getState().apps.regression_crossvalidationvalue} />
+                            <div className="text-danger" id="noOfFolds"></div>                            
                             </div>
                         </div> :
                         <div id="range">
@@ -268,7 +285,7 @@ export class ModelVariableSelection extends React.Component {
                                     <div class="col-md-4">
                                         <div class="form-group xs-ml-10 xs-mr-10">
                                             <div class="input-group xs-mb-15">
-                                                <input type="text" name="createModelName" required={true} id="createModelName" autocomplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
+                                                <input type="text" name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
                                                     <button type="submit" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>

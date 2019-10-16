@@ -171,7 +171,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
+    if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
@@ -399,7 +399,20 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 if(analysisList[i].name == evt.name){
                     for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                         if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-                            analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                            if($("#"+evt.id).val() != ""){
+                                let cusNum =  parseFloat($("#"+evt.id).val());
+                                if((cusNum^0) != cusNum){
+                                    let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
+                                    bootbox.alert(errormsg);
+                                    return;
+                                }else if(cusNum <= 0){
+                                    let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
+                                    bootbox.alert(errormsg);
+                                    return;
+                                }else{
+                                    analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                                }
+                            }
                         }
                     }
                     break;
@@ -417,7 +430,20 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                     analysisList[i].status = false;
                 for(var j=0;j<analysisList[i].binSetting.length;j++){
                     if(evt.id == j){
-                        analysisList[i].binSetting[j].value = parseInt(evt.value);
+                        if(evt.value != ""){
+                            let binNum =  parseFloat(evt.value);
+                            if((binNum^0) != binNum){
+                                let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else if(binNum <= 0){
+                                let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else{
+                                analysisList[i].binSetting[j].value = parseInt(evt.value);                                
+                            }
+                        }
                     }
                 }
                 break;
@@ -699,7 +725,12 @@ export function updateSelectedVariables(evt){
 
 }
 
-
+export function updateSelectedVariablesAction(value, dispatch){
+    return {
+        type: "CLEAR_SELECTED_VARIABLES",
+        value
+      }
+  }
 
 export function showDataPreview() {
     return {
@@ -806,12 +837,12 @@ function deleteDatasetAPI(slug){
 
 
 
-export function handleRename(slug,dialog,name){
+export function handleRename(slug,dialog,name,allDataList,dataList){
     return (dispatch) => {
-        showRenameDialogBox(slug,dialog,dispatch,name)
+        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)
     }
 }
-function showRenameDialogBox(slug,dialog,dispatch,name){
+function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
     const customBody = (
 			<div className="row">
 			<div className="col-md-4">
@@ -821,6 +852,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+            <div className="text-danger" id="ErrorMsg"></div>
             </div>
 			</div>
 		</div>
@@ -832,7 +864,17 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+                     if(dataList!="" && dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
+                      }
+                      else if(allDataList!="" && allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)  
+                      }
+                      else{
+                      renameDataset(slug,dialog,$("#idRenameDataset").val(),allDataList,dataList,dispatch)
+                      }
                   })
                   ],
                   bsSize: 'medium',
@@ -843,7 +885,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
     });
 }
 
-function renameDataset(slug,dialog,newName,dispatch){
+function renameDataset(slug,dialog,newName,allDataList,dataList,dispatch){
     dispatch(showLoading());
     Dialog.resetOptions();
     return renameDatasetAPI(slug,newName).then(([response, json]) =>{
@@ -1442,12 +1484,12 @@ export function addComponents(colSlug){
         }
 
         if(dataColumnRemoveValues.length == 0){
-            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
         }if(dataColumnReplaceValues.length == 0){
-            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
         }
 
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
@@ -1484,10 +1526,10 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.id+1;
-                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
             }else{
-                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
@@ -1499,9 +1541,9 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.replaceId+1;
-                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }else{
-                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnReplaceValues(dataColumnReplaceValues))

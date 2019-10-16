@@ -51,35 +51,219 @@ export class CreateSignalLoader extends React.Component {
                 }
             },DYNAMICLOADERINTERVAL)}
 
-        let imgsrc_url=STATIC_URL+"assets/images/Processing.gif"
+        let imgsrc_url=STATIC_URL+"assets/images/Processing_mAdvisor.gif"
+		$('#text-carousel').carousel();
         return (
                 <div id="createSignalLoader">
 
                 <Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
 
                 <Modal.Body style={{marginBottom:"0"}}>
-                <div className="row">
-                <div className="col-md-12">
-                <div className="panel xs-mb-0">
-                  <div className="panel-body no-border">
-                    <h4 className="text-center"><br/>
-                      <img src={imgsrc_url}/><br/>
-                      {store.getState().signals.createSignalLoaderValue >= 0?<h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 class="loaderValue" style={{display:"block", textAlign: "center", paddingTop: "15px" }}>In Progress</h5>}
-                      <br/> {store.getState().signals.loaderText}
-                    </h4>
+                
+				
+				<div className="row">
+              <div className="col-md-12">
+                <div className="panel xs-mb-0 modal_bg_processing">
+                  <div className="panel-body no-border xs-p-0">
+					
+				<div id="text-carousel" class="carousel slide vertical" data-ride="carousel">
 
-                    {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body">
+				<div class="row">
+				<div class="col-xs-offset-1 col-xs-10">
+				<div class="carousel-inner">
+				<div class="item active">
+				<div class="carousel-content">
+					<h4 className="text-center">
+					mAdvisor - Data scientist in a box 
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					One click AutoML solution 
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Automated AI and Machine Learning Techniques with zero manual intervention 
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					User friendly interface for Business users with one click solution
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Advanced feature engineering options in analyst mode
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Build predictive models and deploy them for real-time prediction on unseen data
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Suitable for datasets of any size
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Gives you best results from multiple models
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Expandable and scalable adoption of new use cases
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					APD helps users to analyze and create data stories from large volumes of data
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Uses statistical techniques and machine learning algorithms to identify patterns within data sets
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Get insights and conclusive analysis in natural language
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Responsive visualization layer help to create intuitive analysis and bring data to life
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Import dataset from various sources and channels like, Local file system,  MySQL, MSSQL, SAP HANA, HDFS and S3
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Customer portfolio analysis using Robo-Advisor
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Insights about stock price using news article contents in Stock-Sense
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					mAdvisor Narratives for BI - automated insights engine extension for BI platforms such as Qlik Sense, Tableau, Power BI
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Narratives for BI - Translates data from charts and visualization into meaningful summaries
+				</h4>
+				</div>
+				</div>				
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Flexible deployment options - both cloud and on-premise deployments available
+				</h4>
+				</div>
+				</div>
+				<div class="item">
+				<div class="carousel-content">
+				   <h4 className="text-center">
+					Login using your organization credentials
+				</h4>
+				</div>
+				</div>
+
+				</div>
+				</div>
+				</div>
+
+
+				</div>
+					
+		<img src={imgsrc_url} className="img-responsive"/>
+                       
+                    
+					<div className="modal_stepsBlock xs-p-10">
+					<div className="row">
+						<div className="col-sm-9">
+							<p><b>mAdvisor evaluating your data set</b></p>
+								<ul class="modal-steps">
+									{/*	<li>----</li>*/}
+									<li class="active">{store.getState().signals.loaderText}</li>
+									{/*	<li>----</li>*/}
+								</ul>
+							
+						</div>
+						<div className="col-sm-3 text-center">
+							{store.getState().signals.createSignalLoaderValue >= 0?<h2 className="text-white">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h5>}
+							
+						</div>
+					</div>
+					</div>
+			
+						
+                    {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body hidden">
                       <progress className="prg_bar" value={store.getState().signals.createSignalLoaderValue} max={95}></progress>
+					  
                       {/*<div className="progress-value">
                         <h3>{store.getState().signals.createSignalLoaderValue}
                           %</h3>
                       </div>*/}
+					  
                     </div>:""}
-
                   </div>
                 </div>
               </div>
             </div>
+				
+				
+				
+				
+				
+				
+			 
+			
+			
+			
           </Modal.Body>
           {(this.props.showHide)
             ? (

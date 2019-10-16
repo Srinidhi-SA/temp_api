@@ -71,6 +71,46 @@ export function refreshAppsModelList(props) {
 }
 
 
+export function getAllModelList() {
+  return (dispatch) => {
+    return fetchAllModelList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            console.log(json)
+            dispatch(fetchAllModelSuccess(json))
+        }else{
+          dispatch(fetchAllModelError(json))
+        }
+    })
+  }
+}
+function fetchAllModelList(token) {
+  return fetch(API + '/api/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchAllModelError(json) {
+  return {
+      type: "MODEL_ALL_LIST_ERROR",
+      json
+  }
+}
+export function fetchAllModelSuccess(doc){
+  var data = ""
+  if(doc.allModelList[0]!= undefined){
+      data = doc.allModelList;
+  }
+  return {
+      type: "MODEL_ALL_LIST",
+      data,
+  }
+}
+
+
+
+
+
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -1216,6 +1256,7 @@ export function handleModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -1231,8 +1272,27 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
     body: customBody,
     actions: [
       Dialog.CancelAction(), Dialog.OKAction(() => {
-        if (title == RENAMEMODEL)
-          renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
+        if (title == RENAMEMODEL){
+          getAllModelList(store.getState().apps.currentAppId,dispatch)
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allModlLst = Object.values(store.getState().apps.allModelList);
+
+          if ($("#idRenameModel").val() === "") {
+            document.getElementById("ErrorMsg").innerHTML = "Please enter a model name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)          
+          }else if ($("#idRenameModel").val() != "" && $("#idRenameModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid model name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if (letters.test($("#idRenameModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == $("#idRenameModel").val().toLowerCase()) == "") ){
+            document.getElementById("ErrorMsg").innerHTML = "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else{
+            renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
+          }
+        }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)

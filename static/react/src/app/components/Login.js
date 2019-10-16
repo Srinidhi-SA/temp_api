@@ -84,7 +84,7 @@ export class Login extends React.Component {
                       <div className="login-form">
                         <div className="form-group">
                           <div className="input-group">
-                            <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autocomplete="off" className="form-control"/>
+                            <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autoComplete="off" className="form-control"/>
                             {/*  <span className="input-group-addon">
                               <i className="fa fa-user"></i>
                             </span>*/}

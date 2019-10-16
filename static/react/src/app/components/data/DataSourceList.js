@@ -15,9 +15,10 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize} from "../../helpers/helper";
+import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize,statusMessages} from "../../helpers/helper";
 
 import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetails} from "../../actions/dataSourceListActions";
+import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
   return {
@@ -29,7 +30,9 @@ import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetai
     db_username: store.dataSource.db_host,
     db_port: store.dataSource.db_port,
     db_password: store.dataSource.db_host,
-    selectedDataset: store.datasets.selectedDataSet
+    selectedDataset: store.datasets.selectedDataSet,
+    allDataList:store.datasets.allDataSets,
+    datasets:store.datasets.dataList.data,
   };
 })
 
@@ -42,13 +45,45 @@ export class DataSourceList extends React.Component {
   }
   componentWillMount() {
     this.props.dispatch(getDataSourceList());
+    this.props.dispatch(getAllDataList());
   }
+  // componentDidUpdate(){
+  //   this.props.dispatch(getAllDataList());  
+  // }
   onDrop(files) {
+    var duplicateName="";
+    console.log(this.props.datasets)
     if (files.length > 0) {
+      if(this.props.datasets.length>0){
+        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+      duplicateName=true:"";     
+      }
+    if(this.props.allDataList!=""){
+      // for(var i=0;i<this.props.allDataList.data.length;i++){//datasets.dataList.data[""0""].name
+      //           if(this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase())
+      //           var duplicateName=true
+      //         } 
+      // refactored
+      this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+      duplicateName=true:"";  
+
+            }
+
       if (files[0].size == 0) {
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
-      } else {
+        $("#fileErrorMsg").html("The uploaded file is empty, please upload the correct file");
+      }
+      else if(duplicateName){
+        files[0] = {
+          "name": "",
+          "size": ""
+        };
+        this.props.dispatch(saveFileToStore(files))
+        // bootbox.alert(statusMessages("warning","File name must be unique ."));
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Dataset with same name already exists");
+      }
+       else {
         $("#fileErrorMsg").addClass("visibilityHidden");
         this.props.dispatch(saveFileToStore(files))
       }
@@ -59,7 +94,6 @@ export class DataSourceList extends React.Component {
       };
       this.props.dispatch(saveFileToStore(files))
     }
-
   }
   popupMsg() {
   //  console.log(e.taget.value)
@@ -103,7 +137,7 @@ export class DataSourceList extends React.Component {
             if (this.props.renderDatasets) {
               return (
                 <div>
-                  <div class="form-group col-md-10 pt-10 xs-pl-30">
+                  <div class="form-group col-md-12 pt-10">
                     {msg}
                   </div>
                   <div className="clearfix"></div>
@@ -170,19 +204,28 @@ export class DataSourceList extends React.Component {
         <div>
           <Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
 		  <div className="container-fluid">
-            <Row className="clearfix">
+      <Row className="clearfix">
+            {window.location.href.includes("analyst")&&
               <Col sm={3}>
                 <Nav bsStyle="pills" stacked>
                   {navTabs}
                 </Nav>
               </Col>
+            }
 
-              <Col sm={9}>
+            {window.location.href.includes("analyst")? 
+            <Col sm={9}>
                 <Tab.Content animation>
                   {navTabContent}
                 </Tab.Content>
               </Col>
-
+              :
+              <Col sm={12}>
+                <Tab.Content animation>
+                  {navTabContent}
+                </Tab.Content>
+              </Col>
+            }
             </Row>
 			</div>
           </Tab.Container>

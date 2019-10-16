@@ -73,12 +73,12 @@ export class ModelAlgorithmSelection extends React.Component {
                 }else if(document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Solver Used...","small_mascot");
                     bootbox.alert(msg);
-                    return false;
-                }else if(document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")){
+                    return false;   
+                }else if((document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
                     let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
                     bootbox.alert(msg);
                     return false;
-                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected") && (document.getElementsByClassName("solverGrid")[0].innerText.includes("adam") || document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd") ) ){
                     let msg= statusMessages("warning","Please select Shuffle...","small_mascot");
                     bootbox.alert(msg);
                     return false;
@@ -87,9 +87,12 @@ export class ModelAlgorithmSelection extends React.Component {
                     bootbox.alert(msg);
                     return false;
                 }
+               
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
                 return false;
+
+            
             }
             else{
             this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
@@ -131,6 +134,7 @@ export class ModelAlgorithmSelection extends React.Component {
             return(<Redirect to={_link}/>);
         }
         var algorithmData = this.props.manualAlgorithmData;
+        var algoClass = (this.props.currentAppId == 13) ? "col-md-3" : "col-md-algo";
         if (!$.isEmptyObject(algorithmData)){
             var pageData = "";
             if(this.state.showParameterTuning == false){
@@ -138,7 +142,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     var checkboxId = "check"+Index;
                     return(
                          
-                        <div className="col-md-algo">
+                        <div className= {algoClass}>
 						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
                             <div className="ma-checkbox">
@@ -229,7 +233,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div className="form-group">
                                     <label class="col-md-3 control-label">Hyperparameter Tuning :</label>
                                     <div className="col-md-3">
-                                        <select  class="form-control" onChange={this.changeHyperParameterType.bind(this,data.algorithmSlug)} value={selectedValue}>
+                                        <select  class="form-control hyperTune" onChange={this.changeHyperParameterType.bind(this,data.algorithmSlug)} value={selectedValue}>
                                         {hyperParameterTypes}
                                         </select>
                                     </div>

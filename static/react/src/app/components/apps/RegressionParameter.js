@@ -50,10 +50,7 @@ export class RegressionParameter extends React.Component {
     }
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
-        $(".disNum").prop("disabled",false);
-        $(".learningClsInit").prop("disabled",false);
-        $(".earlyStop").prop("disabled",false);
-        $(".multi").prop("disabled",false);
+        $(".multi").prop("disabled",false); // had doubt,y to add this line; 
         $(".powerT").prop("disabled",true);
         $(".fractionCls").prop("disabled",true);
         $(".nesterovsCls").prop("disabled",true);
@@ -78,11 +75,18 @@ export class RegressionParameter extends React.Component {
             });
         }
     }
+    changeFoldCheck(min,max,e){
+        if(e.target.value < min || e.target.value > max){
+            e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
+        }else if(!Number.isInteger(parseFloat(e.target.value))){
+            e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
+        } else e.target.parentElement.lastElementChild.innerHTML = ""
+    }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
             alert("please enter a valid number")
         else {
-            e.target.parentElement.lastElementChild.innerHTML="";
+            // e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
                 defaultVal: e.target.value
             })
@@ -91,58 +95,58 @@ export class RegressionParameter extends React.Component {
     }
     changeSliderValue(e) {
         this.setState({
-        defaultVal: e.target.value
-        });
-        this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
-    }
+            defaultVal: e.target.value
+            });
+            this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+        }
     selecthandleChange(e){
+        var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
-                $(".learningCls").prop("disabled",false);
-                $(".disNum").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",false);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                // $(".powerT").show();
-                $(".nesterovsCls").prop("disabled",false);
-                $(".momentumCls").prop("disabled",false);
+            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false] //caution:true/false Order should be same as paramsArray order
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
+                }
+              }
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
-
             case "adam":
-                $(".disNum").prop("disabled",false);
-                $(".learningCls").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",false);
-                $(".earlyStop").prop("disabled",false);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",false);
-                $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
-                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                // $(".powerT").hide();
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];//caution:true/false Order should be same as paramsArray order
+           for(i=0;i<=paramsArray.length;i++){
+               for(j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
+               }
+              }
+            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                   // code refactored
                 break;
-
             case "lbfgs":
-                $(".learningCls").prop("disabled",true);
-                $(".disNum").prop("disabled",true);
-                $(".learningClsInit").prop("disabled",true);
-                $(".earlyStop").prop("disabled",true);
-                $(".powerT").prop("disabled",true);
-                $(".shuffleCls").prop("disabled",true);
-                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-                // $(".powerT").hide();
-                $(".nesterovsCls").prop("disabled",true);
-                $(".momentumCls").prop("disabled",true);
+            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];//caution:true/false Order should be same as paramsArray order
+            for(var i=0;i<=paramsArray.length;i++){
+                for(var j=0;j<1;j++){
+                $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
+                }
+             }
+            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                   // code refactored
                 break;
             default : "";
         }
-        if(e.target.className=="form-control single earlyStop" && e.target.value=="true"){
+        if(e.target.className=="form-control single earlyStop" && e.target.value == "true"){
             $(".fractionCls").prop("disabled",false);
         }
-        else{
+        else if(e.target.className=="form-control single earlyStop" && e.target.value == "false"){
+            $(".fractionCls").prop("disabled",true);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "sgd" || e.target.value == "adam") ){
+            $(".fractionCls").prop("disabled",false);
+        }
+        else if($('.earlyStop').val() == "true" && (e.target.value == "lbfgs") ){
             $(".fractionCls").prop("disabled",true);
         }
         console.log(e.target.value);
@@ -150,7 +154,7 @@ export class RegressionParameter extends React.Component {
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
         var validateResult = {"iserror":false,"errmsg":""};
-        validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType);
+        validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType,e);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
             //e.target.focus();
@@ -174,11 +178,8 @@ export class RegressionParameter extends React.Component {
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
             document.getElementById("error").innerHTML="only number allowed";
-        }
-        // else if(!numbers.test($(".fractionCls").val())){
-        //     document.getElementsByClassName("fractionCls .clearfix").innerHTML="only number allowed";
-        // }
-        else if($(".hiddenLayerCls").val() == ""){
+         }
+         else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
         }
     }
@@ -248,83 +249,145 @@ export class RegressionParameter extends React.Component {
                     for (var prop in options) {
                         if(options[prop].selected)
                             selectedValue.push(options[prop].name)
+                            if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){//to run below switch conditon  only for ANN, #1363      
+                            var paramsArrayGrid=[".disNum",".beta1",".learningClsInit",".powerT",".iterationGrid",".epsilonGrid",".momentumCls",
+                            ".learningGrid .multiselect",".shuffleGrid .multiselect"];
+
                         switch(parameterData.name){
                             case"solver":
-                            //parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"
-                            //parameterData.defaultValue.map(i=>i)[0].displayName=="adam"
-                            //parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"
-                            if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
-                        // $(".learningGrid .for_multiselect").addClass("disableGrid");
-                        $(".learningGrid .multiselect").prop("disabled",true); 
-                        $(".disNum").prop("disabled",true);
-                        $(".learningClsInit").prop("disabled",true);
-                        $(".powerT").prop("disabled",true);
-                        $(".shuffleGrid .multiselect").prop("disabled",true);
-                        $(".iterationGrid").prop("disabled",true);
-                        $(".epsilonGrid").prop("disabled",true);
-                        $(".momentumCls").prop("disabled",true);
+                     if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                              (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                              (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd                       
+                            var flagsToSolverAll=[false,false,false,false,false,false,false,false,false,]
+                            
+                            for(var i=0;i<=paramsArrayGrid.length;i++){
+                              for(var j=0;j<1;j++){
+                                 $(paramsArrayGrid[i]).prop("disabled",flagsToSolverAll[i]);
+                                }
+                           } 
 
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                    
+                    }
+                    else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                               
+                                var solverSgdLbfgs=[true,true,false,false,false,true,false,false,false,]
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverSgdLbfgs[i]);
+                                      }
+                                 }
 
-
+                             if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                             document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                              }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                             }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
 
                     }
+                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                                
+                                var solverAdamLbfgs=[false,false,false,true,false,false,true,true,false,];
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamLbfgs[i]);
+                                      }
+                                 }
+                                 
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+
+                    }
+                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                            (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
+                               
+                                var solverAdamSgd=[false,false,false,false,false,false,false,false,false,];
+                                for(var i=0;i<=paramsArrayGrid.length;i++){
+                                    for(var j=0;j<1;j++){
+                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamSgd[i]);
+                                      }
+                                 }
+
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                            
+                    }
+                    else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                            
+                        var solverLbfgs=[true,true,true,true,true,true,true,true,true,];
+                            for(var i=0;i<=paramsArrayGrid.length;i++){
+                                for(var j=0;j<1;j++){
+                                   $(paramsArrayGrid[i]).prop("disabled",solverLbfgs[i]);
+                                  }
+                             }
+
+                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                  }
                     else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
-                            $(".disNum").prop("disabled",false);
-                            $(".learningClsInit").prop("disabled",false);
-                            $(".powerT").prop("disabled",true);
-                            // $(".learningGrid .for_multiselect").addClass("disableGrid");
-                           $(".learningGrid .multiselect").prop("disabled",true);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
-
-
-
-
-
+                        
+                        var solverAdam=[false,false,false,true,false,false,true,true,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverAdam[i]);
+                              }
+                         }
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
                     }
                     else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
-                        $(".disNum").prop("disabled",true);
-                        $(".learningClsInit").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",true);
-                        $(".momentumCls").prop("disabled",false);
-
-
-
-
-
-                    }
+                        
+                        var solverSgd=[true,true,false,false,false,true,false,false,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverSgd[i]);
+                              }
+                         }
+                       
+                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                                                   
+                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";                          
+                    }              
                     else{
-                        $(".disNum").prop("disabled",false);
-                        $(".learningClsInit").prop("disabled",false);
+                        
+                        var solverdefault=[false,false,false,false,false,false,false,false,false,];
+                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                            for(var j=0;j<1;j++){
+                               $(paramsArrayGrid[i]).prop("disabled",solverdefault[i]);
+                              }
+                         }
                         $(".earlyStop").prop("disabled",false);
-                        $(".powerT").prop("disabled",false);
-                        // $(".learningGrid .for_multiselect").removeClass("disableGrid");
-                        $(".learningGrid .multiselect").prop("disabled",false);
-                        $(".shuffleGrid .multiselect").prop("disabled",false);
-                        $(".iterationGrid").prop("disabled",false);
-                        $(".epsilonGrid").prop("disabled",false);
-                        $(".momentumCls").prop("disabled",true);
-
-
-
-
                     }
                     break;
                     default:
                        "";
-            
-
-                }
-
-
-                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
+             }
+            }
+       optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
             } 
             }
             else{
@@ -354,6 +417,8 @@ export class RegressionParameter extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     switch(parameterData.displayName){
                         case"Beta 1":
+                        var  classN= "form-control beta1";
+                        break;
                         case"Beta 2":
                         var  classN= "form-control disNum";
                         break;
@@ -371,11 +436,15 @@ export class RegressionParameter extends React.Component {
                         break;
                         case"Alpha":
                         var type= "text";
-                        classN= "form-control";
+                        classN= "form-control alphaCls";
                         break;
                         case"Batch Size":
                         var type= "text";
-                        classN= "form-control";
+                        classN= "form-control batchCls";
+                        break;
+                        case"Hidden Layer Size":
+                        var type= "text";
+                        classN= "form-control hiddenCls";
                         break;
                         default:
                         classN= "form-control";
@@ -385,7 +454,7 @@ export class RegressionParameter extends React.Component {
                     return (
                          <div className="row">
                         <div className="col-md-2">
-                            <input type={type} className={classN} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                         </div>
@@ -401,6 +470,19 @@ export class RegressionParameter extends React.Component {
                         case"No of Iteration":
                            sliderclassN= "form-control iterationGrid";
                         break;
+                        case"Maximum Solver Iterations":
+                        if(parameterData.defaultValue==200)
+                           sliderclassN= "form-control maxSolverGrid";
+                           else 
+                           sliderclassN="form-control";
+                        break;
+                        case"Convergence tolerance of iterations(e^-n)":
+                        if(parameterData.neural)
+                            sliderclassN= "form-control convergGrid";
+                            else 
+                            sliderclassN= "form-control";
+
+                        break;
                         default:
                            sliderclassN="form-control";
                         }
@@ -414,7 +496,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g.  5-20, 10-400, 30"/>
+                                    <input type="text" className={sliderclassN} value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<1 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"} />
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
@@ -439,28 +521,35 @@ export class RegressionParameter extends React.Component {
                     switch(parameterData.displayName){
                         case"Epsilon":
                         var cls= "col-xs-10 epsilonCls";
+                        var sliderTextCls="form-control inputWidth epsilonCls"
+                    
                         break;
                         case"No of Iteration":
                         var  cls= "col-xs-10 iterationCls";
+                        var sliderTextCls="form-control inputWidth iterationCls"
+
                         break;
                         default:
                         var cls = "col-xs-10";
+                        var sliderTextCls="form-control inputWidth"
+
                         break;
                     }
 
            
                     return (
                             <div className="row">                            
-                            <div className="col-md-6 col-sm-2">
-                                
+                                <div className="col-md-6 col-sm-2">
+
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
                                     <div className={cls}>
-                                    <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
+                                        <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min}/>
                                     </div>
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
-                                 
+                            
                             </div>
-                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)} disabled/>
+                            <div className="col-md-4 col-sm-4"><input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } min = {this.state.min} max = {this.state.max} className={sliderTextCls} value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onInput={this.changeFoldCheck.bind(this,this.state.min,this.state.max)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)}/>
+                           {/* #1361 added onKeyDown to prevent e */}
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -503,7 +592,7 @@ export class RegressionParameter extends React.Component {
                     <div className="row">
                     <div className="col-md-6">
                     <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
-                    <div className="text-danger" id="error"></div>
+                    <div className="text-danger range-validate" id="error"></div>
                     </div>
                     </div>
                 );
@@ -513,7 +602,6 @@ export class RegressionParameter extends React.Component {
        
     }
     render() {
-        console.log("card is called!!!! with data:----");
         let parameterData = this.props.parameterData;
         let tune = this.props.isTuning;
         const parameterElements = this.renderParameterData(parameterData,tune);
@@ -525,12 +613,59 @@ export class RegressionParameter extends React.Component {
 
     }
     
-    validateTextboxValue(textboxVal,min,max,type){
+    validateTextboxValue(textboxVal,min,max,type,e){
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
-        if(!numbers.test(textboxVal)){
-            return {"iserror":true,"errmsg":"only number allowed"};
+        var letter = /[a-zA-Z]/;
+        if(letter.test(textboxVal)){
+            return {"iserror":true,"errmsg":"only numbers allowed here"};
         }
+            if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
+                if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
+                    return {"iserror":true,"errmsg":"only numbers allowed"};
+                }
+            }
+         //(Review it)Changes from here to 
+       if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
+        //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
+        if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="convergGrid" && letter.test($('.convergGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="epsilonGrid" && letter.test($('.epsilonGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="iterationGrid" && letter.test($('.iterationGrid').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+
+       }
+       //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
+     if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
+          return {"iserror":true,"errmsg":"only numbers allowed"};
+       }
+       else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
+        return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="beta1" && !numbers.test($('.beta1').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="disNum" && !numbers.test($('.disNum').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="hiddenCls" && letter.test($('.hiddenCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="hiddenCls" && ($('.hiddenCls').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        
+
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
@@ -548,24 +683,35 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const from = match[1] ? parseFloat(match[1], 10) : min;
                 const to = match[3] ? parseFloat(match[3], 10) : max;
-                if (from > to || from < min || from > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
-                if (to > max || to < min || to > max)
-                return {"iserror":true,"errmsg":"Invalid Range"};
+                if (from > to || from < min || from > max) //ex:grid search 10-400 "check for both values range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                if (to > max || to < min || to > max)//ex:grid search  10-400 "if right value is more then range"
+                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
             }
             else{
-                var isSingleNumber = parts[i].split(/-|\u3001/);
-                if(isSingleNumber.length > 1)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                const singleNumber = parseFloat(parts[i], 10);
-                if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
-                return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
-                //1310
-                var checkType = this.checkType(parts[i],type,min,max);
-                if(checkType.iserror == true)
-                return {"iserror":true,"errmsg":checkType.errmsg};
+                if(this.props.parameterData.name != "max_leaf_nodes"){
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if(isSingleNumber.length > 1)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    if(this.props.parameterData.displayName == "Random Seed" && ((parts[i]^0) != parts[i]))
+                    return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    const singleNumber = parseFloat(parts[i], 10);
+                    // if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
+                    if ((singleNumber > max || singleNumber < min )) /* type.indexOf(null) breaking the validation */
+                    return {"iserror":true,"errmsg":"Valid Range is "+min+"-"+max};
+                    //1310
+                    var checkType = this.checkType(parts[i],type,min,max);
+                    if(checkType.iserror == true)
+                    return {"iserror":true,"errmsg":checkType.errmsg};
+                }else{
+                    var isSingleNumber = parts[i].split(/-|\u3001/);
+                    if((parts[i]^0) != parts[i])
+                        return {"iserror":true,"errmsg":"Decimals are not allowed"};
+                    if(parts[i] <= 0)
+                        return {"iserror":true,"errmsg":"Value should be greater than zero"};
+                }
             }
         }
     }
@@ -585,6 +731,7 @@ export class RegressionParameter extends React.Component {
             var allowedTypes = "";
             var wrongCount = 0;
             var that = this;
+            if(!this.props.algorithmData[4]){
             $.each(type,function(k,v){
                 if(v == "float"){
                     (k == 0)?allowedTypes = "Decimals" : allowedTypes+= ", Decimals";
@@ -601,6 +748,7 @@ export class RegressionParameter extends React.Component {
                     that.checkType(val,type,min,max);
                 }
             });
+        }
             if(wrongCount != 0 && wrongCount == type.length)
             return {"iserror":true,"errmsg":"Only "+allowedTypes+" are allowed"};
             else

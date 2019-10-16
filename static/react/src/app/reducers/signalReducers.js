@@ -255,7 +255,6 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "ZOOM_CHART":
     {
         return {
