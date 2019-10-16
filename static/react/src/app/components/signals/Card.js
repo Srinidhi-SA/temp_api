@@ -25,8 +25,11 @@ yformat = null,
 cardData = {};
 
 @connect((store) => {
-    return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
-        chartObject: store.chartObject.chartObj,currentAppDetails: store.apps.currentAppDetails};
+    return {login_response: store.login.login_response,
+        signal: store.signals.signalAnalysis,
+        chartObject: store.chartObject.chartObj,
+        currentAppDetails: store.apps.currentAppDetails,
+    };
 })
 
 export class Card extends React.Component {
@@ -106,34 +109,34 @@ export class Card extends React.Component {
                 return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
             case "toggle":
-            var tableData = [];
-            tableData.push(story.data.toggleon);
-            var toggleData =  this.renderCardData(tableData,"toggleOn");
-            tableData = [];
-            tableData.push(story.data.toggleoff);
-             var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
-             var randomChk = randomNum+"_chk"
-            var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-            <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)}/><span>
-            <label for={randomChk}></label></span>
-            </div>
-            return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);
-            break;
+                var tableData = [];
+                tableData.push(story.data.toggleon);
+                var toggleData =  this.renderCardData(tableData,"toggleOn");
+                tableData = [];
+                tableData.push(story.data.toggleoff);
+                 var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
+                var randomChk = randomNum+"_chk"
+                var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
+                                    <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)} /><span>
+                                    <label for={randomChk}></label></span>
+                                </div>
+                return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);                    
+                break;
             case "kpi":
             let boxData = story.data;
             let divClass = "text-center";
-              if(story.widthPercent &&  story.widthPercent != 100){
+            if(story.widthPercent &&  story.widthPercent != 100){
                         //let width  = parseInt((story.widthPercent/100)*20);
                         divClass="col-md-4 bgStockBox";
-              }
-			 return(
-			<div className={divClass}>
-               
-			    <h3 className="text-center xs-m-0">{boxData.value}
-				<br/>
-				<small>{boxData.text}</small>
-				</h3>
-			    
+            }
+            return(
+            <div className={divClass}>
+            
+                <h3 className="text-center xs-m-0">{boxData.value}
+                <br/>
+                <small>{boxData.text}</small>
+                </h3>
+                
                 
             </div>
 			);

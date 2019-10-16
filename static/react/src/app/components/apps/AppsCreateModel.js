@@ -115,7 +115,7 @@ export class AppsCreateModel extends React.Component {
         } else if (letters.test(modelName) == false){
             bootbox.alert(statusMessages("warning", "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.", "small_mascot"));
             return false;
-		} else if(!(allModlLst.filter(i=>i.name == modelName) == "") ){
+		} else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == modelName.toLowerCase()) == "") ){
 			bootbox.alert(statusMessages("warning", "Model by name \""+ modelName +"\" already exists. Please enter a new name.", "small_mascot"));
 			return false;
 		}
