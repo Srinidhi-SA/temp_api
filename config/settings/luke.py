@@ -18,9 +18,9 @@ DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
-        'HOST': 'localhost',
+        'USER': 'root',
+        'PASSWORD': 'Marlabs@123',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
@@ -143,8 +143,8 @@ DEPLOYMENT_ENV = "prod"
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
+CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -179,7 +179,7 @@ KYLO_SERVER_DETAILS = {
 CELERY_ONCE_CONFIG = {
   'backend': 'celery_once.backends.Redis',
   'settings': {
-    'url': 'redis://localhost:6379/',
+    'url': 'redis://172.31.53.141:6379/',
     'default_timeout': 60 * 60
   }
 }

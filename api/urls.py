@@ -134,7 +134,6 @@ urlpatterns = [
     url(r'^request_from_alexa', views.request_from_alexa, name="request_from_alexa"),
     url(r'^get_all_models', views.get_all_models, name="get_all_models"),
     url(r'^get_all_signals', views.get_all_signals, name="get_all_signals"),
-    url(r'^down_msp', views.down_msp, name="down_msp"),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
 
