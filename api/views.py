@@ -6291,6 +6291,7 @@ def get_all_models(request):
             modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allModelList': modelList})
 
+
 def get_all_signals(request):
     if request.method == 'GET':
         user_id = request.user.id
@@ -6317,3 +6318,16 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 pass
     else:
         return False
+
+
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def down_msp(request):
+    import weasyprint
+    if request.method == 'GET':
+        pdf = weasyprint.HTML(
+            'https://madvisor2.marlabsai.com/apps/automated-prediction-30vq9q5scd/autoML/models/result_check-0cfcci8gm4').write_pdf()
+        file('result_check.pdf', 'wb').write(pdf)
+        return JsonResponse({'message': 'done'})
