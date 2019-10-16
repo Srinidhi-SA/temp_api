@@ -14,7 +14,6 @@ export default function reducer(state = {
   signal_sorton:null,
   signal_sorttype:null,
   sideCardListFlag:null,
-  doToggleFlag:false,
   loaderText:"Submitting for analysis",
   advanceSettingsModal:false,
   getVarType:null,
@@ -256,16 +255,6 @@ export default function reducer(state = {
         }
       }
       break;
-
-      case "TOGGLE_OFF":
-      {
-        return {
-          ...state,
-          doToggleFlag: action.flag
-        }
-      }
-      break;
-
     case "ZOOM_CHART":
     {
         return {

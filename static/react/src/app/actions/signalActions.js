@@ -757,11 +757,6 @@ export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
 
-export function doToggle(flag){
-  return {
-    type: "TOGGLE_OFF",flag
-  }
-}
 export function handleDecisionTreeTable(evt) {
   var probability = "";
   var probabilityCond = true;
