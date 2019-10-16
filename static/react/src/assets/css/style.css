@@ -5699,7 +5699,8 @@ div#side-menu {
 }
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle {
-	color: #363636
+	color: #363636;
+	text-transform:capitalize;
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle i {
 	color: #849190;
