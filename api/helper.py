@@ -1554,9 +1554,7 @@ def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_e
                         info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
                         id = jsondata['value'][i]['id']
                         if 'sub-label' in info_dict[u_id]['mail'].lower():
-                            print "i got sub-label"
                             check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
-                            print check
                             if check:
                                 info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
                                 info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
@@ -1598,7 +1596,6 @@ def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_e
 
                 except Exception as e:
                     print e
-            print info_dict
             return info_dict
         else:
             return "{0}: {1}".format(r.status_code, r.text)

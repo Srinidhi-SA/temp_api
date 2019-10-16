@@ -924,12 +924,12 @@ def create_model_autoML(dataset_object_id=None, config=None):
             dataset_object = Dataset.objects.get(slug=data['slug'])
             print dataset_object
 
-            model_config = {
-                "name": data['model_name'],
-                "app_id": 2,
-                "mode": "autoML",
+            model_config={
+                "name":data['model_name'],
+                "app_id":2,
+                "mode":"autoML",
                 "email": data['email'],
-                "config": {}
+                "config":{}
             }
 
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
@@ -1048,42 +1048,36 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                 result = r.json()
                 access_token = result['access_token']
                 content = "AutoML Dataupload successful. Model is created."
-                mail('send', access_token, return_mail_id=trainer_object.email, subject='Marlabs-AutoML Success',
-                     content=content)
+
+                mail('send',access_token=access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
+
             else:
                 pass
         else:
             pass
 
 
-def mail(action_type, **kwargs):
+def mail(action_type=None,access_token=None,return_mail_id=None,subject=None,content=None):
     # access_token = access_token
     # If there is no token in the session, redirect to home
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
-        if action_type == 'receive':
-            # ,last_seen = '2019-09-19T04:25:09Z'
-            messages = get_my_messages(access_token, info_dict)
-            messages = json.dumps(messages)
-            return messages
-        elif action_type == 'send':
             try:
-                messages = send_my_messages(access_token, **kwargs)
+                messages = send_my_messages(access_token, return_mail_id, subject, content)
                 if messages[:3] == '202':
                     print "Mail Sent"
-            except:
+            except Exception as e:
+                print e
                 print "Some issue with mail sending module..."
-        else:
-            return "Please enter proper command"
 
-
-def send_my_messages(access_token, return_mail_id, subject, content, file_name=None):
+def send_my_messages(access_token, return_mail_id, subject, content):
     '''
   Replies to the mail with attachments
   '''
     # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
-    get_messages_url = 'https://graph.microsoft.com/v1.0' + '/users/' + return_mail_id + '/sendmail'
+    # get_messages_url = 'https://graph.microsoft.com/v1.0' + '/users/' + settings.OUTLOOK_ID + '/sendmail'
+    get_messages_url = 'https://graph.microsoft.com/v1.0/me/' + '/sendmail'
     # Use OData query parameters to control the results
     #  - Only first 10 results returned
     #  - Only return the ReceivedDateTime, Subject, and From fields
@@ -1107,9 +1101,12 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_name=N
             ]
         },
         "SaveToSentItems": "true",
-    }
 
-    r = make_api_call('POST', get_messages_url, access_token, payload=payload)
+    }
+    from api.helper import make_api_call
+    import requests
+
+    r = make_api_call('POST', get_messages_url, access_token,payload = payload)
     if (r.status_code == requests.codes.ok):
         print "Mail Sent"
         return r.json()
