@@ -498,6 +498,12 @@ class ScoreView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            scorename_list = []
+            score_obj = Score.objects.filter()
+            for index, i in enumerate(score_obj):
+                scorename_list.append(i.name)
+            if data['name'] in scorename_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
