@@ -781,12 +781,15 @@ export function hideDULoaderPopup(){
     }
 }
 export function showDialogBox(slug,dialog,dispatch,evt){
-    var labelTxt = evt.target.text;
+    var labelTxt = (evt.target.text).trim();
     Dialog.setOptions({
         defaultOkLabel: 'Yes',
         defaultCancelLabel: 'No',
     })
-	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
+    if(labelTxt == "Stop")
+        var body_msg=renderHTML(statusMessages("warning","Are you sure you want to stop uploading the selected data set?","small_mascot"))
+    else
+	    var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
     dialog.show({
         title: 'Delete Dataset',
         body: body_msg,
