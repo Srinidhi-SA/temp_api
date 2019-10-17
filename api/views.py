@@ -98,6 +98,12 @@ class SignalView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            signalname_list = []
+            job_obj = Insight.objects.filter()
+            for index, i in enumerate(job_obj):
+                signalname_list.append(i.name)
+            if data['name'] in signalname_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -132,7 +138,6 @@ class SignalView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-
         if 'name' in data:
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
@@ -218,6 +223,12 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            trainername_list = []
+            trainer_obj = Trainer.objects.filter()
+            for index, i in enumerate(trainer_obj):
+                trainername_list.append(i.name)
+            if data['name'] in trainername_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -487,6 +498,12 @@ class ScoreView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            scorename_list = []
+            score_obj = Score.objects.filter()
+            for index, i in enumerate(score_obj):
+                scorename_list.append(i.name)
+            if data['name'] in scorename_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
