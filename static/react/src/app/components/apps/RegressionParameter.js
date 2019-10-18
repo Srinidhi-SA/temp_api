@@ -26,10 +26,13 @@ export class RegressionParameter extends React.Component {
                 min: this.props.parameterData.valueRange[0],
                 max: this.props.parameterData.valueRange[1],
                 defaultVal:this.props.parameterData.defaultValue,
+                name:this.props.parameterData.name,
             };
         else
         this.state = {
             defaultVal:this.props.parameterData.defaultValue,
+            name:this.props.parameterData.name,
+
         };
     }
 
@@ -78,6 +81,18 @@ export class RegressionParameter extends React.Component {
     changeFoldCheck(min,max,e){
         if(e.target.value < min || e.target.value > max){
             e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
+            // if(e.currentTarget.parentElement.outerText!=""){
+            //    $("."+e.target.classList[1]).addClass("regParamFocus");
+            //   }
+            //  else{
+            //   $("."+e.target.classList[1]).removeClass("regParamFocus");
+            //  }
+           if(e.target.parentElement.lastElementChild.innerHTML !=""){
+               $("."+e.target.classList[1]).addClass("regParamFocus");
+            }else
+            $("."+e.target.classList[1]).remove("regParamFocus");
+
+
         }else if(!Number.isInteger(parseFloat(e.target.value))){
             e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
         } else e.target.parentElement.lastElementChild.innerHTML = ""
@@ -100,6 +115,7 @@ export class RegressionParameter extends React.Component {
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
     selecthandleChange(e){
+
         var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
@@ -153,11 +169,20 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
+        if(e.target.value!=""){
+            $("."+e.target.classList[1]).removeClass("regParamFocus");
+            }else if(e.target.value==""){
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+            }
         var validateResult = {"iserror":false,"errmsg":""};
         validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType,e);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
-            //e.target.focus();
+            if(e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg)
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+            else
+            $("."+e.target.classList[1]).removeClass("regParamFocus");
+
         }
         this.setState({
           defaultVal: e.target.value
@@ -178,9 +203,11 @@ export class RegressionParameter extends React.Component {
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
             document.getElementById("error").innerHTML="only number allowed";
+
          }
          else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
+
         }
     }
     handleCheckboxEvents(e){
@@ -190,6 +217,19 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.checked,this.props.type));
     }
     renderParameterData(parameterData,tune){ 
+        $(".activation .multiselect").removeClass("regParamFocus");
+        $(".solverGrid .multiselect").removeClass("regParamFocus");
+        $(".learningGrid .multiselect").removeClass("regParamFocus");
+        $(".shuffleGrid .multiselect").removeClass("regParamFocus");
+        $(".InterceptGrid .multiselect").removeClass("regParamFocus");
+        $(".criterionGrid .multiselect").removeClass("regParamFocus");
+        $(".bootstrapGrid .multiselect").removeClass("regParamFocus");
+        $(".boosterGrid .multiselect").removeClass("regParamFocus");
+        $(".treeGrid .multiselect").removeClass("regParamFocus");
+        $(".batchGrid .multiselect").removeClass("regParamFocus");
+
+
+
         let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             // case "tuple":
@@ -237,10 +277,26 @@ export class RegressionParameter extends React.Component {
                         case"Shuffle":
                             rowCls = "shuffleGrid";
                             break;
-                        case "Verbose":
-                            rowCls = "verboseGrid";
+                        case "Batch Size":
+                            rowCls = "batchGrid";
+                            break;
+                            case "Fit Intercept":
+                            rowCls = "InterceptGrid";
+                            break;
+                            case "Criterion":
+                            rowCls = "criterionGrid";
+                            break;
+                            case "Bootstrap Sampling":
+                            rowCls = "bootstrapGrid";
+                            break;
+                            case "Booster Function":
+                            rowCls = "boosterGrid";
+                            break;
+                            case "Tree Construction Algorithm":
+                            rowCls = "treeGrid";
                             break;
                         default:
+                        
                             rowCls = "row";
                     }  
 
@@ -521,17 +577,36 @@ export class RegressionParameter extends React.Component {
                     switch(parameterData.displayName){
                         case"Epsilon":
                         var cls= "col-xs-10 epsilonCls";
-                        var sliderTextCls="form-control inputWidth epsilonCls"
+                        var sliderTextCls="form-control epsilonCls inputWidth "
                     
                         break;
                         case"No of Iteration":
                         var  cls= "col-xs-10 iterationCls";
-                        var sliderTextCls="form-control inputWidth iterationCls"
+                        var sliderTextCls="form-control iterationCls inputWidth "
 
                         break;
+                        case"Convergence tolerance of iterations(e^-n)":
+                        var  cls= "col-xs-10 convergenceCls";
+                        var sliderTextCls="form-control convergenceCls inputWidth "
+
+                        break;
+                        case"Maximum Solver Iterations":
+                        var  cls= "col-xs-10 maxIterationsCls";
+                        var sliderTextCls="form-control maxIterationsCls inputWidth "
+
+                        case"Max Depth":
+                        var  cls= "col-xs-10 maxDepthCls";
+                        var sliderTextCls="form-control maxDepthCls inputWidth "
+                        
+                    //    case "Minimum Instances For Split"
+
                         default:
                         var cls = "col-xs-10";
-                        var sliderTextCls="form-control inputWidth"
+                        // var sliderTextCls="form-control inputWidth \" "+this.state.name+"\""
+                        var sliderTextCls=`form-control ${this.state.name} inputWidth`
+
+            
+                        // bootbox.alert(statusMessages("warning", "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.", "small_mascot"));
 
                         break;
                     }

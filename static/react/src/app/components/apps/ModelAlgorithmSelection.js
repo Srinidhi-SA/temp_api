@@ -66,27 +66,67 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             if(!isContinueRange || !isContinueMulticheck){
-                if(document.getElementsByClassName("activation")[0].innerHTML.includes("None selected")){
-                    let msg= statusMessages("warning","Please select Activation...","small_mascot");
+             if(document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Fit Intercept...","small_mascot");
                     bootbox.alert(msg);
+                    $(".InterceptGrid .multiselect").addClass("regParamFocus");
+                    
                     return false;
                 }else if(document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Solver Used...","small_mascot");
                     bootbox.alert(msg);
+                    $(".solverGrid .multiselect").addClass("regParamFocus");
+
                     return false;   
-                }else if((document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
-                    let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
+                }else if(document.getElementsByClassName("criterionGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Criterion...","small_mascot");
                     bootbox.alert(msg);
+                    $(".criterionGrid .multiselect").addClass("regParamFocus");
+                    
+                    return false;
+                }else if(document.getElementsByClassName("bootstrapGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Bootstrap Sampling...","small_mascot");
+                    bootbox.alert(msg);
+                    $(".bootstrapGrid .multiselect").addClass("regParamFocus");
+                    
+                    return false;
+                }else if(document.getElementsByClassName("boosterGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Booster Function...","small_mascot");
+                    bootbox.alert(msg);
+                    $(".boosterGrid .multiselect").addClass("regParamFocus");
+                    
+                    return false;
+                }else if(document.getElementsByClassName("treeGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Tree Construction Algorithm...","small_mascot");
+                    bootbox.alert(msg);
+                    $(".treeGrid .multiselect").addClass("regParamFocus");
+                    
+                    return false;
+                } else if(document.getElementsByClassName("activation")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Activation...","small_mascot");
+                    bootbox.alert(msg);
+                    $(".activation .multiselect").addClass("regParamFocus");
                     return false;
                 }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected") && (document.getElementsByClassName("solverGrid")[0].innerText.includes("adam") || document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd") ) ){
                     let msg= statusMessages("warning","Please select Shuffle...","small_mascot");
                     bootbox.alert(msg);
+                    $(".shuffleGrid .multiselect").addClass("regParamFocus");
+
                     return false;
-                }else if(document.getElementsByClassName("verboseGrid")[0].innerHTML.includes("None selected")){
-                    let msg= statusMessages("warning","Please select Verbose...","small_mascot");
+                }else if((document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
+                    let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
                     bootbox.alert(msg);
+                    $(".learningGrid .multiselect").addClass("regParamFocus");
+
+                    return false;
+                }else if(document.getElementsByClassName("batchGrid")[0].innerHTML.includes("None selected")){
+                    let msg= statusMessages("warning","Please select Batch Size...","small_mascot");
+                    bootbox.alert(msg);
+                    $(".batchGrid .multiselect").addClass("regParamFocus");
+                    
                     return false;
                 }
+
                
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
