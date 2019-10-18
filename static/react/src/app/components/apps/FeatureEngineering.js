@@ -382,6 +382,12 @@ export class FeatureEngineering extends React.Component {
     });
   }
 
+  handleBack=()=>{
+    const appId = this.props.match.params.AppId;
+    const slug = this.props.match.params.slug;
+    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/dataCleansing?from=feature_Engineering`);
+  }
+
   render() {
     console.log("FeatureEngineering render method is called...");
     this.feTableSorter();
@@ -562,7 +568,8 @@ export class FeatureEngineering extends React.Component {
                     </div>
                   </div>
                   <div className="panel-body box-shadow">
-                    <div className="buttonRow text-right" id="dataPreviewButton">
+                  <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                    <div className="buttonRow" id="dataPreviewButton" style={{float:"right",display:"inline-block"}}>
                       <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
                     <div class="xs-p-10"></div>

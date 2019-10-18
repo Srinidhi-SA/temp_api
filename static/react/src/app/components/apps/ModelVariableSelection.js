@@ -54,9 +54,13 @@ export class ModelVariableSelection extends React.Component {
 }
 
     getValueOfFromParam() {
+        if(this.props.location === undefined){
+        }
+       else{
         const params = new URLSearchParams(this.props.location.search);
         return params.get('from');
     }
+}
     handleRangeSlider(e) {
         this.props.dispatch(updateTrainAndTest(e.target.value))
     }

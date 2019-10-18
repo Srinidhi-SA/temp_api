@@ -75,9 +75,13 @@ export class DataVariableSelection extends React.Component {
     }
 }
     getValueOfFromParam() {
-        const params = new URLSearchParams(this.props.location.search);
-        return params.get('from');
-    }
+        if(this.props.location === undefined){
+         }
+        else{
+            const params = new URLSearchParams(this.props.location.search);
+            return params.get('from');
+        }
+  }
     componentDidUpdate(){
         var count = getTotalVariablesSelected();
         if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){

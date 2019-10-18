@@ -31,6 +31,7 @@ import {
   outlierRemovalSelectedAction,
   variableSelectedAction,
   checkedAllAction,
+  dataCleansingCheckUpdate,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
   dataCleansingDataTypeChange
@@ -71,6 +72,10 @@ export class DataCleansing extends React.Component {
   }
 
   componentWillMount() {
+    const from = this.getValueOfFromParam();
+    if (from === 'feature_Engineering') {
+    }
+    else {
     if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
       window.history.go(-1);
     }
@@ -97,6 +102,16 @@ export class DataCleansing extends React.Component {
         return "";
       this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
     });
+  }
+  }
+
+  getValueOfFromParam() {
+    if(this.props.location === undefined){
+    }
+   else{
+    const params = new URLSearchParams(this.props.location.search);
+    return params.get('from');
+}
   }
 
   componentDidMount() {
@@ -196,6 +211,8 @@ tableHead.addEventListener('click', function (e) {
 
 
   variableCheckboxOnChange(event, item) {
+    const checkBoxIndex = event.target.dataset["index"];
+    this.props.dispatch(dataCleansingCheckUpdate(checkBoxIndex, event.target.checked));
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.dataset["colslug"], event.target.checked));
     if (Object.values(this.props.datasets.selectedVariables).includes(false)) {
       this.props.dispatch(checkedAllAction(false));
@@ -285,7 +302,7 @@ tableHead.addEventListener('click', function (e) {
     const slug = this.props.match.params.slug;
     this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel?from=data_cleansing`);
   }
-  
+
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
     let disble = false;
     if((missingnum)==0){
@@ -339,7 +356,7 @@ tableHead.addEventListener('click', function (e) {
     if (this.props.dataPreview != null) {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
-      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => {
         let outnum = 1;
         let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
@@ -349,7 +366,7 @@ tableHead.addEventListener('click', function (e) {
             <tr className={('all ' + item.columnType)} id="mssg">
               <td class="filter-false sorter-false">
                 <div class="ma-checkbox inline">
-                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)} />
+                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={item.checked} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)} />
                   <label for={item.slug}> </label>
                 </div>
               </td>
@@ -409,7 +426,7 @@ tableHead.addEventListener('click', function (e) {
                     <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
                     <div class="col-sm-7">
                       <div className="content-section implementation">
-                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" checked={this.state.value1} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
+                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" defaultChecked={this.props.datasets.duplicateAttributes} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
                       </div>
                     </div>
                   </div>
@@ -418,7 +435,7 @@ tableHead.addEventListener('click', function (e) {
                     <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                     <div class="col-sm-7">
                       <div className="content-section implementation">
-                        <InputSwitch id="rd2" checked={this.state.value2} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+                        <InputSwitch id="rd2" defaultChecked={this.props.datasets.duplicateObservations} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
                       </div>
                     </div>
                   </div>
