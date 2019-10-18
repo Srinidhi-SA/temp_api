@@ -750,7 +750,7 @@ from celery.decorators import periodic_task
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
-
+    
     if mails is not None:
         print "All set to proceed to upload dataset."
 
@@ -777,7 +777,7 @@ def trigger_outlook_periodic_job():
                         data['email'] = value['emailAddress']['address']
                 except Exception as error:
                     print error
-            if len(data) > 1:
+            if len(data) > 0:
                 print "Here is the collected data"
                 print data
                 trigger_metaData_autoML.delay(data)

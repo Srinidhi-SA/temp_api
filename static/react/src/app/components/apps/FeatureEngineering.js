@@ -275,78 +275,115 @@ export class FeatureEngineering extends React.Component {
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var transformationData = this.state[this.props.selectedItem.slug][actionType];
-      if (transformationData.replace_values_with == true) {
-        if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "") {
+
+      if(this.props.selectedItem.columnType == "measure"){
+        if(!document.getElementById("replace_values_with").checked && !document.getElementById("feature_scaling").checked && !document.getElementById("variable_transformation").checked){
           $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value");
-          $("input[name='replace_values_with_input']").focus();
-          return;
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.replace_values_with == true || document.getElementById("replace_values_with").checked ) {
+            if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "" || $("input[name='replace_values_with_input']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value");
+              $("input[name='replace_values_with_input']").focus();
+              return;
+            }
+            else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "" ||$("select[name='replace_values_with_selected']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value to replace with");
+              $("select[name='replace_values_with_selected']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.feature_scaling == true || document.getElementById("feature_scaling").checked) {
+            if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "" || $("select[name='perform_standardization_select']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value for feature scaling");
+              $("select[name='perform_standardization_select']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.variable_transformation == true || document.getElementById("variable_transformation").checked) {
+            if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == ""|| $("select[name='variable_transformation_select']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value for variable transformation");
+              $("select[name='variable_transformation_select']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
         }
-        else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "") {
+      }else if(this.props.selectedItem.columnType == "dimension"){
+        if(!document.getElementById("encoding_dimensions").checked && !document.getElementById("return_character_count").checked && !document.getElementById("is_custom_string_in").checked){
           $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value to replace with");
-          $("select[name='replace_values_with_selected']").focus();
-          return;
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.encoding_dimensions == true || document.getElementById("encoding_dimensions").checked) {
+            if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "" || $("select[name='encoding_type']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select Encoding Type");
+              $("select[name='encoding_type']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.is_custom_string_in == true || document.getElementById("is_custom_string_in").checked) {
+            if (transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null || transformationData.is_custom_string_in_input == "" || $("input[name='is_custom_string_in_input']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value for custom String");
+              $("input[name='is_custom_string_in_input']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
+        }
+      }else if(this.props.selectedItem.columnType == "datetime"){
+        if(!document.getElementById("extract_time_feature").checked && !document.getElementById("time_since").checked && !document.getElementById("is_date_weekend").checked ){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.extract_time_feature == true || document.getElementById("extract_time_feature").checked) {
+            if (transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null || transformationData.extract_time_feature_select == "" || $("select[name='extract_time_feature_select']").val() == "" ){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value for time feature");
+              $("select[name='extract_time_feature_select']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.time_since == true || document.getElementById("time_since").checked) {
+            if (transformationData.time_since_input == undefined || transformationData.time_since_input == null || transformationData.time_since_input == "" || $("input[name='time_since_input']").val()== "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value for Time Since");
+              $("input[name='time_since_input']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
         }
       }
-      else if (transformationData.feature_scaling == true) {
-        if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for feature scaling");
-          $("select[name='perform_standardization_select']").focus();
-          return;
-        }
-      }
-      else if (transformationData.variable_transformation == true) {
-        if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for variable transformation");
-          $("select[name='variable_transformation_select']").focus();
-          return;
-        }
-      }
-      else if (transformationData.encoding_dimensions == true) {
-        if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select Encoding Type");
-          $("select[name='encoding_type']").focus();
-          return;
-        }
-      }
-      else if (transformationData.is_custom_string_in == true) {
-        if (transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null || transformationData.is_custom_string_in_input == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for custom String");
-          $("input[name='is_custom_string_in_input']").focus();
-          return;
-        }
-      }
-      else if (transformationData.extract_time_feature == true) {
-        if (transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null || transformationData.extract_time_feature_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for time feature");
-          $("select[name='extract_time_feature_select']").focus();
-          return;
-        }
-      }
-      else if (transformationData.time_since == true) {
-        if (transformationData.time_since_input == undefined || transformationData.time_since_input == null || transformationData.time_since_input == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for Time Since");
-          $("input[name='time_since_input']").focus();
-          return;
-        }
-      }
-      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
-      this.closeBinsOrLevelsModal();
-      this.closeTransformColumnModal();
-    }
-    else {
-      $("#fileErrorMsg").removeClass("visibilityHidden");
-      $("#fileErrorMsg").html("No fields Selected");
     }
   }
 
@@ -477,7 +514,7 @@ export class FeatureEngineering extends React.Component {
         <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
-              <h3 className="modal-title">Transform column</h3>
+              <h3 className="modal-title">Transform {this.props.selectedItem.columnType} column</h3>
             </Modal.Header>
             <Modal.Body>
               <Transform parentPickValue={this.pickValue} />

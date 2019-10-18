@@ -52,7 +52,7 @@ export class DataUploadLoader extends React.Component {
     return (
       <div id="dULoader">
         <Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
-          <Modal.Body style={{marginBottom:"0"}} className="xs-pb-0 xs-pt-20">
+          <Modal.Body style={{marginBottom:"0"}}>
             <div className="row">
               <div className="col-md-12">
                 <div className="panel xs-mb-0 modal_bg_processing">
