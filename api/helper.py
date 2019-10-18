@@ -1446,7 +1446,6 @@ def get_mails_from_outlook():
       print "Access token received."
       ### Trigger mail receive action  ###
       result_message = get_outlook_mails(access_token)
-      #print result_message
       if result_message == None:
           print "result message not found."
           return None
@@ -1493,14 +1492,32 @@ def get_outlook_auth(auth_code,refresh_token,outlook_data):
 def get_outlook_mails(access_token):
   # access_token = access_token
   # If there is no token in the session, redirect to home
-  if not access_token:
-      print "Access token not found"
-      return None
-  else:
-      info_dict = {}
-      info_dict = get_my_messages(access_token,info_dict)
-      return info_dict
+    try:
+        if not access_token:
+            print "Access token not found"
+            return None
+        else:
+            info_dict = {}
+            from datetime import datetime, timedelta
+            import time
+            t1  = time.time()
+            last_seen = time_conversion(t1)
+            info_dict = get_my_messages(access_token,info_dict,last_seen)
+            return info_dict
+    except Exception as err:
+        print err
 
+def time_conversion(t1):
+    from datetime import datetime, timedelta
+    import time
+    dt_object = datetime.fromtimestamp(t1)
+    print dt_object
+    dt_object = dt_object - timedelta(hours=0, minutes=10)
+    dt_object = str(dt_object)
+    dt_object = dt_object.replace(' ','T')
+    dt_object = dt_object[:-7]
+    dt_object = dt_object+'Z'
+    return dt_object
 
 def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_element=None):
 
@@ -1598,7 +1615,8 @@ def get_my_messages(access_token,info_dict,last_seen=None,message_id = None,id_e
                     print e
             return info_dict
         else:
-            return "{0}: {1}".format(r.status_code, r.text)
+            return None
+            #return "{0}: {1}".format(r.status_code, r.text)
     except Exception as err:
         print err
 
