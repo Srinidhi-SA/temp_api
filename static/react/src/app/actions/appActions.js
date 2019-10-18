@@ -2171,7 +2171,11 @@ export function updateSelectedVariable(event) {
   return { type: "SET_POSSIBLE_LIST", varType, varText, varSlug };
 }
 
-export function selectMetricAction(name,displayName,selected) {
+export function selectMetricAction(event, selectedOrNot) {
+  var evalMet = event.target.childNodes[event.target.selectedIndex];
+  var displayName = evalMet.getAttribute("name");
+  var name = evalMet.getAttribute("value");
+  var selected = selectedOrNot
   return { type: "SET_EVALUATION_METRIC", name, displayName, selected };
 }
 
@@ -2200,11 +2204,11 @@ function scoreToProceed(flag) {
 
 export function showLevelCountsForTarget(event) {
   var selOption = event.target.childNodes[event.target.selectedIndex];
+  var varType = selOption.value;
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
   var levelCounts = null;
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
-  var varType = colData.filter(i=>i.name==varText)[0].actualColumnType;
   var colStats = [];
   if (varType == "dimension") {
     for (var i = 0; i < colData.length; i++) {
