@@ -258,6 +258,14 @@ export default function reducer(state = {
         }      
       }
       break;
+      case "CLEAR_TOGGLE_VALUES":
+      {
+        return {
+          ...state,
+          toggleValues : {}
+        }      
+      }
+      break;
     case "CREATE_SIGNAL_LOADER_MSG":
       {
         return {

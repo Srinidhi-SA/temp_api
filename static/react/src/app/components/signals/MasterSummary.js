@@ -8,14 +8,19 @@ import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
 import {Card} from "./Card";
 import {STATIC_URL} from "../../helpers/env.js"
+import {clearToggleValue} from "../../actions/signalActions";
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis, toggleValues: store.signals.toggleValues };
 })
 
 export class MasterSummary extends React.Component {
   constructor() {
     super();
+  }
+
+  componentDidMount(){
+    this.props.dispatch(clearToggleValue());    
   }
   render() {
 

@@ -759,6 +759,9 @@ export function clearLoadingMsg() {
 export function pickToggleValue(id,flag){
   return {type: "TOGGLE_VALUES", id,flag}
 }
+export function clearToggleValue(){
+  return {type: "CLEAR_TOGGLE_VALUES"}
+}
 export function handleDecisionTreeTable(evt) {
   var probability = "";
   var probabilityCond = true;
