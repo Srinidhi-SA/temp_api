@@ -38,6 +38,8 @@ export class ModelVariableSelection extends React.Component {
         if (from === 'data_cleansing') {
         } 
         else{
+        this.props.dispatch(saveSelectedValuesForModel("","",""));
+        this.props.dispatch(selectMetricAction("","",""));
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
         if (this.props.dataPreview == null) {
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
@@ -107,8 +109,12 @@ export class ModelVariableSelection extends React.Component {
     }
 
     setEvaluationMetric(event) {
-        this.props.dispatch(selectMetricAction(event, true));
+        var evalMet = event.target.childNodes[event.target.selectedIndex];
+        var displayName = evalMet.getAttribute("name");
+        var name = evalMet.getAttribute("value");
+        this.props.dispatch(selectMetricAction( name, displayName, true));
     }
+
     handleOptionChange(e) {
         this.props.dispatch(updateRegressionTechnique(e.target.value));
         //this.setState({ selectedTechnique: e.target.value});
@@ -149,17 +155,17 @@ export class ModelVariableSelection extends React.Component {
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if (metaData) {
-                renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
+                renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)}  defaultValue={store.getState().apps.apps_regression_targetType} id="createModelAnalysisList">
                     <option value="">--Select--</option>
                     {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
                         metaData.map((metaItem, metaIndex) => {
                             if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.name}>{metaItem.name}</option>)
                             }
                         }) :
                         metaData.map((metaItem, metaIndex) => {
                             if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.name}>{metaItem.name}</option>)
                             }
                         })
                     }
@@ -168,7 +174,7 @@ export class ModelVariableSelection extends React.Component {
                 renderSelectBox = <option>No Variables</option>
             }
             if (this.props.targetLevelCounts != null) {
-                renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount">
+                renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                     <option value="">--Select--</option>
                     {this.props.targetLevelCounts.map((item, index) => {
 
@@ -226,7 +232,7 @@ export class ModelVariableSelection extends React.Component {
             metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
         }
         if (metric) {
-            metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} id="selectEvaluation" required={true}>
+            metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={this.props.metricSelected.name} id="selectEvaluation" required={true}>
                 <option value="">--select--</option>
                 {metric.map((mItem, mIndex) => {
                     return (<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)
@@ -277,7 +283,7 @@ export class ModelVariableSelection extends React.Component {
                                     }
                                 </FormGroup>
                                 <FormGroup role="form">
-                                    <DataVariableSelection match={this.props.match} />
+                                    <DataVariableSelection match={this.props.match} location={this.props.location} />
                                 </FormGroup>
 
                                 <FormGroup role="form">
@@ -298,7 +304,7 @@ export class ModelVariableSelection extends React.Component {
                                     <div class="col-md-4">
                                         <div class="form-group xs-ml-10 xs-mr-10">
                                             <div class="input-group xs-mb-15">
-                                                <input type="text" name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
+                                                <input type="text" defaultValue={store.getState().apps.apps_regression_modelName} name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
                                                     <button type="submit" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>
