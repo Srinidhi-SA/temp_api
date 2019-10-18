@@ -15463,7 +15463,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
 img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
     width: 45px;
 }
-.ma-checkbox.disabled {
+.ma-checkbox.disabled label{
     color: #afafaf;
     cursor: not-allowed;
 }
