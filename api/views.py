@@ -6245,7 +6245,7 @@ def request_from_alexa(request):
         if request.GET['data'] == 'dataset':
             # user_id = request.user.id
             user_id = User.objects.get(username="alexa")
-            dataset_obj = Dataset.objects.filter(created_by=user_id)
+            dataset_obj = Dataset.objects.filter(created_by=user_id, deleted=False)
             for index, obj in enumerate(dataset_obj):
                 response[index] = {"name": obj.name, "slug": obj.slug}
             return JsonResponse(response)
