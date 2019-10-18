@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis, pickToggleValue} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
@@ -29,6 +29,7 @@ cardData = {};
         signal: store.signals.signalAnalysis,
         chartObject: store.chartObject.chartObj,
         currentAppDetails: store.apps.currentAppDetails,
+        toggleValues: store.signals.toggleValues,
     };
 })
 
@@ -42,7 +43,15 @@ export class Card extends React.Component {
       $('#box0').parent('div').addClass('text-center');
     }
     handleCheckBoxEvent(event){
-        handleSignalToggleButton();
+        this.props.dispatch(pickToggleValue(event.target.id, event.target.checked));
+        if (this.props.toggleValues[event.target.id] == true) {
+            $(".toggleOff").removeClass("hidden");
+            $(".toggleOn").addClass("hidden")
+          } else {
+            $(".toggleOn").removeClass("hidden");
+            $(".toggleOff").addClass("hidden")
+          }
+        // handleSignalToggleButton();
     }
     calculateWidth(width){
         let colWidth  = parseInt((width/100)*12)
@@ -116,9 +125,16 @@ export class Card extends React.Component {
                 tableData.push(story.data.toggleoff);
                  var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
                 var randomChk = randomNum+"_chk"
+                var varId = story.data.toggleon.data.tableData[0][0];
+                if(this.props.toggleValues[varId] == true)
+                    var idchecked = true
+                else if(this.props.toggleValues[varId] == false)
+                    var idchecked = false
+                else if(this.props.toggleValues == "" || undefined)
+                    var idchecked = false
                 var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-                                    <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)} /><span>
-                                    <label for={randomChk}></label></span>
+                                    <input type="checkbox" name={randomChk} value={randomChk} id={varId} checked={idchecked} onClick={this.handleCheckBoxEvent.bind(this)} />
+                                    <span><label for={varId}></label></span>
                                 </div>
                 return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);                    
                 break;
