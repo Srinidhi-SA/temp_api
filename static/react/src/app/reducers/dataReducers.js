@@ -861,6 +861,9 @@ export default function reducer(state = {
         outlierRemoval:{},
         removeDuplicateAttributes :{},
         removeDuplicateObservations :{},
+        duplicateAttributes : false,
+        duplicateObservations : false,
+
       }
     }
     break;

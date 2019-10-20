@@ -55,7 +55,7 @@ import {
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets: store.datasets,
-    checkedAll: store.datasets.checkedAll
+    checkedAll: store.datasets.checkedAll,
   };
 })
 
@@ -426,7 +426,7 @@ tableHead.addEventListener('click', function (e) {
                     <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
                     <div class="col-sm-7">
                       <div className="content-section implementation">
-                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" defaultChecked={this.props.datasets.duplicateAttributes} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
+                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" checked={store.getState().datasets.duplicateAttributes} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
                       </div>
                     </div>
                   </div>
@@ -435,7 +435,7 @@ tableHead.addEventListener('click', function (e) {
                     <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                     <div class="col-sm-7">
                       <div className="content-section implementation">
-                        <InputSwitch id="rd2" defaultChecked={this.props.datasets.duplicateObservations} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+                        <InputSwitch id="rd2" checked={store.getState().datasets.duplicateObservations} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
                       </div>
                     </div>
                   </div>
