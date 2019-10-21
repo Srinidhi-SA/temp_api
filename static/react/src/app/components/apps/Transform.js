@@ -47,14 +47,28 @@ componentDidMount(){
       document.getElementById("variable_transformation_select").disabled=false;
     }
   }else if(this.props.selectedItem.columnType=="dimension"){
-    if(document.getElementById("encoding_dimensions").checked){
-      $("#one_hot_encoding").parent().removeClass("disabled");
-      $("#label_encoding").parent().removeClass("disabled");
-    }
-    if(document.getElementById("is_custom_string_in_input").value != ""){
-      document.getElementById("is_custom_string_in").checked=true;
-      document.getElementById("is_custom_string_in_input").disabled=false;
-    }
+    
+	$('#encoding_dimensions').change(function() {
+        if ($(this).prop('checked')) {
+			$("#one_hot_encoding").parent().removeClass("disabled");
+			$("#label_encoding").parent().removeClass("disabled");
+        }
+        else {
+			$("#one_hot_encoding").parent().addClass("disabled");
+			$("#label_encoding").parent().addClass("disabled");
+        }
+    });
+	 
+    $('#is_custom_string_in').change(function() {
+        if ($(this).prop('checked')) {
+			document.getElementById("is_custom_string_in_input").disabled=false;
+        }
+        else {
+			document.getElementById("is_custom_string_in_input").disabled=true;
+        }
+    });
+	
+	
   }else{
     if(document.getElementById("extract_time_feature_select").value !=""){
       document.getElementById("extract_time_feature").checked=true;
