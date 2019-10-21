@@ -5699,7 +5699,8 @@ div#side-menu {
 }
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle {
-	color: #363636
+	color: #363636;
+	text-transform:capitalize;
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle i {
 	color: #849190;
@@ -15258,8 +15259,12 @@ form .col-sm-4.control-label {
     margin: 0;
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
-.algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #71e8db; }
-.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #71e8db; }
+.algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #e6e6e6; }
+.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #e6e6e6; }
+
+.bg-highlight-parent .ma-checkbox {
+    border-bottom: 1px solid #e6e6e6;
+}
 div.algSelection .checkbox .ma-checkbox label { font-size: 14px; text-transform: capitalize; padding: 10px; }
 .algSelection .ma-checkbox { margin-bottom: 15px;}
 .algSelection .ma-checkbox label { font-weight:bold; }
@@ -15458,7 +15463,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
 img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
     width: 45px;
 }
-.ma-checkbox.disabled {
+.ma-checkbox.disabled label{
     color: #afafaf;
     cursor: not-allowed;
 }

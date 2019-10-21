@@ -13,7 +13,7 @@ import datetime
 import json
 import copy
 from api.helper import get_random_model_id, get_mails_from_outlook
-
+from django.contrib.auth.models import User
 
 @task(name="sum_two_numbers")
 def add(x, y):
@@ -750,7 +750,7 @@ from celery.decorators import periodic_task
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
-
+    
     if mails is not None:
         print "All set to proceed to upload dataset."
 
@@ -781,6 +781,9 @@ def trigger_outlook_periodic_job():
                 print "Here is the collected data"
                 print data
                 trigger_metaData_autoML.delay(data)
+            else:
+                print "No mails found"
+                break
             ##########################################################################################
 
             # pass
@@ -1041,17 +1044,26 @@ def outlook_autoML_success_mail(trainer_object_id=None):
     else:
         trainer_object = Trainer.objects.get(id=trainer_object_id)
         if trainer_object.mode == 'autoML':
-            if trainer_object.email is not None:
-                from api.helper import get_outlook_auth
-                r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
-                                     settings.OUTLOOK_DETAILS)
-                result = r.json()
-                access_token = result['access_token']
-                content = "AutoML Dataupload successful. Model is created."
 
-                mail('send',access_token=access_token,return_mail_id=trainer_object.email,subject='Marlabs-AutoML Success',content=content)
+            from api.helper import get_outlook_auth
+            r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
+                                 settings.OUTLOOK_DETAILS)
+            result = r.json()
+            access_token = result['access_token']
+            content = "AutoML Dataupload successful. Model is created."
+            try:
+                if trainer_object.email is not None:
+                    return_mail_id = trainer_object.email
+                    mail('send',access_token=access_token,return_mail_id=return_mail_id,subject='Marlabs-AutoML Success',content=content)
+                else:
+                    user_id = trainer_object.created_by_id
+                    user_object = User.objects.get(id=user_id)
+                    return_mail_id = user_object.email
+                    if return_mail_id is not None:
+                        mail('send',access_token=access_token,return_mail_id=return_mail_id,subject='Marlabs-AutoML Success',content=content)
 
-            else:
+            except Exception as err:
+                print err
                 pass
         else:
             pass

@@ -28,7 +28,8 @@ export default function reducer(state = {
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
-  selected_signal_type:""
+  selected_signal_type:"",
+  toggleValues:{},
 }, action) {
   // console.log("in SIGNAL reducer!!");
   // console.log(action);
@@ -248,6 +249,24 @@ export default function reducer(state = {
       }
     }
     break;
+    case "TOGGLE_VALUES":
+      {
+        var allToggleValues = state.toggleValues;
+        allToggleValues[action.id] = action.flag;
+        return {
+          ...state,
+          toggleValues : allToggleValues
+        }      
+      }
+      break;
+      case "CLEAR_TOGGLE_VALUES":
+      {
+        return {
+          ...state,
+          toggleValues : {}
+        }      
+      }
+      break;
     case "CREATE_SIGNAL_LOADER_MSG":
       {
         return {
@@ -256,7 +275,6 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "ZOOM_CHART":
     {
         return {

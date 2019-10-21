@@ -813,6 +813,12 @@ function dispatchSignalLoadingMsg(signalAnalysis) {
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
+export function pickToggleValue(id,flag){
+  return {type: "TOGGLE_VALUES", id,flag}
+}
+export function clearToggleValue(){
+  return {type: "CLEAR_TOGGLE_VALUES"}
+}
 export function handleDecisionTreeTable(evt) {
   var probability = "";
   var probabilityCond = true;
