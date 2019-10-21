@@ -94,8 +94,17 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 							<div className="clearfix"></div>
 							 
 							
-                            <div className="clearfix"></div>
-                                {percentageDetails}
+                            <div className="row">
+                            <div className="col-xs-12">
+                            <div className="pull-left">
+                                {percentageDetails} 
+                                </div>
+                                <div className="pull-right" style={{"color":"#00998c"}}>
+                                {/* {percentageDetails}  */}
+                                 {data.mode!=""?data.mode:"Analyst"}
+                                </div>
+                                </div>
+                            </div>
                             
                             {/*<!-- Popover Content link -->
                             <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
@@ -103,6 +112,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             {store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}
                                 </div>
                             </a></OverlayTrigger>*/}
+                            {/* {data.mode?data.mode:""} */}
+
+
                             
                             </div>
                             
