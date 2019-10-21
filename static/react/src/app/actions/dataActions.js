@@ -48,7 +48,6 @@ export function getDataList(pageNo) {
 
 function fetchDataList(pageNo,token,dispatch) {
 
-	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
 	let data_sorton =  store.getState().datasets.data_sorton;
 	let data_sorttype = store.getState().datasets.data_sorttype;
@@ -56,10 +55,6 @@ function fetchDataList(pageNo,token,dispatch) {
 		data_sorttype = ""
 			else if(data_sorttype=='desc')
 				data_sorttype="-"
-
-					console.log(data_sorton+" "+data_sorttype)
-
-					console.log(search_element)
 					if(search_element!=""&&search_element!=null){
 						//console.log("calling for search element!!")
 						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
