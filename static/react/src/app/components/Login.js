@@ -33,13 +33,6 @@ export class Login extends React.Component {
     this.setState({pwd: password});
   }
 
-  onHoverForget(){
-    //  Activate the Tooltips
-    $('body').bootstrapMaterialDesign();
-    $('[data-toggle="tooltip"], [rel="tooltip"]').tooltip();
-      $('[data-toggle="tooltip"]').tooltip();
-  }
-
   componentDidMount(){
     hidechatbot()
   }
@@ -121,10 +114,7 @@ export class Login extends React.Component {
                           </div>
 
                         </div>
-						            {/* <a href="#" data-toggle="tooltip" title="Please contact admin!" data-placement="bottom" onMouseOver={this.onHoverForget.bind(this)} className="xs-mt-20 pull-left">Forgot Password?</a> */}
-						            <a href="#" data-tip="Please contact admin!" className="xs-mt-20 pull-left">Forgot Password?</a>
-                       
-                        {/* <p data-tip="hello world">Tooltip</p> */}
+						            <a href="#" data-tip="Please contact admin!" className="xs-mt-20 pull-left">Forgot Password?</a>                      
                         <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
                         <div className="form-group login-submit pull-right">
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>

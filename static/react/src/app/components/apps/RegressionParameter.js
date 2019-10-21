@@ -81,21 +81,16 @@ export class RegressionParameter extends React.Component {
     changeFoldCheck(min,max,e){
         if(e.target.value < min || e.target.value > max){
             e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
-            // if(e.currentTarget.parentElement.outerText!=""){
-            //    $("."+e.target.classList[1]).addClass("regParamFocus");
-            //   }
-            //  else{
-            //   $("."+e.target.classList[1]).removeClass("regParamFocus");
-            //  }
-           if(e.target.parentElement.lastElementChild.innerHTML !=""){
-               $("."+e.target.classList[1]).addClass("regParamFocus");
-            }else
-            $("."+e.target.classList[1]).remove("regParamFocus");
-
-
         }else if(!Number.isInteger(parseFloat(e.target.value))){
             e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
         } else e.target.parentElement.lastElementChild.innerHTML = ""
+
+        if(e.target.parentElement.lastElementChild.innerHTML !=""){
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+         }else
+         $("."+e.target.classList[1]).remove("regParamFocus");
+
+
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
@@ -169,7 +164,7 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
-        if(e.target.value!=""){
+        if(e.target.value!="" && e.target.parentElement.lastElementChild.innerHTML==''){
             $("."+e.target.classList[1]).removeClass("regParamFocus");
             }else if(e.target.value==""){
             $("."+e.target.classList[1]).addClass("regParamFocus");
@@ -503,7 +498,7 @@ export class RegressionParameter extends React.Component {
                         classN= "form-control hiddenCls";
                         break;
                         default:
-                        classN= "form-control";
+                        classN= `form-control ${this.state.name}`;
                         var type= "number";
 
                     }                  
@@ -530,17 +525,17 @@ export class RegressionParameter extends React.Component {
                         if(parameterData.defaultValue==200)
                            sliderclassN= "form-control maxSolverGrid";
                            else 
-                           sliderclassN="form-control";
+                           sliderclassN= `form-control ${this.state.name}`;
                         break;
                         case"Convergence tolerance of iterations(e^-n)":
                         if(parameterData.neural)
                             sliderclassN= "form-control convergGrid";
                             else 
-                            sliderclassN= "form-control";
+                            sliderclassN= `form-control ${this.state.name}`;
 
                         break;
                         default:
-                           sliderclassN="form-control";
+                           sliderclassN=`form-control ${this.state.name}`;
                         }
                         return(
                             <div className="row">                            
@@ -585,14 +580,26 @@ export class RegressionParameter extends React.Component {
                         var sliderTextCls="form-control iterationCls inputWidth "
 
                         break;
+                        
                         case"Convergence tolerance of iterations(e^-n)":
-                        var  cls= "col-xs-10 convergenceCls";
-                        var sliderTextCls="form-control convergenceCls inputWidth "
+                        if(parameterData.neural){
+                            var  cls= "col-xs-10 convergenceCls";
+                            var sliderTextCls="form-control convergenceCls inputWidth "
+                        }
+                        else{
+                            var cls = "col-xs-10";
+                            var sliderTextCls=`form-control ${this.state.name} inputWidth`
+                        }
 
                         break;
                         case"Maximum Solver Iterations":
-                        var  cls= "col-xs-10 maxIterationsCls";
-                        var sliderTextCls="form-control maxIterationsCls inputWidth "
+                        if(parameterData.defaultValue==200){
+                            var  cls= "col-xs-10 maxIterationsCls";
+                            var sliderTextCls="form-control maxIterationsCls inputWidth "
+                        }else{
+                            var cls = "col-xs-10";
+                            var sliderTextCls=`form-control ${this.state.name} inputWidth`
+                        }
 
                         case"Max Depth":
                         var  cls= "col-xs-10 maxDepthCls";
@@ -602,11 +609,9 @@ export class RegressionParameter extends React.Component {
 
                         default:
                         var cls = "col-xs-10";
-                        // var sliderTextCls="form-control inputWidth \" "+this.state.name+"\""
                         var sliderTextCls=`form-control ${this.state.name} inputWidth`
 
             
-                        // bootbox.alert(statusMessages("warning", "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.", "small_mascot"));
 
                         break;
                     }
