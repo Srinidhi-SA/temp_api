@@ -11,6 +11,7 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
+import {getAllSignalList} from "../../actions/signalActions";
 
 import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
 
@@ -37,6 +38,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dimensionSubLevel:store.datasets.dimensionSubLevel,
         dataSetSelectAllAnalysis:store.datasets.dataSetSelectAllAnalysis,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
+        allSignalList:store.signals.allSignalList,
 
     };
 })
@@ -70,6 +72,8 @@ export class VariableSelection extends React.Component {
         this.props.dispatch(advanceSettingsModal(true));
     }
     createSignal(event){
+        console.log($('#createSname').val())
+        console.log(this.props.allSignalList)
         event.preventDefault();
         let letters = /^[0-9a-zA-Z\d-_\s]+$/;
         var isAnalysisChecked = checkAnalysisIsChecked();
@@ -90,6 +94,12 @@ export class VariableSelection extends React.Component {
             return false;
 
         }
+    else if(Object.values(this.props.allSignalList).map(i=>i.name.toLowerCase()).includes($('#createSname').val().toLowerCase())){
+        bootbox.alert(statusMessages("warning", "Signal with same name alrady exists, Please try changing name!", "small_mascot"));
+        $('#createSname').val("").focus();
+        return false;
+    }
+    
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
               //let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
@@ -162,6 +172,8 @@ export class VariableSelection extends React.Component {
 
     componentDidMount(){
         var that = this;
+        this.props.dispatch(getAllSignalList());
+
 
     }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import ReactTooltip from 'react-tooltip'
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
@@ -31,6 +32,7 @@ export class Login extends React.Component {
     const password = e.target.value;
     this.setState({pwd: password});
   }
+
   componentDidMount(){
     hidechatbot()
   }
@@ -112,11 +114,12 @@ export class Login extends React.Component {
                           </div>
 
                         </div>
-						<a href="#" className="xs-mt-20 pull-left">Forgot Password?</a>
+						            <a href="#" data-tip="Please contact admin!" className="xs-mt-20 pull-left">Forgot Password?</a>                      
+                        <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
                         <div className="form-group login-submit pull-right">
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
                         </div>
-						<div className="clearfix"></div>
+						            <div className="clearfix"></div>
                         <div className = "text-danger text-center" id="errormsg">{this.state.errmsg}</div>
 
                       </div>

@@ -81,7 +81,7 @@ export class DataSourceList extends React.Component {
         this.props.dispatch(saveFileToStore(files))
         // bootbox.alert(statusMessages("warning","File name must be unique ."));
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Dataset with same name already exists");
+        $("#fileErrorMsg").html("Dataset with this name already exists");
       }
        else {
         $("#fileErrorMsg").addClass("visibilityHidden");
@@ -205,27 +205,28 @@ export class DataSourceList extends React.Component {
           <Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
 		  <div className="container-fluid">
       <Row className="clearfix">
-            {window.location.href.includes("analyst")&&
-              <Col sm={3}>
-                <Nav bsStyle="pills" stacked>
-                  {navTabs}
-                </Nav>
-              </Col>
-            }
-
-            {window.location.href.includes("analyst")? 
-            <Col sm={9}>
+        {(window.location.href.includes("autoML"))?
+          ""
+          :
+          <Col sm={3}>
+            <Nav bsStyle="pills" stacked>
+              {navTabs}
+            </Nav>
+          </Col>
+        }
+        {(window.location.href.includes("autoML"))?
+            <Col sm={12}>
+            <Tab.Content animation>
+              {navTabContent}
+            </Tab.Content>
+          </Col>
+            :
+              <Col sm={9}>
                 <Tab.Content animation>
                   {navTabContent}
                 </Tab.Content>
               </Col>
-              :
-              <Col sm={12}>
-                <Tab.Content animation>
-                  {navTabContent}
-                </Tab.Content>
-              </Col>
-            }
+        }
             </Row>
 			</div>
           </Tab.Container>

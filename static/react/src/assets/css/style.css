@@ -13950,7 +13950,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	font-size:11px;
 }
 .footerTitle-lineh { line-height: 3em; }
-.newCardStyle { height:114px; }
+.newCardStyle { height:115px; }
 
 
 .newCardStyle, .app-block{
@@ -15463,7 +15463,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
 img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
     width: 45px;
 }
-.ma-checkbox.disabled {
+.ma-checkbox.disabled label{
     color: #afafaf;
     cursor: not-allowed;
 }
@@ -16339,4 +16339,17 @@ div#replaceValues {
 
 .lexBtn:hover{
 	box-shadow: 3px 2px 8px 0px #457b74;
+}
+
+.regParamFocus{
+	border-color: #ef6262;
+}
+
+.customeTheme{
+	color: #0f0f0f !important;
+	background-color: #f0f5f4 !important;
+	pointer-events: auto !important;
+}
+.__react_component_tooltip.type-dark.place-bottom:after{
+	border-bottom-color: #f0f5f4 !important;
 }

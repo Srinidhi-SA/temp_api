@@ -48,7 +48,6 @@ export function getDataList(pageNo) {
 
 function fetchDataList(pageNo,token,dispatch) {
 
-	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
 	let data_sorton =  store.getState().datasets.data_sorton;
 	let data_sorttype = store.getState().datasets.data_sorttype;
@@ -56,10 +55,6 @@ function fetchDataList(pageNo,token,dispatch) {
 		data_sorttype = ""
 			else if(data_sorttype=='desc')
 				data_sorttype="-"
-
-					console.log(data_sorton+" "+data_sorttype)
-
-					console.log(search_element)
 					if(search_element!=""&&search_element!=null){
 						//console.log("calling for search element!!")
 						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
@@ -867,11 +862,22 @@ function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                     if(dataList!="" && dataList.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                    let letters = /^[0-9a-zA-Z\-_\s]+$/;
+                    var datalist=store.getState().datasets.dataList.data;
+                    var alldataSets=store.getState().datasets.allDataSets.data;
+                    if($("#idRenameDataset").val()==""){
+                        document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
+                        showRenameDialogBox(slug, dialog, dispatch, name)
+                  }
+                  else if (!letters.test($("#idRenameDataset").val())){
+                    document.getElementById("ErrorMsg").innerHTML = "Please enter name in a correct format. It should not contain special characters @,#,$,%,!,&.";
+                    showRenameDialogBox(slug, dialog, dispatch, name)
+                   }
+                     else if(datalist!="" && datalist.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
                         document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
                         showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
                       }
-                      else if(allDataList!="" && allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                      else if(alldataSets!=undefined && alldataSets.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
                         document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
                         showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)  
                       }
