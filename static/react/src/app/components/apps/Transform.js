@@ -33,53 +33,66 @@ export class Transform extends React.Component {
 componentDidMount(){
   this.checkCount();
   if(this.props.selectedItem.columnType=="measure"){
-    if(document.getElementById("replace_values_with_input").value != "" || document.getElementById("replace_values_with_selected").value != ""){
-      document.getElementById("replace_values_with").checked=true;
-      document.getElementById("replace_values_with_input").disabled=false;
-      document.getElementById("replace_values_with_selected").disabled=false;
-    }
-    if(document.getElementById("perform_standardization_select").value != ""){
-      document.getElementById("feature_scaling").checked=true;
-      document.getElementById("perform_standardization_select").disabled=false;
-    }
-    if(document.getElementById("variable_transformation_select").value != ""){
-      document.getElementById("variable_transformation").checked=true;
-      document.getElementById("variable_transformation_select").disabled=false;
-    }
+    $('#replace_values_with').change(function() {
+      if ($(this).prop('checked')) {
+        document.getElementById("replace_values_with_input").disabled=false;
+        document.getElementById("replace_values_with_selected").disabled=false;
+      }else {
+        document.getElementById("replace_values_with_input").disabled=true;
+        document.getElementById("replace_values_with_selected").disabled=true;
+      }
+    });
+
+    $('#feature_scaling').change(function() {
+      if ($(this).prop('checked')) {
+        document.getElementById("perform_standardization_select").disabled=false;
+      }else {
+        document.getElementById("perform_standardization_select").disabled=true;
+      }
+    });
+
+    $('#variable_transformation').change(function() {
+      if ($(this).prop('checked')) {
+        document.getElementById("variable_transformation_select").disabled=false;
+      }else {
+        document.getElementById("variable_transformation_select").disabled=true;
+      }
+    });
+
   }else if(this.props.selectedItem.columnType=="dimension"){
-    
-	$('#encoding_dimensions').change(function() {
-        if ($(this).prop('checked')) {
-			$("#one_hot_encoding").parent().removeClass("disabled");
-			$("#label_encoding").parent().removeClass("disabled");
-        }
-        else {
-			$("#one_hot_encoding").parent().addClass("disabled");
-			$("#label_encoding").parent().addClass("disabled");
-        }
+	  $('#encoding_dimensions').change(function() {
+      if ($(this).prop('checked')) {
+			  $("#one_hot_encoding").parent().removeClass("disabled");
+			  $("#label_encoding").parent().removeClass("disabled");
+      }else {
+			  $("#one_hot_encoding").parent().addClass("disabled");
+			  $("#label_encoding").parent().addClass("disabled");
+      }
     });
 	 
     $('#is_custom_string_in').change(function() {
-        if ($(this).prop('checked')) {
-			document.getElementById("is_custom_string_in_input").disabled=false;
-        }
-        else {
-			document.getElementById("is_custom_string_in_input").disabled=true;
-        }
+      if ($(this).prop('checked')) {
+        document.getElementById("is_custom_string_in_input").disabled=false;
+      }else {
+			  document.getElementById("is_custom_string_in_input").disabled=true;
+      }
     });
-	
-	
-  }else{
-    if(document.getElementById("extract_time_feature_select").value !=""){
-      document.getElementById("extract_time_feature").checked=true;
-      document.getElementById("extract_time_feature_select").disabled=false;
-    }
-    if(document.getElementById("time_since_input").value !=""){
-      document.getElementById("time_since").checked=true;
-      document.getElementById("time_since_input").disabled=false;
-    }
+	}else{
+    $('#extract_time_feature').change(function() {
+      if ($(this).prop('checked')) {
+        document.getElementById("extract_time_feature_select").disabled=false;
+      }else {
+        document.getElementById("extract_time_feature_select").disabled=true;
+      }
+    });
+    $('#time_since').change(function() {
+      if ($(this).prop('checked')) {
+        document.getElementById("time_since_input").disabled=false;
+      }else {
+        document.getElementById("time_since_input").disabled=true;
+      }
+    });
   }
-  
 }
 
 checkCount(){
@@ -114,102 +127,7 @@ console.log(rowCount,"count============================");
   }
 
   pickValue(event){
-    if(this.props.selectedItem.columnType == "measure"){ 
-      if(document.getElementById("replace_values_with").checked){
-        document.getElementById("replace_values_with_input").disabled= false;
-        document.getElementById("replace_values_with_selected").disabled= false;
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        document.getElementById("replace_values_with_input").disabled= true;
-        document.getElementById("replace_values_with_selected").disabled= true;
-        document.getElementById("replace_values_with_input").value= "";
-        document.getElementById("replace_values_with_selected").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-      if(document.getElementById("feature_scaling").checked){
-        document.getElementById("perform_standardization_select").disabled=false;
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        document.getElementById("perform_standardization_select").disabled=true;
-        document.getElementById("perform_standardization_select").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-      if(document.getElementById("variable_transformation").checked){
-        document.getElementById("variable_transformation_select").disabled=false;
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        document.getElementById("variable_transformation_select").disabled=true;
-        document.getElementById("variable_transformation_select").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-    }else if(this.props.selectedItem.columnType == "dimension"){
-      if(document.getElementById('encoding_dimensions').checked){
-        $("#one_hot_encoding").parent().removeClass("disabled");
-      $("#label_encoding").parent().removeClass("disabled");
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        $("#one_hot_encoding").parent().addClass("disabled");
-        $("#label_encoding").parent().addClass("disabled");
-        document.getElementById('one_hot_encoding').checked = false ;
-        document.getElementById('label_encoding').checked = false ;
-        document.getElementById("one_hot_encoding").value= "";
-        document.getElementById("label_encoding").value= "";
-
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-      if(document.getElementById("is_custom_string_in").checked){
-        document.getElementById("is_custom_string_in_input").disabled=false;
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        document.getElementById("is_custom_string_in_input").disabled=true;
-        document.getElementById("is_custom_string_in_input").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-    }else{ 
-      if(document.getElementById("extract_time_feature").checked){
-        document.getElementById("extract_time_feature_select").disabled=false;
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }else{
-        document.getElementById("extract_time_feature_select").disabled=true;
-        document.getElementById("extract_time_feature_select").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-      if(document.getElementById("time_since").checked){
-        $("#fileErrorMsg").addClass("visibilityHidden");
-        document.getElementById("time_since_input").disabled=false;
-      }else{
-        document.getElementById("time_since_input").disabled=true;
-        document.getElementById("time_since_input").value= "";
-        $("#fileErrorMsg").addClass("visibilityHidden");
-      }
-    }
     this.props.parentPickValue("transformationData", event);
-  }
-
-  onchangeInput(event){
-    // document.getElementsByName("encoding_type").value = "";
-    // if(document.getElementById('encoding_dimensions').checked){
-    //   $("#one_hot_encoding").parent().removeClass("disabled");
-    //   $("#label_encoding").parent().removeClass("disabled");
-    // // document.getElementById("one_hot_encoding").removeAttribute('disabled');
-    // // document.getElementById("label_encoding").removeAttribute('disabled');
-    // }
-    // else{
-      
-    //   document.getElementById('one_hot_encoding').checked = false;
-    //   document.getElementById('label_encoding').checked = false ;
-    //   //document.getElementById("one_hot_encoding").disabled = true;
-    //   //document.getElementById("label_encoding").disabled = true;
-    //   $("#one_hot_encoding").parent().addClass("disabled");
-    //   $("#label_encoding").parent().addClass("disabled");
-      
-    //   // this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
-    //   //   this.setState({ state: this.state });
-    //   // this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
-    //   this.setState({ state: this.state });
-    //   }
-    //     //disable CREATEMODEL
-    //     return "";
   }
 
   handleEncodingRadioButtonOnchange(event){
@@ -306,11 +224,11 @@ console.log(rowCount,"count============================");
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onInput={this.pickValue}/>
                       <label for="encoding_dimensions">Perform Encoding:</label>
                     </div>
                   </div>
-                  <span onChange={this.onchangeInput.bind(this)} className="inline">
+                  <span className="inline">
                   <div class="col-md-7 col-sm-6">
                   <div class="ma-checkbox inline oneHot disabled" id="oneHot">
                       <input type="radio" id="one_hot_encoding" name="encoding_type"  value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onInput={this.pickValue}/>
