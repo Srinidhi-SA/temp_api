@@ -28,8 +28,6 @@ export class DetailOverlay extends React.Component {
   }
   render() {
    var details = this.props.details.brief_info;
-   console.log("In overlay element");
-   console.log(this.props.details)
    let templateList = "";
    let template = {};
    if(typeof details!="undefined")
