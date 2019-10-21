@@ -95,6 +95,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
             else:
                 data['name'] = data.get('name', data['input_file'].name)
+            datasetname_list = []
+            dataset_obj = Dataset.objects.filter()
+            for index, i in enumerate(dataset_obj):
+                datasetname_list.append(i.name)
+            if data['name'] in datasetname_list:
+                return creation_failed_exception("Name already exists!.")
         elif 'datasource_details' in data:
             data['input_file'] = None
             if "datasetname" in data['datasource_details']:
