@@ -33,6 +33,40 @@ export class Transform extends React.Component {
 componentDidMount(){
   this.checkCount();
   if(this.props.selectedItem.columnType=="measure"){
+    if(document.getElementById("replace_values_with_input").value != "" || document.getElementById("replace_values_with_selected").value != ""){
+      document.getElementById("replace_values_with").checked=true;
+      document.getElementById("replace_values_with_input").disabled=false;
+      document.getElementById("replace_values_with_selected").disabled=false;
+    }
+    if(document.getElementById("perform_standardization_select").value != ""){
+      document.getElementById("feature_scaling").checked=true;
+      document.getElementById("perform_standardization_select").disabled=false;
+    }
+    if(document.getElementById("variable_transformation_select").value != ""){
+      document.getElementById("variable_transformation").checked=true;
+      document.getElementById("variable_transformation_select").disabled=false;
+    }
+  }else if(this.props.selectedItem.columnType=="dimension"){
+    if(document.getElementById("encoding_dimensions").checked){
+      $("#one_hot_encoding").parent().removeClass("disabled");
+      $("#label_encoding").parent().removeClass("disabled");
+    }
+    if(document.getElementById("is_custom_string_in_input").value != ""){
+      document.getElementById("is_custom_string_in").checked=true;
+      document.getElementById("is_custom_string_in_input").disabled=false;
+    }
+  }else{
+    if(document.getElementById("extract_time_feature_select").value !=""){
+      document.getElementById("extract_time_feature").checked=true;
+      document.getElementById("extract_time_feature_select").disabled=false;
+    }
+    if(document.getElementById("time_since_input").value !=""){
+      document.getElementById("time_since").checked=true;
+      document.getElementById("time_since_input").disabled=false;
+    }
+  }
+
+  if(this.props.selectedItem.columnType=="measure"){
     $('#replace_values_with').change(function() {
       if ($(this).prop('checked')) {
         document.getElementById("replace_values_with_input").disabled=false;
@@ -63,20 +97,20 @@ componentDidMount(){
 
     
 	$('#encoding_dimensions').change(function() {
-        if ($(this).prop('checked')) {
-			$("#one_hot_encoding").parent().removeClass("disabled");
-			$("#label_encoding").parent().removeClass("disabled");
-			$("#one_hot_encoding").removeAttr('disabled');
-			$("#label_encoding").removeAttr('disabled');
-			//$("#one_hot_encoding").prop('disabled', disabled);
-			//$("#label_encoding").prop('disabled', disabled);
-        }
-        else {
-			$("#one_hot_encoding").parent().addClass("disabled");
-			$("#label_encoding").parent().addClass("disabled");
-			$("#one_hot_encoding").attr('disabled','disabled');
-			$("#label_encoding").attr('disabled','disabled');
-        }
+      if ($(this).prop('checked')) {
+        $("#one_hot_encoding").parent().removeClass("disabled");
+        $("#label_encoding").parent().removeClass("disabled");
+        $("#one_hot_encoding").removeAttr('disabled');
+        $("#label_encoding").removeAttr('disabled');
+        //$("#one_hot_encoding").prop('disabled', disabled);
+        //$("#label_encoding").prop('disabled', disabled);
+      }
+      else {
+        $("#one_hot_encoding").parent().addClass("disabled");
+        $("#label_encoding").parent().addClass("disabled");
+        $("#one_hot_encoding").attr('disabled','disabled');
+        $("#label_encoding").attr('disabled','disabled');
+      }
 
     });
 	 
@@ -137,6 +171,75 @@ console.log(rowCount,"count============================");
   }
 
   pickValue(event){
+    if(this.props.selectedItem.columnType == "measure"){ 
+      if(document.getElementById("replace_values_with").checked){
+        document.getElementById("replace_values_with_input").disabled= false;
+        document.getElementById("replace_values_with_selected").disabled= false;
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        document.getElementById("replace_values_with_input").disabled= true;
+        document.getElementById("replace_values_with_selected").disabled= true;
+        document.getElementById("replace_values_with_input").value= "";
+        document.getElementById("replace_values_with_selected").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+      if(document.getElementById("feature_scaling").checked){
+        document.getElementById("perform_standardization_select").disabled=false;
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        document.getElementById("perform_standardization_select").disabled=true;
+        document.getElementById("perform_standardization_select").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+      if(document.getElementById("variable_transformation").checked){
+        document.getElementById("variable_transformation_select").disabled=false;
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        document.getElementById("variable_transformation_select").disabled=true;
+        document.getElementById("variable_transformation_select").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+    }else if(this.props.selectedItem.columnType == "dimension"){
+      if(document.getElementById('encoding_dimensions').checked){
+        $("#one_hot_encoding").parent().removeClass("disabled");
+      $("#label_encoding").parent().removeClass("disabled");
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        $("#one_hot_encoding").parent().addClass("disabled");
+        $("#label_encoding").parent().addClass("disabled");
+        document.getElementById('one_hot_encoding').checked = false ;
+        document.getElementById('label_encoding').checked = false ;
+        document.getElementById("one_hot_encoding").value= "";
+        document.getElementById("label_encoding").value= "";
+
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+      if(document.getElementById("is_custom_string_in").checked){
+        document.getElementById("is_custom_string_in_input").disabled=false;
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        document.getElementById("is_custom_string_in_input").disabled=true;
+        document.getElementById("is_custom_string_in_input").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+    }else{ 
+      if(document.getElementById("extract_time_feature").checked){
+        document.getElementById("extract_time_feature_select").disabled=false;
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }else{
+        document.getElementById("extract_time_feature_select").disabled=true;
+        document.getElementById("extract_time_feature_select").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+      if(document.getElementById("time_since").checked){
+        $("#fileErrorMsg").addClass("visibilityHidden");
+        document.getElementById("time_since_input").disabled=false;
+      }else{
+        document.getElementById("time_since_input").disabled=true;
+        document.getElementById("time_since_input").value= "";
+        $("#fileErrorMsg").addClass("visibilityHidden");
+      }
+    }
     this.props.parentPickValue("transformationData", event);
   }
 
