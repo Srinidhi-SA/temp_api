@@ -28,6 +28,8 @@ from api.tasks import clean_up_on_delete
 from api.permission import DatasetRelatedPermission
 from guardian.shortcuts import assign_perm
 from django.conf import settings
+
+
 # Create your views here.
 
 class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -36,7 +38,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         )
 
         return queryset
@@ -55,7 +57,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
-    permission_classes = (DatasetRelatedPermission, )
+    permission_classes = (DatasetRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
 
@@ -68,12 +70,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
 
         try:
-            if data['mode']=='autoML':
-                self.mode='autoML'
-            elif data['mode']=='analyst':
-                self.mode='analyst'
+            if data['mode'] == 'autoML':
+                self.mode = 'autoML'
+            elif data['mode'] == 'analyst':
+                self.mode = 'analyst'
             else:
-                self.mode='analyst'
+                self.mode = 'analyst'
             self.save()
         except:
             pass
@@ -89,32 +91,35 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     return creation_failed_exception("Name have special_characters.")
 
         if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
+            data['input_file'] = request.FILES.get('input_file')
             data['datasource_type'] = 'fileUpload'
             if data['input_file'] is None:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+                data['name'] = data.get('name',
+                                        data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
             else:
                 data['name'] = data.get('name', data['input_file'].name)
             datasetname_list = []
-            dataset_obj = Dataset.objects.filter()
-            for index, i in enumerate(dataset_obj):
+            dataset_query = Dataset.objects.all()
+            for index, i in enumerate(dataset_query):
                 datasetname_list.append(i.name)
             if data['name'] in datasetname_list:
-                return creation_failed_exception("Name already exists!.")
+                return creation_failed_exception("Dataset file name already exists!.")
+
         elif 'datasource_details' in data:
             data['input_file'] = None
             if "datasetname" in data['datasource_details']:
                 datasource_details = json.loads(data['datasource_details'])
                 data['name'] = datasource_details['datasetname']
             else:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                data['name'] = data.get('name',
+                                        data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
         try:
             data['created_by'] = request.user.id
         except:
-            #data['created_by'] = None
+            # data['created_by'] = None
             pass
 
         serializer = DatasetSerializer(data=data, context={"request": self.request})
@@ -131,7 +136,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
 
         if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+            return creation_failed_exception(
+                "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
         try:
             instance = self.get_object_from_all()
@@ -241,7 +247,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     from config.settings import feature_engineering_settings
                     object_details['meta_data']["uiMetaData"].update({
-                        "fe_config" : {
+                        "fe_config": {
                             "data_cleansing": feature_engineering_settings.data_cleansing_static,
                             "column_format": feature_engineering_settings.column_format,
                             "fe": feature_engineering_settings.feture_engineering_static
@@ -253,9 +259,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if object_details['meta_data']["uiMetaData"] is None:
                     pass
                 else:
-                    object_details['meta_data']["uiMetaData"]['SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
-                    object_details['meta_data']["uiMetaData"]['SKLEARN_REGRESSION_EVALUATION_METRICS'] = settings.SKLEARN_REGRESSION_EVALUATION_METRICS
-
+                    object_details['meta_data']["uiMetaData"][
+                        'SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
+                    object_details['meta_data']["uiMetaData"][
+                        'SKLEARN_REGRESSION_EVALUATION_METRICS'] = settings.SKLEARN_REGRESSION_EVALUATION_METRICS
 
         return Response(object_details)
 
@@ -310,10 +317,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         ts = data.get('config')
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
-                uiMetaData,
-                transformation_setting=ts,
-                user=request.user
-            )
+            uiMetaData,
+            transformation_setting=ts,
+            user=request.user
+        )
 
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
         return Response(uiMetaData)
@@ -323,7 +330,6 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         data = data.get('variableSelection')
         return Response(get_advanced_setting(data))
-
 
     @list_route(methods=['get'])
     def dummy_permission(self, request):
@@ -340,7 +346,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def createFromKylo(self, request, *args, **kwargs):
         try:
-            data=kwargs.get('data')
+            data = kwargs.get('data')
             data = convert_to_string(data)
 
             if 'datasource_details' in data:
@@ -349,11 +355,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     datasource_details = json.loads(data['datasource_details'])
                     data['name'] = datasource_details['datasetname']
                 else:
-                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(
+                        random.randint(1000000, 10000000)))
 
-            # question: why to use user.id when it can take, id, pk, object.
-            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-                data['created_by']=request['user']
+                # question: why to use user.id when it can take, id, pk, object.
+                # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+                data['created_by'] = request['user']
 
             serializer = DatasetSerializer(data=data, context={"request": request})
             if serializer.is_valid():
