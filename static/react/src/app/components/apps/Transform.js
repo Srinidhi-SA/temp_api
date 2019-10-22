@@ -52,10 +52,16 @@ componentDidMount(){
         if ($(this).prop('checked')) {
 			$("#one_hot_encoding").parent().removeClass("disabled");
 			$("#label_encoding").parent().removeClass("disabled");
+			$("#one_hot_encoding").removeAttr('disabled');
+			$("#label_encoding").removeAttr('disabled');
+			//$("#one_hot_encoding").prop('disabled', disabled);
+			//$("#label_encoding").prop('disabled', disabled);
         }
         else {
 			$("#one_hot_encoding").parent().addClass("disabled");
 			$("#label_encoding").parent().addClass("disabled");
+			$("#one_hot_encoding").attr('disabled','disabled');
+			$("#label_encoding").attr('disabled','disabled');
         }
     });
 	 
