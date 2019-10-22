@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement} from "../../actions/appActions";
 import {updateSelectedVariablesAction} from "../../actions/dataActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
@@ -111,6 +111,21 @@ var dateFormat = require('dateformat');
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
         }
+        filterByMode(){
+            this.props.dispatch(storeModelSearchElement(""));
+
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+            
+            this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
+        if($(".mode_filter").val()){
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val());
+        }
+        else{
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models');
+
+        }
+        this.props.dispatch(getAppsModelList(store.getState().apps.current_page));    
+        }
         
         render() {
             console.log("apps model list is called##########3");
@@ -155,6 +170,13 @@ var dateFormat = require('dateformat');
                         <div className="main-content">
                         <div className="row">
                         <div className="col-md-6">
+
+                        <select className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Algorithm" onChange={this.filterByMode.bind(this)}>
+                        <option disabled selected value="">Filter By Mode</option>
+                        <option value="">All</option>
+                        <option value="analyst">Analyst</option>
+                        <option value="autoML">Auto ML</option>
+                        </select>
                         
                         </div>
                         <div className="col-md-6">

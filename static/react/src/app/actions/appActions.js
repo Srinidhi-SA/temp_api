@@ -128,6 +128,9 @@ function fetchModelList(pageNo, token) {
   let search_element = store.getState().apps.model_search_element;
   let apps_model_sorton = store.getState().apps.apps_model_sorton;
   let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
+  let filter_by_mode= store.getState().apps.filter_models_by_mode;
+  debugger;
+  console.log(filter_by_mode)
   if (apps_model_sorttype == 'asc')
     apps_model_sorttype = ""
   else if (apps_model_sorttype == 'desc')
@@ -144,7 +147,15 @@ function fetchModelList(pageNo, token) {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else {
+  } else if(filter_by_mode){
+    return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&mode=' + filter_by_mode + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+   
+    // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }
+  else{
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -1753,6 +1764,10 @@ export function storeRoboSortElements(roboSorton, roboSorttype) {
 }
 export function storeAppsModelSortElements(appsModelSorton, appsModelSorttype) {
   return { type: "SORT_APPS_MODEL", appsModelSorton, appsModelSorttype }
+}
+
+export function storeAppsModelFilterElement(filter_by_mode) {
+  return { type: "FILTER_APPS_MODEL", filter_by_mode }
 }
 export function storeAppsScoreSortElements(appsScoreSorton, appsScoreSorttype) {
   return { type: "SORT_APPS_SCORE", appsScoreSorton, appsScoreSorttype }
