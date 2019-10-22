@@ -99,7 +99,7 @@ class SignalView(viewsets.ModelViewSet):
 
         if 'name' in data:
             signalname_list = []
-            signal_query = Insight.objects.all()
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
             for index, i in enumerate(signal_query):
                 signalname_list.append(i.name)
             if data['name'] in signalname_list:
@@ -224,7 +224,7 @@ class TrainerView(viewsets.ModelViewSet):
 
         if 'name' in data:
             trainername_list = []
-            trainer_query = Trainer.objects.all()
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
             for index, i in enumerate(trainer_query):
                 trainername_list.append(i.name)
             if data['name'] in trainername_list:
@@ -499,7 +499,7 @@ class ScoreView(viewsets.ModelViewSet):
 
         if 'name' in data:
             scorename_list = []
-            score_query = Score.objects.all()
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
             for index, i in enumerate(score_query):
                 scorename_list.append(i.name)
             if data['name'] in scorename_list:

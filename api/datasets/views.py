@@ -99,7 +99,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             else:
                 data['name'] = data.get('name', data['input_file'].name)
             datasetname_list = []
-            dataset_query = Dataset.objects.all()
+            dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
             for index, i in enumerate(dataset_query):
                 datasetname_list.append(i.name)
             if data['name'] in datasetname_list:
