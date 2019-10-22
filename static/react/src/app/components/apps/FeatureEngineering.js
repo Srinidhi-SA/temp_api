@@ -209,7 +209,6 @@ export class FeatureEngineering extends React.Component {
       let lvllen=lvl.length;
       for(i in lvl){ 
         if(lvl[i].inputValue == "" || undefined){
-          console.log('Col nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Please enter the new column name");
           return;
@@ -277,18 +276,18 @@ export class FeatureEngineering extends React.Component {
       var transformationData = this.state[this.props.selectedItem.slug][actionType];
 
       if(this.props.selectedItem.columnType == "measure"){
-        if(!document.getElementById("replace_values_with").checked && !document.getElementById("feature_scaling").checked && !document.getElementById("variable_transformation").checked){
+        if(!$('#replace_values_with').prop('checked') && !$('#feature_scaling').prop('checked') && !$('#variable_transformation').prop('checked')){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("No fields Selected");
         }else{
-          if (transformationData.replace_values_with == true || document.getElementById("replace_values_with").checked ) {
-            if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "" || $("input[name='replace_values_with_input']").val() == "") {
+          if (transformationData.replace_values_with == true || $('#replace_values_with').prop('checked') ) {
+            if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "" || $('#replace_values_with').val() == "") {
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Enter value");
               $("input[name='replace_values_with_input']").focus();
               return;
             }
-            else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "" ||$("select[name='replace_values_with_selected']").val() == "") {
+            else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "" || $('#replace_values_with_selected').val() == "" || $('#replace_values_with_selected').val() == "None") {
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Select value to replace with");
               $("select[name='replace_values_with_selected']").focus();
@@ -297,18 +296,19 @@ export class FeatureEngineering extends React.Component {
               $("#fileErrorMsg").addClass("visibilityHidden");
           }
 
-          if (transformationData.feature_scaling == true || document.getElementById("feature_scaling").checked) {
-            if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "" || $("select[name='perform_standardization_select']").val() == "") {
-              $("#fileErrorMsg").removeClass("visibilityHidden");
-              $("#fileErrorMsg").html("Select value for feature scaling");
-              $("select[name='perform_standardization_select']").focus();
-              return;
-            }else
-              $("#fileErrorMsg").addClass("visibilityHidden");
-          }
+            if((transformationData.feature_scaling == true) || $('#feature_scaling').prop('checked')){
+              if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "" || $('#perform_standardization_select').val() == "" || $('#perform_standardization_select').val() == "None") {
+                $("#fileErrorMsg").removeClass("visibilityHidden");
+                $("#fileErrorMsg").html("Select value for feature scaling");
+                $("select[name='perform_standardization_select']").focus();
+                return;
+              }else{
+                $("#fileErrorMsg").addClass("visibilityHidden");
+              }
+            }
 
-          if (transformationData.variable_transformation == true || document.getElementById("variable_transformation").checked) {
-            if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == ""|| $("select[name='variable_transformation_select']").val() == "") {
+          if (transformationData.variable_transformation == true || $('#variable_transformation').prop('checked')) {
+            if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == ""|| $('#variable_transformation_select').val() == "" || $('#variable_transformation_select').val() == "None") {
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Select value for variable transformation");
               $("select[name='variable_transformation_select']").focus();
@@ -323,13 +323,14 @@ export class FeatureEngineering extends React.Component {
           this.closeBinsOrLevelsModal();
           this.closeTransformColumnModal();
         }
-      }else if(this.props.selectedItem.columnType == "dimension"){
-        if(!document.getElementById("encoding_dimensions").checked && !document.getElementById("return_character_count").checked && !document.getElementById("is_custom_string_in").checked){
+      }
+      else if(this.props.selectedItem.columnType == "dimension"){
+        if(!document.getElementById("encoding_dimensions").checked || !document.getElementById("return_character_count").checked || !document.getElementById("is_custom_string_in").checked){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("No fields Selected");
         }else{
           if (transformationData.encoding_dimensions == true || document.getElementById("encoding_dimensions").checked) {
-            if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "" || $("select[name='encoding_type']").val() == "") {
+            if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "" || $("#encoding_type").val() == "") {
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Select Encoding Type");
               $("select[name='encoding_type']").focus();
