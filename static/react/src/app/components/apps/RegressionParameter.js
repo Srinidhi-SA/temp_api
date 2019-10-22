@@ -697,6 +697,7 @@ export class RegressionParameter extends React.Component {
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
+        var commaLetters= /^[0-9\,.\s]+$/;
         if(letter.test(textboxVal)){
             return {"iserror":true,"errmsg":"only numbers allowed here"};
         }
@@ -723,11 +724,19 @@ export class RegressionParameter extends React.Component {
 
        }
        //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
-     if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
-          return {"iserror":true,"errmsg":"only numbers allowed"};
-       }
-       else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
-        return {"iserror":true,"errmsg":"only numbers allowed"};
+       if(this.props.algorithmData[4].hyperParameterSetting[1].selected){
+        if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+          }
+        }else if(e.target.classList[1]=="learningClsInit" && letter.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="learningClsInit" && ($('.learningClsInit   ').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="learningClsInit" && !commaLetters.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
@@ -742,6 +751,8 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="hiddenCls" && ($('.hiddenCls').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="hiddenCls" && !commaLetters.test($('.hiddenCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         
