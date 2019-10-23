@@ -2120,7 +2120,10 @@ class Score(models.Model):
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
-        return output
+        check_valid = self.compare_variable_selection_and_model_variable_selection_columns(output)
+        if check_valid:
+            return output
+        return {'message': 'The ModelVariable columns do not match with Variable columns!'}
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
@@ -2251,6 +2254,17 @@ class Score(models.Model):
         )
 
         return convert_json_object_into_list_of_object(brief_info, 'score')
+
+    @staticmethod
+    def compare_variable_selection_and_model_variable_selection_columns(config):
+        modelVariableSelectionList, variableSelectionList = list(), list()
+        for mvardata, vardata in zip(config['modelvariableSelection'], config['variableSelection']):
+            modelVariableSelectionList.append(mvardata['name'])
+            variableSelectionList.append(vardata['name'])
+        diff = set(modelVariableSelectionList).difference(variableSelectionList)
+        if diff:
+            return False
+        return True
 
 
 class Robo(models.Model):
