@@ -222,7 +222,7 @@ export class AppsCreateModel extends React.Component {
 				<label className="pb-2 pt-10">Select subvalue:</label>
 				<select className="form-control" id="createModelLevelCount">
                     <option>--Select--</option>
-                    {this.state.countVal!=""?this.state.countVal.map((item, index) => {
+                    {this.state.countVal!=""?this.state.countVal.sort().map((item, index) => {
 
                         return (<option key={item} name={item} value={item}>{item}</option>)
                     }
