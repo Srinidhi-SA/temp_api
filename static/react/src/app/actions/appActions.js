@@ -136,18 +136,25 @@ function fetchModelList(pageNo, token) {
   else if (apps_model_sorttype == 'desc')
     apps_model_sorttype = "-"
 
-  if (search_element != "" && search_element != null) {
+    if (search_element != "" && search_element != null && filter_by_mode!="") {
+      console.log("calling for model search element!!")
+      return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+        method: 'get',
+        headers: getHeader(token)
+      }).then(response => Promise.all([response, response.json()]));
+    }
+    else if (search_element != "" && search_element != null) {
     console.log("calling for model search element!!")
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
+    } else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if(filter_by_mode){
+    } else if(filter_by_mode){
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&mode=' + filter_by_mode + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
    
     // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {

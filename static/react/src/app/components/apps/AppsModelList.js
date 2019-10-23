@@ -29,7 +29,8 @@ var dateFormat = require('dateformat');
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
-            apps_model_sorttype:store.apps.apps_model_sorttype
+            apps_model_sorttype:store.apps.apps_model_sorttype,
+            mode_filter_by:store.apps.filter_models_by_mode
         };
     })
     
@@ -94,7 +95,13 @@ var dateFormat = require('dateformat');
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
+                if($(".mode_filter").val()!=""){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/search=' + e.target.value + '')
+                }
+                else{
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + e.target.value + '')
+
+                }
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
@@ -104,6 +111,9 @@ var dateFormat = require('dateformat');
         }
         
         doSorting(sortOn, type){
+            // $(".mode_filter").val()="";
+            // this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
+
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
@@ -112,7 +122,6 @@ var dateFormat = require('dateformat');
             this.props.dispatch(getAppsModelList(1));
         }
         filterByMode(){
-            this.props.dispatch(storeModelSearchElement(""));
 
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             
@@ -260,6 +269,9 @@ var dateFormat = require('dateformat');
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if(this.props.apps_model_sorton)
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
+            else if(this.props.mode_filter_by)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
+
             else
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models');
             this.props.dispatch(getAppsModelList(1));
