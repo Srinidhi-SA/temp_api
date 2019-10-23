@@ -297,7 +297,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-1 control-label read text-center">
                                          <b>Max</b>
                                     </label>
-                                     <label class="col-md-4 control-label read"><b><span class="xs-ml-30">Select one or multiple intervals</span></b></label>
+                                     <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 <div>{parametersData}</div>
 								</FormGroup>
