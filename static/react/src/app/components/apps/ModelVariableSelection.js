@@ -164,7 +164,7 @@ export class ModelVariableSelection extends React.Component {
             if (this.props.targetLevelCounts != null) {
                 renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount">
                     <option value="">--Select--</option>
-                    {this.props.targetLevelCounts.map((item, index) => {
+                    {this.props.targetLevelCounts.sort().map((item, index) => {
 
                         return (<option key={item} name={item} value={item}>{item}</option>)
                     }
