@@ -191,13 +191,25 @@ export class AppsCreateModel extends React.Component {
 			// <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			// )
 			this.props.currentAppDetails.app_id == 13 ?
-			        this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map((metaItem, metaIndex) => {
+			        this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
+						if (a.name < b.name)
+							return -1;
+						if (a.name > b.name)
+							return 1;
+						return 0;
+					}).map((metaItem, metaIndex) => {
                             if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                 return (
 								<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
                             }
                         }) :
-						this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map((metaItem, metaIndex) => {
+						this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
+							if (a.name < b.name)
+								return -1;
+							if (a.name > b.name)
+								return 1;
+							return 0;
+						}).map((metaItem, metaIndex) => {
                             if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                 return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
                             }
