@@ -135,16 +135,23 @@ export class ModelVariableSelection extends React.Component {
         let renderLevelCountSelectBox = null;
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
-            if (metaData) {
+            const sortedMetaData = (metaData.sort((a, b) => {
+                                        if (a.name < b.name)
+                                            return -1;
+                                        if (a.name > b.name)
+                                            return 1;
+                                        return 0;
+                                    }));
+            if (sortedMetaData) {
                 renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
                     <option value="">--Select--</option>
                     {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
-                        metaData.map((metaItem, metaIndex) => {
+                        sortedMetaData.map((metaItem, metaIndex) => {
                             if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                 return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
                             }
                         }) :
-                        metaData.map((metaItem, metaIndex) => {
+                        sortedMetaData.map((metaItem, metaIndex) => {
                             if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
                                 return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
                             }
