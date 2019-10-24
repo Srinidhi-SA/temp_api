@@ -3935,6 +3935,10 @@ td.visible-print,  th.visible-print {
 .visible-print-block {
 	display: block!important
 }
+
+.main-content::-webkit-scrollbar { width: 0 !important }
+.main-content { -ms-overflow-style: none;overflow: -moz-scrollbars-none; }
+.grp_legends_green.continue, .grp_legends_green.back { display:none }
 }
 .visible-print-inline {
 	display: none!important
