@@ -130,7 +130,6 @@ function fetchModelList(pageNo, token) {
   let apps_model_sorton = store.getState().apps.apps_model_sorton;
   let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
   let filter_by_mode= store.getState().apps.filter_models_by_mode;
-  debugger;
   console.log(filter_by_mode)
   if (apps_model_sorttype == 'asc')
     apps_model_sorttype = ""
