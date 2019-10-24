@@ -34,6 +34,7 @@ export default function reducer(state = {
         appsLoaderModal:false,
         appsLoaderPerValue:-1,
         appsLoaderText :"",
+        setAppsLoaderValues:{},
         modelSummaryFlag:false,
         scoreSummaryFlag:false,
         modelTargetVariable:"",
@@ -489,6 +490,16 @@ export default function reducer(state = {
             appsLoaderModal:true,
             appsLoaderPerValue:action.value,
             appsLoaderText :action.text,
+        }
+    }
+    break;
+    case "SET_APPS_LOADER_MODAL":{
+        var allLoaderValues = state.setAppsLoaderValues;
+        allLoaderValues[action.slug] = action.value;
+        return {
+          ...state,
+          setAppsLoaderValues : allLoaderValues,
+        //   appsLoaderModal: false
         }
     }
     break;
