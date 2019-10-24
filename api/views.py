@@ -6334,3 +6334,20 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 pass
     else:
         return False
+@csrf_exempt
+def view_model_summary_autoML(request):
+    print request.url
+    print "i am going to view model summary"
+    model_slug = request.GET['slug']
+    print model_slug
+    #response = Trainer.objects.get(slug=model_slug)
+    #from django.http import HttpResponseRedirect,render
+    import requests
+    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
+    print url
+    try:
+        response = requests.get(url)
+        return render(request, 'model_summary.html', context=response)
+        #return render(request,model_summary.html,context)
+    except Exception as err:
+        print err

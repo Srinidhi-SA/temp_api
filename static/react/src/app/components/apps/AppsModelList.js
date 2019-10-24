@@ -65,6 +65,9 @@ var dateFormat = require('dateformat');
             this.props.dispatch(refreshAppsModelList(this.props));
             // this.props.dispatch(refreshAppsAlgoList(this.props));
            this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
+           this.props.dispatch(storeModelSearchElement(""));
+            this.props.dispatch(storeAppsModelSortElements("",""));
+            this.props.dispatch(storeAppsModelFilterElement(""));
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -95,7 +98,7 @@ var dateFormat = require('dateformat');
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
-                if($(".mode_filter").val()!=""){
+                if($(".mode_filter").val()!=""&& this.props.mode_filter_by != null){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/search=' + e.target.value + '')
                 }
                 else{
@@ -111,13 +114,14 @@ var dateFormat = require('dateformat');
         }
         
         doSorting(sortOn, type){
-            // $(".mode_filter").val()="";
-            // this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
-
+            this.props.dispatch(storeModelSearchElement(""));
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-            
+            if($(".mode_filter").val()){
+             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
+            }
+             else{
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
-            
+            }
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
         }
@@ -126,14 +130,19 @@ var dateFormat = require('dateformat');
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             
             this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
-        if($(".mode_filter").val()){
+            if(this.props.model_search_element && $(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode=' + $(".mode_filter").val() +'/models?search=' + this.props.model_search_element + '')
+            }
+            else if($(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val());
-        }
-        else{
+            }
+            else if($(".mode_filter").val()==""&& this.props.model_search_element){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?search=' + this.props.model_search_element + '');
+            }
+            else{
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models');
-
-        }
-        this.props.dispatch(getAppsModelList(store.getState().apps.current_page));    
+            }
+            this.props.dispatch(getAppsModelList(1));    
         }
         
         render() {
@@ -161,7 +170,6 @@ var dateFormat = require('dateformat');
             const modelList = store.getState().apps.modelList.data;
             const algoList = store.getState().apps.algoList;
             console.log("modelllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
-            
             var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {
@@ -260,18 +268,21 @@ var dateFormat = require('dateformat');
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+            }else if(this.props.mode_filter_by){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?filllter=' + this.props.mode_filter_by +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?page='+eventKey+'')
                 this.props.dispatch(getAppsModelList(eventKey));
         }
         clearSearchElement(e){
             this.props.dispatch(storeModelSearchElement(""));
-            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-            if(this.props.apps_model_sorton)
-            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
-            else if(this.props.mode_filter_by)
-            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
+            this.props.dispatch(storeAppsModelSortElements("",""));
 
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+            if(this.props.mode_filter_by)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
+            else if(this.props.apps_model_sorton)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
             else
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models');
             this.props.dispatch(getAppsModelList(1));
