@@ -99,8 +99,8 @@ class SignalView(viewsets.ModelViewSet):
 
         if 'name' in data:
             signalname_list = []
-            job_obj = Insight.objects.filter()
-            for index, i in enumerate(job_obj):
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(signal_query):
                 signalname_list.append(i.name)
             if data['name'] in signalname_list:
                 return creation_failed_exception("Name already exists!.")
@@ -224,8 +224,8 @@ class TrainerView(viewsets.ModelViewSet):
 
         if 'name' in data:
             trainername_list = []
-            trainer_obj = Trainer.objects.filter()
-            for index, i in enumerate(trainer_obj):
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(trainer_query):
                 trainername_list.append(i.name)
             if data['name'] in trainername_list:
                 return creation_failed_exception("Name already exists!.")
@@ -499,8 +499,8 @@ class ScoreView(viewsets.ModelViewSet):
 
         if 'name' in data:
             scorename_list = []
-            score_obj = Score.objects.filter()
-            for index, i in enumerate(score_obj):
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(score_query):
                 scorename_list.append(i.name)
             if data['name'] in scorename_list:
                 return creation_failed_exception("Name already exists!.")
@@ -6334,3 +6334,20 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 pass
     else:
         return False
+@csrf_exempt
+def view_model_summary_autoML(request):
+    print request.url
+    print "i am going to view model summary"
+    model_slug = request.GET['slug']
+    print model_slug
+    #response = Trainer.objects.get(slug=model_slug)
+    #from django.http import HttpResponseRedirect,render
+    import requests
+    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
+    print url
+    try:
+        response = requests.get(url)
+        return render(request, 'model_summary.html', context=response)
+        #return render(request,model_summary.html,context)
+    except Exception as err:
+        print err

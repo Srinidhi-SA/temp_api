@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement} from "../../actions/appActions";
 import {updateSelectedVariablesAction} from "../../actions/dataActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
@@ -29,7 +29,8 @@ var dateFormat = require('dateformat');
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
-            apps_model_sorttype:store.apps.apps_model_sorttype
+            apps_model_sorttype:store.apps.apps_model_sorttype,
+            mode_filter_by:store.apps.filter_models_by_mode
         };
     })
     
@@ -64,6 +65,9 @@ var dateFormat = require('dateformat');
             this.props.dispatch(refreshAppsModelList(this.props));
             // this.props.dispatch(refreshAppsAlgoList(this.props));
            this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
+           this.props.dispatch(storeModelSearchElement(""));
+            this.props.dispatch(storeAppsModelSortElements("",""));
+            this.props.dispatch(storeAppsModelFilterElement(""));
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -94,7 +98,13 @@ var dateFormat = require('dateformat');
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
+                if($(".mode_filter").val()!=""&& this.props.mode_filter_by != null){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/search=' + e.target.value + '')
+                }
+                else{
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + e.target.value + '')
+
+                }
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
@@ -104,12 +114,35 @@ var dateFormat = require('dateformat');
         }
         
         doSorting(sortOn, type){
+            this.props.dispatch(storeModelSearchElement(""));
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-            
+            if($(".mode_filter").val()){
+             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
+            }
+             else{
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
-            
+            }
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
+        }
+        filterByMode(){
+
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+            
+            this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
+            if(this.props.model_search_element && $(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode=' + $(".mode_filter").val() +'/models?search=' + this.props.model_search_element + '')
+            }
+            else if($(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val());
+            }
+            else if($(".mode_filter").val()==""&& this.props.model_search_element){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?search=' + this.props.model_search_element + '');
+            }
+            else{
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models');
+            }
+            this.props.dispatch(getAppsModelList(1));    
         }
         
         render() {
@@ -137,7 +170,6 @@ var dateFormat = require('dateformat');
             const modelList = store.getState().apps.modelList.data;
             const algoList = store.getState().apps.algoList;
             console.log("modelllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
-            
             var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {
@@ -155,6 +187,13 @@ var dateFormat = require('dateformat');
                         <div className="main-content">
                         <div className="row">
                         <div className="col-md-6">
+
+                        <select className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Algorithm" onChange={this.filterByMode.bind(this)}>
+                        <option disabled selected value="">Filter By Mode</option>
+                        <option value="">All</option>
+                        <option value="analyst">Analyst</option>
+                        <option value="autoML">Auto ML</option>
+                        </select>
                         
                         </div>
                         <div className="col-md-6">
@@ -229,14 +268,20 @@ var dateFormat = require('dateformat');
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+            }else if(this.props.mode_filter_by){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?filllter=' + this.props.mode_filter_by +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?page='+eventKey+'')
                 this.props.dispatch(getAppsModelList(eventKey));
         }
         clearSearchElement(e){
             this.props.dispatch(storeModelSearchElement(""));
+            this.props.dispatch(storeAppsModelSortElements("",""));
+
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-            if(this.props.apps_model_sorton)
+            if(this.props.mode_filter_by)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
+            else if(this.props.apps_model_sorton)
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
             else
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models');
