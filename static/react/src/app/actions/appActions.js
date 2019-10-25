@@ -525,8 +525,15 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
-        dispatch(createModelSuccess(json, dispatch))
+        if(json.status === false){
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
+          bootbox.alert(modelErrorMsg);
+        }else{
+          console.log(json)
+          dispatch(createModelSuccess(json, dispatch))
+        }
       }
       else {
         dispatch(closeAppsLoaderValue());
@@ -805,8 +812,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
         else if (json.status == INPROGRESS) {
           if (json.message !== null && json.message.length > 0) {
-            // dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
-            dispatch(setAppsLoaderValue(json.slug,json.message[0].stageCompletionPercentage,json.message[0].shortExplanation))
+            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }
       } else {
@@ -1320,7 +1326,7 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
             showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
           }else{
             renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
-          }
+            }
         }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
