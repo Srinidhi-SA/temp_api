@@ -451,8 +451,9 @@ else{
 
       } else if (this.buttons.create.text == CREATEMODEL) {
         isCreateAllowed = permission_details.create_trainer;
-      } else if (this.buttons.create.text == CREATESCORE) {
+      } else if (this.buttons.create.text == CREATESCORE || "Create Score") {
         isCreateAllowed = permission_details.create_score;
+      isDataValidationAllowed = false;
       } else if (this.buttons.create.text == "Compose Insight") {
         //need to change in future
         isCreateAllowed = true
