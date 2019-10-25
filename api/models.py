@@ -2114,12 +2114,15 @@ class Score(models.Model):
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
+        print 'svsc :::: ' + str(score_variable_selection_config)
         dataset_obj = Dataset.objects.get(slug=self.slug)
         meta_data = json.loads(dataset_obj.meta_data)
+        modelvariablecolList = [i['name'] for _, i in trainer_variable_selection_config.items() if not i['targetColumn']]
+        print 'mvcl :::: ' + str(modelvariablecolList)
         variablecolList = list()
         for colStat in meta_data['columnData']:
             variablecolList.append(colStat['name'])
-        modelvariablecolList = [i['name'] for _, i in trainer_variable_selection_config.items() if not i['targetColumn']]
+        print 'vcl :::: ' + str(variablecolList)
         check_valid = self.compare_columns_list(modelvariablecolList, variablecolList)
         if check_valid:
             return output
