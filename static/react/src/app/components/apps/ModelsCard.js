@@ -100,8 +100,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 {percentageDetails} 
                                 </div>
                                 <div className="pull-right" style={{"color":"#00998c"}}>
-                                {/* {percentageDetails}  */}
-                                 {data.mode!=""?data.mode:"Analyst"}
+                                 {(data.mode!=""&& data.mode!=null)?data.mode:"Analyst"}
                                 </div>
                                 </div>
                             </div>

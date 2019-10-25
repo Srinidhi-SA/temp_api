@@ -65,7 +65,7 @@ export default function reducer(state = {
         robo_sorttype:null,
         apps_model_sorton:null,
         apps_model_sorttype:null,
-        filter_models_by_mode:null,
+        filter_models_by_mode:"",
         apps_score_sorton:null,
         apps_score_sorttype:null,
         appsCreateStockModal:false,
