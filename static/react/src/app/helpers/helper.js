@@ -212,7 +212,7 @@ export function generateCircularChartRows(table) {
         if (isNaN(colData))
           return <td key={j}>{colData}</td>;
         else
-          return <td style={{"width":"33%"}} key={j}><CircularProgressbar percentage={colData} initialAnimation={true}/></td>;
+          return <td style={{"width":"20%"}} key={j}><CircularProgressbar percentage={colData} initialAnimation={true}/></td>;
         }
       );
       return <tr key={i}>{rows}</tr>;
