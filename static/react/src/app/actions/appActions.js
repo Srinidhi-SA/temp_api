@@ -35,6 +35,7 @@ import React from "react";
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { createcustomAnalysisDetails } from './signalActions';
 import { browserHistory } from 'react-router'
+import { AppsLoader } from "../components/common/AppsLoader";
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
@@ -524,8 +525,15 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
-        dispatch(createModelSuccess(json, dispatch))
+        if(json.status === false){
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
+          bootbox.alert(modelErrorMsg);
+        }else{
+          console.log(json)
+          dispatch(createModelSuccess(json, dispatch))
+        }
       }
       else {
         dispatch(closeAppsLoaderValue());
@@ -989,6 +997,10 @@ export function updateSelectedApp(appId, appName, appDetails) {
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
 }
+export function setAppsLoaderValue(slug,value,text){
+  return { type: "SET_APPS_LOADER_MODAL", slug,value, text }
+
+}
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
 }
@@ -1314,7 +1326,7 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
             showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
           }else{
             renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
-          }
+            }
         }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
