@@ -2114,11 +2114,11 @@ class Score(models.Model):
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
-        print 'svsc :::: ' + str(score_variable_selection_config)
+        print self.slug
         dataset_obj = Dataset.objects.get(slug=self.slug)
+        print dataset_obj
         meta_data = json.loads(dataset_obj.meta_data)
         modelvariablecolList = [i['name'] for _, i in trainer_variable_selection_config.items() if not i['targetColumn']]
-        print 'mvcl :::: ' + str(modelvariablecolList)
         variablecolList = list()
         for colStat in meta_data['columnData']:
             variablecolList.append(colStat['name'])
