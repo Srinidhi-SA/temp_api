@@ -2028,8 +2028,10 @@ class Score(models.Model):
         self.add_to_job()
 
     def add_to_job(self, *args, **kwargs):
-
+        from exceptions import creation_failed_exception
         jobConfig = self.generate_config(*args, **kwargs)
+        if 'err_message' in jobConfig['config']["COLUMN_SETTINGS"]:
+            return creation_failed_exception('Few columns are missing in train data!')
 
         job = job_submission(
             instance=self,
@@ -2129,7 +2131,7 @@ class Score(models.Model):
         print check_valid
         if check_valid:
             return output
-        return {'message': 'Few columns are missing in train data!'}
+        return {'err_message': 'Few columns are missing in train data!'}
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
