@@ -3939,6 +3939,10 @@ td.visible-print,  th.visible-print {
 .main-content::-webkit-scrollbar { width: 0 !important }
 .main-content { -ms-overflow-style: none;overflow: -moz-scrollbars-none; }
 .grp_legends_green.continue, .grp_legends_green.back { display:none }
+.form-control {border:none;-webkit-appearance:none;-moz-appearance: none; }
+select::-ms-expand {
+  display: none;
+}
 * {-webkit-print-color-adjust: exact !important;   color-adjust: exact !important; }
 html, body {    width: 210mm;    height: 297mm; font-size:12px;   }
  .side-body { position:absolute; } span.d_m_img {
@@ -13028,7 +13032,8 @@ div.dataTables_wrapper div.dataTables_length label select {
 	padding-left: 10px!important
 }
 .xs-pr-10 {
-	padding-right: 10px!important
+	padding-right: 10px!important;
+	padding-top: 5px
 }
 .xs-pb-10 {
 	padding-bottom: 10px!important
