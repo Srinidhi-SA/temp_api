@@ -353,13 +353,20 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+        t_d_c_s = set([item['name'] for item in t_d_c if not item["targetColumn"]])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
-        proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        #proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        diff = t_d_c_s.difference(d_d_c_s)
+        proceedFlag = True
+        message = 'Good to go!'
+        if diff:
+            proceedFlag = False
+            message = 'There are missing or new columns in test data!'
 
-        if proceedFlag != True:
+        """
+        if not proceedFlag:
             missing = t_d_c_s.difference(d_d_c_s)
             extra = d_d_c_s.difference(t_d_c_s)
             message = "These are the missing Columns {0}".format(missing)
@@ -371,7 +378,7 @@ class TrainerView(viewsets.ModelViewSet):
                 message = "These are the new columns {0}".format(extra)
             else:
                 message = ""
-
+        """
         # proceedFlag = True
         return JsonResponse({
             'proceed': proceedFlag,
