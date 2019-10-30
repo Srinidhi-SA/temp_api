@@ -2028,25 +2028,18 @@ class Score(models.Model):
         self.add_to_job()
 
     def add_to_job(self, *args, **kwargs):
-        from exceptions import creation_failed_exception
         jobConfig = self.generate_config(*args, **kwargs)
-        if jobConfig['config']["COLUMN_SETTINGS"] is None:
-            self.status = "FAILED"
-            self.save()
-            print self.status
-            return creation_failed_exception('Few columns are missing in train data!')
-        else:
-            job = job_submission(
+        job = job_submission(
                 instance=self,
                 jobConfig=jobConfig,
                 job_type='score'
             )
-            self.job = job
-            if job is None:
-                self.status = "FAILED"
-            else:
-                self.status = "INPROGRESS"
-            self.save()
+        self.job = job
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
+        self.save()
 
     def generate_config(self, *args, **kwargs):
         config = {
@@ -2119,21 +2112,7 @@ class Score(models.Model):
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
-        conf = self.dataset.get_metadata_url_config()
-        train_slug = conf['slug_list'][0]
-        dataset_obj = Dataset.objects.get(slug=train_slug)
-        meta_data = json.loads(dataset_obj.meta_data)
-        modelvariablecolList = [i['name'] for i in trainer_variable_selection_config if not i['targetColumn']]
-        variablecolList = list()
-        for colStat in meta_data['columnData']:
-            variablecolList.append(colStat['name'])
-        print 'variablecolList : ' + str(variablecolList)
-        print 'modelvariablecolList : ' + str(modelvariablecolList)
-        check_valid = self.compare_columns_list(modelvariablecolList, variablecolList)
-        print check_valid
-        if check_valid:
-            return output
-        return None
+        return output
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
@@ -2263,13 +2242,6 @@ class Score(models.Model):
         )
 
         return convert_json_object_into_list_of_object(brief_info, 'score')
-
-    @staticmethod
-    def compare_columns_list(modelVariableSelectionList, variableSelectionList):
-        diff = set(modelVariableSelectionList).difference(variableSelectionList)
-        if diff:
-            return False
-        return True
 
 
 class Robo(models.Model):
