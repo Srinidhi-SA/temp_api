@@ -1964,7 +1964,8 @@ class Trainer(models.Model):
             'actualColumnType': columnType,
             'name': newly_generated_column_name,
             'selected': True,
-            'slug': slug
+            'slug': slug,
+            'isFeatureColumn': True
         }
         custom_dict.update(temp)
         custom_dict['dateSuggestionFlag'] = False

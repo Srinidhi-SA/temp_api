@@ -353,11 +353,11 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c if not item["targetColumn"]])
+        t_d_c_s = set([item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in item.keys()])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
-        #proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        # proceedFlag = t_d_c_s.issuperset(d_d_c_s)
         diff = t_d_c_s.difference(d_d_c_s)
         proceedFlag = True
         message = 'Good to go!'
