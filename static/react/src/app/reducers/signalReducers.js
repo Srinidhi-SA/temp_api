@@ -1,5 +1,6 @@
 export default function reducer(state = {
   signalList: {},
+  allSignalList:{},
   signalAnalysis:{},
   algoAnalysis:{},
   selectedAlgo:{},
@@ -27,7 +28,8 @@ export default function reducer(state = {
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
-  selected_signal_type:""
+  selected_signal_type:"",
+  toggleValues:{},
 }, action) {
   // console.log("in SIGNAL reducer!!");
   // console.log(action);
@@ -247,6 +249,24 @@ export default function reducer(state = {
       }
     }
     break;
+    case "TOGGLE_VALUES":
+      {
+        var allToggleValues = state.toggleValues;
+        allToggleValues[action.id] = action.flag;
+        return {
+          ...state,
+          toggleValues : allToggleValues
+        }      
+      }
+      break;
+      case "CLEAR_TOGGLE_VALUES":
+      {
+        return {
+          ...state,
+          toggleValues : {}
+        }      
+      }
+      break;
     case "CREATE_SIGNAL_LOADER_MSG":
       {
         return {
@@ -306,6 +326,18 @@ export default function reducer(state = {
       signalAnalysis:{}
     }
   }
+  case "ALL_SIGNAL_LIST":
+      {
+        return {
+          ...state,
+          allSignalList: action.data,
+        }
+      }
+      break;
+      case "ALL_SIGNAL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch signal list!!");
+      }
   }
   return state
 }

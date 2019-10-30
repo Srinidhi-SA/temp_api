@@ -52,11 +52,11 @@ SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION = [
 
 SKLEARN_ML_SUPPORTED_BATCH_SIZE_CLASSIFICATION = [
     {"name":"auto","selected":False,"displayName":"auto"},
-    {"name":"8","selected":False,"displayName":"8"},
-    {"name":"16","selected":False,"displayName":"16"},
-    {"name":"32","selected":False,"displayName":"32"},
-    {"name":"64","selected":False,"displayName":"64"},
-    {"name":"128","selected":False,"displayName":"128"},
+    {"name":8,"selected":False,"displayName":"8"},
+    {"name":16,"selected":False,"displayName":"16"},
+    {"name":32,"selected":False,"displayName":"32"},
+    {"name":64,"selected":False,"displayName":"64"},
+    {"name":128,"selected":False,"displayName":"128"},
 ]
 
 

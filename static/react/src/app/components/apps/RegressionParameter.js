@@ -26,10 +26,13 @@ export class RegressionParameter extends React.Component {
                 min: this.props.parameterData.valueRange[0],
                 max: this.props.parameterData.valueRange[1],
                 defaultVal:this.props.parameterData.defaultValue,
+                name:this.props.parameterData.name,
             };
         else
         this.state = {
             defaultVal:this.props.parameterData.defaultValue,
+            name:this.props.parameterData.name,
+
         };
     }
 
@@ -81,6 +84,13 @@ export class RegressionParameter extends React.Component {
         }else if(!Number.isInteger(parseFloat(e.target.value))){
             e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
         } else e.target.parentElement.lastElementChild.innerHTML = ""
+
+        if(e.target.parentElement.lastElementChild.innerHTML !=""){
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+         }else
+         $("."+e.target.classList[1]).remove("regParamFocus");
+
+
     }
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
@@ -100,6 +110,7 @@ export class RegressionParameter extends React.Component {
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
     selecthandleChange(e){
+
         var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
@@ -153,11 +164,20 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     checkChangeTextboxValue(min,max,expectedDataType,e){
+        if(e.target.value!="" && e.target.parentElement.lastElementChild.innerHTML==''){
+            $("."+e.target.classList[1]).removeClass("regParamFocus");
+            }else if(e.target.value==""){
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+            }
         var validateResult = {"iserror":false,"errmsg":""};
         validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType,e);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
-            //e.target.focus();
+            if(e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg)
+            $("."+e.target.classList[1]).addClass("regParamFocus");
+            else
+            $("."+e.target.classList[1]).removeClass("regParamFocus");
+
         }
         this.setState({
           defaultVal: e.target.value
@@ -178,9 +198,11 @@ export class RegressionParameter extends React.Component {
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
             document.getElementById("error").innerHTML="only number allowed";
+
          }
          else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
+
         }
     }
     handleCheckboxEvents(e){
@@ -190,6 +212,19 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.checked,this.props.type));
     }
     renderParameterData(parameterData,tune){ 
+        $(".activation .multiselect").removeClass("regParamFocus");
+        $(".solverGrid .multiselect").removeClass("regParamFocus");
+        $(".learningGrid .multiselect").removeClass("regParamFocus");
+        $(".shuffleGrid .multiselect").removeClass("regParamFocus");
+        $(".InterceptGrid .multiselect").removeClass("regParamFocus");
+        $(".criterionGrid .multiselect").removeClass("regParamFocus");
+        $(".bootstrapGrid .multiselect").removeClass("regParamFocus");
+        $(".boosterGrid .multiselect").removeClass("regParamFocus");
+        $(".treeGrid .multiselect").removeClass("regParamFocus");
+        $(".batchGrid .multiselect").removeClass("regParamFocus");
+
+
+
         let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
             // case "tuple":
@@ -237,10 +272,26 @@ export class RegressionParameter extends React.Component {
                         case"Shuffle":
                             rowCls = "shuffleGrid";
                             break;
-                        case "Verbose":
-                            rowCls = "verboseGrid";
+                        case "Batch Size":
+                            rowCls = "batchGrid";
+                            break;
+                            case "Fit Intercept":
+                            rowCls = "InterceptGrid";
+                            break;
+                            case "Criterion":
+                            rowCls = "criterionGrid";
+                            break;
+                            case "Bootstrap Sampling":
+                            rowCls = "bootstrapGrid";
+                            break;
+                            case "Booster Function":
+                            rowCls = "boosterGrid";
+                            break;
+                            case "Tree Construction Algorithm":
+                            rowCls = "treeGrid";
                             break;
                         default:
+                        
                             rowCls = "row";
                     }  
 
@@ -447,7 +498,7 @@ export class RegressionParameter extends React.Component {
                         classN= "form-control hiddenCls";
                         break;
                         default:
-                        classN= "form-control";
+                        classN= `form-control ${this.state.name}`;
                         var type= "number";
 
                     }                  
@@ -474,17 +525,17 @@ export class RegressionParameter extends React.Component {
                         if(parameterData.defaultValue==200)
                            sliderclassN= "form-control maxSolverGrid";
                            else 
-                           sliderclassN="form-control";
+                           sliderclassN= `form-control ${this.state.name}`;
                         break;
                         case"Convergence tolerance of iterations(e^-n)":
                         if(parameterData.neural)
                             sliderclassN= "form-control convergGrid";
                             else 
-                            sliderclassN= "form-control";
+                            sliderclassN= `form-control ${this.state.name}`;
 
                         break;
                         default:
-                           sliderclassN="form-control";
+                           sliderclassN=`form-control ${this.state.name}`;
                         }
                         return(
                             <div className="row">                            
@@ -521,17 +572,46 @@ export class RegressionParameter extends React.Component {
                     switch(parameterData.displayName){
                         case"Epsilon":
                         var cls= "col-xs-10 epsilonCls";
-                        var sliderTextCls="form-control inputWidth epsilonCls"
+                        var sliderTextCls="form-control epsilonCls inputWidth "
                     
                         break;
                         case"No of Iteration":
                         var  cls= "col-xs-10 iterationCls";
-                        var sliderTextCls="form-control inputWidth iterationCls"
+                        var sliderTextCls="form-control iterationCls inputWidth "
 
                         break;
+                        
+                        case"Convergence tolerance of iterations(e^-n)":
+                        if(parameterData.neural){
+                            var  cls= "col-xs-10 convergenceCls";
+                            var sliderTextCls="form-control convergenceCls inputWidth "
+                        }
+                        else{
+                            var cls = "col-xs-10";
+                            var sliderTextCls=`form-control ${this.state.name} inputWidth`
+                        }
+
+                        break;
+                        case"Maximum Solver Iterations":
+                        if(parameterData.defaultValue==200){
+                            var  cls= "col-xs-10 maxIterationsCls";
+                            var sliderTextCls="form-control maxIterationsCls inputWidth "
+                        }else{
+                            var cls = "col-xs-10";
+                            var sliderTextCls=`form-control ${this.state.name} inputWidth`
+                        }
+
+                        case"Max Depth":
+                        var  cls= "col-xs-10 maxDepthCls";
+                        var sliderTextCls="form-control maxDepthCls inputWidth "
+                        
+                    //    case "Minimum Instances For Split"
+
                         default:
                         var cls = "col-xs-10";
-                        var sliderTextCls="form-control inputWidth"
+                        var sliderTextCls=`form-control ${this.state.name} inputWidth`
+
+            
 
                         break;
                     }
@@ -617,6 +697,7 @@ export class RegressionParameter extends React.Component {
         const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         var numbers = /^(0|[1-9]\d*)(\.\d+)?$/;
         var letter = /[a-zA-Z]/;
+        var commaLetters= /^[0-9\,.\s]+$/;
         if(letter.test(textboxVal)){
             return {"iserror":true,"errmsg":"only numbers allowed here"};
         }
@@ -643,11 +724,19 @@ export class RegressionParameter extends React.Component {
 
        }
        //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
-     if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
-          return {"iserror":true,"errmsg":"only numbers allowed"};
-       }
-       else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
-        return {"iserror":true,"errmsg":"only numbers allowed"};
+       if(this.props.algorithmData[4].hyperParameterSetting[1].selected){
+        if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+          }
+        }else if(e.target.classList[1]=="learningClsInit" && letter.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="learningClsInit" && ($('.learningClsInit   ').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="learningClsInit" && !commaLetters.test($('.learningClsInit').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }
+        else if(e.target.classList[1]=="alphaCls" && !numbers.test($('.alphaCls').val())){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="momentumCls" &&!numbers.test($('.momentumCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
@@ -662,6 +751,8 @@ export class RegressionParameter extends React.Component {
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         else if(e.target.classList[1]=="hiddenCls" && ($('.hiddenCls').val()=="")){
+            return {"iserror":true,"errmsg":"only numbers allowed"};
+        }else if(e.target.classList[1]=="hiddenCls" && !commaLetters.test($('.hiddenCls').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
         }
         

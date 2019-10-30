@@ -10,6 +10,8 @@ import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages} from "../../helpers/helper";
+import {clearDataPreview} from "../../actions/dataUploadActions"
+
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -29,6 +31,7 @@ import {statusMessages} from "../../helpers/helper";
 
 export class ModelBuildingModeSelection extends React.Component {
     componentWillMount() {
+    this.props.dispatch(clearDataPreview());
         //It will trigger when refresh happens on url
         // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
         //     window.history.go(-1);

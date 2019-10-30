@@ -13,7 +13,8 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
-  updateHide
+  updateHide,
+  getAllSignalList
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -76,6 +77,7 @@ export class Signals extends React.Component {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
     this.props.dispatch(refreshSignals(this.props));
+    this.props.dispatch(getAllSignalList());
 
   }
 
