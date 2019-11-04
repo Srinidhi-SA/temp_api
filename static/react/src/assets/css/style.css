@@ -3935,6 +3935,32 @@ td.visible-print,  th.visible-print {
 .visible-print-block {
 	display: block!important
 }
+
+.main-content::-webkit-scrollbar { width: 0 !important }
+.main-content { -ms-overflow-style: none;overflow: -moz-scrollbars-none; }
+.grp_legends_green.continue, .grp_legends_green.back { display:none }
+.form-control {border:none;-webkit-appearance:none;-moz-appearance: none; }
+select::-ms-expand {
+ display: none;
+}
+* {-webkit-print-color-adjust: exact !important;   color-adjust: exact !important; }
+html, body {    width: 210mm;    height: 297mm; font-size:12px;   }
+ .side-body { position:absolute; }
+ span.d_m_img {
+   display: list-item;
+   list-style-image: url("../images/icon_bAmAdvisor.png");
+   list-style-position: inside;
+   }
+    span.d_analyst_img {
+   display: list-item;
+   list-style-image: url("../images/icon_dataAnalyst.png");
+   list-style-position: inside;
+   }
+    .bImpact_time_icon, .bImpact_time_icon.xs-ml-10 {
+        display: list-item;
+   list-style-image: url("../images/icon_bAClock.png");
+   list-style-position: inside;
+    }
 }
 .visible-print-inline {
 	display: none!important
@@ -13950,7 +13976,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	font-size:11px;
 }
 .footerTitle-lineh { line-height: 3em; }
-.newCardStyle { height:114px; }
+.newCardStyle { height:115px; }
 
 
 .newCardStyle, .app-block{
@@ -15470,6 +15496,14 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .preview_content .table-responsive {
     background: #FFFFFF;
 }
+
+.ma-checkbox.disabled input[type=radio]:checked+label:before, .ma-radio.disabled input[type=radio]:checked+label:before {
+    content: "\f111";
+	color:#FFFFFF;
+	border-color:#CCCCCC;
+}
+
+
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
@@ -16339,4 +16373,17 @@ div#replaceValues {
 
 .lexBtn:hover{
 	box-shadow: 3px 2px 8px 0px #457b74;
+}
+
+.regParamFocus{
+	border-color: #ef6262;
+}
+
+.customeTheme{
+	color: #0f0f0f !important;
+	background-color: #f0f5f4 !important;
+	pointer-events: auto !important;
+}
+.__react_component_tooltip.type-dark.place-bottom:after{
+	border-bottom-color: #f0f5f4 !important;
 }

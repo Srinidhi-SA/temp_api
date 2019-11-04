@@ -683,6 +683,44 @@ export function storeSortElements(sorton, sorttype) {
 export function setSideCardListFlag(sideCardListClass) {
   return {type: "SET_SIDECARDLIST_FLAG", sideCardListClass}
 }
+//for allSignalList
+
+export function getAllSignalList() {
+  return (dispatch) => {
+    return fetchAllSignalList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            console.log(json)
+            dispatch(fetchAllSignalSuccess(json))
+        }else{
+          dispatch(fetchAllSignalError(json))
+        }
+    })
+  }
+}
+function fetchAllSignalList(token) {
+  return fetch(API + '/api/get_all_signals/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllSignalSuccess(doc){
+  var data = ""
+  if(doc.allSignalList[0]!= undefined){
+      data = doc.allSignalList;
+  }
+  return {
+      type: "ALL_SIGNAL_LIST",
+      data,
+  }
+}
+function fetchAllSignalError(json) {
+  return {
+      type: "ALL_SIGNAL_LIST_ERROR",
+      json
+  }
+}
+//end of allSignalList
 
 export function handleRename(slug, dialog, name) {
   return (dispatch) => {
@@ -700,6 +738,8 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
 			<div className="form-group">
 			<label for="fl1" className="control-label">Enter a new name</label>
 			<input className="form-control" id="idRenameSignal" type="text" defaultValue={name}/>
+      <div className="text-danger" id="ErrorMsg"></div>
+
 			</div>
 			</div>
 		</div>
@@ -710,8 +750,25 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
     title: 'Rename Signal',
     body: customBody,
     actions: [
-      Dialog.CancelAction(), Dialog.OKAction(() => {
-        renameSignal(slug, dialog, $("#idRenameSignal").val(), dispatch)
+      Dialog.CancelAction(), 
+      Dialog.OKAction(() => {
+        let letters = /^[0-9a-zA-Z\-_\s]+$/;
+        var allSignalList=store.getState().signals.allSignalList;
+        console.log(allSignalList,"inside ok action")
+        if($("#idRenameSignal").val()==""){
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
+              showRenameDialogBox(slug, dialog, dispatch, name)
+        }
+        else if (!letters.test($("#idRenameSignal").val())){
+              document.getElementById("ErrorMsg").innerHTML = "Please enter name in a correct format. It should not contain special characters @,#,$,%,!,&.";
+              showRenameDialogBox(slug, dialog, dispatch, name)
+        }
+       else if(Object.values(allSignalList).map(i=>i.name.toLowerCase()).includes($("#idRenameSignal").val().toLowerCase())){
+              document.getElementById("ErrorMsg").innerHTML = "Signal with same name already exists.";
+              showRenameDialogBox(slug, dialog, dispatch, name)
+        }else{
+          renameSignal(slug, dialog, $("#idRenameSignal").val(), dispatch)
+        }
       })
     ],
     bsSize: 'medium',

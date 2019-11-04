@@ -118,25 +118,34 @@ export class Card extends React.Component {
                 return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
             case "toggle":
+                var varId = story.data.toggleon.data.tableData[0][0];
+                if(this.props.toggleValues[varId] == true){
+                    var toggleClass = "toggleOn hidden"
+                    var toggleClass1 = "toggleOff"
+                }
+                else{
+                    var toggleClass = "toggleOn"
+                    var toggleClass1 = "toggleOff hidden"
+                }
                 var tableData = [];
                 tableData.push(story.data.toggleon);
-                var toggleData =  this.renderCardData(tableData,"toggleOn");
+                var toggleData =  this.renderCardData(tableData,toggleClass);
                 tableData = [];
                 tableData.push(story.data.toggleoff);
-                 var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
+                 var toggleData1 = this.renderCardData(tableData,toggleClass1);
                 var randomChk = randomNum+"_chk"
-                var varId = story.data.toggleon.data.tableData[0][0];
+                
                 if(this.props.toggleValues[varId] == true)
                     var idchecked = true
                 else if(this.props.toggleValues[varId] == false)
                     var idchecked = false
-                else if(this.props.toggleValues == "" || undefined)
+                else
                     var idchecked = false
                 var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-                                    <input type="checkbox" name={randomChk} value={randomChk} id={varId} checked={idchecked} onClick={this.handleCheckBoxEvent.bind(this)} />
+                                    <input type="checkbox" id={varId} name={varId} value={varId} defaultChecked={idchecked} onChange={this.handleCheckBoxEvent.bind(this)} />
                                     <span><label for={varId}></label></span>
                                 </div>
-                return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);                    
+                return (<div key={varId}>{inputChk}{toggleData}{toggleData1}</div>);                    
                 break;
             case "kpi":
             let boxData = story.data;

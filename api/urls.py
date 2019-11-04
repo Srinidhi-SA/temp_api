@@ -7,7 +7,7 @@ from rest_framework import routers
 from api import views
 from datasets.views import DatasetView
 from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
-from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi
+from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, view_model_summary_autoML,kill_timeout_job_from_ui
 from views import AppView
 
 from views import TrainerView
@@ -103,6 +103,7 @@ router.register(
 
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
+    url(r'^view_model_summary_autoML',views.view_model_summary_autoML, name = "view_model_summary_autoML"),
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
     url(r'^job/(?P<slug>[^/.]+)/get_config$',views.get_config , name="get_config"),
     url(r'^job/(?P<slug>[^/.]+)/set_result',views.set_result , name="set_result"),
@@ -134,6 +135,7 @@ urlpatterns = [
     url(r'^request_from_alexa', views.request_from_alexa, name="request_from_alexa"),
     url(r'^get_all_models', views.get_all_models, name="get_all_models"),
     url(r'^get_all_signals', views.get_all_signals, name="get_all_signals"),
+    url(r'^kill_timeout_job_from_ui', views.kill_timeout_job_from_ui, name="kill_timeout_job_from_ui"),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
 

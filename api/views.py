@@ -99,8 +99,8 @@ class SignalView(viewsets.ModelViewSet):
 
         if 'name' in data:
             signalname_list = []
-            job_obj = Insight.objects.filter()
-            for index, i in enumerate(job_obj):
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(signal_query):
                 signalname_list.append(i.name)
             if data['name'] in signalname_list:
                 return creation_failed_exception("Name already exists!.")
@@ -224,8 +224,8 @@ class TrainerView(viewsets.ModelViewSet):
 
         if 'name' in data:
             trainername_list = []
-            trainer_obj = Trainer.objects.filter()
-            for index, i in enumerate(trainer_obj):
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(trainer_query):
                 trainername_list.append(i.name)
             if data['name'] in trainername_list:
                 return creation_failed_exception("Name already exists!.")
@@ -353,13 +353,20 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+        t_d_c_s = set([item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in item.keys()])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
-        proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        # proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        diff = t_d_c_s.difference(d_d_c_s)
+        proceedFlag = True
+        message = 'Good to go!'
+        if diff:
+            proceedFlag = False
+            message = 'There are missing or new columns in test data!'
 
-        if proceedFlag != True:
+        """
+        if not proceedFlag:
             missing = t_d_c_s.difference(d_d_c_s)
             extra = d_d_c_s.difference(t_d_c_s)
             message = "These are the missing Columns {0}".format(missing)
@@ -371,7 +378,7 @@ class TrainerView(viewsets.ModelViewSet):
                 message = "These are the new columns {0}".format(extra)
             else:
                 message = ""
-
+        """
         # proceedFlag = True
         return JsonResponse({
             'proceed': proceedFlag,
@@ -499,8 +506,8 @@ class ScoreView(viewsets.ModelViewSet):
 
         if 'name' in data:
             scorename_list = []
-            score_obj = Score.objects.filter()
-            for index, i in enumerate(score_obj):
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(score_query):
                 scorename_list.append(i.name)
             if data['name'] in scorename_list:
                 return creation_failed_exception("Name already exists!.")
@@ -1207,6 +1214,128 @@ def end_of_this_world(request, slug=None):
 
     return JsonResponse({'result': "success"})
 
+
+def kill_timeout_job_from_ui(request):
+    slug = request.GET["slug"]
+    try:
+        dataset1_object=Dataset.objects.get(slug=slug)
+        job=dataset1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        dataset_object = get_db_object(model_name=Dataset.__name__,
+                                           model_slug=object_id
+                                           )
+
+        dataset_object.status = "FAILED"
+        dataset_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        signal_object=Insight.objects.get(slug=slug)
+        job=signal_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        insight_object = get_db_object(model_name=Insight.__name__,
+                                           model_slug=object_id
+                                           )
+
+        insight_object.status = "FAILED"
+        insight_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        trainer1_object=Trainer.objects.get(slug=slug)
+        job=trainer1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        trainer_object = get_db_object(model_name=Trainer.__name__,
+                                       model_slug=object_id
+                                       )
+
+        trainer_object.status = "FAILED"
+        trainer_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        score1_object=Score.objects.get(slug=slug)
+        job=score1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        score_object = get_db_object(model_name=Score.__name__,
+                                     model_slug=object_id
+                                     )
+
+        score_object.status = "FAILED"
+        score_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        robo_advisor_object=Robo.objects.get(slug=slug)
+        job=robo_advisor_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        robo_object = get_db_object(model_name=Robo.__name__,
+                                    model_slug=object_id
+                                    )
+
+        robo_object.status = "FAILED"
+        robo_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        stocksense_object=StockDataset.objects.get(slug=slug)
+        job=stocksense_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        stock_objects = get_db_object(model_name=StockDataset.__name__,
+                                      model_slug=object_id
+                                      )
+        stock_objects.status = 'FAILED'
+        stock_objects.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
 
 @csrf_exempt
 def set_result(request, slug=None):
@@ -6334,3 +6463,19 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 pass
     else:
         return False
+@csrf_exempt
+def view_model_summary_autoML(request):
+    print "i am going to view model summary"
+    model_slug = request.GET['slug']
+    print model_slug
+    #response = Trainer.objects.get(slug=model_slug)
+    #from django.http import HttpResponseRedirect,render
+    import requests
+    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
+    print url
+    try:
+        response = requests.get(url)
+        return render(request, 'model_summary.html', context=response)
+        #return render(request,model_summary.html,context)
+    except Exception as err:
+        print err

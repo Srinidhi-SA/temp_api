@@ -28,13 +28,16 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
-            apps_model_sorttype:store.apps.apps_model_sorttype
+            apps_model_sorttype:store.apps.apps_model_sorttype,
+            setAppsLoaderValues:store.apps.setAppsLoaderValues
         };
     })
     
     export class ModelsCard extends React.Component {
         constructor(props) {
             super(props);
+        }
+        componentWillMount(){
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -69,7 +72,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
                         if(data.status == INPROGRESS){
-                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
+                            this.props.dispatch(getAppsModelSummary(data.slug))
+                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?this.props.setAppsLoaderValues[data.slug]+' %':"In Progress"}</span></div>;
                             modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                         }else if(data.status == SUCCESS){
                             data.completed_percentage = 100;
@@ -94,8 +98,16 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 							<div className="clearfix"></div>
 							 
 							
-                            <div className="clearfix"></div>
-                                {percentageDetails}
+                            <div className="row">
+                            <div className="col-xs-12">
+                            <div className="pull-left">
+                                {percentageDetails} 
+                                </div>
+                                <div className="pull-right" style={{"color":"#00998c"}}>
+                                 {(data.mode!=""&& data.mode!=null)?data.mode:"Analyst"}
+                                </div>
+                                </div>
+                            </div>
                             
                             {/*<!-- Popover Content link -->
                             <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
@@ -103,6 +115,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             {store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}
                                 </div>
                             </a></OverlayTrigger>*/}
+                            {/* {data.mode?data.mode:""} */}
+
+
                             
                             </div>
                             

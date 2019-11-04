@@ -1,5 +1,6 @@
 export default function reducer(state = {
   signalList: {},
+  allSignalList:{},
   signalAnalysis:{},
   algoAnalysis:{},
   selectedAlgo:{},
@@ -325,6 +326,18 @@ export default function reducer(state = {
       signalAnalysis:{}
     }
   }
+  case "ALL_SIGNAL_LIST":
+      {
+        return {
+          ...state,
+          allSignalList: action.data,
+        }
+      }
+      break;
+      case "ALL_SIGNAL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch signal list!!");
+      }
   }
   return state
 }

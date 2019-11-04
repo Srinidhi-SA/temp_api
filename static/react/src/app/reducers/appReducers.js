@@ -34,6 +34,7 @@ export default function reducer(state = {
         appsLoaderModal:false,
         appsLoaderPerValue:-1,
         appsLoaderText :"",
+        setAppsLoaderValues:{},
         modelSummaryFlag:false,
         scoreSummaryFlag:false,
         modelTargetVariable:"",
@@ -65,6 +66,7 @@ export default function reducer(state = {
         robo_sorttype:null,
         apps_model_sorton:null,
         apps_model_sorttype:null,
+        filter_models_by_mode:"",
         apps_score_sorton:null,
         apps_score_sorttype:null,
         appsCreateStockModal:false,
@@ -492,6 +494,16 @@ export default function reducer(state = {
         }
     }
     break;
+    case "SET_APPS_LOADER_MODAL":{
+        var allLoaderValues = state.setAppsLoaderValues;
+        allLoaderValues[action.slug] = action.value;
+        return {
+          ...state,
+          setAppsLoaderValues : allLoaderValues,
+        //   appsLoaderModal: false
+        }
+    }
+    break;
     case "HIDE_APPS_LOADER_MODAL":
     {
 
@@ -833,6 +845,14 @@ export default function reducer(state = {
             ...state,
             apps_model_sorton:action.appsModelSorton,
             apps_model_sorttype:action.appsModelSorttype
+        }
+    }
+    break;
+    break;	case "FILTER_APPS_MODEL":
+    {
+        return{
+            ...state,
+            filter_models_by_mode:action.filter_by_mode,
         }
     }
     break;

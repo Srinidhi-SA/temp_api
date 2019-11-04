@@ -35,6 +35,7 @@ import React from "react";
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { createcustomAnalysisDetails } from './signalActions';
 import { browserHistory } from 'react-router'
+import { AppsLoader } from "../components/common/AppsLoader";
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
@@ -128,23 +129,46 @@ function fetchModelList(pageNo, token) {
   let search_element = store.getState().apps.model_search_element;
   let apps_model_sorton = store.getState().apps.apps_model_sorton;
   let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
+  let filter_by_mode= store.getState().apps.filter_models_by_mode;
+  console.log(filter_by_mode)
   if (apps_model_sorttype == 'asc')
     apps_model_sorttype = ""
   else if (apps_model_sorttype == 'desc')
     apps_model_sorttype = "-"
 
-  if (search_element != "" && search_element != null) {
+    if (search_element != "" && search_element != null && filter_by_mode!=""&& filter_by_mode!=null) {
+      console.log("calling for model search element!!")
+      return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+        method: 'get',
+        headers: getHeader(token)
+      }).then(response => Promise.all([response, response.json()]));
+    }
+    else if (search_element != "" && search_element != null) {
     console.log("calling for model search element!!")
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
+    } 
+    else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)&& filter_by_mode!=""&& filter_by_mode != null) {
+      return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+        method: 'get',
+        headers: getHeader(token)
+      }).then(response => Promise.all([response, response.json()]));
+      }else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else {
+    } else if(filter_by_mode!=""&& filter_by_mode!=null){
+    return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&mode=' + filter_by_mode + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+   
+    // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }
+  else{
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -501,8 +525,15 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
-        dispatch(createModelSuccess(json, dispatch))
+        if(json.status === false){
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
+          bootbox.alert(modelErrorMsg);
+        }else{
+          console.log(json)
+          dispatch(createModelSuccess(json, dispatch))
+        }
       }
       else {
         dispatch(closeAppsLoaderValue());
@@ -966,6 +997,10 @@ export function updateSelectedApp(appId, appName, appDetails) {
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
 }
+export function setAppsLoaderValue(slug,value,text){
+  return { type: "SET_APPS_LOADER_MODAL", slug,value, text }
+
+}
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
 }
@@ -1291,7 +1326,7 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
             showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
           }else{
             renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
-          }
+            }
         }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
@@ -1753,6 +1788,10 @@ export function storeRoboSortElements(roboSorton, roboSorttype) {
 }
 export function storeAppsModelSortElements(appsModelSorton, appsModelSorttype) {
   return { type: "SORT_APPS_MODEL", appsModelSorton, appsModelSorttype }
+}
+
+export function storeAppsModelFilterElement(filter_by_mode) {
+  return { type: "FILTER_APPS_MODEL", filter_by_mode }
 }
 export function storeAppsScoreSortElements(appsScoreSorton, appsScoreSorttype) {
   return { type: "SORT_APPS_SCORE", appsScoreSorton, appsScoreSorttype }
