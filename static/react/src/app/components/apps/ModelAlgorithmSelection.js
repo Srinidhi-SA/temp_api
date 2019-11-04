@@ -167,6 +167,13 @@ export class ModelAlgorithmSelection extends React.Component {
     
             }
     }
+
+    handleBack=()=>{
+        const appId = this.props.match.params.AppId;
+        const slug = this.props.match.params.slug;
+        this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/featureEngineering?from=algorithm_selection`);
+      }
+
     render() {
         if(store.getState().apps.modelSummaryFlag){ 
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
@@ -335,8 +342,9 @@ export class ModelAlgorithmSelection extends React.Component {
                                 </Tabs>
                                 }
 							<div className="clearfix"></div>
-                            <div className="text-right">
-                                <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" onClick={this.createModel.bind(this)}>{buttonName}</Button>
+                            <div>
+                            <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                            <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName}</Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

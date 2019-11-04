@@ -70,6 +70,7 @@ export default function reducer(state = {
   selectedItem:{},
   isNoOfBinsEnabled:false,
   isSpecifyIntervalsEnabled:true,
+  convertUsingBin: "false",
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -848,7 +849,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
+        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins},
+        convertUsingBin: action.yesNoValue
       }
     }
     break;
