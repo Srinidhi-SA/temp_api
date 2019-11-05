@@ -69,7 +69,7 @@ export class MasterSummary extends React.Component {
         <div className="page-head">
           <div class="row">
             <div class="col-md-12">
-              <Breadcrumb path={[
+              {/* <Breadcrumb path={[
                 {
                   path: '/signals',
                   label: 'Signals'
@@ -77,7 +77,7 @@ export class MasterSummary extends React.Component {
                   path: '/signals/' + this.props.signalId,
                   label: heading
                 }
-              ]}/>
+              ]}/> */}
             </div>
             
           </div>
