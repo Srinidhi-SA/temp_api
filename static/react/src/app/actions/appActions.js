@@ -999,7 +999,6 @@ export function openAppsLoaderValue(value, text) {
 }
 export function setAppsLoaderValue(slug,value,text){
   return { type: "SET_APPS_LOADER_MODAL", slug,value, text }
-
 }
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
