@@ -58,8 +58,11 @@ export default function reducer(state = {
   featureEngineering:{},
   selectedVariables : {},
   checkedAll:true,
+  checked:true,
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
+  duplicateAttributes: false,
+  duplicateObservations: false,
   olUpperRange : {},
   binsOrLevelsShowModal:false,
   transferColumnShowModal:false,
@@ -67,6 +70,7 @@ export default function reducer(state = {
   selectedItem:{},
   isNoOfBinsEnabled:false,
   isSpecifyIntervalsEnabled:true,
+  convertUsingBin: "false",
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -688,19 +692,43 @@ export default function reducer(state = {
 
     case "CHECKED_ALL_SELECTED":
     {
+      var check = action.selecteOrNot;
       return {
         ...state,
-        checkedAll : action.selecteOrNot
+        checkedAll : check
       }
 
     }
     break;
+    case "DATA_CLEANSING_CHECK_UPDATE":
+      {
+        console.log(action.checkedOrNot, action.index, 'anshulanshulanshul');
+        return {
+          ...state,
+          dataPreview: {
+            ...state.dataPreview,
+            meta_data: {
+              ...state.dataPreview.meta_data,
+              scriptMetaData: {
+                ...state.dataPreview.meta_data.scriptMetaData,
+                columnData: state.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => ({
+                  ...item,
+                  checked: index === Number(action.index) ? action.checkedOrNot : item.checked, 
+                }))
+              }
+            }
+          },
+        };
+  
+      }
+      break;
 
     case "REMOVE_DUPLICATE_ATTRIBUTES":
     {
       return {
         ...state,
-        removeDuplicateAttributes : action.yesOrNo
+        removeDuplicateAttributes : action.yesOrNo,
+        duplicateAttributes: action.yesOrNo,
       }
     }
     break;
@@ -709,7 +737,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        removeDuplicateObservations : action.yesOrNo
+        removeDuplicateObservations : action.yesOrNo,
+        duplicateObservations : action.yesOrNo,
       }
     }
     break;
@@ -820,7 +849,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
+        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins},
+        convertUsingBin: action.yesNoValue
       }
     }
     break;
@@ -833,6 +863,9 @@ export default function reducer(state = {
         outlierRemoval:{},
         removeDuplicateAttributes :{},
         removeDuplicateObservations :{},
+        duplicateAttributes : false,
+        duplicateObservations : false,
+
       }
     }
     break;

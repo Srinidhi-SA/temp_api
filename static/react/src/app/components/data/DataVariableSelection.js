@@ -55,6 +55,10 @@ export class DataVariableSelection extends React.Component {
         this.props.dispatch( updateSelectedVariables( e ) )
     }
     componentDidMount() {
+        const from = this.getValueOfFromParam();
+        if (from === 'data_cleansing') {
+        }
+        else{
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
             deselectAllVariablesDataPrev(true);
@@ -69,6 +73,15 @@ export class DataVariableSelection extends React.Component {
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
     }
+}
+    getValueOfFromParam() {
+        if(this.props.location === undefined){
+         }
+        else{
+            const params = new URLSearchParams(this.props.location.search);
+            return params.get('from');
+        }
+  }
     componentDidUpdate(){
         var count = getTotalVariablesSelected();
         if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){

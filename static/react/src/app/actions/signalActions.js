@@ -451,8 +451,9 @@ export function clearDimensionSearchIfTargetIsSelected(name){
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
-    var varType = selOption.value;
+    var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
     var varText = selOption.text;
+    var varType = colData.filter(i=>i.name==varText)[0].actualColumnType;
     var varSlug = selOption.getAttribute("name");
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
