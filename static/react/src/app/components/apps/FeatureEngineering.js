@@ -31,6 +31,8 @@ import { statusMessages } from "../../helpers/helper";
     currentAppDetails: store.apps.currentAppDetails,
     featureEngineering: store.datasets.featureEngineering,
     selectedVariables: store.datasets.selectedVariables,
+    convertUsingBin: store.datasets.convertUsingBin,
+    numberOfBins: store.datasets.topLevelData.numberOfBins,
   };
 })
 
@@ -80,8 +82,21 @@ export class FeatureEngineering extends React.Component {
         }
       });
     });
-    this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton,0));
+    const from = this.getValueOfFromParam();
+    if (from === 'algorithm_selection') {
+    }
+    else {
+    this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
   }
+}
+
+  getValueOfFromParam() {
+    if(this.props.location === undefined){
+    }
+   else{
+    const params = new URLSearchParams(this.props.location.search);
+    return params.get('from');
+}}
 
   clearBinsAndIntervals(event) {
     if (this.state[this.props.selectedItem.slug] != undefined && this.state[this.props.selectedItem.slug]["binData"] != undefined) {
@@ -552,15 +567,15 @@ export class FeatureEngineering extends React.Component {
                   </p>
                     <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.state.topLevelRadioButton === "true"} />
+                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.props.convertUsingBin === "true"} />
                         <label for="mTod-binning1">Yes</label>
                       </div>
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.state.topLevelRadioButton === "false"} />
+                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.props.convertUsingBin === "false"} />
                         <label for="mTod-binning2">No </label>
                       </div>
                     </span>
-                    {(this.state.topLevelRadioButton == "true") ? <div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number" /></span></div> : ""}
+                    {(this.props.convertUsingBin === "true") ? <div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number" defaultValue={this.props.numberOfBins} /></span></div> : ""}
                   </div>
                 </div>
                 <div className="panel box-shadow ">
