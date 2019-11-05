@@ -139,6 +139,12 @@ class SignalView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         if 'name' in data:
+            signalname_list = []
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(signal_query):
+                signalname_list.append(i.name)
+            if data['name'] in signalname_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -255,6 +261,12 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            trainername_list = []
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(trainer_query):
+                trainername_list.append(i.name)
+            if data['name'] in trainername_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -540,6 +552,12 @@ class ScoreView(viewsets.ModelViewSet):
         # instance = self.get_object()
 
         if 'name' in data:
+            scorename_list = []
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(score_query):
+                scorename_list.append(i.name)
+            if data['name'] in scorename_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
