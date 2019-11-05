@@ -114,7 +114,7 @@ export class Login extends React.Component {
                           </div>
 
                         </div>
-						            <a href="#" data-tip="Please contact admin!" className="xs-mt-20 pull-left">Forgot Password?</a>                      
+						            <a href="#" data-tip="Please reach out to mAdvisor helpdesk." className="xs-mt-20 pull-left">Forgot Password?</a>                      
                         <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
                         <div className="form-group login-submit pull-right">
                           <button onClick={this.doAuth.bind(this)} id="login" className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
