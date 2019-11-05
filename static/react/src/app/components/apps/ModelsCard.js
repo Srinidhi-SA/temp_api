@@ -73,7 +73,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     var percentageDetails = "";
                     var setVal = this.props.setAppsLoaderValues[data.slug];
                         if(data.status == INPROGRESS){
-                            // this.props.dispatch(getAppsModelSummary(data.slug))
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setVal >= 0 ?setVal+' %':"In Progress"}</span></div>;
                             modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                         }else if(data.status == SUCCESS){
