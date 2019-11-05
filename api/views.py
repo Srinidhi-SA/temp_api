@@ -6448,7 +6448,6 @@ def request_from_alexa(request):
 def get_all_models(request):
     if request.method == 'GET':
         user_id = request.user.id
-        print user_id
         modelList = dict()
         job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
         for index, i in enumerate(job_obj):
@@ -6458,12 +6457,20 @@ def get_all_models(request):
 def get_all_signals(request):
     if request.method == 'GET':
         user_id = request.user.id
-        print user_id
         signalList = dict()
         job_obj = Insight.objects.filter(created_by_id=user_id)
         for index, i in enumerate(job_obj):
             signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allSignalList': signalList})
+
+#Return list of all users
+def get_all_users(request):
+    if request.method == 'GET':
+        UsersList = dict()
+        users_obj = User.objects.filter(is_active=True)
+        for index, i in enumerate(users_obj):
+            UsersList.update({index: {'name': i.username}})
+        return JsonResponse({'allUsersList': UsersList})
 
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
