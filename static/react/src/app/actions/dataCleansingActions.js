@@ -34,6 +34,13 @@ export function checkedAllAction( selecteOrNot, dispatch){
     selecteOrNot
 	}
 }
+export function dataCleansingCheckUpdate( index,checkedOrNot){
+  return {
+		type: "DATA_CLEANSING_CHECK_UPDATE",
+    checkedOrNot,
+    index
+	}
+}
 
 export function removeDuplicateAttributesAction(duplicate_attribute_removal, yesOrNo, dispatch){
      return {
