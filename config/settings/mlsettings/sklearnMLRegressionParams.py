@@ -285,6 +285,20 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
 
 SKLEARN_ML_GBT_REGRESSION_PARAMS = [
         {
+            "name":"learning_rate",
+            "displayName":"Learning Rate",
+            "description":"It shrinks the contribution of each tree by learning_rate",
+            "defaultValue":0.1,
+            "acceptedValue":None,
+            "valueRange":[0.1,1.0],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType": ["float"]
+        },
+        {
             "name":"loss",
             "displayName":"Loss Function",
             "description":"It is the loss function to be optimized",
@@ -312,20 +326,6 @@ SKLEARN_ML_GBT_REGRESSION_PARAMS = [
             "expectedDataType": ["float"],
             "allowedDataType": ["float"]
 
-        },
-        {
-            "name":"learning_rate",
-            "displayName":"Learning Rate",
-            "description":"It shrinks the contribution of each tree by learning_rate",
-            "defaultValue":0.1,
-            "acceptedValue":None,
-            "valueRange":[0.1,1.0],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["float"],
-            "allowedDataType": ["float"]
         },
         {
             "name":"warm_start",
