@@ -1,7 +1,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import random
-
+import time
+import base64
+import mimetypes
+from selenium import webdriver
 import signal
 
 import os
@@ -14,6 +17,7 @@ import json
 import copy
 from api.helper import get_random_model_id, get_mails_from_outlook
 from django.contrib.auth.models import User
+
 
 @task(name="sum_two_numbers")
 def add(x, y):
@@ -34,7 +38,7 @@ def xsum(numbers):
 
 import subprocess
 import re
-from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo, DatasetScoreDeployment
+from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo, DatasetScoreDeployment, CustomApps
 
 
 @task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
@@ -750,7 +754,7 @@ from celery.decorators import periodic_task
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
-    
+
     if mails is not None:
         print "All set to proceed to upload dataset."
 
@@ -927,12 +931,12 @@ def create_model_autoML(dataset_object_id=None, config=None):
             dataset_object = Dataset.objects.get(slug=data['slug'])
             print dataset_object
 
-            model_config={
-                "name":data['model_name'],
-                "app_id":2,
-                "mode":"autoML",
+            model_config = {
+                "name": data['model_name'],
+                "app_id": 2,
+                "mode": "autoML",
                 "email": data['email'],
-                "config":{}
+                "config": {}
             }
 
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
@@ -1051,16 +1055,20 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             result = r.json()
             access_token = result['access_token']
             content = "AutoML Dataupload successful. Model is created."
+            app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
+            attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
             try:
                 if trainer_object.email is not None:
                     return_mail_id = trainer_object.email
-                    mail('send',access_token=access_token,return_mail_id=return_mail_id,subject='Marlabs-AutoML Success',content=content)
+                    mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                         subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                 else:
                     user_id = trainer_object.created_by_id
                     user_object = User.objects.get(id=user_id)
                     return_mail_id = user_object.email
                     if return_mail_id is not None:
-                        mail('send',access_token=access_token,return_mail_id=return_mail_id,subject='Marlabs-AutoML Success',content=content)
+                        mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                             subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
 
             except Exception as err:
                 print err
@@ -1069,21 +1077,22 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             pass
 
 
-def mail(action_type=None,access_token=None,return_mail_id=None,subject=None,content=None):
+def mail(action_type=None, access_token=None, return_mail_id=None, subject=None, content=None, attachments=None):
     # access_token = access_token
     # If there is no token in the session, redirect to home
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
-            try:
-                messages = send_my_messages(access_token, return_mail_id, subject, content)
-                if messages[:3] == '202':
-                    print "Mail Sent"
-            except Exception as e:
-                print e
-                print "Some issue with mail sending module..."
+        try:
+            messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
+            if messages[:3] == '202':
+                print "Mail Sent"
+        except Exception as e:
+            print e
+            print "Some issue with mail sending module..."
 
-def send_my_messages(access_token, return_mail_id, subject, content):
+
+def send_my_messages(access_token, return_mail_id, subject, content, file_to_attach):
     '''
   Replies to the mail with attachments
   '''
@@ -1094,6 +1103,15 @@ def send_my_messages(access_token, return_mail_id, subject, content):
     #  - Only first 10 results returned
     #  - Only return the ReceivedDateTime, Subject, and From fields
     #  - Sort the results by the ReceivedDateTime field in descending order
+
+    b64_content = base64.b64encode(open(file_to_attach, 'rb').read())
+    mime_type = mimetypes.guess_type(file_to_attach)[0]
+    mime_type = mime_type if mime_type else ''
+    attached_files = {'@odata.type': '#microsoft.graph.fileAttachment',
+                      'ContentBytes': b64_content.decode('utf-8'),
+                      'ContentType': mime_type,
+                      'Name': file_to_attach.split('/')[-1]}
+
     payload = {
 
         "Message": {
@@ -1110,7 +1128,8 @@ def send_my_messages(access_token, return_mail_id, subject, content):
                         "Address": return_mail_id
                     }
                 }
-            ]
+            ],
+            'Attachments': [attached_files]
         },
         "SaveToSentItems": "true",
 
@@ -1118,9 +1137,48 @@ def send_my_messages(access_token, return_mail_id, subject, content):
     from api.helper import make_api_call
     import requests
 
-    r = make_api_call('POST', get_messages_url, access_token,payload = payload)
-    if (r.status_code == requests.codes.ok):
+    r = make_api_call('POST', get_messages_url, access_token, payload=payload)
+    if r.status_code == requests.codes.ok:
         print "Mail Sent"
         return r.json()
     else:
         return "{0}: {1}".format(r.status_code, r.text)
+
+
+def send_devtools(driver, cmd, params={}):
+    resource = "/session/%s/chromium/send_command_and_get_result" % driver.session_id
+    url = driver.command_executor._url + resource
+    body = json.dumps({'cmd': cmd, 'params': params})
+    response = driver.command_executor._request('POST', url, body)
+    return response.get('value')
+
+
+def save_as_pdf(driver, path, options=None):
+    if options is None:
+        options = {}
+    result = send_devtools(driver, "Page.printToPDF", options)
+    with open(path, 'wb') as f:
+        f.write(base64.b64decode(result['data']))
+
+
+def get_model_summary_pdf(app_slug, model_slug):
+    protocol = 'http'
+    if settings.USE_HTTPS:
+        protocol = 'https'
+
+    login_url = '{}://{}'.format(protocol, settings.THIS_SERVER_DETAILS['host'])
+    url = '{}/apps/{}/autoML/models/{}'.format(login_url, app_slug, model_slug)
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+
+    driver = webdriver.Chrome(chrome_options=options)
+    driver.get(login_url)
+    driver.find_element_by_id('username').send_keys('email')
+    driver.find_element_by_id('password').send_keys('emailuser')
+    driver.find_element_by_xpath('//button').click()
+    driver.get(url)
+    path = '{}/{}.pdf'.format(settings.MODEL_SUMMARY_DOWNLOAD_PATH, model_slug)
+    save_as_pdf(driver, path, {'landscape': False})
+    return path

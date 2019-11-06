@@ -160,12 +160,10 @@ export class ModelAlgorithmSelection extends React.Component {
         this.props.dispatch(saveParameterTuning());
     }
     changeHyperParameterType(slug,e){
-        
         this.props.dispatch(changeHyperParameterType(slug,e.target.value));
         if(e.target.value="none"){
             $(".learningGrid .for_multiselect").removeClass("disableGrid");
-    
-            }
+        }
     }
 
     handleBack=()=>{
@@ -295,8 +293,8 @@ export class ModelAlgorithmSelection extends React.Component {
                                     :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
                                  </div>
-                                {selectedValue != "none"?
-                                <div>
+                                {selectedValue != "none" && document.getElementsByClassName("active")[1].innerText != "LINEAR REGRESSION"?
+                                <div className="maxminLabel">
                                      <label class="col-md-6 control-label read"></label>
                                      <label class="col-md-1 control-label read text-center">
                                             <b>Min</b>
