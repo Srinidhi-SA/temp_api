@@ -6469,7 +6469,7 @@ def get_all_users(request):
         UsersList = dict()
         users_obj = User.objects.filter(is_active=True)
         for index, i in enumerate(users_obj):
-            UsersList.update({index: {'name': i.username}})
+            UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
 
 
