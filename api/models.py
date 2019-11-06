@@ -99,9 +99,9 @@ class Job(models.Model):
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, self.object_id)
+            submit_job_separate_task.delay(command_array, self.slug)
         else:
-            submit_job_separate_task1(command_array, self.object_id)
+            submit_job_separate_task1(command_array, self.slug)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -177,7 +177,6 @@ class Dataset(models.Model):
     class Meta:
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_DATASET
-
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -596,7 +595,6 @@ class Insight(models.Model):
         verbose_name_plural = "Signals"
         permissions = settings.PERMISSIONS_RELATED_TO_SIGNAL
 
-
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.status, self.created_at]])
 
@@ -810,7 +808,7 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
-    mode = models.CharField(max_length=10, null=True,blank=True)
+    mode = models.CharField(max_length=10, null=True, blank=True)
 
     data = models.TextField(default="{}")
 
@@ -827,8 +825,6 @@ class Trainer(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
     email = models.EmailField(null=True, blank=True)
-
-
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -851,24 +847,23 @@ class Trainer(models.Model):
 
     def generate_config(self, *args, **kwargs):
 
-
-        #changes in UI given config
-        if self.mode=='analyst':
+        # changes in UI given config
+        if self.mode == 'analyst':
             self.apply_changes_of_selectedVariables_into_variable_selection()
 
         config = {
             "config": {}
         }
 
-        if self.mode=='autoML':
-            #import pdb;pdb.set_trace()
-            dataset_slug=self.dataset.slug
-            #print "#############################"
-            #print dataset_slug
-            #print "#############################"
+        if self.mode == 'autoML':
+            # import pdb;pdb.set_trace()
+            dataset_slug = self.dataset.slug
+            # print "#############################"
+            # print dataset_slug
+            # print "#############################"
             self.get_targetColumn_for_variableSelection_autoML()
 
-        #creating new config for ML/API using UI given config
+        # creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
         try:
@@ -880,16 +875,17 @@ class Trainer(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         if (self.app_id in settings.REGRESSION_APP_ID):
-            config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
-        if self.mode=='autoML':
+        if self.mode == 'autoML':
             from config.settings import feature_engineering_settings
-            fe_default_settings=copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
-            dc_default_settings=copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
-            config['config']['FEATURE_SETTINGS']={"DATA_CLEANSING":dc_default_settings,"FEATURE_ENGINEERING":fe_default_settings}
+            fe_default_settings = copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
+            dc_default_settings = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+            config['config']['FEATURE_SETTINGS'] = {"DATA_CLEANSING": dc_default_settings,
+                                                    "FEATURE_ENGINEERING": fe_default_settings}
         else:
             config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
@@ -901,11 +897,11 @@ class Trainer(models.Model):
             # Unselect original
             if 'featureEngineering' in configUI:
                 for colSlug in self.collect_column_slugs_which_all_got_transformations:
-                        for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                if i['slug'] == colSlug:
-                                    print(colSlug)
-                                    i['selected'] = False
-                                    break
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            print(colSlug)
+                            i['selected'] = False
+                            break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
 
             # Updating datatypes
@@ -930,39 +926,40 @@ class Trainer(models.Model):
                             break
             # Selected value to be True/False on basis of ignoreSuggestionFlag & ignoreSuggestionPreviewFlag
             if 'featureEngineering' in configUI:
-                if len(configUI['selectedVariables'])>0:
+                if len(configUI['selectedVariables']) > 0:
                     for SV_slug in configUI['selectedVariables']:
-                        #if user perform featureEngineering actions
-                        if len(configUI['featureEngineering']['columnsSettings'])>0:
+                        # if user perform featureEngineering actions
+                        if len(configUI['featureEngineering']['columnsSettings']) > 0:
                             for fe_slug in configUI['featureEngineering']['columnsSettings']:
                                 if SV_slug == fe_slug:
                                     pass
                                 else:
                                     for i in configAPI['columnData']:
                                         if SV_slug == i['slug']:
-                                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                            if i['ignoreSuggestionFlag'] == True and i[
+                                                'ignoreSuggestionPreviewFlag'] == False:
                                                 for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
                                                     if colSlug['slug'] == i['slug']:
-                                                        colSlug['selected']=False
+                                                        colSlug['selected'] = False
                                             else:
                                                 pass
                         # if featureEngineering config is empty
                         else:
                             for i in configAPI['columnData']:
                                 if SV_slug == i['slug']:
-                                    if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                    if i['ignoreSuggestionFlag'] == True and i['ignoreSuggestionPreviewFlag'] == False:
                                         for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
                                             if colSlug['slug'] == i['slug']:
-                                                colSlug['selected']=False
-                #For AutoML mode when there will be no Selected Variables
+                                                colSlug['selected'] = False
+                # For AutoML mode when there will be no Selected Variables
                 else:
                     for i in configAPI['columnData']:
-                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
-                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                    if colSlug['slug'] == i['slug']:
-                                        colSlug['selected']=False
-                            else:
-                                pass
+                        if i['ignoreSuggestionFlag'] == True and i['ignoreSuggestionPreviewFlag'] == False:
+                            for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                if colSlug['slug'] == i['slug']:
+                                    colSlug['selected'] = False
+                        else:
+                            pass
             else:
                 print("Feature featureEngineering config Not found !")
         except Exception as err:
@@ -1035,8 +1032,8 @@ class Trainer(models.Model):
         targetLevel = None
         if 'targetLevel' in config:
             targetLevel = config.get('targetLevel')
-        if(self.app_id in settings.REGRESSION_APP_ID):
-            validationTechnique=config.get('validationTechnique')
+        if (self.app_id in settings.REGRESSION_APP_ID):
+            validationTechnique = config.get('validationTechnique')
             return {
                 'inputfile': [self.dataset.get_input_file()],
                 'modelpath': [self.slug],
@@ -1044,19 +1041,19 @@ class Trainer(models.Model):
                 'analysis_type': ['training'],
                 'metadata': self.dataset.get_metadata_url_config(),
                 'targetLevel': targetLevel,
-                'app_type':'regression'
+                'app_type': 'regression'
             }
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
 
             validationTechnique = config.get('validationTechnique')
             return {
-            'inputfile': [self.dataset.get_input_file()],
-            'modelpath': [self.slug],
-            'validationTechnique': [validationTechnique],
-            'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config(),
-            'targetLevel': targetLevel,
-            'app_type':'classification'
+                'inputfile': [self.dataset.get_input_file()],
+                'modelpath': [self.slug],
+                'validationTechnique': [validationTechnique],
+                'analysis_type': ['training'],
+                'metadata': self.dataset.get_metadata_url_config(),
+                'targetLevel': targetLevel,
+                'app_type': 'classification'
             }
 
     def create_configuration_column_settings(self):
@@ -1147,7 +1144,6 @@ class Trainer(models.Model):
                     brief_info.update({
                         'train_test_split': 0
                     })
-
 
         brief_info.update(
             {
@@ -1290,7 +1286,6 @@ class Trainer(models.Model):
                             default_values['selected'] = True
                             break
 
-
                 # checking for shuffle
                 if params['name'] == 'shuffle':
                     make_some_one_false = True
@@ -1363,14 +1358,15 @@ class Trainer(models.Model):
         if 'dataCleansing' in config:
             data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'featureEngineering' in config:
-            feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
+            feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'],
+                                                                                column_data)
 
-        self.collect_column_slugs_which_all_got_transformations = list(set(self.collect_column_slugs_which_all_got_transformations ))
+        self.collect_column_slugs_which_all_got_transformations = list(
+            set(self.collect_column_slugs_which_all_got_transformations))
         return {
             'DATA_CLEANSING': data_cleansing_config,
             'FEATURE_ENGINEERING': feature_engineering_config
         }
-
 
     def data_cleansing_adaptor_for_ml(self, data_cleansing_config_ui, column_data):
         '''
@@ -1512,7 +1508,7 @@ class Trainer(models.Model):
                         try:
                             overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                             for col in column_data:
-                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
+                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True and column_data[col]['targetColumn'] == False:
                                     self.collect_column_slugs_which_all_got_transformations.append(col)
                                     self.generate_new_column_name_based_on_transformation(
                                         column_data[col],
@@ -1533,7 +1529,7 @@ class Trainer(models.Model):
                 if fkey == 'transformationData':
                     mlJson = self.transformationUiJsonToMLJsonAdapter(uiJson=uiJson,
                                                                       variable_selection_column_data=column_data[slug]
-                                                             )
+                                                                      )
                     self.add_to_feature_engineering_transformation_settings(transformation_settings, mlJson)
 
                 if fkey == 'binData':
@@ -1543,14 +1539,14 @@ class Trainer(models.Model):
                     self.add_to_feature_engineering_bin_creation_settings(level_creation_settings, mlJson)
                 elif fkey == 'levelData':
                     mlJson, is_datetime_level = self.levelsAdapter(uiJson=uiJson,
-                                                variable_selection_column_data=column_data[slug]
-                                                )
-                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson, is_datetime_level)
+                                                                   variable_selection_column_data=column_data[slug]
+                                                                   )
+                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson,
+                                                                            is_datetime_level)
 
         return feature_engineering_ml_config
 
     def add_to_feature_engineering_transformation_settings(self, transformation_settings, mlJson):
-
 
         for transformation_function_names in mlJson:
 
@@ -1559,7 +1555,6 @@ class Trainer(models.Model):
                     op['selected'] = True
                     op['columns'].append(mlJson[transformation_function_names])
                     transformation_settings['selected'] = True
-
 
     def add_to_feature_engineering_bin_creation_settings(self, level_creation_settings, mlJson):
         try:
@@ -1651,52 +1646,51 @@ class Trainer(models.Model):
                     "replace_value": uiJson.get("replace_values_with_input", 0)
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("replace_values_with_input", 0)),
-                                                        uiJson.get("replace_values_with_selected", "mean")
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("replace_values_with_input", 0)),
+                    uiJson.get("replace_values_with_selected", "mean")
+                )
             if key == "add_specific_value":
                 colStructure = {
                     "value_to_be_added": uiJson.get("add_specific_value_input", 0),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("add_specific_value_input", 0))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("add_specific_value_input", 0))
+                )
             if key == "subtract_specific_value":
                 colStructure = {
                     "value_to_be_subtracted": uiJson.get("subtract_specific_value_input", 0),
                 }
 
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("subtract_specific_value_input", 0))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("subtract_specific_value_input", 0))
+                )
             if key == "multiply_specific_value":
                 colStructure = {
                     "value_to_be_multiplied": uiJson.get("multiply_specific_value_input", 1),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("multiply_specific_value_input", 1))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("multiply_specific_value_input", 1))
+                )
 
             if key == "divide_specific_value":
                 colStructure = {
                     "value_to_be_divided": uiJson.get("divide_specific_value_input", 1),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("divide_specific_value_input", 1))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("divide_specific_value_input", 1))
+                )
 
             if key == "perform_standardization":
-
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
@@ -1706,10 +1700,10 @@ class Trainer(models.Model):
                     'normalization': 'normalized'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                )
             if key == "feature_scaling":
                 key = "perform_standardization"
                 colStructure = {
@@ -1721,10 +1715,10 @@ class Trainer(models.Model):
                     'normalization': 'normalized'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                )
             if key == "variable_transformation":
                 colStructure = {
                     "transformation_type": uiJson.get("variable_transformation_select", "log_transformation"),
@@ -1736,17 +1730,17 @@ class Trainer(models.Model):
                     'square_root_transform': 'squareroot_transformed'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
+                )
             # Dimensioins Transformations
             if key == "return_character_count":
                 colStructure = {}
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key
-                                    )
+                    variable_selection_column_data,
+                    key
+                )
             if key == "encoding_dimensions":
                 colStructure = {
                     "encoding_type": uiJson.get("encoding_type", "one_hot_encoding"),
@@ -1756,19 +1750,19 @@ class Trainer(models.Model):
                     'label_encoding': 'label_encoded'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
+                )
             if key == "is_custom_string_in":
                 colStructure = {
                     "user_given_string": uiJson.get("is_custom_string_in_input", "error"),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        str(uiJson.get("is_custom_string_in_input", "error"))
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("is_custom_string_in_input", "error"))
+                )
 
             colStructure["name"] = variable_selection_column_data['name']
             colStructure["user_given_name"] = user_given_name
@@ -1797,9 +1791,9 @@ class Trainer(models.Model):
             # Measures Transformations
             if uiJson["selectBinType"] == "create_equal_sized_bins":
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        uiJson["selectBinType"]
-                                    )
+                    variable_selection_column_data,
+                    uiJson["selectBinType"]
+                )
                 colStructure.update({
                     "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
                     "user_given_name": user_given_name
@@ -1808,9 +1802,9 @@ class Trainer(models.Model):
 
             if uiJson["selectBinType"] == "create_custom_bins":
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        uiJson["selectBinType"]
-                                    )
+                    variable_selection_column_data,
+                    uiJson["selectBinType"]
+                )
                 colStructure.update({
                     "list_of_intervals": [int(token.strip()) for token in
                                           uiJson.get("specifyintervals", "").split(",")],
@@ -1947,10 +1941,10 @@ class Trainer(models.Model):
         else:
             new_name = "_".join([original_col_nam, function_name] + list(args))
         self.add_newly_generated_column_names_into_column_settings(
-                    newly_generated_column_name=new_name,
-                    columnType=name_mapping[function_name]['type'],
-                    variable_selection_column_data=variable_selection_column_data
-                    )
+            newly_generated_column_name=new_name,
+            columnType=name_mapping[function_name]['type'],
+            variable_selection_column_data=variable_selection_column_data
+        )
 
         return new_name
 
@@ -1964,13 +1958,14 @@ class Trainer(models.Model):
         for i in remove_these:
             del temp[i]
         slug = slugify(self.name + "-" + ''.join(
-                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
         custom_dict = {
             'columnType': columnType,
             'actualColumnType': columnType,
             'name': newly_generated_column_name,
             'selected': True,
-            'slug': slug
+            'slug': slug,
+            'isFeatureColumn': True
         }
         custom_dict.update(temp)
         custom_dict['dateSuggestionFlag'] = False
@@ -1978,7 +1973,7 @@ class Trainer(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.save()
             train_algo_instance = TrainAlgorithmMapping.objects.filter(trainer_id=self.id)
             for iter in train_algo_instance:
@@ -2034,15 +2029,12 @@ class Score(models.Model):
         self.add_to_job()
 
     def add_to_job(self, *args, **kwargs):
-
         jobConfig = self.generate_config(*args, **kwargs)
-
         job = job_submission(
-            instance=self,
-            jobConfig=jobConfig,
-            job_type='score'
-        )
-
+                instance=self,
+                jobConfig=jobConfig,
+                job_type='score'
+            )
         self.job = job
         if job is None:
             self.status = "FAILED"
@@ -2082,7 +2074,7 @@ class Score(models.Model):
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
-        labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        labelMappingDictAll = model_config_from_results.get('labelMappingDict', None)
         modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
@@ -2094,14 +2086,14 @@ class Score(models.Model):
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
-            'selectedModel' : [selectedModel],
+            'selectedModel': [selectedModel],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict],
+            'labelMappingDict': [labelMappingDict],
             'targetLevel': modelTargetLevel
         }
 
@@ -2115,15 +2107,13 @@ class Score(models.Model):
 
         # Score related variable selection
         main_config = json.loads(self.config)
+
         score_variable_selection_config = main_config.get('variablesSelection')
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
-        check_valid = self.compare_variable_selection_and_model_variable_selection_columns(output)
-        if check_valid:
-            return output
-        return {'message': 'The ModelVariable columns do not match with Variable columns!'}
+        return output
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
@@ -2187,7 +2177,6 @@ class Score(models.Model):
         model_config = json.loads(self.trainer.config)
         model_config_feature_settings = model_config['config']['FEATURE_SETTINGS']
         return model_config_feature_settings
-
 
     def get_local_file_path(self):
         return '/tmp/' + self.slug
@@ -2254,17 +2243,6 @@ class Score(models.Model):
         )
 
         return convert_json_object_into_list_of_object(brief_info, 'score')
-
-    @staticmethod
-    def compare_variable_selection_and_model_variable_selection_columns(config):
-        modelVariableSelectionList, variableSelectionList = list(), list()
-        for mvardata, vardata in zip(config['modelvariableSelection'], config['variableSelection']):
-            modelVariableSelectionList.append(mvardata['name'])
-            variableSelectionList.append(vardata['name'])
-        diff = set(modelVariableSelectionList).difference(variableSelectionList)
-        if diff:
-            return False
-        return True
 
 
 class Robo(models.Model):
@@ -2433,7 +2411,6 @@ class CustomApps(models.Model):
         #             'created_by': self.created_by.username,
         #         })
         #     return convert_json_object_into_list_of_object(brief_info, 'apps')
-
 
     def adjust_rank(self, index):
         self.rank = index
@@ -2710,7 +2687,7 @@ class StockDataset(models.Model):
                         url=url,
                         regex_dict=get_regex(NASDAQ_REGEX_FILE),
                         slug=self.slug
-                        )
+                    )
 
                     if len(stock_data) == 0 and i == 0:
                         try:
@@ -2721,13 +2698,13 @@ class StockDataset(models.Model):
 
                             pass
 
-                    if len(stock_data) >0 :
+                    if len(stock_data) > 0:
                         break
 
             if stock_data is not None:
                 if len(stock_data) > 0:
                     print PRINTPREFIX, "caching for{}".format(stock_symbol)
-                    historic_cache.put(cache_key,pickle.dumps(stock_data))
+                    historic_cache.put(cache_key, pickle.dumps(stock_data))
 
                 self.write_to_concepts_folder(
                     stockDataType="historic",
@@ -2797,7 +2774,7 @@ class StockDataset(models.Model):
         # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
         # self.get_bluemix_natural_language_understanding()
-        print "generate_meta_data "*3
+        print "generate_meta_data " * 3
         self.meta_data = self.crawl_news_data()
 
     def create_folder_in_scripts_data(self):
@@ -2823,7 +2800,7 @@ class StockDataset(models.Model):
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         self.sanitize(path + "/concepts.json")
         for name in file_names:
-            path1 = path + "/"+ name
+            path1 = path + "/" + name
             path2 = path_slug + name
             shutil.copyfile(path1, path2)
 
@@ -2840,7 +2817,7 @@ class StockDataset(models.Model):
         text = re.sub('<.*?>', ' ', content)
         if text:
             text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\\u", " ").replace("\r",
-                                                                                                              " ").strip()
+                                                                                                               " ").strip()
         text = text.encode('utf-8')
 
         f = open(path, 'w')
@@ -3030,7 +3007,6 @@ class StockDataset(models.Model):
 
         self.crawled_data = json.dumps(crawled_data)
         self.save()
-
 
     def write_bluemix_data_into_concepts(self, name, data, type='json'):
 
@@ -5197,10 +5173,9 @@ class TrainAlgorithmMapping(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
@@ -5217,13 +5192,14 @@ class TrainAlgorithmMapping(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.save()
             deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
             for iter in deploy_instance:
                 iter.terminate_periodic_task()
         except Exception as err:
-            raise(err)
+            raise (err)
+
 
 # Deployment for Model management
 class ModelDeployment(models.Model):
@@ -5236,7 +5212,6 @@ class ModelDeployment(models.Model):
     data = models.TextField(default="{}")
     status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
-
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
@@ -5245,10 +5220,9 @@ class ModelDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
@@ -5336,12 +5310,11 @@ class ModelDeployment(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.disable_periodic_task()
 
         except Exception as err:
             print(err)
-
 
     def disable_periodic_task(self):
         from django_celery_beat.models import PeriodicTask
@@ -5418,9 +5391,7 @@ class ModelDeployment(models.Model):
         return score_details
 
 
-
 class DatasetScoreDeployment(models.Model):
-
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300
                             )
@@ -5433,7 +5404,6 @@ class DatasetScoreDeployment(models.Model):
     data = models.TextField(default="{}")
     status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
-
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
@@ -5442,10 +5412,9 @@ class DatasetScoreDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):

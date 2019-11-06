@@ -28,13 +28,16 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
-            apps_model_sorttype:store.apps.apps_model_sorttype
+            apps_model_sorttype:store.apps.apps_model_sorttype,
+            setAppsLoaderValues:store.apps.setAppsLoaderValues
         };
     })
     
     export class ModelsCard extends React.Component {
         constructor(props) {
             super(props);
+        }
+        componentWillMount(){
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -68,12 +71,13 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
+                    var setVal = this.props.setAppsLoaderValues[data.slug];
                         if(data.status == INPROGRESS){
-                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
+                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setVal >= 0 ?setVal+' %':"In Progress"}</span></div>;
                             modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                         }else if(data.status == SUCCESS){
                             data.completed_percentage = 100;
-                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
                         }else if(data.status == FAILED){
                             percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                         }

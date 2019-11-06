@@ -3941,13 +3941,14 @@ td.visible-print,  th.visible-print {
 .grp_legends_green.continue, .grp_legends_green.back { display:none }
 .form-control {border:none;-webkit-appearance:none;-moz-appearance: none; }
 select::-ms-expand {
-  display: none;
+ display: none;
 }
 * {-webkit-print-color-adjust: exact !important;   color-adjust: exact !important; }
 html, body {    width: 210mm;    height: 297mm; font-size:12px;   }
- .side-body { position:absolute; } span.d_m_img {
+ .side-body { position:absolute; }
+ span.d_m_img {
    display: list-item;
-   list-style-image: url("cd /path/to/repo.git../images/icon_bAmAdvisor.png");
+   list-style-image: url("../images/icon_bAmAdvisor.png");
    list-style-position: inside;
    }
     span.d_analyst_img {

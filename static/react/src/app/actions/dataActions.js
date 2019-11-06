@@ -163,6 +163,9 @@ function fetchDataPreview(slug,dispatch,interval) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log("data preview from api to store")
+    dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+        column.checked = true;
+    });
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
@@ -209,22 +212,18 @@ columns
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
         }
-        
-        //timeout for data upload inprogress for long time
         setTimeout(function() {
-            if(dataPreview.message[0].globalCompletionPercentage<=0){
-                return fetch(API + '/api/kill_timeout_job_from_ui/?slug='+slug, {
-                    method: 'get',
-                    headers: getHeader(getUserDetailsOrRestart.get().userToken)
-                }).then(response => Promise.all([response, response.json()])).catch(function(error){
-                bootbox.alert("Unable to connect to server. Check your connection please try again.")
-                  }); 
-                 }
+           if(dataPreview.message[0].globalCompletionPercentage<=0){
+               return fetch(API + '/api/kill_timeout_job_from_ui/?slug='+slug, {
+                   method: 'get',
+                   headers: getHeader(getUserDetailsOrRestart.get().userToken)
+               }).then(response => Promise.all([response, response.json()])).catch(function(error){
+               bootbox.alert("Unable to connect to server. Check your connection please try again.")
+                 });
+                }
 
-            
-            },420000);
-            //end of timeout
 
+           },420000);
         return {
             type: "SELECTED_DATASET",
             dataset,

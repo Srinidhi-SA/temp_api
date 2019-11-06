@@ -261,7 +261,7 @@ export class ModelManagement extends React.Component {
         var AlgoLink = '/apps/' + this.props.match.params.AppId + modeSelected+'/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
-          <td><label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>
+          <td><label for="txt_lName1">{`${((this.props.algoList.current_page-1)*12)+key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>
           <td className="text-left"> {item.model_id}</td>
           <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
           <td className="text-left"> {item.algorithm}</td>

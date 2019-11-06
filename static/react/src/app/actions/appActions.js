@@ -35,6 +35,7 @@ import React from "react";
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { createcustomAnalysisDetails } from './signalActions';
 import { browserHistory } from 'react-router'
+import { AppsLoader } from "../components/common/AppsLoader";
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
@@ -524,8 +525,15 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
-        dispatch(createModelSuccess(json, dispatch))
+        if(json.status === false){
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
+          bootbox.alert(modelErrorMsg);
+        }else{
+          console.log(json)
+          dispatch(createModelSuccess(json, dispatch))
+        }
       }
       else {
         dispatch(closeAppsLoaderValue());
@@ -804,7 +812,9 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
         else if (json.status == INPROGRESS) {
           if (json.message !== null && json.message.length > 0) {
+            dispatch(setAppsLoaderValue(slug,json.message[0].stageCompletionPercentage))
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+            dispatch(getAppsModelList("1"));
           }
         }
       } else {
@@ -988,6 +998,10 @@ export function updateSelectedApp(appId, appName, appDetails) {
 
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
+}
+export function setAppsLoaderValue(slug,value){
+  return { type: "SET_APPS_LOADER_MODAL", slug,value }
+
 }
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
@@ -1314,7 +1328,7 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
             showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
           }else{
             renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
-          }
+            }
         }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
@@ -2198,11 +2212,7 @@ export function updateSelectedVariable(event) {
   return { type: "SET_POSSIBLE_LIST", varType, varText, varSlug };
 }
 
-export function selectMetricAction(event, selectedOrNot) {
-  var evalMet = event.target.childNodes[event.target.selectedIndex];
-  var displayName = evalMet.getAttribute("name");
-  var name = evalMet.getAttribute("value");
-  var selected = selectedOrNot
+export function selectMetricAction(name,displayName,selected) {
   return { type: "SET_EVALUATION_METRIC", name, displayName, selected };
 }
 
@@ -2231,11 +2241,11 @@ function scoreToProceed(flag) {
 
 export function showLevelCountsForTarget(event) {
   var selOption = event.target.childNodes[event.target.selectedIndex];
-  var varType = selOption.value;
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
   var levelCounts = null;
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+  var varType = colData.filter(i=>i.name==varText)[0].actualColumnType;
   var colStats = [];
   if (varType == "dimension") {
     for (var i = 0; i < colData.length; i++) {
