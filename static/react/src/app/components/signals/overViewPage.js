@@ -469,7 +469,7 @@ export class OverViewPage extends React.Component {
               <div className="page-head ">
                 <div class="row">
                   <div class="col-md-12">
-                    <Breadcrumb path={[
+                    {/* <Breadcrumb path={[
                     {
                       path: that.urlPrefix,
                       label: breadcrumb_label
@@ -480,7 +480,7 @@ export class OverViewPage extends React.Component {
                       path: that.urlPrefix + "/" + this.props.match.params.slug + '/' + this.props.match.params.l1,
                       label: l1Name
                     }
-                    ]}/>
+                    ]}/> */}
                   </div>
                   {/*  <div class="col-md-8">
                   <h2>{l1Name}</h2>
