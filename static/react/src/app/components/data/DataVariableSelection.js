@@ -53,8 +53,7 @@ export class DataVariableSelection extends React.Component {
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
-        debugger
-        if(e.target.name ==  "date_type"){
+        if(window.location.href.includes("/createSignal") && e.target.name ==  "date_type"){
             if(e.target.id == "unselect"){
                 $("#chk_analysis_trend").prop("disabled",true);
             }else{
