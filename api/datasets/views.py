@@ -322,6 +322,15 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         #     return creation_failed_exception(err)
         # return creation_failed_exception(serializer.errors)
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        dataset_obj = Dataset.objects.filter(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug')).values().first()
+        dataset_obj.update(
+            {'id': None, 'created_by_id': request.GET['shared_id'], 'name': dataset_obj['name'] + '(shared)'})
+        Dataset.objects.create(**dataset_obj)
+        return JsonResponse({'message': 'done'})
+
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
         data = request.data

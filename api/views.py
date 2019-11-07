@@ -365,7 +365,8 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in item.keys()])
+        t_d_c_s = set(
+            [item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in item.keys()])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
@@ -652,6 +653,15 @@ class ScoreView(viewsets.ModelViewSet):
                     })
         else:
             return JsonResponse({'result': 'failed to download'})
+
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        score_obj = Score.objects.filter(created_by_id=request.user.id,
+                                         slug=self.kwargs.get('slug')).values().first()
+        score_obj.update(
+            {'id': None, 'created_by_id': request.GET['shared_id'], 'name': score_obj['name'] + '(shared)'})
+        Score.objects.create(**score_obj)
+        return JsonResponse({'message': 'done'})
 
 
 class RoboView(viewsets.ModelViewSet):
@@ -1236,8 +1246,8 @@ def end_of_this_world(request, slug=None):
 def kill_timeout_job_from_ui(request):
     slug = request.GET["slug"]
     try:
-        dataset1_object=Dataset.objects.get(slug=slug)
-        job=dataset1_object.job
+        dataset1_object = Dataset.objects.get(slug=slug)
+        job = dataset1_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1247,8 +1257,8 @@ def kill_timeout_job_from_ui(request):
         from api.helper import get_db_object
         object_id = job.object_id
         dataset_object = get_db_object(model_name=Dataset.__name__,
-                                           model_slug=object_id
-                                           )
+                                       model_slug=object_id
+                                       )
 
         dataset_object.status = "FAILED"
         dataset_object.save()
@@ -1256,8 +1266,8 @@ def kill_timeout_job_from_ui(request):
     except:
         pass
     try:
-        signal_object=Insight.objects.get(slug=slug)
-        job=signal_object.job
+        signal_object = Insight.objects.get(slug=slug)
+        job = signal_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1267,8 +1277,8 @@ def kill_timeout_job_from_ui(request):
         from api.helper import get_db_object
         object_id = job.object_id
         insight_object = get_db_object(model_name=Insight.__name__,
-                                           model_slug=object_id
-                                           )
+                                       model_slug=object_id
+                                       )
 
         insight_object.status = "FAILED"
         insight_object.save()
@@ -1276,8 +1286,8 @@ def kill_timeout_job_from_ui(request):
     except:
         pass
     try:
-        trainer1_object=Trainer.objects.get(slug=slug)
-        job=trainer1_object.job
+        trainer1_object = Trainer.objects.get(slug=slug)
+        job = trainer1_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1296,8 +1306,8 @@ def kill_timeout_job_from_ui(request):
     except:
         pass
     try:
-        score1_object=Score.objects.get(slug=slug)
-        job=score1_object.job
+        score1_object = Score.objects.get(slug=slug)
+        job = score1_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1316,8 +1326,8 @@ def kill_timeout_job_from_ui(request):
     except:
         pass
     try:
-        robo_advisor_object=Robo.objects.get(slug=slug)
-        job=robo_advisor_object.job
+        robo_advisor_object = Robo.objects.get(slug=slug)
+        job = robo_advisor_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1336,8 +1346,8 @@ def kill_timeout_job_from_ui(request):
     except:
         pass
     try:
-        stocksense_object=StockDataset.objects.get(slug=slug)
-        job=stocksense_object.job
+        stocksense_object = StockDataset.objects.get(slug=slug)
+        job = stocksense_object.job
         if not job:
             return JsonResponse({'result': 'Failed'})
         from api.tasks import kill_application_using_fabric
@@ -1354,6 +1364,7 @@ def kill_timeout_job_from_ui(request):
         return JsonResponse({'result': "success"})
     except:
         pass
+
 
 @csrf_exempt
 def set_result(request, slug=None):
@@ -6449,10 +6460,11 @@ def get_all_models(request):
     if request.method == 'GET':
         user_id = request.user.id
         modelList = dict()
-        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'])
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'], deleted=False)
         for index, i in enumerate(job_obj):
             modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allModelList': modelList})
+
 
 def get_all_signals(request):
     if request.method == 'GET':
@@ -6469,7 +6481,7 @@ def get_all_users(request):
         UsersList = dict()
         users_obj = User.objects.filter(is_active=True)
         for index, i in enumerate(users_obj):
-            UsersList.update({index: {'name': i.username}})
+            UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
 
 
@@ -6488,19 +6500,23 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
                 pass
     else:
         return False
+
+
 @csrf_exempt
 def view_model_summary_autoML(request):
     print "i am going to view model summary"
     model_slug = request.GET['slug']
     print model_slug
-    #response = Trainer.objects.get(slug=model_slug)
-    #from django.http import HttpResponseRedirect,render
+    # response = Trainer.objects.get(slug=model_slug)
+    # from django.http import HttpResponseRedirect,render
     import requests
     url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
     print url
     try:
         response = requests.get(url)
         return render(request, 'model_summary.html', context=response)
-        #return render(request,model_summary.html,context)
+        # return render(request,model_summary.html,context)
     except Exception as err:
         print err
+
+

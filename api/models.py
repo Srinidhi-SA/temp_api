@@ -99,9 +99,9 @@ class Job(models.Model):
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, self.object_id)
+            submit_job_separate_task.delay(command_array, self.slug)
         else:
-            submit_job_separate_task1(command_array, self.object_id)
+            submit_job_separate_task1(command_array, self.slug)
         original_object = self.get_original_object()
 
         if original_object is not None:
