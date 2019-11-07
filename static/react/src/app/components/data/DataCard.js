@@ -12,11 +12,12 @@ import {
     Button
 } from "react-bootstrap";
 import store from "../../store";
+import {Share} from "../common/Share"
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName,openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED, statusMessages} from  "../../helpers/helper"
@@ -30,6 +31,7 @@ var dateFormat = require('dateformat');
     return {
         login_response: store.login.login_response,
         dataList: store.datasets.dataList,
+        shareModelShow:store.datasets.shareModelShow,
         userList:store.datasets.allUserList,
         dataPreview: store.datasets.dataPreview,
         signalMeta: store.datasets.signalMeta,
@@ -76,6 +78,15 @@ export class DataCard extends React.Component {
         var allDataList=this.props.allDataList
         this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
+    openShareModal(shareItem) {
+        console.log("open ---openBinsOrLevelsModal");
+        this.props.dispatch(openShareModalAction(shareItem));
+        //this.setState({NoModal: this.state.NoModal + 1});
+       }
+    closeShareModal(event) {
+        console.log("closeddddd ---closeBinsOrLevelsModal");
+        this.props.dispatch(closeShareModalAction());
+      }
     openDataLoaderScreen(slug, percentage, message, e){
         var dataUpload = {};
         dataUpload.slug = slug
@@ -86,6 +97,25 @@ export class DataCard extends React.Component {
     }
     
     render() {
+        var sharePopup = (
+      <div id="sharePopup" role="dialog" className="modal fade modal-colored-header">
+                 <Modal show={this.props.shareModelShow} onHide={this.closeShareModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{ overflow: 'inherit' }} >
+                <Modal.Header>
+                  <h3 className="modal-title">Share</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  <div>
+                    <h4>With whom you want to share?</h4>
+                    <Share usersList={this.props.userList}/> 
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.closeShareModal.bind(this)}>Cancel</Button>
+                  <Button bsStyle="primary" form="shareForm" content="Submit"  value="Submit">Share</Button>
+                </Modal.Footer>
+              </Modal>
+            </div>
+          )
         
         
         const dataSets = this.props.data;
@@ -129,6 +159,7 @@ export class DataCard extends React.Component {
             iconDetails = <img src={src} alt="LOADING"/>;
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_dataset || permissionDetails.rename_dataset;
+
            
             
             
@@ -185,10 +216,11 @@ export class DataCard extends React.Component {
 								? "Stop"
 								: "Delete"}</a>
                                 </span>: ""}
-                                {/* {data.status == "SUCCESS"? <span onClick={this.handleShare.bind(this, data.slug,data.name,this.props.userList)}>
+                                {data.status == "SUCCESS"? <span onClick={this.openShareModal.bind(this,data.name)}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
-								</span>: ""} */}
+								</span>: ""}
+                                 {sharePopup}
 								<div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}

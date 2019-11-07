@@ -294,6 +294,19 @@ export function fetchAllUsersSuccess(json){
     }
 }
 //End of fetch userList
+
+export function openShareModalAction(shareItem) {
+    return {
+      type: "SHARE_MODAL_SHOW",
+      shareItem
+    }
+  }
+  
+  export function closeShareModalAction() {
+     return {
+       type: "SHARE_MODAL_HIDE",
+     }
+  }
 export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
