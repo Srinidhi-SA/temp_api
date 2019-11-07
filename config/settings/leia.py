@@ -217,6 +217,9 @@ KYLO_SERVER_DETAILS = {
     "kylo_file_path":"/opt/kylo/"
 }
 
+#MOdel Summary dowload key_path
+MODEL_SUMMARY_DOWNLOAD_PATH='/home/ubuntu/automlModelSummary'
+
 # if DEBUG == False:
 #     from logger_config import *
 #     server_log = BASE_DIR + '/server_log'

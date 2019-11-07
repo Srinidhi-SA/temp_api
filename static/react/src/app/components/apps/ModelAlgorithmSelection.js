@@ -160,13 +160,18 @@ export class ModelAlgorithmSelection extends React.Component {
         this.props.dispatch(saveParameterTuning());
     }
     changeHyperParameterType(slug,e){
-        
         this.props.dispatch(changeHyperParameterType(slug,e.target.value));
         if(e.target.value="none"){
             $(".learningGrid .for_multiselect").removeClass("disableGrid");
-    
-            }
+        }
     }
+
+    handleBack=()=>{
+        const appId = this.props.match.params.AppId;
+        const slug = this.props.match.params.slug;
+        this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/featureEngineering?from=algorithm_selection`);
+      }
+
     render() {
         if(store.getState().apps.modelSummaryFlag){ 
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
@@ -288,8 +293,8 @@ export class ModelAlgorithmSelection extends React.Component {
                                     :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
                                  </div>
-                                {selectedValue != "none"?
-                                <div>
+                                {selectedValue != "none" && document.getElementsByClassName("active")[1].innerText != "LINEAR REGRESSION"?
+                                <div className="maxminLabel">
                                      <label class="col-md-6 control-label read"></label>
                                      <label class="col-md-1 control-label read text-center">
                                             <b>Min</b>
@@ -335,8 +340,9 @@ export class ModelAlgorithmSelection extends React.Component {
                                 </Tabs>
                                 }
 							<div className="clearfix"></div>
-                            <div className="text-right">
-                                <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" onClick={this.createModel.bind(this)}>{buttonName}</Button>
+                            <div>
+                            <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                            <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName}</Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

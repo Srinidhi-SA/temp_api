@@ -99,9 +99,9 @@ class Job(models.Model):
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, self.object_id)
+            submit_job_separate_task.delay(command_array, self.slug)
         else:
-            submit_job_separate_task1(command_array, self.object_id)
+            submit_job_separate_task1(command_array, self.slug)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -1508,7 +1508,7 @@ class Trainer(models.Model):
                         try:
                             overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                             for col in column_data:
-                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
+                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True and column_data[col]['targetColumn'] == False:
                                     self.collect_column_slugs_which_all_got_transformations.append(col)
                                     self.generate_new_column_name_based_on_transformation(
                                         column_data[col],
@@ -1964,7 +1964,8 @@ class Trainer(models.Model):
             'actualColumnType': columnType,
             'name': newly_generated_column_name,
             'selected': True,
-            'slug': slug
+            'slug': slug,
+            'isFeatureColumn': True
         }
         custom_dict.update(temp)
         custom_dict['dateSuggestionFlag'] = False
