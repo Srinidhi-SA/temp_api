@@ -106,6 +106,13 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(showLevelCountsForTarget(event))
         this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(updateSelectedVariable(event));
+
+        if(this.props.currentAppDetails.app_id === 13){
+          let target =  $("#createModelAnalysisList").val();
+          let targetUniqueVal= this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.name=== target)[0].columnStats.filter(j=>j.displayName === "Unique Values")[0].value
+          targetUniqueVal <=5 &&
+          bootbox.alert(statusMessages("warning","Please proceed with automated prediction to get better results as this dataset has less than 5 unique value for the selected target column"));
+        }
     }
 
     setEvaluationMetric(event) {
