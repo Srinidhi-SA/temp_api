@@ -9,6 +9,7 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
+  allUserList:{},
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
@@ -144,6 +145,19 @@ export default function reducer(state = {
       }
       break;
     case "DATA_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "USERS_ALL_LIST":
+      {
+        return {
+          ...state,
+          allUserList: action.json,
+        }
+      }
+      break;
+    case "USERS_ALL_LIST_ERROR":
       {
         throw new Error("Unable to fetch data list!!");
       }

@@ -15,7 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting,getAllDataList} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -30,6 +30,7 @@ var dateFormat = require('dateformat');
     return {
         login_response: store.login.login_response,
         dataList: store.datasets.dataList,
+        userList:store.datasets.allUserList,
         dataPreview: store.datasets.dataPreview,
         signalMeta: store.datasets.signalMeta,
         selectedDataSet: store.datasets.selectedDataSet,
@@ -50,6 +51,7 @@ export class DataCard extends React.Component {
     }
     componentWillMount() {
         this.props.dispatch(getAllDataList());
+        this.props.dispatch(getAllUsersList())
       }
     
     getPreviewData(status,e) {
@@ -182,7 +184,11 @@ export class DataCard extends React.Component {
 								<i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
 								? "Stop"
 								: "Delete"}</a>
-								</span>: ""}
+                                </span>: ""}
+                                {/* {data.status == "SUCCESS"? <span onClick={this.handleShare.bind(this, data.slug,data.name,this.props.userList)}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+								</span>: ""} */}
 								<div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}

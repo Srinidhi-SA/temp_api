@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
 import renderHTML from 'react-render-html';
-import Dialog from 'react-bootstrap-dialog'
+import Dialog from 'react-bootstrap-dialog';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
@@ -261,7 +261,39 @@ function fetchDataPreviewError(json) {
         json
     }
 }
-
+//Fetch userList start 
+export function getAllUsersList() {
+    return (dispatch) => {
+        return fetchAllUsersList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+            if(response.status === 200){
+                console.log(json)
+                dispatch(fetchAllUsersSuccess(json))
+            }
+            else{
+                dispatch(fetchAllUsersError(json))
+            }
+        })
+    }
+}
+function fetchAllUsersList(token) {
+    return fetch(API+'/api/get_all_users/',{
+        method: 'get',
+        headers: getHeader(token)
+    }).then( response => Promise.all([response, response.json()]));
+}
+function fetchAllUsersError(json) {
+    return {
+        type: "USERS_ALL_LIST_ERROR",
+        json
+    }
+}
+export function fetchAllUsersSuccess(json){
+    return {
+        type: "USERS_ALL_LIST",
+        json,
+    }
+}
+//End of fetch userList
 export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
