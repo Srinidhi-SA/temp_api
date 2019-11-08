@@ -335,7 +335,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 import random,string
                 slug = dataset_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 dataset_obj.update(
-                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared'},'slug':slug)
+                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared','slug':slug})
                 Dataset.objects.create(**dataset_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
