@@ -483,6 +483,23 @@ class TrainerView(viewsets.ModelViewSet):
             "data": serializer.data
         })
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            user_ids = request.query_params.get('user_id', None).split(',')
+            trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
+            model_name = trainer_obj['name']
+            if request.user.id in [int(i) for i in user_ids]:
+                return JsonResponse({'message': 'Models should not be shared to itself.'})
+
+            for i in user_ids:
+                trainer_obj.update({'name':model_name+'(shared)', 'id':None, 'created_by_id':i})
+                Trainer.objects.create(**trainer_obj)
+            return JsonResponse({'message': 'Models shared'})
+
+        except Exception as err:
+            print err
+            return JsonResponse({'message':'Models sharing failed.'})
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
