@@ -24,6 +24,7 @@ from api.exceptions import creation_failed_exception, update_failed_exception, r
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
 from django.contrib.auth.models import User
+from django.db.models import Q
 from api.utils import \
     convert_to_string, \
     name_check, \
@@ -6479,7 +6480,7 @@ def get_all_signals(request):
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
-        users_obj = User.objects.filter(is_active=True)
+        users_obj = User.objects.filter(~Q(id = request.user.id,is_active=True))
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
@@ -6518,5 +6519,3 @@ def view_model_summary_autoML(request):
         # return render(request,model_summary.html,context)
     except Exception as err:
         print err
-
-
