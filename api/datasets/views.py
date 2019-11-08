@@ -329,6 +329,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                                  slug=self.kwargs.get('slug')).values().first()
             dataset_name = dataset_obj['name']
             shared_id = request.GET['shared_id'].split(",")
+            if request.user.id in shared_id:
+                return JsonResponse({'message': 'Dataset should not be shared it itself.'})
             for id in shared_id:
                 dataset_obj.update(
                     {'id': None, 'created_by_id': id, 'name':dataset_name + '(shared)'})
