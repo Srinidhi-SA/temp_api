@@ -488,16 +488,18 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            user_ids = request.query_params.get('user_id', None).split(',')
+            shared_id = request.query_params.get('shared_id', None).split(',')
             trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             model_name = trainer_obj['name']
-            if request.user.id in [int(i) for i in user_ids]:
+            if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Models should not be shared to itself.'})
 
-            for i in user_ids:
-                trainer_obj.update({'name':model_name+'(shared)', 'id':None, 'created_by_id':i})
+            for i in shared_id:
+                import random,string
+                slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug})
                 Trainer.objects.create(**trainer_obj)
-            return JsonResponse({'message': 'Models shared'})
+            return JsonResponse({'message': 'Models shared.'})
 
         except Exception as err:
             print err
@@ -679,11 +681,13 @@ class ScoreView(viewsets.ModelViewSet):
                                              slug=self.kwargs.get('slug')).values().first()
             score_name = score_obj['name']
             shared_id = request.GET['shared_id'].split(",")
-            if request.user.id in shared_id:
+            if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Score should not be shared to itself.'})
             for id in shared_id:
+                import random,string
+                slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 score_obj.update(
-                    {'id': None, 'created_by_id': id, 'name': score_name + '(shared)'})
+                    {'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
