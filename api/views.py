@@ -657,13 +657,20 @@ class ScoreView(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
-        score_obj = Score.objects.filter(created_by_id=request.user.id,
-                                         slug=self.kwargs.get('slug')).values().first()
-        score_obj.update(
-            {'id': None, 'created_by_id': request.GET['shared_id'], 'name': score_obj['name'] + '(shared)'})
-        Score.objects.create(**score_obj)
-        return JsonResponse({'message': 'done'})
-
+        try:
+            score_obj = Score.objects.filter(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug')).values().first()
+            score_name = score_obj['name']
+            shared_id = request.GET['shared_id'].split(",")
+            if request.user.id in shared_id:
+                return JsonResponse({'message': 'Score should not be shared to itself.'})
+            for id in shared_id:
+                score_obj.update(
+                    {'id': None, 'created_by_id': id, 'name': score_name + '(shared)'})
+                Score.objects.create(**score_obj)
+            return JsonResponse({'message': 'done'})
+        except Exception as err:
+            print err
 
 class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
