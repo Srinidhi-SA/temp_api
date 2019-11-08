@@ -78,9 +78,9 @@ export class DataCard extends React.Component {
         var allDataList=this.props.allDataList
         this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
-    openShareModal(shareItem) {
+    openShareModal(shareItem,slug) {
         console.log("open ---openBinsOrLevelsModal");
-        this.props.dispatch(openShareModalAction(shareItem));
+        this.props.dispatch(openShareModalAction(shareItem,slug));
         //this.setState({NoModal: this.state.NoModal + 1});
        }
     closeShareModal(event) {
@@ -96,28 +96,7 @@ export class DataCard extends React.Component {
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
     
-    render() {
-        var sharePopup = (
-      <div id="sharePopup" role="dialog" className="modal fade modal-colored-header">
-                 <Modal show={this.props.shareModelShow} onHide={this.closeShareModal.bind(this)} dialogClassName="modal-colored-header modal-md" style={{ overflow: 'inherit' }} >
-                <Modal.Header>
-                  <h3 className="modal-title">Share</h3>
-                </Modal.Header>
-                <Modal.Body>
-                  <div>
-                    <h4>With whom you want to share?</h4>
-                    <Share usersList={this.props.userList}/> 
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={this.closeShareModal.bind(this)}>Cancel</Button>
-                  <Button bsStyle="primary" form="shareForm" content="Submit"  value="Submit">Share</Button>
-                </Modal.Footer>
-              </Modal>
-            </div>
-          )
-        
-        
+    render() { 
         const dataSets = this.props.data;
         const dataList=this.props.dataList;
 
@@ -216,12 +195,12 @@ export class DataCard extends React.Component {
 								? "Stop"
 								: "Delete"}</a>
                                 </span>: ""}
-                                {data.status == "SUCCESS"? <span onClick={this.openShareModal.bind(this,data.name)}>
+                                {data.status == "SUCCESS"? <span onClick={this.openShareModal.bind(this,data.name,data.slug)}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}
-                                 {sharePopup}
-								<div className="clearfix"></div>
+                                <Share usersList={this.props.userList}/>
+                                <div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}
                                 

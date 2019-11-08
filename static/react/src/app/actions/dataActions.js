@@ -295,10 +295,11 @@ export function fetchAllUsersSuccess(json){
 }
 //End of fetch userList
 
-export function openShareModalAction(shareItem) {
+export function openShareModalAction(shareItem,slug) {
     return {
       type: "SHARE_MODAL_SHOW",
-      shareItem
+      shareItem,
+      slug
     }
   }
   
@@ -348,6 +349,15 @@ export function fetchAllDataSuccess(doc){
         slug
     }
 }
+
+export function shareItemCall(names,slug) {
+    return fetch(API+'/api/datasets/'+slug+'/share/?shared_id='+names,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then( response => Promise.all([response, response.json()]));
+}
+
+
 export function saveAdvanceSettings(){
     var savedAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetAnalysisList);
     return {

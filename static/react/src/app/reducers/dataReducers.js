@@ -70,6 +70,7 @@ export default function reducer(state = {
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
   shareItem:{},
+  shareItemSlug:"",
   isNoOfBinsEnabled:false,
   shareModelShow:false,
   isSpecifyIntervalsEnabled:true,
@@ -169,7 +170,8 @@ export default function reducer(state = {
         return {
           ...state,
           shareModelShow: true,
-          shareItem:action.shareItem
+          shareItem:action.shareItem,
+          shareItemSlug:action.slug
         }
       }
       break;
