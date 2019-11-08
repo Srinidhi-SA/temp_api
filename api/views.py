@@ -195,6 +195,26 @@ class SignalView(viewsets.ModelViewSet):
         serializer = InsightSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            shared_id = request.query_params.get('shared_id', None).split(',')
+            signal_obj = Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
+            signal_name = signal_obj['name']
+            if request.user.id in [int(i) for i in shared_id]:
+                return JsonResponse({'message': 'Models should not be shared to itself.'})
+
+            for i in shared_id:
+                import random,string
+                slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug})
+                Insight.objects.create(**signal_obj)
+            return JsonResponse({'message': 'Signals shared.'})
+
+        except Exception as err:
+            print err
+            return JsonResponse({'message':'Signals sharing failed.'})
+
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
