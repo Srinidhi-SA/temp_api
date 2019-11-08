@@ -2245,7 +2245,7 @@ export function showLevelCountsForTarget(event) {
   var varSlug = selOption.getAttribute("name");
   var levelCounts = null;
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
-  var varType = colData.filter(i=>i.name==varText)[0].actualColumnType;
+  var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
   if (varType == "dimension") {
     for (var i = 0; i < colData.length; i++) {

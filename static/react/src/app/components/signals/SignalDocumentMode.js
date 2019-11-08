@@ -120,7 +120,7 @@ export class SignalDocumentMode extends React.Component {
               <div className="page-head">
                 <div class="row">
                   <div class="col-md-12">
-                    <Breadcrumb path={[
+                    {/* <Breadcrumb path={[
                       {
                         path: '/signals',
                         label: 'Signals'
@@ -128,7 +128,7 @@ export class SignalDocumentMode extends React.Component {
                         path: '/signaldocumentMode/' + this.props.match.params.slug,
                         label: this.props.signal.name
                       }
-                    ]}/>
+                    ]}/> */}
                   </div>
                 </div>
                 <div class="clearfix"></div>
