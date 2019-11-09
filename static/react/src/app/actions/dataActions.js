@@ -295,11 +295,12 @@ export function fetchAllUsersSuccess(json){
 }
 //End of fetch userList
 
-export function openShareModalAction(shareItem,slug) {
+export function openShareModalAction(shareItem,slug,itemType) {
     return {
       type: "SHARE_MODAL_SHOW",
       shareItem,
-      slug
+      slug,
+      itemType
     }
   }
   
@@ -350,11 +351,13 @@ export function fetchAllDataSuccess(doc){
     }
 }
 
-export function shareItemCall(names,slug) {
+export function shareItemCall(names,slug,shareItemType) {
+    if(shareItemType="data"){
     return fetch(API+'/api/datasets/'+slug+'/share/?shared_id='+names,{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
     }).then( response => Promise.all([response, response.json()]));
+}
 }
 
 

@@ -78,9 +78,9 @@ export class DataCard extends React.Component {
         var allDataList=this.props.allDataList
         this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
-    openShareModal(shareItem,slug) {
+    openShareModal(shareItem,slug,itemType) {
         console.log("open ---openBinsOrLevelsModal");
-        this.props.dispatch(openShareModalAction(shareItem,slug));
+        this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
         //this.setState({NoModal: this.state.NoModal + 1});
        }
     closeShareModal(event) {
@@ -195,7 +195,7 @@ export class DataCard extends React.Component {
 								? "Stop"
 								: "Delete"}</a>
                                 </span>: ""}
-                                {data.status == "SUCCESS"? <span onClick={this.openShareModal.bind(this,data.name,data.slug)}>
+                                {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"data")}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}

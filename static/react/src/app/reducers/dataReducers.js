@@ -71,6 +71,7 @@ export default function reducer(state = {
   selectedItem:{},
   shareItem:{},
   shareItemSlug:"",
+  shareItemType:"",
   isNoOfBinsEnabled:false,
   shareModelShow:false,
   isSpecifyIntervalsEnabled:true,
@@ -171,7 +172,8 @@ export default function reducer(state = {
           ...state,
           shareModelShow: true,
           shareItem:action.shareItem,
-          shareItemSlug:action.slug
+          shareItemSlug:action.slug,
+          shareItemType:action.itemType,
         }
       }
       break;
