@@ -324,12 +324,22 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
-        dataset_obj = Dataset.objects.filter(created_by_id=request.user.id,
-                                             slug=self.kwargs.get('slug')).values().first()
-        dataset_obj.update(
-            {'id': None, 'created_by_id': request.GET['shared_id'], 'name': dataset_obj['name'] + '(shared)'})
-        Dataset.objects.create(**dataset_obj)
-        return JsonResponse({'message': 'done'})
+        try:
+            dataset_obj = Dataset.objects.filter(created_by_id=request.user.id,
+                                                 slug=self.kwargs.get('slug')).values().first()
+            dataset_name = dataset_obj['name']
+            shared_id = request.GET['shared_id'].split(",")
+            if request.user.id in [int(i) for i in shared_id]:
+                return JsonResponse({'message': 'Dataset should not be shared to itself.'})
+            for id in shared_id:
+                import random,string
+                slug = dataset_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                dataset_obj.update(
+                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared','slug':slug})
+                Dataset.objects.create(**dataset_obj)
+            return JsonResponse({'message': 'done'})
+        except Exception as err:
+            print err
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):

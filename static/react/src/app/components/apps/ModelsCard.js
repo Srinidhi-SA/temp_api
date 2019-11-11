@@ -80,16 +80,19 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
-                    var setVal = this.props.setAppsLoaderValues[data.slug];
-                        if(data.status == INPROGRESS){
-                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setVal >= 0 ?setVal+' %':"In Progress"}</span></div>;
-                            modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
-                        }else if(data.status == SUCCESS){
-                            data.completed_percentage = 100;
-                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
-                        }else if(data.status == FAILED){
-                            percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
-                        }
+                    if(data.status == INPROGRESS){
+                        if(this.props.setAppsLoaderValues[data.slug] != undefined)
+                            var setAppLoaderVal = this.props.setAppsLoaderValues[data.slug].value;
+                        else
+                            var setAppLoaderVal = 0;
+                        percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setAppLoaderVal >= 0 ? setAppLoaderVal +' %':"In Progress"}</span></div>;
+                        modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                    }else if(data.status == SUCCESS){
+                        data.completed_percentage = 100;
+                        percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
+                    }else if(data.status == FAILED){
+                        percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
+                    }
                     var permissionDetails = data.permission_details;
                     var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 
                     return (
