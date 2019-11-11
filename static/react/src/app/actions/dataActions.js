@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
 import renderHTML from 'react-render-html';
-import Dialog from 'react-bootstrap-dialog'
+import Dialog from 'react-bootstrap-dialog';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
@@ -230,7 +230,6 @@ columns
         }
     }
 }
-
 function dispatchDataPreview(dataPreview,slug){
     return {
         type: "DATA_PREVIEW",
@@ -262,7 +261,54 @@ function fetchDataPreviewError(json) {
         json
     }
 }
+//Fetch userList start 
+export function getAllUsersList() {
+    return (dispatch) => {
+        return fetchAllUsersList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+            if(response.status === 200){
+                console.log(json)
+                dispatch(fetchAllUsersSuccess(json))
+            }
+            else{
+                dispatch(fetchAllUsersError(json))
+            }
+        })
+    }
+}
+function fetchAllUsersList(token) {
+    return fetch(API+'/api/get_all_users/',{
+        method: 'get',
+        headers: getHeader(token)
+    }).then( response => Promise.all([response, response.json()]));
+}
+function fetchAllUsersError(json) {
+    return {
+        type: "USERS_ALL_LIST_ERROR",
+        json
+    }
+}
+export function fetchAllUsersSuccess(json){
+    return {
+        type: "USERS_ALL_LIST",
+        json,
+    }
+}
+//End of fetch userList
 
+export function openShareModalAction(shareItem,slug,itemType) {
+    return {
+      type: "SHARE_MODAL_SHOW",
+      shareItem,
+      slug,
+      itemType
+    }
+  }
+  
+  export function closeShareModalAction() {
+     return {
+       type: "SHARE_MODAL_HIDE",
+     }
+  }
 export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -304,6 +350,34 @@ export function fetchAllDataSuccess(doc){
         slug
     }
 }
+
+export function handleShareItem(userIds,slug,shareItemType,shareItemName,dispatch){
+    return shareItemApi(userIds,slug,shareItemType).then(([response, json]) =>{
+        if(response.status === 200){
+            bootbox.alert(`${ shareItemType} "${shareItemName}" is shared successfully.`)
+        }
+        else{
+            bootbox.alert(`${ shareItemType} "${shareItemName}" sharing failed. Please try again later.`)
+        }
+    })
+}
+
+function shareItemApi(userIds,slug,shareItemType) {
+    if(shareItemType == "Data"){
+     return fetch(API+'/api/datasets/'+slug+'/share/?shared_id='+userIds,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()]));
+    }
+    else if(shareItemType == "Model"){
+     return fetch(API+'/api/trainer/'+slug+'/share/?shared_id='+userIds,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()]));
+    }
+}
+
+
 export function saveAdvanceSettings(){
     var savedAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetAnalysisList);
     return {

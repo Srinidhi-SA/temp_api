@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -53,6 +53,13 @@ export class DataVariableSelection extends React.Component {
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
+        if(window.location.href.includes("/createSignal") && e.target.name ==  "date_type"){
+            if(e.target.id == "unselect"){
+                $("#chk_analysis_trend").prop("disabled",true);
+            }else{
+                $("#chk_analysis_trend").prop("disabled",false);
+            }
+        }
     }
     componentDidMount() {
         const from = this.getValueOfFromParam();
@@ -462,7 +469,8 @@ export class DataVariableSelection extends React.Component {
                                                  {datetimeTemplate}
                                                  {store.getState().datasets.dataSetTimeDimensions.length > 0 && 
                                         <div class="ma-radio inline">
-                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  /><label htmlFor="unselect">None</label>
+                                         <input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} id="unselect" name="date_type"  />
+                                         <label htmlFor="unselect">None</label>
                                         </div>
                                         }
                                                 </ul>

@@ -3,6 +3,10 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
+import {Share} from "../common/Share"
+import {openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
+
+
 
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
@@ -22,6 +26,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
             algoList: store.apps.algoList,
+            userList:store.datasets.allUserList,
 
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
@@ -59,6 +64,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             else
                 return;
         }
+        openShareModal(shareItem,slug,itemType) {
+            console.log("open ---openBinsOrLevelsModal");
+            this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+           }
         render() {
 
                 var modelList = this.props.data;
@@ -71,16 +80,19 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     }
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
-                    var setVal = this.props.setAppsLoaderValues[data.slug];
-                        if(data.status == INPROGRESS){
-                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setVal >= 0 ?setVal+' %':"In Progress"}</span></div>;
-                            modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
-                        }else if(data.status == SUCCESS){
-                            data.completed_percentage = 100;
-                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
-                        }else if(data.status == FAILED){
-                            percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
-                        }
+                    if(data.status == INPROGRESS){
+                        if(this.props.setAppsLoaderValues[data.slug] != undefined)
+                            var setAppLoaderVal = this.props.setAppsLoaderValues[data.slug].value;
+                        else
+                            var setAppLoaderVal = 0;
+                        percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setAppLoaderVal >= 0 ? setAppLoaderVal +' %':"In Progress"}</span></div>;
+                        modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                    }else if(data.status == SUCCESS){
+                        data.completed_percentage = 100;
+                        percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
+                    }else if(data.status == FAILED){
+                        percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
+                    }
                     var permissionDetails = data.permission_details;
                     var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 
                     return (
@@ -150,6 +162,11 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 ? "Delete "
                                 : "Delete"}</a>
                             </span>:""}
+                            {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Model")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+								</span>: ""}
+                                <Share usersList={this.props.userList}/>
 							<div className="clearfix"></div>
 							</li>                            
                             </ul>

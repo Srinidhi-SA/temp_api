@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -61,6 +61,8 @@ export class Data extends React.Component {
     }
   componentDidMount(){
      this.props.dispatch(refreshDatasets(this.props));
+     this.props.dispatch(getAllUsersList(this.props));
+     
   }
 
   openModelPopup() {
