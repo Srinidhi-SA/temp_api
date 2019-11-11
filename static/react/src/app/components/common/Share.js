@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { MultiSelect } from 'primereact/multiselect';
 import { Button, Modal ,Tab, Row, Col } from "react-bootstrap";
-import {closeShareModalAction,shareItemCall} from "../../actions/dataActions";
+import {closeShareModalAction,handleShareItem} from "../../actions/dataActions";
 @connect((store) => {
   return {
     shareItemName: store.datasets.shareItem,
@@ -16,7 +16,7 @@ export class Share extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-			names:[]
+			userIds:[]
 		}
   }
 
@@ -32,17 +32,17 @@ export class Share extends React.Component {
       return { "label": item.name, "value": item.Uid };
     });
   }
-  proceedToShare(names){
-    shareItemCall(names,this.props.shareItemSlug,this.props.shareItemType);
+  proceedToShare(userIds){
+    handleShareItem(userIds,this.props.shareItemSlug,this.props.shareItemType,this.props.shareItemName);
     this.closeShareModal()
-    this.setState({names:[]})
+    this.setState({userIds:[]})
   }
 
   render() {
    var rendermultiselect= (this.props.usersList.allUsersList!=undefined? <div className="form-group">
        <div className="content-section implementation multiselect-demo width-multisel">
-       <MultiSelect  value={this.state.names} options={this.getMultiSelectOptions()} onChange={(e) => this.setState({names: e.value})}
-        style={{ "minWidth": '22em',"maxWidth":"22em","width": "90%"}}  filter={true} placeholder="choose users" />
+       <MultiSelect  value={this.state.userIds} options={this.getMultiSelectOptions()} onChange={(e) => this.setState({userIds: e.value})}
+        style={{ "minWidth": '22em',"maxWidth":"22em","width": "90%"}}  filter={true} placeholder="Choose users" />
        </div>
        </div>:"")
     var renderOptions =
@@ -77,7 +77,7 @@ export class Share extends React.Component {
     </Modal.Body>
     <Modal.Footer>
       <Button onClick={this.closeShareModal.bind(this)}>Cancel</Button>
-      <Button bsStyle="primary" form="shareForm" content="Submit" onClick={this.proceedToShare.bind(this,this.state.names)} value="Submit">Share</Button>
+      <Button bsStyle="primary" form="shareForm" content="Submit" onClick={this.proceedToShare.bind(this,this.state.userIds)} value="Submit">Share</Button>
     </Modal.Footer>
     </Modal>
   </div>);}}
