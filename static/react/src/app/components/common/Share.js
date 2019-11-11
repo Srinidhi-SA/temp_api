@@ -58,10 +58,10 @@ export class Share extends React.Component {
     <Modal.Header>
       <h3 className="modal-title">Share</h3>
     </Modal.Header>
-    <Modal.Body style={{"minHeight":"340px","minWidth":"10px"}}>
+    <Modal.Body style={{"minHeight":"320px","minWidth":"10px"}}>
      <div className="row">
      <div className="col-sm-3">
-     <label>Dataset:</label>
+     <label>{this.props.shareItemType} name:</label>
      </div>
      <div className="col-sm-9">
      <h4>{this.props.shareItemName}</h4>

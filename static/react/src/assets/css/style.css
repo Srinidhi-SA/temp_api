@@ -16409,3 +16409,13 @@ box-shadow: none !important;
 	opacity: .06;
 	filter: alpha(opacity=0)
 }
+
+body .p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-multiselect-filter-icon {
+		color: #00998c !important;
+}
+body .p-checkbox .p-checkbox-box.p-focus {
+	border-color:#00998c !important;
+}
+body .p-inputtext:enabled:focus:not(.p-error) {
+	border-color: #00998c !important;
+}

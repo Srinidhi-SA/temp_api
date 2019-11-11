@@ -352,8 +352,14 @@ export function fetchAllDataSuccess(doc){
 }
 
 export function shareItemCall(names,slug,shareItemType) {
-    if(shareItemType="data"){
+    if(shareItemType == "Data"){
     return fetch(API+'/api/datasets/'+slug+'/share/?shared_id='+names,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then( response => Promise.all([response, response.json()]));
+}
+else if(shareItemType == "Model"){
+    return fetch(API+'/api/models/'+slug+'/share/?shared_id='+names,{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
     }).then( response => Promise.all([response, response.json()]));
