@@ -24,6 +24,7 @@ from api.exceptions import creation_failed_exception, update_failed_exception, r
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
 from django.contrib.auth.models import User
+from django.db.models import Q
 from api.utils import \
     convert_to_string, \
     name_check, \
@@ -484,6 +485,25 @@ class TrainerView(viewsets.ModelViewSet):
             "data": serializer.data
         })
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            shared_id = request.query_params.get('shared_id', None).split(',')
+            trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
+            model_name = trainer_obj['name']
+            if request.user.id in [int(i) for i in shared_id]:
+                return JsonResponse({'message': 'Models should not be shared to itself.'})
+
+            for i in shared_id:
+                import random,string
+                slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug})
+                Trainer.objects.create(**trainer_obj)
+            return JsonResponse({'message': 'Models shared.'})
+
+        except Exception as err:
+            print err
+            return JsonResponse({'message':'Models sharing failed.'})
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -656,13 +676,22 @@ class ScoreView(viewsets.ModelViewSet):
 
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
-        score_obj = Score.objects.filter(created_by_id=request.user.id,
-                                         slug=self.kwargs.get('slug')).values().first()
-        score_obj.update(
-            {'id': None, 'created_by_id': request.GET['shared_id'], 'name': score_obj['name'] + '(shared)'})
-        Score.objects.create(**score_obj)
-        return JsonResponse({'message': 'done'})
-
+        try:
+            score_obj = Score.objects.filter(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug')).values().first()
+            score_name = score_obj['name']
+            shared_id = request.GET['shared_id'].split(",")
+            if request.user.id in [int(i) for i in shared_id]:
+                return JsonResponse({'message': 'Score should not be shared to itself.'})
+            for id in shared_id:
+                import random,string
+                slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                score_obj.update(
+                    {'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug})
+                Score.objects.create(**score_obj)
+            return JsonResponse({'message': 'done'})
+        except Exception as err:
+            print err
 
 class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -6470,7 +6499,7 @@ def get_all_signals(request):
     if request.method == 'GET':
         user_id = request.user.id
         signalList = dict()
-        job_obj = Insight.objects.filter(created_by_id=user_id)
+        job_obj = Insight.objects.filter(created_by_id=user_id, deleted=False)
         for index, i in enumerate(job_obj):
             signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allSignalList': signalList})
@@ -6479,7 +6508,7 @@ def get_all_signals(request):
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
-        users_obj = User.objects.filter(is_active=True)
+        users_obj = User.objects.filter(~Q(id = request.user.id,is_active=True))
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
@@ -6518,5 +6547,3 @@ def view_model_summary_autoML(request):
         # return render(request,model_summary.html,context)
     except Exception as err:
         print err
-
-
