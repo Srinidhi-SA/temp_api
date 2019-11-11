@@ -4,14 +4,13 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary, setAppsLoaderValues,} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {STATIC_URL} from "../../helpers/env";
-import {handleJobProcessing} from "../../helpers/helper";
-
+import {STATIC_URL, API} from "../../helpers/env";
+import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -25,8 +24,10 @@ import {handleJobProcessing} from "../../helpers/helper";
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
+		setAppsLoaderValues: store.apps.setAppsLoaderValues
 	};
 })
+
 
 export class AppsLoader extends React.Component {
   constructor(){
@@ -35,10 +36,34 @@ export class AppsLoader extends React.Component {
 	openModelPopup(){
   	this.props.dispatch(openAppsLoaderValue())
   }
+  valueStore = () =>{
+	let timer = setInterval(() => {
+		if(this.props.setAppsLoaderValues[this.props.modelSlug].status === "INPROGRESS"){
+	  	return fetch(API + '/api/trainer/' + this.props.modelSlug + '/', {
+	  		method: 'get',
+	  		headers: getHeader(getUserDetailsOrRestart.get().userToken)
+			}).then(response => response.json())
+			.then(responsejson => {
+				if(responsejson.message[0].globalCompletionPercentage <= 100){
+					if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[0].globalCompletionPercentage){
+						this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[0].globalCompletionPercentage,responsejson.status))
+						this.props.dispatch(getAppsModelList(1));
+					}
+				}
+			})
+		}
+	 if (this.props.setAppsLoaderValues[this.props.modelSlug].value === 100){
+	   clearInterval(timer);
+		this.props.dispatch(updateModelSummaryFlag(true));
+	 }
+	},10000);
+}
   closeModelPopup(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
-  	this.props.dispatch(closeAppsLoaderValue());
+	  this.props.dispatch(closeAppsLoaderValue());
+	this.valueStore();
+
 		clearAppsIntervel();
 		//if(this.props.app_type == "REGRESSION")
 		//if(this.props.app_type == "REGRESSION")
