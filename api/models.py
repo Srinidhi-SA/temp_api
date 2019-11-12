@@ -396,7 +396,7 @@ class Dataset(models.Model):
     def get_hdfs_relative_file_path(self):
 
         if self.shared is True:
-            pass
+            return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
             return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
