@@ -329,13 +329,15 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                                  slug=self.kwargs.get('slug')).values().first()
             dataset_name = dataset_obj['name']
             shared_id = request.GET['shared_id'].split(",")
+            shared_by=User.objects.get(id=request.user.id)
+
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Dataset should not be shared to itself.'})
             for id in shared_id:
                 import random,string
                 slug = dataset_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 dataset_obj.update(
-                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared','slug':slug})
+                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared','slug':slug,'shared': True,'shared_by':'','shared_slug':self.kwargs.get('slug')})
                 Dataset.objects.create(**dataset_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
