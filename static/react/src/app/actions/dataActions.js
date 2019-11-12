@@ -165,7 +165,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log("data preview from api to store")
     dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
         column.checked = true;
-    });}
+    });
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
@@ -229,6 +229,7 @@ columns
             dataset,
         }
     }
+}
 function dispatchDataPreview(dataPreview,slug){
     return {
         type: "DATA_PREVIEW",
