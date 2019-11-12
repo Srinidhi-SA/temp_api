@@ -139,6 +139,14 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return creation_failed_exception(
                 "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
 
+        if 'name' in data:
+            datasetname_list = []
+            dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(dataset_query):
+                datasetname_list.append(i.name)
+            if data['name'] in datasetname_list:
+                return creation_failed_exception("Dataset file name already exists!.")
+
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
@@ -153,6 +161,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'subsetting' in data:
             if data['subsetting'] == True:
+                subset_dataset_list = []
+                dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+                for index, i in enumerate(dataset_query):
+                    subset_dataset_list.append(i.name)
+                if data['name'] in subset_dataset_list:
+                    return creation_failed_exception("Dataset file name already exists!.")
                 return self.subsetting(request, instance)
 
         # question: do we need update method in views/ as well as in serializers?
@@ -307,6 +321,27 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         # except Exception as err:
         #     return creation_failed_exception(err)
         # return creation_failed_exception(serializer.errors)
+
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            dataset_obj = Dataset.objects.filter(created_by_id=request.user.id,
+                                                 slug=self.kwargs.get('slug')).values().first()
+            dataset_name = dataset_obj['name']
+            shared_id = request.GET['shared_id'].split(",")
+            shared_by=User.objects.get(id=request.user.id)
+
+            if request.user.id in [int(i) for i in shared_id]:
+                return JsonResponse({'message': 'Dataset should not be shared to itself.'})
+            for id in shared_id:
+                import random,string
+                slug = dataset_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
+                dataset_obj.update(
+                    {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared','slug':slug,'shared': True,'shared_by':'','shared_slug':self.kwargs.get('slug')})
+                Dataset.objects.create(**dataset_obj)
+            return JsonResponse({'message': 'done'})
+        except Exception as err:
+            print err
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):

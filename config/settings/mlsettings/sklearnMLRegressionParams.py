@@ -166,19 +166,6 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                 },
 
                 {
-                    "name":"criterion",
-                    "displayName":"Measure For quality of a split",
-                    "description":"The function to measure the quality of a split",
-                    "defaultValue":[{"name":obj["name"],"selected":obj["selected"],"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_REGRESSION],
-                    "paramType":"list",
-                    "uiElemType":"checkbox",
-                    "display":True,
-                    "hyperpatameterTuningCandidate":True,
-                    "expectedDataType": ["string"],
-                    "allowedDataType":["string"]
-
-                },
-                {
                     "name":"min_samples_split",
                     "displayName":"Minimum Instances For Split",
                     "description":"The minimum number of samples required to split an internal node",
@@ -238,20 +225,6 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                     "allowedDataType": ["float", "int","string", None]
                 },
                 {
-                    "name":"max_leaf_nodes",
-                    "displayName":"Maximum Number of Leaf Nodes",
-                    "description":"The maximum of number of leaf nodes",
-                    "defaultValue":None,
-                    "acceptedValue":None,
-                    "valueRange":[],
-                    "paramType":"number",
-                    "uiElemType":"textBox",
-                    "display":True,
-                    "hyperpatameterTuningCandidate":False,
-                    "expectedDataType": ["int", None],
-                    "allowedDataType": ["int",None]
-                },
-                {
                     "name":"min_impurity_decrease",
                     "displayName":"Impurity Decrease cutoff for Split",
                     "description":"A node will be split if this split induces a decrease of the impurity greater than or equal to this value",
@@ -267,23 +240,36 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
 
                 },
                 {
-                 "name":"random_state",
-                 "displayName":"Random Seed",
-                 "description":"The seed of the pseudo random number generator to use when shuffling the data",
-                 "defaultValue":None,
-                 "acceptedValue":None,
-                 "valueRange":[1,100],
-                 "paramType":"number",
-                 "uiElemType":"textBox",
-                 "display":True,
-                 "hyperpatameterTuningCandidate":False,
-                 "expectedDataType": ["int", None],
-                 "allowedDataType": ["int", None]
+                    "name":"criterion",
+                    "displayName":"Measure For quality of a split",
+                    "description":"The function to measure the quality of a split",
+                    "defaultValue":[{"name":obj["name"],"selected":obj["selected"],"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_REGRESSION],
+                    "paramType":"list",
+                    "uiElemType":"checkbox",
+                    "display":True,
+                    "hyperpatameterTuningCandidate":True,
+                    "expectedDataType": ["string"],
+                    "allowedDataType":["string"]
 
                 }
+
 ]
 
 SKLEARN_ML_GBT_REGRESSION_PARAMS = [
+        {
+            "name":"learning_rate",
+            "displayName":"Learning Rate",
+            "description":"It shrinks the contribution of each tree by learning_rate",
+            "defaultValue":0.1,
+            "acceptedValue":None,
+            "valueRange":[0.1,1.0],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType": ["float"]
+        },
         {
             "name":"loss",
             "displayName":"Loss Function",
@@ -314,20 +300,6 @@ SKLEARN_ML_GBT_REGRESSION_PARAMS = [
 
         },
         {
-            "name":"learning_rate",
-            "displayName":"Learning Rate",
-            "description":"It shrinks the contribution of each tree by learning_rate",
-            "defaultValue":0.1,
-            "acceptedValue":None,
-            "valueRange":[0.1,1.0],
-            "paramType":"number",
-            "uiElemType":"slider",
-            "display":True,
-            "hyperpatameterTuningCandidate":True,
-            "expectedDataType": ["float"],
-            "allowedDataType": ["float"]
-        },
-        {
             "name":"warm_start",
             "displayName":"Warm Start",
             "description":"When set to True, reuse the solution of the previous call to fit as initialization",
@@ -349,6 +321,20 @@ SKLEARN_ML_GBT_REGRESSION_PARAMS = [
             "hyperpatameterTuningCandidate":False,
             "expectedDataType": ["bool"],
             "allowedDataType": ["bool"]
+
+        },
+        {
+            "name": "loss",
+            "displayName": "Loss Function",
+            "description": "It is the loss function to be optimized",
+            "defaultValue": [{"name": obj["name"], "selected": obj["selected"], "displayName": obj["displayName"]} for obj
+                             in SKLEARN_ML_SUPPORTED_LOSS],
+            "paramType": "list",
+            "uiElemType": "checkbox",
+            "display": True,
+            "hyperpatameterTuningCandidate": True,
+            "expectedDataType": ["string"],
+            "allowedDataType": ["string"]
 
         },
 
@@ -439,7 +425,7 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
                 "hyperpatameterTuningCandidate": False,
                 "expectedDataType": ["int"],
                 "allowedDataType": ["int"]
-            },
+    },
     {
         "name":"warm_start",
         "displayName":"Warm Start",
@@ -489,5 +475,33 @@ SKLEARN_ML_DTREE_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PAR
             "expectedDataType": ["string"],
             "allowedDataType": ["string"]
         },
+        {
+            "name": "max_leaf_nodes",
+            "displayName": "Maximum Number of Leaf Nodes",
+            "description": "The maximum of number of leaf nodes",
+            "defaultValue": None,
+            "acceptedValue": None,
+            "valueRange": [],
+            "paramType": "number",
+            "uiElemType": "textBox",
+            "display": True,
+            "hyperpatameterTuningCandidate": False,
+            "expectedDataType": ["int", None],
+            "allowedDataType": ["int", None]
+        },
+        {
+            "name": "random_state",
+            "displayName": "Random Seed",
+            "description": "The seed of the pseudo random number generator to use when shuffling the data",
+            "defaultValue": None,
+            "acceptedValue": None,
+            "valueRange": [1, 100],
+            "paramType": "number",
+            "uiElemType": "textBox",
+            "display": True,
+            "hyperpatameterTuningCandidate": False,
+            "expectedDataType": ["int", None],
+            "allowedDataType": ["int", None]
 
+        }
 ]

@@ -12,11 +12,12 @@ import {
     Button
 } from "react-bootstrap";
 import store from "../../store";
+import {Share} from "../common/Share"
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting,getAllDataList} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName,openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED, statusMessages} from  "../../helpers/helper"
@@ -30,6 +31,8 @@ var dateFormat = require('dateformat');
     return {
         login_response: store.login.login_response,
         dataList: store.datasets.dataList,
+        shareModelShow:store.datasets.shareModelShow,
+        userList:store.datasets.allUserList,
         dataPreview: store.datasets.dataPreview,
         signalMeta: store.datasets.signalMeta,
         selectedDataSet: store.datasets.selectedDataSet,
@@ -50,6 +53,7 @@ export class DataCard extends React.Component {
     }
     componentWillMount() {
         this.props.dispatch(getAllDataList());
+        this.props.dispatch(getAllUsersList())
       }
     
     getPreviewData(status,e) {
@@ -74,6 +78,15 @@ export class DataCard extends React.Component {
         var allDataList=this.props.allDataList
         this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
+    openShareModal(shareItem,slug,itemType) {
+        console.log("open ---openBinsOrLevelsModal");
+        this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+        //this.setState({NoModal: this.state.NoModal + 1});
+       }
+    closeShareModal(event) {
+        console.log("closeddddd ---closeBinsOrLevelsModal");
+        this.props.dispatch(closeShareModalAction());
+      }
     openDataLoaderScreen(slug, percentage, message, e){
         var dataUpload = {};
         dataUpload.slug = slug
@@ -83,9 +96,7 @@ export class DataCard extends React.Component {
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
     
-    render() {
-        
-        
+    render() { 
         const dataSets = this.props.data;
         const dataList=this.props.dataList;
 
@@ -127,6 +138,7 @@ export class DataCard extends React.Component {
             iconDetails = <img src={src} alt="LOADING"/>;
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_dataset || permissionDetails.rename_dataset;
+
            
             
             
@@ -182,8 +194,13 @@ export class DataCard extends React.Component {
 								<i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
 								? "Stop"
 								: "Delete"}</a>
+                                </span>: ""}
+                                {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Data")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}
-								<div className="clearfix"></div>
+                                <Share usersList={this.props.userList}/>
+                                <div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}
                                 

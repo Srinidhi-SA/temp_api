@@ -30,6 +30,8 @@ import {
   updateScoreSummaryFlag
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
+import {getAllUsersList} from "../../actions/dataActions";
+
 
 @connect((store) => {
   return {
@@ -53,6 +55,8 @@ export class Apps extends React.Component {
   componentWillMount() {
        this.props.dispatch(updateModelSummaryFlag(false));
        this.props.dispatch(updateScoreSummaryFlag(false));
+       this.props.dispatch(getAllUsersList());
+
 
     //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {

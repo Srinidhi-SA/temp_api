@@ -9,6 +9,7 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
+  allUserList:{},
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
@@ -58,15 +59,23 @@ export default function reducer(state = {
   featureEngineering:{},
   selectedVariables : {},
   checkedAll:true,
+  checked:true,
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
+  duplicateAttributes: false,
+  duplicateObservations: false,
   olUpperRange : {},
   binsOrLevelsShowModal:false,
   transferColumnShowModal:false,
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
+  shareItem:{},
+  shareItemSlug:"",
+  shareItemType:"",
   isNoOfBinsEnabled:false,
+  shareModelShow:false,
   isSpecifyIntervalsEnabled:true,
+  convertUsingBin: "false",
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -142,6 +151,39 @@ export default function reducer(state = {
     case "DATA_ALL_LIST_ERROR":
       {
         throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "USERS_ALL_LIST":
+      {
+        return {
+          ...state,
+          allUserList: action.json,
+        }
+      }
+      break;
+    case "USERS_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "SHARE_MODAL_SHOW":
+      {
+        return {
+          ...state,
+          shareModelShow: true,
+          shareItem:action.shareItem,
+          shareItemSlug:action.slug,
+          shareItemType:action.itemType,
+        }
+      }
+      break;
+  
+      case "SHARE_MODAL_HIDE":
+      {
+        return {
+          ...state,
+          shareModelShow: false
+        }
       }
       break;
     case "SELECTED_ANALYSIS_TYPE":
@@ -688,19 +730,43 @@ export default function reducer(state = {
 
     case "CHECKED_ALL_SELECTED":
     {
+      var check = action.selecteOrNot;
       return {
         ...state,
-        checkedAll : action.selecteOrNot
+        checkedAll : check
       }
 
     }
     break;
+    case "DATA_CLEANSING_CHECK_UPDATE":
+      {
+        console.log(action.checkedOrNot, action.index, 'anshulanshulanshul');
+        return {
+          ...state,
+          dataPreview: {
+            ...state.dataPreview,
+            meta_data: {
+              ...state.dataPreview.meta_data,
+              scriptMetaData: {
+                ...state.dataPreview.meta_data.scriptMetaData,
+                columnData: state.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => ({
+                  ...item,
+                  checked: index === Number(action.index) ? action.checkedOrNot : item.checked, 
+                }))
+              }
+            }
+          },
+        };
+  
+      }
+      break;
 
     case "REMOVE_DUPLICATE_ATTRIBUTES":
     {
       return {
         ...state,
-        removeDuplicateAttributes : action.yesOrNo
+        removeDuplicateAttributes : action.yesOrNo,
+        duplicateAttributes: action.yesOrNo,
       }
     }
     break;
@@ -709,7 +775,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        removeDuplicateObservations : action.yesOrNo
+        removeDuplicateObservations : action.yesOrNo,
+        duplicateObservations : action.yesOrNo,
       }
     }
     break;
@@ -820,7 +887,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
+        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins},
+        convertUsingBin: action.yesNoValue
       }
     }
     break;
@@ -833,6 +901,9 @@ export default function reducer(state = {
         outlierRemoval:{},
         removeDuplicateAttributes :{},
         removeDuplicateObservations :{},
+        duplicateAttributes : false,
+        duplicateObservations : false,
+
       }
     }
     break;

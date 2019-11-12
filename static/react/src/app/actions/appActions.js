@@ -41,7 +41,7 @@ export var appsInterval = null;
 export var refreshAppsModelInterval = null;
 export var refreshAppsScoresInterval = null;
 
-function getHeader(token) {
+export function getHeader(token) {
   return { 'Authorization': token, 'Content-Type': 'application/json' };
 }
 
@@ -523,6 +523,7 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
 
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
+
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
         if(json.status === false){
@@ -531,7 +532,6 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
           var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
           bootbox.alert(modelErrorMsg);
         }else{
-          console.log(json)
           dispatch(createModelSuccess(json, dispatch))
         }
       }
@@ -685,6 +685,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
 }
 function createModelSuccess(data, dispatch) {
   var slug = data.slug;
+  dispatch(setAppsLoaderValues(slug,data.completed_percentage,data.status));
   appsInterval = setInterval(function () {
     /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
@@ -792,6 +793,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
+          dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
           clearInterval(appsInterval);
           dispatch(fetchModelSummarySuccess(json));
           dispatch(closeAppsLoaderValue());
@@ -812,7 +814,9 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
         else if (json.status == INPROGRESS) {
           if (json.message !== null && json.message.length > 0) {
+            dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+            dispatch(getAppsModelList("1"));
           }
         }
       } else {
@@ -825,7 +829,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
   }
 }
 
-function fetchModelSummary(token, slug) {
+export function fetchModelSummary(token, slug) {
   return fetch(API + '/api/trainer/' + slug + '/', {
     method: 'get',
     headers: getHeader(token)
@@ -997,8 +1001,8 @@ export function updateSelectedApp(appId, appName, appDetails) {
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
 }
-export function setAppsLoaderValue(slug,value,text){
-  return { type: "SET_APPS_LOADER_MODAL", slug,value, text }
+export function setAppsLoaderValues(slug,value,status){
+  return { type: "SET_APPS_LOADER_MODAL", slug,value,status }
 
 }
 export function closeAppsLoaderValue() {
@@ -2210,11 +2214,7 @@ export function updateSelectedVariable(event) {
   return { type: "SET_POSSIBLE_LIST", varType, varText, varSlug };
 }
 
-export function selectMetricAction(event, selectedOrNot) {
-  var evalMet = event.target.childNodes[event.target.selectedIndex];
-  var displayName = evalMet.getAttribute("name");
-  var name = evalMet.getAttribute("value");
-  var selected = selectedOrNot
+export function selectMetricAction(name,displayName,selected) {
   return { type: "SET_EVALUATION_METRIC", name, displayName, selected };
 }
 
@@ -2243,11 +2243,11 @@ function scoreToProceed(flag) {
 
 export function showLevelCountsForTarget(event) {
   var selOption = event.target.childNodes[event.target.selectedIndex];
-  var varType = selOption.value;
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
   var levelCounts = null;
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+  var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
   if (varType == "dimension") {
     for (var i = 0; i < colData.length; i++) {

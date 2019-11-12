@@ -99,9 +99,9 @@ class Job(models.Model):
         from tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, self.object_id)
+            submit_job_separate_task.delay(command_array, self.slug)
         else:
-            submit_job_separate_task1(command_array, self.object_id)
+            submit_job_separate_task1(command_array, self.slug)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -173,6 +173,9 @@ class Dataset(models.Model):
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -392,6 +395,8 @@ class Dataset(models.Model):
 
     def get_hdfs_relative_file_path(self):
 
+        if self.shared is True:
+            pass
         if self.subsetting is True:
             return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
@@ -1964,7 +1969,8 @@ class Trainer(models.Model):
             'actualColumnType': columnType,
             'name': newly_generated_column_name,
             'selected': True,
-            'slug': slug
+            'slug': slug,
+            'isFeatureColumn': True
         }
         custom_dict.update(temp)
         custom_dict['dateSuggestionFlag'] = False

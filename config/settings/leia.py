@@ -181,6 +181,9 @@ KYLO_SERVER_DETAILS = {
 }
 
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
+#MOdel Summary dowload key_path
+MODEL_SUMMARY_DOWNLOAD_PATH='/home/ubuntu/automlModelSummary'
+
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',

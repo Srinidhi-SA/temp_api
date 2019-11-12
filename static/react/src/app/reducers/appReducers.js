@@ -494,16 +494,6 @@ export default function reducer(state = {
         }
     }
     break;
-    case "SET_APPS_LOADER_MODAL":{
-        var allLoaderValues = state.setAppsLoaderValues;
-        allLoaderValues[action.slug] = action.value;
-        return {
-          ...state,
-          setAppsLoaderValues : allLoaderValues,
-        //   appsLoaderModal: false
-        }
-    }
-    break;
     case "HIDE_APPS_LOADER_MODAL":
     {
 
@@ -513,6 +503,18 @@ export default function reducer(state = {
             appsLoaderPerValue:-1,
             appsLoaderText :"",
             updateCreateModelHideShow:false,
+        }
+    }
+    break;
+    case "SET_APPS_LOADER_MODAL":{
+        var allLoaderValues = state.setAppsLoaderValues;
+        allLoaderValues[action.slug] = {
+            "value" : action.value,
+            "status" : action.status,
+        }
+        return {
+          ...state,
+          setAppsLoaderValues : allLoaderValues,
         }
     }
     break;
