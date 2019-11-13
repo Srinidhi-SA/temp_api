@@ -809,7 +809,7 @@ class Insight(models.Model):
         if self.shared is True:
             brief_info.update(
                 {
-                    'created_by': self.shared_by,
+                    'shared_by': self.shared_by,
                     'updated_at': self.updated_at,
                     'dataset': self.dataset.name
                 }
@@ -1175,7 +1175,7 @@ class Trainer(models.Model):
         if self.shared_by is True:
             brief_info.update(
                 {
-                    'created_by': self.shared_by,
+                    'shared_by': self.shared_by,
                     'updated_at': self.updated_at,
                     'dataset': self.dataset.name
                 }
@@ -2284,7 +2284,7 @@ class Score(models.Model):
         else:
             brief_info.update(
                 {
-                    'shared_by': self.created_by.username,
+                    'created_by': self.created_by.username,
                     'updated_at': self.updated_at,
                     'dataset': self.dataset.name,
                     'model': self.trainer.name
