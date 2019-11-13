@@ -2352,17 +2352,43 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
               val1.acceptedValue = parVal;
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
-              $.each(allValues, function (i, dat) {
-                if (dat.name == parVal) {
-                  if (type == "TuningParameter")
-                    dat.selected = !dat.selected;
-                  else
-                    dat.selected = true;
-                }
-                else if (type == "NonTuningParameter" || type == "TuningOption")
-                  dat.selected = false;
+
+              if(type == "TuningParameter"){
+                if(parVal.length == 0)
+                  $.each(allValues, function (i, dat) {
+                        dat.selected = false;
+                  });
+                else
+                  for(let j=0; j<parVal.length; j++){
+                    $.each(allValues, function (i, dat) {
+                      if (dat.name == parVal[j])
+                          dat.selected = true;
+                      else if(!parVal.includes(dat.name))
+                        dat.selected = false;
+                    });
+                  }
+              }else if (type == "NonTuningParameter" || type == "TuningOption"){
+                $.each(allValues, function (i, dat) {
+                    if (dat.name == parVal) {
+                        dat.selected = true;
+                    }
+                    else
+                      dat.selected = false;
+                  });
               }
-              );
+                
+              // $.each(allValues, function (i, dat) {
+              //   if (dat.name == parVal) {
+              //     if (type == "TuningParameter")
+              //       dat.selected = !dat.selected;
+              //     else
+              //       dat.selected = true;
+              //   }
+              //   else if (type == "NonTuningParameter" || type == "TuningOption")
+              //     dat.selected = false;
+              // }
+              // );
+              
             } else {
               val1.acceptedValue = parVal;
             }
