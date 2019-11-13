@@ -9,6 +9,7 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
+  allUserList:{},
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
@@ -68,7 +69,11 @@ export default function reducer(state = {
   transferColumnShowModal:false,
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
+  shareItem:{},
+  shareItemSlug:"",
+  shareItemType:"",
   isNoOfBinsEnabled:false,
+  shareModelShow:false,
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   
@@ -146,6 +151,39 @@ export default function reducer(state = {
     case "DATA_ALL_LIST_ERROR":
       {
         throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "USERS_ALL_LIST":
+      {
+        return {
+          ...state,
+          allUserList: action.json,
+        }
+      }
+      break;
+    case "USERS_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "SHARE_MODAL_SHOW":
+      {
+        return {
+          ...state,
+          shareModelShow: true,
+          shareItem:action.shareItem,
+          shareItemSlug:action.slug,
+          shareItemType:action.itemType,
+        }
+      }
+      break;
+  
+      case "SHARE_MODAL_HIDE":
+      {
+        return {
+          ...state,
+          shareModelShow: false
+        }
       }
       break;
     case "SELECTED_ANALYSIS_TYPE":

@@ -3,7 +3,7 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
-
+import {openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
@@ -22,7 +22,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         return {login_response: store.login.login_response,
             modelList: store.apps.modelList,
             algoList: store.apps.algoList,
-
             modelSummaryFlag:store.apps.modelSummaryFlag,
             modelSlug:store.apps.modelSlug,
             currentAppId:store.apps.currentAppId,
@@ -59,6 +58,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             else
                 return;
         }
+        openShareModal(shareItem,slug,itemType) {
+            console.log("open ---openBinsOrLevelsModal");
+            this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+           }
         render() {
 
                 var modelList = this.props.data;
@@ -153,6 +156,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 ? "Delete "
                                 : "Delete"}</a>
                             </span>:""}
+                            {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Model")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+								</span>: ""}
 							<div className="clearfix"></div>
 							</li>                            
                             </ul>

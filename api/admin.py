@@ -16,10 +16,10 @@ admin.site.disable_action('delete_selected')
 class DatasetAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["name", "slug"]
-    list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
+    list_display = ["name", "slug", "shared", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
-    list_filter = ["status", "deleted", "created_by"]
-    readonly_fields = ["created_at", "deleted", "created_by", "job", "slug"]
+    list_filter = ["status", "shared", "deleted", "created_by","shared_by"]
+    readonly_fields = ["created_at", "deleted", "created_by", "job", "slug", "shared_slug"]
 
 
 class InsightAdmin(admin.ModelAdmin):

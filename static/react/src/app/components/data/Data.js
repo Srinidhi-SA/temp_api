@@ -15,8 +15,9 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
+import {Share} from "../common/Share"
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -33,6 +34,7 @@ var dateFormat = require('dateformat');
     login_response: store.login.login_response,
     dataList: store.datasets.dataList,
     dataPreview: store.datasets.dataPreview,
+    userList:store.datasets.allUserList,
     signalMeta: store.datasets.signalMeta,
     selectedDataSet: store.datasets.selectedDataSet,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
@@ -61,6 +63,8 @@ export class Data extends React.Component {
     }
   componentDidMount(){
      this.props.dispatch(refreshDatasets(this.props));
+     this.props.dispatch(getAllUsersList(this.props));
+     
   }
 
   openModelPopup() {
@@ -197,6 +201,7 @@ export class Data extends React.Component {
               </div>
             </div>
             <DataUploadLoader/>
+            <Share usersList={this.props.userList}/>
 
         </div>
                 </div>

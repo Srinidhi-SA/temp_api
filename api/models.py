@@ -173,6 +173,9 @@ class Dataset(models.Model):
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -392,6 +395,8 @@ class Dataset(models.Model):
 
     def get_hdfs_relative_file_path(self):
 
+        if self.shared is True:
+            return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
             return os.path.join(settings.HDFS.get('base_path'), self.slug)
 

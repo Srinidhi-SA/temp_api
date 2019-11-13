@@ -6,6 +6,7 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+import {Share} from "../common/Share"
 
 import {connect} from "react-redux";
 import {
@@ -30,10 +31,13 @@ import {
   updateScoreSummaryFlag
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
+import {getAllUsersList} from "../../actions/dataActions";
+
 
 @connect((store) => {
   return {
     login_response: store.login.login_response,
+    userList:store.datasets.allUserList,
     modelList: store.apps.modelList,
     algolist:store.algoList,
     currentAppId: store.apps.currentAppId,
@@ -53,6 +57,8 @@ export class Apps extends React.Component {
   componentWillMount() {
        this.props.dispatch(updateModelSummaryFlag(false));
        this.props.dispatch(updateScoreSummaryFlag(false));
+       this.props.dispatch(getAllUsersList());
+
 
     //checking for score and model tab
     if (this.props.match.url.indexOf("model") != -1) {
@@ -154,6 +160,8 @@ export class Apps extends React.Component {
               : <Tab eventKey="score" disabled  title="Scores">{scores}</Tab>}
           </Tabs>
           <AppsLoader match={this.props.match}/>
+          <Share usersList={this.props.userList}/>
+
         </div>
       </div>
     );
