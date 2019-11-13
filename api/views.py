@@ -654,7 +654,11 @@ class ScoreView(viewsets.ModelViewSet):
         instance = self.get_object()
         from django.conf import settings
         base_file_path = settings.SCORES_SCRIPTS_FOLDER
-        download_path = base_file_path + instance.slug + '/data.csv'
+
+        if self.shared is True:
+            download_path = base_file_path + instance.shared_slug + '/data.csv'
+        else:
+            download_path = base_file_path + instance.slug + '/data.csv'
         # save_file_to = instance.get_local_file_path()
         #
         # from api.lib.fab_helper import get_file
