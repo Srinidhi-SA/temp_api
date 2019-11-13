@@ -715,6 +715,7 @@ BRIEF_INFO_CONFIG = {
     'number of measures': 'Number of Measures',
     'number of dimensions': 'Number of Dimensions',
     'number of time dimension': 'Number of Date',
+    'shared_by': 'Shared By',
     'created_by': 'Created By',
     'updated_at': 'Updated On',
     'variable selected': 'Variable Selected',
@@ -736,6 +737,7 @@ BRIEF_INFO_CONFIG = {
 }
 
 FIRST_ORDER = [
+    'shared_by',
     'created_by',
     'updated_at',
 ]
