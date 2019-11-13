@@ -163,7 +163,7 @@ function fetchDataPreview(slug,dispatch,interval) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log("data preview from api to store")
-    dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+    dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
         column.checked = true;
     });
     console.log(dataPreview)
@@ -375,6 +375,18 @@ function shareItemApi(userIds,slug,shareItemType) {
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
      }).then( response => Promise.all([response, response.json()]));
     }
+    else if(shareItemType == "Signal"){
+        return fetch(API+'/api/signals/'+slug+'/share/?shared_id='+userIds,{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken)
+       }).then( response => Promise.all([response, response.json()]));
+    }
+    else{
+        return fetch(API+'/api/score/'+slug+'/share/?shared_id='+userIds,{
+            method: 'get',
+            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+         }).then( response => Promise.all([response, response.json()]));   
+     }
 }
 
 

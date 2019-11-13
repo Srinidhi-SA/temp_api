@@ -15,6 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
+import {Share} from "../common/Share"
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
@@ -33,6 +34,7 @@ var dateFormat = require('dateformat');
     login_response: store.login.login_response,
     dataList: store.datasets.dataList,
     dataPreview: store.datasets.dataPreview,
+    userList:store.datasets.allUserList,
     signalMeta: store.datasets.signalMeta,
     selectedDataSet: store.datasets.selectedDataSet,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
@@ -199,6 +201,7 @@ export class Data extends React.Component {
               </div>
             </div>
             <DataUploadLoader/>
+            <Share usersList={this.props.userList}/>
 
         </div>
                 </div>
