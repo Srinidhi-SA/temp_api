@@ -201,13 +201,16 @@ class SignalView(viewsets.ModelViewSet):
             shared_id = request.query_params.get('shared_id', None).split(',')
             signal_obj = Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             signal_name = signal_obj['name']
+            shared_by=User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Models should not be shared to itself.'})
 
             for i in shared_id:
                 import random,string
                 slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug})
+                signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Insight.objects.create(**signal_obj)
             return JsonResponse({'message': 'Signals shared.'})
 
@@ -511,13 +514,17 @@ class TrainerView(viewsets.ModelViewSet):
             shared_id = request.query_params.get('shared_id', None).split(',')
             trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             model_name = trainer_obj['name']
+            shared_by=User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Models should not be shared to itself.'})
 
             for i in shared_id:
                 import random,string
                 slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug})
+                trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Trainer.objects.create(**trainer_obj)
             return JsonResponse({'message': 'Models shared.'})
 
@@ -705,13 +712,17 @@ class ScoreView(viewsets.ModelViewSet):
                                              slug=self.kwargs.get('slug')).values().first()
             score_name = score_obj['name']
             shared_id = request.GET['shared_id'].split(",")
+            shared_by=User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Score should not be shared to itself.'})
             for id in shared_id:
                 import random,string
                 slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 score_obj.update(
-                    {'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug})
+                    {'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
