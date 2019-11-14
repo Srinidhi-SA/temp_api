@@ -207,6 +207,9 @@ export class ModelAlgorithmSelection extends React.Component {
             else{
                 var buttonName = "Create Model";
                 var pageTitle = "Parameter Tuning";
+                var label= document.getElementsByClassName("active")[1];
+                var minmaxLabel= (label=== undefined) ? "linear" : label.innerText 
+               
                 var pageData = algorithmData.map((data,Index) =>{
                     var hyperParameterTypes = [];
                     var selectedValue = "";
@@ -293,7 +296,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
                                  </div>
-                                {selectedValue != "none" && document.getElementsByClassName("active")[1].innerText != "LINEAR REGRESSION"?
+                                {selectedValue != "none" && (minmaxLabel != "LINEAR REGRESSION")?
                                 <div className="maxminLabel">
                                      <label class="col-md-6 control-label read"></label>
                                      <label class="col-md-1 control-label read text-center">
