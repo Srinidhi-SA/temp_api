@@ -375,6 +375,18 @@ function shareItemApi(userIds,slug,shareItemType) {
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
      }).then( response => Promise.all([response, response.json()]));
     }
+    else if(shareItemType == "Signal"){
+        return fetch(API+'/api/signals/'+slug+'/share/?shared_id='+userIds,{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken)
+       }).then( response => Promise.all([response, response.json()]));
+    }
+    else{
+        return fetch(API+'/api/score/'+slug+'/share/?shared_id='+userIds,{
+            method: 'get',
+            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+         }).then( response => Promise.all([response, response.json()]));   
+     }
 }
 
 

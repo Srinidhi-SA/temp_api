@@ -173,6 +173,9 @@ class Dataset(models.Model):
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -392,6 +395,8 @@ class Dataset(models.Model):
 
     def get_hdfs_relative_file_path(self):
 
+        if self.shared is True:
+            return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
             return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
@@ -534,14 +539,23 @@ class Dataset(models.Model):
                             sample[data['displayName']]: data['value']
                         }
                     )
+        if self.shared is True:
 
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.name
-            }
-        )
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.name
+                }
+            )
         return convert_json_object_into_list_of_object(brief_info, 'dataset')
 
     def get_metadata_url_config(self):
@@ -588,6 +602,9 @@ class Insight(models.Model):
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -789,14 +806,22 @@ class Insight(models.Model):
                     brief_info.update({
                         'analysis list': []
                     })
-
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name
-            }
-        )
+        if self.shared is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'signal')
 
@@ -825,6 +850,9 @@ class Trainer(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
     email = models.EmailField(null=True, blank=True)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1144,14 +1172,22 @@ class Trainer(models.Model):
                     brief_info.update({
                         'train_test_split': 0
                     })
-
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name
-            }
-        )
+        if self.shared_by is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
@@ -2008,6 +2044,9 @@ class Score(models.Model):
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -2233,14 +2272,24 @@ class Score(models.Model):
                     'algorithm name': algorithm_name,
                 })
 
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name,
-                'model': self.trainer.name
-            }
-        )
+        if self.shared_by is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name,
+                    'model': self.trainer.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name,
+                    'model': self.trainer.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'score')
 
