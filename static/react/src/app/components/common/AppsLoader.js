@@ -32,7 +32,8 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 export class AppsLoader extends React.Component {
   constructor(){
     super();
-  }
+	}
+	
 	openModelPopup(){
   	this.props.dispatch(openAppsLoaderValue())
   }
@@ -53,16 +54,18 @@ export class AppsLoader extends React.Component {
 			})
 		}
 	 if (this.props.setAppsLoaderValues[this.props.modelSlug].value === 100){
+		 $(".notifyBtn").trigger('click');
 	   clearInterval(timer);
 		this.props.dispatch(updateModelSummaryFlag(true));
 	 }
 	},10000);
+
 }
   closeModelPopup(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
 	  this.props.dispatch(closeAppsLoaderValue());
-	this.valueStore();
+	  this.valueStore();
 
 		clearAppsIntervel();
 		//if(this.props.app_type == "REGRESSION")
@@ -83,6 +86,7 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
 	}
+
   render() {
 		$('#text-carousel').carousel();
 		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
@@ -104,7 +108,7 @@ export class AppsLoader extends React.Component {
 		
    return (
           <div id="dULoader">
-      	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+				<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
       	<Modal.Body>
 		<div className="row">
 		<div className="col-md-12">
@@ -279,7 +283,7 @@ export class AppsLoader extends React.Component {
 						</div>
 						<div className="col-sm-3 text-center">
 							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue" style={{display:"block", textAlign: "center" }}>In Progress</h5>} 
-						</div>
+				  	</div>
 					</div>
 					</div>
 				
