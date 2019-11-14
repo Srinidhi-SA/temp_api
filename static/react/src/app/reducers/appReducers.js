@@ -36,6 +36,7 @@ export default function reducer(state = {
         appsLoaderText :"",
         setAppsLoaderValues:{},
         modelSummaryFlag:false,
+        parameterTuningFlag:false,
         scoreSummaryFlag:false,
         modelTargetVariable:"",
         roboList:{},
@@ -547,6 +548,14 @@ export default function reducer(state = {
         return {
             ...state,
             modelSummaryFlag:action.flag,
+        }
+    }
+    break;
+    case "UPDATE_PARAMETER_TUNING_FLAG":
+    {
+        return {
+            ...state,
+            parameterTuningFlag:action.flag,
         }
     }
     break;

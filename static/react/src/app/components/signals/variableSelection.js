@@ -39,7 +39,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dataSetSelectAllAnalysis:store.datasets.dataSetSelectAllAnalysis,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         allSignalList:store.signals.allSignalList,
-
+        CopyTimeDimension : store.datasets.CopyTimeDimension,
     };
 })
 
@@ -66,7 +66,6 @@ export class VariableSelection extends React.Component {
     handleAllAnlysis(evt){
         this.props.dispatch(updateSelectAllAnlysis(evt.target.checked));
         this.props.dispatch(selectAllAnalysisList(evt.target.checked));
-
     }
     openAdvanceSettingsModal(){
         this.props.dispatch(advanceSettingsModal(true));
@@ -123,10 +122,10 @@ export class VariableSelection extends React.Component {
 
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
-        if(dateTimeIsSelected == undefined && trendIsChecked == true){
-            bootbox.alert("Please select one of the date dimensions.");
-            return false;
-        }
+            if(dateTimeIsSelected == undefined && trendIsChecked == true){
+                bootbox.alert("Please select one of the date dimensions.");
+                return false;
+            }
 
         console.log("while creating signal")
         console.log(this.props);
@@ -246,12 +245,21 @@ export class VariableSelection extends React.Component {
             let disableSelectAll = false;
             $('.possibleAnalysis[type="checkbox"]').each(function() {
                 if($(this).prop('disabled') == true)
-                disableSelectAll = true;
+                    disableSelectAll = true;
             });
-            if(disableSelectAll == true)
-            $("#allAnalysis").prop("disabled",true);
-            else
-            $("#allAnalysis").prop("disabled",false);
+            if(disableSelectAll == true){
+                $("#allAnalysis").prop("disabled",true);
+                $("#allAnalysis")[0].checked = true;
+            }else{
+                if(this.props.CopyTimeDimension.filter(i=>(i.selected == true)).length == 0 && this.props.CopyTimeDimension.length !=0){
+                    $("#unselect")[0].checked = true;
+                    $("#allAnalysis").prop("disabled",true);
+                    $("#chk_analysis_trend").prop("disabled",true);
+                }else{
+                    $("#allAnalysis").prop("disabled",false);
+                    $("#allAnalysis")[0].checked = true;   
+                }
+            }
         }
     }
     handleCategoricalChk(event){

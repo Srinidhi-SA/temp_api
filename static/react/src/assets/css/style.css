@@ -15324,6 +15324,10 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   display: flex;
   flex-wrap: wrap; }
 .p-multiselect-item label {text-overflow:ellipsis; white-space: nowrap; overflow:hidden; width:130px; }
+.for_multiselect .p-multiselect-header::after {
+    content: "Select All";
+}
+.for_multiselect .p-multiselect-close { display:none; }
 .form-horizontal .control-label { text-align:left; }
 
 

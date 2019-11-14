@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -31,6 +31,7 @@ import {resetSelectedTargetVariable} from "../../actions/signalActions";
         isUpdate:store.datasets.isUpdate,
         modelSummary:store.apps.modelSummary,
         createScoreShowVariables:store.datasets.createScoreShowVariables,
+        CopyTimeDimension: store.datasets.CopyTimeDimension,
     };
 } )
 
@@ -54,10 +55,13 @@ export class DataVariableSelection extends React.Component {
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
         if(window.location.href.includes("/createSignal") && e.target.name ==  "date_type"){
-            if(e.target.id == "unselect"){
+            if(this.props.CopyTimeDimension.filter(i=>(i.selected==true)).length == 0){
                 $("#chk_analysis_trend").prop("disabled",true);
+                $("#chk_analysis_trend")[0].checked = false
+                this.props.dispatch(selectAllAnalysisList(true))
             }else{
                 $("#chk_analysis_trend").prop("disabled",false);
+                this.props.dispatch(selectAllAnalysisList(true))
             }
         }
     }

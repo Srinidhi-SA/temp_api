@@ -28,7 +28,8 @@ import {
   refreshAppsAlgoList,
   updateSelectedApp,
   updateModelSummaryFlag,
-  updateScoreSummaryFlag
+  updateScoreSummaryFlag,
+  parameterTuningVisited
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getAllUsersList} from "../../actions/dataActions";
@@ -58,6 +59,8 @@ export class Apps extends React.Component {
        this.props.dispatch(updateModelSummaryFlag(false));
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
+       this.props.dispatch(parameterTuningVisited(false))
+
 
 
     //checking for score and model tab
@@ -125,6 +128,7 @@ export class Apps extends React.Component {
     if (store.getState().apps.modelSummaryFlag) {  
       let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML/models/" : "/analyst/models/";
       let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
+      // alert("apps jsssssssssssss")
       return (<Redirect to={_link}/>);
     }
      if (store.getState().apps.scoreSummaryFlag) {
