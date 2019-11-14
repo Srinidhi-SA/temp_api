@@ -11,7 +11,7 @@ import {
     Button
   } from "react-bootstrap";
 import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview,openShareModalAction} from "../../actions/dataActions";
 import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
 import {
     getList,
@@ -72,6 +72,11 @@ export class SignalCard extends React.Component {
 
           //this.props.history.push('/signals/'+slug);
         }
+        openShareModal(shareItem,slug,itemType) {
+          console.log("open ---openBinsOrLevelsModal");
+          this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+          //this.setState({NoModal: this.state.NoModal + 1});
+         }
     render() {
 
         var listData = this.props.data;
@@ -176,6 +181,10 @@ export class SignalCard extends React.Component {
                               ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
+            {story.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,story.name,story.slug,"Signal")}>
+            <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+            <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+            </span>: ""}
 						<div className="clearfix"></div>
 						</li>
 					 

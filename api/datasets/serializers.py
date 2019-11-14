@@ -81,7 +81,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        exclude = ( 'id', 'updated_at')
+        exclude = ( 'id', 'updated_at','shared_slug')
 
 
 class DataListSerializer(serializers.ModelSerializer):

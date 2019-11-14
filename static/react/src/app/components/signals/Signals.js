@@ -31,12 +31,13 @@ import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList, hideDataPreview} from "../../actions/dataActions";
+import {getAllDataList, hideDataPreview,getAllUsersList} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
-import {showLoading, hideLoading} from 'react-redux-loading-bar'
+import {showLoading, hideLoading} from 'react-redux-loading-bar';
+import {Share} from "../common/Share";
 
 @connect((store) => {
   return {
@@ -46,7 +47,8 @@ import {showLoading, hideLoading} from 'react-redux-loading-bar'
     signal_search_element: store.signals.signal_search_element,
     signal_sorton: store.signals.signal_sorton,
     signal_sorttype: store.signals.signal_sorttype,
-    signalAnalysis: store.signals.signalAnalysis
+    signalAnalysis: store.signals.signalAnalysis,
+    userList:store.datasets.allUserList
   };
 })
 
@@ -78,6 +80,8 @@ export class Signals extends React.Component {
     console.log($('a[rel="popover"]'));
     this.props.dispatch(refreshSignals(this.props));
     this.props.dispatch(getAllSignalList());
+    this.props.dispatch(getAllUsersList(this.props));
+
 
   }
 
@@ -251,6 +255,8 @@ export class Signals extends React.Component {
               </div>
             </div>
           <CreateSignalLoader history={this.props.history}/>
+          <Share usersList={this.props.userList}/>
+
         </div>
                 </div>
       );
