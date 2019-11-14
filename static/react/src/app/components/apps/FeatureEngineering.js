@@ -416,7 +416,7 @@ export class FeatureEngineering extends React.Component {
     this.setState({ state: this.state });
   }
   handleProcedClicked(event) {
-    var proccedUrl = this.props.match.url.replace('featureEngineering', 'Proceed');
+    var proccedUrl = this.props.match.url.replace('featureEngineering', 'algorithmSelection');
     this.props.history.push(proccedUrl);
   }
   isBinningOrLevelsDisabled(item) {

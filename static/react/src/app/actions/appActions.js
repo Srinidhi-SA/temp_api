@@ -2331,6 +2331,9 @@ function triggerRegressionAppAlgorithmAPI(appType) {
 export function saveRegressionAppAlgorithmData(data) {
   return { type: "SAVE_REGRESSION_ALGORITHM_DATA", data }
 }
+export function parameterTuningVisited(flag) {
+  return { type: "UPDATE_PARAMETER_TUNING_FLAG", flag }
+}
 export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
