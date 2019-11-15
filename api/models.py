@@ -1172,7 +1172,7 @@ class Trainer(models.Model):
                     brief_info.update({
                         'train_test_split': 0
                     })
-        if self.shared_by is True:
+        if self.shared is True:
             brief_info.update(
                 {
                     'shared_by': self.shared_by,
@@ -2272,7 +2272,7 @@ class Score(models.Model):
                     'algorithm name': algorithm_name,
                 })
 
-        if self.shared_by is True:
+        if self.shared is True:
             brief_info.update(
                 {
                     'shared_by': self.shared_by,
