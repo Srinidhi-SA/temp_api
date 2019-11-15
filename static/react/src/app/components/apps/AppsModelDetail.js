@@ -20,6 +20,7 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
+		setAppsLoaderValues: store.apps.setAppsLoaderValues,
 		};
 })
 
@@ -37,16 +38,20 @@ export class AppsModelDetail extends React.Component {
 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
-		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
-		    this.props.dispatch(updateModelSlug(this.props.match.params.slug));
+			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
+			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
-
+		
 	}
-
+	
   print() {
-    window.print();
+		window.print();
   }
   componentDidMount() {
+		let currentModel= this.props.modelSlug;
+		if(this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
+			$(".notifyBtn").trigger('click');
+		}
 		window.scrollTo(0, 0);
 	  if(!isEmpty(store.getState().apps.modelSummary)){
 		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
