@@ -7,7 +7,8 @@ from rest_framework import routers
 from api import views
 from datasets.views import DatasetView
 from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
-from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, view_model_summary_autoML,kill_timeout_job_from_ui,get_all_users
+from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, \
+    view_model_summary_autoML,kill_timeout_job_from_ui,get_all_users,view_model_summary_detail
 from views import AppView
 
 from views import TrainerView
@@ -104,6 +105,7 @@ router.register(
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
     url(r'^view_model_summary_autoML',views.view_model_summary_autoML, name = "view_model_summary_autoML"),
+    url(r'^view_model_summary_detail',views.view_model_summary_detail, name = "view_model_summary_detail"),
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
     url(r'^job/(?P<slug>[^/.]+)/get_config$',views.get_config , name="get_config"),
     url(r'^job/(?P<slug>[^/.]+)/set_result',views.set_result , name="set_result"),
