@@ -1031,8 +1031,8 @@ export function updateScoreSummaryFlag(flag) {
 export function updateModelSlug(slug) {
   return { type: "CREATE_MODEL_SUCCESS", slug }
 }
-export function updateScoreSlug(slug) {
-  return { type: "CREATE_SCORE_SUCCESS", slug }
+export function updateScoreSlug(slug,sharedSlug) {
+  return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
 
 export function getAppsRoboList(pageNo) {
