@@ -16388,7 +16388,9 @@ div#replaceValues {
 	color: #0f0f0f !important;
 	background-color: #f0f5f4 !important;
 	pointer-events: auto !important;
+	text-align: left;
 }
+.btn-sig-info ul { list-style-type: none; ;}
 .__react_component_tooltip.type-dark.place-bottom:after{
 	border-bottom-color: #f0f5f4 !important;
 }
@@ -16424,3 +16426,27 @@ body .p-checkbox .p-checkbox-box.p-focus {
 body .p-inputtext:enabled:focus:not(.p-error) {
 	border-color: #00998c !important;
 }
+
+
+.btn-default.btn-graph-info {
+    border-radius: 50px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.btn-graph-info { 
+	position: absolute;
+	right: 20px; 
+	bottom:134px; 
+	z-index: 100;
+}
+
+
+.btn-default.btn-sig-info {
+    border-radius: 100px;
+    margin-left: 6px;
+    padding: 3px 12px;
+	margin-top: 2px;
+}
+
+.btn-sig-info { border-radius: 10px;}
+.btn-sig-info:hover, .btn-graph-info:hover { color:#32afa3}
