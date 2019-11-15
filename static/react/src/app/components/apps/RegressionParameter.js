@@ -6,6 +6,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {decimalPlaces} from "../../helpers/helper";
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import {updateAlgorithmData} from "../../actions/appActions";
+import { MultiSelect } from 'primereact/multiselect';
 
 @connect((store) => {
     return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
@@ -34,6 +35,10 @@ export class RegressionParameter extends React.Component {
             name:this.props.parameterData.name,
 
         };
+        if(this.props.parameterData.paramType == "list")
+            this.state = {
+                dropValues : ""
+            };
     }
 
     componentWillReceiveProps(nextProps) {
@@ -46,11 +51,10 @@ export class RegressionParameter extends React.Component {
         setTimeout(function(){ $('.multi').multiselect('refresh'); }, 0);
     }
 
-   
     componentWillMount(){
         setTimeout(function(){ $('.single').multiselect('destroy'); }, 0);
-       
     }
+
     componentDidMount(){
         $(".learningCls").prop("disabled",true);
         $(".multi").prop("disabled",false); // had doubt,y to add this line; 
@@ -62,8 +66,7 @@ export class RegressionParameter extends React.Component {
 
     componentDidUpdate(){
         var that = this;
-        if(this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter")
-        {
+        if(this.props.parameterData.paramType == "list" && this.props.type == "TuningParameter"){
             $(this.eleSel).multiselect({
                 onChange: function(option, checked, select) {
                     that.props.dispatch(updateAlgorithmData(that.props.algorithmSlug,that.props.parameterData.name,$(option).val(),that.props.type));
@@ -78,74 +81,74 @@ export class RegressionParameter extends React.Component {
             });
         }
     }
+
     changeFoldCheck(min,max,e){
         if(e.target.value < min || e.target.value > max){
             e.target.parentElement.lastElementChild.innerHTML = "Valid Range is "+min+"-"+ max
         }else if(!Number.isInteger(parseFloat(e.target.value))){
             e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
         } else e.target.parentElement.lastElementChild.innerHTML = ""
-
+        
         if(e.target.parentElement.lastElementChild.innerHTML !=""){
             $("."+e.target.classList[1]).addClass("regParamFocus");
-         }else
-         $("."+e.target.classList[1]).remove("regParamFocus");
-
-
+        }else
+            $("."+e.target.classList[1]).remove("regParamFocus");
     }
+
     changeSliderValueFromText(e) {
         if (isNaN(e.target.value))
             alert("please enter a valid number")
         else {
-            // e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
                 defaultVal: e.target.value
             })
             this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
         }
     }
+
     changeSliderValue(e) {
         this.setState({
             defaultVal: e.target.value
-            });
-            this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
-        }
-    selecthandleChange(e){
+        });
+        this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
+    }
 
+    selecthandleChange(e){
         var paramsArray=[".learningCls",".disNum",".beta1",".learningClsInit",".earlyStop",".powerT",".shuffleCls",".epsilonCls",".iterationCls",".nesterovsCls",".momentumCls"]
         switch(e.target.value){
             case "sgd":
-            var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false] //caution:true/false Order should be same as paramsArray order
-            for(var i=0;i<=paramsArray.length;i++){
-                for(var j=0;j<1;j++){
-                $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
+                var flagsToSetSgd=[false,true,true,false,false,false,false,true,false,false,false] //caution:true/false Order should be same as paramsArray order
+                for(var i=0;i<=paramsArray.length;i++){
+                    for(var j=0;j<1;j++){
+                        $(paramsArray[i]).prop("disabled",flagsToSetSgd[i]);
+                    }
                 }
-              }
-            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                   // code refactored
-                break;
+                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                // code refactored
+            break;
             case "adam":
-           var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];//caution:true/false Order should be same as paramsArray order
-           for(i=0;i<=paramsArray.length;i++){
-               for(j=0;j<1;j++){
-                $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
-               }
-              }
-            $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
-            $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
-                   // code refactored
-                break;
-            case "lbfgs":
-            var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];//caution:true/false Order should be same as paramsArray order
-            for(var i=0;i<=paramsArray.length;i++){
-                for(var j=0;j<1;j++){
-                $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
+                var flagsToSetAdam=[true,false,false,false,false,true,false,false,false,true,true,];//caution:true/false Order should be same as paramsArray order
+                for(i=0;i<=paramsArray.length;i++){
+                    for(j=0;j<1;j++){
+                        $(paramsArray[i]).prop("disabled",flagsToSetAdam[i]);
+                    }
                 }
-             }
-            $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
-            $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
-                   // code refactored
-                break;
+                $(".epsilonCls .slider-horizontal").removeClass("epsilonDisable");
+                $(".iterationCls .slider-horizontal").removeClass("epsilonDisable");
+                // code refactored
+            break;
+            case "lbfgs":
+                var flagsToSetlbfgs=[true,true,true,true,true,true,true,true,true,true,true,];//caution:true/false Order should be same as paramsArray order
+                for(var i=0;i<=paramsArray.length;i++){
+                    for(var j=0;j<1;j++){
+                        $(paramsArray[i]).prop("disabled",flagsToSetlbfgs[i]);
+                    }
+                }
+                $(".iterationCls .slider-horizontal").addClass("epsilonDisable");
+                $(".epsilonCls .slider-horizontal").addClass("epsilonDisable");
+                // code refactored
+            break;
             default : "";
         }
         if(e.target.className=="form-control single earlyStop" && e.target.value == "true"){
@@ -161,33 +164,35 @@ export class RegressionParameter extends React.Component {
             $(".fractionCls").prop("disabled",true);
         }
         console.log(e.target.value);
+        this.setState({dropValues: e.value})
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
+
     checkChangeTextboxValue(min,max,expectedDataType,e){
         if(e.target.value!="" && e.target.parentElement.lastElementChild.innerHTML==''){
             $("."+e.target.classList[1]).removeClass("regParamFocus");
-            }else if(e.target.value==""){
+        }else if(e.target.value==""){
             $("."+e.target.classList[1]).addClass("regParamFocus");
-            }
+        }
         var validateResult = {"iserror":false,"errmsg":""};
         validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType,e);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
             if(e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg)
-            $("."+e.target.classList[1]).addClass("regParamFocus");
+                $("."+e.target.classList[1]).addClass("regParamFocus");
             else
-            $("."+e.target.classList[1]).removeClass("regParamFocus");
-
+                $("."+e.target.classList[1]).removeClass("regParamFocus");
         }
         this.setState({
           defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
+
     changeTextboxValue(e){
         ($(".momentumCls").val())>=0.1?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
         if(e.target.parentElement.lastElementChild != null)
-          e.target.parentElement.lastElementChild.innerHTML="";
+            e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
             defaultVal: e.target.value
         });
@@ -198,19 +203,19 @@ export class RegressionParameter extends React.Component {
         }
         else if(!numbers.test($(".hiddenLayerCls").val())){
             document.getElementById("error").innerHTML="only number allowed";
-
          }
-         else if($(".hiddenLayerCls").val() == ""){
+        else if($(".hiddenLayerCls").val() == ""){
             document.getElementById("error").innerHTML="mandatory field";
-
         }
     }
+
     handleCheckboxEvents(e){
         this.setState({
             defaultVal: e.target.checked
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.checked,this.props.type));
     }
+
     renderParameterData(parameterData,tune){ 
         $(".activation .multiselect").removeClass("regParamFocus");
         $(".solverGrid .multiselect").removeClass("regParamFocus");
@@ -222,8 +227,6 @@ export class RegressionParameter extends React.Component {
         $(".boosterGrid .multiselect").removeClass("regParamFocus");
         $(".treeGrid .multiselect").removeClass("regParamFocus");
         $(".batchGrid .multiselect").removeClass("regParamFocus");
-
-
 
         let randomNum = Math.random().toString(36).substr(2,8);
             switch (parameterData.paramType) {
@@ -253,6 +256,9 @@ export class RegressionParameter extends React.Component {
                 }
 
                 var optionsTemp =[];
+                var optionsTemp1 =[];
+                var optionsTemp2 = [];
+
                 //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
                 let options = parameterData.defaultValue;
                 let mName = this.props.metricSelected.name;
@@ -275,23 +281,22 @@ export class RegressionParameter extends React.Component {
                         case "Batch Size":
                             rowCls = "batchGrid";
                             break;
-                            case "Fit Intercept":
+                        case "Fit Intercept":
                             rowCls = "InterceptGrid";
                             break;
-                            case "Criterion":
+                        case "Criterion":
                             rowCls = "criterionGrid";
                             break;
-                            case "Bootstrap Sampling":
+                        case "Bootstrap Sampling":
                             rowCls = "bootstrapGrid";
                             break;
-                            case "Booster Function":
+                        case "Booster Function":
                             rowCls = "boosterGrid";
                             break;
-                            case "Tree Construction Algorithm":
+                        case "Tree Construction Algorithm":
                             rowCls = "treeGrid";
                             break;
                         default:
-                        
                             rowCls = "row";
                     }  
 
@@ -300,169 +305,168 @@ export class RegressionParameter extends React.Component {
                     for (var prop in options) {
                         if(options[prop].selected)
                             selectedValue.push(options[prop].name)
-                            if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){//to run below switch conditon  only for ANN, #1363      
-                            var paramsArrayGrid=[".disNum",".beta1",".learningClsInit",".powerT",".iterationGrid",".epsilonGrid",".momentumCls",
-                            ".learningGrid .multiselect",".shuffleGrid .multiselect"];
+                        if(this.props.parameterData.defaultValue.map(val=>val)[0].displayName=="adam"){//to run below switch conditon  only for ANN, #1363      
+                            var paramsArrayGrid=[".disNum",".beta1",".learningClsInit",".powerT",".iterationGrid",".epsilonGrid",".momentumCls",".learningGrid .multiselect",".shuffleGrid .multiselect"];
 
                         switch(parameterData.name){
                             case"solver":
-                     if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
-                              (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
-                              (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd                       
-                            var flagsToSolverAll=[false,false,false,false,false,false,false,false,false,]
-                            
-                            for(var i=0;i<=paramsArrayGrid.length;i++){
-                              for(var j=0;j<1;j++){
-                                 $(paramsArrayGrid[i]).prop("disabled",flagsToSolverAll[i]);
-                                }
-                           } 
-
-                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                            
-                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-                    
-                    }
-                    else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
-                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
-                               
-                                var solverSgdLbfgs=[true,true,false,false,false,true,false,false,false,]
-                                for(var i=0;i<=paramsArrayGrid.length;i++){
-                                    for(var j=0;j<1;j++){
-                                       $(paramsArrayGrid[i]).prop("disabled",solverSgdLbfgs[i]);
-                                      }
-                                 }
-
-                             if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                             document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                              }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        
-                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                             }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-
-                    }
-                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
-                            (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                                if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                                    (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")&&
+                                    (options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")){ //sgd                       
+                                    var flagsToSolverAll=[false,false,false,false,false,false,false,false,false,]
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                            $(paramsArrayGrid[i]).prop("disabled",flagsToSolverAll[i]);
+                                        }
+                                    }
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
                                 
-                                var solverAdamLbfgs=[false,false,false,true,false,false,true,true,false,];
-                                for(var i=0;i<=paramsArrayGrid.length;i++){
-                                    for(var j=0;j<1;j++){
-                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamLbfgs[i]);
-                                      }
-                                 }
+                                    if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                                    }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                                }
+                                else if((options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")&&
+                                        (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                                        
+                                    var solverSgdLbfgs=[true,true,false,false,false,true,false,false,false,]
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                           $(paramsArrayGrid[i]).prop("disabled",solverSgdLbfgs[i]);
+                                        }
+                                    }
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                            
+                                    if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                                    }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                                }
+                                else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                                        (options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs")){ //sgd
+                                            
+                                    var solverAdamLbfgs=[false,false,false,true,false,false,true,true,false,];
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                            $(paramsArrayGrid[i]).prop("disabled",solverAdamLbfgs[i]);
+                                        }
+                                    }
                                  
-                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                            
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";
+                                    document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                                }
+                                else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
+                                        (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
+                                        
+                                    var solverAdamSgd=[false,false,false,false,false,false,false,false,false,];
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                            $(paramsArrayGrid[i]).prop("disabled",solverAdamSgd[i]);
+                                        }
+                                    }
 
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                                    
+                                    if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                                    }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                                    
+                                }
+                                else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
+                                    var solverLbfgs=[true,true,true,true,true,true,true,true,true,];
+                                        for(var i=0;i<=paramsArrayGrid.length;i++){
+                                            for(var j=0;j<1;j++){
+                                                $(paramsArrayGrid[i]).prop("disabled",solverLbfgs[i]);
+                                            }
+                                        }
+                                    document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                                    document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
+                                }
+                                else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
+                                    var solverAdam=[false,false,false,true,false,false,true,true,false,];
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                           $(paramsArrayGrid[i]).prop("disabled",solverAdam[i]);
+                                        }
+                                    }
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
+                                    
+                                    document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
+                                }
+                                else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
+                                    var solverSgd=[true,true,false,false,false,true,false,false,false,];
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                        $(paramsArrayGrid[i]).prop("disabled",solverSgd[i]);
+                                        }
+                                    }
+                                    if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
+                                    }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                                                   
+                                    if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
+                                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
+                                    }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";                          
+                                }              
+                                else{
+                                    var solverdefault=[false,false,false,false,false,false,false,false,false,];
+                                    for(var i=0;i<=paramsArrayGrid.length;i++){
+                                        for(var j=0;j<1;j++){
+                                        $(paramsArrayGrid[i]).prop("disabled",solverdefault[i]);
+                                        }
+                                    }
+                                    $(".earlyStop").prop("disabled",false);
+                                }
+                                break;
+                                default:
+                                "";
+                        }
                     }
-                    else if((options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam")&&
-                            (options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd")){ //sgd
-                               
-                                var solverAdamSgd=[false,false,false,false,false,false,false,false,false,];
-                                for(var i=0;i<=paramsArrayGrid.length;i++){
-                                    for(var j=0;j<1;j++){
-                                       $(paramsArrayGrid[i]).prop("disabled",solverAdamSgd[i]);
-                                      }
-                                 }
-
-                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                            
-                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-                            
-                    }
-                    else if(options.map(i=>i)[1].selected && parameterData.defaultValue.map(i=>i)[1].displayName=="lbfgs"){ //lbfgs
-                            
-                        var solverLbfgs=[true,true,true,true,true,true,true,true,true,];
-                            for(var i=0;i<=paramsArrayGrid.length;i++){
-                                for(var j=0;j<1;j++){
-                                   $(paramsArrayGrid[i]).prop("disabled",solverLbfgs[i]);
-                                  }
-                             }
-
-                        document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                        document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";
-                  }
-                    else if(options.map(i=>i)[0].selected && parameterData.defaultValue.map(i=>i)[0].displayName=="adam"){ //adam
-                        
-                        var solverAdam=[false,false,false,true,false,false,true,true,false,];
-                        for(var i=0;i<=paramsArrayGrid.length;i++){
-                            for(var j=0;j<1;j++){
-                               $(paramsArrayGrid[i]).prop("disabled",solverAdam[i]);
-                              }
-                         }
-                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                            
-                            
-                            document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";  
-                    }
-                    else if(options.map(i=>i)[2].selected && parameterData.defaultValue.map(i=>i)[2].displayName=="sgd"){ //sgd
-                        
-                        var solverSgd=[true,true,false,false,false,true,false,false,false,];
-                        for(var i=0;i<=paramsArrayGrid.length;i++){
-                            for(var j=0;j<1;j++){
-                               $(paramsArrayGrid[i]).prop("disabled",solverSgd[i]);
-                              }
-                         }
-                       
-                            if(document.querySelector(".shuffleGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "Please Select at least one";                          
-                            }else document.getElementsByClassName("shuffleGrid")[0].lastChild.innerText = "";                                                   
-                            if(document.querySelector(".learningGrid .for_multiselect").innerText == "None selected"){
-                                document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "Please Select at least one";
-                            }else document.getElementsByClassName("learningGrid")[0].lastChild.innerText = "";                          
-                    }              
-                    else{
-                        
-                        var solverdefault=[false,false,false,false,false,false,false,false,false,];
-                        for(var i=0;i<=paramsArrayGrid.length;i++){
-                            for(var j=0;j<1;j++){
-                               $(paramsArrayGrid[i]).prop("disabled",solverdefault[i]);
-                              }
-                         }
-                        $(".earlyStop").prop("disabled",false);
-                    }
-                    break;
-                    default:
-                       "";
-             }
-            }
-       optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
-            } 
+                    //For HTML Multiple Select
+                    optionsTemp.push(
+                    <option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>
+                        {options[prop].displayName}
+                    </option>);
+                    //For MultiSelect
+                    optionsTemp1.push({"key":prop,"label": options[prop].displayName, 'value': options[prop].name})
+                    if(options[prop].selected)
+                        optionsTemp2.push(options[prop].name);
+                    this.state.dropValues = Array.from(new Set(optionsTemp2));
+                } 
             }
             else{
                 var selectedValue="";
-            for (var prop in options) {
-                if(options[prop].selected)
-                selectedValue = options[prop].name;
-                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
+                for (var prop in options) {
+                    if(options[prop].selected)
+                        selectedValue = options[prop].name;
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
+                }
             }
-            }
-               return(
-                   <div className= {"row" + " " + rowCls}>
-                  <div className="col-md-6 for_multiselect">
-                 <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={tune?"multiple":false}>
-                 {optionsTemp}
-                 {/* <option value={mName} selected={mselected}>{mDispName}</option> */}
-                 </select>
-				</div>
-                  <div className="clearfix"></div>
-                  {tune ?<div className="col-md-6 check-multiselect text-danger">{(selectedValue.length == 0)?"Please select at least one":""}</div>:""}
-                  {/*{(tune && selectedValue.length == 0)?<div className="col-md-6 check-multiselect text-danger">Please select at least one</div>:""}*/}
+            return(
+                <div className= {"row" + " " + rowCls}>
+                {tune?
+                    <div className="col-md-4 for_multiselect">
+                        <MultiSelect value={this.state.dropValues} className={cls} options={optionsTemp1} onChange={this.selecthandleChange.bind(this)} placeholder="None Selected"/>
+                    </div>:
+                    <div className="col-md-6 for_multiselect">
+                        <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={false}>
+                            {optionsTemp}
+                        </select>
+                    </div>
+                }
+                <div className="clearfix"></div>
+                    {tune ?<div className="col-md-6 check-multiselect text-danger">{(selectedValue.length == 0)?"Please select at least one":""}</div>:""}
+                    {/*{(tune && selectedValue.length == 0)?<div className="col-md-6 check-multiselect text-danger">Please select at least one</div>:""}*/}
                 </div>
                );
-                break;
+            break;
             
             case "number":
                 if(parameterData.uiElemType == "textBox"){

@@ -35,12 +35,9 @@ export class ModelAlgorithmSelection extends React.Component {
         };
     }
     componentWillMount() {
-        //It will trigger when refresh happens on url
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        else
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
@@ -49,20 +46,6 @@ export class ModelAlgorithmSelection extends React.Component {
     }
 
     createModel(event){
-        event.preventDefault();
-        let isSelected = checkAtleastOneSelected();
-        if(isSelected == false){
-            let msg= statusMessages("warning","Please select at least one algorithm that you want to use for prediction.","small_mascot");
-            bootbox.alert(msg);
-            return false;
-        }
-        if(this.state.showParameterTuning == false){
-            this.props.dispatch(saveParameterTuning());
-            this.setState({
-            showParameterTuning:true
-            });
-        }
-        else{
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             if(!isContinueRange || !isContinueMulticheck){
@@ -137,7 +120,6 @@ export class ModelAlgorithmSelection extends React.Component {
             else{
             this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
             }
-        }
 
     }
     handleOptionChange(e){
@@ -169,7 +151,8 @@ export class ModelAlgorithmSelection extends React.Component {
     handleBack=()=>{
         const appId = this.props.match.params.AppId;
         const slug = this.props.match.params.slug;
-        this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/featureEngineering?from=algorithm_selection`);
+        this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/algorithmSelection`);
+
       }
 
     render() {
@@ -182,31 +165,11 @@ export class ModelAlgorithmSelection extends React.Component {
         var algoClass = (this.props.currentAppId == 13) ? "col-md-3" : "col-md-algo";
         if (!$.isEmptyObject(algorithmData)){
             var pageData = "";
-            if(this.state.showParameterTuning == false){
-                pageData = algorithmData.map((data,Index) =>{
-                    var checkboxId = "check"+Index;
-                    return(
-                         
-                        <div className= {algoClass}>
-						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
-                        <div className="checkbox">
-                            <div className="ma-checkbox">
-                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}> {data.algorithmName}</label>
-                            </div>							
-							<div className="xs-mt-5"><p>{data.description}</p></div>
-                        </div>
-						</div>
-                        </div>
-                         
-
-                    );
-                });
-                var buttonName = "Proceed";
-                var pageTitle = "Algorithm Selection";
-            }
-            else{
                 var buttonName = "Create Model";
                 var pageTitle = "Parameter Tuning";
+                var label= document.getElementsByClassName("active")[1];
+                var minmaxLabel= (label=== undefined) ? "linear" : label.innerText 
+               
                 var pageData = algorithmData.map((data,Index) =>{
                     var hyperParameterTypes = [];
                     var selectedValue = "";
@@ -293,7 +256,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
                                  </div>
-                                {selectedValue != "none" && document.getElementsByClassName("active")[1].innerText != "LINEAR REGRESSION"?
+                                {selectedValue != "none" && (minmaxLabel != "LINEAR REGRESSION")?
                                 <div className="maxminLabel">
                                      <label class="col-md-6 control-label read"></label>
                                      <label class="col-md-1 control-label read text-center">
@@ -304,6 +267,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     </label>
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
+                                
                                 <div>{parametersData}</div>
 								</FormGroup>
                             </Tab>
@@ -311,7 +275,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     }
 
                 });
-            }
+            // }
 
         return(
                 <div className="side-body">
@@ -322,7 +286,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     </div>
                     <div className="main-content">
                           <div className="panel panel-mAd xs-p-20 box-shadow">
-                                {this.state.showParameterTuning == false ?
+                                {/* {this.state.showParameterTuning == false ?
                                 <div>
                                     <div className="panel-heading xs-ml-0 xs-mb-10">
                                         Please use the following learning algorithms for prediction
@@ -335,14 +299,14 @@ export class ModelAlgorithmSelection extends React.Component {
                                 </div>:
 
 
+                            } */}
                                <Tabs  id="algosel" onSelect={this.changeParameter.bind(this)} className="tab-container">
                                 {pageData}
                                 </Tabs>
-                                }
 							<div className="clearfix"></div>
                             <div>
                             <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                            <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName}</Button>
+                            <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName} <i class="fa fa-angle-double-right"></i></Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

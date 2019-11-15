@@ -552,7 +552,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
         if(evt.target.className == "possibleAnalysis"){
             for(var i=0;i<analysisList.length;i++){
                 if(analysisList[i].name == evt.target.value){
-                    analysisList[i].status = evt.target.checked;
+                        analysisList[i].status = evt.target.checked;                 
                     if(analysisList[i].noOfColumnsToUse != null){
                         if(!evt.target.checked){
                             for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
@@ -627,7 +627,10 @@ export function selectAllAnalysisList(flag){
         trendSettings = totalAnalysisList.dimensions.trendSettings;
     }
     for(var i=0;i<analysisList.length;i++){
-        analysisList[i].status = flag;
+        if((store.getState().datasets.CopyTimeDimension.filter(i=>(i.selected==true)).length == 0) && analysisList[i].name == "trend")
+            analysisList[i].status = false;
+        else
+            analysisList[i].status = flag;
         if(analysisList[i].noOfColumnsToUse != null){
             for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                 //when select all is unchecked
@@ -785,7 +788,7 @@ export function updateSelectedVariables(evt){
             dimFlag = getIsAllSelected(dataSetDimensions);
         }
         else if(evt.target.className == "timeDimension"){
-            dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
+                dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
         }
 
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
