@@ -16430,8 +16430,10 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 
 .btn-default.btn-graph-info {
     border-radius: 50px;
-    padding-left: 12px;
-    padding-right: 12px;
+    width: 28px;
+    height: 28px;
+    line-height: 0.6em;
+    padding: 10px;
 }
 .btn-graph-info { 
 	position: absolute;
@@ -16449,3 +16451,6 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 
 .btn-sig-info { border-radius: 10px;}
 .btn-sig-info:hover, .btn-graph-info:hover { color:#32afa3}
+
+.col-md-6 .p-multiselect.p-component { width:175px; }
+.col-md-6 .p-multiselect.p-component .p-multiselect-label { text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
