@@ -29,6 +29,7 @@ export default function reducer(state = {
         selectedAlg:"",
         scoreSummary:{},
         scoreSlug:"",
+        scoreSlugShared:"",
         currentAppId:"",
         currentAppName:"",
         appsLoaderModal:false,
@@ -455,6 +456,7 @@ export default function reducer(state = {
             ...state,
             scoreSummary: action.data,
             scoreSlug:action.data.slug,
+            scoreSlugShared:action.data.shared_slug,
         }
     }
     break;
@@ -564,6 +566,7 @@ export default function reducer(state = {
         return {
             ...state,
             scoreSlug:action.slug,
+            scoreSlugShared:action.sharedSlug,
             updateCreateModelHideShow:true,
         }
     }

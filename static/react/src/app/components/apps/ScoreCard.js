@@ -49,11 +49,11 @@ export class ScoreCard extends React.Component {
     handleScoreRename(slug, name) {
         this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
-    getScoreSummary(slug,status) {
+    getScoreSummary(slug,status,sharedSlug) {
         if(status==FAILED){
             bootbox.alert(statusMessages("error","Unable to create Score. Please check your connection and try again.","small_mascot"));            
         }else{
-            this.props.dispatch(updateScoreSlug(slug));
+            this.props.dispatch(updateScoreSlug(slug,sharedSlug));
         }
     }
     openDataLoaderScreen(data){
@@ -75,7 +75,7 @@ export class ScoreCard extends React.Component {
             }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
-            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status)}>{data.name}</Link>;
+            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;

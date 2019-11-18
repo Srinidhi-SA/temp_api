@@ -46,6 +46,7 @@ export class ModelAlgorithmSelection extends React.Component {
     }
 
     createModel(event){
+        Notification.requestPermission();
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             if(!isContinueRange || !isContinueMulticheck){

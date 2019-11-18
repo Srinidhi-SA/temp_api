@@ -51,8 +51,9 @@ export class AppsScoreDetail extends React.Component {
     console.log("apps Score Detail View is called##########3");
 	let scoreSummary = store.getState().apps.scoreSummary;
 	let slink = window.location.pathname.includes("analyst")?"/analyst":"/autoML";
-    let scoreLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores";
-    let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+		let scoreLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores";
+		var scoreSlugtoDownload=(store.getState().apps.scoreSlugShared==null||store.getState().apps.scoreSlugShared==undefined)?store.getState().apps.scoreSlug:store.getState().apps.scoreSlugShared		
+    let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+scoreSlugtoDownload+"/dataPreview";
     var showViewButton = true;
     var showDownloadButton = true;
     console.log(scoreSummary)
@@ -104,7 +105,7 @@ export class AppsScoreDetail extends React.Component {
 		                    });
 		}
 		if(listOfCardList){
-			let downloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
+			let downloadURL=API+'/api/get_score_data_and_return_top_n/?url='+scoreSlugtoDownload+'&download_csv=true&count=100'
 			return (
 			          <div className="side-body">
 
