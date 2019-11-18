@@ -212,9 +212,9 @@ class SignalView(viewsets.ModelViewSet):
                 import random,string
                 slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    signal_obj.update({'name':signal_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    signal_obj.update({'name':signal_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    signal_obj.update({'name':signal_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Insight.objects.create(**signal_obj)
             return JsonResponse({'message': 'Signals shared.'})
 
@@ -530,9 +530,9 @@ class TrainerView(viewsets.ModelViewSet):
                 import random,string
                 slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    trainer_obj.update({'name':model_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    trainer_obj.update({'name':model_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    trainer_obj.update({'name':model_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Trainer.objects.create(**trainer_obj)
             return JsonResponse({'message': 'Models shared.'})
 
@@ -741,9 +741,9 @@ class ScoreView(viewsets.ModelViewSet):
                 import random,string
                 slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared'+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
