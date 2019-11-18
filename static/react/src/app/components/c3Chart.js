@@ -339,7 +339,7 @@ export class C3Chart extends React.Component {
           {(this.props.data.subchart!=null)?
             <span>
               <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
-              <i class="btn btn-default btn-graph-info fa fa-info" data-tip="Some Text"/>
+              <i class="btn btn-default btn-graph-info fa fa-info" data-tip="Move grey section to zoom and view different part of the chart"/>
             </span>
             :""
           }
