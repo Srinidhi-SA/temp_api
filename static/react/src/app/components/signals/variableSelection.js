@@ -362,23 +362,25 @@ export class VariableSelection extends React.Component {
                 <div className="col-md-12">
                 <div className="panel panel-alt4 panel-alt4 cst-panel-shadow">
                 <div className="panel-heading text-center">Type of Signals&nbsp;&nbsp; 
-               
-                <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
-                 
-                <i class="btn btn-default fa fa-info btn-sig-info" data-html="true" data-tip={(this.props.getVarType == "measure") ?
-                    "<b>Overview:</b> Contains Distribution Analysis consisting of Mean, Average, Median, Quartiles for numerical variables."+
-                    "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
-                    "<br/><b>Performance:</b> ANOVA test assesses whether the averages of more than two groups are statistically different from each other."+
-                    "<br/><b>Influencers:</b> Model the relationship between two or more explanatory variables and a response variable by fitting <br/>a linear equation to observed data."+
-                    "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
-                :
-                    "<b>Overview:</b> Univariate Freq. Distribution shows a summarized grouping of data divided into mutually exclusive classes <br/>and the number of occurrences in a class."+
-                    "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
-                    "<br/><b>Association:</b> The chi-square test can be used to determine the association between categorical variables."+
-                    "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
-                }>
-                </i>
-               
+               {
+                this.props.getVarType?
+                <span>
+                    <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
+                    <i class="btn btn-default fa fa-info btn-sig-info" data-html="true" data-tip={(this.props.getVarType == "measure") ?
+                        "<b>Overview:</b> Contains Distribution Analysis consisting of Mean, Average, Median, Quartiles for numerical variables."+
+                        "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
+                        "<br/><b>Performance:</b> ANOVA test assesses whether the averages of more than two groups are statistically different from each other."+
+                        "<br/><b>Influencers:</b> Model the relationship between two or more explanatory variables and a response variable by fitting <br/>a linear equation to observed data."+
+                        "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
+                        :
+                        "<b>Overview:</b> Univariate Freq. Distribution shows a summarized grouping of data divided into mutually exclusive classes <br/>and the number of occurrences in a class."+
+                        "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
+                        "<br/><b>Association:</b> The chi-square test can be used to determine the association between categorical variables."+
+                        "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
+                        }>
+                    </i>
+                </span>
+               :""}
                  
                 </div>
                 <div className="panel-body text-center" id="analysisList" >

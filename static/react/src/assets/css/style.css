@@ -16444,8 +16444,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .btn-default.btn-sig-info {
     border-radius: 100px;
     margin-left: 6px;
-    padding: 3px 12px;
-	margin-top: 2px;
+    padding: 3px 10px;
 }
 
 .btn-sig-info { border-radius: 10px;}
