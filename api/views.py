@@ -198,6 +198,7 @@ class SignalView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
+            obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
             signal_obj = Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             signal_name = signal_obj['name']
@@ -210,7 +211,10 @@ class SignalView(viewsets.ModelViewSet):
             for i in shared_id:
                 import random,string
                 slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                if obj.shared is True:
+                    signal_obj.update({'name':signal_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                else:
+                    signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Insight.objects.create(**signal_obj)
             return JsonResponse({'message': 'Signals shared.'})
 
@@ -511,6 +515,7 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
+            obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
             trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             model_name = trainer_obj['name']
@@ -524,7 +529,10 @@ class TrainerView(viewsets.ModelViewSet):
             for i in shared_id:
                 import random,string
                 slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                if obj.shared is True:
+                    trainer_obj.update({'name':model_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                else:
+                    trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Trainer.objects.create(**trainer_obj)
             return JsonResponse({'message': 'Models shared.'})
 
@@ -708,6 +716,7 @@ class ScoreView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
+            obj = Score.objects.get(slug=self.kwargs.get('slug'))
             score_obj = Score.objects.filter(created_by_id=request.user.id,
                                              slug=self.kwargs.get('slug')).values().first()
             score_name = score_obj['name']
@@ -721,8 +730,10 @@ class ScoreView(viewsets.ModelViewSet):
             for id in shared_id:
                 import random,string
                 slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                score_obj.update(
-                    {'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                if obj.shared is True:
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                else:
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
@@ -6568,17 +6579,44 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
 
 @csrf_exempt
 def view_model_summary_autoML(request):
-    print "i am going to view model summary"
     model_slug = request.GET['slug']
-    print model_slug
-    # response = Trainer.objects.get(slug=model_slug)
-    # from django.http import HttpResponseRedirect,render
+    #print model_slug
+    instance = Trainer.objects.get(slug=model_slug)
+
+    #if instance.viewed is False:
+    from django.http import HttpResponseRedirect
+    from django.shortcuts import render
     import requests
     url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
-    print url
+    #print url
     try:
-        response = requests.get(url)
-        return render(request, 'model_summary.html', context=response)
-        # return render(request,model_summary.html,context)
+        #response = requests.get(url)
+        #print response
+        #print type(response.body)
+        #return render(request, 'model_summary.html', context=response)
+        context = {"Config":instance}
+        #instance.viewed=True
+        #instance.save()
+        return render(request,'model_summary.html',context)
+
+    except Exception as err:
+        print err
+    #else:
+    #    from django.shortcuts import render
+    #    return render(request,'model_summary_expired.html')
+
+@csrf_exempt
+def view_model_summary_detail(request):
+    try:
+        model_config=dict()
+        model_slug = request.GET['slug']
+        instance = Trainer.objects.get(slug=model_slug)
+        #from django.forms import model_to_dict
+        #model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
+        config=json.loads(instance.config)
+        data=json.loads(instance.data)
+        model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
+        return JsonResponse({'modelDetail': model_config})
+
     except Exception as err:
         print err

@@ -29,6 +29,7 @@ export default function reducer(state = {
         selectedAlg:"",
         scoreSummary:{},
         scoreSlug:"",
+        scoreSlugShared:"",
         currentAppId:"",
         currentAppName:"",
         appsLoaderModal:false,
@@ -36,6 +37,7 @@ export default function reducer(state = {
         appsLoaderText :"",
         setAppsLoaderValues:{},
         modelSummaryFlag:false,
+        parameterTuningFlag:false,
         scoreSummaryFlag:false,
         modelTargetVariable:"",
         roboList:{},
@@ -454,6 +456,7 @@ export default function reducer(state = {
             ...state,
             scoreSummary: action.data,
             scoreSlug:action.data.slug,
+            scoreSlugShared:action.data.shared_slug,
         }
     }
     break;
@@ -550,11 +553,20 @@ export default function reducer(state = {
         }
     }
     break;
+    case "UPDATE_PARAMETER_TUNING_FLAG":
+    {
+        return {
+            ...state,
+            parameterTuningFlag:action.flag,
+        }
+    }
+    break;
     case "CREATE_SCORE_SUCCESS":
     {
         return {
             ...state,
             scoreSlug:action.slug,
+            scoreSlugShared:action.sharedSlug,
             updateCreateModelHideShow:true,
         }
     }
