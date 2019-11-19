@@ -101,6 +101,33 @@ export function fetchDataSuccess(doc){
 		current_page,
 	}
 }
+
+export function fetchModelEdit(slug,interval) {
+	return (dispatch) => {
+		return fetchModelEditAPI(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchModelEditAPISuccess(json))
+			}
+			else{
+			bootbox.alert("some thing went wrong")
+			}
+		})
+	}
+}
+
+export function fetchModelEditAPISuccess(doc){
+	return {
+        type: "MODEL_EDIT_CONFIG",
+        doc
+	}
+}
+export function fetchModelEditAPI(slug) {
+	return fetch(API+'/api/trainer/'+slug+'/edit/',{
+		method: 'get',
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
+	}).then( response => Promise.all([response, response.json()]));
+}
 //fetch stock dataset Preview
 export function getStockDataSetPreview(slug,interval) {
 	return (dispatch) => {
@@ -212,18 +239,16 @@ columns
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
         }
-        setTimeout(function() {
-           if(dataPreview.message[0].globalCompletionPercentage<=0){
-               return fetch(API + '/api/kill_timeout_job_from_ui/?slug='+slug, {
-                   method: 'get',
-                   headers: getHeader(getUserDetailsOrRestart.get().userToken)
-               }).then(response => Promise.all([response, response.json()])).catch(function(error){
-               bootbox.alert("Unable to connect to server. Check your connection please try again.")
-                 });
-                }
-
-
-           },420000);
+        // setTimeout(function() {
+        //    if(dataPreview.message[0].globalCompletionPercentage<=0){
+        //        return fetch(API + '/api/kill_timeout_job_from_ui/?slug='+slug, {
+        //            method: 'get',
+        //            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+        //        }).then(response => Promise.all([response, response.json()])).catch(function(error){
+        //        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+        //          });
+        //         }
+        //    },420000);
         return {
             type: "SELECTED_DATASET",
             dataset,
@@ -295,7 +320,16 @@ export function fetchAllUsersSuccess(json){
 }
 //End of fetch userList
 
-export function openShareModalAction(shareItem,slug,itemType) {
+export function setEditModelValues(dataSlug,modelSlug,flag) {
+    return {
+      type: "SET_EDIT_MODEL",
+      dataSlug,
+      modelSlug,
+      flag
+      
+    }
+  }
+  export function openShareModalAction(shareItem,slug,itemType) {
     return {
       type: "SHARE_MODAL_SHOW",
       shareItem,
@@ -303,7 +337,7 @@ export function openShareModalAction(shareItem,slug,itemType) {
       itemType
     }
   }
-  
+
   export function closeShareModalAction() {
      return {
        type: "SHARE_MODAL_HIDE",
