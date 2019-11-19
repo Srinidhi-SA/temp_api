@@ -112,6 +112,7 @@ urlpatterns = [
     url(r'^job/(?P<slug>[^/.]+)/rest_in_peace',views.end_of_this_world , name="end_of_this_world"),
     url(r'^job/(?P<slug>[^/.]+)/use_set_result',views.use_set_result , name="use_set_result"),
     url(r'^job/(?P<slug>[^/.]+)/dump_complete_messages',views.dump_complete_messages , name="dump_complete_messages"),
+    url(r'^job/(?P<slug>[^/.]+)/initial_messages/',views.initial_messages , name="initial_messages"),
     url(r'^download_data/(?P<slug>[^/.]+)',views.get_chart_or_small_data , name="get_chart_or_small_data"),
     url(r'^get_info',views.get_info , name="get_info"),
     url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
