@@ -101,6 +101,33 @@ export function fetchDataSuccess(doc){
 		current_page,
 	}
 }
+
+export function fetchModelEdit(slug,interval) {
+	return (dispatch) => {
+		return fetchModelEditAPI(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchModelEditAPISuccess(json))
+			}
+			else{
+			bootbox.alert("some thing went wrong")
+			}
+		})
+	}
+}
+
+export function fetchModelEditAPISuccess(doc){
+	return {
+        type: "MODEL_EDIT_CONFIG",
+        doc
+	}
+}
+export function fetchModelEditAPI(slug) {
+	return fetch(API+'/api/trainer/'+slug+'/edit/',{
+		method: 'get',
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
+	}).then( response => Promise.all([response, response.json()]));
+}
 //fetch stock dataset Preview
 export function getStockDataSetPreview(slug,interval) {
 	return (dispatch) => {
@@ -295,7 +322,16 @@ export function fetchAllUsersSuccess(json){
 }
 //End of fetch userList
 
-export function openShareModalAction(shareItem,slug,itemType) {
+export function setEditModelValues(dataSlug,modelSlug,flag) {
+    return {
+      type: "SET_EDIT_MODEL",
+      dataSlug,
+      modelSlug,
+      flag
+      
+    }
+  }
+  export function openShareModalAction(shareItem,slug,itemType) {
     return {
       type: "SHARE_MODAL_SHOW",
       shareItem,
@@ -303,7 +339,7 @@ export function openShareModalAction(shareItem,slug,itemType) {
       itemType
     }
   }
-  
+
   export function closeShareModalAction() {
      return {
        type: "SHARE_MODAL_HIDE",
