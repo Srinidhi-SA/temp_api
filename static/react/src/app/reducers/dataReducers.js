@@ -15,6 +15,9 @@ export default function reducer(state = {
   selectedVariablesCount: 0,
   signalMeta: {},
   curUrl: "",
+  editmodelModelSlug:"",
+  editmodelDataSlug:"",
+  editmodelFlag:false,
   dataUploadLoaderModal: false,
   dULoaderValue: -1,
   data_search_element: "",
@@ -76,6 +79,7 @@ export default function reducer(state = {
   shareModelShow:false,
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
+  modelEditconfig:"",
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -89,6 +93,16 @@ export default function reducer(state = {
           dataList: action.data,
           latestDatasets:action.latestDatasets,
           current_page: action.current_page
+        }
+      }
+      break;
+      case "MODEL_EDIT_CONFIG":
+      {
+        return {
+          ...state,
+          modelEditconfig: action.doc,
+          
+         
         }
       }
       break;
@@ -174,6 +188,16 @@ export default function reducer(state = {
           shareItem:action.shareItem,
           shareItemSlug:action.slug,
           shareItemType:action.itemType,
+        }
+      }
+      break;
+      case "SET_EDIT_MODEL":
+      {
+        return {
+          ...state,
+          editmodelDataSlug:action.dataSlug,
+          editmodelModelSlug:action.modelSlug,
+          editmodelFlag:action.flag
         }
       }
       break;

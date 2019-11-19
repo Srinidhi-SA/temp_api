@@ -26,6 +26,8 @@ import { options } from "react-bootstrap-dialog";
         regression_crossvalidationvalue: store.apps.regression_crossvalidationvalue,
         metricSelected: store.apps.metricSelected,
         allModelList: store.apps.allModelList,
+        editmodelModelSlug:store.datasets.editmodelModelSlug,
+        modelEditconfig:store.datasets.modelEditconfig
     };
 })
 
@@ -35,7 +37,7 @@ export class ModelVariableSelection extends React.Component {
     }
     componentWillMount() {
         const from = this.getValueOfFromParam();
-        if (from === 'data_cleansing') {
+         if (from === 'data_cleansing') {
         } 
         else{
         this.props.dispatch(saveSelectedValuesForModel("","",""));
@@ -167,7 +169,7 @@ export class ModelVariableSelection extends React.Component {
                                         if (a.name > b.name)
                                             return 1;
                                         return 0;
-                                    }));
+                                    }));                    
             if (sortedMetaData) {
                 renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} defaultValue={store.getState().apps.apps_regression_targetType} id="createModelAnalysisList">
                     <option value="">--Select--</option>

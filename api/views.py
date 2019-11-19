@@ -212,9 +212,9 @@ class SignalView(viewsets.ModelViewSet):
                 import random,string
                 slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    signal_obj.update({'name':signal_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    signal_obj.update({'name':signal_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    signal_obj.update({'name':signal_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    signal_obj.update({'name':signal_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Insight.objects.create(**signal_obj)
             return JsonResponse({'message': 'Signals shared.'})
 
@@ -530,9 +530,9 @@ class TrainerView(viewsets.ModelViewSet):
                 import random,string
                 slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    trainer_obj.update({'name':model_name, 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    trainer_obj.update({'name':model_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    trainer_obj.update({'name':model_name+'_shared', 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    trainer_obj.update({'name':model_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Trainer.objects.create(**trainer_obj)
             return JsonResponse({'message': 'Models shared.'})
 
@@ -741,9 +741,9 @@ class ScoreView(viewsets.ModelViewSet):
                 import random,string
                 slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
                 else:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared', 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared'+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
@@ -6625,7 +6625,18 @@ def view_model_summary_detail(request):
         #model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
         config=json.loads(instance.config)
         data=json.loads(instance.data)
-        model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
+        try:
+            table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
+            FI_dict_keys = table_data[0]
+            FI_dict_values = table_data[1]
+            #import collections
+            import operator
+            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
+            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1))
+            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data,'table_data':FI_dict})
+        except:
+            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:

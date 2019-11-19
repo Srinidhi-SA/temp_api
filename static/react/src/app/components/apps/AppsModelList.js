@@ -188,7 +188,7 @@ var dateFormat = require('dateformat');
                         <div className="row">
                         <div className="col-md-6">
 
-                        <select className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Algorithm" onChange={this.filterByMode.bind(this)}>
+                        <select className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Mode" onChange={this.filterByMode.bind(this)}>
                         <option disabled selected value="">Filter By Mode</option>
                         <option value="">All</option>
                         <option value="analyst">Analyst</option>
