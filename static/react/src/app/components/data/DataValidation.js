@@ -58,12 +58,19 @@ export class DataValidation extends React.Component {
                                <input type="radio" checked={actionNames.status}  name="uniqueBtn" id={actionNames.actionName}/>
                                <label for={actionNames.actionName}><a className="inline-block">{actionNames.displayName}</a></label>
                                </div>
-                       </li>)
-
-											 else
-                  return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
-
-
+					   </li>)
+					else 
+						
+						return (
+							(window.location.href.includes("/models/data") && (actionNames.actionName == "delete" || actionNames.actionName == "rename" || actionNames.actionName == "replace"))?
+							<li className="greyDisable" key={index}>
+								<a name={actionNames.actionName}>{actionNames.displayName}</a>
+							</li>
+							:
+							<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
+								<a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a>
+							</li>
+						)
                }
 
 

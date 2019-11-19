@@ -16453,3 +16453,8 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 
 .col-md-6 .p-multiselect.p-component { width:175px; }
 .col-md-6 .p-multiselect.p-component .p-multiselect-label { text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+
+.scrollable-menu li.greyDisable a {
+	color: #b1afaf !important;
+	cursor: not-allowed;
+}

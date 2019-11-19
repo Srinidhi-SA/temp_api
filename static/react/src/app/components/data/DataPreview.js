@@ -724,21 +724,21 @@ else{
                       <div className="navbar">
                         <ul className="nav navbar-nav navbar-right">
                           <li>
-                            {(this.isSubsetted)
+                            {(this.isSubsetted && !this.props.location.pathname.includes("/models/data"))
                               ? (
                                 <div className="form-group">
                                   <input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm col-sm-12" placeholder="New Dataset Name"/>
                                 </div>
                               )
                               : (<div/>)
-}
+                            }
                           </li>
 
                           <li className="text-right">
                             <Button onClick={this.closePreview.bind(this)}>
                               {this.buttons.close.text}
                             </Button>
-                            {(this.isSubsetted)
+                            {(this.isSubsetted && !this.props.location.pathname.includes("/models/data"))
                               ? (
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )
