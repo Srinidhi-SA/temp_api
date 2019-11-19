@@ -7,7 +7,7 @@ import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
 import {ViewChartData} from "./common/ViewChartData";
-
+import ReactTooltip from 'react-tooltip'
 import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
@@ -336,7 +336,13 @@ export class C3Chart extends React.Component {
     return (
       <div className="chart-area">
 
-         
+          {(this.props.data.subchart!=null)?
+            <span>
+              <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
+              <i class="btn btn-default btn-graph-info fa fa-info" data-tip="Move grey section to zoom and view different part of the chart"/>
+            </span>
+            :""
+          }
           <div className="chart-data-icon">
 
             <div class="btn-group pull-right">
@@ -375,7 +381,6 @@ export class C3Chart extends React.Component {
             </div>
 			 <div className="clearfix"></div>
           </div>
-
           <div className="clearfix"></div>
           <div className={this.classId}></div>
          <div className={chartDownloadCls} style={{display:"none"}}></div>
