@@ -440,6 +440,24 @@ def save_results_to_job(slug, results):
         job.results = results
     job.save()
 
+@task(name='save_job_messages', queue=CONFIG_FILE_NAME)
+def save_job_messages(slug, messages):
+    from api.helper import get_db_object
+    import json
+    try:
+        job = get_db_object(model_name=Job.__name__,
+                            model_slug=slug
+                            )
+
+        if isinstance(messages, str) or isinstance(messages, unicode):
+            job.messages = messages
+        elif isinstance(messages, dict):
+            results = json.dumps(messages)
+            job.messages = messages
+        job.save()
+    except Exception as err:
+        print err
+
 
 @task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
 def save_results_to_job1(slug, results):
