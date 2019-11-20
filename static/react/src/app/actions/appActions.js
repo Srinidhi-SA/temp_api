@@ -1031,8 +1031,8 @@ export function updateScoreSummaryFlag(flag) {
 export function updateModelSlug(slug) {
   return { type: "CREATE_MODEL_SUCCESS", slug }
 }
-export function updateScoreSlug(slug) {
-  return { type: "CREATE_SCORE_SUCCESS", slug }
+export function updateScoreSlug(slug,sharedSlug) {
+  return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
 
 export function getAppsRoboList(pageNo) {
@@ -2331,6 +2331,9 @@ function triggerRegressionAppAlgorithmAPI(appType) {
 export function saveRegressionAppAlgorithmData(data) {
   return { type: "SAVE_REGRESSION_ALGORITHM_DATA", data }
 }
+export function parameterTuningVisited(flag) {
+  return { type: "UPDATE_PARAMETER_TUNING_FLAG", flag }
+}
 export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
@@ -2352,17 +2355,43 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
               val1.acceptedValue = parVal;
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
-              $.each(allValues, function (i, dat) {
-                if (dat.name == parVal) {
-                  if (type == "TuningParameter")
-                    dat.selected = !dat.selected;
-                  else
-                    dat.selected = true;
-                }
-                else if (type == "NonTuningParameter" || type == "TuningOption")
-                  dat.selected = false;
+
+              if(type == "TuningParameter"){
+                if(parVal.length == 0)
+                  $.each(allValues, function (i, dat) {
+                        dat.selected = false;
+                  });
+                else
+                  for(let j=0; j<parVal.length; j++){
+                    $.each(allValues, function (i, dat) {
+                      if (dat.name == parVal[j])
+                          dat.selected = true;
+                      else if(!parVal.includes(dat.name))
+                        dat.selected = false;
+                    });
+                  }
+              }else if (type == "NonTuningParameter" || type == "TuningOption"){
+                $.each(allValues, function (i, dat) {
+                    if (dat.name == parVal) {
+                        dat.selected = true;
+                    }
+                    else
+                      dat.selected = false;
+                  });
               }
-              );
+                
+              // $.each(allValues, function (i, dat) {
+              //   if (dat.name == parVal) {
+              //     if (type == "TuningParameter")
+              //       dat.selected = !dat.selected;
+              //     else
+              //       dat.selected = true;
+              //   }
+              //   else if (type == "NonTuningParameter" || type == "TuningOption")
+              //     dat.selected = false;
+              // }
+              // );
+              
             } else {
               val1.acceptedValue = parVal;
             }

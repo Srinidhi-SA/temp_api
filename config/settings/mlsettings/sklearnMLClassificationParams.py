@@ -30,27 +30,27 @@ SKLEARN_ML_SUPPORTED_MAX_FEATURES = [
 ##### NEURAL NETWORK PARAMETERS    ####
 
 SKLEARN_ML_SUPPORTED_ACTIVATION_CLASSIFICATION = [
-    {"name": "relu", "selected": False, "displayName": "relu"},
+    {"name": "relu", "selected": True, "displayName": "relu"},
     {"name": "identity", "selected": False, "displayName": "identity"},
     {"name": "logistic", "selected": False, "displayName": "logistic"},
     {"name": "tanh", "selected": False, "displayName": "tanh"},
 ]
 
 SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION = [
-    {"name": "adam", "selected": False, "displayName": "adam"},
+    {"name": "adam", "selected": True, "displayName": "adam"},
     {"name": "lbfgs", "selected": False, "displayName": "lbfgs"},
     {"name": "sgd", "selected": False, "displayName": "sgd"},
 ]
 
 SKLEARN_ML_SUPPORTED_LEARNING_RATE_CLASSIFICATION = [
-    {"name": "constant", "selected": False, "displayName": "constant"},
+    {"name": "constant", "selected": True, "displayName": "constant"},
     {"name": "invscaling", "selected": False, "displayName": "invscaling"},
     {"name": "adaptive", "selected": False, "displayName": "adaptive"},
 
 ]
 
 SKLEARN_ML_SUPPORTED_BATCH_SIZE_CLASSIFICATION = [
-    {"name": "auto", "selected": False, "displayName": "auto"},
+    {"name": "auto", "selected": True, "displayName": "auto"},
     {"name": 8, "selected": False, "displayName": "8"},
     {"name": 16, "selected": False, "displayName": "16"},
     {"name": 32, "selected": False, "displayName": "32"},
@@ -658,7 +658,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
         "defaultValue": [
             {
                 "name": "true",
-                "selected": False,
+                "selected": True,
                 "displayName": "True"
             },
             {

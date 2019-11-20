@@ -12,7 +12,6 @@ import {
     Button
 } from "react-bootstrap";
 import store from "../../store";
-import {Share} from "../common/Share"
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
@@ -32,7 +31,6 @@ var dateFormat = require('dateformat');
         login_response: store.login.login_response,
         dataList: store.datasets.dataList,
         shareModelShow:store.datasets.shareModelShow,
-        userList:store.datasets.allUserList,
         dataPreview: store.datasets.dataPreview,
         signalMeta: store.datasets.signalMeta,
         selectedDataSet: store.datasets.selectedDataSet,
@@ -199,7 +197,6 @@ export class DataCard extends React.Component {
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}
-                                <Share usersList={this.props.userList}/>
                                 <div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}

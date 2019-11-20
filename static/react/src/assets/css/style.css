@@ -3699,7 +3699,7 @@ button.close {
 	border: 1px solid #fff;
 	border-radius: 10px;
 	cursor: pointer;
-	background-color: #0000009;
+	background-color: #000000;
 	background-color: transparent;
 }
 .carousel-indicators .active {
@@ -14078,7 +14078,6 @@ box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
    font-size: 11px;
    color: #337ab7;
    text-transform:uppercase;
-   font-weight:14px;
    font-weight: bold;
 }
 .popover-div-a:hover{
@@ -14393,7 +14392,7 @@ a.tabs-control.right span { right: -2px; border-radius: 50px; }
   display:none;
   padding:7px;
   padding-top:11px;
-  white-space:no-wrap;
+  white-space:nowrap;
   vertical-align:middle;
   background-color:#fff;
 }
@@ -15324,6 +15323,10 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   display: flex;
   flex-wrap: wrap; }
 .p-multiselect-item label {text-overflow:ellipsis; white-space: nowrap; overflow:hidden; width:130px; }
+.for_multiselect .p-multiselect-header::after {
+    content: "Select All";
+}
+.for_multiselect .p-multiselect-close { display:none; }
 .form-horizontal .control-label { text-align:left; }
 
 
@@ -16384,7 +16387,9 @@ div#replaceValues {
 	color: #0f0f0f !important;
 	background-color: #f0f5f4 !important;
 	pointer-events: auto !important;
+	text-align: left;
 }
+.btn-sig-info ul { list-style-type: none; ;}
 .__react_component_tooltip.type-dark.place-bottom:after{
 	border-bottom-color: #f0f5f4 !important;
 }
@@ -16419,4 +16424,37 @@ body .p-checkbox .p-checkbox-box.p-focus {
 }
 body .p-inputtext:enabled:focus:not(.p-error) {
 	border-color: #00998c !important;
+}
+
+
+.btn-default.btn-graph-info {
+    border-radius: 50px;
+    width: 28px;
+    height: 28px;
+    line-height: 0.6em;
+    padding: 10px;
+}
+.btn-graph-info { 
+	position: absolute;
+	right: 20px; 
+	bottom:134px; 
+	z-index: 100;
+}
+
+
+.btn-default.btn-sig-info {
+    border-radius: 100px;
+    margin-left: 6px;
+    padding: 3px 10px;
+}
+
+.btn-sig-info { border-radius: 10px;}
+.btn-sig-info:hover, .btn-graph-info:hover { color:#32afa3}
+
+.col-md-6 .p-multiselect.p-component { width:175px; }
+.col-md-6 .p-multiselect.p-component .p-multiselect-label { text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+
+.scrollable-menu li.greyDisable a {
+	color: #b1afaf !important;
+	cursor: not-allowed;
 }

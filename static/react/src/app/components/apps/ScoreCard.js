@@ -30,6 +30,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
+import {openShareModalAction} from "../../actions/dataActions";
 
 var dateFormat = require('dateformat');
 
@@ -48,17 +49,22 @@ export class ScoreCard extends React.Component {
     handleScoreRename(slug, name) {
         this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
-    getScoreSummary(slug,status) {
+    getScoreSummary(slug,status,sharedSlug) {
         if(status==FAILED){
             bootbox.alert(statusMessages("error","Unable to create Score. Please check your connection and try again.","small_mascot"));            
         }else{
-            this.props.dispatch(updateScoreSlug(slug));
+            this.props.dispatch(updateScoreSlug(slug,sharedSlug));
         }
     }
     openDataLoaderScreen(data){
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createScoreSuccessAnalysis(data));
     }
+    openShareModal(shareItem,slug,itemType) {
+        console.log("open ---openBinsOrLevelsModal");
+        this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+        //this.setState({NoModal: this.state.NoModal + 1});
+       }
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
@@ -69,7 +75,7 @@ export class ScoreCard extends React.Component {
             }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
-            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status)}>{data.name}</Link>;
+            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;
@@ -141,6 +147,10 @@ export class ScoreCard extends React.Component {
                                 ? "Stop"
                                 : "Delete"}</a>
                     </span>:""}
+                    {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Score")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+								</span>: ""}
 					<div className="clearfix"></div>
 					</li>
                     

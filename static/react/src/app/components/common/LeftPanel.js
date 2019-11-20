@@ -4,11 +4,14 @@ import {connect} from "react-redux";
 import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
-import {getUserDetailsOrRestart} from "../../helpers/helper"
-import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js"
+import {getUserDetailsOrRestart} from "../../helpers/helper";
+import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js";
+import ReactNotifications from 'react-browser-notifications';
 
 @connect((store) => {
-  return {dataPreviewFlag: store.datasets.dataPreviewFlag};
+  return {dataPreviewFlag: store.datasets.dataPreviewFlag,
+          apps_regression_modelName: store.apps.apps_regression_modelName,
+  };
 })
 
 class LeftPanel extends React.Component {
@@ -44,9 +47,16 @@ class LeftPanel extends React.Component {
 	})*/
 
   }
+  showNotifications= () => {
+    if(this.n.supported()) this.n.show();
+  }
+
+  handleClick =(event)=> {
+    window.focus()
+    this.n.close(event.target.tag);
+  }
   render() {
-    console.log("LeftPanel")
-    console.log(this.props);
+    let notifyBody= this.props.apps_regression_modelName + " model created successfully."
     let view_data_permission=getUserDetailsOrRestart.get().view_data_permission
     let view_signal_permission = getUserDetailsOrRestart.get().view_signal_permission
     let view_trainer_permission = getUserDetailsOrRestart.get().view_trainer_permission
@@ -55,6 +65,15 @@ class LeftPanel extends React.Component {
     return (
       <div>
         <div>
+        <ReactNotifications
+              onRef={ref => (this.n = ref)}
+			        title="mAdvisor"
+			        body= {notifyBody}
+			        icon= "devices-logo.png"
+			        tag="abcdef"
+			        onClick={event => this.handleClick(event)}
+		        />
+		        <button className="notifyBtn noDisplay" onClick={this.showNotifications}>Notify Me!</button>
           {/* Side bar Main Menu -->*/}
           <div className="side-menu collapse navbar-collapse" id="side-menu">
             <div className="side-menu-container">

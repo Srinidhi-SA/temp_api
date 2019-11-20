@@ -42,6 +42,8 @@ import {AppsStockDataPreview} from "./components/apps/AppsStockDataPreview";
 import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
 import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection";
+import {AlgorithmSelection} from "./components/apps/AlgorithmSelection";
+
 import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
@@ -398,8 +400,8 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/autoML/scores/:slug/dataPreview" render={score}/>
              {/* above line was not added for autoMl*/}
 
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
-            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/algorithmSelection" component={AlgorithmSelection}/>
+            <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/parameterTuning" component={ModelAlgorithmSelection}/>
             {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/> */}
             <Route exact path="/apps/:AppId/modeSelection" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
