@@ -6633,11 +6633,40 @@ def view_model_summary_detail(request):
             import operator
             #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
             FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
-            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1))
+            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
+            FI_dict=FI_dict[1:len(FI_dict):1]
             model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data,'table_data':FI_dict})
-        except:
+        except Exception as err:
+            print err
             model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
         print err
+@csrf_exempt
+def dump_complete_messages(request, slug=None):
+    try:
+        job = Job.objects.get(slug=slug)
+
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        messages = request.body
+        tasks.save_job_messages.delay(
+            slug,
+            messages
+        )
+        return JsonResponse({'result': "Success"})
+    except Exception as e:
+        return JsonResponse({'result': "Failed"})
+        print e
+
+def initial_messages(request,slug=None):
+    try:
+        job = Job.objects.get(slug=slug)
+
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        messages = json.loads(job.messages)
+        return JsonResponse({'messages':messages})
+    except Exception as e:
+        print e
