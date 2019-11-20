@@ -6659,14 +6659,3 @@ def dump_complete_messages(request, slug=None):
     except Exception as e:
         return JsonResponse({'result': "Failed"})
         print e
-
-def initial_messages(request,slug=None):
-    try:
-        job = Job.objects.get(slug=slug)
-
-        if not job:
-            return JsonResponse({'result': 'Failed'})
-        messages = json.loads(job.messages)
-        return JsonResponse({'messages':messages})
-    except Exception as e:
-        print e
