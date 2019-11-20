@@ -6633,8 +6633,8 @@ def view_model_summary_detail(request):
             import operator
             #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
             FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
-            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1))
-            FI_dict=FI_dict[:-1]
+            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
+            FI_dict=FI_dict[1:len(FI_dict):1]
             model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data,'table_data':FI_dict})
         except Exception as err:
             print err
