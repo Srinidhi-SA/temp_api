@@ -6598,7 +6598,7 @@ def view_model_summary_autoML(request):
     if settings.USE_HTTPS:
         protocol = 'https'
 
-    response_url = '{}://{}/api/view_model_summary_detail/?slug={}/'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
 
     try:
         context = {"Response":response_url}
