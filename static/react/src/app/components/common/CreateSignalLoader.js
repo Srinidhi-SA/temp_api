@@ -19,7 +19,8 @@ import {STATIC_URL} from "../../helpers/env";
     createSignalLoaderValue: store.signals.createSignalLoaderValue,
     loaderText: store.signals.loaderText,
     signalData: store.signals.signalData,
-    showHide: store.signals.showHide
+	showHide: store.signals.showHide,
+	signalLoadedText: store.signals.signalLoadedText
   };
 })
 
@@ -27,6 +28,19 @@ export class CreateSignalLoader extends React.Component {
   constructor(props) {
     super(props);
   }
+  componentWillUpdate(){
+	var getText = [];
+	if(this.props.createSignalLoaderValue >= 0 && getText.length <= 1){ 
+		$("#loadingMsgs").empty()
+		getText = Object.values(store.getState().signals.signalLoadedText);
+		console.log(getText);
+	}else{
+		$("#loadingMsgs").empty();
+		getText.push(store.getState().signals.loaderText);
+	}
+		if(document.getElementById('loadingMsgs') != null)
+		document.getElementById('loadingMsgs').appendChild(this.makeULSig(getText));
+	}
   openModelPopup() {
     this.props.dispatch(openCsLoaderModal())
   }
@@ -42,6 +56,32 @@ export class CreateSignalLoader extends React.Component {
     clearCreateSignalInterval();
     this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
+  makeULSig(array) {
+	var list = document.createElement('ul');
+	var indexNum = Object.keys(this.props.signalLoadedText).find(key => this.props.signalLoadedText[key] === this.props.loaderText);
+	for(var i = 0; i < array.length; i++) {
+		if(indexNum == i){
+			var item = document.createElement('li');
+			var att = document.createAttribute("class");
+			att.value = "democlass";
+			item.setAttributeNode(att);
+			item.appendChild(document.createTextNode(array[i]));
+			list.appendChild(item);
+		}else if(i < indexNum){
+			var item = document.createElement('li');
+			var att = document.createAttribute("class");
+			att.value = "democlass1";
+			item.setAttributeNode(att);
+			item.appendChild(document.createTextNode(array[i]));
+			list.appendChild(item);
+		}else{
+			var item = document.createElement('li');
+			item.appendChild(document.createTextNode(array[i]));
+			list.appendChild(item);
+		}
+	}
+	return list;
+}
     render() {
         var that = this;
         if(this.props.signalData != null){
@@ -226,11 +266,14 @@ export class CreateSignalLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-								<ul class="modal-steps">
+							<div class="modal-steps" id="loadingMsgs">
+								&nbsp;&nbsp;&nbsp;Please wait while analysing...
+							</div>
+								{/* <ul class="modal-steps"> */}
 									{/*	<li>----</li>*/}
-									<li class="active">{store.getState().signals.loaderText}</li>
+									{/* <li class="active">{store.getState().signals.loaderText}</li> */}
 									{/*	<li>----</li>*/}
-								</ul>
+								{/* </ul> */}
 							
 						</div>
 						<div className="col-sm-3 text-center">

@@ -16,6 +16,7 @@ export default function reducer(state = {
   signal_sorttype:null,
   sideCardListFlag:null,
   loaderText:"Submitting for analysis",
+  signalLoadedText:[],
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
@@ -59,6 +60,7 @@ export default function reducer(state = {
           signalAnalysis: action.signalAnalysis.data,
           selectedSignal: action.errandId,
           urlPrefix:"/signals",
+          signalLoadedText:action.signalAnalysis.initial_messages,
         }
       }
       break;
