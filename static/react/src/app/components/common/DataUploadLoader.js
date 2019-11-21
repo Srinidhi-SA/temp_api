@@ -21,7 +21,7 @@ import {handleJobProcessing} from "../../helpers/helper";
     dataLoaderText: store.datasets.dataLoaderText,
     showHideData: store.dataUpload.showHideData,
     selectedDataSet:store.datasets.selectedDataSet,
-
+    dataLoadedText:store.datasets.dataLoadedText
   };
 })
 
@@ -29,6 +29,20 @@ export class DataUploadLoader extends React.Component {
   constructor() {
     super();
   }
+
+  componentWillUpdate(){
+		var getText = [];
+	  if(this.props.dULoaderValue >= 0 && this.props.dataLoadedText.length != 0){
+		$("#loadingMsgs").empty()
+		getText = Object.values(store.getState().datasets.dataLoadedText);
+		console.log(getText);
+	  }else{
+		$("#loadingMsgs").empty();
+		getText.push(store.getState().datasets.dataLoaderText);
+	  }
+		if(document.getElementById('loadingMsgs') != null)
+		document.getElementById('loadingMsgs').appendChild(this.makeULforData(getText));
+	}
   
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
@@ -44,7 +58,32 @@ export class DataUploadLoader extends React.Component {
       this.props.dispatch(hideDataPreview());
       clearDatasetPreview();
     }
-	
+    makeULforData(array) {
+      var list = document.createElement('ul');
+      var indexNum = Object.keys(this.props.dataLoadedText).find(key => this.props.dataLoadedText[key] === this.props.dataLoaderText);
+      for(var i = 0; i < array.length; i++) {
+        if(indexNum == i){
+          var item = document.createElement('li');
+          var att = document.createAttribute("class");
+          att.value = "democlass";
+          item.setAttributeNode(att);
+          item.appendChild(document.createTextNode(array[i]));
+          list.appendChild(item);
+        }else if(i < indexNum){
+          var item = document.createElement('li');
+          var att = document.createAttribute("class");
+          att.value = "democlass1";
+          item.setAttributeNode(att);
+          item.appendChild(document.createTextNode(array[i]));
+          list.appendChild(item);
+        }else{
+          var item = document.createElement('li');
+          item.appendChild(document.createTextNode(array[i]));
+          list.appendChild(item);
+        }
+      }
+      return list;
+    }
   render() {
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
     //let checked=!this.props.showHideData
@@ -218,11 +257,18 @@ export class DataUploadLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-								<ul class="modal-steps hidden">
-									{/*	<li>----</li>*/}
-									<li class="active">{store.getState().datasets.dataLoaderText}</li>
-									{/*	<li>----</li>*/}
-								</ul>
+
+              <div class="modal-steps" id="loadingMsgs">
+								&nbsp;&nbsp;&nbsp;Please wait while preparing data...
+							</div>
+
+								{/* <ul class="modal-steps hidden">
+										<li>----</li>
+									<li class="active">
+                    {store.getState().datasets.dataLoaderText}
+                  </li>
+										<li>----</li>
+								</ul> */}
 							
 						</div>
 						<div className="col-sm-3 text-center">
