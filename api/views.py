@@ -6590,21 +6590,18 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
 @csrf_exempt
 def view_model_summary_autoML(request):
     model_slug = request.GET['slug']
-    #print model_slug
     instance = Trainer.objects.get(slug=model_slug)
 
     #if instance.viewed is False:
-    from django.http import HttpResponseRedirect
     from django.shortcuts import render
-    import requests
-    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
-    #print url
+    protocol = 'http'
+    if settings.USE_HTTPS:
+        protocol = 'https'
+
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}/'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
+
     try:
-        #response = requests.get(url)
-        #print response
-        #print type(response.body)
-        #return render(request, 'model_summary.html', context=response)
-        context = {"Config":instance}
+        context = {"Response":response_url}
         #instance.viewed=True
         #instance.save()
         return render(request,'model_summary.html',context)
