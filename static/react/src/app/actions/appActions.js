@@ -942,6 +942,9 @@ export function getAppsScoreSummary(slug) {
           dispatch(closeAppsLoaderValue());
           dispatch(hideDataPreview());
         } else if (json.status == INPROGRESS) {
+          if(Object.keys(json.initial_messages).length != 0){
+            dispatch(setAppsLoaderText(json.initial_messages));
+          }
           if (json.message !== null && json.message.length > 0) {
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
