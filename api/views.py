@@ -6604,7 +6604,7 @@ def view_model_summary_autoML(request):
         context = {"Response":response_url}
         #instance.viewed=True
         #instance.save()
-        return render(request,'model_summary.html',context)
+        return render(request,'modelSummary.html',context)
 
     except Exception as err:
         print err
@@ -6632,10 +6632,12 @@ def view_model_summary_detail(request):
             FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
             FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
             FI_dict=FI_dict[1:len(FI_dict):1]
-            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data,'table_data':FI_dict})
+            model_summary_data = dict()
+            model_summary_data['model_summary'] = data['model_summary']
+            model_config.update({'name':instance.name,'slug':instance.slug,'data':model_summary_data,'table_data':FI_dict})
         except Exception as err:
             print err
-            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
