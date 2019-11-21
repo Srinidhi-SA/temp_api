@@ -159,6 +159,12 @@ export class AppsCreateModel extends React.Component {
 		  }
 	
   setPossibleList(event) {
+		if(this.props.currentAppDetails.app_id === 13){
+			let target =  $("#createModelTarget option:selected").text();
+			let targetUniqueVal= this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.name=== target)[0].columnStats.filter(j=>j.displayName === "Unique Values")[0].value
+			targetUniqueVal <=5 &&
+			bootbox.alert(statusMessages("warning","Please proceed with automated prediction to get better results as this dataset has less than 5 unique value for the selected target column"));
+		}
 	this.levelCountsForAutoMl(event);
 	this.props.dispatch(updateSelectedVariable(event));
 }
