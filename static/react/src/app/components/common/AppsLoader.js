@@ -314,7 +314,9 @@ export class AppsLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-							<div class="modal-steps" id="loadingMsgs"></div>
+							<div class="modal-steps" id="loadingMsgs">
+								&nbsp;&nbsp;&nbsp;Please wait while analysing...
+							</div>
 								{/* <ul class="modal-steps"> */}
 								{/*	<li>----</li>*/}
 									{/* <li class="active"></li> */}
