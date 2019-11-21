@@ -1515,7 +1515,10 @@ ul.list_category li { line-height: 2.2em; padding-left: 16px; }
 .accordion-body .panel-body { margin-left: 35px; }
 .bg-primary { background-color: #018983 !important; }
 
-.mm_links { margin:0 auto; }
+.mm_links {
+    margin: 0 auto;
+    list-style-type: none;
+}
 .mm_links li { margin: 20px 20px}
 .mm_links li a { display:block; width:100px; text-align:center; color: #9fd6d0; padding:20px; border-radius:48%; box-shadow: 0 5px 35px 0px rgba(0,0,0,.1); }
 .mm_links li a:hover { color: #92fffc; background-color:#31b1a0   }
