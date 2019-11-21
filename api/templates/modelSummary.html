@@ -518,7 +518,7 @@
       for (var row = 0; row < 1; row++) {
         str += "<tr>"; // open HTML row
 
-        str += `<th rowspan="3" class="left_highlilght">Predicted</th>`;
+        str += `<th rowspan=${matrixTable.length} class="left_highlilght">Predicted</th>`;
         str += "<th>" + matrixTable[row][0] + "</th>";
         str += "<th>" + matrixTable[row][1] + "</th>";
         str += "<th>" + matrixTable[row][2] + "</th>";
