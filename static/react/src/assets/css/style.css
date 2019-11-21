@@ -16458,3 +16458,17 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	color: #b1afaf !important;
 	cursor: not-allowed;
 }
+.democlass {
+	font-weight: bold;
+    margin: 5px;
+    color: white;
+  }
+.modal-steps ul { list-style-type: none; margin:1px; padding:0; }
+.modal-steps ul li:before { 
+	content: '-';
+	padding-right: 10px; 
+}
+.modal-steps ul li.democlass1:before {
+	content: '✓';
+	padding-right: 10px;
+}
