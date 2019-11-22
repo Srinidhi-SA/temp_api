@@ -120,6 +120,9 @@ export class AppsLoader extends React.Component {
 				list.appendChild(item);
 			}else{
 				var item = document.createElement('li');
+				var att = document.createAttribute("class");
+				att.value = "democlass2";
+				item.setAttributeNode(att);
 				item.appendChild(document.createTextNode(array[i]));
 				list.appendChild(item);
 			}

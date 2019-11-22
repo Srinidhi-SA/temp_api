@@ -16463,12 +16463,13 @@ body .p-inputtext:enabled:focus:not(.p-error) {
     margin: 5px;
     color: white;
   }
-.modal-steps ul { list-style-type: none; margin:1px; padding:0; }
-.modal-steps ul li:before { 
-	content: '-';
-	padding-right: 10px; 
+.modal-steps ul li.democlass1::after {
+    content: '✓';
+    color: white;
+    float: right;
 }
-.modal-steps ul li.democlass1:before {
-	content: '✓';
-	padding-right: 10px;
+.modal-steps ul li.democlass2::after {
+    content: '✓';
+    color: grey;
+    float: right;
 }
