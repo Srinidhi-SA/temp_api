@@ -210,12 +210,20 @@
     border-radius: 4px;
     font-weight: 600;
     }
+    .scroll{
+      max-height: 500px;
+      overflow-y: auto;
+      display: block;
+    }
+
   </style>
   <script>
     function printPage() {
+      $("#featureTable tbody").removeClass("scroll");
       window.print();
+      $("#featureTable tbody").addClass("scroll");
     }
-    ;
+
 (function ($) {
 	$.fn.loading = function () {
 		var DEFAULTS = {
@@ -504,6 +512,7 @@
 
       var table = document.getElementById("featureTable");
       table.innerHTML = str;
+      $("#featureTable tbody").addClass("scroll");
     }
 
     function confusionMatrix(matrixTable) {
