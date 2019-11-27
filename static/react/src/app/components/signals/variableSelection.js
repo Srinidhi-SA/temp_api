@@ -278,6 +278,11 @@ export class VariableSelection extends React.Component {
         if(analysisList.length==countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",true);  }, 0);  }
         return list;
     }
+    handleBack=()=>{
+        const slug = this.props.match.params.slug;
+        debugger
+        this.props.history.replace(`/data/${slug}?from=createSignal`);
+      }
     render(){
         var that= this;
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
@@ -396,10 +401,14 @@ export class VariableSelection extends React.Component {
                  
 				
 				<div class="clearfix xs-m-10"></div>
-                <div className="col-lg-5 col-lg-offset-7">
+               <div className="col-lg-2">
+                <Button onClick={this.handleBack} bsStyle="primary"><i className="fa fa-angle-double-left"></i> Back</Button>
+
+               </div>
+                <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
-                        <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
-                          <button type="submit" class="btn btn-primary">Create Signal</button></span>
+                    <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>
                
