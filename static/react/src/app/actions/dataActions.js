@@ -228,7 +228,6 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(closeAppsLoaderValue());
         //clearDatasetPreview()
         //dispatch(hideDataPreview())
-columns
         return {
             type: "DATA_PREVIEW_FOR_LOADER",
             dataPreview,
@@ -236,6 +235,9 @@ columns
         }
     }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+        if(Object.keys(dataPreview.initial_messages).length != 0){
+            dispatch(setDataLoadedText(dataPreview.initial_messages));
+        }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
         }
@@ -269,6 +271,12 @@ export function dispatchDataPreviewAutoML(dataPreview,slug){
         slug,
     }
 }
+export function setDataLoadedText(text){
+    return {
+        type: "DATA_LOADED_TEXT",
+        text
+    }
+  }
 
 function dispatchDataPreviewLoadingMsg(dataPreview){
     let message = dataPreview.message

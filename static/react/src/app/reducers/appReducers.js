@@ -35,6 +35,7 @@ export default function reducer(state = {
         appsLoaderModal:false,
         appsLoaderPerValue:-1,
         appsLoaderText :"",
+        appsLoadedText :["Loading..."],
         setAppsLoaderValues:{},
         modelSummaryFlag:false,
         parameterTuningFlag:false,
@@ -497,6 +498,12 @@ export default function reducer(state = {
         }
     }
     break;
+    case "APPS_LOADED_TEXT":{
+        return {
+            ...state,
+            appsLoadedText : action.text,
+        }
+    }
     case "HIDE_APPS_LOADER_MODAL":
     {
 

@@ -210,12 +210,20 @@
     border-radius: 4px;
     font-weight: 600;
     }
+    .scroll{
+      max-height: 500px;
+      overflow-y: auto;
+      display: block;
+    }
+
   </style>
   <script>
     function printPage() {
+      $("#featureTable tbody").removeClass("scroll");
       window.print();
+      $("#featureTable tbody").addClass("scroll");
     }
-    ;
+
 (function ($) {
 	$.fn.loading = function () {
 		var DEFAULTS = {
@@ -504,6 +512,7 @@
 
       var table = document.getElementById("featureTable");
       table.innerHTML = str;
+      $("#featureTable tbody").addClass("scroll");
     }
 
     function confusionMatrix(matrixTable) {
@@ -517,21 +526,17 @@
 
       for (var row = 0; row < 1; row++) {
         str += "<tr>"; // open HTML row
-
-        str += `<th rowspan=${matrixTable.length} class="left_highlilght">Predicted</th>`;
-        str += "<th>" + matrixTable[row][0] + "</th>";
-        str += "<th>" + matrixTable[row][1] + "</th>";
-        str += "<th>" + matrixTable[row][2] + "</th>";
-        str += "</tr>"; // close HTML row
-
+          str += `<th rowspan=${matrixTable.length} class="left_highlilght">Predicted</th>`;
+            for (var col = 0; col < matrixTable[row].length; col++)
+             str += "<th>" + matrixTable[row][col] + "</th>";
+             str += "</tr>"; // close HTML row
       }
 
       for (var row = 1; row < matrixTable.length; row++) {
         str += "<tr>"; // open HTML row
-        str += "<td>" + matrixTable[row][0] + "</td>";
-        str += "<td>" + matrixTable[row][1] + "</td>";
-        str += "<td>" + matrixTable[row][2] + "</td>";
-        str += "</tr>"; // close HTML row
+            for (var col = 0; col < matrixTable[row].length; col++)
+            str += "<td>" + matrixTable[row][col] + "</td>";
+            str += "</tr>"; // close HTML row
       }
       return str;
     }

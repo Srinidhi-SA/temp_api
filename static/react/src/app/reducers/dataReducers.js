@@ -42,6 +42,7 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
+  dataLoadedText:[],
   dataTransformSettings:[],
   variableTypeListModal:false,
   selectedColSlug:"",
@@ -538,6 +539,13 @@ export default function reducer(state = {
     {
       return {...state,
       loading_message:action.message}
+    }
+    break;
+    case "DATA_LOADED_TEXT":{
+      return {
+      ...state,
+      dataLoadedText : action.text
+      }
     }
     break;
     case "CLEAR_LOADING_MSG":
