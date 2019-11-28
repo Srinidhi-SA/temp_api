@@ -6496,7 +6496,8 @@ def get_all_signals(request):
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
-        users_obj = User.objects.filter(~Q(id = request.user.id,is_active=True))
+        users_obj = User.objects.filter(~Q(is_active=False))
+        users_obj = users_obj.exclude(id=request.user.id)
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
@@ -6522,24 +6523,21 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
 @csrf_exempt
 def view_model_summary_autoML(request):
     model_slug = request.GET['slug']
-    #print model_slug
     instance = Trainer.objects.get(slug=model_slug)
 
     #if instance.viewed is False:
-    from django.http import HttpResponseRedirect
     from django.shortcuts import render
-    import requests
-    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
-    #print url
+    protocol = 'http'
+    if settings.USE_HTTPS:
+        protocol = 'https'
+
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
+
     try:
-        #response = requests.get(url)
-        #print response
-        #print type(response.body)
-        #return render(request, 'model_summary.html', context=response)
-        context = {"Config":instance}
+        context = {"Response":response_url}
         #instance.viewed=True
         #instance.save()
-        return render(request,'model_summary.html',context)
+        return render(request,'modelSummary.html',context)
 
     except Exception as err:
         print err
@@ -6567,10 +6565,12 @@ def view_model_summary_detail(request):
             FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
             FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
             FI_dict=FI_dict[1:len(FI_dict):1]
-            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data,'table_data':FI_dict})
+            model_summary_data = dict()
+            model_summary_data['model_summary'] = data['model_summary']
+            model_config.update({'name':instance.name,'slug':instance.slug,'data':model_summary_data,'table_data':FI_dict})
         except Exception as err:
             print err
-            model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
@@ -6590,15 +6590,4 @@ def dump_complete_messages(request, slug=None):
         return JsonResponse({'result': "Success"})
     except Exception as e:
         return JsonResponse({'result': "Failed"})
-        print e
-
-def initial_messages(request,slug=None):
-    try:
-        job = Job.objects.get(slug=slug)
-
-        if not job:
-            return JsonResponse({'result': 'Failed'})
-        messages = json.loads(job.messages)
-        return JsonResponse({'messages':messages})
-    except Exception as e:
         print e

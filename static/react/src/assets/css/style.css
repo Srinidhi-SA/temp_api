@@ -16452,9 +16452,24 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .btn-sig-info:hover, .btn-graph-info:hover { color:#32afa3}
 
 .col-md-6 .p-multiselect.p-component { width:175px; }
-.col-md-6 .p-multiselect.p-component .p-multiselect-label { text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+.col-md-6 .p-multiselect.p-component .p-multiselect-label { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding:1px;}
 
 .scrollable-menu li.greyDisable a {
 	color: #b1afaf !important;
 	cursor: not-allowed;
+}
+.democlass {
+	font-weight: bold;
+    margin: 5px;
+    color: white;
+  }
+.modal-steps ul li.democlass1::after {
+    content: '✓';
+    color: white;
+    float: right;
+}
+.modal-steps ul li.democlass2::after {
+    content: '✓';
+    color: grey;
+    float: right;
 }

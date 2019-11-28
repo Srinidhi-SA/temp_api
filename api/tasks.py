@@ -4,7 +4,6 @@ import random
 import time
 import base64
 import mimetypes
-from selenium import webdriver
 import signal
 
 import os
@@ -1068,21 +1067,31 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                                  settings.OUTLOOK_DETAILS)
             result = r.json()
             access_token = result['access_token']
-            content = "AutoML Dataupload successful. Model is created."
-            app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
-            attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
+            protocol = 'http'
+            if settings.USE_HTTPS:
+                protocol = 'https'
+
+            Result_URL = '{}://{}/api/view_model_summary_autoML/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],trainer_object.slug)
+            #content = "AutoML Dataupload successful. Model is created."
+            content = Result_URL
+            #app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
+            #attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
             try:
                 if trainer_object.email is not None:
                     return_mail_id = trainer_object.email
+                    #mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                    #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                     mail('send', access_token=access_token, return_mail_id=return_mail_id,
-                         subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
+                         subject='Marlabs-AutoML Success', content=content)
                 else:
                     user_id = trainer_object.created_by_id
                     user_object = User.objects.get(id=user_id)
                     return_mail_id = user_object.email
                     if return_mail_id is not None:
+                        #mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                        #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                         mail('send', access_token=access_token, return_mail_id=return_mail_id,
-                             subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
+                             subject='Marlabs-AutoML Success', content=content)
 
             except Exception as err:
                 print err
@@ -1091,14 +1100,15 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             pass
 
 
-def mail(action_type=None, access_token=None, return_mail_id=None, subject=None, content=None, attachments=None):
+def mail(action_type=None, access_token=None, return_mail_id=None, subject=None, content=None):
     # access_token = access_token
     # If there is no token in the session, redirect to home
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
         try:
-            messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
+            #messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
+            messages = send_my_messages(access_token, return_mail_id, subject, content)
             if messages[:3] == '202':
                 print "Mail Sent"
         except Exception as e:
@@ -1106,7 +1116,7 @@ def mail(action_type=None, access_token=None, return_mail_id=None, subject=None,
             print "Some issue with mail sending module..."
 
 
-def send_my_messages(access_token, return_mail_id, subject, content, file_to_attach):
+def send_my_messages(access_token, return_mail_id, subject, content):
     '''
   Replies to the mail with attachments
   '''
@@ -1117,7 +1127,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_to_att
     #  - Only first 10 results returned
     #  - Only return the ReceivedDateTime, Subject, and From fields
     #  - Sort the results by the ReceivedDateTime field in descending order
-
+    '''
     b64_content = base64.b64encode(open(file_to_attach, 'rb').read())
     mime_type = mimetypes.guess_type(file_to_attach)[0]
     mime_type = mime_type if mime_type else ''
@@ -1125,7 +1135,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_to_att
                       'ContentBytes': b64_content.decode('utf-8'),
                       'ContentType': mime_type,
                       'Name': file_to_attach.split('/')[-1]}
-
+    '''
     payload = {
 
         "Message": {
@@ -1134,7 +1144,8 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_to_att
             "Body": {
 
                 "ContentType": "Text",
-                "Content": content
+                "Content": "Hi There,\n\nPlease go through the attached link in order to view your Model Summary.\n\n\n"+content,
+
             },
             "ToRecipients": [
                 {
@@ -1143,7 +1154,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_to_att
                     }
                 }
             ],
-            'Attachments': [attached_files]
+            #'Attachments': [attached_files]
         },
         "SaveToSentItems": "true",
 
@@ -1158,7 +1169,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, file_to_att
     else:
         return "{0}: {1}".format(r.status_code, r.text)
 
-
+'''
 def send_devtools(driver, cmd, params={}):
     resource = "/session/%s/chromium/send_command_and_get_result" % driver.session_id
     url = driver.command_executor._url + resource
@@ -1196,3 +1207,4 @@ def get_model_summary_pdf(app_slug, model_slug):
     path = '{}/{}.pdf'.format(settings.MODEL_SUMMARY_DOWNLOAD_PATH, model_slug)
     save_as_pdf(driver, path, {'landscape': False})
     return path
+'''
