@@ -6564,7 +6564,8 @@ def get_all_signals(request):
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
-        users_obj = User.objects.filter(~Q(id = request.user.id,is_active=True))
+        users_obj = User.objects.filter(~Q(is_active=False))
+        users_obj = users_obj.exclude(id=request.user.id)
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})

@@ -118,6 +118,10 @@ export class AppsLoader extends React.Component {
 				item.setAttributeNode(att);
 				item.appendChild(document.createTextNode(array[i]));
 				list.appendChild(item);
+			}else if(array.length === 1){
+				var item = document.createElement('li');
+				item.appendChild(document.createTextNode(array[i]));
+				list.appendChild(item);
 			}else{
 				var item = document.createElement('li');
 				var att = document.createAttribute("class");
