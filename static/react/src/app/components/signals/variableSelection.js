@@ -40,6 +40,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         allSignalList:store.signals.allSignalList,
         CopyTimeDimension : store.datasets.CopyTimeDimension,
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage
     };
 })
 
@@ -159,21 +160,26 @@ export class VariableSelection extends React.Component {
     }
 
     componentWillMount(){
-        if (this.props.dataPreview == null) {
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        if(this.props.fromVariableSelectionPage){
+
+      }else{
+            if (this.props.dataPreview == null) {
+                this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+            }
+            this.props.dispatch(closeCsLoaderModal());
+            this.props.dispatch(resetSelectedTargetVariable());
+            this.props.dispatch(updateSelectAllAnlysis(false));
+            if(this.props.dataPreview != null)
+            this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
         }
-        this.props.dispatch(closeCsLoaderModal());
-        this.props.dispatch(resetSelectedTargetVariable());
-        this.props.dispatch(updateSelectAllAnlysis(false));
-        if(this.props.dataPreview != null)
-        this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
     }
 
     componentDidMount(){
+        if(this.props.fromVariableSelectionPage && this.props.selVarSlug != null){
+            document.getElementsByName(this.props.selVarSlug)[0].selected = true
+        }
         var that = this;
         this.props.dispatch(getAllSignalList());
-
-
     }
 
     componentWillUpdate(){
@@ -280,7 +286,6 @@ export class VariableSelection extends React.Component {
     }
     handleBack=()=>{
         const slug = this.props.match.params.slug;
-        debugger
         this.props.history.replace(`/data/${slug}?from=createSignal`);
       }
     render(){

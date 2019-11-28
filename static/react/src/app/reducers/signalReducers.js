@@ -31,6 +31,7 @@ export default function reducer(state = {
   latestSignals:{},
   selected_signal_type:"",
   toggleValues:{},
+  fromVariableSelectionPage:false,
 }, action) {
   // console.log("in SIGNAL reducer!!");
   // console.log(action);
@@ -328,6 +329,13 @@ export default function reducer(state = {
       signalAnalysis:{}
     }
   }
+  break;
+  case "FROM_VARIABLE_SELECTION_PAGE":{
+    return{
+      ...state,
+      fromVariableSelectionPage:action.flag
+    }
+  }break;
   case "ALL_SIGNAL_LIST":
       {
         return {

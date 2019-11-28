@@ -32,6 +32,7 @@ import {resetSelectedTargetVariable} from "../../actions/signalActions";
         modelSummary:store.apps.modelSummary,
         createScoreShowVariables:store.datasets.createScoreShowVariables,
         CopyTimeDimension: store.datasets.CopyTimeDimension,
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage
     };
 } )
 
@@ -68,6 +69,9 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         const from = this.getValueOfFromParam();
         if (from === 'data_cleansing') {
+
+        }else if(this.props.fromVariableSelectionPage){
+            
         }
         else{
     	window.scrollTo(0, 0);
