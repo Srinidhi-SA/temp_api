@@ -555,11 +555,24 @@ class TrainerView(viewsets.ModelViewSet):
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
             data_cleansing = dict()
+
             try:
-                data_cleansing = config['dataCleansing']['columnsSettings']
+                data = config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']
+                if data['outlier_removal']['selected']:
+                    for op_index, operation in enumerate(data['outlier_removal']['operations']):
+                        operation_items = dict()
+                        if operation['columns']:
+                            for index, i in enumerate(operation['columns']):
+                                data_items = dict()
+                                data_items['treatment'] = operation['name']
+                                data_items['name'] = i['name']
+                                data_items['type'] = i['datatype']
+                                operation_items[index] = data_items
+                                print operation_items
+                            data_cleansing[op_index] = operation_items
             except Exception as err:
                 print err
-            return JsonResponse({'name':trainer_obj.name,'dc_config': data_cleansing,'config':config})
+            return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
             print err
