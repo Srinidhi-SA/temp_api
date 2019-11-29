@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable, saveSignalName} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -40,7 +40,8 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         allSignalList:store.signals.allSignalList,
         CopyTimeDimension : store.datasets.CopyTimeDimension,
-        fromVariableSelectionPage : store.signals.fromVariableSelectionPage
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage,
+        setSigName : store.signals.setSigName
     };
 })
 
@@ -175,8 +176,15 @@ export class VariableSelection extends React.Component {
     }
 
     componentDidMount(){
-        if(this.props.fromVariableSelectionPage && this.props.selVarSlug != null){
-            document.getElementsByName(this.props.selVarSlug)[0].selected = true
+        if(this.props.fromVariableSelectionPage){
+            if(this.props.selVarSlug != null)
+                document.getElementsByName(this.props.selVarSlug)[0].selected = true;
+            var hel = store.getState().datasets.CopyOfMeasures.filter(i=>i.slug==this.props.selVarSlug)[0];
+            if(hel.targetColumn === true && hel.actualColumnType === "measure")
+                $("#idCategoricalVar")[0].parentNode.classList.remove("hidden")
+                if(hel.columnType === "dimension")
+                    $("#idCategoricalVar")[0].checked = true
+            $("#createSname")[0].value = this.props.setSigName;
         }
         var that = this;
         this.props.dispatch(getAllSignalList());
@@ -288,6 +296,9 @@ export class VariableSelection extends React.Component {
         const slug = this.props.match.params.slug;
         this.props.history.replace(`/data/${slug}?from=createSignal`);
       }
+    setSignalName(event){
+        this.props.dispatch(saveSignalName(event.target.value));
+    }
     render(){
         var that= this;
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
@@ -412,7 +423,7 @@ export class VariableSelection extends React.Component {
                </div>
                 <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
-                    <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                    <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
                     <button type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>

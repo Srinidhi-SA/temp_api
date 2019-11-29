@@ -21,6 +21,7 @@ export default function reducer(state = {
   getVarType:null,
   getVarText:null,
   selVarSlug:null,
+  setSigName:"",
   loading_message:[],
   viewChartFlag:false,
   chartClassId :"",
@@ -139,6 +140,13 @@ export default function reducer(state = {
         }
       }
       break;
+    case "SET_SIGNAL_NAME":{
+      return{
+        ...state,
+        setSigName: action.sigName
+      }
+    }
+    break;
     case "SEL_PREDICTION":
       {
         return {

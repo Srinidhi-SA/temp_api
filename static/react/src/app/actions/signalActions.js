@@ -565,6 +565,9 @@ export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   }
 
 }
+export function saveSignalName(sigName) {
+  return {type: "SET_SIGNAL_NAME", sigName}
+}
 
 export function createcustomAnalysisDetails() {
   var transformSettings = store.getState().datasets.dataTransformSettings;
