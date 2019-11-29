@@ -554,7 +554,12 @@ class TrainerView(viewsets.ModelViewSet):
         try:
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
-            return JsonResponse({'name':trainer_obj.name,'config': config})
+            data_cleansing = dict()
+            try:
+                data_cleansing = config['dataCleansing']['columnsSettings']
+            except Exception as err:
+                print err
+            return JsonResponse({'name':trainer_obj.name,'dc_config': data_cleansing,'config':config})
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
             print err
