@@ -222,6 +222,15 @@ class SignalView(viewsets.ModelViewSet):
             print err
             return JsonResponse({'message':'Signals sharing failed.'})
 
+    @detail_route(methods=['get'])
+    def edit(self, request, *args, **kwargs):
+        try:
+            signal_obj = Insight.objects.get(slug=self.kwargs.get('slug'))
+            config = json.loads(signal_obj.config)
+            return JsonResponse({'name':signal_obj.name,'config': config})
+        except Exception as err:
+            return JsonResponse({'message': 'Config not found.'})
+            print err
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
