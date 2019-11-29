@@ -78,6 +78,8 @@ export default function reducer(state = {
   shareItemType:"",
   isNoOfBinsEnabled:false,
   shareModelShow:false,
+  dtModelShow:false,
+  dtRule: "",
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   modelEditconfig:"",
@@ -192,6 +194,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DT_MODAL_SHOW":
+        {
+          return {
+            ...state,
+            dtModelShow: true,
+            dtRule: action.rule,
+          }
+        }
+        break;
       case "SET_EDIT_MODEL":
       {
         return {
@@ -211,6 +222,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DT_MODAL_HIDE":
+        {
+          return {
+            ...state,
+            dtModelShow: false
+          }
+        }
+        break;
     case "SELECTED_ANALYSIS_TYPE":
       {
         return {
