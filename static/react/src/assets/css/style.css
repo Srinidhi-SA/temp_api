@@ -9786,7 +9786,7 @@ pre {
 	-moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1); }
 .btn-default.btn-round, .btn-warning.btn-round { padding: 5px 10px;}
-td .btn-default.btn-round {  padding: 0 10px; margin:0; }
+td .btn-default.btn-round {  padding: 0 10px; margin:0; cursor: pointer; }
 .btn-rounded.btn-lg {
 	border-radius: 5px
 }
@@ -15601,10 +15601,10 @@ html{
     cursor: pointer!important;
 }
 
-.node circle{
-    stroke: steelblue !important;
+/* .node circle{
+    stroke: steelblue;
     stroke-width: 0.8px !important;
-}
+} */
 
 .link{
     fill: none !important;
@@ -16472,4 +16472,62 @@ body .p-inputtext:enabled:focus:not(.p-error) {
     content: '✓';
     color: grey;
     float: right;
+}
+#tree-vertical .node {
+	cursor: pointer;
+}
+
+#tree-vertical .node circle {
+	stroke-width: 3px !important;
+}
+
+#tree-vertical .node text {
+	font: 12px sans-serif;
+}
+
+#tree-vertical .link {
+	fill: none;
+	stroke: #ccc;
+	stroke-width: 2px;
+}
+
+#tree-vertical {
+	margin-bottom: 10px;
+	overflow: auto;
+	height: 400px;
+}
+
+#tree-vertical svg {
+	display: block;
+	position: relative;
+    top: -50px;
+    left: -95px;
+}
+
+#tree-vertical text {
+	max-width: 50px;
+	display: block;
+}
+
+ .dtTooltip {
+	position: absolute;
+	text-align: center;
+	padding: 5px 10px;
+	font-size: 12px;
+	background: #eff2f5;
+	border: solid 1px #88bae4;
+	border-radius: 8px;
+	pointer-events: none;
+	max-width: 250px;
+	z-index: 999999;
+}
+.dtModal{
+	width: 800px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.dtModal .modal-content{
+	min-width: 800px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }

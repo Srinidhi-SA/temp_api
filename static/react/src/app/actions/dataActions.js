@@ -345,12 +345,23 @@ export function setEditModelValues(dataSlug,modelSlug,flag) {
       itemType
     }
   }
+  export function openDTModalAction(rule) {
+    return {
+      type: "DT_MODAL_SHOW",
+      rule,
+    }
+  }
 
   export function closeShareModalAction() {
      return {
        type: "SHARE_MODAL_HIDE",
      }
   }
+  export function closeDtModalAction() {
+    return {
+      type: "DT_MODAL_HIDE",
+    }
+ }
 export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
