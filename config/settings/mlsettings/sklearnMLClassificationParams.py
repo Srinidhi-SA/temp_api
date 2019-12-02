@@ -1210,6 +1210,33 @@ TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS = [
 TENSORFLOW_LAMBDA_FUNCTIONS = [
     {"name": "2*X", "selected": True, "displayName": "2*X"},
 ]
+SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
+    {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
+    {"name": "hinge", "selected": False, "displayName": "hinge"},
+    {"name": "categorical_hinge", "selected": False, "displayName": "categorical_hinge"},
+    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
+    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
+    {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
+    {"name": "kullback_leibler_divergence", "selected": False, "displayName": "kullback_leibler_divergence"},
+]
+SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
+    {"name": "SGD", "selected": False, "displayName": "SGD"},
+    {"name": "RMSprop", "selected": False, "displayName": "RMSprop"},
+    {"name": "Adagrad", "selected": False, "displayName": "Adagrad"},
+    {"name": "Adadelta", "selected": False, "displayName": "Adadelta"},
+    {"name": "Adam", "selected": False, "displayName": "Adam"},
+    {"name": "Adamax", "selected": False, "displayName": "Adamax"},
+    {"name": "Nadam", "selected": False, "displayName": "Nadam"},
+]
+TF_CLASSIFICATION_METRICS = [
+    {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
+    {"name": "categorical_accuracy", "selected": False, "displayName": "categorical_accuracy"},
+    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
+    {"name": "FalseNegatives", "selected": False, "displayName": "FalseNegatives"},
+    {"name": "FalsePositives", "selected": False, "displayName": "FalsePositives"},
+    {"name": "sparse_categorical_accuracy", "selected": False, "displayName": "sparse_categorical_accuracy"},
+    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
+]
 TENSORFLOW_DENSE_PARAMETERS = [
     {
         "name": "activation",
@@ -1388,7 +1415,77 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
         "description": "XYZ",
         "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
         "acceptedValue": None,
-        "valueRange": [0.0, 1.0],
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "loss",
+        "displayName": "Loss",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "optimizer",
+        "displayName": "Optimizer",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "batch_size",
+        "displayName": "Batch Size",
+        "description": "XYZ.",
+        "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": [0.0, 100.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "number_of_epochs",
+        "displayName": "Number of Epochs",
+        "description": "XYZ.",
+        "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": [0.0, 10000.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "metrics",
+        "displayName": "Metrics",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in TF_CLASSIFICATION_METRICS],
+        "acceptedValue": None,
+        "valueRange": None,
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
