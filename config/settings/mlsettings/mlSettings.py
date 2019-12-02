@@ -382,6 +382,14 @@ else:
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
                 "description":"This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
             },
+            {
+                "algorithmName": "TensorFlow",
+                "selected": False,
+                "parameters": SKLEARN_ML_TENSORFLOW_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+                "description":"This is implementation of tensorflow algorithm"
+            },
             # {
             #     "algorithmName": "SVM",
             #     "selected": False,
