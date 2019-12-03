@@ -211,8 +211,7 @@ componentDidMount = () => {
                 var tarinTest= this.props.modelEditconfig.config.config.FILE_SETTINGS.validationTechnique[0].value 
                 var subLevelOnEdit = this.props.modelEditconfig.config.config.FILE_SETTINGS.targetLevel 
                 var metricOnEdit = this.props.modelEditconfig.config.config.ALGORITHM_SETTING[0].hyperParameterSetting[0].params[0].defaultValue[0].name
-                var modelValidation= this.props.modelEditconfig.config.config.
-                FILE_SETTINGS.validationTechnique[0].displayName!="K Fold Validation"?"trainTestValidation":"crossValidation";
+                var modelValidation= this.props.modelEditconfig.config.config.FILE_SETTINGS.validationTechnique[0].displayName!="K Fold Validation"?"trainTestValidation":"crossValidation";
                 var duplicateAttributes = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.DATA_CLEANSING.overall_settings[0].selected
                 var duplicateObservations = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.DATA_CLEANSING.overall_settings[1].selected
                 var binningSelected=this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected
@@ -301,7 +300,7 @@ componentDidMount = () => {
             } else {
                 renderSelectBox = <option>No Variables</option>
             }
-            if ((this.props.targetLevelCounts != null && this.props.currentAppDetails.app_id != 13)||(store.getState().apps.targetLevelCounts!=""&&this.props.editmodelFlag)) {
+            if ((this.props.targetLevelCounts != "" && this.props.currentAppDetails.app_id != 13)||(store.getState().apps.targetLevelCounts!=""&&this.props.editmodelFlag)) {
                 renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                     <option value="">--Select--</option>
                     {this.props.editmodelFlag?store.getState().apps.targetLevelCounts.sort().map((item,i)=>{
@@ -313,7 +312,7 @@ componentDidMount = () => {
                     }
                     )}
                 </select>
-            }else if(this.props.currentAppDetails.app_id === 13){
+            }else if(this.props.currentAppDetails.app_id === 13 && this.state.targetCountVal != ""){
                 renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                     <option value="">--Select--</option>
                     {
@@ -416,7 +415,7 @@ componentDidMount = () => {
 
                                     {/*<!-- /.col-lg-4 -->*/}
 
-                                    {(this.props.targetLevelCounts != "") ? 
+                                    {(this.props.targetLevelCounts != "" && this.props.currentAppDetails.app_id != 13) ? 
                                         (<div className="xs-mt-20 xs-mb-20">
                                             <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
                                             <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
