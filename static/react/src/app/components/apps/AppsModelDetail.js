@@ -49,7 +49,7 @@ export class AppsModelDetail extends React.Component {
   }
   componentDidMount() {
 		let currentModel= this.props.modelSlug;
-		if(this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
+		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
 		}
 		window.scrollTo(0, 0);

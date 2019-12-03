@@ -17,9 +17,10 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		appsLoaderModal:store.apps.appsLoaderModal,
 		appsLoaderPerValue:store.apps.appsLoaderPerValue,
 		appsLoaderText:store.apps.appsLoaderText,
+		appsLoadedText:store.apps.appsLoadedText,
 		appsLoaderImage:store.apps.appsLoaderImage,
 		currentAppId: store.apps.currentAppId,
-    modelSlug: store.apps.modelSlug,
+	    modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
@@ -33,34 +34,46 @@ export class AppsLoader extends React.Component {
   constructor(){
     super();
 	}
+	componentWillUpdate(){
+		var getText = [];
+	  if(this.props.appsLoaderPerValue >= 0 && getText.length <= 1){ 
+		$("#loadingMsgs").empty()
+		getText = Object.values(store.getState().apps.appsLoadedText);
+		console.log(getText);
+	  }else{
+		$("#loadingMsgs").empty();
+		getText.push(store.getState().apps.appsLoaderText);
+	  }
+		if(document.getElementById('loadingMsgs') != null)
+		document.getElementById('loadingMsgs').appendChild(this.makeUL(getText));
+	}
 	
 	openModelPopup(){
-  	this.props.dispatch(openAppsLoaderValue())
-  }
-  valueStore = () =>{
-	let timer = setInterval(() => {
-		if(this.props.setAppsLoaderValues[this.props.modelSlug].status === "INPROGRESS"){
-	  	return fetch(API + '/api/trainer/' + this.props.modelSlug + '/', {
-	  		method: 'get',
-	  		headers: getHeader(getUserDetailsOrRestart.get().userToken)
-			}).then(response => response.json())
-			.then(responsejson => {
-				if(responsejson.message[0].globalCompletionPercentage <= 100){
-					if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[0].globalCompletionPercentage){
-						this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[0].globalCompletionPercentage,responsejson.status))
-						this.props.dispatch(getAppsModelList(1));
+  		this.props.dispatch(openAppsLoaderValue())
+  	}
+	valueStore = () =>{
+		let timer = setInterval(() => {
+			if(this.props.setAppsLoaderValues[this.props.modelSlug].status === "INPROGRESS"){
+			return fetch(API + '/api/trainer/' + this.props.modelSlug + '/', {
+				method: 'get',
+				headers: getHeader(getUserDetailsOrRestart.get().userToken)
+				}).then(response => response.json())
+				.then(responsejson => {
+					if(responsejson.message[0].globalCompletionPercentage <= 100){
+						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[0].globalCompletionPercentage){
+							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[0].globalCompletionPercentage,responsejson.status))
+							this.props.dispatch(getAppsModelList(1));
+						}
 					}
-				}
-			})
+				})
+			}
+		if (this.props.setAppsLoaderValues[this.props.modelSlug].value === 100){
+			$(".notifyBtn").trigger('click');
+		clearInterval(timer);
+			this.props.dispatch(updateModelSummaryFlag(true));
 		}
-	 if (this.props.setAppsLoaderValues[this.props.modelSlug].value === 100){
-		 $(".notifyBtn").trigger('click');
-	   clearInterval(timer);
-		this.props.dispatch(updateModelSummaryFlag(true));
-	 }
-	},10000);
-
-}
+		},10000);
+	}
   closeModelPopup(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
@@ -85,6 +98,40 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(handleJobProcessing(this.props.modelSlug));
 		this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
+	}
+
+	makeUL(array) {
+		var list = document.createElement('ul');
+		var indexNum = Object.keys(this.props.appsLoadedText).find(key => this.props.appsLoadedText[key] === this.props.appsLoaderText);
+		for(var i = 0; i < array.length; i++) {
+			if(indexNum == i){
+				var item = document.createElement('li');
+				var att = document.createAttribute("class");
+				att.value = "democlass";
+				item.setAttributeNode(att);
+				item.appendChild(document.createTextNode(array[i]));
+				list.appendChild(item);
+			}else if(i < indexNum){
+				var item = document.createElement('li');
+				var att = document.createAttribute("class");
+				att.value = "democlass1";
+				item.setAttributeNode(att);
+				item.appendChild(document.createTextNode(array[i]));
+				list.appendChild(item);
+			}else if(array.length === 1){
+				var item = document.createElement('li');
+				item.appendChild(document.createTextNode(array[i]));
+				list.appendChild(item);
+			}else{
+				var item = document.createElement('li');
+				var att = document.createAttribute("class");
+				att.value = "democlass2";
+				item.setAttributeNode(att);
+				item.appendChild(document.createTextNode(array[i]));
+				list.appendChild(item);
+			}
+		}
+		return list;
 	}
 
   render() {
@@ -274,11 +321,14 @@ export class AppsLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-								<ul class="modal-steps">
+							<div class="modal-steps" id="loadingMsgs">
+								&nbsp;&nbsp;&nbsp;Please wait while analysing...
+							</div>
+								{/* <ul class="modal-steps"> */}
 								{/*	<li>----</li>*/}
-									<li class="active">{store.getState().apps.appsLoaderText}</li>
+									{/* <li class="active"></li> */}
 								{/*	<li>----</li>*/}
-								</ul>
+								{/* </ul> */}
 							
 						</div>
 						<div className="col-sm-3 text-center">
