@@ -559,23 +559,31 @@ class TrainerView(viewsets.ModelViewSet):
             try:
                 data = config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']
                 if data['outlier_removal']['selected']:
-                    for op_index, operation in enumerate(data['outlier_removal']['operations']):
-                        operation_items = dict()
+                    index = 0
+                    for operation in data['outlier_removal']['operations']:
                         if operation['columns']:
-                            for index, i in enumerate(operation['columns']):
+                            for i in operation['columns']:
                                 data_items = dict()
                                 data_items['treatment'] = operation['name']
                                 data_items['name'] = i['name']
                                 data_items['type'] = i['datatype']
-                                operation_items[index] = data_items
-                                print operation_items
-                            data_cleansing[op_index] = operation_items
+                                data_cleansing[index] = data_items
+                                index += 1
+
+                if data['missing_value_treatment']['selected']:
+                    index = 0
+                    for operation in data['missing_value_treatment']['operations']:
+                        if operation['columns']:
+                            for i in operation['columns']:
+                                data_items = dict()
+
             except Exception as err:
                 print err
             return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
         except Exception as err:
-            return JsonResponse({'message': 'Config not found.'})
             print err
+            return JsonResponse({'message': 'Config not found.'})
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -775,6 +783,7 @@ class ScoreView(viewsets.ModelViewSet):
             return JsonResponse({'message': 'done'})
         except Exception as err:
             print err
+
 
 class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
