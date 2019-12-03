@@ -5834,9 +5834,7 @@ def delete_and_keep_only_ten_from_all_models(request):
 def get_algorithm_config_list(request):
     try:
         app_type = request.GET['app_type']
-        print app_type
         mode = request.GET['mode']
-        print mode
     except:
         app_type = "CLASSIFICATION"
     try:
