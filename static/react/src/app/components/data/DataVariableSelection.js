@@ -36,6 +36,8 @@ import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
         CopyTimeDimension: store.datasets.CopyTimeDimension,
         modelEditconfig:store.datasets.modelEditconfig,
         editmodelFlag:store.datasets.editmodelFlag,
+
+
         fromVariableSelectionPage : store.signals.fromVariableSelectionPage
     };
 } )
