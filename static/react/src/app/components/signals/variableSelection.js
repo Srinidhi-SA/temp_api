@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable, saveSignalName} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -40,6 +40,8 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         allSignalList:store.signals.allSignalList,
         CopyTimeDimension : store.datasets.CopyTimeDimension,
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage,
+        setSigName : store.signals.setSigName
     };
 })
 
@@ -159,21 +161,33 @@ export class VariableSelection extends React.Component {
     }
 
     componentWillMount(){
-        if (this.props.dataPreview == null) {
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        if(this.props.fromVariableSelectionPage){
+
+      }else{
+            if (this.props.dataPreview == null) {
+                this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+            }
+            this.props.dispatch(closeCsLoaderModal());
+            this.props.dispatch(resetSelectedTargetVariable());
+            this.props.dispatch(updateSelectAllAnlysis(false));
+            if(this.props.dataPreview != null)
+            this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
         }
-        this.props.dispatch(closeCsLoaderModal());
-        this.props.dispatch(resetSelectedTargetVariable());
-        this.props.dispatch(updateSelectAllAnlysis(false));
-        if(this.props.dataPreview != null)
-        this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
     }
 
     componentDidMount(){
+        if(this.props.fromVariableSelectionPage){
+            if(this.props.selVarSlug != null)
+                document.getElementsByName(this.props.selVarSlug)[0].selected = true;
+            var hel = store.getState().datasets.CopyOfMeasures.filter(i=>i.slug==this.props.selVarSlug)[0];
+            if(hel.targetColumn === true && hel.actualColumnType === "measure")
+                $("#idCategoricalVar")[0].parentNode.classList.remove("hidden")
+                if(hel.columnType === "dimension")
+                    $("#idCategoricalVar")[0].checked = true
+            $("#createSname")[0].value = this.props.setSigName;
+        }
         var that = this;
         this.props.dispatch(getAllSignalList());
-
-
     }
 
     componentWillUpdate(){
@@ -277,6 +291,13 @@ export class VariableSelection extends React.Component {
         if(analysisList.length!=countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",false);  }, 0);  }
         if(analysisList.length==countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",true);  }, 0);  }
         return list;
+    }
+    handleBack=()=>{
+        const slug = this.props.match.params.slug;
+        this.props.history.replace(`/data/${slug}?from=createSignal`);
+      }
+    setSignalName(event){
+        this.props.dispatch(saveSignalName(event.target.value));
     }
     render(){
         var that= this;
@@ -396,10 +417,14 @@ export class VariableSelection extends React.Component {
                  
 				
 				<div class="clearfix xs-m-10"></div>
-                <div className="col-lg-5 col-lg-offset-7">
+               <div className="col-lg-2">
+                <Button onClick={this.handleBack} bsStyle="primary"><i className="fa fa-angle-double-left"></i> Back</Button>
+
+               </div>
+                <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
-                        <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
-                          <button type="submit" class="btn btn-primary">Create Signal</button></span>
+                    <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>
                

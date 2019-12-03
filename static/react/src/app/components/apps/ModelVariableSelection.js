@@ -60,6 +60,7 @@ export class ModelVariableSelection extends React.Component {
         super(props);
         this.state = {
             perspective: false,
+            targetCountVal:'',
           }
     }
     componentWillMount() {
@@ -153,8 +154,14 @@ componentDidMount = () => {
         if(this.props.currentAppDetails.app_id === 13){
           let target =  $("#createModelAnalysisList").val();
           let targetUniqueVal= this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.name=== target)[0].columnStats.filter(j=>j.displayName === "Unique Values")[0].value
-          targetUniqueVal <=5 &&
-          bootbox.alert(statusMessages("warning","Please proceed with automated prediction to get better results as this dataset has less than 5 unique value for the selected target column"));
+          targetUniqueVal <=5 && bootbox.alert(statusMessages("warning","Please proceed with automated prediction to get better results as this dataset has less than 5 unique value for the selected target column"));
+            if(targetUniqueVal <=5){
+                let oo = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.name=== target)[0].columnStats.filter(j=>j.name === "LevelCount")[0].value;
+                this.setState({targetCountVal:Object.keys(oo)});
+            }else{
+                this.setState({targetCountVal:""});
+
+            }
         }
     }
 
@@ -294,7 +301,7 @@ componentDidMount = () => {
             } else {
                 renderSelectBox = <option>No Variables</option>
             }
-            if (this.props.targetLevelCounts != ""||(store.getState().apps.targetLevelCounts!=""&&this.props.editmodelFlag)) {
+            if ((this.props.targetLevelCounts != null && this.props.currentAppDetails.app_id != 13)||(store.getState().apps.targetLevelCounts!=""&&this.props.editmodelFlag)) {
                 renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                     <option value="">--Select--</option>
                     {this.props.editmodelFlag?store.getState().apps.targetLevelCounts.sort().map((item,i)=>{
@@ -305,6 +312,17 @@ componentDidMount = () => {
                         return (<option key={item} name={item} value={item}>{item}</option>)
                     }
                     )}
+                </select>
+            }else if(this.props.currentAppDetails.app_id === 13){
+                renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
+                    <option value="">--Select--</option>
+                    {
+                        (this.state.targetCountVal != "")?
+                            this.state.targetCountVal.sort().map((item, index) => {
+                                return (<option key={item} name={item} value={item}>{item}</option>)
+                            })
+                        : ""
+                    }
                 </select>
             }
         }
@@ -398,13 +416,19 @@ componentDidMount = () => {
 
                                     {/*<!-- /.col-lg-4 -->*/}
 
-                                    {(this.props.targetLevelCounts != "") ? (<div className="xs-mt-20 xs-mb-20">
-
-                                        <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
-                                        <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
-
-                                        {/*<!-- /.col-lg-4 -->*/}
-                                    </div>) : (<div></div>)
+                                    {(this.props.targetLevelCounts != "") ? 
+                                        (<div className="xs-mt-20 xs-mb-20">
+                                            <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
+                                            <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
+                                        </div>) 
+                                    : 
+                                        this.state.targetCountVal != "" ?
+                                        (<div className="xs-mt-20 xs-mb-20">
+                                            <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
+                                            <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
+                                        </div>)
+                                        :
+                                        (<div></div>)
 
                                     }
                                 </FormGroup>

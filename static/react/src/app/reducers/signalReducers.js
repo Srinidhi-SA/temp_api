@@ -16,10 +16,12 @@ export default function reducer(state = {
   signal_sorttype:null,
   sideCardListFlag:null,
   loaderText:"Submitting for analysis",
+  signalLoadedText:[],
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
   selVarSlug:null,
+  setSigName:"",
   loading_message:[],
   viewChartFlag:false,
   chartClassId :"",
@@ -30,6 +32,7 @@ export default function reducer(state = {
   latestSignals:{},
   selected_signal_type:"",
   toggleValues:{},
+  fromVariableSelectionPage:false,
 }, action) {
   // console.log("in SIGNAL reducer!!");
   // console.log(action);
@@ -59,6 +62,7 @@ export default function reducer(state = {
           signalAnalysis: action.signalAnalysis.data,
           selectedSignal: action.errandId,
           urlPrefix:"/signals",
+          signalLoadedText:action.signalAnalysis.initial_messages,
         }
       }
       break;
@@ -136,6 +140,13 @@ export default function reducer(state = {
         }
       }
       break;
+    case "SET_SIGNAL_NAME":{
+      return{
+        ...state,
+        setSigName: action.sigName
+      }
+    }
+    break;
     case "SEL_PREDICTION":
       {
         return {
@@ -326,6 +337,13 @@ export default function reducer(state = {
       signalAnalysis:{}
     }
   }
+  break;
+  case "FROM_VARIABLE_SELECTION_PAGE":{
+    return{
+      ...state,
+      fromVariableSelectionPage:action.flag
+    }
+  }break;
   case "ALL_SIGNAL_LIST":
       {
         return {

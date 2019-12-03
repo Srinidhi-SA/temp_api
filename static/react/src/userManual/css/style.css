@@ -552,7 +552,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 /* Section with background
 --------------------------------*/
 .section-bg {
-  background: #f7f7f7;
+  background: #f9f9f9;
 }
 
 /* Featured Services Section
@@ -1469,6 +1469,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 .xs-mt-30 { margin-top:30px }
 .xs-mt-40 { margin-top:40px }
 .xs-mt-50 { margin-top:50px } 
+.xs-mb-10 { margin-bottom: 10px; }
 /** Colors for Components **/
 #using_mAdvisor { padding: 60px 0;}
 
@@ -1512,3 +1513,16 @@ ul.list_category li { line-height: 2.2em; padding-left: 16px; }
     vertical-align: text-top; padding-top:5px; }
 	.carousel-indicators { display:none; }
 .accordion-body .panel-body { margin-left: 35px; }
+.bg-primary { background-color: #018983 !important; }
+
+.mm_links { margin:0 auto; }
+.mm_links li { margin: 20px 20px}
+.mm_links li a { display:block; width:100px; text-align:center; color: #9fd6d0; padding:20px; border-radius:48%; box-shadow: 0 5px 35px 0px rgba(0,0,0,.1); }
+.mm_links li a:hover { color: #92fffc; background-color:#31b1a0   }
+ 
+.mm_links li.active a {
+    color:#FFFFFF; background-color:#31b1a0
+}
+
+h5.text-white { margin-top: 30px; }
+.clearfix { clear:both; overflow:hidden; } 

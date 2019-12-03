@@ -222,6 +222,15 @@ class SignalView(viewsets.ModelViewSet):
             print err
             return JsonResponse({'message':'Signals sharing failed.'})
 
+    @detail_route(methods=['get'])
+    def edit(self, request, *args, **kwargs):
+        try:
+            signal_obj = Insight.objects.get(slug=self.kwargs.get('slug'))
+            config = json.loads(signal_obj.config)
+            return JsonResponse({'name':signal_obj.name,'config': config})
+        except Exception as err:
+            return JsonResponse({'message': 'Config not found.'})
+            print err
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -545,7 +554,25 @@ class TrainerView(viewsets.ModelViewSet):
         try:
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
-            return JsonResponse({'name':trainer_obj.name,'config': config})
+            data_cleansing = dict()
+
+            try:
+                data = config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']
+                if data['outlier_removal']['selected']:
+                    for op_index, operation in enumerate(data['outlier_removal']['operations']):
+                        operation_items = dict()
+                        if operation['columns']:
+                            for index, i in enumerate(operation['columns']):
+                                data_items = dict()
+                                data_items['treatment'] = operation['name']
+                                data_items['name'] = i['name']
+                                data_items['type'] = i['datatype']
+                                operation_items[index] = data_items
+                                print operation_items
+                            data_cleansing[op_index] = operation_items
+            except Exception as err:
+                print err
+            return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
             print err
@@ -5798,9 +5825,7 @@ def delete_and_keep_only_ten_from_all_models(request):
 def get_algorithm_config_list(request):
     try:
         app_type = request.GET['app_type']
-        print app_type
         mode = request.GET['mode']
-        print mode
     except:
         app_type = "CLASSIFICATION"
     try:
@@ -6564,7 +6589,8 @@ def get_all_signals(request):
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
-        users_obj = User.objects.filter(~Q(id = request.user.id,is_active=True))
+        users_obj = User.objects.filter(~Q(is_active=False))
+        users_obj = users_obj.exclude(id=request.user.id)
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username,'Uid':i.id}})
         return JsonResponse({'allUsersList': UsersList})
@@ -6590,24 +6616,21 @@ def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Targ
 @csrf_exempt
 def view_model_summary_autoML(request):
     model_slug = request.GET['slug']
-    #print model_slug
     instance = Trainer.objects.get(slug=model_slug)
 
     #if instance.viewed is False:
-    from django.http import HttpResponseRedirect
     from django.shortcuts import render
-    import requests
-    url = 'https://madvisor2.marlabsai.com/api/trainer/' + model_slug + '/'
-    #print url
+    protocol = 'http'
+    if settings.USE_HTTPS:
+        protocol = 'https'
+
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
+
     try:
-        #response = requests.get(url)
-        #print response
-        #print type(response.body)
-        #return render(request, 'model_summary.html', context=response)
-        context = {"Config":instance}
+        context = {"Response":response_url}
         #instance.viewed=True
         #instance.save()
-        return render(request,'model_summary.html',context)
+        return render(request,'modelSummary.html',context)
 
     except Exception as err:
         print err
@@ -6625,8 +6648,39 @@ def view_model_summary_detail(request):
         #model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
         config=json.loads(instance.config)
         data=json.loads(instance.data)
-        model_config.update({'name':instance.name,'slug':instance.slug,'config':config,'data':data})
+        try:
+            table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
+            FI_dict_keys = table_data[0]
+            FI_dict_values = table_data[1]
+            #import collections
+            import operator
+            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
+            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
+            FI_dict=FI_dict[1:len(FI_dict):1]
+            model_summary_data = dict()
+            model_summary_data['model_summary'] = data['model_summary']
+            model_config.update({'name':instance.name,'slug':instance.slug,'data':model_summary_data,'table_data':FI_dict})
+        except Exception as err:
+            print err
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
         print err
+@csrf_exempt
+def dump_complete_messages(request, slug=None):
+    try:
+        job = Job.objects.get(slug=slug)
+
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        messages = request.body
+        tasks.save_job_messages.delay(
+            slug,
+            messages
+        )
+        return JsonResponse({'result': "Success"})
+    except Exception as e:
+        return JsonResponse({'result': "Failed"})
+        print e

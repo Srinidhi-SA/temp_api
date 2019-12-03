@@ -224,6 +224,12 @@ class InsightSerializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
+        try:
+            initial_messages = instance.job.messages
+            ret['initial_messages'] = json.loads(initial_messages)
+        except:
+            ret['initial_messages'] = None
+
         if dataset_object.datasource_type=='fileUpload':
             PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             try:
@@ -335,6 +341,11 @@ class TrainerSerlializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
+        try:
+            initial_messages = instance.job.messages
+            ret['initial_messages'] = json.loads(initial_messages)
+        except:
+            ret['initial_messages'] = None
 
         if dataset_object.datasource_type=='fileUpload':
             PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
@@ -447,7 +458,11 @@ class ScoreSerlializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
-
+        try:
+            initial_messages = instance.job.messages
+            ret['initial_messages'] = json.loads(initial_messages)
+        except:
+            ret['initial_messages'] = None
         #if dataset_object.datasource_type=='fileUpload':
            # PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             #try:
