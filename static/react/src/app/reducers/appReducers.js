@@ -93,7 +93,7 @@ export default function reducer(state = {
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
-        targetLevelCounts:null,
+        targetLevelCounts:"",
         currentAppDetails:null,
         updateCreateModelHideShow:false,
         apps_regression_modelName:"",

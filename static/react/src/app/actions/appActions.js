@@ -2264,8 +2264,8 @@ export function showLevelCountsForTarget(event) {
   }
   return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
-export function updateTargetLevel(value) {
-  return { type: "SET_TARGET_LEVEL_COUNTS", value }
+export function updateTargetLevel(levelCounts) {
+  return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
 export function clearAppsIntervel() {
   clearInterval(appsInterval)

@@ -33,6 +33,8 @@ import { statusMessages } from "../../helpers/helper";
     selectedVariables: store.datasets.selectedVariables,
     convertUsingBin: store.datasets.convertUsingBin,
     numberOfBins: store.datasets.topLevelData.numberOfBins,
+    editmodelFlag:store.datasets.editmodelFlag
+
   };
 })
 
@@ -85,7 +87,7 @@ export class FeatureEngineering extends React.Component {
     const from = this.getValueOfFromParam();
     if (from === 'algorithm_selection') {
     }
-    else {
+    else if(!this.props.editmodelFlag){
     this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
   }
 }

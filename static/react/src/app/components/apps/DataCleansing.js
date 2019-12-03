@@ -56,6 +56,10 @@ import {
     currentAppDetails: store.apps.currentAppDetails,
     datasets: store.datasets,
     checkedAll: store.datasets.checkedAll,
+    editmodelFlag:store.datasets.editmodelFlag,
+    modelEditconfig:store.datasets.modelEditconfig,
+    
+
   };
 })
 
@@ -102,6 +106,9 @@ export class DataCleansing extends React.Component {
         return "";
       this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
     });
+    if(this.props.editmodelFlag){
+     this.setOutliersOnEdit()
+    }
   }
   }
 
@@ -111,8 +118,15 @@ export class DataCleansing extends React.Component {
    else{
     const params = new URLSearchParams(this.props.location.search);
     return params.get('from');
-}
+   }
   }
+  setOutliersOnEdit(){
+    var outliers=Object.values(this.props.modelEditconfig.outlier_config)
+    for(var i=0;i<outliers.length;i++){//colName,colType,colSlug, treatment 
+    this.props.dispatch(outlierRemovalSelectedAction(outliers[i].name,outliers[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==outliers[i].name)[0].slug
+    ,outliers[i].treatment))
+   }
+}
 
   componentDidMount() {
 
@@ -258,8 +272,10 @@ tableHead.addEventListener('click', function (e) {
 
   getUpdatedDataType(colSlug) {
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
-    let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-
+   if(!this.props.editmodelFlag)
+    var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+   else 
+        colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
       if (item.toLowerCase() == colType.toLowerCase()) {
