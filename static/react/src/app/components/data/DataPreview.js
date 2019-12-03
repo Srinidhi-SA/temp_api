@@ -29,6 +29,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 
 
 @connect((store) => {
@@ -80,6 +81,20 @@ export class DataPreview extends React.Component {
   // }
 
   componentWillMount() {
+    const from = this.getValueOfFromParam();
+        if (from === 'createSignal') {
+          if (this.props.match.path.includes("slug")) {
+            this.buttons['close'] = {
+              url: "/data",
+              text: "Close"
+            };
+            this.buttons['create'] = {
+              url: "/data/" + this.props.match.params.slug + "/createSignal",
+              text: CREATESIGNAL
+            };
+            this.props.dispatch(fromVariableSelectionPage(true));
+          }
+    }else {
     // this.props.dispatch(getAllDataList());
     this.props.dispatch(getDataList(1));
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
@@ -119,6 +134,8 @@ export class DataPreview extends React.Component {
         text: "Compose Insight"
       };
     } else if (this.props.match.path.includes("slug")) {
+      this.props.dispatch(resetSelectedTargetVariable());
+      this.props.dispatch(fromVariableSelectionPage(false));
       this.buttons['close'] = {
         url: "/data",
         text: "Close"
@@ -191,7 +208,15 @@ export class DataPreview extends React.Component {
         text: CREATESIGNAL
       };
     }*/
+  }
+  }
 
+  getValueOfFromParam() {
+    if(this.props.location === undefined){
+     }else{
+       const params = new URLSearchParams(this.props.location.search);
+       return params.get('from');
+    }
   }
 
   componentDidMount() {
@@ -724,21 +749,21 @@ else{
                       <div className="navbar">
                         <ul className="nav navbar-nav navbar-right">
                           <li>
-                            {(this.isSubsetted)
+                            {(this.isSubsetted && !this.props.location.pathname.includes("/models/data"))
                               ? (
                                 <div className="form-group">
                                   <input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm col-sm-12" placeholder="New Dataset Name"/>
                                 </div>
                               )
                               : (<div/>)
-}
+                            }
                           </li>
 
                           <li className="text-right">
                             <Button onClick={this.closePreview.bind(this)}>
                               {this.buttons.close.text}
                             </Button>
-                            {(this.isSubsetted)
+                            {(this.isSubsetted && !this.props.location.pathname.includes("/models/data"))
                               ? (
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )

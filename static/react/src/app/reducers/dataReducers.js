@@ -42,6 +42,7 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
+  dataLoadedText:[],
   dataTransformSettings:[],
   variableTypeListModal:false,
   selectedColSlug:"",
@@ -77,6 +78,8 @@ export default function reducer(state = {
   shareItemType:"",
   isNoOfBinsEnabled:false,
   shareModelShow:false,
+  dtModelShow:false,
+  dtRule: "",
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   modelEditconfig:"",
@@ -191,6 +194,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DT_MODAL_SHOW":
+        {
+          return {
+            ...state,
+            dtModelShow: true,
+            dtRule: action.rule,
+          }
+        }
+        break;
       case "SET_EDIT_MODEL":
       {
         return {
@@ -210,6 +222,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DT_MODAL_HIDE":
+        {
+          return {
+            ...state,
+            dtModelShow: false
+          }
+        }
+        break;
     case "SELECTED_ANALYSIS_TYPE":
       {
         return {
@@ -538,6 +558,13 @@ export default function reducer(state = {
     {
       return {...state,
       loading_message:action.message}
+    }
+    break;
+    case "DATA_LOADED_TEXT":{
+      return {
+      ...state,
+      dataLoadedText : action.text
+      }
     }
     break;
     case "CLEAR_LOADING_MSG":

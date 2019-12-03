@@ -49,6 +49,11 @@ class DatasetSerializer(serializers.ModelSerializer):
             ret['message'] = get_message(instance.job)
         except:
             ret['message'] = None
+        try:
+            initial_messages = instance.job.messages
+            ret['initial_messages'] = json.loads(initial_messages)
+        except:
+            ret['initial_messages'] = None
 
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True

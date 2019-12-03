@@ -10,6 +10,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages} from "../../helpers/helper";
+import { TensorFlow } from "./TensorFlow";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -238,6 +239,9 @@ export class ModelAlgorithmSelection extends React.Component {
                         return(
                             <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <FormGroup role="form">
+                                {data.algorithmName === "TensorFlow"?
+                                <TensorFlow data/>
+                                :(
 								 <div className="xs-mt-20">
                                     <div className="form-group">
                                     <label class="col-md-3 control-label">Hyperparameter Tuning :</label>
@@ -248,7 +252,8 @@ export class ModelAlgorithmSelection extends React.Component {
                                     </div>
                                     <div class="clearfix"></div>
                                     </div>
-                                 </div>
+                                 </div>)}
+                                 {data.algorithmName === "TensorFlow"?"":(<span>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div>
                                     <div className="col-md-12">
@@ -257,6 +262,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
                                  </div>
+                                 </span>)}
                                 {selectedValue != "none" && (minmaxLabel != "LINEAR REGRESSION")?
                                 <div className="maxminLabel">
                                      <label class="col-md-6 control-label read"></label>
@@ -269,7 +275,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 
-                                <div>{parametersData}</div>
+                                <div>{data.algorithmName === "TensorFlow"?"":parametersData}</div>
 								</FormGroup>
                             </Tab>
                         );

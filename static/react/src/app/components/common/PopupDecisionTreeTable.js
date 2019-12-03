@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {getSignalAnalysis,handleDecisionTreeTable} from "../../actions/signalActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {openDTModalAction} from "../../actions/dataActions"
 import {MAXTEXTLENGTH} from "../../helpers/helper";
+import {DecisionTree} from "../common/DecisionTree";
 
 
 @connect((store) => {
@@ -20,10 +18,13 @@ export class PopupDecisionTreeTable extends React.Component {
     super(props);
 
   }
-  showDecisionTreePopup(rule){
-     bootbox.alert({title: "Prediction Rule",
-             message: rule});
-  }
+  // showDecisionTreePopup(rule){
+  //    bootbox.alert({title: "Prediction Rule",
+  //            message: rule});
+  // }
+  showDecisionTreePopup =(rule)=>{
+  this.props.dispatch(openDTModalAction(rule));
+ }
   componentDidMount(){
       handleDecisionTreeTable();
   }
@@ -69,7 +70,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>
 
               });
-              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -99,6 +100,7 @@ generateDecisionTreeRows(table) {
    this.callTableSorter()
    return (
            <div class="table-style_2">
+             <DecisionTree/>
            {/* <Scrollbars style={{ height: 200 }}
                className="thumb-horizontal" > */}
            <table id="sorter" className={className}>

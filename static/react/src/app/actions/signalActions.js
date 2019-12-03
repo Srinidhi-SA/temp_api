@@ -532,6 +532,7 @@ function updateSetVarAs(colSlug,evt){
             if(dataSetMeasures[i].slug == colSlug){
                 if(dataSetMeasures[i].targetColSetVarAs == null){
                     dataSetMeasures[i].targetColSetVarAs = "percentage";
+                    dataSetMeasures[i].columnType = "dimension";
                     break;
                 }
                 else{
@@ -563,6 +564,9 @@ export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
     return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
   }
 
+}
+export function saveSignalName(sigName) {
+  return {type: "SET_SIGNAL_NAME", sigName}
 }
 
 export function createcustomAnalysisDetails() {
@@ -917,5 +921,10 @@ export function updateTargetTypForSelSignal(signal_type){
 export function clearSignalAnalysisBeforeLogout(){
   return {
     type:"CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT"
+  }
+}
+export function fromVariableSelectionPage(flag){
+  return {
+      type: "FROM_VARIABLE_SELECTION_PAGE",flag
   }
 }

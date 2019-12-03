@@ -60,6 +60,7 @@ export class ModelVariableSelection extends React.Component {
         super(props);
         this.state = {
             perspective: false,
+            targetCountVal:'',
           }
     }
     componentWillMount() {
@@ -204,8 +205,7 @@ componentDidMount = () => {
                 var tarinTest= this.props.modelEditconfig.config.config.FILE_SETTINGS.validationTechnique[0].value 
                 var subLevelOnEdit = this.props.modelEditconfig.config.config.FILE_SETTINGS.targetLevel 
                 var metricOnEdit = this.props.modelEditconfig.config.config.ALGORITHM_SETTING[0].hyperParameterSetting[0].params[0].defaultValue[0].name
-                var modelValidation= this.props.modelEditconfig.config.config.
-                FILE_SETTINGS.validationTechnique[0].displayName!="K Fold Validation"?"trainTestValidation":"crossValidation";
+                var modelValidation= this.props.modelEditconfig.config.config.FILE_SETTINGS.validationTechnique[0].displayName!="K Fold Validation"?"trainTestValidation":"crossValidation";
                 var duplicateAttributes = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.DATA_CLEANSING.overall_settings[0].selected
                 var duplicateObservations = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.DATA_CLEANSING.overall_settings[1].selected
                 var binningSelected=this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected

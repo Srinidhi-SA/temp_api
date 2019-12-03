@@ -813,6 +813,9 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             dispatch(reSetRegressionVariables());
         }
         else if (json.status == INPROGRESS) {
+          if(Object.keys(json.initial_messages).length != 0){
+            dispatch(setAppsLoaderText(json.initial_messages));
+          }
           if (json.message !== null && json.message.length > 0) {
             dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
@@ -939,6 +942,9 @@ export function getAppsScoreSummary(slug) {
           dispatch(closeAppsLoaderValue());
           dispatch(hideDataPreview());
         } else if (json.status == INPROGRESS) {
+          if(Object.keys(json.initial_messages).length != 0){
+            dispatch(setAppsLoaderText(json.initial_messages));
+          }
           if (json.message !== null && json.message.length > 0) {
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
@@ -1000,6 +1006,9 @@ export function updateSelectedApp(appId, appName, appDetails) {
 
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
+}
+export function setAppsLoaderText(text){
+  return { type: "APPS_LOADED_TEXT",text}
 }
 export function setAppsLoaderValues(slug,value,status){
   return { type: "SET_APPS_LOADER_MODAL", slug,value,status }
