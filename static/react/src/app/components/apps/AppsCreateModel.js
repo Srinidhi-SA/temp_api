@@ -153,10 +153,15 @@ export class AppsCreateModel extends React.Component {
  levelCountsForAutoMl(event) {
 	var selOption = event.target.childNodes[event.target.selectedIndex];
 	var varText = selOption.text;
-	var option = this.state.autoMlVal !="" && this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0].filter(k=>k.name=="LevelCount")[0].value
-	var category= Object.keys(option);	
-	this.setState({countVal:category});
-		  }
+	var uniqueValData = this.state.autoMlVal.meta_data.uiMetaData.columnDataUI.filter(i => i.name==varText).map(j=>j.columnStats)[0];
+	if(this.state.autoMlVal !="" && uniqueValData.filter(k=>k.name=="LevelCount")[0] != undefined){ 
+		var option = uniqueValData.filter(k=>k.name=="LevelCount")[0].value;
+		var category= Object.keys(option);	
+		this.setState({countVal:category});
+	}else{
+		this.setState({countVal:""})
+	}
+}
 	
   setPossibleList(event) {
 		if(this.props.currentAppDetails.app_id === 13){
@@ -169,7 +174,7 @@ export class AppsCreateModel extends React.Component {
 	this.props.dispatch(updateSelectedVariable(event));
 }
 	render() {
-	  const dataSets = store.getState().datasets.allDataSets.data;
+	 	const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
 		let hideCreate=false
@@ -179,69 +184,69 @@ export class AppsCreateModel extends React.Component {
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
-			renderSelectBox = (<div><select id="model_Dataset" name="selectbasic"  onChange={this.updateDataset.bind(this)} class="form-control">
-			<option>--Select dataset--</option>
-			{dataSets.map(dataSet =>
-			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
-			)}
-			</select>
-
-			{window.location.href.includes("autoML")&&
-			<div>
-				<label className="pb-2 pt-10">Model Name</label>
-            <input type="text" className="form-control" autoComplete="off" placeholder="model name" id="modelName"></input>
-				<label className="pb-2 pt-10">Select target variable:</label>
-				<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
-				<option>--Select--</option>
-			{
-				this.state.autoMlVal!=""?
-			// this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map(dataSet =>
-			// <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
-			// )
-			this.props.currentAppDetails.app_id == 13 ?
-			        this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
-						if (a.name < b.name)
-							return -1;
-						if (a.name > b.name)
-							return 1;
-						return 0;
-					}).map((metaItem, metaIndex) => {
-                            if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-                                return (
-								<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
-                            }
-                        }) :
-						this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
-							if (a.name < b.name)
-								return -1;
-							if (a.name > b.name)
-								return 1;
-							return 0;
-						}).map((metaItem, metaIndex) => {
-                            if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
-                                return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
-                            }
-                        })
+			renderSelectBox = (
+				<div>
+					<select id="model_Dataset" name="selectbasic"  onChange={this.updateDataset.bind(this)} class="form-control">
+						<option>--Select dataset--</option>
+						{dataSets.map(dataSet => <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>)}
+					</select>
+					{window.location.href.includes("autoML")&&
+					<div>
+						<label className="pb-2 pt-10">Model Name</label>
+            			<input type="text" className="form-control" autoComplete="off" placeholder="model name" id="modelName"></input>
+						<label className="pb-2 pt-10">Select target variable:</label>
+						<select className="form-control" id="createModelTarget" onChange={this.setPossibleList.bind(this)}>
+							<option>--Select--</option>
+							{
+								this.state.autoMlVal!=""?
+								// this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.map(dataSet =>
+								// <option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+								// )
+								this.props.currentAppDetails.app_id == 13 ?
+			        				this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
+										if (a.name < b.name)
+											return -1;
+										if (a.name > b.name)
+											return 1;
+										return 0;
+									}).map((metaItem, metaIndex) => {
+										if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
+											return (
+											<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+										}
+									}) :
+									this.state.autoMlVal.meta_data.uiMetaData.varibaleSelectionArray.sort((a, b) => {
+										if (a.name < b.name)
+											return -1;
+										if (a.name > b.name)
+											return 1;
+										return 0;
+									}).map((metaItem, metaIndex) => {
+										if (metaItem.columnType != "measure" && metaItem.columnType != "datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
+											return (<option key={metaItem.slug} name={metaItem.slug} value={metaItem.columnType}>{metaItem.name}</option>)
+										}
+									})
                     
-			:""}
-				</select>
-{this.state.countVal!=""&&
-<div>
-				<label className="pb-2 pt-10">Select subvalue:</label>
-				<select className="form-control" id="createModelLevelCount">
-                    <option>--Select--</option>
-                    {this.state.countVal!=""?this.state.countVal.sort().map((item, index) => {
-
-                        return (<option key={item} name={item} value={item}>{item}</option>)
-                    }
-                    ):""}
-                </select>
-								</div>
-}
-				</div>
-				}
-
-					</div>)
+								: "" 
+							}
+						</select>
+						{this.state.countVal !=""&&
+							<div>
+								<label className="pb-2 pt-10">Select subvalue:</label>
+								<select className="form-control" id="createModelLevelCount">
+									<option>--Select--</option>
+									{this.state.countVal!=""?
+										this.state.countVal.sort().map((item, index) => {
+											return (<option key={item} name={item} value={item}>{item}</option>)
+										})
+										:""
+									}
+								</select>
+							</div>
+						}
+					</div>
+					}
+				</div>)
 		}else{
 			renderSelectBox = "No Datasets"
 			if(this.props.selectedDataSrcType=="fileUpload")

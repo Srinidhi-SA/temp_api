@@ -8,7 +8,7 @@ SKLEARN_ML_SUPPORTED_MULTICLASS_OPTION = [
     {"name": "multinomial", "selected": False, "displayName": "Multinomial"}
 ]
 SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
-    {"name": "newton-cg", "selected": False, "displayName": "newton-cg", "penalty": "l2"},
+    {"name": "newton-cg", "selected": True, "displayName": "newton-cg", "penalty": "l2"},
     {"name": "lbfgs", "selected": False, "displayName": "lbfgs", "penalty": "l2"},
     {"name": "sag", "selected": False, "displayName": "sag", "penalty": "l2"},
     # {"name":"liblinear","selected":False,"displayName":"liblinear","penalty":"l1"},
@@ -16,7 +16,7 @@ SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
 
 ]
 SKLEARN_ML_SUPPORTED_SPLIT_CRITERION_CLASSIFICATION = [
-    {"name": "gini", "selected": False, "displayName": "Gini Impurity"},
+    {"name": "gini", "selected": True, "displayName": "Gini Impurity"},
     {"name": "entropy", "selected": False, "displayName": "Entropy"},
 ]
 
@@ -446,7 +446,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         "defaultValue": [
             {
                 "name": "false",
-                "selected": False,
+                "selected": True,
                 "displayName": "False"
             },
             {
@@ -939,13 +939,13 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
 ]
 
 SKLEARN_ML_SUPPORTED_XGB_BOOSTER = [
-    {"name": "gbtree", "selected": False, "displayName": "gbtree"},
+    {"name": "gbtree", "selected": True, "displayName": "gbtree"},
     {"name": "dart", "selected": False, "displayName": "dart"},
     {"name": "gblinear", "selected": False, "displayName": "gblinear"},
 ]
 
 SKLEARN_ML_SUPPORTED_XGB_TREE_ALGORITHMS = [
-    {"name": "auto", "selected": False, "displayName": "auto"},
+    {"name": "auto", "selected": True, "displayName": "auto"},
     {"name": "exact", "selected": False, "displayName": "exact"},
     {"name": "approx", "selected": False, "displayName": "approx"},
     {"name": "hist", "selected": False, "displayName": "hist"},
@@ -1160,5 +1160,337 @@ SKLEARN_ML_NAIVE_BAYES_PARAMS = [
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
+    },
+]
+TENSORFLOW_ACTIVATION_PARAMETERS = [
+    {"name": "deserialize", "selected": True, "displayName": "deserialize"},
+    {"name": "elu", "selected": False, "displayName": "elu"},
+    {"name": "exponential", "selected": False, "displayName": "exponential"},
+    {"name":"get","selected":False,"displayName":"get"},
+    {"name": "hard_sigmoid", "selected": False, "displayName": "hard_sigmoid"},
+    {"name":"Linear","selected":False,"displayName":"Linear"},
+    {"name":"relu","selected":False,"displayName":"relu"},
+    {"name":"selu","selected":False,"displayName":"selu"},
+    {"name":"serialize","selected":False,"displayName":"serialize"},
+    {"name":"sigmoid","selected":False,"displayName":"sigmoid"},
+    {"name":"softmax","selected":False,"displayName":"softmax"},
+    {"name":"softplus","selected":False,"displayName":"softplus"},
+    {"name":"softsign","selected":False,"displayName":"softsign"},
+    {"name":"tanh","selected":False,"displayName":"tanh"},
+]
+TENSORFLOW_COMMON_INITIALIZER_PARAMETERS = [
+    {"name": "Zeros", "selected": True, "displayName": "Zeros"},
+    {"name": "Ones", "selected": False, "displayName": "Ones"},
+    {"name": "Constant", "selected": False, "displayName": "Constant"},
+    {"name": "RandomNormal", "selected": False, "displayName": "RandomNormal"},
+    {"name": "RandomUniform", "selected": False, "displayName": "RandomUniform"},
+    {"name": "TruncatedNormal", "selected": False, "displayName": "TruncatedNormal"},
+    {"name": "VarianceScaling", "selected": False, "displayName": "VarianceScaling"},
+    {"name": "Orthogonal", "selected": False, "displayName": "Orthogonal"},
+    {"name": "Identity", "selected": False, "displayName": "Identity"},
+    {"name": "lecun_uniform", "selected": False, "displayName": "lecun_uniform"},
+    {"name": "glorot_normal", "selected": False, "displayName": "glorot_normal"},
+    {"name": "glorot_uniform", "selected": False, "displayName": "glorot_uniform"},
+    {"name": "he_normal", "selected": False, "displayName": "he_normal"},
+    {"name": "lecun_normal", "selected": False, "displayName": "lecun_normal"},
+    {"name": "he_uniform", "selected": False, "displayName": "he_uniform"},
+
+]
+TENSORFLOW_COMMON_REGULARIZER_PARAMETERS = [
+    {"name": "l1", "selected": True, "displayName": "l1"},
+    {"name": "l2", "selected": False, "displayName": "l2"},
+    {"name": "l1_l2", "selected": False, "displayName": "l1_l2"},
+]
+TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS = [
+    {"name": "MaxNorm", "selected": True, "displayName": "MaxNorm"},
+    {"name": "NonNeg", "selected": False, "displayName": "NonNeg"},
+    {"name": "UnitNorm", "selected": False, "displayName": "UnitNorm"},
+    {"name": "MinMaxNorm", "selected": False, "displayName": "MinMaxNorm"},
+]
+TENSORFLOW_LAMBDA_FUNCTIONS = [
+    {"name": "2*X", "selected": True, "displayName": "2*X"},
+]
+SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
+    {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
+    {"name": "hinge", "selected": False, "displayName": "hinge"},
+    {"name": "categorical_hinge", "selected": False, "displayName": "categorical_hinge"},
+    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
+    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
+    {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
+    {"name": "kullback_leibler_divergence", "selected": False, "displayName": "kullback_leibler_divergence"},
+]
+SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
+    {"name": "SGD", "selected": False, "displayName": "SGD"},
+    {"name": "RMSprop", "selected": False, "displayName": "RMSprop"},
+    {"name": "Adagrad", "selected": False, "displayName": "Adagrad"},
+    {"name": "Adadelta", "selected": False, "displayName": "Adadelta"},
+    {"name": "Adam", "selected": False, "displayName": "Adam"},
+    {"name": "Adamax", "selected": False, "displayName": "Adamax"},
+    {"name": "Nadam", "selected": False, "displayName": "Nadam"},
+]
+TF_CLASSIFICATION_METRICS = [
+    {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
+    {"name": "categorical_accuracy", "selected": False, "displayName": "categorical_accuracy"},
+    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
+    {"name": "FalseNegatives", "selected": False, "displayName": "FalseNegatives"},
+    {"name": "FalsePositives", "selected": False, "displayName": "FalsePositives"},
+    {"name": "sparse_categorical_accuracy", "selected": False, "displayName": "sparse_categorical_accuracy"},
+    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
+]
+TENSORFLOW_DENSE_PARAMETERS = [
+    {
+        "name": "activation",
+        "displayName": "Activation",
+        "description": "Activation function for the hidden layer.",
+        # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+        "defaultValue": [obj for obj in TENSORFLOW_ACTIVATION_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "units",
+        "displayName": "Units",
+        "description": "Dimensionality of the output space.",
+        "defaultValue": 1.0,
+        "acceptedValue": None,
+        "valueRange": [0.1, 1.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "use_bias",
+        "displayName": "use_bias",
+        "description": "Whether the layer uses a bias vector.",
+        "defaultValue": [
+            {
+                "name": "false",
+                "selected": False,
+                "displayName": "False"
+            },
+            {
+                "name": "true",
+                "selected": False,
+                "displayName": "True"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+    {
+        "name": "kernel_initializer",
+        "displayName": "kernel_initializer",
+        "description": "Initializer for the kernel weights matrix.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "bias_initializer",
+        "displayName": "bias_initializer",
+        "description": "Initializer for the bias vector.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "kernel_regularizer",
+        "displayName": "kernel_regularizer",
+        "description": "Regularizer function applied to the kernel weights matrix.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "bias_regularizer",
+        "displayName": "bias_regularizer",
+        "description": "Regularizer function applied to the bias vector.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "activity_regularizer",
+        "displayName": "activity_regularizer",
+        "description": "Regularizer function applied to the output of the layer.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "kernel_constraint",
+        "displayName": "kernel_constraint",
+        "description": "Constraint function applied to the kernel weights matrix.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "bias_constraint",
+        "displayName": "bias_constraint",
+        "description": "Constraint function applied to the bias vector.",
+        "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+]
+TENSORFLOW_DROPOUT_PARAMETERS = [
+    {
+        "name": "rate",
+        "displayName": "Rate",
+        "description": "Fraction of the input units to drop.",
+        "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": [0.0, 1.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+]
+TENSORFLOW_LAMBDA_PARAMETERS = [
+    {
+        "name": "lambda",
+        "displayName": "Lambda",
+        "description": "Wraps arbitrary expression as a Layer object..",
+        "defaultValue": [obj for obj in TENSORFLOW_LAMBDA_FUNCTIONS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+]
+SKLEARN_ML_SUPPORTED_TF_LAYER = [
+    {"name": "Dense", "selected": False, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
+    {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
+    {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
+]
+SKLEARN_ML_TENSORFLOW_PARAMS = [
+    {
+        "name": "layer",
+        "displayName": "Layer",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "loss",
+        "displayName": "Loss",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "optimizer",
+        "displayName": "Optimizer",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "batch_size",
+        "displayName": "Batch Size",
+        "description": "XYZ.",
+        "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": [0.0, 100.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "number_of_epochs",
+        "displayName": "Number of Epochs",
+        "description": "XYZ.",
+        "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": [0.0, 10000.0],
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "metrics",
+        "displayName": "Metrics",
+        "description": "XYZ",
+        "defaultValue":[obj for obj in TF_CLASSIFICATION_METRICS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
 ]
