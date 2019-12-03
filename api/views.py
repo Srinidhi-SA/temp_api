@@ -202,35 +202,40 @@ class SignalView(viewsets.ModelViewSet):
             shared_id = request.query_params.get('shared_id', None).split(',')
             signal_obj = Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             signal_name = signal_obj['name']
-            shared_by=User.objects.get(id=request.user.id)
+            shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Models should not be shared to itself.'})
 
             for i in shared_id:
-                import random,string
+                import random, string
                 slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    signal_obj.update({'name':signal_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    signal_obj.update(
+                        {'name': signal_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
+                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
                 else:
-                    signal_obj.update({'name':signal_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    signal_obj.update(
+                        {'name': signal_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
+                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
                 Insight.objects.create(**signal_obj)
             return JsonResponse({'message': 'Signals shared.'})
 
         except Exception as err:
             print err
-            return JsonResponse({'message':'Signals sharing failed.'})
+            return JsonResponse({'message': 'Signals sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
         try:
             signal_obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(signal_obj.config)
-            return JsonResponse({'name':signal_obj.name,'config': config})
+            return JsonResponse({'name': signal_obj.name, 'config': config})
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
             print err
+
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -528,7 +533,7 @@ class TrainerView(viewsets.ModelViewSet):
             shared_id = request.query_params.get('shared_id', None).split(',')
             trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
             model_name = trainer_obj['name']
-            shared_by=User.objects.get(id=request.user.id)
+            shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
@@ -536,46 +541,63 @@ class TrainerView(viewsets.ModelViewSet):
                 return JsonResponse({'message': 'Models should not be shared to itself.'})
 
             for i in shared_id:
-                import random,string
+                import random, string
                 slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    trainer_obj.update({'name':model_name+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    trainer_obj.update(
+                        {'name': model_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i, 'slug': slug,
+                         'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
                 else:
-                    trainer_obj.update({'name':model_name+'_shared'+str(random.randint(1,100)), 'id':None, 'created_by_id':i, 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    trainer_obj.update(
+                        {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
+                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
                 Trainer.objects.create(**trainer_obj)
             return JsonResponse({'message': 'Models shared.'})
 
         except Exception as err:
             print err
-            return JsonResponse({'message':'Models sharing failed.'})
+            return JsonResponse({'message': 'Models sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
         try:
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
-            data_cleansing = dict()
-
+            outlier_removal = dict()
+            missing_value_treatment = dict()
             try:
                 data = config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']
                 if data['outlier_removal']['selected']:
-                    for op_index, operation in enumerate(data['outlier_removal']['operations']):
-                        operation_items = dict()
+                    index = 0
+                    for operation in data['outlier_removal']['operations']:
                         if operation['columns']:
-                            for index, i in enumerate(operation['columns']):
+                            for i in operation['columns']:
                                 data_items = dict()
                                 data_items['treatment'] = operation['name']
                                 data_items['name'] = i['name']
                                 data_items['type'] = i['datatype']
-                                operation_items[index] = data_items
-                                print operation_items
-                            data_cleansing[op_index] = operation_items
+                                outlier_removal[index] = data_items
+                                index += 1
+
+                if data['missing_value_treatment']['selected']:
+                    index = 0
+                    for operation in data['missing_value_treatment']['operations']:
+                        if operation['columns']:
+                            for i in operation['columns']:
+                                data_items = dict()
+                                data_items['treatment'] = operation['name']
+                                data_items['name'] = i['name']
+                                data_items['type'] = i['datatype']
+                                missing_value_treatment[index] = data_items
+                                index += 1
+
             except Exception as err:
                 print err
-            return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
+            return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config})
         except Exception as err:
-            return JsonResponse({'message': 'Config not found.'})
             print err
+            return JsonResponse({'message': 'Config not found.'})
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -758,23 +780,28 @@ class ScoreView(viewsets.ModelViewSet):
                                              slug=self.kwargs.get('slug')).values().first()
             score_name = score_obj['name']
             shared_id = request.GET['shared_id'].split(",")
-            shared_by=User.objects.get(id=request.user.id)
+            shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
             if request.user.id in [int(i) for i in shared_id]:
                 return JsonResponse({'message': 'Score should not be shared to itself.'})
             for id in shared_id:
-                import random,string
+                import random, string
                 slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
                 if obj.shared is True:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + str(random.randint(1, 100)),
+                                      'slug': slug, 'shared': True, 'shared_by': shared_by,
+                                      'shared_slug': obj.shared_slug})
                 else:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + '_shared'+str(random.randint(1,100)), 'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
+                    score_obj.update(
+                        {'id': None, 'created_by_id': id, 'name': score_name + '_shared' + str(random.randint(1, 100)),
+                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
             print err
+
 
 class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -6585,14 +6612,15 @@ def get_all_signals(request):
             signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
         return JsonResponse({'allSignalList': signalList})
 
-#Return list of all users
+
+# Return list of all users
 def get_all_users(request):
     if request.method == 'GET':
         UsersList = dict()
         users_obj = User.objects.filter(~Q(is_active=False))
         users_obj = users_obj.exclude(id=request.user.id)
         for index, i in enumerate(users_obj):
-            UsersList.update({index: {'name': i.username,'Uid':i.id}})
+            UsersList.update({index: {'name': i.username, 'Uid': i.id}})
         return JsonResponse({'allUsersList': UsersList})
 
 
@@ -6618,56 +6646,62 @@ def view_model_summary_autoML(request):
     model_slug = request.GET['slug']
     instance = Trainer.objects.get(slug=model_slug)
 
-    #if instance.viewed is False:
+    # if instance.viewed is False:
     from django.shortcuts import render
     protocol = 'http'
     if settings.USE_HTTPS:
         protocol = 'https'
 
-    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],instance.slug)
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol,
+                                                                           settings.THIS_SERVER_DETAILS['host'],
+                                                                           instance.slug)
 
     try:
-        context = {"Response":response_url}
-        #instance.viewed=True
-        #instance.save()
-        return render(request,'modelSummary.html',context)
+        context = {"Response": response_url}
+        # instance.viewed=True
+        # instance.save()
+        return render(request, 'modelSummary.html', context)
 
     except Exception as err:
         print err
-    #else:
+    # else:
     #    from django.shortcuts import render
     #    return render(request,'model_summary_expired.html')
+
 
 @csrf_exempt
 def view_model_summary_detail(request):
     try:
-        model_config=dict()
+        model_config = dict()
         model_slug = request.GET['slug']
         instance = Trainer.objects.get(slug=model_slug)
-        #from django.forms import model_to_dict
-        #model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
-        config=json.loads(instance.config)
-        data=json.loads(instance.data)
+        # from django.forms import model_to_dict
+        # model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
+        config = json.loads(instance.config)
+        data = json.loads(instance.data)
         try:
             table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
             FI_dict_keys = table_data[0]
             FI_dict_values = table_data[1]
-            #import collections
+            # import collections
             import operator
-            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = dict(zip(FI_dict_keys,FI_dict_values))
-            FI_dict= sorted(FI_dict.items(), key=operator.itemgetter(1),reverse=True)
-            FI_dict=FI_dict[1:len(FI_dict):1]
+            # FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = dict(zip(FI_dict_keys, FI_dict_values))
+            FI_dict = sorted(FI_dict.items(), key=operator.itemgetter(1), reverse=True)
+            FI_dict = FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
             model_summary_data['model_summary'] = data['model_summary']
-            model_config.update({'name':instance.name,'slug':instance.slug,'data':model_summary_data,'table_data':FI_dict})
+            model_config.update(
+                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data, 'table_data': FI_dict})
         except Exception as err:
             print err
-            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
+            # model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
         print err
+
+
 @csrf_exempt
 def dump_complete_messages(request, slug=None):
     try:
