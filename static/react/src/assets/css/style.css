@@ -16493,14 +16493,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 
 #tree-vertical {
 	margin-bottom: 10px;
-	overflow: auto;
-	height: 400px;
+	/* overflow: auto; */
+	/* height: 400px; */
 }
 
 #tree-vertical svg {
 	display: block;
 	position: relative;
-    top: -50px;
+    top: -70px;
     left: -95px;
 }
 
@@ -16530,4 +16530,43 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	min-width: 800px;
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+.addLayer{
+	height: 30px;
+	width: 30px;
+	background-color: #43ae9e;
+	border-radius: 50%;
+	line-height: 30px;
+	display: inline-block;
+	text-align: center;
+	z-index: 9;
+	position: relative;
+	border: 1px solid #20b7a9;
+}
+.addLayerTxt{
+  background-color: #fff;
+  padding: 5.2px 15px;
+  left: -10px;
+  position: relative;
+  border: 1px solid #4bbbaf;
+  font-size: 14px;
+}
+.mb-20{
+	margin-bottom: 20px;
+	padding-left: 20px;
+}
+.layerPanel{
+  box-shadow: 2px 4px 6px 2px #c0c0c0;
+	margin-bottom: 25px;
+	margin-left: 1%;
+  margin-right: 1%;
+}
+.layerHeader{
+  background-color: #e6e6e6;
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: 500;
+}
+.layerBody{
+  padding: 10px 0px;
 }
