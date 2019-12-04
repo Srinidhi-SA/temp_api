@@ -25,7 +25,8 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
-		setAppsLoaderValues: store.apps.setAppsLoaderValues
+		setAppsLoaderValues: store.apps.setAppsLoaderValues,
+		currentAppDetails:store.apps.currentAppDetails,
 	};
 })
 
@@ -146,20 +147,20 @@ export class AppsLoader extends React.Component {
 		$('#text-carousel').carousel();
 		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
 		var hideUrl = "";
-		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0){
-		let	appURL = "/"+store.getState().apps.currentAppDetails.app_url;
-		let mURL;
-		if(window.location.href.includes("analyst")){
-			mURL = appURL.replace("models","analyst/models/")
-		}else{
-			mURL = appURL.replace("models","autoML/models/")
-		}
-
-		store.getState().apps.currentAppDetails != null ? hideUrl = mURL:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/analyst/models";
-		}
-		else if((this.props.match.url).includes("/apps-stock-advisor-analyze"))hideUrl = "/apps-stock-advisor";
-		else
-		hideUrl = this.props.match.url;
+		if(store.getState().apps.currentAppDetails != null)
+			if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0){
+				let	appURL = "/"+store.getState().apps.currentAppDetails.app_url;
+				let mURL;
+				if(window.location.href.includes("analyst")){
+					mURL = appURL.replace("models","analyst/models/")
+				}else{
+					mURL = appURL.replace("models","autoML/models/")
+				}
+				store.getState().apps.currentAppDetails != null ? hideUrl = mURL:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/analyst/models";
+			} else if((this.props.match.url).includes("/apps-stock-advisor-analyze"))
+				hideUrl = "/apps-stock-advisor";
+			else
+				hideUrl = this.props.match.url;
 		
    return (
           <div id="dULoader">
