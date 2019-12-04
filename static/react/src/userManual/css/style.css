@@ -689,6 +689,8 @@ body.mobile-nav-active #mobile-nav-toggle {
   color: #00998c;
 }
 
+#overview a:hover .overview-col { background:#e8e8e8; }
+
 #overview .overview-col p {
   font-size: 14px;
   line-height: 24px;
@@ -699,8 +701,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 /* Services Section
 --------------------------------*/
-#howitworks {
-  background: #fff;
+#howitworks { 
   background-size: cover;
   padding: 60px 0 40px 0;
 }
@@ -860,18 +861,18 @@ body.mobile-nav-active #mobile-nav-toggle {
 
 /* components Section
 --------------------------------*/
-#components {
+#components, #data_modules {
   padding: 60px 0;
 }
 
-#components #components-flters {
+#components #components-flters, #data_modules #module-flters{
   padding: 0;
   margin: 5px 0 10px 0;
   list-style: none;
   text-align: center;
 }
 
-#components #components-flters li {
+#components #components-flters li, #data_modules #module-flters li {
   cursor: pointer;
   margin: 15px 15px 15px 0;
   display: inline-block;
@@ -886,12 +887,12 @@ body.mobile-nav-active #mobile-nav-toggle {
   transition: all 0.3s ease-in-out;
 }
 
-#components #components-flters li:hover, #components #components-flters li.filter-active {
+#components #components-flters li:hover, #components #components-flters li.filter-active, #data_modules #module-flters li.filter-active{
   background: #00998c;
   color: #fff;
 }
 
-#components #components-flters li:last-child {
+#components #components-flters li:last-child, #data_modules #module-flters li:last-child {
   margin-right: 0;
 }
 
@@ -904,16 +905,18 @@ body.mobile-nav-active #mobile-nav-toggle {
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.16);
 }
 
-#components .components-item {
+#components .components-item, 
+#data_modules .components-item {
   position: relative;
   min-height: 200px;
   overflow: hidden;
   width:100%
 }
 
-#components .components-item h2, #components .components-item p { margin-left:20px; margin-right:20px;}
+#components .components-item h2, #components .components-item p,
+#data_modules .components-item h2, #data_modules .components-item p { margin-left:20px; margin-right:20px;}
 
-#components .components-item figure {
+#components .components-item figure, #data_modules .components-item figure{
   background: #000;
   overflow: hidden;
   height: 240px;
@@ -922,12 +925,14 @@ body.mobile-nav-active #mobile-nav-toggle {
   margin: 0;
 }
 
-#components .components-item figure:hover img {
+#components .components-item figure:hover img, #data_modules .components-item figure:hover img {
   opacity: 0.4;
   transition: 0.3s;
 }
 
-#components .components-item figure .link-preview, #components .components-item figure .link-details {
+#components .components-item figure .link-preview, #components .components-item figure .link-details,
+#data_modules .components-item figure .link-preview, #data_modules .components-item figure .link-details
+{
   position: absolute;
   display: inline-block;
   visibility: hidden;
@@ -940,41 +945,46 @@ body.mobile-nav-active #mobile-nav-toggle {
   transition: 0.2s;
 }
 
-#components .components-item figure .link-preview i, #components .components-item figure .link-details i {
+#components .components-item figure .link-preview i, #components .components-item figure .link-details i, #data_modules .components-item figure .link-preview i, #data_modules .components-item figure .link-details i
+{
   padding-top: 6px;
   font-size: 22px;
   color: #333;
 }
 
-#components .components-item figure .link-preview:hover, #components .components-item figure .link-details:hover {
+#components .components-item figure .link-preview:hover, #components .components-item figure .link-details:hover,
+#data_modules .components-item figure .link-preview:hover, #data_modules .components-item figure .link-details:hover
+{
   background: #00998c;
 }
 
-#components .components-item figure .link-preview:hover i, #components .components-item figure .link-details:hover i {
+#components .components-item figure .link-preview:hover i, #components .components-item figure .link-details:hover i,
+#data_modules .components-item figure .link-preview:hover i, #data_modules .components-item figure .link-details:hover i
+{
   color: #fff;
 }
 
-#components .components-item figure .link-preview {
+#components .components-item figure .link-preview, #data_modules .components-item figure .link-preview {
   left: calc(50% - 38px);
   top: calc(50% - 18px);
 }
 
-#components .components-item figure .link-details {
+#components .components-item figure .link-details, #data_modules .components-item figure .link-details{
   right: calc(50% - 38px);
   top: calc(50% - 18px);
 }
 
-#components .components-item figure:hover .link-preview {
+#components .components-item figure:hover .link-preview, #data_modules .components-item figure:hover .link-preview {
   visibility: visible;
   left: calc(50% - 44px);
 }
 
-#components .components-item figure:hover .link-details {
+#components .components-item figure:hover .link-details, #data_modules .components-item figure:hover .link-details {
   visibility: visible;
   right: calc(50% - 44px);
 }
 
-#components .components-item .components-info {
+#components .components-item .components-info, #data_modules .components-item .components-info {
   background: #fff;
   text-align: center;
   padding: 30px;
@@ -982,7 +992,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   border-radius: 0 0 3px 3px;
 }
 
-#components .components-item .components-info h4 {
+#components .components-item .components-info h4, #data_modules .components-item .components-info h4 {
   font-size: 18px;
   line-height: 1px;
   font-weight: 700;
@@ -990,15 +1000,15 @@ body.mobile-nav-active #mobile-nav-toggle {
   padding-bottom: 0;
 }
 
-#components .components-item .components-info h4 a {
+#components .components-item .components-info h4 a, #data_modules .components-item .components-info h4 a{
   color: #333;
 }
 
-#components .components-item .components-info h4 a:hover {
+#components .components-item .components-info h4 a:hover, #data_modules .components-item .components-info h4 a:hover{
   color: #00998c;
 }
 
-#components .components-item .components-info p {
+#components .components-item .components-info p, #data_modules .components-item .components-info p{
   padding: 0;
   margin: 0;
   color: #b8b8b8;
@@ -1470,6 +1480,8 @@ body.mobile-nav-active #mobile-nav-toggle {
 .xs-mt-40 { margin-top:40px }
 .xs-mt-50 { margin-top:50px } 
 .xs-mb-10 { margin-bottom: 10px; }
+.xs-ml-10 { margin-left: 10px; }
+.xs-ml-20 { margin-left: 20px; }
 /** Colors for Components **/
 #using_mAdvisor { padding: 60px 0;}
 
@@ -1529,3 +1541,120 @@ ul.list_category li { line-height: 2.2em; padding-left: 16px; }
 
 h5.text-white { margin-top: 30px; }
 .clearfix { clear:both; overflow:hidden; } 
+
+/** DRAGGING + Traditional Vs Automatic *******/
+.section-block {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.ba-slider {
+    position: relative;
+    overflow: hidden;
+}
+ 
+.ba-slider img {
+    width: 100%;
+    display:block;
+}
+ 
+.resize {
+    position: absolute;
+    top:0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    overflow: hidden;
+}
+
+
+.handle { /* Thin line seperator */
+  position:absolute; 
+  left:50%;
+  top:0;
+  bottom:0;
+  width:4px;
+  margin-left:-2px;
+ 
+  background: rgb(19, 194, 180);
+  cursor: ew-resize;
+}
+ 
+.handle:after {  /* Big orange knob  */
+    position: absolute;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+ 
+    content:'\21d4';
+    color:white;
+    font-weight:bold;
+    font-size:36px;
+    text-align:center;
+    line-height:64px;
+ 
+    background: #e7fffd; /* @orange */
+    border:1px solid #e7fffd; /* darken(@orange, 5%) */
+    border-radius: 50%;
+    transition:all 0.3s ease;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,.3), 
+      inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 60px 50px -30px #149a9a; /* lighten(@orange, 20%)*/ 
+}
+
+.draggable:after {
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    line-height:48px;
+    font-size:30px;
+}
+
+.xs-pb-50 { padding-bottom:50px; }
+.xs-pt-20 { padding-top: 20px; }
+.xs-p-20 { padding: 20px; }
+
+
+/* Page content */
+.content {
+  padding: 16px;
+}
+
+/* The sticky class is added to the navbar with JS when it reaches its scroll position */
+.sticky {
+      position: sticky;
+    top: 72px;
+    width: 100%;
+    background: #00998c;
+    border-radius: 6px 6px 0 0;
+	z-index: 2;
+}
+.nav-tabs {
+    border-bottom: 1px solid transparent;
+}
+.nav-fill a {
+    color: white;
+}
+.nav-fill .nav-item { border-width: 0; }
+.nav-link:hover, .nav-tabs .nav-link.active {
+	color: #ffffff;
+	font-weight: 900;
+    background-color: #13c2b4;
+    border-color: transparent;
+    border-width: 0;
+    border-radius: 0;
+	
+}
+ 
+.tab-pane .fa { color: #13c2b4}
+
+.tab-content {
+    background: #ecf5f4;
+	border-radius: 0 0 6px 6px;
+}
+
+/* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
+.sticky + .content {
+  padding-top: 60px;
+}
