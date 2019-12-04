@@ -96,7 +96,7 @@ export class TensorFlow extends React.Component {
                   <div className="row mb-20">
                   <div class="form-group">
                    <label class="col-md-2">Layer</label>
-                   <label className="col-md-4">XYZ</label>
+                   <label className="col-md-4">A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.</label>
                    <div className="col-md-6">
                  <div className ="row">
                    <div className="col-md-6">
