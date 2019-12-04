@@ -16493,14 +16493,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 
 #tree-vertical {
 	margin-bottom: 10px;
-	overflow: auto;
-	height: 400px;
+	/* overflow: auto; */
+	/* height: 400px; */
 }
 
 #tree-vertical svg {
 	display: block;
 	position: relative;
-    top: -50px;
+    top: -70px;
     left: -95px;
 }
 
