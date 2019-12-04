@@ -5,7 +5,7 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import {STATIC_URL} from "../helpers/env";
+import {STATIC_URL, API} from "../helpers/env";
 import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
@@ -54,6 +54,7 @@ export class Login extends React.Component {
   }
   }
   render() {
+    const forgotLink = API + "/reset-password/"; 
     console.log("login is called!!")
     console.log(this.props)
     this.state.errmsg = this.props.errmsg;
@@ -114,8 +115,8 @@ export class Login extends React.Component {
                           </div>
 
                         </div>
-						            <a href="#" data-tip="Please reach out to mAdvisor helpdesk." className="xs-mt-20 pull-left">Forgot Password?</a>                      
-                        <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
+						            <a href = {forgotLink} className="xs-mt-20 pull-left">Forgot Password?</a>                      
+                      
                         <div className="form-group login-submit pull-right">
                           <button onClick={this.doAuth.bind(this)} id="login" className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
                         </div>
