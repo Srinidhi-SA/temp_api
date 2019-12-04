@@ -80,10 +80,13 @@ export class ModelVariableSelection extends React.Component {
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        } else if (this.props.targetLevelCounts != null && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+        } else if ((this.props.currentAppDetails.app_id != 13 && this.props.targetLevelCounts != null) && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
             bootbox.alert("Please select a sublevel value to analyze...");
             return false;
-        } else if ($('#createModelAnalysisList option:selected').val() == "") {
+        } else if (this.props.currentAppDetails.app_id === 13 && this.state.targetCountVal != "" && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+            bootbox.alert("Please select a sublevel value to analyze...");
+            return false;
+        }else if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
         } else if (creatModelName != "" && creatModelName.trim() == "") {
