@@ -4,8 +4,8 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary, setAppsLoaderValues,} from "../../actions/appActions";
-import {hideDataPreview} from "../../actions/dataActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, setAppsLoaderValues,} from "../../actions/appActions";
+import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
@@ -33,6 +33,14 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 export class AppsLoader extends React.Component {
   constructor(){
     super();
+	}
+	componentWillMount(){
+		if(window.location.href.includes("\createModel")){
+			this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+			if (this.props.dataPreview == null) {
+				this.props.dispatch(getDataSetPreview(this.props.match.params.slug));       
+			}
+		}
 	}
 	componentWillUpdate(){
 		var getText = [];
