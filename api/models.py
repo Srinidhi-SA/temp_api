@@ -1833,7 +1833,8 @@ class Trainer(models.Model):
                 )
                 colStructure.update({
                     "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
-                    "user_given_name": user_given_name
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 
@@ -1845,7 +1846,8 @@ class Trainer(models.Model):
                 colStructure.update({
                     "list_of_intervals": [int(token.strip()) for token in
                                           uiJson.get("specifyintervals", "").split(",")],
-                    "user_given_name": user_given_name
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 

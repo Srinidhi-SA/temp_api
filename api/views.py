@@ -565,7 +565,7 @@ class TrainerView(viewsets.ModelViewSet):
             config = json.loads(trainer_obj.config)
             unmodified_column_list = list()
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                if variable['isFeatureColumn']:
+                if 'isFeatureColumn' in variable.keys():
                     variable['selected'] = False
                     unmodified_column_list.append(variable['originalColumnName'])
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:

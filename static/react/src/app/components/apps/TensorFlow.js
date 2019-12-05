@@ -2,6 +2,8 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
+import {updateAlgorithmData} from "../../actions/appActions";
+
 
 @connect((store) => {
     return {
@@ -15,12 +17,24 @@ export class TensorFlow extends React.Component {
         super(props);
     }
 
+    changeTextboxValue(item,e){
+      debugger
+      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
+
+      this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+  }
+    handleSelectBox(item,e){
+      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
+      this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+      console.log("111111111111111111111111",item.name,e.target.value)
+    }
+
     getOptions(item) {
       var arr = item.defaultValue.map(j=>j.displayName);
       var options = arr.map(k => {
           return <option value={k} > {k}</option>
       })
-      return <select className="form-control"> {options} </select>
+      return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
     }
     
     addLayer(){
@@ -69,7 +83,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item.defaultValue} value={item.defaultValue} />
+                   <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.defaultValue} value={item.acceptedValue} />
                    </div>
                 </div> 
                 </div>
@@ -82,7 +96,7 @@ export class TensorFlow extends React.Component {
                   <div className="row mb-20">
                   <div class="form-group">
                    <label class="col-md-2">Layer</label>
-                   <label className="col-md-4">XYZ</label>
+                   <label className="col-md-4">A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.</label>
                    <div className="col-md-6">
                  <div className ="row">
                    <div className="col-md-6">
