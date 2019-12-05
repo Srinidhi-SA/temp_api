@@ -563,6 +563,14 @@ class TrainerView(viewsets.ModelViewSet):
         try:
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
+            unmodified_column_list = list()
+            for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                if 'isFeatureColumn' in variable.keys():
+                    variable['selected'] = False
+                    unmodified_column_list.append(variable['originalColumnName'])
+            for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                if variable['name'] in set(unmodified_column_list):
+                    variable['selected'] = True
             outlier_removal = dict()
             missing_value_treatment = dict()
             try:

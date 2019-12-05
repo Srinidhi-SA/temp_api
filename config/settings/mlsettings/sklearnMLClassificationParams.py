@@ -1412,7 +1412,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "layer",
         "displayName": "Layer",
-        "description": "XYZ",
+        "description": "A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.",
         "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
         "acceptedValue": None,
         "valueRange": None,
@@ -1426,7 +1426,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "loss",
         "displayName": "Loss",
-        "description": "XYZ",
+        "description": "The function used to evaluate the candidate solution (i.e. a set of weights).",
         "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS],
         "acceptedValue": None,
         "valueRange": None,
@@ -1440,7 +1440,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "optimizer",
         "displayName": "Optimizer",
-        "description": "XYZ",
+        "description": "Method used to minimize the loss function.",
         "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS],
         "acceptedValue": None,
         "valueRange": None,
@@ -1454,7 +1454,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "batch_size",
         "displayName": "Batch Size",
-        "description": "XYZ.",
+        "description": "The number of training examples in one Forward/Backward Pass.",
         "defaultValue": 0.0,
         "acceptedValue": None,
         "valueRange": [0.0, 100.0],
@@ -1468,7 +1468,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "number_of_epochs",
         "displayName": "Number of Epochs",
-        "description": "XYZ.",
+        "description": "An epoch refers to one cycle through the full training data-set.",
         "defaultValue": 0.0,
         "acceptedValue": None,
         "valueRange": [0.0, 10000.0],
@@ -1482,7 +1482,7 @@ SKLEARN_ML_TENSORFLOW_PARAMS = [
     {
         "name": "metrics",
         "displayName": "Metrics",
-        "description": "XYZ",
+        "description": "List of metrics to be evaluated by the model during training And testing.",
         "defaultValue":[obj for obj in TF_CLASSIFICATION_METRICS],
         "acceptedValue": None,
         "valueRange": None,
