@@ -268,7 +268,7 @@ export class Profile extends React.Component {
 									<td className="item xs-pt-5">
 									</td>
 									<td>
-										<a href="javascript:;">Change Password</a>
+										<a href="https://madvisor2.marlabsai.com/password-change/" target="_blank">Change Password</a>
 									</td>
 								  </tr>
                                 </tbody>
