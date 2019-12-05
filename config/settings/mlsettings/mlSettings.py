@@ -331,6 +331,14 @@ else:
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
             "description":"A meta estimator that uses averaging predictive power of a number of decision tree classification models. This is very effective in predicting the expected values of numeric variables and also to control overfitting."
           },
+          {
+                "algorithmName": "TensorFlow",
+                "selected": False,
+                "parameters": SKLEARN_ML_TENSORFLOW_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "tfr",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+                "description": "This is implementation of tensorflow algorithm"
+          }
         ]
     }
     ALGORITHM_LIST_CLASSIFICATION = {

@@ -104,13 +104,14 @@ SCORES_SCRIPTS_FOLDER = env('SCORES_SCRIPTS_DIR')
 
 IMAGE_URL = "/api/get_profile_image/"
 
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = ""
-EMAIL_USE_SSL = ""
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.office365.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "madvisor.automl@marlabs.com"
+EMAIL_HOST_PASSWORD = "Secure@123"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'madvisor.automl@marlabs.com'
 
 JOBSERVER_FROM_EMAIL = env('JOBSERVER_FROM_EMAIL')
 JOBSERVER_SENDTO_EMAIL_LIST = tuple(env.list('JOBSERVER_SENDTO_EMAIL_LIST', default=[]))

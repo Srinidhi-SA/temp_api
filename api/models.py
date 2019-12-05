@@ -1833,7 +1833,8 @@ class Trainer(models.Model):
                 )
                 colStructure.update({
                     "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
-                    "user_given_name": user_given_name
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 
@@ -1845,7 +1846,8 @@ class Trainer(models.Model):
                 colStructure.update({
                     "list_of_intervals": [int(token.strip()) for token in
                                           uiJson.get("specifyintervals", "").split(",")],
-                    "user_given_name": user_given_name
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 
@@ -1980,7 +1982,8 @@ class Trainer(models.Model):
         self.add_newly_generated_column_names_into_column_settings(
             newly_generated_column_name=new_name,
             columnType=name_mapping[function_name]['type'],
-            variable_selection_column_data=variable_selection_column_data
+            variable_selection_column_data=variable_selection_column_data,
+            original_column_name=original_col_nam
         )
 
         return new_name
@@ -1988,7 +1991,8 @@ class Trainer(models.Model):
     def add_newly_generated_column_names_into_column_settings(self,
                                                               newly_generated_column_name,
                                                               columnType,
-                                                              variable_selection_column_data
+                                                              variable_selection_column_data,
+                                                              original_column_name
                                                               ):
         remove_these = ['name', 'columnType', 'actualColumnType', 'selected']
         temp = copy.deepcopy(variable_selection_column_data)
@@ -1999,6 +2003,7 @@ class Trainer(models.Model):
         custom_dict = {
             'columnType': columnType,
             'actualColumnType': columnType,
+            'originalColumnName': original_column_name,
             'name': newly_generated_column_name,
             'selected': True,
             'slug': slug,

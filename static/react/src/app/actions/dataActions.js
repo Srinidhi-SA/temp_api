@@ -345,10 +345,11 @@ export function setEditModelValues(dataSlug,modelSlug,flag) {
       itemType
     }
   }
-  export function openDTModalAction(rule) {
+  export function openDTModalAction(rule,path) {
     return {
       type: "DT_MODAL_SHOW",
       rule,
+      path,
     }
   }
 

@@ -1076,13 +1076,21 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             content = Result_URL
             #app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
             #attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
+            mail_data = dict()
+            mail_data['modelName'] = trainer_object.name
+            mail_data['datasetName'] = trainer_object.dataset.name
+            mail_data['createdAt'] = trainer_object.created_at
+            conf = json.loads(trainer_object.config)
+            for i in conf['config']['COLUMN_SETTINGS']['variableSelection']:
+                if i['targetColumn']:
+                    mail_data['variable'] = i['name']
             try:
                 if trainer_object.email is not None:
                     return_mail_id = trainer_object.email
                     #mail('send', access_token=access_token, return_mail_id=return_mail_id,
                     #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                     mail('send', access_token=access_token, return_mail_id=return_mail_id,
-                         subject='Marlabs-AutoML Success', content=content)
+                         subject='Marlabs-AutoML Success', content=content, mail_options=mail_data)
                 else:
                     user_id = trainer_object.created_by_id
                     user_object = User.objects.get(id=user_id)
@@ -1091,7 +1099,7 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                         #mail('send', access_token=access_token, return_mail_id=return_mail_id,
                         #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                         mail('send', access_token=access_token, return_mail_id=return_mail_id,
-                             subject='Marlabs-AutoML Success', content=content)
+                             subject='Marlabs-AutoML Success', content=content, mail_options=mail_data)
 
             except Exception as err:
                 print err
@@ -1100,7 +1108,7 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             pass
 
 
-def mail(action_type=None, access_token=None, return_mail_id=None, subject=None, content=None):
+def mail(action_type=None, access_token=None, return_mail_id=None, subject=None, content=None, mail_options=None):
     # access_token = access_token
     # If there is no token in the session, redirect to home
     if not access_token:
@@ -1108,7 +1116,7 @@ def mail(action_type=None, access_token=None, return_mail_id=None, subject=None,
     else:
         try:
             #messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
-            messages = send_my_messages(access_token, return_mail_id, subject, content)
+            messages = send_my_messages(access_token, return_mail_id, subject, content, mail_options)
             if messages[:3] == '202':
                 print "Mail Sent"
         except Exception as e:
@@ -1116,7 +1124,7 @@ def mail(action_type=None, access_token=None, return_mail_id=None, subject=None,
             print "Some issue with mail sending module..."
 
 
-def send_my_messages(access_token, return_mail_id, subject, content):
+def send_my_messages(access_token, return_mail_id, subject, content, mail_options):
     '''
   Replies to the mail with attachments
   '''
@@ -1136,6 +1144,17 @@ def send_my_messages(access_token, return_mail_id, subject, content):
                       'ContentType': mime_type,
                       'Name': file_to_attach.split('/')[-1]}
     '''
+    htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>Model has been successfully created through AutoML.
+    </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable : 
+    {}</br></br>Please go through the attached link in order to view your Model Summary.
+    </br></br></br><a href="{}">Model Summary</a></br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
+    .format(return_mail_id.split('@')[0],
+            mail_options['modelName'],
+            mail_options['createdAt'],
+            mail_options['datasetName'],
+            mail_options['variable'],
+            content)
+
     payload = {
 
         "Message": {
@@ -1143,8 +1162,8 @@ def send_my_messages(access_token, return_mail_id, subject, content):
             "Subject": subject,
             "Body": {
 
-                "ContentType": "Text",
-                "Content": "Hi There,\n\nPlease go through the attached link in order to view your Model Summary.\n\n\n"+content,
+                "ContentType": "HTML",
+                "Content": htmlData,
 
             },
             "ToRecipients": [
