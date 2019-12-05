@@ -80,10 +80,13 @@ export class ModelVariableSelection extends React.Component {
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        } else if (this.props.targetLevelCounts != null && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+        } else if ((this.props.currentAppDetails.app_id != 13 && this.props.targetLevelCounts != null) && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
             bootbox.alert("Please select a sublevel value to analyze...");
             return false;
-        } else if ($('#createModelAnalysisList option:selected').val() == "") {
+        } else if (this.props.currentAppDetails.app_id === 13 && this.state.targetCountVal != "" && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+            bootbox.alert("Please select a sublevel value to analyze...");
+            return false;
+        }else if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
         } else if (creatModelName != "" && creatModelName.trim() == "") {
@@ -160,9 +163,9 @@ export class ModelVariableSelection extends React.Component {
         var modelValidation = "";
         var noOfROws = "";
         var buttonName = "Create Model";
-        noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function (elements) {
-            return elements;
-        }).value;
+        // noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function (elements) {
+        //     return elements;
+        // }).value;
         if (store.getState().apps.modelSummaryFlag) {
             let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/analyst/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);
@@ -262,11 +265,12 @@ export class ModelVariableSelection extends React.Component {
         }
         let metric = "";
         let metricValues = "";
-        if(this.props.currentAppDetails.app_id==2)
-        metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
-        else{
-            metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
-        }
+        if(this.props.currentAppDetails !=null)
+            if(this.props.currentAppDetails.app_id==2)
+                metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
+            else{
+                metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
+            }
         if (metric) {
             metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={this.props.metricSelected.name} id="selectEvaluation" required={true}>
                 <option value="">--select--</option>
