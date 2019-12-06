@@ -12,6 +12,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import { saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -24,6 +25,8 @@ import {
     selectedItem: store.datasets.selectedItem,
     featureEngineering: store.datasets.featureEngineering,
     datasets: store.datasets,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -83,10 +86,50 @@ export class Levels extends React.Component {
 
   componentWillMount() {
     this.addNewLevel();
-    console.log("Levels componentWillMount method is called...");
-    
+    console.log("Levels componentWillMount method is called...");    
+      if(this.props.editmodelFlag){
+        let feConfig = "";
+        feConfig = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
+        if(this.props.selectedItem.actualColumnType === "dimension"){
+          if(feConfig.filter(i=>i.name === "create_new_levels" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              let dimLevelData = feConfig.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0].mapping_dict;
+              let levelsValue = Object.entries(dimLevelData);
+              let levelLen = levelsValue.length;
+              let dataToSave = [];
+              
+              for(let i=0;i<levelLen;i++){
+                dataToSave.push({inputValue:levelsValue[i][0],multiselectValue:levelsValue[i][1]})
+              }
+              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"levelData",dataToSave))
+              this.setState({
+                levelsArray: dataToSave
+              });
+            }
+        }else if(this.props.selectedItem.actualColumnType === "datetime"){
+          if(feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              let datLevelData = feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0].mapping_dict;
+              let levelsDatValue = Object.entries(datLevelData);
+              let levelLen = levelsDatValue.length;
+              let dataToSave = [];
+              
+              for(let i=0;i<levelLen;i++){
+                let sDate = levelsDatValue[i][1][0].split("/").reverse().join("-");
+                let eDate = levelsDatValue[i][1][1].split("/").reverse().join("-")
+
+                dataToSave.push({inputValue:levelsDatValue[i][0],startDate:sDate,endDate:eDate})
+              }
+              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"levelData",dataToSave))
+              this.setState({
+                levelsArray: dataToSave
+              });
+            }
+        }
+      }
 
   }
+
   componentWillUpdate() {
     
     this.props.parentUpdateLevelsData(this.state.levelsArray);
@@ -188,14 +231,14 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
+                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} defaultValue={levelData.inputValue}  onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
                </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
                 </div>
                 <div className="form-group">
                   <div className="content-section implementation multiselect-demo">
-                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
+                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} defaultValue={levelData.multiselectValue} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
                       style={{ minWidth: '12em' }}  filter={true} placeholder="choose" />
                   </div>
                 </div>

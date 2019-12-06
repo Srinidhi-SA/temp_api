@@ -9,7 +9,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
-import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
+import {  saveEncodingValuesAction, saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -17,6 +17,8 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -28,6 +30,95 @@ export class Transform extends React.Component {
     this.state = {};
     this.state.encodingRadioButton;
 
+  }
+
+  componentWillMount(){
+    if(this.props.editmodelFlag){
+      let feConfig = "";
+        feConfig = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.transformation_settings.operations;
+        
+        if(this.props.selectedItem.actualColumnType === "measure"){
+          let dataToSave = [];
+          let mTransData1 ={replace_values_with:false,replace_values_with_input:"",replace_values_with_selected:""};
+          let mTransData2 ={feature_scaling:false,perform_standardization_select:""};
+          let mTransData3 ={variable_transformation:false,variable_transformation_select:""};
+
+          if(feConfig.filter(i=>i.name === "replace_values_with" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              mTransData1 = feConfig.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              mTransData1.replace_values_with=true
+            }
+          if(feConfig.filter(i=>i.name === "perform_standardization" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              mTransData2 = feConfig.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              mTransData2.feature_scaling=true
+            }
+          if(feConfig.filter(i=>i.name === "variable_transformation" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              mTransData3 = feConfig.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              mTransData3.variable_transformation=true
+            }
+          dataToSave.push({replace_values_with:mTransData1.replace_values_with,replace_values_with_input:mTransData1.replace_value,replace_values_with_selected:mTransData1.replace_by,
+              feature_scaling:mTransData2.feature_scaling,perform_standardization_select:mTransData2.standardization_type,
+              variable_transformation:mTransData3.variable_transformation,variable_transformation_select:mTransData3.transformation_type})
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"transformationData",dataToSave[0]));
+        }
+        
+        else if(this.props.selectedItem.actualColumnType === "dimension"){
+          let dataToSave = [];
+          let dimData1 ={encoding_dimensions:false,encoding_type:""};
+          let dimData2 ={return_character_count:false};
+          let dimData3 ={is_custom_string_in:false,is_custom_string_in_input:""};
+
+          if(feConfig.filter(i=>i.name === "encoding_dimensions" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              dimData1 = feConfig.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              dimData1.encoding_dimensions=true
+            }
+          if(feConfig.filter(i=>i.name === "return_character_count" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "return_character_count" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              dimData2 = feConfig.filter(i=>i.name === "return_character_count" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              dimData2.return_character_count=true
+            }
+          
+          if(feConfig.filter(i=>i.name === "is_custom_string_in" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              dimData3 = feConfig.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              dimData3.is_custom_string_in=true
+            }
+          dataToSave.push({encoding_dimensions:dimData1.encoding_dimensions,encoding_type:dimData1.encoding_type,
+              return_character_count:dimData2.return_character_count,
+              is_custom_string_in:dimData3.is_custom_string_in,is_custom_string_in_input:dimData3.user_given_string})
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"transformationData",dataToSave[0]));
+        }
+        
+        else if(this.props.selectedItem.actualColumnType === "datetime"){
+          let dataToSave = [];
+          let dtData1 ={is_date_weekend:false};
+          let dtData2 ={extract_time_feature:false,extract_time_feature_select:""};
+          let dtData3 ={time_since:false,time_since_input:""};
+
+          if(feConfig.filter(i=>i.name === "is_date_weekend" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              dtData1 = feConfig.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              dtData1.is_date_weekend=true
+            }
+          if(feConfig.filter(i=>i.name === "extract_time_feature" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+            dtData2 = feConfig.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+            dtData2.extract_time_feature=true
+          }
+          if(feConfig.filter(i=>i.name === "time_since" && i.selected).length!=0)
+            if(feConfig.filter(i=>i.name === "time_since" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
+              dtData3 = feConfig.filter(i=>i.name === "time_since" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+              dtData3.time_since_is_true=true
+            }
+          dataToSave.push({is_date_weekend:dtData1.is_date_weekend,
+              extract_time_feature:dtData2.extract_time_feature,extract_time_feature_select:dtData2.time_feature_to_extract,
+              time_since:dtData3.time_since_is_true,time_since_input:dtData3.time_since.split("/").reverse().join("-")})
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"transformationData",dataToSave[0]));
+        }
+    }
   }
 
 componentDidMount(){

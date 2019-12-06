@@ -38,21 +38,19 @@ export class Bins extends React.Component {
       let feConfig = "";
       feConfig = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
 
-      if(this.props.selectedItem.actualColumnType === "measure" && feConfig.filter(i=>(i.name==="create_custom_bins" && i.selected)) ){
-        if(feConfig.filter(i=>i.name==="create_custom_bins")[0].columns.filter(j=>j.name === this.props.selectedItem.name)){
-          let customBinData = feConfig.filter(i=>i.name==="create_custom_bins")[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+      if(this.props.selectedItem.actualColumnType === "measure")
+        if((feConfig.filter(i=>i.name === "create_custom_bins" && i.selected).length!=0)  && (feConfig.filter(i=>i.name === "create_custom_bins")[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0)){
+          let customBinData = feConfig.filter(i=>i.name === "create_custom_bins" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
           let dataToSave = [];
-          dataToSave.push({newcolumnname:customBinData.actual_col_name, selectBinType:"create_custom_bin",specifyintervals:customBinData.list_of_intervals})
+          dataToSave.push({newcolumnname:customBinData.actual_col_name, selectBinType:"create_custom_bins",specifyintervals:customBinData.list_of_intervals})
           this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"binData",dataToSave[0]))
         }
-      }else if(this.props.selectedItem.actualColumnType === "measure" && feConfig.filter(i=>(i.name==="create_equal_sized_bins" && i.selected)) ){
-          if(feConfig.filter(i=>i.name==="create_equal_sized_bins")[0].columns.filter(j=>j.name === this.props.selectedItem.name)){
-            let equalBinData = feConfig.filter(i=>i.name==="create_equal_sized_bins")[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
-            let dataToSave = [];
-            dataToSave.push({newcolumnname:equalBinData.actual_col_name, selectBinType:"create_equal_sized_bin", numberofbins:equalBinData.list_of_intervals})
-            this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"binData",dataToSave[0]))
+        else if((feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected).length!=0)  && (feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0)){
+          let equalBinData = feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
+          let dataToSave = [];
+          dataToSave.push({newcolumnname:equalBinData.actual_col_name, selectBinType:"create_equal_sized_bins",numberofbins:equalBinData.number_of_bins})
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"binData",dataToSave[0]))
         }
-      }
     }
   }
 
