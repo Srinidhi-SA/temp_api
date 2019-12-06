@@ -136,6 +136,14 @@ export class DataCleansing extends React.Component {
   }
   }
 
+setMissingValuesOnEdit(){
+  var missingValues =Object.values(this.props.modelEditconfig.missing_value_config)
+  for(var i=0;i<missingValues.length;i++){//colName,colType,colSlug, treatment
+  this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug
+  ,missingValues[i].treatment))
+ }
+}
+
   componentDidMount() {
 
 
