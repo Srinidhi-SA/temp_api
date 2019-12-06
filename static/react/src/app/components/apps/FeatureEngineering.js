@@ -33,8 +33,8 @@ import { statusMessages } from "../../helpers/helper";
     selectedVariables: store.datasets.selectedVariables,
     convertUsingBin: store.datasets.convertUsingBin,
     numberOfBins: store.datasets.topLevelData.numberOfBins,
-    editmodelFlag:store.datasets.editmodelFlag
-
+    editmodelFlag:store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -64,6 +64,12 @@ export class FeatureEngineering extends React.Component {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
     };
+    if((this.props.editmodelFlag) && (this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected)){
+        let binningDate = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0];
+        this.state.topLevelRadioButton = "true";
+        // this.props.dispatch(saveTopLevelValuesAction(true, binningData.number_of_bins));
+      }
+    
   }
 
   componentDidMount() {

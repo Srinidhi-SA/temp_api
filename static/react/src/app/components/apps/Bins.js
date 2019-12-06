@@ -44,12 +44,14 @@ export class Bins extends React.Component {
           let dataToSave = [];
           dataToSave.push({newcolumnname:customBinData.actual_col_name, selectBinType:"create_custom_bins",specifyintervals:customBinData.list_of_intervals})
           this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"binData",dataToSave[0]))
+          this.props.dispatch(binningOptionsOnChangeAction(true,false));
         }
         else if((feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected).length!=0)  && (feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0)){
           let equalBinData = feConfig.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0];
           let dataToSave = [];
           dataToSave.push({newcolumnname:equalBinData.actual_col_name, selectBinType:"create_equal_sized_bins",numberofbins:equalBinData.number_of_bins})
           this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"binData",dataToSave[0]))
+          this.props.dispatch(binningOptionsOnChangeAction(false,true));
         }
     }
   }
