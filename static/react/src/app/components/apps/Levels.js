@@ -87,47 +87,6 @@ export class Levels extends React.Component {
   componentWillMount() {
     this.addNewLevel();
     console.log("Levels componentWillMount method is called...");    
-      if(this.props.editmodelFlag){
-        let feConfig = "";
-        feConfig = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
-        if(this.props.selectedItem.actualColumnType === "dimension"){
-          if(feConfig.filter(i=>i.name === "create_new_levels" && i.selected).length!=0)
-            if(feConfig.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
-              let dimLevelData = feConfig.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0].mapping_dict;
-              let levelsValue = Object.entries(dimLevelData);
-              let levelLen = levelsValue.length;
-              let dataToSave = [];
-              
-              for(let i=0;i<levelLen;i++){
-                dataToSave.push({inputValue:levelsValue[i][0],multiselectValue:levelsValue[i][1]})
-              }
-              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"levelData",dataToSave))
-              this.setState({
-                levelsArray: dataToSave
-              });
-            }
-        }else if(this.props.selectedItem.actualColumnType === "datetime"){
-          if(feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected).length!=0)
-            if(feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name).length != 0){
-              let datLevelData = feConfig.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns.filter(j=>j.name === this.props.selectedItem.name)[0].mapping_dict;
-              let levelsDatValue = Object.entries(datLevelData);
-              let levelLen = levelsDatValue.length;
-              let dataToSave = [];
-              
-              for(let i=0;i<levelLen;i++){
-                let sDate = levelsDatValue[i][1][0].split("/").reverse().join("-");
-                let eDate = levelsDatValue[i][1][1].split("/").reverse().join("-")
-
-                dataToSave.push({inputValue:levelsDatValue[i][0],startDate:sDate,endDate:eDate})
-              }
-              this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug,"levelData",dataToSave))
-              this.setState({
-                levelsArray: dataToSave
-              });
-            }
-        }
-      }
-
   }
 
   componentWillUpdate() {
