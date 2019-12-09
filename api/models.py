@@ -1832,7 +1832,8 @@ class Trainer(models.Model):
                     uiJson["selectBinType"]
                 )
                 colStructure.update({
-                    "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
+                    # "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
+                    "number_of_bins": int(str(uiJson.get("numberofbins", "10")).strip()),
                     "user_given_name": user_given_name,
                     "actual_col_name": uiJson["newcolumnname"]
                 })
