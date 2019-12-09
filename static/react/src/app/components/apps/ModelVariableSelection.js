@@ -295,16 +295,17 @@ componentDidMount = () => {
                 renderSelectBox = <option>No Variables</option>
             }
             if (this.props.targetLevelCounts != ""||(store.getState().apps.targetLevelCounts!=""&&this.props.editmodelFlag)) {
+                let targetLvlCountfromState = store.getState().apps.targetLevelCounts;
                 renderLevelCountSelectBox = <select className="form-control" id="createModelLevelCount" defaultValue={store.getState().apps.apps_regression_levelCount}>
                     <option value="">--Select--</option>
-                    {this.props.editmodelFlag?store.getState().apps.targetLevelCounts.sort().map((item,i)=>{
-
-                return (<option key={item} name={item} value={item}>{item}</option>)
-                        }):this.props.targetLevelCounts.sort().map((item, index) => {
-
+                    {(this.props.editmodelFlag && targetLvlCountfromState != "")?
+                    targetLvlCountfromState.sort().map((item,i)=>{
                         return (<option key={item} name={item} value={item}>{item}</option>)
-                    }
-                    )}
+                    })
+                    :
+                    this.props.targetLevelCounts.sort().map((item, index) => {
+                        return (<option key={item} name={item} value={item}>{item}</option>)
+                    })}
                 </select>
             }
         }
