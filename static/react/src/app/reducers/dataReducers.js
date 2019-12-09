@@ -959,6 +959,7 @@ export default function reducer(state = {
         duplicateObservations : false,
 
       }
+      
     }
     break;
 

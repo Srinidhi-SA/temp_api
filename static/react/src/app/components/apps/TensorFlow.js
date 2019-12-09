@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {updateAlgorithmData} from "../../actions/appActions";
+import Layer from './Layer'
 
 
 @connect((store) => {
@@ -15,6 +16,10 @@ import {updateAlgorithmData} from "../../actions/appActions";
 export class TensorFlow extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+          panels : [],
+          layerType:"dense"
+      }
     }
 
     changeTextboxValue(item,e){
@@ -37,24 +42,27 @@ export class TensorFlow extends React.Component {
       return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
     }
     
-    addLayer(){
 
-    const div1 = document.createElement('div');
-  
-    div1.className = 'row layerPanel' ;
-      div1.innerHTML = `
-      <div class="layer">
-      <div class="layerHeader">Dense</div>
-      <div class="layerBody">
-      <div class="form-group"><label class="col-md-2 control-label read">Activation</label><label class="col-md-4 control-label read">Activation function for the hidden layer.</label><div class="col-md-6"><div class="row undefined"><div class="col-md-6 for_multiselect"><select class="form-control single" style=""><option class="0" value="relu">relu</option><option class="1" value="identity">identity</option><option class="2" value="logistic">logistic</option><option class="3" value="tanh">tanh</option></select></div><div class="clearfix"></div><!-- react-text: 5803 --><!-- /react-text --></div></div><div class="clearfix"></div></div>
-      <div class="form-group"><label class="col-md-2 control-label read">Shuffle</label><label class="col-md-4 control-label read">Activation function for the hidden layer.</label><div class="col-md-6"><div class="row undefined"><div class="col-md-6 for_multiselect"><select class="form-control single" style=""><option class="0" value="relu">relu</option><option class="1" value="identity">identity</option><option class="2" value="logistic">logistic</option><option class="3" value="tanh">tanh</option></select></div><div class="clearfix"></div><!-- react-text: 5803 --><!-- /react-text --></div></div><div class="clearfix"></div></div>
-      </div>
-      </div>
-      `;
-   
-    document.getElementById('layerArea').appendChild(div1);
+  handleClick(){
+    //apps.regression_algorithm_data_manual[5].parameters[""0""].defaultValue[1].selected
+
+    var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
+    console.log(Layer)
+    const nextId = this.state.panels.length + 1
+    this.setState({
+         panels: this.state.panels.concat([nextId]),
+         layerType:slectedLayer
+    })
   }
     render() {
+
+      if(this.state.layerType==="Dense")
+    var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
+    else if(this.state.layerType==="Dropout")
+     data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
+    else 
+    data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[2].parameters
+
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
      var rendercontent = algorithmData.map((item,index)=>{
            if(item.paramType=="list"){
@@ -84,7 +92,7 @@ export class TensorFlow extends React.Component {
                  <div className ="row">
                  <div className="col-md-2">
                    <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.defaultValue} value={item.acceptedValue} />
-                   </div>
+                </div>
                 </div> 
                 </div>
                 </div>
@@ -103,14 +111,28 @@ export class TensorFlow extends React.Component {
                     {this.getOptions(this.props.manualAlgorithmData[5].parameters[0])}
                    </div>
                    <div className="col-md-6" style={{textAlign:'center'}}>
-                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.addLayer}>
+                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
                       <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
                       <span className="addLayerTxt">Add layer</span>
                   </div>
+                  
                    </div>
+                  {/* <button onClick={this.handleClick.bind(this,"dense")}>
+                  <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
+                  <span className="addLayerTxt">Add layer</span>
+                  </button> */}
+                  
                  </div>
+                 
                  </div>
                 </div>
+                  </div>
+                  <div className='panel-wrapper'>
+                  {
+                    this.state.panels.map((panelId) => (
+                      <Layer key={panelId} id={panelId} parameters={data} layerType={this.state.layerType} />
+                    ))
+                  }
                   </div>
                   <div id="layerArea"></div>
                     {rendercontent}
