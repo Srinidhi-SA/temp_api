@@ -751,7 +751,7 @@ SKLEARN_ML_SUPPORTED_TF_LAYER = [
     {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
     {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
 ]
-SKLEARN_ML_TENSORFLOW_PARAMS = [
+SKLEARN_ML_TENSORFLOW_REGRESSION_PARAMS = [
     {
         "name": "layer",
         "displayName": "Layer",

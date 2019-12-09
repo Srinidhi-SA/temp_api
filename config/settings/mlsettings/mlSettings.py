@@ -334,7 +334,7 @@ else:
           {
                 "algorithmName": "TensorFlow",
                 "selected": False,
-                "parameters": SKLEARN_ML_TENSORFLOW_PARAMS,
+                "parameters": SKLEARN_ML_TENSORFLOW_REGRESSION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "tfr",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
                 "description": "This is implementation of tensorflow algorithm"
@@ -393,7 +393,7 @@ else:
             {
                 "algorithmName": "TensorFlow",
                 "selected": False,
-                "parameters": SKLEARN_ML_TENSORFLOW_PARAMS,
+                "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
                 "description":"This is implementation of tensorflow algorithm"
