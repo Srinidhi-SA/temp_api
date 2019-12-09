@@ -877,6 +877,7 @@ class Trainer(models.Model):
     def generate_config(self, *args, **kwargs):
 
         # changes in UI given config
+
         if self.mode == 'analyst':
             self.apply_changes_of_selectedVariables_into_variable_selection()
 
@@ -922,7 +923,12 @@ class Trainer(models.Model):
         try:
             configUI = self.get_config()
             configAPI = self.dataset.get_config()
-
+            try:
+                if 'TENSORFLOW' in configUI:
+                    config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
+            except Exception as err:
+                print "Error adding Tesorflow Selection to Algorithm"
+                print err
             # Unselect original
             if 'featureEngineering' in configUI:
                 for colSlug in self.collect_column_slugs_which_all_got_transformations:
