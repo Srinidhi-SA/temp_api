@@ -561,7 +561,6 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
         try:
-            from datetime import datetime
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
             unmodified_column_list = list()
