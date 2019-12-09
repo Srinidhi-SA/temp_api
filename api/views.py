@@ -561,7 +561,6 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
         try:
-            from datetime import datetime
             trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(trainer_obj.config)
             unmodified_column_list = list()
@@ -572,13 +571,7 @@ class TrainerView(viewsets.ModelViewSet):
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
                 if variable['name'] in set(unmodified_column_list):
                     variable['selected'] = True
-            for operation in config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']['level_creation_settings']['operations']:
-                if operation['selected']:
-                    for column in operation['columns']:
-                        if column['datatype'] == 'datetime':
-                            for item in column['mapping_dict']:
-                                for i in item:
-                                    i = datetime.strptime(i, '%d/%m/%Y').strftime('%Y/%m/%d')
+
             outlier_removal = dict()
             missing_value_treatment = dict()
             try:
