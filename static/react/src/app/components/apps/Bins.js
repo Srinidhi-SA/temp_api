@@ -10,6 +10,7 @@ import {
   selectedBinsOrLevelsTabAction,
   binningOptionsOnChangeAction,
   saveBinValuesAction,
+  saveBinLevelTransformationValuesAction,
 } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
@@ -19,7 +20,9 @@ import {
     dataPreview: store.datasets.dataPreview,
     isNoOfBinsEnabled: store.datasets.isNoOfBinsEnabled,
     isSpecifyIntervalsEnabled: store.datasets.isSpecifyIntervalsEnabled,
-    featureEngineering: store.datasets.featureEngineering
+    featureEngineering: store.datasets.featureEngineering,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -31,6 +34,13 @@ export class Bins extends React.Component {
 
 
   componentWillMount() {
+    if(this.props.editmodelFlag){
+      if(this.props.featureEngineering[this.props.selectedItem.slug]!=undefined && this.props.featureEngineering[this.props.selectedItem.slug].binData.selectBinType == "create_equal_sized_bins"){
+        this.props.dispatch(binningOptionsOnChangeAction(false,true));
+      }else{
+        this.props.dispatch(binningOptionsOnChangeAction(true,false));
+      }
+    }
   }
 
   getBindata() {

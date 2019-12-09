@@ -38,6 +38,7 @@ import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
         editmodelFlag:store.datasets.editmodelFlag,
 
 
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage
     };
 } )
 
@@ -74,6 +75,9 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         const from = this.getValueOfFromParam();
         if (from === 'data_cleansing') {
+
+        }else if(this.props.fromVariableSelectionPage){
+            
         }
         else if(this.props.editmodelFlag){ //removed from === 'editModel'
 
