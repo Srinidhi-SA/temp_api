@@ -569,6 +569,7 @@ class TrainerView(viewsets.ModelViewSet):
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
                 if variable['name'] in set(unmodified_column_list):
                     variable['selected'] = True
+
             outlier_removal = dict()
             missing_value_treatment = dict()
             try:
@@ -596,6 +597,7 @@ class TrainerView(viewsets.ModelViewSet):
                                 data_items['type'] = i['datatype']
                                 missing_value_treatment[index] = data_items
                                 index += 1
+                config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in x.keys()]
 
             except Exception as err:
                 print err

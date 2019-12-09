@@ -233,5 +233,4 @@ def deploy_ui():
 '''
 api restarting problem
 sudo docker cp /home/ubuntu/env_deployment/UI_deployment/mAdvisor-api/config/settings/config_file_name_to_run.py <api-container-id>:/home/mAdvisor/mAdvisor-api/config/settings/
-
 '''
