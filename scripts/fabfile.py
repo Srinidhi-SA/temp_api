@@ -220,7 +220,7 @@ def deploy_ui():
     run("sudo docker cp /home/ubuntu/env_deployment/UI_deployment/mAdvisor-api/config/settings/config_file_name_to_run.py "+container_name+":/home/mAdvisor/mAdvisor-api/config/settings/")
     print "CONFIG FILE UPDATED INSIDE API CONTAINER"
 
-    container_name = run("sudo docker ps -aqf \"name=api\" | head -n 2 | tail -n 1")
+    container_name = run("sudo docker ps -aqf \"name=nginx\" | head -n 2 | tail -n 1")
     print container_name
     print "FETCHED NGINX CONTAINER ID"
     run("docker exec -it "+container_name+" bash -c \"service nginx reload\"")
