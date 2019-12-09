@@ -1404,11 +1404,11 @@ TENSORFLOW_LAMBDA_PARAMETERS = [
     },
 ]
 SKLEARN_ML_SUPPORTED_TF_LAYER = [
-    {"name": "Dense", "selected": False, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
+    {"name": "Dense", "selected": True, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
     {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
     {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
 ]
-SKLEARN_ML_TENSORFLOW_PARAMS = [
+SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
     {
         "name": "layer",
         "displayName": "Layer",
