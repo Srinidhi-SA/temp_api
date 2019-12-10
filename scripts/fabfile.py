@@ -199,20 +199,20 @@ def deploy_ui():
         print "BUNDLE.JS FILE OF LATEST CODE CREATED"
 
 
-    container_name = run("sudo docker ps -aqf \"name=api\" | head -n 2 | tail -n 1")
+    container_name = run("sudo docker ps -aqf \"name=nginx\" | head -n 2 | tail -n 1")
     print container_name
     print "FETCHED NGINX CONTAINER ID"
     run("sudo docker cp /home/ubuntu/env_deployment/UI_deployment/mAdvisor-api/static/react/dist/app/bundle.js "+container_name+":/home/static/react/dist/app/")
     print "LATEST UI CODE PUT INSIDE NGINX CONTAINER"
 
     #Task: Avoid updating UI Version In script.
-    with cd("/home/ubuntu/env_deployment/UI_deployment/mAdvisor-api/config/settings"):
-        text_command = 'CONFIG_FILE_NAME = \'luke\'\nUI_VERSION = \'{0}\''.format(random.randint(100000,10000000))
-        print text_command
-        run("sudo su -c \"echo '{0}' > config_file_name_to_run.py\"".format(text_command))
-        run('''sudo sed -i "s/luke/'luke'/"  config_file_name_to_run.py''')
+    #with cd("/home/ubuntu/env_deployment/UI_deployment/mAdvisor-api/config/settings"):
+    #    text_command = 'CONFIG_FILE_NAME = \'luke\'\nUI_VERSION = \'{0}\''.format(random.randint(100000,10000000))
+    #    print text_command
+    #    run("sudo su -c \"echo '{0}' > config_file_name_to_run.py\"".format(text_command))
+    #    run('''sudo sed -i "s/luke/'luke'/"  config_file_name_to_run.py''')
         #run('''sudo sed -i "s/4309824/'4309824'/"  config_file_name_to_run.py''')
-        print "CONFIG FILENAME TO RUN UPDATED"
+    #    print "CONFIG FILENAME TO RUN UPDATED"
 
     container_name = run("sudo docker ps -aqf \"name=api\" | head -n 1")
     print container_name
