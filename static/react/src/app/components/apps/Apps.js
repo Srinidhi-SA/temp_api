@@ -32,7 +32,8 @@ import {
   updateModelSummaryFlag,
   updateScoreSummaryFlag,
   parameterTuningVisited,
-  clearTensorFlowArray
+  clearTensorFlowArray,
+  selectMetricAction,
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getAllUsersList,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
