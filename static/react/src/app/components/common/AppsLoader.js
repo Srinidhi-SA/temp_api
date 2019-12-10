@@ -35,14 +35,14 @@ export class AppsLoader extends React.Component {
   constructor(){
     super();
 	}
-	componentWillMount(){
-		if(window.location.href.includes("\createModel")){
-			this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-			if (this.props.dataPreview == null) {
-				this.props.dispatch(getDataSetPreview(this.props.match.params.slug));       
-			}
-		}
-	}
+	// componentWillMount(){
+	// 	if(window.location.href.includes("\createModel")){
+	// 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+	// 		if (this.props.dataPreview == null) {
+	// 			this.props.dispatch(getDataSetPreview(this.props.match.params.slug));       
+	// 		}
+	// 	}
+	// }
 	componentWillUpdate(){
 		var getText = [];
 	  if(this.props.appsLoaderPerValue >= 0 && getText.length <= 1){ 
