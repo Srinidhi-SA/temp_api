@@ -1208,7 +1208,10 @@ TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS = [
     {"name": "MinMaxNorm", "selected": False, "displayName": "MinMaxNorm"},
 ]
 TENSORFLOW_LAMBDA_FUNCTIONS = [
-    {"name": "2*X", "selected": True, "displayName": "2*X"},
+    {"name": "Addition", "selected": True, "displayName": "Addition"},
+    {"name": "Subtraction", "selected": True, "displayName": "Subtraction"},
+    {"name": "Multiplication", "selected": True, "displayName": "Multiplication"},
+    {"name": "Division", "selected": True, "displayName": "Division"},
 ]
 SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
     {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
@@ -1382,7 +1385,7 @@ TENSORFLOW_DROPOUT_PARAMETERS = [
         "acceptedValue": None,
         "valueRange": [0.0, 1.0],
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textbox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["float"],
@@ -1395,12 +1398,27 @@ TENSORFLOW_LAMBDA_PARAMETERS = [
         "displayName": "Lambda",
         "description": "Wraps arbitrary expression as a Layer object..",
         "defaultValue": [obj for obj in TENSORFLOW_LAMBDA_FUNCTIONS],
+        "acceptedValue": None,
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
+    },
+    {
+        "name": "units",
+        "displayName": "Units",
+        "description": "Dimensionality of the output space.",
+        "defaultValue": None,
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": [],
+        "allowedDataType": []
     },
 ]
 SKLEARN_ML_SUPPORTED_TF_LAYER = [
@@ -1457,13 +1475,13 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "description": "The number of training examples in one Forward/Backward Pass.",
         "defaultValue": 0.0,
         "acceptedValue": None,
-        "valueRange": [0.0, 100.0],
+        "valueRange": None,
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "number_of_epochs",
@@ -1471,13 +1489,13 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "description": "An epoch refers to one cycle through the full training data-set.",
         "defaultValue": 0.0,
         "acceptedValue": None,
-        "valueRange": [0.0, 10000.0],
+        "valueRange": None,
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "metrics",
