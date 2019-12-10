@@ -1056,6 +1056,10 @@ export function updateScoreSlug(slug,sharedSlug) {
 export function updateTensorFlowArray(id,layerType,tensorFlowArray) {
   return { type: "UPDATE_LAYERS", id,layerType,tensorFlowArray }
 }
+export function clearTensorFlowArray() {
+  return { type: "CLEAR_LAYERS"}
+}
+
 
 export function getAppsRoboList(pageNo) {
   return (dispatch) => {

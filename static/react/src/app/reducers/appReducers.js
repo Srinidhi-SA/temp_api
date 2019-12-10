@@ -919,6 +919,16 @@ export default function reducer(state = {
       }
 
     break;
+    
+    case "CLEAR_LAYERS":
+    {
+        return{
+          ...state,
+          tensorFlowInputs :[]
+        }
+      }
+
+    break;
 
 
     case "STOCK_LIST":

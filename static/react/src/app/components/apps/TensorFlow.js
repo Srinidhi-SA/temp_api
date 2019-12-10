@@ -4,6 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {updateAlgorithmData} from "../../actions/appActions";
 import Layer from './Layer'
+import {statusMessages} from  "../../helpers/helper"
 
 
 @connect((store) => {
@@ -44,16 +45,29 @@ export class TensorFlow extends React.Component {
     
 
   handleClick(){
-    //apps.regression_algorithm_data_manual[5].parameters[""0""].defaultValue[1].selected
-
     var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
-    console.log(Layer)
+    
+    var tfArray= store.getState().apps.tensorFlowInputs
+    if(tfArray.length>=2){
+      var prevLayer=tfArray[tfArray.length-1].layer
+      if(slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")
+        var showError=true
+      else
+          showError =false
+    }
+
+    if(showError){
+      bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
+    }
+    else
+    {
     const nextId = this.state.panels.length + 1
-    this.setState({
+      this.setState({
          panels: this.state.panels.concat([nextId]),
          layerType:slectedLayer
-    })
-  }
+      })
+    }
+}
     render() {
 
       if(this.state.layerType==="Dense")
