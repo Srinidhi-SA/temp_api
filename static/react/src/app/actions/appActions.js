@@ -576,7 +576,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
-    var tensorFlow = store.getState().apps.tensorFlowInputs
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
     var hidden_layer_info={"hidden_layer_info":tensorFlow}
     var details = {
       "metric": store.getState().apps.metricSelected,
@@ -635,9 +635,9 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       }
     }
     var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-    var tflow = store.getState().apps.tensorFlowInputs
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
     var hidden_layer_info={
-      "hidden_layer_info":tflow
+      "hidden_layer_info":tensorFlow
       }
   
     var details = {
