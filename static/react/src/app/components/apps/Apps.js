@@ -32,7 +32,9 @@ import {
   updateModelSummaryFlag,
   updateScoreSummaryFlag,
   parameterTuningVisited,
-  selectMetricAction
+  selectMetricAction,
+  clearDataPreview,
+
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getAllUsersList,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
@@ -59,6 +61,9 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount() {
+    if(store.getState().datasets.editmodelFlag){
+     this.props.dispatch(clearDataPreview());
+    }
        this.props.dispatch(updateModelSummaryFlag(false));
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
