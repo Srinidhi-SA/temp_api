@@ -171,6 +171,9 @@ export class ModelVariableSelection extends React.Component {
             return (<Redirect to={_link} />);
         }
         let dataPrev = store.getState().datasets.dataPreview;
+        if(dataPrev === null){
+            dataPrev = this.props.dataPreview;
+        }
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
@@ -265,7 +268,7 @@ export class ModelVariableSelection extends React.Component {
         }
         let metric = "";
         let metricValues = "";
-        if(this.props.currentAppDetails !=null)
+        if(this.props.currentAppDetails !=null && dataPrev != null)
             if(this.props.currentAppDetails.app_id==2)
                 metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
             else{
