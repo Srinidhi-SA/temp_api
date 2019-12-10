@@ -570,6 +570,7 @@ class TrainerView(viewsets.ModelViewSet):
                 if variable['name'] in set(unmodified_column_list):
                     variable['selected'] = True
 
+            tf_data = list()
             outlier_removal = dict()
             missing_value_treatment = dict()
             try:
@@ -598,10 +599,11 @@ class TrainerView(viewsets.ModelViewSet):
                                 missing_value_treatment[index] = data_items
                                 index += 1
                 config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in x.keys()]
+                tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
 
             except Exception as err:
                 print err
-            return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config})
+            return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config, 'TENSORFLOW': tf_data})
         except Exception as err:
             print err
             return JsonResponse({'message': 'Config not found.'})
