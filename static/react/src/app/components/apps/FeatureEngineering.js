@@ -53,6 +53,9 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentWillMount() {
+    if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+      window.history.go(-1);
+    }
     this.setState({ featureEngineering: this.props.featureEngineering });
     if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
@@ -457,7 +460,8 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;
 
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
+    if(this.props.dataPreview != null)
+      var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables) {

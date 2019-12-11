@@ -85,6 +85,7 @@ export default function reducer(state = {
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   modelEditconfig:"",
+  topLevelData:{},
   
 }, action) {
   console.log("In DATA reducer!!");
