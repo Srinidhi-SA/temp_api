@@ -1376,6 +1376,91 @@ TENSORFLOW_DENSE_PARAMETERS = [
         "allowedDataType": ["string"]
     },
 ]
+PYTORCH_LINEAR_PARAMETERS = [
+    {
+        "name": "activation",
+        "displayName": "Activation",
+        "description": "Activation function for the hidden layer.",
+        "defaultValue": [obj for obj in TENSORFLOW_ACTIVATION_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "dropout",
+        "displayName": "Dropout",
+        "description": "Dropout parameter for the hidden layer.",
+        "defaultValue": 0.2,
+        "paramType": "number",
+        "uiElemType": "slider",
+        "display": True,
+        "valueRange": [0.1, 1.0],
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "batchnormalisation",
+        "displayName": "Batch Normalisation",
+        "description": "Whether the layer uses Batch Normalisation.",
+        "defaultValue": [
+            {
+                "name": "false",
+                "selected": False,
+                "displayName": "False"
+            },
+            {
+                "name": "true",
+                "selected": False,
+                "displayName": "True"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+    {
+        "name": "units",
+        "displayName": "Units",
+        "description": "Units parameter for the hidden layer.",
+        "defaultValue": 100,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+    {
+        "name": "bias",
+        "displayName": "Bias",
+        "description": "Whether the layer uses Bias.",
+        "defaultValue": [
+            {
+                "name": "false",
+                "selected": False,
+                "displayName": "False"
+            },
+            {
+                "name": "true",
+                "selected": False,
+                "displayName": "True"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    }
+]
 TENSORFLOW_DROPOUT_PARAMETERS = [
     {
         "name": "rate",
@@ -1426,12 +1511,15 @@ SKLEARN_ML_SUPPORTED_TF_LAYER = [
     {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
     {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
 ]
+SKLEARN_ML_SUPPORTED_PT_LAYER = [
+    {"name": "Linear", "selected": True, "displayName": "Linear", "parameters": [obj for obj in PYTORCH_LINEAR_PARAMETERS]}
+]
 SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
     {
         "name": "layer",
         "displayName": "Layer",
         "description": "A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.",
-        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "list",
@@ -1488,6 +1576,92 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
         "defaultValue": 0.0,
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+    {
+        "name": "metrics",
+        "displayName": "Metrics",
+        "description": "List of metrics to be evaluated by the model during training And testing.",
+        "defaultValue":[obj for obj in TF_CLASSIFICATION_METRICS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+]
+SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [
+    {
+        "name": "layer",
+        "displayName": "Layer",
+        "description": "A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.",
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_PT_LAYER],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "loss",
+        "displayName": "Loss",
+        "description": "The function used to evaluate the candidate solution (i.e. a set of weights).",
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "optimizer",
+        "displayName": "Optimizer",
+        "description": "Method used to minimize the loss function.",
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS],
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
+    },
+    {
+        "name": "batch_size",
+        "displayName": "Batch Size",
+        "description": "The number of training examples in one Forward/Backward Pass.",
+        "defaultValue": 0,
+        "acceptedValue": None,
+        "valueRange": [0, 100],
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+    {
+        "name": "number_of_epochs",
+        "displayName": "Number of Epochs",
+        "description": "An epoch refers to one cycle through the full training data-set.",
+        "defaultValue": 0,
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "number",
