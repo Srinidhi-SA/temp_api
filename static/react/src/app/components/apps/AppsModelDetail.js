@@ -65,14 +65,19 @@ export class AppsModelDetail extends React.Component {
 			let selAlgoList = newProps.algoList.data.filter(i=>i.trainer===this.props.modelSlug)
 			let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
-				let algorithmName = $(".sm-mb-20")[i].innerText.replace(/ /g,'')
+				let algorithmName = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
 				if($(".sm-mb-20")[i].children.length == 0){
+
 					let info = document.createElement('a');
-					info.innerText = " More Info";
-					let sel = selAlgoList.filter(i=>(i.algorithm).replace(/ /g,'') === algorithmName)
+					var att = document.createAttribute("class");
+					att.value = "summaryLink";
+					info.setAttributeNode(att);
+					info.innerText = "For More Info Click Here";
+
+					let sel = selAlgoList.filter(i=>(i.algorithm).replace(/ /g,'').toLocaleUpperCase() === algorithmName)
 					info.href = (sel.length !=0)?
 					this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug):"#"
-					$(".sm-mb-20")[i].appendChild(info);
+					$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
 				}
 			}
 		}

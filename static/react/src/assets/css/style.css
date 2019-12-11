@@ -16458,6 +16458,13 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	color: #b1afaf !important;
 	cursor: not-allowed;
 }
+.summaryLink {
+	color:#6f9ec3;
+}
+.summaryLink:hover{
+	color:#6f9ec3;
+	text-decoration-line: underline;
+}
 .democlass {
 	font-weight: bold;
     margin: 5px;
