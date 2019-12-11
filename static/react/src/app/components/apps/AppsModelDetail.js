@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -21,7 +21,8 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
 		setAppsLoaderValues: store.apps.setAppsLoaderValues,
-		};
+		algoList: store.apps.algoList
+	};
 })
 
 
@@ -41,24 +42,42 @@ export class AppsModelDetail extends React.Component {
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
-		
+		this.props.dispatch(getAppsAlgoList(1));
 	}
 	
-  print() {
+	print() {
 		window.print();
-  }
-  componentDidMount() {
+	}
+
+	componentDidMount() {
 		let currentModel= this.props.modelSlug;
 		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
 		}
 		window.scrollTo(0, 0);
-	  if(!isEmpty(store.getState().apps.modelSummary)){
-		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
-		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
-	  }
+		if(!isEmpty(store.getState().apps.modelSummary)){
+			if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
+			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+		}
+	}
+	componentWillReceiveProps(newProps){
+		if(newProps.algoList.data != undefined){
+			let selAlgoList = newProps.algoList.data.filter(i=>i.trainer===this.props.modelSlug)
+			let noOfHeads = $(".sm-mb-20").length;
+			for(var i=0;i<noOfHeads;i++){
+				let algorithmName = $(".sm-mb-20")[i].innerText.replace(/ /g,'')
+				if($(".sm-mb-20")[i].children.length == 0){
+					let info = document.createElement('a');
+					info.innerText = " More Info";
+					let sel = selAlgoList.filter(i=>(i.algorithm).replace(/ /g,'') === algorithmName)
+					info.href = (sel.length !=0)?
+					this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug):"#"
+					$(".sm-mb-20")[i].appendChild(info);
+				}
+			}
+		}
+	}
 
-  }
   componentDidUpdate(){
       $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
