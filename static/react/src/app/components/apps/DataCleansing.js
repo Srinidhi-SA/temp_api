@@ -385,7 +385,6 @@ tableHead.addEventListener('click', function (e) {
                   return items.name == "numberOfNulls"
                 }).map((option) => {
                   missingnum = option.value;
-                  console.log(missingnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
@@ -395,7 +394,6 @@ tableHead.addEventListener('click', function (e) {
                   return items.name == "Outliers"
                 }).map((option) => {
                   outnum = option.value;
-                  console.log(outnum);
                   return (<span>{option.value}</span>);
                 }
                 )}
