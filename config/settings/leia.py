@@ -23,10 +23,10 @@ DATABASES = {
     },
     "default": {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
-        'HOST': 'localhost',
+        'NAME': 'madvisor2',
+        'USER': 'root',
+        'PASSWORD': 'Marlabs@123',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }

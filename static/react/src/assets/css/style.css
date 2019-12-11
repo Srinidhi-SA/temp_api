@@ -16563,7 +16563,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .layerHeader{
   background-color: #e6e6e6;
-    padding: 8px 10px;
+    padding: 18px 10px;
     font-size: 15px;
     font-weight: 500;
 }
