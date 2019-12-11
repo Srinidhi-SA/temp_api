@@ -16570,3 +16570,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .layerBody{
   padding: 10px 0px;
 }
+.dtImage{
+	  display: inline-block;
+    height: 15px;
+		padding-right: 2px;
+		padding-left: 5px;
+}
+.legends{
+	float: right;
+  padding-right: 30px;
+  padding-top: 20px;
+}
