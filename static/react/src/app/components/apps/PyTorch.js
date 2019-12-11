@@ -16,7 +16,7 @@ export class PyTorch extends React.Component {
         super(props);
     }
     render() {
-        let renderPyTorchContent = "Pytorch Content"
+        let renderPyTorchContent = "Pytorch"
         this.props.algorithmData
         return (        
             <div className="col-md-12">
