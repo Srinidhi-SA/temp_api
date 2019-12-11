@@ -74,7 +74,6 @@ export default function reducer(state = {
         apps_score_sorttype:null,
         appsCreateStockModal:false,
         appsStockSymbolsInputs:[],
-        tensorFlowInputs:[],
         stockAnalysisList:{},
         stockUploadDomainModal:false,
         stockUploadDomainFiles:[],
@@ -908,29 +907,6 @@ export default function reducer(state = {
     break;
 
     
-    case "UPDATE_LAYERS":
-    {
-        var curTfData = state.tensorFlowInputs
-        curTfData[action.id-1] =  action.tensorFlowArray;
-        return{
-          ...state,
-          tensorFlowInputs : curTfData
-        }
-      }
-
-    break;
-    
-    case "CLEAR_LAYERS":
-    {
-        return{
-          ...state,
-          tensorFlowInputs :[]
-        }
-      }
-
-    break;
-
-
     case "STOCK_LIST":
     {
         return {

@@ -576,14 +576,12 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
-    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
-    var hidden_layer_info={"hidden_layer_info":tensorFlow}
+   
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
-      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
       "dataCleansing": dataCleansing,
@@ -635,14 +633,9 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       }
     }
     var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
-    var hidden_layer_info={
-      "hidden_layer_info":tensorFlow
-      }
   
     var details = {
       "ALGORITHM_SETTING": AlgorithmSettings,
-      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
 			"targetLevel": targetLevel,
 			"targetColumn":targetVariable,
@@ -1051,13 +1044,6 @@ export function updateModelSlug(slug) {
 }
 export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
-}
-
-export function updateTensorFlowArray(id,layerType,tensorFlowArray) {
-  return { type: "UPDATE_LAYERS", id,layerType,tensorFlowArray }
-}
-export function clearTensorFlowArray() {
-  return { type: "CLEAR_LAYERS"}
 }
 
 
