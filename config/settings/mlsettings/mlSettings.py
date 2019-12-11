@@ -398,17 +398,17 @@ else:
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
                 "description":"This is implementation of tensorflow algorithm"
             },
-            # {
-            #     "algorithmName": "SVM",
-            #     "selected": False,
-            #     "parameters": SKLEARN_ML_RF_REGRESSION_PARAMS,
-            #     "algorithmSlug": ALGORITHMRANDOMSLUG + "rfr",
-            #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            # "description":"fill in the blanks"
-            # }
+            {
+                 "algorithmName": "PyTorch",
+                 "selected": False,
+                 "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
+                 "algorithmSlug": ALGORITHMRANDOMSLUG + "ptc",
+                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+                 "description": "This is an implementation of PyTorch algorithm"
+            }
         ]
     }
-
+# SKLEARN_ML_PT_CLASSIFICATION_PARAMS
 #########################   CONFIG FOR AUTO ML   ############################
 
 AUTOML_ALGORITHM_LIST_REGRESSION={
