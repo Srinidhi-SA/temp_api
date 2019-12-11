@@ -1663,7 +1663,7 @@ SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [
         "description": "An epoch refers to one cycle through the full training data-set.",
         "defaultValue": 0,
         "acceptedValue": None,
-        "valueRange": [0, -1],
+        "valueRange": None,
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
