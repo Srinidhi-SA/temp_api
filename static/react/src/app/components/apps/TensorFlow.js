@@ -55,8 +55,10 @@ export class TensorFlow extends React.Component {
       else
           showError =false
     }
-
-    if(showError){
+   if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
+    bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
+   }
+   else if(showError){
       bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
     }
     else
