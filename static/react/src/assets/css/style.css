@@ -16458,6 +16458,13 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	color: #b1afaf !important;
 	cursor: not-allowed;
 }
+.summaryLink {
+	color:#6f9ec3;
+}
+.summaryLink:hover{
+	color:#6f9ec3;
+	text-decoration-line: underline;
+}
 .democlass {
 	font-weight: bold;
     margin: 5px;
@@ -16569,4 +16576,15 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .layerBody{
   padding: 10px 0px;
+}
+.dtImage{
+	  display: inline-block;
+    height: 15px;
+		padding-right: 2px;
+		padding-left: 5px;
+}
+.legends{
+	float: right;
+  padding-right: 30px;
+  padding-top: 20px;
 }

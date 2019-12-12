@@ -2257,7 +2257,7 @@ export function showLevelCountsForTarget(event) {
   var selOption = event.target.childNodes[event.target.selectedIndex];
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
-  var levelCounts = null;
+  var levelCounts = "";
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
   var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
@@ -2276,8 +2276,8 @@ export function showLevelCountsForTarget(event) {
   }
   return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
-export function updateTargetLevel(value) {
-  return { type: "SET_TARGET_LEVEL_COUNTS", value }
+export function updateTargetLevel(levelCounts) {
+  return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
 export function clearAppsIntervel() {
   clearInterval(appsInterval)
