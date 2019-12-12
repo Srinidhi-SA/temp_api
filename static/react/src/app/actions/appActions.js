@@ -1053,8 +1053,43 @@ export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
 
-export function updateTensorFlowArray(id,layerType,tensorFlowArray) {
-  return { type: "UPDATE_LAYERS", id,layerType,tensorFlowArray }
+export function addTensorFlowArray(id,layerType,name,val) {
+  debugger;
+    if(layerType==="Dense"){
+     var  tensorFlowArray={
+        "layer":"Dense",
+        "activation": "",
+        "activity_regularizer": "",
+        "bias_constraint": "",
+        "bias_initializer": "",
+        "bias_regularizer": "",
+        "kernel_constraint": "",
+        "kernel_initializer": "",
+        "kernel_regularizer": "",
+        "units": "",
+        "use_bias": "",
+      }    
+  }
+  else if(layerType==="Dropout"){
+      var  tensorFlowArray={
+        "layer":"Dropout",
+        "rate":"",
+      }
+    }
+    else{
+      var  tensorFlowArray={
+        "layer":"Lambda",
+        "lambda":"",
+        "units":"",
+      }
+    }
+  return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
+}
+
+export function updateTensorFlowArray(id,name,val) {
+  debugger;
+  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
+  return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
 }
 export function clearTensorFlowArray() {
   return { type: "CLEAR_LAYERS"}
