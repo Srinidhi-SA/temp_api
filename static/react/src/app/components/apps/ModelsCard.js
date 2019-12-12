@@ -172,7 +172,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 </span>: ""}                           
 							<div className="clearfix"></div>
 							</li>   
-                            {data.status == "SUCCESS"? 
+                            {(data.status == "SUCCESS" && data.mode ==="analyst")? 
                                     <Link to={modelEditLink} id={data.slug} className="editButton">
                                     <Button className="dropdown-item btn-primary" style={{marginLeft:"25px"}} onClick={this.handleEditModel.bind(this,data.dataset,data.slug)}>{"Edit"}</Button>     
                                     </Link>                    
