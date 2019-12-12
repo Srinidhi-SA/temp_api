@@ -290,6 +290,13 @@ export class DecisionTree extends React.Component {
       <h3 className="modal-title">Prediction Rule</h3>
     </Modal.Header>
     <Modal.Body>
+      {window.location.href.includes("scores")?
+       <div className="row">
+       <div className="col-sm-12" >
+         <div ref="test"></div>
+       </div>
+             
+        </div>:
     <Scrollbars style={this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
      <div className="row">
      <div className="col-sm-12" >
@@ -308,6 +315,7 @@ export class DecisionTree extends React.Component {
      </div>
       </div>
      </Scrollbars>
+     }
     </Modal.Body>
     <Modal.Footer>
       <Button onClick={this.closeDTModal.bind(this)}>Cancel</Button>
