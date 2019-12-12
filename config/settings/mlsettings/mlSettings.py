@@ -2,6 +2,7 @@ from pySparkMLClassificationParams import *
 from pySparkMLRegressionParams import *
 from sklearnMLClassificationParams import *
 from sklearnMLRegressionParams import *
+from pyTorchClassificationParams import *
 from autoMLSettings import *
 import copy
 
