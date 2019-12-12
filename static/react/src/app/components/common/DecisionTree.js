@@ -347,7 +347,6 @@ componentDidUpdate(){
   this.BuildHorizontalTree(newObject, "#tree-vertical"))
   }
   else{
-    //var Json = this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree 
     var Json = store.getState().apps.scoreSummary.data.listOfCards[0].decisionTree
     var newObject;
     Json != undefined && 
