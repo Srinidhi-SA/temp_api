@@ -41,8 +41,10 @@ export class ModelVariableSelection extends React.Component {
     componentWillMount() {
         const from = this.getValueOfFromParam();
          if (from === 'data_cleansing') {
-        } 
-        else{
+        } else if(this.props.currentAppDetails === null || this.props.dataPreview === null){
+            let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+        }else{
         this.props.dispatch(saveSelectedValuesForModel("","",""));
         this.props.dispatch(selectMetricAction("","",""));
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
