@@ -209,6 +209,11 @@ export function getAppsAlgoList(pageNo) {
     })
   }
 }
+export function clearAppsAlgoList(){
+  return {
+    type: "CLEAR_APPS_ALGO_LIST"
+  }
+}
 
 export function createDeploy(slug) {
   return (dispatch) => {
