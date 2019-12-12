@@ -11,6 +11,8 @@ import $ from "jquery";
 
 import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
+import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
+
 
 @connect(( store ) => {
     return {
@@ -32,6 +34,10 @@ import {resetSelectedTargetVariable} from "../../actions/signalActions";
         modelSummary:store.apps.modelSummary,
         createScoreShowVariables:store.datasets.createScoreShowVariables,
         CopyTimeDimension: store.datasets.CopyTimeDimension,
+        modelEditconfig:store.datasets.modelEditconfig,
+        editmodelFlag:store.datasets.editmodelFlag,
+
+
         fromVariableSelectionPage : store.signals.fromVariableSelectionPage
     };
 } )
@@ -73,21 +79,28 @@ export class DataVariableSelection extends React.Component {
         }else if(this.props.fromVariableSelectionPage){
             
         }
+        else if(this.props.editmodelFlag){ //removed from === 'editModel'
+
+        }
         else{
-    	window.scrollTo(0, 0);
-        if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            deselectAllVariablesDataPrev(true);
-            // DisableSelectAllCheckbox();
+            window.scrollTo(0, 0);
+            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                deselectAllVariablesDataPrev(true);
+                // DisableSelectAllCheckbox();
+                this.props.dispatch( resetSelectedVariables(true) );
+            }
+            else{
             this.props.dispatch( resetSelectedVariables(true) );
+            deselectAllVariablesDataPrev(true);
+            }
+            this.props.dispatch(resetSelectedTargetVariable());
         }
-        else{
-        this.props.dispatch( resetSelectedVariables(true) );
-        deselectAllVariablesDataPrev(true);
-        }
-        this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
-        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
+       if (from !== 'data_cleansing') {
+           this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
     }
+   
+
 }
     getValueOfFromParam() {
         if(this.props.location === undefined){
@@ -96,6 +109,10 @@ export class DataVariableSelection extends React.Component {
             const params = new URLSearchParams(this.props.location.search);
             return params.get('from');
         }
+  }
+  componentWillMount(){
+       if( this.props.editmodelFlag)
+    this.props.dispatch(makeAllVariablesTrueOrFalse(false));
   }
     componentDidUpdate(){
         var count = getTotalVariablesSelected();
@@ -166,7 +183,11 @@ export class DataVariableSelection extends React.Component {
             if(this.props.match.path.includes("/createScore") && !$.isEmptyObject(modelSummary))
             this.props.dispatch(updateVariableSelectionArray(modelSummary));
             this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
-            const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
+            // if(isEmpty(this.props.modelEditconfig)||{
+            // if(this.props.editmodelFlag && this.props.modelEditconfig!="")
+                // var metaData = this.props.modelEditconfig.config.config.COLUMN_SETTINGS.variableSelection
+            // else
+           var  metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             this.measures = [];
             this.dimensions = [];
             this.datetime = [];
@@ -207,7 +228,10 @@ export class DataVariableSelection extends React.Component {
                 // deselectAllVariablesDataPrev(false);
                 // DisableSelectAllCheckbox();
             }
-            else{
+            else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
+              ""; 
+            }       // Need to go through this compleate if condition .
+            else{  
                 this.props.dispatch( resetSelectedVariables(true));
                 deselectAllVariablesDataPrev(true);
             }

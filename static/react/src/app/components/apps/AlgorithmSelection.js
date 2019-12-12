@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType,parameterTuningVisited} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType,parameterTuningVisited,saveRegressionAppAlgorithmData} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -25,6 +25,8 @@ import {statusMessages} from "../../helpers/helper";
         currentAppDetails:store.apps.currentAppDetails,
         modelSummaryFlag:store.apps.modelSummaryFlag,
         parameterTuningFlag:store.apps.parameterTuningFlag,
+        modelEditconfig:store.datasets.modelEditconfig,
+        editmodelFlag:store.datasets.editmodelFlag,
     };
 })
 
@@ -39,6 +41,10 @@ export class AlgorithmSelection extends React.Component {
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
             this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+        }
+        else if(this.props.editmodelFlag){
+          this.props.dispatch(saveRegressionAppAlgorithmData(this.props.modelEditconfig.config.config))
+
         }
         else if(!this.props.parameterTuningFlag)
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));

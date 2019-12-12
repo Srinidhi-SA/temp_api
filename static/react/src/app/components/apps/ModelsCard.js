@@ -1,6 +1,7 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
+import {Button} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {openShareModalAction,closeShareModalAction,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
@@ -71,6 +72,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 
             var modelList = this.props.data;
             var appsModelList = modelList.map((data, i) => {
+                // var modelEditLink = "/data/" + data.dataset;
+                // "/apps/"+this.props.match.params.AppId+ mlink + "/models"
+                var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel";
+                // var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel/fromedit/"+data.slug;
                     var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
                     if(data.status==FAILED){
                         var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/";
@@ -104,7 +109,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
                             <h5 className="title newCardTitle pull-left">
                             {modelLink1}
-                            </h5>
+                            </h5>                         
 							<div className="pull-right">{store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}</div>
 							<div className="clearfix"></div>
 							 
@@ -164,9 +169,14 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Model")}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
-                                </span>: ""}
+                                </span>: ""}                           
 							<div className="clearfix"></div>
-							</li>                            
+							</li>   
+                            {(data.status == "SUCCESS" && data.mode ==="analyst")? 
+                                    <Link to={modelEditLink} id={data.slug} className="editButton">
+                                    <Button className="dropdown-item btn-primary" style={{marginLeft:"25px"}} onClick={this.handleEditModel.bind(this,data.dataset,data.slug)}>{"Edit"}</Button>     
+                                    </Link>                    
+                              : ""}                         
                             </ul>
                             {/*<!-- End Rename and Delete BLock  -->*/}
                             

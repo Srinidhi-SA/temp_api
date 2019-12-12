@@ -9,7 +9,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
-import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
+import {  saveEncodingValuesAction, saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -17,6 +17,8 @@ import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActio
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 

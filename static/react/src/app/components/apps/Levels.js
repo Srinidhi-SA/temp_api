@@ -12,6 +12,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import { saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -24,6 +25,8 @@ import {
     selectedItem: store.datasets.selectedItem,
     featureEngineering: store.datasets.featureEngineering,
     datasets: store.datasets,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -83,10 +86,9 @@ export class Levels extends React.Component {
 
   componentWillMount() {
     this.addNewLevel();
-    console.log("Levels componentWillMount method is called...");
-    
-
+    console.log("Levels componentWillMount method is called...");    
   }
+
   componentWillUpdate() {
     
     this.props.parentUpdateLevelsData(this.state.levelsArray);
@@ -188,14 +190,14 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
+                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} defaultValue={levelData.inputValue}  onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
                </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
                 </div>
                 <div className="form-group">
                   <div className="content-section implementation multiselect-demo">
-                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
+                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} defaultValue={levelData.multiselectValue} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
                       style={{ minWidth: '12em' }}  filter={true} placeholder="choose" />
                   </div>
                 </div>
