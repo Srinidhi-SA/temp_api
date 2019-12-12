@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Button, } from "react-bootstrap";
-import {addLayersTensorFlow,updateTensorFlowArray,addTensorFlowArray} from '../../actions/appActions'
+import {updateTensorFlowArray,addTensorFlowArray} from '../../actions/appActions'
 import store from "../../store";
 import { connect } from "react-redux";
 
@@ -13,50 +12,18 @@ import { connect } from "react-redux";
 })
 
 export default class Layer extends Component {
-  
-
-  // constructor(props) {
-    // super(props);
-    // if(this.props.layerType=="Dense")
-    //  this.state={
-    // "layer":"Dense",
-    // "activation": "deserialize",
-    // "activity_regularizer": "l1",
-    // "bias_constraint": "MaxNorm",
-    // "bias_initializer": "Zeros",
-    // "bias_regularizer": "l1",
-    // "kernel_constraint": "MaxNorm",
-    // "kernel_initializer": "Zeros",
-    // "kernel_regularizer": "l2",
-    // "units": "0",
-    // "use_bias": "False",
-      // }
-      // else if(this.props.layerType=="Dropout")
-      // this.state={
-        // "layer":"Dropout",
-        // "rate":"0.2",
-      // }
-      // else
-      // this.state={
-      //   "layer":"Lambda",
-        // "function":"2*x",
-      // }
-
-    // }
-
-    componentDidMount(){
+    
+  componentDidMount(){
       this.props.dispatch(addTensorFlowArray(this.props.id,this.props.layerType))
     }
     
     shouldComponentUpdate(nextProps){
-       return false
-  }
+        return false
+    }
   
   myChangeHandler(item,e){
     let name = item.name;
     let val = e.target.value;
-    // this.setState({[name]: val},()=>{
-    // });
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
   }
   getOptions(item) {
@@ -67,21 +34,7 @@ export default class Layer extends Component {
     return <select className="form-control" onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>
   }
   
-    
-  handleSaveClick=()=>{ //not using this function as well as save button
-    this.props.dispatch(updateTensorFlowArray(this.props.id,this.state.layer,this.state))
-  }
-  
-  handleSelectBox(item,e){ //not using this function
-    debugger;
-    alert(e.target.value);
-    console.log("111111111111111111111111",item.name,e.target.value)
-  }
-  
-
-  render() {
-
-     
+  render() { 
     var cls =`row layerPanel ${this.props.id}`
     debugger;
     var rendercontent = this.props.parameters.map((item,index)=>{
@@ -131,11 +84,6 @@ export default class Layer extends Component {
       </div>
       <div class="layerBody">
         {rendercontent}
-        {/* <div className="row">
-        <div className="col-md-12 text-center">
-         <Button  bsStyle="primary" onClick={this.handleSaveClick}>{this.state.isSaved?"saved":"save"}</Button>
-        </div>
-        </div> */}
         </div>
       </div>
       </div>
