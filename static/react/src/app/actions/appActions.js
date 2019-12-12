@@ -576,6 +576,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
+   
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
@@ -631,7 +632,8 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "value": (50/100)
       }
     }
-		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+    var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+  
     var details = {
       "ALGORITHM_SETTING": AlgorithmSettings,
       "validationTechnique": validationTechnique,
@@ -1043,6 +1045,7 @@ export function updateModelSlug(slug) {
 export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
+
 
 export function getAppsRoboList(pageNo) {
   return (dispatch) => {

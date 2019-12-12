@@ -55,9 +55,14 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({ featureEngineering: this.props.featureEngineering });
-    if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
-      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+    if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+      let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+    }else{
+      this.setState({ featureEngineering: this.props.featureEngineering });
+      if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      }
     }
     console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
@@ -659,7 +664,8 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;
 
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
+    if(this.props.dataPreview != null)
+      var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables) {

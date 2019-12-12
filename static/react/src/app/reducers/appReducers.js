@@ -906,7 +906,7 @@ export default function reducer(state = {
     }
     break;
 
-
+    
     case "STOCK_LIST":
     {
         return {

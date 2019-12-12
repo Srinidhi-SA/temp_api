@@ -41,12 +41,14 @@ export class RegressionParameter extends React.Component {
     }
     else{
         if(this.props.parameterData.paramType == "number")
-            this.state = {
-                min: this.props.parameterData.valueRange[0],
-                max: this.props.parameterData.valueRange[1],
-                defaultVal:this.props.parameterData.defaultValue,
-                name:this.props.parameterData.name,
-            };
+            (this.props.parameterData.valueRange != null)?
+                this.state = {
+                    min: this.props.parameterData.valueRange[0],
+                    max: this.props.parameterData.valueRange[1],
+                    defaultVal:this.props.parameterData.defaultValue,
+                    name:this.props.parameterData.name,
+                }:""
+            
         else
         this.state = {
             defaultVal:this.props.parameterData.defaultValue,

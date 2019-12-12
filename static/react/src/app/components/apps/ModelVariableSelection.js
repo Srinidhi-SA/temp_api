@@ -66,8 +66,10 @@ export class ModelVariableSelection extends React.Component {
     componentWillMount() {
         const from = this.getValueOfFromParam();
          if (from === 'data_cleansing') {
-        } 
-        else{
+        } else if(this.props.currentAppDetails === null || this.props.dataPreview === null){
+            let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+        }else{
         this.props.dispatch(saveSelectedValuesForModel("","",""));
         this.props.dispatch(selectMetricAction("","",""));
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
@@ -119,10 +121,13 @@ componentDidMount = () => {
         if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
-        } else if (this.props.targetLevelCounts != "" && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+        } else if ((this.props.currentAppDetails.app_id != 13 && this.props.targetLevelCounts != null) && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
             bootbox.alert("Please select a sublevel value to analyze...");
             return false;
-        } else if ($('#createModelAnalysisList option:selected').val() == "") {
+        } else if (this.props.currentAppDetails.app_id === 13 && this.state.targetCountVal != "" && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
+            bootbox.alert("Please select a sublevel value to analyze...");
+            return false;
+        }else if ($('#createModelAnalysisList option:selected').val() == "") {
             bootbox.alert("Please select a variable to analyze...");
             return false;
         } else if (creatModelName != "" && creatModelName.trim() == "") {
@@ -254,12 +259,14 @@ componentDidMount = () => {
         // noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function (elements) {
         //     return elements;
         // }).value;
-       
         if (store.getState().apps.modelSummaryFlag) {
             let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/analyst/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);
         }
         let dataPrev = store.getState().datasets.dataPreview;
+        if(dataPrev === null){
+            dataPrev = this.props.dataPreview;
+        }
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
@@ -351,11 +358,12 @@ componentDidMount = () => {
         }
         let metric = "";
         let metricValues = "";
-        if(this.props.currentAppDetails.app_id==2)
-        metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
-        else{
-            metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
-        }
+        if(this.props.currentAppDetails !=null && dataPrev != null)
+            if(this.props.currentAppDetails.app_id==2)
+                metric = dataPrev.meta_data.uiMetaData.SKLEARN_CLASSIFICATION_EVALUATION_METRICS;
+            else{
+                metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
+            }
         if (metric) {
             metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={store.getState().apps.metricSelected.name} id="selectEvaluation" required={true}>
                 <option value="">--select--</option>

@@ -68,12 +68,12 @@ export class Apps extends React.Component {
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
        this.props.dispatch(parameterTuningVisited(false))
-      
+     
        //have to recheck next 3actions needed or not
-       this.props.dispatch(setEditModelValues("","",false));
-       this.props.dispatch(fetchModelEdit(""))
-       this.props.dispatch(selectMetricAction("", "", ""));
-       this.props.dispatch(saveTopLevelValuesAction("false",""))
+      this.props.dispatch(setEditModelValues("","",false));
+      this.props.dispatch(fetchModelEdit(""))
+      this.props.dispatch(selectMetricAction("", "", ""));
+      this.props.dispatch(saveTopLevelValuesAction("false",""))
 
 
 

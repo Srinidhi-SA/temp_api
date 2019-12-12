@@ -80,9 +80,12 @@ export default function reducer(state = {
   shareModelShow:false,
   dtModelShow:false,
   dtRule: "",
+  dtData: {},
+  dtPath:[],
   isSpecifyIntervalsEnabled:true,
   convertUsingBin: "false",
   modelEditconfig:"",
+  topLevelData:{},
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -200,6 +203,7 @@ export default function reducer(state = {
             ...state,
             dtModelShow: true,
             dtRule: action.rule,
+            dtPath: action.path,
           }
         }
         break;
@@ -956,6 +960,7 @@ export default function reducer(state = {
         duplicateObservations : false,
 
       }
+      
     }
     break;
 

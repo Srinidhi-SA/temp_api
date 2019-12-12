@@ -22,8 +22,8 @@ export class PopupDecisionTreeTable extends React.Component {
   //    bootbox.alert({title: "Prediction Rule",
   //            message: rule});
   // }
-  showDecisionTreePopup =(rule)=>{
-  this.props.dispatch(openDTModalAction(rule));
+  showDecisionTreePopup =(rule,path)=>{
+  this.props.dispatch(openDTModalAction(rule,path));
  }
   componentDidMount(){
       handleDecisionTreeTable();
@@ -61,6 +61,7 @@ generateDecisionTreeRows(table) {
           var colLength = rowData.length;
           if(i != 0){
               var rule = rowData[rowData.length-1]
+              var path = rowData[rowData.length-2]
               var rows = rowData.map(function(colData,j) {
 
                    if(j == 0){
@@ -70,7 +71,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>
 
               });
-              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule,path)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;
