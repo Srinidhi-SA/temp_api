@@ -908,13 +908,26 @@ export default function reducer(state = {
     break;
 
     
-    case "UPDATE_LAYERS":
+
+    case "ADD_LAYERS":
     {
         var curTfData = state.tensorFlowInputs
         curTfData[action.id-1] =  action.tensorFlowArray;
         return{
+            ...state,
+            tensorFlowInputs : curTfData
+          }
+      }
+
+    break;    
+    case "UPDATE_LAYERS":
+    { 
+        var stateval =state.tensorFlowInputs
+        action.tensorFlowInputs[action.name] = action.val;
+        stateval[action.id-1]=action.tensorFlowInputs        
+        return{
           ...state,
-          tensorFlowInputs : curTfData
+          tensorFlowInputs : stateval
         }
       }
 
