@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, } from "react-bootstrap";
-import {addLayersTensorFlow,updateTensorFlowArray} from '../../actions/appActions'
+import {addLayersTensorFlow,updateTensorFlowArray,addTensorFlowArray} from '../../actions/appActions'
 import store from "../../store";
 import { connect } from "react-redux";
 
@@ -15,36 +15,37 @@ import { connect } from "react-redux";
 export default class Layer extends Component {
   
 
-  constructor(props) {
-    super(props);
-    if(this.props.layerType=="Dense")
-     this.state={
-    "layer":"Dense",
-    "activation": "deserialize",
-    "activity_regularizer": "l1",
-    "bias_constraint": "MaxNorm",
-    "bias_initializer": "Zeros",
-    "bias_regularizer": "l1",
-    "kernel_constraint": "MaxNorm",
-    "kernel_initializer": "Zeros",
-    "kernel_regularizer": "l2",
-    "units": "0",
-    "use_bias": "False",
-      }
-      else if(this.props.layerType=="Dropout")
-      this.state={
-        "layer":"Dropout",
-        "rate":"0.2",
-      }
-      else
-      this.state={
-        "layer":"Lambda",
-        "function":"2*x",
-      }
+  // constructor(props) {
+    // super(props);
+    // if(this.props.layerType=="Dense")
+    //  this.state={
+    // "layer":"Dense",
+    // "activation": "deserialize",
+    // "activity_regularizer": "l1",
+    // "bias_constraint": "MaxNorm",
+    // "bias_initializer": "Zeros",
+    // "bias_regularizer": "l1",
+    // "kernel_constraint": "MaxNorm",
+    // "kernel_initializer": "Zeros",
+    // "kernel_regularizer": "l2",
+    // "units": "0",
+    // "use_bias": "False",
+      // }
+      // else if(this.props.layerType=="Dropout")
+      // this.state={
+        // "layer":"Dropout",
+        // "rate":"0.2",
+      // }
+      // else
+      // this.state={
+      //   "layer":"Lambda",
+        // "function":"2*x",
+      // }
 
-    }
+    // }
+
     componentDidMount(){
-      this.props.dispatch(updateTensorFlowArray(this.props.id,this.state.layer,this.state))
+      this.props.dispatch(addTensorFlowArray(this.props.id,this.props.layerType))
     }
     
     shouldComponentUpdate(nextProps){
@@ -54,9 +55,9 @@ export default class Layer extends Component {
   myChangeHandler(item,e){
     let name = item.name;
     let val = e.target.value;
-    this.setState({[name]: val},()=>{
-      this.props.dispatch(updateTensorFlowArray(this.props.id,this.state.layer,this.state))
-    });
+    // this.setState({[name]: val},()=>{
+    // });
+    this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
   }
   getOptions(item) {
     var arr = item.defaultValue.map(j=>j.displayName);
