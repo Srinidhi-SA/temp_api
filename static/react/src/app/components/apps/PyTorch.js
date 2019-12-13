@@ -19,9 +19,12 @@ export class PyTorch extends React.Component {
     renderPyTorchData(parameterData,tune){
         switch (parameterData.paramType) {
             case "list":
-                switch(parameterData.name){
+                switch(parameterData.displayName){
+                    case "Layer":
+                        var cls = "form-control single layer";
+                        break;
                     default:
-                       var cls= "form-control single";
+                        var cls= "form-control single";
                 }
                 var options = parameterData.defaultValue
                 var selectedValue = ""
@@ -35,7 +38,7 @@ export class PyTorch extends React.Component {
                 return(
                     <div className= {"row"}>
                         <div className="col-md-3">
-                            <select ref={(el) => { this.eleSel = el }} className={"form-control single"} /*onConChange={this.selecthandleChange.bind(this)} multiple={false}*/>
+                            <select ref={(el) => { this.eleSel = el }} className={cls} /*onChange={this.selecthandleChange.bind(this)} multiple={false}*/>
                                 {optionsTemp}
                             </select>
                         </div>
@@ -46,9 +49,11 @@ export class PyTorch extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     switch(parameterData.displayName){
                         case "Batch Size":
+                            var type = "number";
                             var classN= "form-control batchCls";
                             break;
                         case "Number of Epochs":
+                            var type = "number";
                             classN = "form-control epochsCls"
                             break;
                         default:
@@ -58,8 +63,8 @@ export class PyTorch extends React.Component {
                     }
                     return (
                         <div className="row">
-                            <div className="col-md-2">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } /*value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                            <div className="col-md-1">
+                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={parameterData.defaultVal} /*onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                             </div>
@@ -71,7 +76,7 @@ export class PyTorch extends React.Component {
                 return (
                     <div className="row">
                         <div className="col-md-6">
-                            <input type="text" className="form-control" /*value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}*//>
+                            <input type="text" className="form-control" value={parameterData.defaultVal} /*onChange={this.changeTextboxValue.bind(this)}*//>
                         </div>
                     </div>
                 );
@@ -80,7 +85,7 @@ export class PyTorch extends React.Component {
                 return (
                     <div className="row">
                     <div className="col-md-6">
-                    <input type="text" className={defaultCls} /*value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}*//>
+                    <input type="text" className={defaultCls} value={parameterData.defaultVal} /*onChange={this.changeTextboxValue.bind(this)}*//>
                     <div className="text-danger range-validate" id="error"></div>
                     </div>
                     </div>
