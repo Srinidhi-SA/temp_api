@@ -1163,15 +1163,15 @@ SKLEARN_ML_NAIVE_BAYES_PARAMS = [
     },
 ]
 TENSORFLOW_ACTIVATION_PARAMETERS = [
-    {"name": "deserialize", "selected": True, "displayName": "deserialize"},
+    #{"name": "deserialize", "selected": True, "displayName": "deserialize"},
     {"name": "elu", "selected": False, "displayName": "elu"},
     {"name": "exponential", "selected": False, "displayName": "exponential"},
-    {"name":"get","selected":False,"displayName":"get"},
+    #{"name":"get","selected":False,"displayName":"get"},
     {"name": "hard_sigmoid", "selected": False, "displayName": "hard_sigmoid"},
-    {"name":"Linear","selected":False,"displayName":"Linear"},
+    {"name":"linear","selected":False,"displayName":"Linear"},
     {"name":"relu","selected":False,"displayName":"relu"},
     {"name":"selu","selected":False,"displayName":"selu"},
-    {"name":"serialize","selected":False,"displayName":"serialize"},
+    #{"name":"serialize","selected":False,"displayName":"serialize"},
     {"name":"sigmoid","selected":False,"displayName":"sigmoid"},
     {"name":"softmax","selected":False,"displayName":"softmax"},
     {"name":"softplus","selected":False,"displayName":"softplus"},
@@ -1214,16 +1214,16 @@ TENSORFLOW_LAMBDA_FUNCTIONS = [
     {"name": "Division", "selected": True, "displayName": "Division"},
 ]
 SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
+    {"name": "categorical_crossentropy", "selected": True, "displayName": "categorical_crossentropy"},
     {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
     {"name": "hinge", "selected": False, "displayName": "hinge"},
     {"name": "categorical_hinge", "selected": False, "displayName": "categorical_hinge"},
-    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
     {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
     {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
     {"name": "kullback_leibler_divergence", "selected": False, "displayName": "kullback_leibler_divergence"},
 ]
 SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
-    {"name": "SGD", "selected": False, "displayName": "SGD"},
+    {"name": "SGD", "selected": True, "displayName": "SGD"},
     {"name": "RMSprop", "selected": False, "displayName": "RMSprop"},
     {"name": "Adagrad", "selected": False, "displayName": "Adagrad"},
     {"name": "Adadelta", "selected": False, "displayName": "Adadelta"},
@@ -1232,13 +1232,13 @@ SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
     {"name": "Nadam", "selected": False, "displayName": "Nadam"},
 ]
 TF_CLASSIFICATION_METRICS = [
+    {"name": "sparse_categorical_crossentropy", "selected": True, "displayName": "sparse_categorical_crossentropy"},
     {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
     {"name": "categorical_accuracy", "selected": False, "displayName": "categorical_accuracy"},
     {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
     {"name": "FalseNegatives", "selected": False, "displayName": "FalseNegatives"},
     {"name": "FalsePositives", "selected": False, "displayName": "FalsePositives"},
     {"name": "sparse_categorical_accuracy", "selected": False, "displayName": "sparse_categorical_accuracy"},
-    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
 ]
 TENSORFLOW_DENSE_PARAMETERS = [
     {
@@ -1489,7 +1489,7 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "name": "number_of_epochs",
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
-        "defaultValue": 0.0,
+        "defaultValue": 10,
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "number",

@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -42,7 +42,7 @@ export class AppsModelDetail extends React.Component {
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
-		this.props.dispatch(getAppsAlgoList(1));
+		this.props.dispatch(clearAppsAlgoList());
 	}
 	
 	print() {
@@ -59,6 +59,8 @@ export class AppsModelDetail extends React.Component {
 			if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
 			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
 		}
+		this.props.dispatch(getAppsAlgoList(1));
+
 	}
 	componentWillReceiveProps(newProps){
 		if(newProps.algoList.data != undefined){
@@ -66,8 +68,7 @@ export class AppsModelDetail extends React.Component {
 			let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
 				let algorithmName = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
-				if($(".sm-mb-20")[i].children.length == 0){
-
+				if($(".sm-mb-20")[i].parentNode.parentNode.children.length <= 2){
 					let info = document.createElement('a');
 					var att = document.createAttribute("class");
 					att.value = "summaryLink";

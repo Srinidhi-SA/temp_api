@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
 import {updateSelectedVariablesAction} from "../../actions/dataActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
@@ -55,9 +55,12 @@ var dateFormat = require('dateformat');
             }
             if(store.getState().apps.currentAppId == ""){
                 this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-            }else{
-                this.props.dispatch(getAppsAlgoList(pageNo));
             }
+            //removing getAppsAlgoList call as we have it in ModelManagement component and making algoList empty
+            // else{
+            //     this.props.dispatch(getAppsAlgoList(pageNo));
+            // }
+            this.props.dispatch(clearAppsAlgoList())
            this.props.dispatch(updateModelSummaryFlag(false));
            this.props.dispatch(updateSelectedVariablesAction(false));
         }
