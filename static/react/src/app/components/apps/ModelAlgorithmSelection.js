@@ -243,8 +243,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 {data.algorithmName === "TensorFlow"?
                                 <TensorFlow data/>
                                 :data.algorithmName === "PyTorch"?
-                                <PyTorch data/>
-                                :
+                                <PyTorch data/>:
                                 (
 								 <div className="xs-mt-20">
                                     <div className="form-group">
@@ -257,7 +256,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div class="clearfix"></div>
                                     </div>
                                  </div>)}
-                                 {data.algorithmName === "TensorFlow" || "PyTorch"?"":
+                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":
                                  (<span>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div>
@@ -280,7 +279,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 
-                                <div>{data.algorithmName === "TensorFlow" || "PyTorch"?"":parametersData}</div>
+                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":parametersData}</div>
 								</FormGroup>
                             </Tab>
                         );

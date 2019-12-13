@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {statusMessages} from  "../../helpers/helper"
+import { RegressionParameter } from "./RegressionParameter";
 
 @connect((store)=>{
     return{
@@ -15,14 +16,13 @@ export class PyTorch extends React.Component {
     constructor(props){
         super(props);
     }
+        
     render() {
-        let renderPyTorchContent = "Pytorch"
-        this.props.algorithmData
-        return (        
+        return (
             <div className="col-md-12">
                 <div className="row mb-20">
                     <div class="form-group">
-                        {renderPyTorchContent}
+                        PyTorch
                     </div>
                 </div>
           </div>
