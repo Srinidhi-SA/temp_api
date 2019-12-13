@@ -241,7 +241,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 <FormGroup role="form">
                                 {data.algorithmName === "TensorFlow"?
                                 <TensorFlow data/>
-                                :data.algorithmName === "TensorFlow"?
+                                :data.algorithmName === "PyTorch"?
                                 <PyTorch data/>:
                                 (
 								 <div className="xs-mt-20">
