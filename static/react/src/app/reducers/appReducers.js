@@ -203,6 +203,15 @@ export default function reducer(state = {
     }
     break;
 
+    case "CLEAR_APPS_ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList:{}
+        }
+    }
+    break;
+
     case "ALGO_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
