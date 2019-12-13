@@ -16399,7 +16399,14 @@ div#replaceValues {
    	margin-top: 2%!important;
 
 }
-
+.shareButtonCenter{
+	width: 48%!important;
+	margin-top: 2%!important;
+	left: 26%!important;
+	margin-right: 26%!important;
+	display: block;
+	position: relative;
+}
 .width-multisel{
 	width :100%;
 }
