@@ -181,7 +181,7 @@ export class SignalCard extends React.Component {
                               ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
-            {story.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,story.name,story.slug,"Signal")}>
+            {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"Signal")}>
             <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
             <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
             </span>: ""}
