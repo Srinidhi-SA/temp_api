@@ -32,6 +32,7 @@ import {
   updateModelSummaryFlag,
   updateScoreSummaryFlag,
   parameterTuningVisited,
+  clearTensorFlowArray,
   selectMetricAction,
   clearDataPreview,
 
@@ -68,6 +69,7 @@ export class Apps extends React.Component {
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
        this.props.dispatch(parameterTuningVisited(false))
+       this.props.dispatch(clearTensorFlowArray())
      
        //have to recheck next 3actions needed or not
       this.props.dispatch(setEditModelValues("","",false));

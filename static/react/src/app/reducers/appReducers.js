@@ -75,6 +75,7 @@ export default function reducer(state = {
         appsCreateStockModal:false,
         appsStockSymbolsInputs:[],
         stockAnalysisList:{},
+        tensorFlowInputs:[],
         stockUploadDomainModal:false,
         stockUploadDomainFiles:[],
         stockSlug:"",
