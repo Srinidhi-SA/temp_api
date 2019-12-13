@@ -43,7 +43,6 @@ export class AppsModelDetail extends React.Component {
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
 		this.props.dispatch(clearAppsAlgoList());
-		this.props.dispatch(getAppsAlgoList(1));
 	}
 	
 	print() {
@@ -60,6 +59,8 @@ export class AppsModelDetail extends React.Component {
 			if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
 			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
 		}
+		this.props.dispatch(getAppsAlgoList(1));
+
 	}
 	componentWillReceiveProps(newProps){
 		if(newProps.algoList.data != undefined){
