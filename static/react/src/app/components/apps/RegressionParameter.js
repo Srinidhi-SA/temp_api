@@ -24,12 +24,11 @@ import { MultiSelect } from 'primereact/multiselect';
 export class RegressionParameter extends React.Component {
     constructor(props) {
         super(props);
-        if(this.props.editmodelFlag){
         if(this.props.parameterData.paramType == "number")
             this.state = {
                 min: this.props.parameterData.valueRange[0],
                 max: this.props.parameterData.valueRange[1],
-                defaultVal:this.props.parameterData.acceptedValue!=null?this.props.parameterData.acceptedValue:this.props.parameterData.defaultValue,
+                defaultVal:this.props.parameterData.defaultValue,
                 name:this.props.parameterData.name,
             };
         else
@@ -38,25 +37,6 @@ export class RegressionParameter extends React.Component {
             name:this.props.parameterData.name,
 
         };
-    }
-    else{
-        if(this.props.parameterData.paramType == "number")
-            (this.props.parameterData.valueRange != null)?
-                this.state = {
-                    min: this.props.parameterData.valueRange[0],
-                    max: this.props.parameterData.valueRange[1],
-                    defaultVal:this.props.parameterData.defaultValue,
-                    name:this.props.parameterData.name,
-                }:""
-            
-        else
-        this.state = {
-            defaultVal:this.props.parameterData.defaultValue,
-            name:this.props.parameterData.name,
-
-        };
-    }
-        
         if(this.props.parameterData.paramType == "list")
             this.state = {
                 dropValues : ""
