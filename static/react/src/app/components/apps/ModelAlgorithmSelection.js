@@ -11,6 +11,7 @@ import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages} from "../../helpers/helper";
 import { TensorFlow } from "./TensorFlow";
+import { PyTorch } from "./PyTorch";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
