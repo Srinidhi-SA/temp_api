@@ -31,13 +31,14 @@ import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList, hideDataPreview,getAllUsersList} from "../../actions/dataActions";
+import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEdit} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
 import {Share} from "../common/Share";
+import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -61,6 +62,9 @@ export class Signals extends React.Component {
     var pageNo = 1;
     //this.props.dispatch(storeSearchElement(""));
     this.props.dispatch(hideDataPreview())
+    this.props.dispatch(setEditModelValues("","",false));
+    this.props.dispatch(fetchModelEdit(""))
+    this.props.dispatch(saveTopLevelValuesAction("false",""))
     //console.log(getUserDetailsOrRestart.get().view_data_permission)
     if(getUserDetailsOrRestart.get().view_data_permission=="true")
     this.props.dispatch(getAllDataList());

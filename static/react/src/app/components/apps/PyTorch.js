@@ -16,6 +16,7 @@ export class PyTorch extends React.Component {
     constructor(props){
         super(props);
     }
+<<<<<<< HEAD
     renderPyTorchData(parameterData,tune){
         switch (parameterData.paramType) {
             case "list":
@@ -109,11 +110,15 @@ export class PyTorch extends React.Component {
                 );
             }
         });
+=======
+        
+    render() {
+>>>>>>> 8d73ffa23292e73f88ab229a19a8e0365649873f
         return (
             <div className="col-md-12">
                 <div className="row mb-20">
                     <div class="form-group">
-                        {renderPyTorchContent}
+                        PyTorch
                     </div>
                 </div>
           </div>

@@ -16,6 +16,8 @@ import { MultiSelect } from 'primereact/multiselect';
         automaticAlgorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         metricSelected:store.apps.metricSelected,
+        editmodelFlag:store.datasets.editmodelFlag
+
     };
 })
 
@@ -23,14 +25,12 @@ export class RegressionParameter extends React.Component {
     constructor(props) {
         super(props);
         if(this.props.parameterData.paramType == "number")
-            (this.props.parameterData.valueRange != null)?
-                this.state = {
-                    min: this.props.parameterData.valueRange[0],
-                    max: this.props.parameterData.valueRange[1],
-                    defaultVal:this.props.parameterData.defaultValue,
-                    name:this.props.parameterData.name,
-                }:""
-            
+            this.state = {
+                min: this.props.parameterData.valueRange[0],
+                max: this.props.parameterData.valueRange[1],
+                defaultVal:this.props.parameterData.defaultValue,
+                name:this.props.parameterData.name,
+            };
         else
         this.state = {
             defaultVal:this.props.parameterData.defaultValue,
@@ -448,7 +448,7 @@ export class RegressionParameter extends React.Component {
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
-                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
                 }
             }
             return(
