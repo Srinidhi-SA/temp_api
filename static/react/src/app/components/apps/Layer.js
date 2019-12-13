@@ -27,7 +27,9 @@ export default class Layer extends Component {
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
   }
   getOptions(item) {
+
     var arr = item.defaultValue.map(j=>j.displayName);
+    arr.unshift("--Select--")
     var optionsHtml = arr.map(k => {
         return <option value={k} > {k}</option>
     })

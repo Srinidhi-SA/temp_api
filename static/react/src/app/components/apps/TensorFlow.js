@@ -55,12 +55,32 @@ export class TensorFlow extends React.Component {
       else
           showError =false
     }
-   if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
+
+
+    if(tfArray.length>0){
+      var validationFail=false
+      if(tfArray[tfArray.length-1].layer=="Dense"&&(tfArray[tfArray.length-1].activation==""||tfArray[tfArray.length-1].units=="")){
+        validationFail= true
+      }
+      else if(tfArray[tfArray.length-1].layer=="Dropout" && tfArray[tfArray.length-1].rate==""){
+        validationFail= true
+      }
+       else if(tfArray[tfArray.length-1].layer=="Lambda" && tfArray[tfArray.length-1].lambda==""){
+        validationFail= true
+      }
+    }
+
+
+   
+  if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
     bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
+   }
+   else if(validationFail){
+    bootbox.alert(statusMessages("warning", "Please select all mandatory fields from previous layer.", "small_mascot"));    
    }
    else if(showError){
       bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
-    }
+   }
     else
     {
     const nextId = this.state.panels.length + 1
