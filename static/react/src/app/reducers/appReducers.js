@@ -202,7 +202,6 @@ export default function reducer(state = {
         }
     }
     break;
-
     case "CLEAR_APPS_ALGO_LIST":
     {
         return {
