@@ -75,6 +75,10 @@ export class DataCleansing extends React.Component {
     const from = this.getValueOfFromParam();
     if (from === 'feature_Engineering') {
     }
+    else if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+      let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+    }
     else {
     if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
       window.history.go(-1);
@@ -350,10 +354,11 @@ tableHead.addEventListener('click', function (e) {
   render() {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
+
+    if (this.props.dataPreview != null) {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
     // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
-    if (this.props.dataPreview != null) {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => {

@@ -37,7 +37,8 @@ export class AlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-            window.history.go(-3);
+            let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
         }
         else if(!this.props.parameterTuningFlag)
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
