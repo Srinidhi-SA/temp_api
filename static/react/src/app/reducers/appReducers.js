@@ -94,7 +94,7 @@ export default function reducer(state = {
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
-        targetLevelCounts:null,
+        targetLevelCounts:"",
         currentAppDetails:null,
         updateCreateModelHideShow:false,
         apps_regression_modelName:"",
@@ -199,6 +199,14 @@ export default function reducer(state = {
             algoList: action.data,
             latestAlgos:action.latestAlgos,
             current_page:action.current_page,
+        }
+    }
+    break;
+    case "CLEAR_APPS_ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList:{}
         }
     }
     break;
