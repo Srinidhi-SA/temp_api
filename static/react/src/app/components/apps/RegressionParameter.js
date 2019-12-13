@@ -503,6 +503,9 @@ export class RegressionParameter extends React.Component {
                         var type= "text";
                         classN= "form-control hiddenCls";
                         break;
+                        case "Number of Epochs":
+                            classN = "form-control epochsCls"
+                            break;
                         default:
                         classN= `form-control ${this.state.name}`;
                         var type= "number";
