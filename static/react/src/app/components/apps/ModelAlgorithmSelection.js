@@ -243,7 +243,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 {data.algorithmName === "TensorFlow"?
                                 <TensorFlow data/>
                                 :data.algorithmName === "PyTorch"?
-                                <PyTorch data/>:
+                                <PyTorch parameterData={data} type="NonTuningParameter"/>:
                                 (
 								 <div className="xs-mt-20">
                                     <div className="form-group">

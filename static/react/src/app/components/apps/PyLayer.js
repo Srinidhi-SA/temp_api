@@ -2,45 +2,30 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
+import {statusMessages} from  "../../helpers/helper"
+import { RegressionParameter } from "./RegressionParameter";
 import {Button} from "react-bootstrap";
-import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData } from "../../actions/appActions";
+import { setPyTorchLayer } from "../../actions/appActions";
 
 @connect((store)=>{
     return{
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
-        dataPreview:store.datasets.dataPreview,
     }
 })
 
-export class PyTorch extends React.Component {
+export class PyLayer extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            addLayer : false,
-            idLayer : [],
-            noOfRows : this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0]
-        }
     }
 
-    handleAddLayer(){
-        const newLayer = this.state.idLayer.length + 1
-        this.setState({
-            addLayer:true,
-            idLayer:this.state.idLayer.concat([newLayer])
-        });
+    componentWillMount(){
+        let layer = "layer"+ ((this.props.id)-1);
+        let lyrDt = { "activation": "none", "dropout": "none", "batch": "none", "unit": "none", "bias": "none" }
+        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
     }
-
-    selectHandleChange(parameterData,e){
-        this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
-    }
-
-    changeTextboxValue(parameterData,e){
-        this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
-    }
-
+    
     renderPyTorchData(parameterData){
         switch (parameterData.paramType) {
             case "list":
@@ -63,7 +48,7 @@ export class PyTorch extends React.Component {
                 return(
                     <div className= {"row"}>
                         <div className="col-md-3">
-                            <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selectHandleChange.bind(this,parameterData)}>
+                            <select ref={(el) => { this.eleSel = el }} className={cls} /*onChange={this.selecthandleChange.bind(this)} */>
                                 {optionsTemp}
                             </select>
                         </div>
@@ -77,10 +62,6 @@ export class PyTorch extends React.Component {
                             var type = "number";
                             var classN= "form-control batchCls";
                             break;
-                        case "Number of Epochs":
-                            var type = "number";
-                            classN = "form-control epochsCls"
-                            break;
                         default:
                             classN= "form-control";
                             var type= "number";
@@ -88,7 +69,7 @@ export class PyTorch extends React.Component {
                     }
                     return (
                         <div className="col-md-1">
-                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min="0" max="100"/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                            <input type={type} className={classN} /*onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() }*/ value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                         </div>
@@ -105,7 +86,7 @@ export class PyTorch extends React.Component {
                                 <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
                             </div>
                             <div className="col-md-2">
-                                <input type="text" className="form-control" defaultValue={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)}*/ onChange={this.changeTextboxValue.bind(this,parameterData)} />
+                                <input type="text" className="form-control" value={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<1 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"}*/ />
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -119,7 +100,7 @@ export class PyTorch extends React.Component {
                 return (
                     <div className="row">
                         <div className="col-md-6">
-                            <input type="text" className="form-control" defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                            <input type="text" className="form-control" value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)}*//>
                         </div>
                     </div>
                 );
@@ -128,7 +109,7 @@ export class PyTorch extends React.Component {
                 var defaultCls= "form-control"
                 return (
                     <div className="col-md-6">
-                        <input type="text" className={defaultCls} value={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                        <input type="text" className={defaultCls} value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)}*//>
                         <div className="text-danger range-validate" id="error"></div>
                     </div>
                 );
@@ -136,39 +117,26 @@ export class PyTorch extends React.Component {
     }
     render() {
         let randomNum = Math.random().toString(36).substr(2,8);
-
-        let pyTochData = this.props.parameterData;
-        let pyTochSlug = this.props.parameterData.algorithmSlug;
-        let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
-            if(pydata.display){
-                const pyTorchparams = this.renderPyTorchData(pydata);
-                return(
-                    <div class="form-group">
-                        {pydata.displayName === "Layer"?
-                        <Button className="pull-right" onClick={this.handleAddLayer.bind(this)}>Add</Button>
-                        :""}
-                        <label class="col-md-2 control-label read">{pydata.displayName}</label>
-                        <label class="col-md-4 control-label read">{pydata.description}</label>
-                        {pyTorchparams}
-                        <div class="clearfix"></div> 
-                    </div>
-
-                );
-            }
-        });
+        let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
+                if(layerData.display){
+                    const lyr = this.renderPyTorchData(layerData);
+                    return(
+                        <div class="form-group">
+                            <label class="col-md-2 control-label read">{layerData.displayName}</label>
+                            <label class="col-md-4 control-label read">{layerData.description}</label>
+                            {lyr}
+                            <div class="clearfix"></div> 
+                        </div>
+                    );
+                }
+            });
         return (
             <div className="col-md-12">
                 <div className="row mb-20">
-                    <div class="form-group">
-                        <div>
-                            {renderPyTorchContent}
-                        </div>
-                        </div>
-                        {this.state.idLayer.map(layer=>
-                            <div class="panel-body box-shadow">
-                                <PyLayer key={layer} id={layer} parameterData={this.props.parameterData}/>
-                            </div>
-                        )}
+                    <div class="form-group" id={this.props.id}>
+                        Layer {this.props.id}
+                        {renderPyTorchLayer}
+                    </div>
                 </div>
           </div>
         );

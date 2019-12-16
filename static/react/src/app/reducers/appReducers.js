@@ -112,6 +112,7 @@ export default function reducer(state = {
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
         metricSelected:{},
+        pyTorchLayer:{},
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -1077,6 +1078,20 @@ export default function reducer(state = {
             ...state,
             regression_algorithm_data:action.data.ALGORITHM_SETTING,
             regression_algorithm_data_manual:action.data.ALGORITHM_SETTING,
+        }
+    }
+    break;
+    case "SET_PYTORCH_LAYER":{
+        var layerData = state.pyTorchLayer
+        var curLayer = layerData[action.layerNum];
+        if(curLayer === undefined){
+            curLayer = {}
+        }
+        curLayer = action.lyrDt
+        layerData[action.layerNum] = curLayer
+        return {
+            ...state,
+            pyTorchLayer : layerData
         }
     }
     break;
