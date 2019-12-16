@@ -43,52 +43,51 @@ export class TensorFlow extends React.Component {
       return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
     }
     
-
-  handleClick(){
-    var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
     
-    var tfArray= store.getState().apps.tensorFlowInputs
-    if(tfArray.length>=2){
-      var prevLayer=tfArray[tfArray.length-1].layer
-      if(slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")
-        var showError=true
-      else
-          showError =false
-    }
+    layerValidate=(slectedLayer,tfArray)=>{
+      if(tfArray.length>=2)
+      var prevLayer=tfArray[tfArray.length-1].layer;
 
-
-    if(tfArray.length>0){
-      var validationFail=false
-      if(tfArray[tfArray.length-1].layer=="Dense"&&(tfArray[tfArray.length-1].activation==""||tfArray[tfArray.length-1].units=="")){
-        validationFail= true
-      }
-      else if(tfArray[tfArray.length-1].layer=="Dropout" && tfArray[tfArray.length-1].rate==""){
-        validationFail= true
-      }
-       else if(tfArray[tfArray.length-1].layer=="Lambda" && tfArray[tfArray.length-1].lambda==""){
-        validationFail= true
-      }
-    }
-
-
-   
-  if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
-    bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
-   }
-   else if(validationFail){
-    bootbox.alert(statusMessages("warning", "Please select all mandatory fields from previous layer.", "small_mascot"));    
-   }
-   else if(showError){
+      if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
+        bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
+        return false
+       }
+      else if(tfArray.length>=2 && (slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")){
       bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
-   }
-    else
-    {
+      return false
+      }
+     else{
+     this.addLayer(slectedLayer)      
+     }
+  }
+
+
+  addLayer=(slectedLayer)=>{
     const nextId = this.state.panels.length + 1
       this.setState({
          panels: this.state.panels.concat([nextId]),
          layerType:slectedLayer
       })
     }
+
+  handleClick(){
+    var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
+    
+    var tfArray= store.getState().apps.tensorFlowInputs
+    this.layerValidate(slectedLayer,tfArray)
+    
+    // if(tfArray.length>0){
+    //   var validationFail=false
+    //   if(tfArray[tfArray.length-1].layer=="Dense"&&(tfArray[tfArray.length-1].activation==""||tfArray[tfArray.length-1].units=="")){
+    //     validationFail= true
+    //   }
+    //   else if(tfArray[tfArray.length-1].layer=="Dropout" && tfArray[tfArray.length-1].rate==""){
+    //     validationFail= true
+    //   }
+    //    else if(tfArray[tfArray.length-1].layer=="Lambda" && tfArray[tfArray.length-1].lambda==""){
+    //     validationFail= true
+    //   }
+    // }
 }
     render() {
 
@@ -96,8 +95,8 @@ export class TensorFlow extends React.Component {
     var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
     else if(this.state.layerType==="Dropout")
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
-    else 
-    data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[2].parameters
+    // else 
+    // data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[2].parameters
 
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
      var rendercontent = algorithmData.map((item,index)=>{
