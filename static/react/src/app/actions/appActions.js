@@ -580,12 +580,14 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
-   
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={"hidden_layer_info":tensorFlow}
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
       "dataCleansing": dataCleansing,
@@ -637,9 +639,14 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       }
     }
     var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={
+      "hidden_layer_info":tensorFlow
+      }
   
     var details = {
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
 			"targetLevel": targetLevel,
 			"targetColumn":targetVariable,
@@ -1048,6 +1055,48 @@ export function updateModelSlug(slug) {
 }
 export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
+}
+
+export function addTensorFlowArray(id,layerType,name,val) {
+  debugger;
+    if(layerType==="Dense"){
+     var  tensorFlowArray={
+        "layer":"Dense",
+        "activation": "",
+        "activity_regularizer": "",
+        "bias_constraint": "",
+        "bias_initializer": "",
+        "bias_regularizer": "",
+        "kernel_constraint": "",
+        "kernel_initializer": "",
+        "kernel_regularizer": "",
+        "units": "",
+        "use_bias": "",
+      }    
+  }
+  else if(layerType==="Dropout"){
+      var  tensorFlowArray={
+        "layer":"Dropout",
+        "rate":"",
+      }
+    }
+    else{
+      var  tensorFlowArray={
+        "layer":"Lambda",
+        "lambda":"",
+        "units":"",
+      }
+    }
+  return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
+}
+
+export function updateTensorFlowArray(id,name,val) {
+  debugger;
+  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
+  return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
+}
+export function clearTensorFlowArray() {
+  return { type: "CLEAR_LAYERS"}
 }
 
 
