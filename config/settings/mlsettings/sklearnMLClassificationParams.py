@@ -1270,7 +1270,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "use_bias",
-        "displayName": "use_bias",
+        "displayName": "Use Bias",
         "description": "Whether the layer uses a bias vector.",
         "defaultValue": [
             {
@@ -1293,7 +1293,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_initializer",
-        "displayName": "kernel_initializer",
+        "displayName": "Kernel Initializer",
         "description": "Initializer for the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
         "paramType": "list",
@@ -1305,7 +1305,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_initializer",
-        "displayName": "bias_initializer",
+        "displayName": "Bias Initializer",
         "description": "Initializer for the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
         "paramType": "list",
@@ -1317,7 +1317,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_regularizer",
-        "displayName": "kernel_regularizer",
+        "displayName": "Kernel Regularizer",
         "description": "Regularizer function applied to the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1329,7 +1329,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_regularizer",
-        "displayName": "bias_regularizer",
+        "displayName": "Bias Regularizer",
         "description": "Regularizer function applied to the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1341,7 +1341,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "activity_regularizer",
-        "displayName": "activity_regularizer",
+        "displayName": "Activity Regularizer",
         "description": "Regularizer function applied to the output of the layer.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1353,7 +1353,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_constraint",
-        "displayName": "kernel_constraint",
+        "displayName": "Kernel Constraint",
         "description": "Constraint function applied to the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
         "paramType": "list",
@@ -1365,7 +1365,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_constraint",
-        "displayName": "bias_constraint",
+        "displayName": "Bias Constraint",
         "description": "Constraint function applied to the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
         "paramType": "list",
