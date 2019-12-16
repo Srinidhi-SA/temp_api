@@ -16592,3 +16592,8 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   padding-right: 30px;
   padding-top: 20px;
 }
+.mandate:after {
+	content: "*";
+	color: #ff0000;
+	font-size: 15px;
+}

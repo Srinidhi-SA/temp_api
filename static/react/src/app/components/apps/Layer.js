@@ -38,13 +38,13 @@ export default class Layer extends Component {
   
   render() { 
     var cls =`row layerPanel ${this.props.id}`
-    debugger;
+    var mandateField= ["Activation","Units","Rate"]
     var rendercontent = this.props.parameters.map((item,index)=>{
              if(item.paramType=="list"){
               return (
                 <div className ="row mb-20">
                 <div className="form-group">
-                <label className="col-md-2">{item.displayName}</label>
+                <label className={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>
                  <div className="col-md-6">
                  <div className ="row">
@@ -62,7 +62,7 @@ export default class Layer extends Component {
    
                 <div className ="row mb-20">
                 <div class="form-group">
-                <label class="col-md-2 control-label read">{item.displayName}</label>
+                <label class={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>
                 <div className="col-md-6">
                  <div className ="row">

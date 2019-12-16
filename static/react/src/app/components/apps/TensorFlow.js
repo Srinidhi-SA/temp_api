@@ -96,8 +96,8 @@ export class TensorFlow extends React.Component {
     var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
     else if(this.state.layerType==="Dropout")
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
-    else 
-    data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[2].parameters
+    // else 
+    // data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[2].parameters
 
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
      var rendercontent = algorithmData.map((item,index)=>{
