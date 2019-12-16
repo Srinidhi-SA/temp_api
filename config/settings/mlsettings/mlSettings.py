@@ -336,7 +336,7 @@ else:
                 "algorithmName": "TensorFlow",
                 "selected": False,
                 "parameters": SKLEARN_ML_TENSORFLOW_REGRESSION_PARAMS,
-                "algorithmSlug": ALGORITHMRANDOMSLUG + "tfr",
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
                 "description": "This is implementation of tensorflow algorithm"
             }
