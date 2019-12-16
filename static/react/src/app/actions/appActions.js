@@ -1062,29 +1062,29 @@ export function addTensorFlowArray(id,layerType,name,val) {
     if(layerType==="Dense"){
      var  tensorFlowArray={
         "layer":"Dense",
-        "activation": "",
-        "activity_regularizer": "",
-        "bias_constraint": "",
-        "bias_initializer": "",
-        "bias_regularizer": "",
-        "kernel_constraint": "",
-        "kernel_initializer": "",
-        "kernel_regularizer": "",
-        "units": "",
-        "use_bias": "",
+        "activation": null,
+        "activity_regularizer": null,
+        "bias_constraint": null,
+        "bias_initializer": null,
+        "bias_regularizer": null,
+        "kernel_constraint": null,
+        "kernel_initializer": null,
+        "kernel_regularizer": null,
+        "units": null,
+        "use_bias": null,
       }    
   }
   else if(layerType==="Dropout"){
       var  tensorFlowArray={
         "layer":"Dropout",
-        "rate":"",
+        "rate":null,
       }
     }
     else{
       var  tensorFlowArray={
         "layer":"Lambda",
-        "lambda":"",
-        "units":"",
+        "lambda":null,
+        "units":null,
       }
     }
   return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
