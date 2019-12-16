@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import zip
+from builtins import object
 import json
 
 import os
@@ -11,7 +15,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
+from .models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
 
 from django.conf import settings
 import subprocess
@@ -40,7 +44,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
     print("About to submit job through YARN")
     # Submit_job to YARN
-    print queue_name
+    print(queue_name)
 
     '''
     if queue_name is None:
@@ -79,7 +83,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
     application_id = ""
 
-    from tasks import submit_job_separate_task1, submit_job_separate_task
+    from .tasks import submit_job_separate_task1, submit_job_separate_task
 
     if settings.SUBMIT_JOB_THROUGH_CELERY:
         # pass
@@ -267,7 +271,7 @@ class InsightSerializer(serializers.ModelSerializer):
 
         return instance
 
-    class Meta:
+    class Meta(object):
         model = Insight
         exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')
 
@@ -306,7 +310,7 @@ class InsightListSerializers(serializers.ModelSerializer):
     def get_brief_info(self):
         pass
 
-    class Meta:
+    class Meta(object):
         model = Insight
         exclude = (
             'compare_with',
@@ -389,7 +393,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 
         return instance
 
-    class Meta:
+    class Meta(object):
         model = Trainer
         exclude = ('id', 'job')
 
@@ -422,7 +426,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
         return ret
 
 
-    class Meta:
+    class Meta(object):
         model = Trainer
         exclude =  (
             'column_data_raw',
@@ -497,7 +501,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 
         return instance
 
-    class Meta:
+    class Meta(object):
         model = Score
         exclude = ('id', 'job')
 
@@ -533,7 +537,7 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Score
         exclude =  (
             'column_data_raw',
@@ -545,14 +549,14 @@ class ScoreListSerializer(serializers.ModelSerializer):
 
 class JobSerializer(serializers.Serializer):
 
-    class Meta:
+    class Meta(object):
         model = Job
         exclude = ("id", "created_at")
 
 
 class RoboSerializer(serializers.ModelSerializer):
 
-    class Meta:
+    class Meta(object):
         model = Robo
         exclude = ("id", "config", "column_data_raw")
 
@@ -649,7 +653,7 @@ class RoboListSerializer(serializers.ModelSerializer):
             ret['completed_message']="Analyzing Target Variable"
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Robo
         exclude =  (
             'id',
@@ -710,14 +714,14 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         ret = update_name_in_json_data(ret)
         return ret
 
-    class Meta:
+    class Meta(object):
         model = StockDataset
         exclude = ( 'id', 'updated_at')
 
 class StockDatasetListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        print(get_job_status(instance))
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         try:
@@ -736,7 +740,7 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
 
 
 
-    class Meta:
+    class Meta(object):
         model = StockDataset
         fields = (
             "slug",
@@ -775,7 +779,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        print(get_job_status(instance))
         ret = super(AudiosetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -794,7 +798,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
         ret = update_name_in_json_data(ret)
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Audioset
         exclude = ( 'id', 'updated_at')
 
@@ -812,7 +816,7 @@ class AudioListSerializer(serializers.ModelSerializer):
             ret['completed_message']="Analyzing Target Variable"
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Audioset
         fields = (
             "slug",
@@ -863,7 +867,7 @@ class AppListSerializers(serializers.ModelSerializer):
                 tag_keywords.append(key['name'])
             return tag_keywords
 
-        class Meta:
+        class Meta(object):
             model = CustomApps
             fields = '__all__'
 
@@ -920,7 +924,7 @@ class AppSerializer(serializers.ModelSerializer):
 
             return instance
 
-        class Meta:
+        class Meta(object):
             model = CustomApps
             fields = '__all__'
 
@@ -1233,7 +1237,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         else:
             value = ['--', '--', '--', '--', '--']
         key=['project_name','algorithm','training_status','accuracy','runtime']
-        ret.update(dict(zip(key,value)))
+        ret.update(dict(list(zip(key,value))))
 
         ret['trainer'] = instance.trainer.slug
         #return ret
@@ -1246,7 +1250,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = TrainAlgorithmMapping
         exclude =  (
 
@@ -1276,7 +1280,7 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
             ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = TrainAlgorithmMapping
         exclude = (
             'id',
@@ -1305,7 +1309,7 @@ class DeploymentListSerializer(serializers.ModelSerializer):
         ret['periodic_task'] = instance.get_periodic_task_details()
         return ret
 
-    class Meta:
+    class Meta(object):
         model = ModelDeployment
         exclude =  (
             'id',
@@ -1336,7 +1340,7 @@ class DeploymentSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = ModelDeployment
         exclude = (
 
@@ -1360,7 +1364,7 @@ class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = DatasetScoreDeployment
         exclude =  (
 
@@ -1408,7 +1412,7 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = DatasetScoreDeployment
         exclude = (
 
@@ -1427,7 +1431,7 @@ class TrainerNameListSerializer(serializers.ModelSerializer):
                                             ).count()
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Trainer
         fields = (
             'slug',

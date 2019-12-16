@@ -20,7 +20,9 @@ Usage
 List
         fab -list
 """
+from __future__ import print_function
 
+from builtins import str
 from fabric.api import *
 import os
 from fabric.contrib import files
@@ -245,12 +247,12 @@ def pull_ui_and_merge_to_api():
             push_api_to_remote()
             is_done = True
     except Exception as err:
-        print err
+        print(err)
 
     if is_done:
         pull_api_at_remote()
     else:
-        print "Keep Calm. Wait. Take a Breath. Remember Absurdism."
+        print("Keep Calm. Wait. Take a Breath. Remember Absurdism.")
 
 
 def push_api_to_remote(api_branch):
@@ -269,17 +271,17 @@ def push_api_to_remote(api_branch):
             capture = local("git push origin {0}".format(api_branch))
             # print capture
     except Exception as err:
-        print err
+        print(err)
 
     finally:
-        print "finally loop."
+        print("finally loop.")
 
 
 def pull_api_at_remote(base_remote_path, api_branch):
     try:
         with cd(base_remote_path):
             capture = run("git status")
-            print capture
+            print(capture)
             if "Changes not staged for commit" in capture:
                 # abort("Unstaged changes. Please commit or stash.")
                 run("git stash")
@@ -293,10 +295,10 @@ def pull_api_at_remote(base_remote_path, api_branch):
             run('python manage.py migrate')
 
     except Exception as err:
-        print err
+        print(err)
 
     finally:
-        print "finally loop."
+        print("finally loop.")
 
 
 def only_for_api_push_and_pull(server_details, path_details):
@@ -330,7 +332,7 @@ def uptime(branch="dev"):
 
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    print(details)
     path_details= details['path_details']
     server_details= details['server_details']
     run('ls')
@@ -343,7 +345,7 @@ def remember_git_cache_local_and_remote(branch="dev"):
     """
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    print(details)
     path_details= details['path_details']
     server_details= details['server_details']
 
@@ -359,7 +361,7 @@ def cleanup_static_react_old_dist(branch="dev"):
     """
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    print(details)
     path_details= details['path_details']
     server_details= details['server_details']
 
@@ -373,7 +375,7 @@ def cleanup_static_react_old_dist(branch="dev"):
 def create_database(branch="development"):
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    print(details)
     path_details = details['path_details']
     server_details = details['server_details']
 
@@ -397,7 +399,7 @@ def download_sql_and_dump(branch='dev'):
     import time
     details = get_branch_details(branch)
     set_fabric_env(details)
-    print details
+    print(details)
     path_details= details['path_details']
     server_details= details['server_details']
     current_time = time.strftime("%Y%m%dT%H%M%S", time.gmtime())
@@ -447,7 +449,7 @@ def restart_jobserver(branch="development"):
     env.host_string="{0}@{1}".format(username, host)
 
     server_start_process_id = sudo("netstat -nlp |grep 8090| awk  '{print $7}' |cut -f1 -d'/'")
-    print server_start_process_id, type(server_start_process_id), str(server_start_process_id),
+    print(server_start_process_id, type(server_start_process_id), str(server_start_process_id), end=' ')
 
     capture = run('/tmp/job-server/server_stop.sh')
 
@@ -459,11 +461,11 @@ def restart_jobserver(branch="development"):
         if str(server_start_process_id) == "" :
             pass
         else:
-            print "killing server_start_process_id"
-            print "command to kill"
-            print "-------"
-            print "kill -9 {0}".format(server_start_process_id)
-            print "-------"
+            print("killing server_start_process_id")
+            print("command to kill")
+            print("-------")
+            print("kill -9 {0}".format(server_start_process_id))
+            print("-------")
             kill_capture = sudo("kill -9 {0}".format(server_start_process_id))
 
 

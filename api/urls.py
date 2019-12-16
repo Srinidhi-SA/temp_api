@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 from django.conf.urls import url
 from rest_framework import routers
 
 from api import views
-from datasets.views import DatasetView
-from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
-from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, \
+from .datasets.views import DatasetView
+from .views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
+from .views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, \
     view_model_summary_autoML,kill_timeout_job_from_ui,get_all_users,view_model_summary_detail
-from views import AppView
+from .views import AppView
 
-from views import TrainerView
-from views import RoboView
-from views import AudiosetView
-from views import TrainAlgorithmMappingView
-from views import ModelDeployementView
-from views import DatasetScoreDeployementView
+from .views import TrainerView
+from .views import RoboView
+from .views import AudiosetView
+from .views import TrainAlgorithmMappingView
+from .views import ModelDeployementView
+from .views import DatasetScoreDeployementView
 # from views import RegressionView
-from dummyModel.models import DummyView
+from .dummyModel.models import DummyView
 
 # Start adding urlconf from here
 

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
+from builtins import object
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from api.user_helper import UserSerializer
@@ -8,7 +10,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from api.models import Dataset
-from helper import convert_to_json, convert_time_to_human
+from .helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
 import json
@@ -84,7 +86,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
         exclude = ( 'id', 'updated_at','shared_slug')
 
@@ -113,7 +115,7 @@ class DataListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
         fields = (
             "slug",
@@ -138,7 +140,7 @@ class DataNameListSerializer(serializers.ModelSerializer):
         #ret['Target']=metadata['headers']
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
         fields = (
             "slug",

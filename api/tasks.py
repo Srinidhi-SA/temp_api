@@ -1,5 +1,8 @@
 from __future__ import absolute_import, unicode_literals
+from __future__ import print_function
 
+from builtins import str
+from builtins import map
 import random
 import time
 import base64
@@ -20,7 +23,7 @@ from django.contrib.auth.models import User
 
 @task(name="sum_two_numbers")
 def add(x, y):
-    print "crazy bird {0}{1}".format(x, y)
+    print("crazy bird {0}{1}".format(x, y))
     return x + y
 
 
@@ -69,7 +72,7 @@ def submit_job_separate_task(command_array, slug):
         match = re.search('Submitted application (.*)$', line)
         if match:
             application_id = match.groups()[0]
-            print("<------------------------ YARN APPLICATION ID ---------------------->", application_id)
+            print(("<------------------------ YARN APPLICATION ID ---------------------->", application_id))
             from api.helper import get_db_object
 
             model_instance = get_db_object(model_name=Job.__name__,
@@ -111,7 +114,7 @@ def submit_job_separate_task1(command_array, slug):
         my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
-    print cur_process
+    print(cur_process)
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
@@ -157,7 +160,7 @@ def write_into_databases(job_type, object_slug, results):
         # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
-            da.append(map(str, d))
+            da.append(list(map(str, d)))
         results['sampleData'] = da
         # results["modified"] = False
 
@@ -276,7 +279,7 @@ def write_into_databases(job_type, object_slug, results):
         stock_objects.save()
         return results
     else:
-        print "No where to write"
+        print("No where to write")
 
 
 def write_into_databases1(job_type, object_slug, results):
@@ -308,7 +311,7 @@ def write_into_databases1(job_type, object_slug, results):
         # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
-            da.append(map(str, d))
+            da.append(list(map(str, d)))
         results['sampleData'] = da
         # results["modified"] = False
 
@@ -417,7 +420,7 @@ def write_into_databases1(job_type, object_slug, results):
         stock_objects.save()
         return results
     else:
-        print "No where to write"
+        print("No where to write")
 
 
 @task(name='save_results_to_job', queue=CONFIG_FILE_NAME)
@@ -429,7 +432,7 @@ def save_results_to_job(slug, results):
                         model_slug=slug
                         )
 
-    if isinstance(results, str) or isinstance(results, unicode):
+    if isinstance(results, str) or isinstance(results, str):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
@@ -445,14 +448,14 @@ def save_job_messages(slug, messages):
                             model_slug=slug
                             )
 
-        if isinstance(messages, str) or isinstance(messages, unicode):
+        if isinstance(messages, str) or isinstance(messages, str):
             job.messages = messages
         elif isinstance(messages, dict):
             results = json.dumps(messages)
             job.messages = messages
         job.save()
     except Exception as err:
-        print err
+        print(err)
 
 
 @task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
@@ -464,13 +467,13 @@ def save_results_to_job1(slug, results):
                         model_slug=slug
                         )
 
-    if isinstance(results, str) or isinstance(results, unicode):
+    if isinstance(results, str) or isinstance(results, str):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
         job.results = results
     job.save()
-    print "save hogaya " * 100
+    print("save hogaya " * 100)
 
 
 @task(name='cleanup_logentry')
@@ -483,7 +486,7 @@ def clean_up_logentry():
     for user in all_users:
         log_entries = LogEntry.objects.filter(actor=user.id).count()
         LogEntry.objects.all().delete()
-        print "delete object(s) :- %{0}".format(log_entries)
+        print("delete object(s) :- %{0}".format(log_entries))
 
 
 @task(name='cleanup_on_delete', queue=CONFIG_FILE_NAME)
@@ -496,11 +499,11 @@ def clean_up_on_delete(slug, model_name):
         job_instance.save()
 
     sad_instance = SaveAnyData.objects.filter(slug__contains=slug)
-    print len(sad_instance)
+    print(len(sad_instance))
     sad_instance.delete()
 
     sd_instance = SaveData.objects.filter(object_slug__contains=slug)
-    print len(sd_instance)
+    print(len(sd_instance))
     sd_instance.delete()
 
 
@@ -512,7 +515,7 @@ def kill_application_using_fabric(app_id=None):
     from django.conf import settings
     import subprocess
     MODE = settings.MODE
-    print ("MODE", MODE)
+    print(("MODE", MODE))
     if MODE == 'docker':
         # HDFS = settings.KILL_JOB
         # BASEDIR = settings.BASE_DIR
@@ -571,7 +574,7 @@ def stock_sense_crawl(object_slug):
     import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
-    print "stock_sense_crawl" * 2
+    print("stock_sense_crawl" * 2)
     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
                                          model_slug=object_slug
                                          )
@@ -652,7 +655,7 @@ Things to do
 
 
 def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(dataset_object_id):
-    print('received this dataset_object_id : ', dataset_object_id)
+    print(('received this dataset_object_id : ', dataset_object_id))
 
     if dataset_object_id is None:
         print("No dataset id given found")
@@ -734,7 +737,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
 
 
 def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
-    print('received this dataset_object_id : ', dataset_object_id)
+    print(('received this dataset_object_id : ', dataset_object_id))
 
     if dataset_object_id is None:
         print("No dataset id given found")
@@ -769,11 +772,11 @@ def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
 
     if mails is not None:
-        print "All set to proceed to upload dataset."
+        print("All set to proceed to upload dataset.")
 
-        for configkey, configvalue in mails.iteritems():
+        for configkey, configvalue in mails.items():
             data = {}
-            for key, value in configvalue.iteritems():
+            for key, value in configvalue.items():
                 try:
                     # print key,value
                     # value is a dict
@@ -793,19 +796,19 @@ def trigger_outlook_periodic_job():
                     if 'emailAddress' in key:
                         data['email'] = value['emailAddress']['address']
                 except Exception as error:
-                    print error
+                    print(error)
             if len(data) > 0:
-                print "Here is the collected data"
-                print data
+                print("Here is the collected data")
+                print(data)
                 trigger_metaData_autoML.delay(data)
             else:
-                print "No mails found"
+                print("No mails found")
                 break
             ##########################################################################################
 
             # pass
     else:
-        print "No mails."
+        print("No mails.")
     '''
     Task1: Look for auth Code, Access Token and Refresh Token : DONE
     Task2: Get mails from outlook
@@ -818,9 +821,9 @@ def trigger_outlook_periodic_job():
 
 @task(name='trigger_metaData_autoML', queue=CONFIG_FILE_NAME)
 def trigger_metaData_autoML(data):
-    print "metaData job triggered for autoML"
+    print("metaData job triggered for autoML")
     ######################  User id for Email AutoML   ################
-    print data
+    print(data)
     '''
     Create one user with Username "email" in order to use email for AutoML model creation.
 
@@ -845,7 +848,7 @@ def trigger_metaData_autoML(data):
         train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
         ###################################################################
     except Exception as err:
-        print err
+        print(err)
     try:
         #########  Test dataset config   #########
         test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
@@ -862,7 +865,7 @@ def trigger_metaData_autoML(data):
         pass
 
     if train_dataset_serializer.is_valid():
-        print "Saving train dataset Serializer"
+        print("Saving train dataset Serializer")
         train_dataset_object = train_dataset_serializer.save()
         print(train_dataset_object)
         ################################   Create config for model object that to be triggered after metedata job  ##################
@@ -882,17 +885,17 @@ def trigger_metaData_autoML(data):
             from api.utils import convert_to_string
             model_config = convert_to_string(model_config)
             print("Constructed model_config")
-            print model_config
+            print(model_config)
 
             from api.utils import TrainerSerlializer
             trainer_serializer = TrainerSerlializer(data=model_config, context={})
             if trainer_serializer.is_valid():
-                print "Saving trainer Serializer"
+                print("Saving trainer Serializer")
                 trainer_object = trainer_serializer.save()
-                print trainer_object
+                print(trainer_object)
                 try:
                     if test_dataset_serializer.is_valid():
-                        print "Saving test dataset Serializer"
+                        print("Saving test dataset Serializer")
                         test_dataset_object = test_dataset_serializer.save()
                         print(test_dataset_object)
                         ################ Create config for Score object that to be triggered after model job   ##############
@@ -908,9 +911,9 @@ def trigger_metaData_autoML(data):
                         from api.utils import ScoreSerlializer
                         score_serializer = ScoreSerlializer(data=score_config, context={})
                         if score_serializer.is_valid():
-                            print "Saving score Serializer"
+                            print("Saving score Serializer")
                             score_object = score_serializer.save()
-                            print score_object
+                            print(score_object)
                             test_dataset_object.create()
                         else:
                             print(score_serializer.errors)
@@ -924,14 +927,14 @@ def trigger_metaData_autoML(data):
             ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
             train_dataset_object.create()
         except Exception as err:
-            print err
+            print(err)
     else:
         print(train_dataset_serializer.errors)
 
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
 def create_model_autoML(dataset_object_id=None, config=None):
-    print '#####################  Configs for Trainer ##################'
+    print('#####################  Configs for Trainer ##################')
     validationTechnique = {
         "displayName": "K Fold Validation",
         "name": "kFold",
@@ -939,10 +942,10 @@ def create_model_autoML(dataset_object_id=None, config=None):
     }
     if config is not None:
         try:
-            print config
+            print(config)
             data = json.loads(config)
             dataset_object = Dataset.objects.get(slug=data['slug'])
-            print dataset_object
+            print(dataset_object)
 
             model_config = {
                 "name": data['model_name'],
@@ -994,7 +997,7 @@ def create_model_autoML(dataset_object_id=None, config=None):
                 print(trainer_serializer.errors)
 
         except Exception as err:
-            print err
+            print(err)
     else:
         try:
             dataset_object = Dataset.objects.get(id=dataset_object_id)
@@ -1036,11 +1039,11 @@ def create_model_autoML(dataset_object_id=None, config=None):
                 model_config['created_by'] = user_object.id
                 model_config['config']['variablesSelection'] = uiMetaData['varibaleSelectionArray']
             except Exception as e:
-                print e
+                print(e)
 
             from api.utils import convert_to_string
             model_config = convert_to_string(model_config)
-            print("Constructed model_config", model_config)
+            print(("Constructed model_config", model_config))
 
             from api.utils import TrainerSerlializer
             trainer_serializer = TrainerSerlializer(data=model_config, context={})
@@ -1051,7 +1054,7 @@ def create_model_autoML(dataset_object_id=None, config=None):
                 print(trainer_serializer.errors)
 
         except Exception as err:
-            print err
+            print(err)
 
 
 @task(name='outlook_autoML_success_mail', queue=CONFIG_FILE_NAME)
@@ -1094,7 +1097,7 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                              subject='Marlabs-AutoML Success', content=content)
 
             except Exception as err:
-                print err
+                print(err)
                 pass
         else:
             pass
@@ -1110,10 +1113,10 @@ def mail(action_type=None, access_token=None, return_mail_id=None, subject=None,
             #messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
             messages = send_my_messages(access_token, return_mail_id, subject, content)
             if messages[:3] == '202':
-                print "Mail Sent"
+                print("Mail Sent")
         except Exception as e:
-            print e
-            print "Some issue with mail sending module..."
+            print(e)
+            print("Some issue with mail sending module...")
 
 
 def send_my_messages(access_token, return_mail_id, subject, content):
@@ -1164,7 +1167,7 @@ def send_my_messages(access_token, return_mail_id, subject, content):
 
     r = make_api_call('POST', get_messages_url, access_token, payload=payload)
     if r.status_code == requests.codes.ok:
-        print "Mail Sent"
+        print("Mail Sent")
         return r.json()
     else:
         return "{0}: {1}".format(r.status_code, r.text)

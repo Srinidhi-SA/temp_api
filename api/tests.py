@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.test import TestCase
 
 # Create your tests here.

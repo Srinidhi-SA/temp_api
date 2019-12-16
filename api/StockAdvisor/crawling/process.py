@@ -1,9 +1,12 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 import re
 import sys
-import common_utils
+from . import common_utils
 import requests
 from bs4 import BeautifulSoup
-import generic_crawler
+from . import generic_crawler
 
 def sanitize(content,remove_tags=[]):
 	for html_tag in remove_tags:
@@ -12,7 +15,7 @@ def sanitize(content,remove_tags=[]):
 	text=''
 	text=re.sub('<.*?>',' ',content)
 	if text:
-		text=text.replace("\n","").replace("&nbsp;","").replace("\t"," ").replace("\u"," ").replace("\r"," ").strip()
+		text=text.replace("\n","").replace("&nbsp;","").replace("\t"," ").replace("\\u"," ").replace("\r"," ").strip()
 	text =text.encode('utf-8')
 	return text
 
@@ -27,15 +30,15 @@ def process_data(url,content,regex_dict={},remove_tags=[]):
 	if "block" in regex_dict:
 		block_regex=regex_dict.get('block')
 		if not block_regex:
-			print "block regex is not present so exit"
+			print("block regex is not present so exit")
 			sys.exit(0)
 		else:
 			block_regex="(?is)"+block_regex
 		all_blocks=re.findall(block_regex,content)
-	print "total block on this page is : ",len(all_blocks)
+	print("total block on this page is : ",len(all_blocks))
 	for block in all_blocks:
 		json_data={"blocks":len(all_blocks),"seed_url":url}
-		for key in regex_dict.keys():
+		for key in list(regex_dict.keys()):
 			if key in ['block','blocks','source']:
 				continue
 			value=''
@@ -84,13 +87,13 @@ def process_nasdaq_news_article(url, content, stock):
 	soup = BeautifulSoup(content, 'html.parser')
 	new_headlines = soup.find_all('div', class_="news-headlines")
 	all_articles_data = []
-	print new_headlines
+	print(new_headlines)
 	try:
 		for i, tag in enumerate(new_headlines[0]):
 			try:
 				article_data = {}
 				if i % 10 == 3 and 'class' not in tag.attrs:
-					print "collected {0}".format(tag.span.a['href'])
+					print("collected {0}".format(tag.span.a['href']))
 					article_data['title'] = sanitize(tag.span.a.text)
 					article_data['final_url'] = tag.span.a['href']
 					article_data['google_url'] = url
@@ -104,8 +107,8 @@ def process_nasdaq_news_article(url, content, stock):
 					article_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
 					all_articles_data.append(article_data)
 			except Exception as err:
-				print err
-				print "No ArTicle Extracted" * 7
+				print(err)
+				print("No ArTicle Extracted" * 7)
 	except:
 		pass
 	return all_articles_data
@@ -145,13 +148,13 @@ def fetch_stock_news_from_newsapi(cur_stock):
     for item in articles:
 
         cur_key = item['time']
-        if cur_key in histogram.keys():
+        if cur_key in list(histogram.keys()):
             things_to_append = ["description", "title" , "short_desc"]
             for key_to_append in things_to_append:
                 histogram[cur_key][key_to_append] = str(histogram[cur_key][key_to_append]) + " " + str(item[key_to_append])
         else:
             histogram[cur_key] = item
-    return [v for k,v in histogram.items()]
+    return [v for k,v in list(histogram.items())]
 
 def less_then_six_months(date_and_time, str=True):
 	pass
@@ -169,7 +172,7 @@ def process_marketwatch_news_article(content):
 		for l in article.ul.children:
 
 			if type(l) == Tag:
-				print l['class'][0]
+				print(l['class'][0])
 				if l['class'][0] == 'article__timestamp':
 					json_data['time'] = l.text
 				if l['class'][0] == 'article__author':
@@ -191,8 +194,8 @@ def process_nasdaq_news_paragraph(url):
 
 		return article_text
 	except Exception as err:
-		print err
-		print "Article can't be fetched."
+		print(err)
+		print("Article can't be fetched.")
 		return ""
 
 import json
@@ -216,7 +219,7 @@ def fetch_historical_data_from_alphavintage(stock):
 	def sanitize_name(name):
 		return name[3:]
 
-	print "Using Aplha Vintage API for historic stock data for {0}".format(stock)
+	print("Using Aplha Vintage API for historic stock data for {0}".format(stock))
 	raw_data = historical_data['Time Series (Daily)']
 	all_data = []
 	for date_name in raw_data:

@@ -1,3 +1,7 @@
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from builtins import object
 from rest_framework import serializers
 from rest_framework_jwt.serializers import JSONWebTokenSerializer
 # from rest_framework_jwt.views import ObtainJSONWebToken
@@ -71,7 +75,7 @@ class Profile(models.Model):
 
 class UserProfileSerializer(serializers.Serializer):
 
-    class Meta:
+    class Meta(object):
         model = Profile
         field = ('photo', 'website', 'bio', 'phone', 'city', 'country', 'organization')
 
@@ -124,7 +128,7 @@ class UserProfileSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    class Meta:
+    class Meta(object):
         model = User
         fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
 
@@ -195,7 +199,7 @@ def upload_photo(request):
 
 
     other_details = request.POST
-    print other_details.get('website')
+    print(other_details.get('website'))
 
     data = dict()
 
@@ -324,7 +328,7 @@ class myJSONWebTokenSerializer(Serializer):
 
 
 def create_or_update_kylo_auth_file():
-    print "create_or_update_kylo_auth_file"
+    print("create_or_update_kylo_auth_file")
     if settings.ENABLE_KYLO is False:
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
@@ -361,7 +365,7 @@ def create_or_update_kylo_auth_file():
         KYLO_SERVER_DETAILS['kylo_file_path'],
     )
 
-    print ssh_command_users.split(' ')
+    print(ssh_command_users.split(' '))
     import subprocess
     subprocess.call(ssh_command_users.split(' '))
     subprocess.call(ssh_command_groups.split(' '))
@@ -371,26 +375,26 @@ def create_or_update_kylo_auth_file():
     grps=["madvisor"]
     displayName=user.first_name+" "+user.last_name
     user_data={"displayName": user.username,"email": user.email,"enabled": True,"groups":grps,"systemName": user.username}
-    print "user_data: "
-    print user_data
+    print("user_data: ")
+    print(user_data)
     import json
     import requests
     import uuid
     import time
     user_data=json.dumps(user_data)
-    print "user data after dump: "
-    print user_data
+    print("user data after dump: ")
+    print(user_data)
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     settings.KYLO_UI_URL
     url = settings.KYLO_UI_URL + "/proxy/v1/security/users"
     r=requests.post(url,data=user_data,auth=('dladmin','thinkbig'),headers=headers)
-    print "response from kylo: "
-    print r.text
+    print("response from kylo: ")
+    print(r.text)
     #add personal category with Permissions
     cat_url = settings.KYLO_UI_URL + "/proxy/v1/feedmgr/categories"
     id=str(uuid.uuid4())
     millis = int(round(time.time() * 1000))
-    print millis
+    print(millis)
     createDate=millis
     updateDate=millis
     cat_id=str(uuid.uuid4())
@@ -450,8 +454,8 @@ def create_or_update_kylo_auth_file():
       "roleMembershipsUpdated": False
     }
     r=requests.post(cat_url,data=json.dumps(cat_data),auth=('dladmin','thinkbig'),headers=headers)
-    print "rs from create/update category of kylo"
-    print r.text
+    print("rs from create/update category of kylo")
+    print(r.text)
 
 
 

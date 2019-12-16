@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
 import random
 import json
 
@@ -17,12 +21,12 @@ from api.exceptions import creation_failed_exception, update_failed_exception, r
 from api.models import Dataset
 from api.pagination import CustomPagination
 from api.utils import name_check
-from helper import convert_to_string
-from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
+from .helper import convert_to_string
+from .serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
-from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-from helper import convert_metadata_according_to_transformation_setting
-from helper import get_advanced_setting
+from .helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+from .helper import convert_metadata_according_to_transformation_setting
+from .helper import get_advanced_setting
 from api.tasks import clean_up_on_delete
 
 from api.permission import DatasetRelatedPermission
@@ -151,7 +155,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us delete')
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Dataset.__name__)
@@ -225,6 +229,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
+
         try:
             instance = self.get_object_from_all()
         except:
@@ -326,8 +331,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def share(self, request, *args, **kwargs):
         try:
             obj = Dataset.objects.get(slug=self.kwargs.get('slug'))
-            dataset_obj = Dataset.objects.filter(created_by_id=request.user.id,
-                                                 slug=self.kwargs.get('slug')).values().first()
+            dataset_obj = list(Dataset.objects.filter(created_by_id=request.user.id,
+                                                 slug=self.kwargs.get('slug')).values()).first()
             dataset_name = dataset_obj['name']
             shared_id = request.GET['shared_id'].split(",")
             shared_by=User.objects.get(id=request.user.id)
@@ -348,7 +353,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 Dataset.objects.create(**dataset_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
-            print err
+            print(err)
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):

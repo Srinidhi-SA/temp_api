@@ -1,3 +1,4 @@
+from __future__ import print_function
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -59,9 +60,9 @@ def send_alert_through_email(error=None):
     # msg.attach(cover_letter)
 
     try:
-        print "Senging emails to", " ,".join(settings.LIST_OF_ADMIN_EMAILS)
+        print("Senging emails to", " ,".join(settings.LIST_OF_ADMIN_EMAILS))
         send_mail(username, password, from_addr, settings.LIST_OF_ADMIN_EMAILS, msg)
-        print "Email successfully sent to", " ,".join(settings.LIST_OF_ADMIN_EMAILS)
+        print("Email successfully sent to", " ,".join(settings.LIST_OF_ADMIN_EMAILS))
     except smtplib.SMTPAuthenticationError:
-        print 'SMTPAuthenticationError'
-        print "Email not sent to", settings.LIST_OF_ADMIN_EMAILS
+        print('SMTPAuthenticationError')
+        print("Email not sent to", settings.LIST_OF_ADMIN_EMAILS)

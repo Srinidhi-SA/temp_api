@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
+from builtins import object
 import csv
 import json
 import os
@@ -13,8 +18,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from StockAdvisor.crawling.common_utils import get_regex
-from StockAdvisor.crawling.crawl_util import crawl_extract, \
+from .StockAdvisor.crawling.common_utils import get_regex
+from .StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_crawl_news, \
     convert_crawled_data_to_metadata_format, \
     generate_urls_for_historic_data, \
@@ -27,7 +32,7 @@ from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
-from helper import convert_fe_date_format
+from .helper import convert_fe_date_format
 from django_celery_beat.models import PeriodicTask
 
 from guardian.shortcuts import assign_perm
@@ -97,7 +102,7 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from tasks import submit_job_separate_task1, submit_job_separate_task
+        from .tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
             submit_job_separate_task.delay(command_array, self.slug)
@@ -121,7 +126,7 @@ class Job(models.Model):
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
-            print err
+            print(err)
 
     def get_original_object(self):
         original_object = None
@@ -138,7 +143,7 @@ class Job(models.Model):
         elif self.job_type == 'stockAdvisor':
             original_object = StockDataset.objects.get(slug=self.object_id)
         else:
-            print "No where to write"
+            print("No where to write")
 
         return original_object
 
@@ -178,7 +183,7 @@ class Dataset(models.Model):
     shared_by = models.CharField(max_length=100, null=True)
     shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_DATASET
 
@@ -491,7 +496,7 @@ class Dataset(models.Model):
                 if variable['name'] == 'dateTimeSuggestions':
                     dateTimeSuggestions += [variable['value']]
         else:
-            print "How the hell reached here!. Metadata is still not there. Please Wait."
+            print("How the hell reached here!. Metadata is still not there. Please Wait.")
 
         return {
             'ignore_column_suggestion': ignore_column_suggestion,
@@ -607,7 +612,7 @@ class Insight(models.Model):
     shared_by = models.CharField(max_length=100, null=True)
     shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         verbose_name = "Signal"
         verbose_name_plural = "Signals"
@@ -855,7 +860,7 @@ class Trainer(models.Model):
     shared_by = models.CharField(max_length=100, null=True)
     shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
@@ -885,7 +890,6 @@ class Trainer(models.Model):
         }
 
         if self.mode == 'autoML':
-            # import pdb;pdb.set_trace()
             dataset_slug = self.dataset.slug
             # print "#############################"
             # print dataset_slug
@@ -1554,7 +1558,7 @@ class Trainer(models.Model):
                                     )
                         except Exception as err:
                             print(err)
-        self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
+        self.collect_column_slugs_which_all_got_transformations += list(columns_wise_data.keys())
 
         for slug in columns_wise_data:
             feature_engineering_ml_config['selected'] = True
@@ -2049,7 +2053,7 @@ class Score(models.Model):
     shared_by = models.CharField(max_length=100, null=True)
     shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_SCORE
 
@@ -2324,7 +2328,7 @@ class Robo(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # permissions = settings.NEW_PERMISSIONS
 
@@ -2417,7 +2421,7 @@ class CustomApps(models.Model):
     app_type = models.CharField(max_length=300, null=True, default="")
     rank = models.IntegerField(unique=True, null=True)
 
-    class Meta:
+    class Meta(object):
         ordering = ['rank']
 
     def __str__(self):
@@ -2480,7 +2484,7 @@ class CustomAppsUserMapping(models.Model):
     active = models.BooleanField(default=True)
     rank = models.IntegerField(null=True)
 
-    class Meta:
+    class Meta(object):
         unique_together = (('user', 'app'),)
 
 
@@ -2517,7 +2521,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
-        print e
+        print(e)
 
     if not queue_name:
         queue_name = "default"
@@ -2543,7 +2547,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         }
     '''
     # Submitting JobServer
-    from utils import submit_job
+    from .utils import submit_job
     try:
         job_return_data = submit_job(
             slug=job.slug,
@@ -2642,7 +2646,7 @@ class StockDataset(models.Model):
 
     crawled_data = models.TextField(default="{}")
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_STOCK
 
@@ -2690,7 +2694,7 @@ class StockDataset(models.Model):
 
         if len(extracted_data) < 1:
             return {}
-        print "Total News Article are {0}".format(len(extracted_data))
+        print("Total News Article are {0}".format(len(extracted_data)))
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
@@ -2721,7 +2725,7 @@ class StockDataset(models.Model):
         for stock_symbol in self.get_stock_symbol_names():
             stock_data = None
             cache_key = "historic_{}".format(stock_symbol)
-            print PRINTPREFIX, cache_key
+            print(PRINTPREFIX, cache_key)
 
             from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
             try:
@@ -2730,7 +2734,7 @@ class StockDataset(models.Model):
                 pass
 
             if not stock_data:
-                print PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol)
+                print(PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol))
                 NASDAQ_REGEX_FILE = "nasdaq_stock.json"
                 url = generate_url_for_historic_data(stock_symbol)
 
@@ -2746,7 +2750,7 @@ class StockDataset(models.Model):
                         try:
                             cached_data = historic_cache.get(cache_key)
                             stock_data = pickle.loads(cached_data)
-                            print PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol)
+                            print(PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol))
                         except:
 
                             pass
@@ -2756,7 +2760,7 @@ class StockDataset(models.Model):
 
             if stock_data is not None:
                 if len(stock_data) > 0:
-                    print PRINTPREFIX, "caching for{}".format(stock_symbol)
+                    print(PRINTPREFIX, "caching for{}".format(stock_symbol))
                     historic_cache.put(cache_key, pickle.dumps(stock_data))
 
                 self.write_to_concepts_folder(
@@ -2792,7 +2796,7 @@ class StockDataset(models.Model):
     #             )
 
     def get_bluemix_natural_language_understanding(self, name=None):
-        from StockAdvisor.bluemix.process_urls import ProcessUrls
+        from .StockAdvisor.bluemix.process_urls import ProcessUrls
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + "stock_info.csv"
         pu = ProcessUrls(path)
         datas = pu.process()
@@ -2827,7 +2831,7 @@ class StockDataset(models.Model):
         # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
         # self.get_bluemix_natural_language_understanding()
-        print "generate_meta_data " * 3
+        print("generate_meta_data " * 3)
         self.meta_data = self.crawl_news_data()
 
     def create_folder_in_scripts_data(self):
@@ -2884,7 +2888,7 @@ class StockDataset(models.Model):
         from os import listdir
         from os.path import isfile, join
         file_names = listdir(path_slug)
-        print file_names
+        print(file_names)
         # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
 
         from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
@@ -2895,7 +2899,7 @@ class StockDataset(models.Model):
         for name in file_names:
             dest_path = remote_path + "/" + name
             src_path = path_slug + name
-            print src_path, dest_path
+            print(src_path, dest_path)
             put_file(src_path, dest_path)
 
     def create_folder_in_remote(self):
@@ -3008,7 +3012,7 @@ class StockDataset(models.Model):
         self.save()
 
     def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
-        print stockDataType
+        print(stockDataType)
         if stockDataType == "historic":
             name = stockName + "_" + stockDataType
         else:
@@ -3016,8 +3020,8 @@ class StockDataset(models.Model):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         # file_path = path + stockName + "." + type
         file_path = path + name + "." + type
-        print "Writing {1} for {0}".format(stockName, stockDataType)
-        print file_path
+        print("Writing {1} for {0}".format(stockName, stockDataType))
+        print(file_path)
         with open(file_path, "wb") as file_to_write_on:
             if 'csv' == type:
                 writer = csv.writer(file_to_write_on)
@@ -3063,11 +3067,11 @@ class StockDataset(models.Model):
 
     def write_bluemix_data_into_concepts(self, name, data, type='json'):
 
-        for key in data.keys():
+        for key in list(data.keys()):
             name = name + "_" + key
             path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
             file_path = path + name + "." + type
-            print file_path
+            print(file_path)
             out_file = open(file_path, "wb")
             json.dump(data[key], out_file)
             out_file.close()
@@ -3100,7 +3104,7 @@ class Audioset(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # permissions = settings.NEW_PERMISSIONS
 
@@ -4712,15 +4716,15 @@ import copy
 def make_combochart(data, chart, x=None, axes=None, widthPercent=None, title=None):
     t_chart = set_axis_and_data(axes, chart, data, x)
     set_label_and_title(axes, t_chart, title, widthPercent, x)
-    if len(axes.keys()) > 1:
-        t_chart["data"]["chart_c3"]["data"]["types"] = {axes.keys()[1]: "line"}
+    if len(list(axes.keys())) > 1:
+        t_chart["data"]["chart_c3"]["data"]["types"] = {list(axes.keys())[1]: "line"}
 
     make_y2axis(axes, t_chart)
     return t_chart
 
 
 def make_y2axis(axes, t_chart):
-    if len(axes.keys()) > 1:
+    if len(list(axes.keys())) > 1:
         t_chart["data"]["chart_c3"]["axis"]["y2"] = {
             "show": True,
             "tick": {
@@ -4729,7 +4733,7 @@ def make_y2axis(axes, t_chart):
                 "format": ".2s"
             },
             "label": {
-                "text": axes.keys()[1],
+                "text": list(axes.keys())[1],
                 "position": "outer-middle"
             }
         }
@@ -4782,7 +4786,7 @@ def set_label_and_title(axes, chart, title, widthPercent, x):
     if x:
         chart["data"]["chart_c3"]["axis"]["x"]["label"]["text"] = x
     if axes:
-        chart["data"]["chart_c3"]["axis"]["y"]["label"]["text"] = axes.keys()[0]
+        chart["data"]["chart_c3"]["axis"]["y"]["label"]["text"] = list(axes.keys())[0]
     if widthPercent is not None:
         chart["widthPercent"] = widthPercent
 
@@ -5065,7 +5069,7 @@ article_by_source = [
      2, 2][:7]
 ]
 
-from sample_stock_data import stock_performace_card1, \
+from .sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
@@ -5200,7 +5204,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Role(Group):
-    class Meta:
+    class Meta(object):
         proxy = True
         app_label = 'auth'
         verbose_name = _('Role')
@@ -5226,7 +5230,7 @@ class TrainAlgorithmMapping(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
@@ -5273,7 +5277,7 @@ class ModelDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
@@ -5465,7 +5469,7 @@ class DatasetScoreDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER

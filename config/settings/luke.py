@@ -1,4 +1,6 @@
-from base import *
+from __future__ import absolute_import
+from builtins import zip
+from .base import *
 import datetime
 
 
@@ -12,7 +14,7 @@ environ.Env.read_env()
 DEBUG = env('DEBUG')
 
 MODE=env('MODE')
-ALLOWED_HOSTS = ['172.31.50.84','madvisor.marlabsai.com']
+ALLOWED_HOSTS = ['172.31.50.84','madvisor.marlabsai.com', 'localhost']
 
 DATABASES = {
     'default1': {
@@ -40,7 +42,7 @@ import os
 import json
 hdfs_config_key=json.loads(os.environ['HADOOP_CONFIG_KEY'])
 hdfs_config_value=json.loads(os.environ['HADOOP_CONFIG_VALUE'])
-HDFS=dict(zip(hdfs_config_key,hdfs_config_value))
+HDFS=dict(list(zip(hdfs_config_key,hdfs_config_value)))
 
 EMR = {
     "emr_pem_path": "",
