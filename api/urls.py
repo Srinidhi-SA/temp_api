@@ -9,7 +9,7 @@ from datasets.views import DatasetView
 from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
 from views import SignalView, get_datasource_config_list, get_algorithm_config_list,updateFromNifi, \
     view_model_summary_autoML,kill_timeout_job_from_ui,get_all_users,view_model_summary_detail
-from views import AppView
+from views import AppView,ChangePasswordView
 
 from views import TrainerView
 from views import RoboView
@@ -19,7 +19,7 @@ from views import ModelDeployementView
 from views import DatasetScoreDeployementView
 # from views import RegressionView
 from dummyModel.models import DummyView
-
+from api.utils import ChangePasswordSerializer
 # Start adding urlconf from here
 
 router = routers.DefaultRouter()
@@ -140,6 +140,7 @@ urlpatterns = [
     url(r'^get_all_signals', views.get_all_signals, name="get_all_signals"),
     url(r'^get_all_users', views.get_all_users, name="get_all_users"),
     url(r'^kill_timeout_job_from_ui', views.kill_timeout_job_from_ui, name="kill_timeout_job_from_ui"),
+    url(r'^change-user-password/', ChangePasswordView.as_view(serializer_class=ChangePasswordSerializer)),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
 

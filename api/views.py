@@ -46,7 +46,8 @@ from api.utils import \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
     DatasetScoreDeploymentListSerializer, \
-    TrainerNameListSerializer
+    TrainerNameListSerializer, \
+    ChangePasswordSerializer
 # RegressionSerlializer, \
 # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
@@ -6730,3 +6731,48 @@ def dump_complete_messages(request, slug=None):
     except Exception as e:
         return JsonResponse({'result': "Failed"})
         print e
+
+
+"""
+Custom View to change password for requested user
+"""
+from rest_framework import status
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+
+class ChangePasswordView(UpdateAPIView):
+        """
+        An endpoint for changing password.
+        """
+        serializer_class = ChangePasswordSerializer
+        model = User
+        permission_classes = (IsAuthenticated,)
+
+        def get_object(self, queryset=None):
+            obj = self.request.user
+            return obj
+
+        def update(self, request, *args, **kwargs):
+            self.object = self.get_object()
+            serializer = self.get_serializer(data=request.data)
+
+            if serializer.is_valid():
+                # Check old password
+                if not self.object.check_password(serializer.data.get("old_password")):
+                    return Response({"message": ["Invalid old password."]}, status=status.HTTP_400_BAD_REQUEST)
+                # set_password also hashes the password that the user will get
+                self.object.set_password(serializer.data.get("new_password"))
+                self.object.save()
+                response = {
+                    'status': 'success',
+                    'code': status.HTTP_200_OK,
+                    'message': 'Password updated successfully',
+                    'data': {
+                        "Username": self.object.username,
+                        "Email": self.object.email
+                        }
+                }
+
+                return Response(response)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
