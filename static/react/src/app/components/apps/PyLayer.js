@@ -25,6 +25,20 @@ export class PyLayer extends React.Component {
         let lyrDt = { "activation": "none", "dropout": "none", "batch": "none", "unit": "none", "bias": "none" }
         this.props.dispatch(setPyTorchLayer(layer,lyrDt));
     }
+
+    selectHandleChange(parameterData,e){
+        let layerArry = "layer"+ ((this.props.id)-1);
+        let newLyrVal = this.props.pyTorchLayer[layerArry];
+        newLyrVal[parameterData.name] = e.target.value;
+        this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+    }
+
+    changeTextBoxValue(parameterData,e){
+        let layerArry = "layer"+ ((this.props.id)-1);
+        let newLyrVal = this.props.pyTorchLayer[layerArry];
+        newLyrVal[parameterData.name] = e.target.value;
+        this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+    }
     
     renderPyTorchData(parameterData){
         switch (parameterData.paramType) {
@@ -39,6 +53,7 @@ export class PyLayer extends React.Component {
                 var options = parameterData.defaultValue
                 var selectedValue = ""
                 var optionsTemp =[];
+                optionsTemp.push(<option>--Select--</option>);
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
@@ -48,7 +63,7 @@ export class PyLayer extends React.Component {
                 return(
                     <div className= {"row"}>
                         <div className="col-md-3">
-                            <select ref={(el) => { this.eleSel = el }} className={cls} /*onChange={this.selecthandleChange.bind(this)} */>
+                            <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selectHandleChange.bind(this,parameterData)} >
                                 {optionsTemp}
                             </select>
                         </div>
@@ -69,7 +84,7 @@ export class PyLayer extends React.Component {
                     }
                     return (
                         <div className="col-md-1">
-                            <input type={type} className={classN} /*onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() }*/ value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={parameterData.defaultValue} onChange={this.changeTextBoxValue.bind(this,parameterData)} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                         </div>
@@ -86,7 +101,7 @@ export class PyLayer extends React.Component {
                                 <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
                             </div>
                             <div className="col-md-2">
-                                <input type="text" className="form-control" value={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder={(this.state.min<1 && this.state.max==1)?"e.g. 0.5-0.7, 0.4, 1":"e.g. 3-10, 10-400, 10"}*/ />
+                                <input type="text" className="form-control" value={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} */onChange={this.changeTextBoxValue.bind(this,parameterData)} />
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
                             </div>
@@ -100,7 +115,7 @@ export class PyLayer extends React.Component {
                 return (
                     <div className="row">
                         <div className="col-md-6">
-                            <input type="text" className="form-control" value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)}*//>
+                            <input type="text" className="form-control" value={parameterData.defaultValue} onChange={this.changeTextBoxValue.bind(this,parameterData)}/>
                         </div>
                     </div>
                 );
@@ -109,7 +124,7 @@ export class PyLayer extends React.Component {
                 var defaultCls= "form-control"
                 return (
                     <div className="col-md-6">
-                        <input type="text" className={defaultCls} value={parameterData.defaultValue} /*onChange={this.changeTextboxValue.bind(this)}*//>
+                        <input type="text" className={defaultCls} value={parameterData.defaultValue} onChange={this.changeTextBoxValue.bind(this,parameterData)}/>
                         <div className="text-danger range-validate" id="error"></div>
                     </div>
                 );

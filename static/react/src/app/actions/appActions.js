@@ -586,6 +586,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "PyTorchLayers" : store.getState().apps.pyTorchLayer,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
       "dataCleansing": dataCleansing,

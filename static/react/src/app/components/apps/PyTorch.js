@@ -33,6 +33,26 @@ export class PyTorch extends React.Component {
         });
     }
 
+    addSubParam(parameterData,e){
+        if(parameterData.name === "loss"){
+            let subLyr = "Nothing";
+            subLyr = parameterData.defaultValue.filter(i=>i.name === e.target.value)[0].parameters.map(subParamData=>{
+                if(subParamData.display){
+                    const lossparams = this.renderPyTorchData(subParamData);
+                    return(
+                        <div>
+                            <label class="col-md-2 control-label read">{subParamData.displayName}</label>
+                            <label class="col-md-4 control-label read">{subParamData.description}</label>
+                            {lossparams}
+                            <div class="clearfix"></div>
+                        </div>
+    
+                    );
+                }
+            })
+        }
+    }
+
     selectHandleChange(parameterData,e){
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
@@ -41,6 +61,14 @@ export class PyTorch extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
+    getsubParams(item) {
+        // var arr = item.defaultValue.map(j=>j.displayName);
+        // var options = arr.map(k => {
+        //     return <option value={k} > {k}</option>
+        // })
+        // return <select className="form-control"> {options} </select>
+      }
+    
     renderPyTorchData(parameterData){
         switch (parameterData.paramType) {
             case "list":
@@ -53,7 +81,7 @@ export class PyTorch extends React.Component {
                 }
                 var options = parameterData.defaultValue
                 var selectedValue = ""
-                var optionsTemp =[];
+                var optionsTemp = []
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
@@ -66,6 +94,11 @@ export class PyTorch extends React.Component {
                             <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selectHandleChange.bind(this,parameterData)}>
                                 {optionsTemp}
                             </select>
+                        </div>
+                        <div>
+                            {(selectedValue != "none" && selectedValue != "Linear" && selectedValue != "")?
+                            this.getsubParams(options)
+                            :""}
                         </div>
                     </div>
                    );
@@ -136,21 +169,22 @@ export class PyTorch extends React.Component {
     }
     render() {
         let randomNum = Math.random().toString(36).substr(2,8);
-
+        let pyTorchSubParams = null;
         let pyTochData = this.props.parameterData;
         let pyTochSlug = this.props.parameterData.algorithmSlug;
         let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
             if(pydata.display){
                 const pyTorchparams = this.renderPyTorchData(pydata);
+                let formName = "form-group "+pydata.name
                 return(
-                    <div class="form-group">
+                    <div class={formName}>
                         {pydata.displayName === "Layer"?
                         <Button className="pull-right" onClick={this.handleAddLayer.bind(this)}>Add</Button>
                         :""}
                         <label class="col-md-2 control-label read">{pydata.displayName}</label>
                         <label class="col-md-4 control-label read">{pydata.description}</label>
                         {pyTorchparams}
-                        <div class="clearfix"></div> 
+                        <div class="clearfix"></div>
                     </div>
 
                 );
