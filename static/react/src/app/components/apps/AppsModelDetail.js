@@ -126,6 +126,7 @@ export class AppsModelDetail extends React.Component {
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
+				var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
 		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
 				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
 				var cardDataList = listOfCardList.map((data, i) => {
@@ -194,7 +195,9 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-							 
+												<div>
+											  {failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
+										  	</div>
 		                    <div className="col-md-12 text-right xs-mt-30">
 												{!$.isEmptyObject(hyperParameterData)?
 												<span>
