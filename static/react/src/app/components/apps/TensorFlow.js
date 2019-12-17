@@ -24,7 +24,6 @@ export class TensorFlow extends React.Component {
     }
 
     changeTextboxValue(item,e){
-      debugger
       var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
 
       this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
@@ -75,7 +74,7 @@ export class TensorFlow extends React.Component {
     
     var tfArray= store.getState().apps.tensorFlowInputs
     this.layerValidate(slectedLayer,tfArray)
-    
+
     // if(tfArray.length>0){
     //   var validationFail=false
     //   if(tfArray[tfArray.length-1].layer=="Dense"&&(tfArray[tfArray.length-1].activation==""||tfArray[tfArray.length-1].units=="")){
