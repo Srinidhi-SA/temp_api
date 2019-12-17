@@ -183,7 +183,7 @@ export class DataCard extends React.Component {
 							<li className="xs-pl-20 xs-pr-20 xs-pb-10">
 								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name,dataList.data)}>
 								<a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-								<i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+								<i className="fa fa-pencil"></i>&nbsp;&nbsp;Rename</a>
 								</span>:""}
 
 

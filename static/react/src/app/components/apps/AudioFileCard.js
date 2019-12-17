@@ -82,7 +82,7 @@ export class AudioFileCard extends React.Component {
                     <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleAudioRename.bind(this,data.slug,data.name)}>
                     <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>&nbsp;&nbsp; Rename</a>
+                    <i className="fa fa-pencil"></i>&nbsp;&nbsp; Rename</a>
                     </li>
                     <li onClick={this.handleAudioDelete.bind(this,data.slug)} >
                     <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
