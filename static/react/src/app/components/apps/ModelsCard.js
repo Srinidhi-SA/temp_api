@@ -157,7 +157,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 								{permissionDetails.rename_trainer == true ?
                             <span onClick={this.handleModelRename.bind(this,data.slug,data.name)}>
                             <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                            <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+                            <i className="fa fa-pencil"></i>&nbsp;&nbsp;Rename</a>
                             </span>:""}
                             {permissionDetails.remove_trainer == true ?
                             <span onClick={this.handleModelDelete.bind(this,data.slug)} >
@@ -166,17 +166,19 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 ? "Delete "
                                 : "Delete"}</a>
                             </span>:""}
+                            <div style={{display:'flex',justifyContent:'center',width: '100%'}}>
                             {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Model")}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
-                                </span>: ""}                           
-							<div className="clearfix"></div>
+                                </span>: ""} 
+                                     {(data.status == "SUCCESS" && data.mode ==="analyst")? 
+                                    <span onClick={this.handleEditModel.bind(this,data.dataset,data.slug)} style={{marginTop:'2%'}}>
+                                    <Link to={modelEditLink} id={data.slug} className="editButton btn-primary">
+                                    <i className="fa fa-edit"></i>&nbsp;&nbsp;{"Edit"}</Link>
+                                    </span>               
+                              : ""} 
+                              </div>                        
 							</li>   
-                            {(data.status == "SUCCESS" && data.mode ==="analyst")? 
-                                    <Link to={modelEditLink} id={data.slug} className="editButton">
-                                    <Button className="dropdown-item btn-primary" style={{marginLeft:"25px"}} onClick={this.handleEditModel.bind(this,data.dataset,data.slug)}>{"Edit"}</Button>     
-                                    </Link>                    
-                              : ""}                         
                             </ul>
                             {/*<!-- End Rename and Delete BLock  -->*/}
                             

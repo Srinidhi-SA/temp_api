@@ -1330,17 +1330,17 @@ PT_OPTIMIZER_SGD_PARAMETERS = [
 
 
 SKLEARN_ML_SUPPORTED_PT_OPTIMIZER_PARAMETERS = [
-    {"name": "Adadelta", "selected": True, "displayName": "Adadelta", "parameters": [obj for obj in PT_OPTIMIZER_Adadelta_PARAMETERS]},
-    {"name": "Adagrad", "selected": True, "displayName": "Adagrad", "parameters": [obj for obj in PT_OPTIMIZER_Adagrad_PARAMETERS]},
-    {"name": "Adam", "selected": True, "displayName": "Adam", "parameters": [obj for obj in PT_OPTIMIZER_Adam_PARAMETERS]},
-    {"name": "AdamW", "selected": True, "displayName": "AdamW", "parameters": [obj for obj in PT_OPTIMIZER_AdamW_PARAMETERS]},
-    {"name": "SparseAdam", "selected": True, "displayName": "SparseAdam", "parameters": [obj for obj in PT_OPTIMIZER_SparseAdam_PARAMETERS]},
-    {"name": "Adamax", "selected": True, "displayName": "Adamax", "parameters": [obj for obj in PT_OPTIMIZER_Adamax_PARAMETERS]},
-    {"name": "ASGD", "selected": True, "displayName": "ASGD", "parameters": [obj for obj in PT_OPTIMIZER_ASGD_PARAMETERS]},
-    {"name": "LBFGS", "selected": True, "displayName": "LBFGS", "parameters": [obj for obj in PT_OPTIMIZER_LBFGS_PARAMETERS]},
-    {"name": "RMSprop", "selected": True, "displayName": "RMSprop", "parameters": [obj for obj in PT_OPTIMIZER_RMSprop_PARAMETERS]},
-    {"name": "Rprop", "selected": True, "displayName": "Rprop", "parameters": [obj for obj in PT_OPTIMIZER_Rprop_PARAMETERS]},
-    {"name": "SGD", "selected": True, "displayName": "SGD", "parameters": [obj for obj in PT_OPTIMIZER_SGD_PARAMETERS]}
+    {"name": "Adadelta", "selected": False, "displayName": "Adadelta", "parameters": [obj for obj in PT_OPTIMIZER_Adadelta_PARAMETERS]},
+    {"name": "Adagrad", "selected": False, "displayName": "Adagrad", "parameters": [obj for obj in PT_OPTIMIZER_Adagrad_PARAMETERS]},
+    {"name": "Adam", "selected": False, "displayName": "Adam", "parameters": [obj for obj in PT_OPTIMIZER_Adam_PARAMETERS]},
+    {"name": "AdamW", "selected": False, "displayName": "AdamW", "parameters": [obj for obj in PT_OPTIMIZER_AdamW_PARAMETERS]},
+    {"name": "SparseAdam", "selected": False, "displayName": "SparseAdam", "parameters": [obj for obj in PT_OPTIMIZER_SparseAdam_PARAMETERS]},
+    {"name": "Adamax", "selected": False, "displayName": "Adamax", "parameters": [obj for obj in PT_OPTIMIZER_Adamax_PARAMETERS]},
+    {"name": "ASGD", "selected": False, "displayName": "ASGD", "parameters": [obj for obj in PT_OPTIMIZER_ASGD_PARAMETERS]},
+    {"name": "LBFGS", "selected": False, "displayName": "LBFGS", "parameters": [obj for obj in PT_OPTIMIZER_LBFGS_PARAMETERS]},
+    {"name": "RMSprop", "selected": False, "displayName": "RMSprop", "parameters": [obj for obj in PT_OPTIMIZER_RMSprop_PARAMETERS]},
+    {"name": "Rprop", "selected": False, "displayName": "Rprop", "parameters": [obj for obj in PT_OPTIMIZER_Rprop_PARAMETERS]},
+    {"name": "SGD", "selected": False, "displayName": "SGD", "parameters": [obj for obj in PT_OPTIMIZER_SGD_PARAMETERS]}
 ]
 
 PT_LOSS_CrossEntropyLoss_PARAMETERS = [
@@ -1627,13 +1627,13 @@ PT_LOSS_SoftMarginLoss_PARAMETERS = [
 ]
 
 SKLEARN_ML_SUPPORTED_PT_LOSS_PARAMS = [
-    {"name": "CrossEntropyLoss", "selected": True, "displayName": "CrossEntropyLoss", "parameters": [obj for obj in PT_LOSS_CrossEntropyLoss_PARAMETERS]},
-    {"name": "CTCLoss", "selected": True, "displayName": "CTCLoss", "parameters": [obj for obj in PT_LOSS_CTCLoss_PARAMETERS]},
-    {"name": "NLLLoss", "selected": True, "displayName": "NLLLoss", "parameters": [obj for obj in PT_LOSS_NLLLoss_PARAMETERS]},
-    {"name": "PoissonNLLLoss", "selected": True, "displayName": "PoissonNLLLoss", "parameters": [obj for obj in PT_LOSS_PoissonNLLLoss_PARAMETERS]},
-    {"name": "BCELoss", "selected": True, "displayName": "BCELoss", "parameters": [obj for obj in PT_LOSS_BCELoss_PARAMETERS]},
-    {"name": "BCEWithLogitsLoss", "selected": True, "displayName": "BCEWithLogitsLoss", "parameters": [obj for obj in PT_LOSS_BCEWithLogitsLoss_PARAMETERS]},
-    {"name": "SoftMarginLoss", "selected": True, "displayName": "SoftMarginLoss", "parameters": [obj for obj in PT_LOSS_SoftMarginLoss_PARAMETERS]}
+    {"name": "CrossEntropyLoss", "selected": False, "displayName": "CrossEntropyLoss", "parameters": [obj for obj in PT_LOSS_CrossEntropyLoss_PARAMETERS]},
+    {"name": "CTCLoss", "selected": False, "displayName": "CTCLoss", "parameters": [obj for obj in PT_LOSS_CTCLoss_PARAMETERS]},
+    {"name": "NLLLoss", "selected": False, "displayName": "NLLLoss", "parameters": [obj for obj in PT_LOSS_NLLLoss_PARAMETERS]},
+    {"name": "PoissonNLLLoss", "selected": False, "displayName": "PoissonNLLLoss", "parameters": [obj for obj in PT_LOSS_PoissonNLLLoss_PARAMETERS]},
+    {"name": "BCELoss", "selected": False, "displayName": "BCELoss", "parameters": [obj for obj in PT_LOSS_BCELoss_PARAMETERS]},
+    {"name": "BCEWithLogitsLoss", "selected": False, "displayName": "BCEWithLogitsLoss", "parameters": [obj for obj in PT_LOSS_BCEWithLogitsLoss_PARAMETERS]},
+    {"name": "SoftMarginLoss", "selected": False, "displayName": "SoftMarginLoss", "parameters": [obj for obj in PT_LOSS_SoftMarginLoss_PARAMETERS]}
 ]
 
 SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [

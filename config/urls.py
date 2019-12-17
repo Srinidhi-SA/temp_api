@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from api.views import home as home_view
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.views import password_reset, password_reset_done, password_reset_confirm, password_reset_complete, password_change, password_change_done
 # from api.helper import obtain_jwt_token_custom
 from api.user_helper import myJSONWebTokenSerializer
@@ -26,18 +27,17 @@ from rest_framework_jwt.views import \
     refresh_jwt_token, \
     obtain_jwt_token, \
     verify_jwt_token
-
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^reset-password/$', password_reset, name='password_reset'),
-    url(r'^reset-password/done$', password_reset_done, name='password_reset_done'),
+    url(r'^reset-password/$', password_reset, {'html_email_template_name': 'registration/password_reset_html_email.html'}, name='password_reset'),
+    #url(r'^reset-password/$', auth_views.PasswordResetView.as_view(html_email_template_name='registration/password_reset_html_email.html'), name='password_reset'),
+    url(r'^reset-password/done$', password_reset_done, {'template_name': 'registration/password_reset_html_done.html'}, name='password_reset_done'),
     url(r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$', password_reset_confirm,
         name='password_reset_confirm'),
     url(r'^reset-password/complete', password_reset_complete, name='password_reset_complete'),
-    url(r'^password-change/$', password_change, name='password_change'),
-    url(r'^password-change-done/$', password_change_done, name='password_change_done'),
     url(r'^api-token-auth/', ObtainJSONWebToken.as_view(serializer_class=myJSONWebTokenSerializer)),
     url(r'^api-token-refresh/', refresh_jwt_token),
     url(r'^api-token-verify/', verify_jwt_token),

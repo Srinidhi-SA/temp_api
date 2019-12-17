@@ -365,6 +365,16 @@ class TrainerSerlializer(serializers.ModelSerializer):
         else:
             ret['job_status'] = None
 
+        #Adding TrainAlgorithmMapping details
+        try:
+            TrainAlgoList = dict()
+            TrainAlgo_objects = TrainAlgorithmMapping.objects.filter(trainer_id = instance.id)
+            for index, i in enumerate(TrainAlgo_objects):
+                TrainAlgoList.update({index: {'model_id': i.name, 'slug': i.slug}})
+            ret['TrainAlgorithmMapping'] = TrainAlgoList
+        except Exception as err:
+            ret['TrainAlgorithmMapping'] = None
+            print err
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -1433,3 +1443,12 @@ class TrainerNameListSerializer(serializers.ModelSerializer):
             'slug',
             'name'
         )
+
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
+
+    """
+    Serializer for password change endpoint.
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)

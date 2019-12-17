@@ -15216,7 +15216,7 @@ a:hover .icon-container .icon { background:#e6e6e6; }
 a .icon-container .class { color: #333333;}
 a:hover .icon-container .class { color: #02988c;}
 .drp_cst_width { width:280px; }
-.drp_cst_width li span { width: 48%; display: block; float:left; margin-left: 2%; text-align: center; }
+.drp_cst_width li span { width: 48%; display: block; float:left; margin-left: 2% !important; text-align: center; }
 .drp_cst_width li span:first-child { margin-left:0; }
 .drp_cst_width li span a { display:block;  padding: 5px; border-radius:2px }
 
@@ -16397,12 +16397,16 @@ div#replaceValues {
 .shareButton{
    	width: 48%!important;
    	margin-top: 2%!important;
-    margin-left: 26%!important;
-    margin-right: 26%!important;
-    display: block;
 
 }
-
+.shareButtonCenter{
+	width: 48%!important;
+	margin-top: 2%!important;
+	left: 26%!important;
+	margin-right: 26%!important;
+	display: block;
+	position: relative;
+}
 .width-multisel{
 	width :100%;
 }
@@ -16587,4 +16591,9 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	float: right;
   padding-right: 30px;
   padding-top: 20px;
+}
+.mandate:after {
+	content: "*";
+	color: #ff0000;
+	font-size: 15px;
 }
