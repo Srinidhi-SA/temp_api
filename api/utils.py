@@ -11,11 +11,11 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps ,TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps, \
+    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
 
 from django.conf import settings
 import subprocess
-
 
 import json
 from pygments import highlight
@@ -25,8 +25,9 @@ from pygments.formatters import HtmlFormatter
 from django.utils.safestring import mark_safe
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,app_id= None):
-    config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,
+                            app_id=None):
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug, app_id)
 
     # try:
     if hasattr(settings, 'CELERY_SCRIPTS_DIR'):
@@ -68,9 +69,9 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         temp_config = copy.deepcopy(config)
         temp_config['job_config']['config'] = None
         command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
-                            # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
-                             driver_file,
-                             json.dumps(temp_config)]
+                         # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
+                         driver_file,
+                         json.dumps(temp_config)]
     else:
         command_array = ["spark-submit", "--master", "yarn", "--deploy-mode", "client", "--py-files", egg_file_path,
                          # "--packages com.amazonaws:aws-java-sdk-pom:1.10.34,org.apache.hadoop:hadoop-aws:2.6.0",
@@ -100,13 +101,11 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     #     print 'Error-->submit_job_through_yarn--->'
     #     print e
     #     pass
-        # from smtp_email import send_alert_through_email
-        # send_alert_through_email(e)
+    # from smtp_email import send_alert_through_email
+    # send_alert_through_email(e)
 
 
-
-
-def generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id=None):
+def generate_job_config(class_name, job_config, job_name, message_slug, slug, app_id=None):
     # here
     temp_config = JobserverDetails.get_config(slug=slug,
                                               class_name=class_name,
@@ -122,7 +121,7 @@ def generate_job_config(class_name, job_config, job_name, message_slug, slug,app
 
 
 def submit_job_through_job_server(slug, class_name, job_config, job_name=None, message_slug=None):
-    sjs = client.Client( JobserverDetails.get_jobserver_url())
+    sjs = client.Client(JobserverDetails.get_jobserver_url())
     app = sjs.apps.get(JobserverDetails.get_app())
     ctx = sjs.contexts.get(JobserverDetails.get_context())
 
@@ -131,7 +130,6 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     class_path = JobserverDetails.get_class_path(class_name)
 
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
-
 
     try:
         job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
@@ -145,12 +143,14 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     return job_url
 
 
-def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None,app_id=None):
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None, app_id=None):
     """Based on config, submit jobs either through YARN or job server"""
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name,app_id=app_id)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug, queue_name=queue_name,
+                                       app_id=app_id)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
+
 
 def convert_to_string(data):
     keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
@@ -213,7 +213,7 @@ class InsightSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         # ret['created_by'] = UserSerializer(instance.created_by).data
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         try:
@@ -230,17 +230,17 @@ class InsightSerializer(serializers.ModelSerializer):
         except:
             ret['initial_messages'] = None
 
-        if dataset_object.datasource_type=='fileUpload':
+        if dataset_object.datasource_type == 'fileUpload':
             PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             try:
                 from api.helper import convert_to_humanize
-                ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
-                if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
-                    ret['proceed_for_loading']=True
+                ret['file_size'] = convert_to_humanize(dataset_object.input_file.size)
+                if (dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status'] == 'SUCCESS'):
+                    ret['proceed_for_loading'] = True
                 else:
                     ret['proceed_for_loading'] = False
             except:
-                ret['file_size']=-1
+                ret['file_size'] = -1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
 
@@ -289,11 +289,11 @@ class InsightListSerializers(serializers.ModelSerializer):
 
         # ret['is_viewed'] = False
         try:
-            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
         ret['job_status'] = instance.job.status
         # permission details
         permission_details = get_permissions(
@@ -318,7 +318,6 @@ class InsightListSerializers(serializers.ModelSerializer):
         )
 
 
-
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
@@ -330,7 +329,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         try:
@@ -347,17 +346,17 @@ class TrainerSerlializer(serializers.ModelSerializer):
         except:
             ret['initial_messages'] = None
 
-        if dataset_object.datasource_type=='fileUpload':
+        if dataset_object.datasource_type == 'fileUpload':
             PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             try:
                 from api.helper import convert_to_humanize
-                ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
-                if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
-                    ret['proceed_for_loading']=True
+                ret['file_size'] = convert_to_humanize(dataset_object.input_file.size)
+                if (dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status'] == 'SUCCESS'):
+                    ret['proceed_for_loading'] = True
                 else:
                     ret['proceed_for_loading'] = False
             except:
-                ret['file_size']=-1
+                ret['file_size'] = -1
                 ret['proceed_for_loading'] = True
 
         if instance.job:
@@ -365,10 +364,10 @@ class TrainerSerlializer(serializers.ModelSerializer):
         else:
             ret['job_status'] = None
 
-        #Adding TrainAlgorithmMapping details
+        # Adding TrainAlgorithmMapping details
         try:
             TrainAlgoList = dict()
-            TrainAlgo_objects = TrainAlgorithmMapping.objects.filter(trainer_id = instance.id)
+            TrainAlgo_objects = TrainAlgorithmMapping.objects.filter(trainer_id=instance.id)
             for index, i in enumerate(TrainAlgo_objects):
                 TrainAlgoList.update({index: {'model_id': i.name, 'slug': i.slug}})
             ret['TrainAlgorithmMapping'] = TrainAlgoList
@@ -393,8 +392,6 @@ class TrainerSerlializer(serializers.ModelSerializer):
         instance.live_status = validated_data.get("live_status", instance.live_status)
         instance.status = validated_data.get("status", instance.status)
 
-
-
         instance.save()
 
         return instance
@@ -417,11 +414,11 @@ class TrainerListSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
-            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
         ret['job_status'] = instance.job.status
         # permission details
         permission_details = get_permissions(
@@ -431,10 +428,9 @@ class TrainerListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-
     class Meta:
         model = Trainer
-        exclude =  (
+        exclude = (
             'column_data_raw',
             'id',
             'config',
@@ -453,11 +449,11 @@ class ScoreSerlializer(serializers.ModelSerializer):
         ret['trainer_name'] = trainer_object.name
         ret['dataset'] = trainer_object.dataset.slug
         dataset = ret['dataset']
-        #dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         try:
@@ -473,18 +469,18 @@ class ScoreSerlializer(serializers.ModelSerializer):
             ret['initial_messages'] = json.loads(initial_messages)
         except:
             ret['initial_messages'] = None
-        #if dataset_object.datasource_type=='fileUpload':
-           # PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
-            #try:
-               # from api.helper import convert_to_humanize
-                #ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
-                #if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
-                 #   ret['proceed_for_loading']=True
-                #else:
-                 #   ret['proceed_for_loading'] = False
-            #except:
-             #   ret['file_size']=-1
-              #  ret['proceed_for_loading'] = True
+        # if dataset_object.datasource_type=='fileUpload':
+        # PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+        # try:
+        # from api.helper import convert_to_humanize
+        # ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+        # if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+        #   ret['proceed_for_loading']=True
+        # else:
+        #   ret['proceed_for_loading'] = False
+        # except:
+        #   ret['file_size']=-1
+        #  ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -527,11 +523,11 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
-            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
         if instance.job:
             ret['job_status'] = instance.job.status
         else:
@@ -545,7 +541,7 @@ class ScoreListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Score
-        exclude =  (
+        exclude = (
             'column_data_raw',
             'id',
             'config',
@@ -554,14 +550,12 @@ class ScoreListSerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.Serializer):
-
     class Meta:
         model = Job
         exclude = ("id", "created_at")
 
 
 class RoboSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Robo
         exclude = ("id", "config", "column_data_raw")
@@ -590,11 +584,10 @@ class RoboSerializer(serializers.ModelSerializer):
         ret['brief_info'] = instance.get_brief_info()
         if instance.dataset_analysis_done is False:
             if customer_dataset_object.analysis_done and \
-                historical_dataset_object.analysis_done and \
+                    historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
                 instance.dataset_analysis_done = True
                 instance.save()
-
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
@@ -605,7 +598,7 @@ class RoboSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
 
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         # try:
@@ -635,14 +628,14 @@ class RoboListSerializer(serializers.ModelSerializer):
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = market_dataset_object.slug
 
-        ret['dataset_name'] = market_dataset_object.name + ", " +\
+        ret['dataset_name'] = market_dataset_object.name + ", " + \
                               customer_dataset_object.name + ", " + \
                               historical_dataset_object.name
         ret['brief_info'] = instance.get_brief_info()
 
         if instance.analysis_done is False:
             if customer_dataset_object.analysis_done and \
-                historical_dataset_object.analysis_done and \
+                    historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
                 instance.analysis_done = True
                 instance.status = "SUCCESS"
@@ -652,23 +645,23 @@ class RoboListSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
         return ret
 
     class Meta:
         model = Robo
-        exclude =  (
+        exclude = (
             'id',
             'config',
             'data'
         )
 
-class StockDatasetSerializer(serializers.ModelSerializer):
 
+class StockDatasetSerializer(serializers.ModelSerializer):
     # name = serializers.CharField(max_length=100,
     #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
     #                              )
@@ -693,7 +686,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         # try:
@@ -722,7 +715,8 @@ class StockDatasetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StockDataset
-        exclude = ( 'id', 'updated_at')
+        exclude = ('id', 'updated_at')
+
 
 class StockDatasetListSerializer(serializers.ModelSerializer):
 
@@ -731,11 +725,11 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
 
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -743,8 +737,6 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         )
         ret['permission_details'] = permission_details
         return ret
-
-
 
     class Meta:
         model = StockDataset
@@ -761,9 +753,7 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         )
 
 
-
 class AudiosetSerializer(serializers.ModelSerializer):
-
     # name = serializers.CharField(max_length=100,
     #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
     #                              )
@@ -790,7 +780,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        if instance.viewed == False and instance.status=='SUCCESS':
+        if instance.viewed == False and instance.status == 'SUCCESS':
             instance.viewed = True
             instance.save()
         try:
@@ -806,7 +796,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Audioset
-        exclude = ( 'id', 'updated_at')
+        exclude = ('id', 'updated_at')
 
 
 class AudioListSerializer(serializers.ModelSerializer):
@@ -815,11 +805,11 @@ class AudioListSerializer(serializers.ModelSerializer):
         ret = super(AudioListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         try:
-            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+            ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Analyzing Target Variable"
+            ret['completed_message'] = "Analyzing Target Variable"
         return ret
 
     class Meta:
@@ -836,103 +826,105 @@ class AudioListSerializer(serializers.ModelSerializer):
             "file_remote"
         )
 
+
 class AppListSerializers(serializers.ModelSerializer):
-        def to_representation(self, instance):
-            ret = super(AppListSerializers, self).to_representation(instance)
-            ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data['username']
-            #add tags object
-            template_tags = settings.APPS_KEYWORD_TEMPLATE
-            if ret['tags'] != None:
-                tags = ret['tags'].split(",")
-                tag_object = []
-                for obj in template_tags:
-                    if obj['name'] in tags:
-                        tag_object.append(obj)
-                #print tag_object
-                ret['tags'] = tag_object
-                #add all keys list
-                ret['tag_keywords'] = self.add_all_tag_keywords(template_tags)
-
-                CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
-                CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
-                upper_case_name = ret['name'].upper()
-                # print upper_case_name
-                ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
-                ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
-            try:
-                ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
-                ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
-            except:
-                ret['completed_percentage'] = 0
-                ret['completed_message'] = "Analyzing Target Variable"
-            return ret
-
-        def add_all_tag_keywords(self,template_tags):
-            tag_keywords=[]
-            for key in template_tags:
-                tag_keywords.append(key['name'])
-            return tag_keywords
-
-        class Meta:
-            model = CustomApps
-            fields = '__all__'
-
-class AppSerializer(serializers.ModelSerializer):
-        def to_representation(self, instance):
-            # print "in app serializers"
-            ret = super(AppSerializer, self).to_representation(instance)
-            ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-            if ret['tags'] != None:
-                tags = ret['tags'].split(",")
-                tag_object = []
-
-                template_tags = settings.APPS_KEYWORD_TEMPLATE
-                for obj in template_tags:
-                    if obj['name'] in tags:
-                        tag_object.append(obj)
-
-                # print tag_object
-
-                ret['tags'] = tag_object
+    def to_representation(self, instance):
+        ret = super(AppListSerializers, self).to_representation(instance)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data['username']
+        # add tags object
+        template_tags = settings.APPS_KEYWORD_TEMPLATE
+        if ret['tags'] != None:
+            tags = ret['tags'].split(",")
+            tag_object = []
+            for obj in template_tags:
+                if obj['name'] in tags:
+                    tag_object.append(obj)
+            # print tag_object
+            ret['tags'] = tag_object
+            # add all keys list
+            ret['tag_keywords'] = self.add_all_tag_keywords(template_tags)
 
             CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
             CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
             upper_case_name = ret['name'].upper()
             # print upper_case_name
-            ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
-            ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
-            if instance.viewed == False and instance.status == 'SUCCESS':
-                instance.viewed = True
-                instance.save()
-            try:
-                message_list = get_message(instance)
+            ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
+            ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
+        try:
+            ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message'] = "Analyzing Target Variable"
+        return ret
 
-                if message_list is not None:
-                    message_list = [message_list[-1]]
-                ret['message'] = message_list
-            except:
-                ret['message'] = None
-            return ret
+    def add_all_tag_keywords(self, template_tags):
+        tag_keywords = []
+        for key in template_tags:
+            tag_keywords.append(key['name'])
+        return tag_keywords
+
+    class Meta:
+        model = CustomApps
+        fields = '__all__'
 
 
-        def update(self, instance, validated_data):
-            instance.app_id = validated_data.get("app_id", instance.app_id)
-            instance.displayName = validated_data.get("displayName", instance.displayName)
-            instance.description = validated_data.get("description", instance.description)
-            instance.status = validated_data.get("status", instance.status)
-            instance.tags = validated_data.get("tags", instance.tags)
-            instance.iconName = validated_data.get("iconName", instance.iconName)
-            instance.name = validated_data.get("name", instance.name)
-            instance.app_url = validated_data.get("app_url", instance.app_url)
-            instance.app_type = validated_data.get("app_type", instance.app_type)
+class AppSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        # print "in app serializers"
+        ret = super(AppSerializer, self).to_representation(instance)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        if ret['tags'] != None:
+            tags = ret['tags'].split(",")
+            tag_object = []
 
+            template_tags = settings.APPS_KEYWORD_TEMPLATE
+            for obj in template_tags:
+                if obj['name'] in tags:
+                    tag_object.append(obj)
+
+            # print tag_object
+
+            ret['tags'] = tag_object
+
+        CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
+        CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
+        upper_case_name = ret['name'].upper()
+        # print upper_case_name
+        ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
+        ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
+        if instance.viewed == False and instance.status == 'SUCCESS':
+            instance.viewed = True
             instance.save()
+        try:
+            message_list = get_message(instance)
 
-            return instance
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
+        except:
+            ret['message'] = None
+        return ret
 
-        class Meta:
-            model = CustomApps
-            fields = '__all__'
+    def update(self, instance, validated_data):
+        instance.app_id = validated_data.get("app_id", instance.app_id)
+        instance.displayName = validated_data.get("displayName", instance.displayName)
+        instance.description = validated_data.get("description", instance.description)
+        instance.status = validated_data.get("status", instance.status)
+        instance.tags = validated_data.get("tags", instance.tags)
+        instance.iconName = validated_data.get("iconName", instance.iconName)
+        instance.name = validated_data.get("name", instance.name)
+        instance.app_url = validated_data.get("app_url", instance.app_url)
+        instance.app_type = validated_data.get("app_type", instance.app_type)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = CustomApps
+        fields = '__all__'
+
 
 #
 # class RegressionSerlializer(serializers.ModelSerializer):
@@ -1038,10 +1030,11 @@ class AppSerializer(serializers.ModelSerializer):
 
 
 def correct_base_dir():
-    if  settings.BASE_DIR.endswith("config") or settings.BASE_DIR.endswith("config/"):
+    if settings.BASE_DIR.endswith("config") or settings.BASE_DIR.endswith("config/"):
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR
+
 
 def json_prettify_for_admin(json_val):
     response = json.dumps(json_val, sort_keys=True, indent=2)
@@ -1049,25 +1042,25 @@ def json_prettify_for_admin(json_val):
     response = highlight(response, JsonLexer(), formatter)
     style = "<style>" + formatter.get_style_defs() + "</style><br>"
 
-    return mark_safe(style + response +"<hr>")
+    return mark_safe(style + response + "<hr>")
 
 
 def get_permissions(user, model, type='retrieve'):
     if model == 'dataset':
         if type == 'retrieve':
             return {
-               'view_dataset': user.has_perm('api.view_dataset'),
-               'rename_dataset': user.has_perm('api.rename_dataset'),
-               # 'rename_dataset': get_random_true_false(),
-               # 'remove_dataset': get_random_true_false(),
-               'remove_dataset': user.has_perm('api.remove_dataset'),
-               'data_validation': user.has_perm('api.data_validation'),
-               'subsetting_dataset': user.has_perm('api.subsetting_dataset'),
-               'create_signal': user.has_perm('api.create_signal'),
-               'create_trainer': user.has_perm('api.create_trainer'),
-               'create_score': user.has_perm('api.create_score'),
+                'view_dataset': user.has_perm('api.view_dataset'),
+                'rename_dataset': user.has_perm('api.rename_dataset'),
+                # 'rename_dataset': get_random_true_false(),
+                # 'remove_dataset': get_random_true_false(),
+                'remove_dataset': user.has_perm('api.remove_dataset'),
+                'data_validation': user.has_perm('api.data_validation'),
+                'subsetting_dataset': user.has_perm('api.subsetting_dataset'),
+                'create_signal': user.has_perm('api.create_signal'),
+                'create_trainer': user.has_perm('api.create_trainer'),
+                'create_score': user.has_perm('api.create_score'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_dataset': user.has_perm('api.create_dataset') and user.has_perm('api.view_dataset'),
                 'upload_from_file': user.has_perm('api.upload_from_file'),
@@ -1079,43 +1072,46 @@ def get_permissions(user, model, type='retrieve'):
     if model == 'insight':
         if type == 'retrieve':
             return {
-               'view_signal': user.has_perm('api.view_signal'),
-               'rename_signal': user.has_perm('api.rename_signal'),
-               'remove_signal': user.has_perm('api.remove_signal'),
+                'view_signal': user.has_perm('api.view_signal'),
+                'rename_signal': user.has_perm('api.rename_signal'),
+                'remove_signal': user.has_perm('api.remove_signal'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_signal': user.has_perm('api.create_signal') and user.has_perm('api.view_signal'),
             }
     if model == 'trainer':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
-               'view_trainer': user.has_perm('api.view_trainer'),
-               'downlad_pmml': user.has_perm('api.downlad_pmml'),
-               'rename_trainer': user.has_perm('api.rename_trainer'),
-               'remove_trainer': user.has_perm('api.remove_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
+                'view_trainer': user.has_perm('api.view_trainer'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_trainer': user.has_perm('api.rename_trainer'),
+                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
     if model == 'score':
         if type == 'retrieve':
             return {
-               'view_score': user.has_perm('api.view_score'),
-               'download_score': user.has_perm('api.download_score') and user.has_perm('api.view_score'),
-               'rename_score': user.has_perm('api.rename_score'),
-               'remove_score': user.has_perm('api.remove_score'),
+                'view_score': user.has_perm('api.view_score'),
+                'download_score': user.has_perm('api.download_score') and user.has_perm('api.view_score'),
+                'rename_score': user.has_perm('api.rename_score'),
+                'remove_score': user.has_perm('api.remove_score'),
             }
-        if type=='list':
+        if type == 'list':
             return {
-                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
             }
     if model == 'regression':
         if type == 'retrieve':
             return {
-                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
                 'view_regression': user.has_perm('api.view_regression'),
                 'downlad_pmml': user.has_perm('api.downlad_pmml'),
                 'rename_regression': user.has_perm('api.rename_regression'),
@@ -1139,39 +1135,42 @@ def get_permissions(user, model, type='retrieve'):
     if model == 'trainalgorithmmapping':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
-               'view_trainer': user.has_perm('api.view_trainer'),
-               'downlad_pmml': user.has_perm('api.downlad_pmml'),
-               'rename_trainer': user.has_perm('api.rename_trainer'),
-               'remove_trainer': user.has_perm('api.remove_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
+                'view_trainer': user.has_perm('api.view_trainer'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_trainer': user.has_perm('api.rename_trainer'),
+                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
     if model == 'modeldeployment':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
-               'view_trainer': user.has_perm('api.view_trainer'),
-               'downlad_pmml': user.has_perm('api.downlad_pmml'),
-               'rename_trainer': user.has_perm('api.rename_trainer'),
-               'remove_trainer': user.has_perm('api.remove_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
+                'view_trainer': user.has_perm('api.view_trainer'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_trainer': user.has_perm('api.rename_trainer'),
+                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
     if model == 'datasetscoredeployment':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
-               'view_trainer': user.has_perm('api.view_trainer'),
-               'downlad_pmml': user.has_perm('api.downlad_pmml'),
-               'rename_trainer': user.has_perm('api.rename_trainer'),
-               'remove_trainer': user.has_perm('api.remove_trainer'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
+                    'api.view_trainer'),
+                'view_trainer': user.has_perm('api.view_trainer'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_trainer': user.has_perm('api.rename_trainer'),
+                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
-        if type=='list':
+        if type == 'list':
             return {
                 'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
@@ -1185,7 +1184,6 @@ def get_all_view_permission(user):
         'view_signal': user.has_perm('api.view_signal'),
         'view_dataset': user.has_perm('api.view_dataset'),
     }
-
 
 
 def get_random_true_false():
@@ -1206,6 +1204,7 @@ def name_check(name):
 def check_for_length(name):
     return True if len(name) < settings.MAX_LENGTH_OF_NAME else False
 
+
 def check_for_special_chars(name):
     import string
     KEEP_CHARACTERS_IN_NAME = string.digits + string.ascii_letters + settings.ALLOWED_SPECIAL_CHARS_IN_NAME
@@ -1214,8 +1213,10 @@ def check_for_special_chars(name):
             return False
     return True
 
+
 def check_for_empty(name):
     return False if len(name) == 0 else True
+
 
 # model management
 
@@ -1227,28 +1228,29 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(instance.created_by).data
         ret['model_id'] = ret['name']
         ################### Count for deployment ##########################
-        deployment_count_obj=ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=False)
-        ret['deployment'] =len(deployment_count_obj)
+        deployment_count_obj = ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=False)
+        ret['deployment'] = len(deployment_count_obj)
         ####################################################################
         ret['created_on'] = ret['created_at']
         raw_data = json.loads(instance.data)
-        ret['total_deployment']=ret['deployment']+len(ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=True))
-        #Fetching Data from ML
+        ret['total_deployment'] = ret['deployment'] + len(
+            ModelDeployment.objects.filter(deploytrainer_id=instance.id, deleted=True))
+        # Fetching Data from ML
         if raw_data is not dict():
             try:
-                list_data=(raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
+                list_data = (raw_data['listOfNodes'][0]['listOfCards'][0]['cardData'][1]['data']['tableData'])
                 value = [item[1] for item in list_data]
             except:
                 value = ['--', '--', '--', '--', '--']
         else:
             value = ['--', '--', '--', '--', '--']
-        key=['project_name','algorithm','training_status','accuracy','runtime']
-        ret.update(dict(zip(key,value)))
+        key = ['project_name', 'algorithm', 'training_status', 'accuracy', 'runtime']
+        ret.update(dict(zip(key, value)))
 
         ret['trainer'] = instance.trainer.slug
-        #return ret
+        # return ret
 
-        #Permission details
+        # Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1258,7 +1260,7 @@ class TrainAlgorithmMappingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrainAlgorithmMapping
-        exclude =  (
+        exclude = (
 
             'id',
             'config',
@@ -1275,9 +1277,9 @@ class TrainAlgorithmMappingSerializer(serializers.ModelSerializer):
         trainer_object = Trainer.objects.get(pk=trainer)
         ret['trainer'] = trainer_object.slug
         ret['created_by'] = UserSerializer(instance.created_by).data
-        #return ret
+        # return ret
 
-        #Permission details
+        # Permission details
         if 'request' in self.context:
             permission_details = get_permissions(
                 user=self.context['request'].user,
@@ -1300,13 +1302,13 @@ class DeploymentListSerializer(serializers.ModelSerializer):
         ret = super(DeploymentListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
-        #return ret
+        # return ret
         ################### Count for dataset and score #########################
-        dataset_score_count_obj=DatasetScoreDeployment.objects.filter(deployment_id=instance.id, deleted=False)
-        ret['deployment'] =len(dataset_score_count_obj)
+        dataset_score_count_obj = DatasetScoreDeployment.objects.filter(deployment_id=instance.id, deleted=False)
+        ret['deployment'] = len(dataset_score_count_obj)
         #########################################################################
 
-        #Permission details
+        # Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1317,7 +1319,7 @@ class DeploymentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ModelDeployment
-        exclude =  (
+        exclude = (
             'id',
             'config',
             'data',
@@ -1336,9 +1338,9 @@ class DeploymentSerializer(serializers.ModelSerializer):
         ret['deploytrainer'] = deployment_object.slug
         ret['periodic_task'] = instance.get_periodic_task_details()
         ret['created_by'] = UserSerializer(instance.created_by).data
-        #return ret
+        # return ret
 
-        #Permission details
+        # Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1354,15 +1356,16 @@ class DeploymentSerializer(serializers.ModelSerializer):
             # 'trainer'
         )
 
+
 class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(DatasetScoreDeploymentListSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(instance.created_by).data
-        #return ret
+        # return ret
 
-        #Permission details
+        # Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1372,13 +1375,13 @@ class DatasetScoreDeploymentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DatasetScoreDeployment
-        exclude =  (
+        exclude = (
 
             'id',
             'config',
-            #'data',
-            #'dataset',
-            #'score',
+            # 'data',
+            # 'dataset',
+            # 'score',
             'deployment'
         )
 
@@ -1408,9 +1411,9 @@ class DatasetScoreDeploymentSerializer(serializers.ModelSerializer):
             ret['score'] = score_object.slug
 
         ret['created_by'] = UserSerializer(instance.created_by).data
-        #return ret
+        # return ret
 
-        #Permission details
+        # Permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1432,9 +1435,9 @@ class TrainerNameListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(TrainerNameListSerializer, self).to_representation(instance)
         ret['count'] = TrainAlgorithmMapping.objects.filter(
-                                            trainer=instance.id,
-                                            deleted=False
-                                            ).count()
+            trainer=instance.id,
+            deleted=False
+        ).count()
         return ret
 
     class Meta:
@@ -1444,6 +1447,7 @@ class TrainerNameListSerializer(serializers.ModelSerializer):
             'name'
         )
 
+
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
 
@@ -1452,3 +1456,13 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super(UserListSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta:
+        model = User
+        fields = ("username", "id")
