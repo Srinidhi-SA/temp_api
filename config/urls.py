@@ -38,8 +38,6 @@ urlpatterns = [
     url(r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$', password_reset_confirm,
         name='password_reset_confirm'),
     url(r'^reset-password/complete', password_reset_complete, name='password_reset_complete'),
-    url(r'^password-change/$', password_change, name='password_change'),
-    url(r'^password-change-done/$', password_change_done, name='password_change_done'),
     url(r'^api-token-auth/', ObtainJSONWebToken.as_view(serializer_class=myJSONWebTokenSerializer)),
     url(r'^api-token-refresh/', refresh_jwt_token),
     url(r'^api-token-verify/', verify_jwt_token),
