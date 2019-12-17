@@ -309,7 +309,7 @@ export function getAllUsersList() {
     }
 }
 function fetchAllUsersList(token) {
-    return fetch(API+'/api/get_all_users/',{
+    return fetch(API+'/api/users/get_all_users/',{
         method: 'get',
         headers: getHeader(token)
     }).then( response => Promise.all([response, response.json()]));
