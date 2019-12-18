@@ -65,27 +65,35 @@ export class TensorFlow extends React.Component {
 
    let unitLength= document.getElementsByClassName("units").length
    let rateLength= document.getElementsByClassName("rate").length
-   if(unitLength > 0){
+
+   for(let i=0; i<unitLength; i++){
+    var unitFlag;
+    if(document.getElementsByClassName("units")[i].value==="")
+    unitFlag = true;
+   }
+
+   for(let i=0; i<rateLength; i++){
+    var rateFlag;
+    if(document.getElementsByClassName("rate")[i].value==="")
+    rateFlag = true;
+   }
+
       if ($(".activation option:selected").text().includes("--Select--")){
           this.props.dispatch(tensorValidateFlag(false));
           bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
       }
-      else if(document.getElementsByClassName("units")[unitLength-1].value ===""){
+      else if(unitFlag){
            this.props.dispatch(tensorValidateFlag(false));
            bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
      }
+      else if(rateFlag){
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+    }
         else{
              this.props.dispatch(tensorValidateFlag(true));
         }
-      }
-
-    if(rateLength > 0){
-      if( document.getElementsByClassName("rate")[rateLength-1].value ===""){
-        this.props.dispatch(tensorValidateFlag(false));
-        bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
-      }
-        
-      }
+     
   }
 
   addLayer=(slectedLayer)=>{
