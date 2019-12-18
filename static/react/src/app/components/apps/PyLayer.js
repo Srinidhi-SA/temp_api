@@ -6,6 +6,7 @@ import {statusMessages} from  "../../helpers/helper"
 import { RegressionParameter } from "./RegressionParameter";
 import {Button} from "react-bootstrap";
 import { setPyTorchLayer } from "../../actions/appActions";
+import { ReactBootstrapSlider } from "react-bootstrap-slider";
 
 @connect((store)=>{
     return{
@@ -22,7 +23,7 @@ export class PyLayer extends React.Component {
 
     componentWillMount(){
         let layer = "layer"+ ((this.props.id)-1);
-        let lyrDt = { "activation": "none", "dropout": "none", "batch": "none", "unit": "none", "bias": "none" }
+        let lyrDt = { "activation": "none", "dropout": "none", "batch": "none", "units": "none", "bias": "none" }
         this.props.dispatch(setPyTorchLayer(layer,lyrDt));
     }
 
@@ -38,6 +39,13 @@ export class PyLayer extends React.Component {
         let newLyrVal = this.props.pyTorchLayer[layerArry];
         newLyrVal[parameterData.name] = e.target.value;
         this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+    }
+
+    changeSliderValue(parameterData,e) {
+        let layerArry = "layer"+ ((this.props.id)-1);
+        let newLyrVal = this.props.pyTorchLayer[layerArry];
+        newLyrVal[parameterData.name] = e.target.value;
+        this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal));
     }
     
     renderPyTorchData(parameterData){
@@ -91,22 +99,22 @@ export class PyLayer extends React.Component {
                     );
                 }else if(parameterData.uiElemType == "slider"){
                     return(
-                        <div className="row">                            
-                        <div className="col-md-6">
-                            <div className="row">
-                            <div className="col-md-2">
-                                <div className="clr-alt4 gray-box">{parameterData.valueRange[0]}</div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="row">
+                                {/* <div className="col-md-2">
+                                    <div className="clr-alt4 gray-box">{parameterData.valueRange[0]}</div>
+                                </div>
+                                <div className="col-md-2">
+                                    <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
+                                </div> */}
+                                <div className="col-md-2">
+                                    <input type="number" className="form-control" value={parameterData.defaultVal} min={parameterData.valueRange[0]} max={parameterData.valueRange[1]} onChange={this.changeTextBoxValue.bind(this,parameterData)} />
+                                <div className="clearfix"></div>
+                                <div className="range-validate text-danger"></div>
+                                </div>
+                                </div>
                             </div>
-                            <div className="col-md-2">
-                                <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
-                            </div>
-                            <div className="col-md-2">
-                                <input type="text" className="form-control" value={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} */onChange={this.changeTextBoxValue.bind(this,parameterData)} />
-                            <div className="clearfix"></div>
-                            <div className="range-validate text-danger"></div>
-                            </div>
-                            </div>
-                        </div>
                         </div>
                     );
                 }
@@ -131,12 +139,12 @@ export class PyLayer extends React.Component {
         }
     }
     render() {
-        let randomNum = Math.random().toString(36).substr(2,8);
+        var cls =`row layerPanel ${this.props.id}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
                     return(
-                        <div class="form-group">
+                        <div class="row mb-20">
                             <label class="col-md-2 control-label read">{layerData.displayName}</label>
                             <label class="col-md-4 control-label read">{layerData.description}</label>
                             {lyr}
@@ -146,14 +154,16 @@ export class PyLayer extends React.Component {
                 }
             });
         return (
-            <div className="col-md-12">
-                <div className="row mb-20">
-                    <div class="form-group" id={this.props.id}>
+            <div class={cls}>
+                <div class="laye">
+                    <div class="layerHeader" id={this.props.id}>
                         Layer {this.props.id}
+                    </div>
+                    <div class="layerBody">
                         {renderPyTorchLayer}
                     </div>
                 </div>
-          </div>
+            </div>
         );
 
     }
