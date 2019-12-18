@@ -60,28 +60,35 @@ export class AppsModelDetail extends React.Component {
 			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
 		}
 		this.props.dispatch(getAppsAlgoList(1));
-
-	}
-	componentWillReceiveProps(newProps){
-		if(newProps.algoList.data != undefined){
-			let selAlgoList = newProps.algoList.data.filter(i=>i.trainer===this.props.modelSlug)
-			let noOfHeads = $(".sm-mb-20").length;
+		
+		let algoDt = this.props.modelSummary.TrainAlgorithmMapping;
+		let selAlgoList = Object.values(algoDt)
+		let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
-				let algorithmName = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
-				if($(".sm-mb-20")[i].parentNode.parentNode.children.length <= 2){
+				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
+				let algorithmName = ""
+				if(algoNam === "LOGISTICREGRESSION")
+					algorithmName = "LG"
+				else if(algoNam === "XGBOOST")
+					algorithmName = "XG"
+				else if(algoNam === "RANDOMFOREST")
+					algorithmName = "RF"
+				else if(algoNam === "NAIVEBAYES")
+					algorithmName = "NB"
+				else algorithmName = "NN"
+				
 					let info = document.createElement('a');
 					var att = document.createAttribute("class");
 					att.value = "summaryLink";
 					info.setAttributeNode(att);
 					info.innerText = "For More Info Click Here";
 
-					let sel = selAlgoList.filter(i=>(i.algorithm).replace(/ /g,'').toLocaleUpperCase() === algorithmName)
+					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName) )
 					info.href = (sel.length !=0)?
 					this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug):"#"
 					$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
-				}
 			}
-		}
+
 	}
 
   componentDidUpdate(){
