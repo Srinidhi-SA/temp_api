@@ -703,7 +703,7 @@ export function getAllSignalList() {
   }
 }
 function fetchAllSignalList(token) {
-  return fetch(API + '/api/get_all_signals/', {
+  return fetch(API + '/api/signals/get_all_signals/', {
       method: 'get',
       headers: getHeader(token)
   }).then( response => Promise.all([response, response.json()]));

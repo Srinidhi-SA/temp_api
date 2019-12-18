@@ -23,7 +23,7 @@ export default class Layer extends Component {
   
   myChangeHandler(item,e){
     let name = item.name;
-    let val = e.target.value;
+    let val = e.target.value === "--Select--"? null:e.target.value;
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
   }
   getOptions(item) {
@@ -61,8 +61,8 @@ export default class Layer extends Component {
               return (
    
                 <div className ="row mb-20">
-                <div class="form-group">
-                <label class={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
+                <div className="form-group">
+                <label className={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>
                 <div className="col-md-6">
                  <div className ="row">
@@ -80,13 +80,20 @@ export default class Layer extends Component {
    
     return ( 
       <div className={cls}>
-      <div class="laye">
-      <div class="layerHeader">
-      {this.props.layerType}
+      <div className="layer">
+      <div className="layerHeader">
+      {this.props.layerType} 
+      <i className="fa fa-chevron-down" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
+      </i>
       </div>
-      <div class="layerBody">
+      <div className="collapse in" id={`collapseExample${this.props.id}`}>
+       <div className="card card-body">
+       <div className="layerBody">
         {rendercontent}
         </div>
+     </div>
+    </div>
+     
       </div>
       </div>
     )
