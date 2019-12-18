@@ -85,7 +85,7 @@ export default class Layer extends Component {
       <div className="layer">
       <div className="layerHeader">
       {this.props.layerType} 
-      <i className="fa fa-chevron-down" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
+      <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
       </i>
       </div>
       <div className="collapse in" id={`collapseExample${this.props.id}`}>

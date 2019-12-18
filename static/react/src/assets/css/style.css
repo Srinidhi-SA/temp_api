@@ -16577,10 +16577,10 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	padding: 13px 10px;
 	font-size: 14px;
 	font-weight: 600;
-	margin-bottom: 10px
 }
 .layerBody{
-  padding: 10px 0px;
+	padding: 10px 0px;
+	padding-top: 20px;
 }
 .dtImage{
 	  display: inline-block;
@@ -16600,4 +16600,11 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .error{
 	color: #ff0000;
+}
+.layerHeader .fa-chevron-up{
+	float: right;
+} 
+
+.collapsed:before {
+	content: "\f078" !important;
 }
