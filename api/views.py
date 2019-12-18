@@ -46,8 +46,9 @@ from api.utils import \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
     DatasetScoreDeploymentListSerializer, \
-    TrainerNameListSerializer
-# RegressionSerlializer, \
+    TrainerNameListSerializer, \
+    ChangePasswordSerializer, UserListSerializer
+# RegressionSerlializer,
 # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
     TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
@@ -235,6 +236,21 @@ class SignalView(viewsets.ModelViewSet):
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
             print err
+
+    @list_route(methods=['get'])
+    def get_all_signals(self, request,  *args, **kwargs):
+        try:
+            queryset = Insight.objects.filter(
+                created_by=self.request.user,
+                deleted=False
+            )
+            serializer = InsightListSerializers(queryset, many=True, context={"request": self.request})
+            signalList = dict()
+            for index, i in enumerate(serializer.data):
+                signalList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            return JsonResponse({'allSignalList': signalList})
+        except Exception as err:
+            return JsonResponse({'message': str(e)})
 
 
 class TrainerView(viewsets.ModelViewSet):
@@ -609,6 +625,22 @@ class TrainerView(viewsets.ModelViewSet):
         except Exception as err:
             print err
             return JsonResponse({'message': 'Config not found.'})
+
+    @list_route(methods=['get'])
+    def get_all_models(self, request, *args, **kwargs):
+        try:
+            queryset = Trainer.objects.filter(
+                created_by=self.request.user,
+                app_id=request.GET['app_id'],
+                deleted=False
+            )
+            serializer = TrainerListSerializer(queryset, many=True, context={"request": self.request})
+            modelList = dict()
+            for index, i in enumerate(serializer.data):
+                modelList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            return JsonResponse({'allModelList': modelList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
 
 
 class ScoreView(viewsets.ModelViewSet):
@@ -6604,7 +6636,7 @@ def request_from_alexa(request):
             else:
                 return JsonResponse({'message': 'Invalid Email-id.'})
 
-
+"""
 def get_all_models(request):
     if request.method == 'GET':
         user_id = request.user.id
@@ -6634,7 +6666,7 @@ def get_all_users(request):
         for index, i in enumerate(users_obj):
             UsersList.update({index: {'name': i.username, 'Uid': i.id}})
         return JsonResponse({'allUsersList': UsersList})
-
+"""
 
 def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
     meta_data = json.loads(dataset_object.meta_data)
@@ -6730,3 +6762,67 @@ def dump_complete_messages(request, slug=None):
     except Exception as e:
         return JsonResponse({'result': "Failed"})
         print e
+
+
+"""
+Custom View to change password for requested user
+"""
+from rest_framework import status
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+
+
+class ChangePasswordView(UpdateAPIView):
+        """
+        An endpoint for changing password.
+        """
+        serializer_class = ChangePasswordSerializer
+        model = User
+        permission_classes = (IsAuthenticated,)
+
+        def get_object(self, queryset=None):
+            obj = self.request.user
+            return obj
+
+        def update(self, request, *args, **kwargs):
+            self.object = self.get_object()
+            serializer = self.get_serializer(data=request.data)
+
+            if serializer.is_valid():
+                # Check old password
+                if not self.object.check_password(serializer.data.get("old_password")):
+                    return Response({"message": ["Invalid old password."]}, status=status.HTTP_400_BAD_REQUEST)
+                # set_password also hashes the password that the user will get
+                self.object.set_password(serializer.data.get("new_password"))
+                self.object.save()
+                response = {
+                    'status': 'success',
+                    'code': status.HTTP_200_OK,
+                    'message': 'Password updated successfully',
+                    'data': {
+                        "Username": self.object.username,
+                        "Email": self.object.email
+                        }
+                }
+
+                return Response(response)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserView(viewsets.ModelViewSet):
+    serializer_class = UserListSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    @list_route(methods=['get'])
+    def get_all_users(self, request):
+        try:
+            queryset = User.objects.filter(~Q(is_active=False))
+            serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
+            UsersList = dict()
+            for index, i in enumerate(serializer.data):
+                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id')}})
+            return JsonResponse({'allUsersList': UsersList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})

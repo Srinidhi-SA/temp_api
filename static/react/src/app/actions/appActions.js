@@ -85,7 +85,7 @@ export function getAllModelList() {
   }
 }
 function fetchAllModelList(token) {
-  return fetch(API + '/api/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
+  return fetch(API + '/api/trainer/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
       method: 'get',
       headers: getHeader(token)
   }).then( response => Promise.all([response, response.json()]));

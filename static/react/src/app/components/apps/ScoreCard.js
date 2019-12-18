@@ -137,7 +137,7 @@ export class ScoreCard extends React.Component {
 						{permissionDetails.rename_score == true ?
                     <span onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
                     <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>
+                    <i className="fa fa-pencil"></i>
                     &nbsp;&nbsp;Rename</a>
                     </span>:""}
                     {permissionDetails.remove_score == true ?
