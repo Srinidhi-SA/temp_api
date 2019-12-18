@@ -81,7 +81,7 @@ export class AlgorithmSelection extends React.Component {
 
     render() {
         var algorithmData = this.props.manualAlgorithmData;
-        var algoClass = (this.props.currentAppId == 13) ? "col-md-3" : "col-md-algo";
+        var algoClass = "col-md-3";
         if (!$.isEmptyObject(algorithmData)){
             var pageData = "";
                 pageData = algorithmData.map((data,Index) =>{

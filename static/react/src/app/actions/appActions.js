@@ -1058,7 +1058,6 @@ export function updateScoreSlug(slug,sharedSlug) {
 }
 
 export function addTensorFlowArray(id,layerType,name,val) {
-  debugger;
     if(layerType==="Dense"){
      var  tensorFlowArray={
         "layer":"Dense",
@@ -1091,7 +1090,6 @@ export function addTensorFlowArray(id,layerType,name,val) {
 }
 
 export function updateTensorFlowArray(id,name,val) {
-  debugger;
   var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
   return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
 }
@@ -2479,6 +2477,9 @@ export function updateCrossValidationValue(val) {
 }
 export function reSetRegressionVariables() {
   return { type: "RESET_REGRESSION_VARIABLES" }
+}
+export function tensorValidateFlag(flag) {
+  return { type: "TENSOR_VALIDATE_FLAG",flag }
 }
 export function checkAtleastOneSelected() {
   let isSelected = false;

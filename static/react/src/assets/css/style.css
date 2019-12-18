@@ -16573,10 +16573,11 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   margin-right: 1%;
 }
 .layerHeader{
-  background-color: #e6e6e6;
-    padding: 18px 10px;
-    font-size: 15px;
-    font-weight: 500;
+	background-color: #e6e6e6;
+	padding: 13px 10px;
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 10px
 }
 .layerBody{
   padding: 10px 0px;
@@ -16596,4 +16597,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	content: "*";
 	color: #ff0000;
 	font-size: 15px;
+}
+.error{
+	color: #ff0000;
 }

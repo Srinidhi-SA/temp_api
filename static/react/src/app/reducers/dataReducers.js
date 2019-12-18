@@ -86,6 +86,7 @@ export default function reducer(state = {
   convertUsingBin: "false",
   modelEditconfig:"",
   topLevelData:{},
+  tensorValidateFlag: false,
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -112,6 +113,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "TENSOR_VALIDATE_FLAG":
+          {
+            return {
+              ...state,
+              tensorValidateFlag: action.flag,
+            }
+          }
+          break;
 
     case "DATA_LIST_ERROR":
       {
