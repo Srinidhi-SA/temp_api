@@ -12,6 +12,7 @@ import {statusMessages} from  "../../helpers/helper"
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         tensorValidateFlag: store.datasets.tensorValidateFlag,
+        datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value
     };
 })
 
@@ -71,7 +72,7 @@ export class TensorFlow extends React.Component {
       }
       else if(document.getElementsByClassName("units")[unitLength-1].value ===""){
            this.props.dispatch(tensorValidateFlag(false));
-           bootbox.alert(statusMessages("warning", "Please select Unit for dense layer.", "small_mascot"));
+           bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
      }
         else{
              this.props.dispatch(tensorValidateFlag(true));
@@ -81,11 +82,9 @@ export class TensorFlow extends React.Component {
     if(rateLength > 0){
       if( document.getElementsByClassName("rate")[rateLength-1].value ===""){
         this.props.dispatch(tensorValidateFlag(false));
-        bootbox.alert(statusMessages("warning", "Please select Rate for dropout layer.", "small_mascot"));
+        bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
       }
-        else{
-          this.props.dispatch(tensorValidateFlag(true));
-            }
+        
       }
   }
 
@@ -142,7 +141,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} value={item.acceptedValue} />
+                   <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} value={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
                 </div>
                 </div> 
                 </div>

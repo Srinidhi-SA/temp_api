@@ -16603,6 +16603,8 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .layerHeader .fa-chevron-up{
 	float: right;
+	padding: 2px;
+	cursor: pointer;
 } 
 
 .collapsed:before {
