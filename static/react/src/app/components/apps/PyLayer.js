@@ -23,7 +23,7 @@ export class PyLayer extends React.Component {
 
     componentWillMount(){
         let layer = "layer"+ ((this.props.id)-1);
-        let lyrDt = { "activation": "none", "dropout": "none", "batch": "none", "units": "none", "bias": "none" }
+        let lyrDt = { "activation": "none", "dropout": "none", "batchnormalisation": "none", "units_ip": "none","units_op": "none", "bias": "none" }
         this.props.dispatch(setPyTorchLayer(layer,lyrDt));
     }
 
@@ -102,12 +102,6 @@ export class PyLayer extends React.Component {
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="row">
-                                {/* <div className="col-md-2">
-                                    <div className="clr-alt4 gray-box">{parameterData.valueRange[0]}</div>
-                                </div>
-                                <div className="col-md-2">
-                                    <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
-                                </div> */}
                                 <div className="col-md-2">
                                     <input type="number" className="form-control" value={parameterData.defaultVal} min={parameterData.valueRange[0]} max={parameterData.valueRange[1]} onChange={this.changeTextBoxValue.bind(this,parameterData)} />
                                 <div className="clearfix"></div>

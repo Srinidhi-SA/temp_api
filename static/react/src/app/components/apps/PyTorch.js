@@ -72,54 +72,69 @@ export class PyTorch extends React.Component {
                                 <label class="col-md-2">{item[i].displayName}</label>
                                 <label class="col-md-4">{item[i].description}</label>
                                 <div class="col-md-1">
-                                    <input type="number" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item.defaultValue} min="0" max="100"/>
+                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100"/>
                                 </div>
                             </div>
                         );
                     break;
                 case "checkbox":
-                        var options = item[i].valueRange
-                        var selectedValue = ""
-                        var optionsTemp = []
-                        optionsTemp.push(<option value="none">--select--</option>)
-                        for (var prop in options) {
-                            if(options[prop].selected)
-                                selectedValue = options[prop].name;
-                            optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
-                        }
-                        arr1.push(<div class="form-group row">
-                                    <label class="col-md-2">{item[i].displayName}</label>
-                                    <label class="col-md-4">{item[i].description}</label>
-                                    <div>
-                                        <select ref={(el) => { this.eleSel = el }}>
-                                            {optionsTemp}
-                                        </select>
-                                    </div>
-                                </div>
-                                );
-                        break;
-                case "list":
-                            var options = item[i].defaultValue.map(i=>i.name)
-                            var selectedValue = ""
-                            var optionsTemp = []
-                            optionsTemp.push(<option value="none">--select--</option>)
-                            for (var prop in options) {
-                                if(options[prop].selected)
-                                    selectedValue = options[prop].name;
-                                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
-                            }
-                            arr1.push(<div class="form-group row">
-                                        <label class="col-md-2">{item[i].displayName}</label>
-                                        <label class="col-md-4">{item[i].description}</label>
-                                        <div>
-                                            <select ref={(el) => { this.eleSel = el }}>
-                                                {optionsTemp}
-                                            </select>
+                    switch(item[i].name){
+                        case "reduction":
+                                var options = item[i].valueRange
+                                var selectedValue = ""
+                                var optionsTemp = []
+                                optionsTemp.push(<option value="none">--select--</option>)
+                                options.map(k => {
+                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                })
+                                arr1.push(<div class="form-group row">
+                                            <label class="col-md-2">{item[i].displayName}</label>
+                                            <label class="col-md-4">{item[i].description}</label>
+                                            <div class = "col-md-3">
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }}>
+                                                    {optionsTemp}
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
+                                        );
+                            break;
+                            case "betas":
+                                    arr1.push(
+                                        <div class="form-group row">
+                                            <label class="col-md-2">{item[i].displayName}</label>
+                                            <label class="col-md-4">{item[i].description}</label>
+                                            <div>
+                                                <div class="col-md-1">
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1"/>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1"/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     );
-                    break;
-                default : break;
+                                break;
+                        default:
+                                var options = item[i].defaultValue.map(i=>i.name)
+                                var selectedValue = ""
+                                var optionsTemp = []
+                                optionsTemp.push(<option value="none">--select--</option>)
+                                options.map(k => {
+                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                })
+                                arr1.push(<div class="form-group row">
+                                            <label class="col-md-2">{item[i].displayName}</label>
+                                            <label class="col-md-4">{item[i].description}</label>
+                                            <div class = "col-md-3">
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }}>
+                                                    {optionsTemp}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        );
+                        break;
+                    }
+                break;
             }
         }
         return arr1;
@@ -159,8 +174,8 @@ export class PyTorch extends React.Component {
                         <div class="clearfix"></div>
                     </div>
                     {/* <div>
-                        {(selectedValue != "Linear" && selectedValue != "")?
-                            <div>
+                        {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
+                            <div className = "col-md-12">
                                 {this.getsubParams(options.filter(i=>i.name===selectedValue)[0].parameters)}
                             </div>
                         :""}
@@ -173,11 +188,15 @@ export class PyTorch extends React.Component {
                     switch(parameterData.displayName){
                         case "Batch Size":
                             var type = "number";
-                            var classN= "form-control batchCls";
+                            var classN = "form-control batchCls";
+                            var min = parameterData.valueRange[0];
+                            var max = parameterData.valueRange[1];
                             break;
                         case "Number of Epochs":
                             var type = "number";
                             classN = "form-control epochsCls"
+                            min = 0;
+                            max = Number.POSITIVE_INFINITY;
                             break;
                         default:
                             classN= "form-control";
@@ -189,30 +208,10 @@ export class PyTorch extends React.Component {
                             <label class="col-md-2 control-label read">{parameterData.displayName}</label>
                             <label class="col-md-4 control-label read">{parameterData.description}</label>
                             <div class="col-md-1">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min="0" max="100"/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min={min} max={max}/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
                             </div>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
-                        </div>
-                    );
-                }else if(parameterData.uiElemType == "slider"){
-                    return(
-                        <div className="row">                            
-                        <div className="col-md-6">
-                            <div className="row">
-                            <div className="col-md-2">
-                                <div className="clr-alt4 gray-box">{parameterData.valueRange[0]}</div>
-                            </div>
-                            <div className="col-md-2">
-                                <div className="clr-alt4 gray-box">{parameterData.valueRange[1]}</div>
-                            </div>
-                            <div className="col-md-2">
-                                <input type="text" className="form-control" defaultValue={parameterData.defaultVal} /*onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)}*/ onChange={this.changeTextboxValue.bind(this,parameterData)} />
-                            <div className="clearfix"></div>
-                            <div className="range-validate text-danger"></div>
-                            </div>
-                            </div>
-                        </div>
                         </div>
                     );
                 }
@@ -243,7 +242,7 @@ export class PyTorch extends React.Component {
         let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
             if(pydata.display){
                 const pyTorchparams = this.renderPyTorchData(pydata);
-                let formClassName = "form-group "+pydata.name
+                var formClassName =`form-group ${pydata.name}`
                 return(
                     <div class={formClassName}>
                         {pyTorchparams}
