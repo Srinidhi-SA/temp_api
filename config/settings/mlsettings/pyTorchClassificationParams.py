@@ -607,10 +607,22 @@ PYTORCH_LINEAR_PARAMETERS = [
         "allowedDataType": ["string"]
     },
     {
-        "name": "units",
-        "displayName": "Units",
-        "description": "Units parameter for the hidden layer.",
-        "defaultValue": 100,
+        "name": "units_ip",
+        "displayName": "Input Units",
+        "description": "Input Units parameter for the hidden layer.",
+        "defaultValue": None,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+    {
+        "name": "units_op",
+        "displayName": "Output Units",
+        "description": "Output Units parameter for the hidden layer.",
+        "defaultValue": None,
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
