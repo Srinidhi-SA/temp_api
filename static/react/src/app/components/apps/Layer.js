@@ -23,7 +23,7 @@ export default class Layer extends Component {
   
   myChangeHandler(item,e){
     let name = item.name;
-    let val = e.target.value;
+    let val = e.target.value === "--Select--"? null:e.target.value;
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
   }
   getOptions(item) {
