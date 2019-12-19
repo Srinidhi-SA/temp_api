@@ -22,9 +22,8 @@ export class PyLayer extends React.Component {
     }
 
     componentWillMount(){
-        let layer = this.props.id
-        let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
-        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
+        // let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
+        // this.props.dispatch(setPyTorchLayer(1,lyrDt));
     }
 
     selectHandleChange(parameterData,e){

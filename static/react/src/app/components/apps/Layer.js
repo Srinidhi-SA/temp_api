@@ -24,7 +24,14 @@ export default class Layer extends Component {
   myChangeHandler(item,e){
     let name = item.name;
     let val = e.target.value === "--Select--"? null:e.target.value;
+    if(name=="units" && val<1){
+    e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+    }else if(name=="rate" &&val<1){
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+    }else{
+    e.target.parentElement.lastElementChild.innerHTML=""
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
+    }
   }
   getOptions(item) {
 
