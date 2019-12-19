@@ -4,8 +4,8 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData } from "../../actions/appActions";
-
+import { updateAlgorithmData,pytorchValidateFlag } from "../../actions/appActions";
+import {statusMessages} from  "../../helpers/helper"
 @connect((store)=>{
     return{
         algorithmData:store.apps.regression_algorithm_data,
@@ -32,6 +32,24 @@ export class PyTorch extends React.Component {
             addLayer:true,
             idLayer:this.state.idLayer.concat([newLayer])
         });
+    }
+
+    handleClick(){
+        if ($(".Loss option:selected").text().includes("--Select--")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select Loss.", "small_mascot"));
+        }
+        else if($(".Optimizer option:selected").text().includes("--Select--")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select Optimizer.", "small_mascot"));
+        }
+        else{
+            this.props.dispatch(pytorchValidateFlag(true));
+       }
+
+        if(store.getState().datasets.pytorchValidateFlag){
+            this.handleAddLayer();
+            }
     }
 
     addSubParam(parameterData,e){
@@ -99,7 +117,7 @@ export class PyTorch extends React.Component {
                                 var options = item[i].valueRange
                                 var selectedValue = ""
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="none">--select--</option>)
+                                optionsTemp.push(<option value="none">--Select--</option>)
                                 options.map(k => {
                                     optionsTemp.push(<option value={k} > {k}</option>)
                                 })
@@ -134,7 +152,7 @@ export class PyTorch extends React.Component {
                                 var options = item[i].defaultValue.map(i=>i.name)
                                 var selectedValue = ""
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="none">--select--</option>)
+                                optionsTemp.push(<option value="none">--Select--</option>)
                                 options.map(k => {
                                     optionsTemp.push(<option value={k} > {k}</option>)
                                 })
@@ -160,9 +178,10 @@ export class PyTorch extends React.Component {
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue
+                var mandateField= ["Loss","Optimizer"]
                 var selectedValue = ""
                 var optionsTemp = []
-                parameterData.displayName!= "Layer" && optionsTemp.push(<option value="none">--select--</option>)
+                parameterData.displayName!= "Layer" && optionsTemp.push(<option value="none">--Select--</option>)
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
@@ -173,14 +192,14 @@ export class PyTorch extends React.Component {
                     <div>
                     <div>
                         {parameterData.displayName === "Layer"?
-                        <div style={{cursor:'pointer',display:'inline-block','margin-left': '100px'}} onClick={this.handleAddLayer.bind(this)}>
+                        <div style={{cursor:'pointer',display:'inline-block','margin-left': '100px'}} onClick={this.handleClick.bind(this)}>
                             <span className="addLayer">
-                                <i class="fa fa-plus" style={{color: '#fff'}}></i>
+                                <i className="fa fa-plus" style={{color: '#fff'}}></i>
                             </span>
                             <span className="addLayerTxt">Add Layer</span>
                         </div>
                         :""}
-                        <label class="col-md-2 control-label read">{parameterData.displayName}</label>
+                        <label className={mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                         <label class="col-md-4 control-label read">{parameterData.description}</label>
                         <div class = "col-md-3">
                             <select ref={(el) => { this.eleSel = el }} className= {`form-control ${parameterData.displayName}`} onChange={this.selectHandleChange.bind(this,parameterData)}>

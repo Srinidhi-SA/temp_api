@@ -2490,6 +2490,9 @@ export function reSetRegressionVariables() {
 export function tensorValidateFlag(flag) {
   return { type: "TENSOR_VALIDATE_FLAG",flag }
 }
+export function pytorchValidateFlag(flag) {
+  return { type: "PYTORCH_VALIDATE_FLAG",flag }
+}
 export function checkAtleastOneSelected() {
   let isSelected = false;
   let algorithmData = store.getState().apps.regression_algorithm_data_manual;
