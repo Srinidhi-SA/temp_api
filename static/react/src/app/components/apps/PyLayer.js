@@ -30,9 +30,12 @@ export class PyLayer extends React.Component {
     selectHandleChange(parameterData,e){
         let layerArry = "layer"+ ((this.props.id)-1);
         if(parameterData.name === "activation" || parameterData.name === "batchnormalisation"){
-            let newLyrVal = this.props.pyTorchLayer[layerArry].parameterData.name
-            newLyrVal = e.target.value;
-            this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+            let layerDt = this.props.pyTorchLayer[layerArry];
+            if(layerDt[parameterData.name].name != e.target.value){
+                layerDt[parameterData.name] = ""
+            }
+            layerDt[parameterData.name].name = e.target.value;
+            this.props.dispatch(setPyTorchLayer(layerArry,layerDt,parameterData.name))
         }else{
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = e.target.value;
@@ -51,10 +54,9 @@ export class PyLayer extends React.Component {
 
     setLayerSubParams(subparameterData,defaultParamName,e){
         let layerArry = "layer"+ ((this.props.id)-1);
-        let newsubLyrVal = this.props.pyTorchLayer[layerArry][defaultParamName];
-        let newValue = [];
-        newValue[subparameterData.name] = e.target.value;
-        this.props.dispatch(setPyTorchLayer(layerArry,newValue));
+        let newsubLyrVal = this.props.pyTorchLayer[layerArry];
+        newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
+        this.props.dispatch(setPyTorchLayer(layerArry,newsubLyrVal));
     }
 
     changeSliderValue(parameterData,e) {
