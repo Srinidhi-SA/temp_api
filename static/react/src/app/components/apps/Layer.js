@@ -29,11 +29,12 @@ export default class Layer extends Component {
   getOptions(item) {
 
     var arr = item.defaultValue.map(j=>j.displayName);
+    var cls= `form-control ${item.name}`
     arr.unshift("--Select--")
     var optionsHtml = arr.map(k => {
         return <option value={k} > {k}</option>
     })
-    return <select className="form-control" onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>
+    return <div className= {`${item.name}`}><select className= {cls} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
   
   render() { 
@@ -50,7 +51,7 @@ export default class Layer extends Component {
                  <div className ="row">
                  <div className="col-md-6">
                   {this.getOptions(item)}
-                  </div>
+                 </div>
                   </div>
                    </div>
                 </div>
@@ -66,8 +67,9 @@ export default class Layer extends Component {
                 <label className="col-md-4">{item.description}</label>
                 <div className="col-md-6">
                  <div className ="row">
-                 <div className="col-md-2">
-                   <input type="number" className="form-control"  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
+                 <div className= "col-md-2">
+                   <input type="number" className= {`form-control ${item.name}`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
+                   <div className="error"></div>
                    </div>
                 </div> 
                 </div>
@@ -83,7 +85,7 @@ export default class Layer extends Component {
       <div className="layer">
       <div className="layerHeader">
       {this.props.layerType} 
-      <i className="fa fa-chevron-down" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
+      <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
       </i>
       </div>
       <div className="collapse in" id={`collapseExample${this.props.id}`}>

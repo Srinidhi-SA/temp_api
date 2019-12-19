@@ -587,6 +587,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "PyTorchLayers" : store.getState().apps.pyTorchLayer,
       "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
@@ -2466,6 +2467,14 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   return { type: "UPDATE_REGRESSION_ALGORITHM_DATA", newAlgorithm }
 
 }
+export function setPyTorchLayer(layerNum,lyrDt,parameterName){
+  return {
+    type: "SET_PYTORCH_LAYER",
+    layerNum,
+    lyrDt,
+    parameterName,
+  }
+}
 export function setDefaultAutomatic(data) {
   return { type: "SET_REGRESSION_DEFAULT_AUTOMATIC", data }
 }
@@ -2477,6 +2486,9 @@ export function updateCrossValidationValue(val) {
 }
 export function reSetRegressionVariables() {
   return { type: "RESET_REGRESSION_VARIABLES" }
+}
+export function tensorValidateFlag(flag) {
+  return { type: "TENSOR_VALIDATE_FLAG",flag }
 }
 export function checkAtleastOneSelected() {
   let isSelected = false;

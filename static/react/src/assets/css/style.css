@@ -16573,13 +16573,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   margin-right: 1%;
 }
 .layerHeader{
-  background-color: #e6e6e6;
-    padding: 18px 10px;
-    font-size: 15px;
-    font-weight: 500;
+	background-color: #e6e6e6;
+	padding: 13px 10px;
+	font-size: 14px;
+	font-weight: 600;
 }
 .layerBody{
-  padding: 10px 0px;
+	padding: 10px 0px;
+	padding-top: 20px;
 }
 .dtImage{
 	  display: inline-block;
@@ -16596,4 +16597,16 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	content: "*";
 	color: #ff0000;
 	font-size: 15px;
+}
+.error{
+	color: #ff0000;
+}
+.layerHeader .fa-chevron-up{
+	float: right;
+	padding: 2px;
+	cursor: pointer;
+} 
+
+.collapsed:before {
+	content: "\f078" !important;
 }
