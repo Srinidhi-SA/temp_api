@@ -26,6 +26,12 @@ export class TensorFlow extends React.Component {
       }
     }
 
+    componentDidMount(){
+      console.log("component did mount")
+      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
+      this.props.dispatch(updateAlgorithmData(algorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
+
+    }
     changeTextboxValue(item,e){
       let name = item.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
@@ -172,7 +178,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
+                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
                    <div className="error"></div>
                 </div>
                 </div> 
