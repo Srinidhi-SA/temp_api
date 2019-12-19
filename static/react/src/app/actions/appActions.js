@@ -2467,11 +2467,12 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   return { type: "UPDATE_REGRESSION_ALGORITHM_DATA", newAlgorithm }
 
 }
-export function setPyTorchLayer(layerNum,lyrDt){
+export function setPyTorchLayer(layerNum,lyrDt,parameterName){
   return {
     type: "SET_PYTORCH_LAYER",
     layerNum,
-    lyrDt
+    lyrDt,
+    parameterName,
   }
 }
 export function setDefaultAutomatic(data) {

@@ -16610,3 +16610,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .collapsed:before {
 	content: "\f078" !important;
 }
+.Layer {
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
+}
+
+/* For IE10 */
+.Layer::-ms-expand {
+  display: none;
+}

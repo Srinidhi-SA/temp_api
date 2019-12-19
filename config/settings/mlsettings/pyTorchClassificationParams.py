@@ -1709,7 +1709,7 @@ SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [
         "name": "number_of_epochs",
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
-        "defaultValue": 0,
+        "defaultValue": 100,
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "number",
