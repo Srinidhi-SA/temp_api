@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData,pytorchValidateFlag } from "../../actions/appActions";
+import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag } from "../../actions/appActions";
 import {statusMessages} from  "../../helpers/helper"
 @connect((store)=>{
     return{
@@ -13,6 +13,7 @@ import {statusMessages} from  "../../helpers/helper"
         pyTorchLayer:store.apps.pyTorchLayer,
         dataPreview:store.datasets.dataPreview,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
+        pyTorchSubParams:store.apps.pyTorchSubParams,
     }
 })
 
@@ -22,11 +23,18 @@ export class PyTorch extends React.Component {
         this.state = {
             addLayer : false,
             idLayer : [],
-            noOfRows : this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0]
         }
     }
 
+    componentWillMount(){
+        let subParamDt = { "loss": {"loss":"none"}, "optimizer": {"optimizer":"none"}, "batch_size": this.props.datasetRow-1, "number_of_epochs": 100 }
+        this.props.dispatch(setPyTorchSubParams(subParamDt));
+    }
+
     handleAddLayer(){
+        let layer = Object.keys(this.props.pyTorchLayer).length+1
+        let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
+        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
         const newLayer = this.state.idLayer.length + 1
         this.setState({
             addLayer:true,
@@ -52,27 +60,17 @@ export class PyTorch extends React.Component {
             }
     }
 
-    addSubParam(parameterData,e){
-        if(parameterData.name === "loss"){
-            let subLyr = "Nothing";
-            subLyr = parameterData.defaultValue.filter(i=>i.name === e.target.value)[0].parameters.map(subParamData=>{
-                if(subParamData.display){
-                    const lossparams = this.renderPyTorchData(subParamData);
-                    return(
-                        <div>
-                            <label class="col-md-2 control-label read">{subParamData.displayName}</label>
-                            <label class="col-md-4 control-label read">{subParamData.description}</label>
-                            {lossparams}
-                            <div class="clearfix"></div>
-                        </div>
-    
-                    );
-                }
-            })
-        }
-    }
-
     selectHandleChange(parameterData,e){
+        if(parameterData.name === "loss" || parameterData.name === "optimizer"){
+            let subParamDt = this.props.pyTorchSubParams;
+            if(parameterData.name === "loss")
+                subParamDt[parameterData.name] = {"loss":"none"}
+            else 
+                subParamDt[parameterData.name] = {"optimizer":"none"}
+            let subParam = subParamDt[parameterData.name];
+            subParam[parameterData.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamDt));
+        }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
@@ -88,14 +86,51 @@ export class PyTorch extends React.Component {
       else{
         e.target.parentElement.lastElementChild.innerHTML = "" 
       }
+      if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
+            let subParamArry = this.props.pyTorchSubParams;
+            subParamArry[parameterData.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+      }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
-    setSubValues(data,e){
-
+    setSubValues(data,parameterData,e){
+        if(parameterData === "loss"){
+            let subParamArry = this.props.pyTorchSubParams;
+            let selectedPar = subParamArry["loss"];
+            selectedPar[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }else if(parameterData === "optimizer"){
+            let subParamArry = this.props.pyTorchSubParams;
+            let selectedPar = subParamArry["optimizer"];
+            selectedPar[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }else{
+            let subParamArry = this.props.pyTorchSubParams;
+            subParamArry[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }
     }
 
-    getsubParams(item) {
+    setChangeSubValues(data,parameterData,e){
+        if(parameterData === "loss"){
+            let subParamArry = this.props.pyTorchSubParams;
+            let selectedPar = subParamArry["loss"];
+            selectedPar[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }else if(parameterData === "optimizer"){
+            let subParamArry = this.props.pyTorchSubParams;
+            let selectedPar = subParamArry["optimizer"];
+            selectedPar[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }else{
+            let subParamArry = this.props.pyTorchSubParams;
+            subParamArry[data.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }
+    }
+
+    getsubParams(item,parameterData) {
         var arr1 = [];
         var arr2 = [];
         for(var i=0;i<item.length;i++){
@@ -106,7 +141,7 @@ export class PyTorch extends React.Component {
                                 <label class="col-md-2">{item[i].displayName}</label>
                                 <label class="col-md-4">{item[i].description}</label>
                                 <div class="col-md-1">
-                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100" onChange={this.setSubValues.bind(this,item[i])}/>
+                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                 </div>
                             </div>
                         );
@@ -125,7 +160,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i])} >
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -139,10 +174,10 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1" onChange={this.setSubValues.bind(this,item[i],parameterData)}/>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1" onChange={this.setSubValues.bind(this,item[i],parameterData)}/>
                                                 </div>
                                             </div>
                                         </div>
@@ -160,7 +195,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={setSubValues.bind(this,item[i])}>
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -211,7 +246,7 @@ export class PyTorch extends React.Component {
                     <div>
                         {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
                             <div className = "col-md-12">
-                                {this.getsubParams(options.filter(i=>i.name===selectedValue)[0].parameters)}
+                                {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)}
                             </div>
                         :""}
                     </div>
@@ -241,7 +276,7 @@ export class PyTorch extends React.Component {
                             <label class="col-md-2 control-label read">{parameterData.displayName}</label>
                             <label class="col-md-4 control-label read">{parameterData.description}</label>
                             <div class="col-md-1">
-                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.acceptedValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
                                 <div className="error"></div>
                             </div>
                             <div className="clearfix"></div>
