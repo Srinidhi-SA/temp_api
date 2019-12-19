@@ -1476,7 +1476,7 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "displayName": "Batch Size",
         "description": "The number of training examples in one Forward/Backward Pass.",
         "defaultValue": 0,
-        "acceptedValue": None,
+        "acceptedValue": 100,
         "valueRange": None,
         "paramType": "number",
         "uiElemType": "textBox",

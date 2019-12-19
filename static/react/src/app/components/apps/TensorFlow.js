@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {updateAlgorithmData, tensorValidateFlag} from "../../actions/appActions";
-import Layer from './Layer'
-import {statusMessages} from  "../../helpers/helper"
+import Layer from './Layer';
+import {statusMessages} from  "../../helpers/helper";
 
 
 @connect((store) => {
@@ -27,9 +27,21 @@ export class TensorFlow extends React.Component {
     }
 
     changeTextboxValue(item,e){
+      let name = item.name;
+      let val = e.target.value === "--Select--"? null:e.target.value;
+      if(name=="number_of_epochs" && val<1){
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+      }
+      else if(name=="batch_size" && (val < 0 ) || (val > this.props.datasetRow-1)){
+        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
+      else{
+        e.target.parentElement.lastElementChild.innerHTML = "" 
+      }
       var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
       this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
   }
+  
     handleSelectBox(item,e){
       var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
       this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
@@ -65,27 +77,35 @@ export class TensorFlow extends React.Component {
 
    let unitLength= document.getElementsByClassName("units").length
    let rateLength= document.getElementsByClassName("rate").length
-   if(unitLength > 0){
+
+   for(let i=0; i<unitLength; i++){
+    var unitFlag;
+    if(document.getElementsByClassName("units")[i].value==="")
+    unitFlag = true;
+   }
+
+   for(let i=0; i<rateLength; i++){
+    var rateFlag;
+    if(document.getElementsByClassName("rate")[i].value==="")
+    rateFlag = true;
+   }
+
       if ($(".activation option:selected").text().includes("--Select--")){
           this.props.dispatch(tensorValidateFlag(false));
           bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
       }
-      else if(document.getElementsByClassName("units")[unitLength-1].value ===""){
+      else if(unitFlag){
            this.props.dispatch(tensorValidateFlag(false));
            bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
      }
+      else if(rateFlag){
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+    }
         else{
              this.props.dispatch(tensorValidateFlag(true));
         }
-      }
-
-    if(rateLength > 0){
-      if( document.getElementsByClassName("rate")[rateLength-1].value ===""){
-        this.props.dispatch(tensorValidateFlag(false));
-        bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
-      }
-        
-      }
+     
   }
 
   addLayer=(slectedLayer)=>{
@@ -141,7 +161,8 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} value={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
+                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
+                   <div className="error"></div>
                 </div>
                 </div> 
                 </div>
@@ -162,15 +183,11 @@ export class TensorFlow extends React.Component {
                    </div>
                    <div className="col-md-6" style={{textAlign:'center'}}>
                    <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
-                      <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
+                      <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
                       <span className="addLayerTxt">Add layer</span>
                   </div>
                   
                    </div>
-                  {/* <button onClick={this.handleClick.bind(this,"dense")}>
-                  <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
-                  <span className="addLayerTxt">Add layer</span>
-                  </button> */}
                   
                  </div>
                  
