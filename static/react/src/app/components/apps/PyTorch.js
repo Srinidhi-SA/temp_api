@@ -12,6 +12,7 @@ import { updateAlgorithmData } from "../../actions/appActions";
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
         dataPreview:store.datasets.dataPreview,
+        datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
     }
 })
 
@@ -58,6 +59,17 @@ export class PyTorch extends React.Component {
     }
 
     changeTextboxValue(parameterData,e){
+      let name = parameterData.name;
+      let val = e.target.value === "--Select--"? null:e.target.value;
+      if(name=="number_of_epochs" && val<1){
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+      }
+      else if(name=="batch_size" && (val < 0 ) || (val > this.props.datasetRow-1)){
+        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
+      else{
+        e.target.parentElement.lastElementChild.innerHTML = "" 
+      }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
@@ -210,7 +222,8 @@ export class PyTorch extends React.Component {
                             <label class="col-md-2 control-label read">{parameterData.displayName}</label>
                             <label class="col-md-4 control-label read">{parameterData.description}</label>
                             <div class="col-md-1">
-                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min={min} max={max}/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.acceptedValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                                <div className="error"></div>
                             </div>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
