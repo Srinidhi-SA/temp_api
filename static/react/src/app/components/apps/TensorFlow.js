@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {updateAlgorithmData, tensorValidateFlag} from "../../actions/appActions";
-import Layer from './Layer'
-import {statusMessages} from  "../../helpers/helper"
+import Layer from './Layer';
+import {statusMessages} from  "../../helpers/helper";
 
 
 @connect((store) => {
@@ -200,7 +200,7 @@ export class TensorFlow extends React.Component {
                    </div>
                    <div className="col-md-6" style={{textAlign:'center'}}>
                    <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
-                      <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
+                      <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
                       <span className="addLayerTxt">Add layer</span>
                   </div>
                   
