@@ -582,12 +582,18 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
     }
     var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
     var hidden_layer_info={"hidden_layer_info":tensorFlow}
+
+    var pyLyr = {"pyTorchLayers":store.getState().apps.pyTorchLayer}
+    var pySub = store.getState().apps.pyTorchSubParams
+    var pyTorchmerged = {};
+    Object.assign(pyTorchmerged, pyLyr, pySub);
+
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
-      "PyTorchLayers" : store.getState().apps.pyTorchLayer,
+      "PYTORCH" : pyTorchmerged,
       "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
@@ -2435,7 +2441,7 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
                     });
                   }
               }else if (type == "NonTuningParameter" || type == "TuningOption"){
-                $.each(allValues, function (i, dat) {
+                  $.each(allValues, function (i, dat) {
                     if (dat.name == parVal) {
                         dat.selected = true;
                     }
@@ -2473,6 +2479,12 @@ export function setPyTorchLayer(layerNum,lyrDt,parameterName){
     layerNum,
     lyrDt,
     parameterName,
+  }
+}
+export function setPyTorchSubParams(subParamDt){
+  return {
+    type: "SET_PYTORCH_SUBPARAMS",
+    subParamDt,
   }
 }
 export function setDefaultAutomatic(data) {

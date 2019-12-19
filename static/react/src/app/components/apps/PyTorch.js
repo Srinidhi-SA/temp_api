@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData } from "../../actions/appActions";
+import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer } from "../../actions/appActions";
 
 @connect((store)=>{
     return{
@@ -12,6 +12,7 @@ import { updateAlgorithmData } from "../../actions/appActions";
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
         dataPreview:store.datasets.dataPreview,
+        pyTorchSubParams:store.apps.pyTorchSubParams
     }
 })
 
@@ -25,7 +26,15 @@ export class PyTorch extends React.Component {
         }
     }
 
+    componentWillMount(){
+        let subParamDt = { "loss": {"loss":"none"}, "optimizer": {"optimizer":"none"}, "batch_size": "none", "number_of_epochs": "none" }
+        this.props.dispatch(setPyTorchSubParams(subParamDt));
+    }
+
     handleAddLayer(){
+        let layer = this.props.id
+        let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
+        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
         const newLayer = this.state.idLayer.length + 1
         this.setState({
             addLayer:true,
@@ -54,6 +63,12 @@ export class PyTorch extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
+        if(parameterData.name === "loss" || parameterData.name === "optimizer"){
+            let subParamDt = this.props.pyTorchSubParams;
+            let subParam = subParamDt[parameterData.name];
+            subParam[parameterData.name] = e.target.value;
+            this.props.dispatch(setPyTorchSubParams(subParamDt));
+        }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
@@ -61,11 +76,13 @@ export class PyTorch extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
-    setSubValues(data,e){
-
+    setSubValues(data,parameterData,e){
+        let value = e.target.value;
+        
+        // this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData,e.target.value,this.props.type,data.name));
     }
 
-    getsubParams(item) {
+    getsubParams(item,parameterData) {
         var arr1 = [];
         var arr2 = [];
         for(var i=0;i<item.length;i++){
@@ -76,7 +93,7 @@ export class PyTorch extends React.Component {
                                 <label class="col-md-2">{item[i].displayName}</label>
                                 <label class="col-md-4">{item[i].description}</label>
                                 <div class="col-md-1">
-                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100" onChange={this.setSubValues.bind(this,item[i])}/>
+                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100"/>
                                 </div>
                             </div>
                         );
@@ -95,7 +112,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i])} >
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -109,10 +126,10 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1" onChange={this.setSubValues.bind(this,item[i],parameterData)}/>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1" onChange={this.setSubValues.bind(this,item[i],parameterData)}/>
                                                 </div>
                                             </div>
                                         </div>
@@ -130,7 +147,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={setSubValues.bind(this,item[i])}>
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -180,7 +197,7 @@ export class PyTorch extends React.Component {
                     <div>
                         {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
                             <div className = "col-md-12">
-                                {this.getsubParams(options.filter(i=>i.name===selectedValue)[0].parameters)}
+                                {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)}
                             </div>
                         :""}
                     </div>
