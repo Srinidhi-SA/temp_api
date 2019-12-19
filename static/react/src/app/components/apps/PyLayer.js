@@ -34,10 +34,20 @@ export class PyLayer extends React.Component {
                 layerDt[parameterData.name] = {"name":"none"}
             }
             layerDt[parameterData.name].name = e.target.value;
+            let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
+            defValArr.parameters.map(idx=>{
+                let defVal = layerDt[parameterData.name];
+                defVal[idx.name] = idx.defaultValue;
+            });
             this.props.dispatch(setPyTorchLayer(layerArry,layerDt,parameterData.name))
         }else{
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = e.target.value;
+            let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
+            defValArr.parameters.map(idx=>{
+                let defVal = layerDt[parameterData.name];
+                defVal[idx.name] = idx.defaultValue;
+            });
             this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
         }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));

@@ -69,6 +69,12 @@ export class PyTorch extends React.Component {
                 subParamDt[parameterData.name] = {"optimizer":"none"}
             let subParam = subParamDt[parameterData.name];
             subParam[parameterData.name] = e.target.value;
+
+            let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
+            defValArr.parameters.map(idx=>{
+                let defVal = subParamDt[parameterData.name];
+                defVal[idx.name] = idx.defaultValue;
+            });
             this.props.dispatch(setPyTorchSubParams(subParamDt));
         }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
