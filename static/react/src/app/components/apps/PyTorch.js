@@ -61,6 +61,10 @@ export class PyTorch extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
     }
 
+    setSubValues(data,e){
+
+    }
+
     getsubParams(item) {
         var arr1 = [];
         var arr2 = [];
@@ -72,7 +76,7 @@ export class PyTorch extends React.Component {
                                 <label class="col-md-2">{item[i].displayName}</label>
                                 <label class="col-md-4">{item[i].description}</label>
                                 <div class="col-md-1">
-                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100"/>
+                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} min="0" max="100" onChange={this.setSubValues.bind(this,item[i])}/>
                                 </div>
                             </div>
                         );
@@ -91,7 +95,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }}>
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i])} >
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -105,10 +109,10 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1"/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.9" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1"/>
+                                                    <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue="0.99" min="0" max="1" onChange={this.setSubValues.bind(this,item[i])}/>
                                                 </div>
                                             </div>
                                         </div>
@@ -126,7 +130,7 @@ export class PyTorch extends React.Component {
                                             <label class="col-md-2">{item[i].displayName}</label>
                                             <label class="col-md-4">{item[i].description}</label>
                                             <div class = "col-md-3">
-                                                <select class="form-control" ref={(el) => { this.eleSel = el }}>
+                                                <select class="form-control" ref={(el) => { this.eleSel = el }} onChange={setSubValues.bind(this,item[i])}>
                                                     {optionsTemp}
                                                 </select>
                                             </div>
@@ -173,13 +177,13 @@ export class PyTorch extends React.Component {
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                    {/* <div>
+                    <div>
                         {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
                             <div className = "col-md-12">
                                 {this.getsubParams(options.filter(i=>i.name===selectedValue)[0].parameters)}
                             </div>
                         :""}
-                    </div> */}
+                    </div>
                     </div>
                    );
                 break;
@@ -187,13 +191,11 @@ export class PyTorch extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     switch(parameterData.displayName){
                         case "Batch Size":
-                            var type = "number";
                             var classN = "form-control batchCls";
                             var min = parameterData.valueRange[0];
                             var max = parameterData.valueRange[1];
                             break;
                         case "Number of Epochs":
-                            var type = "number";
                             classN = "form-control epochsCls"
                             min = 0;
                             max = Number.POSITIVE_INFINITY;
@@ -208,7 +210,7 @@ export class PyTorch extends React.Component {
                             <label class="col-md-2 control-label read">{parameterData.displayName}</label>
                             <label class="col-md-4 control-label read">{parameterData.description}</label>
                             <div class="col-md-1">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min={min} max={max}/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
+                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)} min={min} max={max}/* onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} *//>
                             </div>
                             <div className="clearfix"></div>
                             <div className="range-validate text-danger"></div>
@@ -216,23 +218,12 @@ export class PyTorch extends React.Component {
                     );
                 }
                 break;
-            case "textbox":
-                return (
-                    <div className="row">
-                        <label class="col-md-2 control-label read">{parameterData.displayName}</label>
-                        <label class="col-md-4 control-label read">{parameterData.description}</label>
-                        <div className="col-md-6">
-                            <input type="text" className="form-control" defaultValue={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
-                        </div>
-                    </div>
-                );
-                break;
             default:
                 var defaultCls= "form-control"
                 return (
                     <div className="col-md-6">
-                        <input type="text" className={defaultCls} value={parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
-                        <div className="text-danger range-validate" id="error"></div>
+                        <label class="col-md-2 control-label read">{parameterData.displayName}</label>
+                        <label class="col-md-4 control-label read">{parameterData.description}</label>                                
                     </div>
                 );
         }
