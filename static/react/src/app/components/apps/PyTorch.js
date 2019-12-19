@@ -162,7 +162,7 @@ export class PyTorch extends React.Component {
                 var options = parameterData.defaultValue
                 var selectedValue = ""
                 var optionsTemp = []
-                optionsTemp.push(<option value="none">--select--</option>)
+                parameterData.displayName!= "Layer" && optionsTemp.push(<option value="none">--select--</option>)
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
@@ -183,7 +183,7 @@ export class PyTorch extends React.Component {
                         <label class="col-md-2 control-label read">{parameterData.displayName}</label>
                         <label class="col-md-4 control-label read">{parameterData.description}</label>
                         <div class = "col-md-3">
-                            <select ref={(el) => { this.eleSel = el }} className="form-control" onChange={this.selectHandleChange.bind(this,parameterData)}>
+                            <select ref={(el) => { this.eleSel = el }} className= {`form-control ${parameterData.displayName}`} onChange={this.selectHandleChange.bind(this,parameterData)}>
                                 {optionsTemp}
                             </select>
                         </div>
