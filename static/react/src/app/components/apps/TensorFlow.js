@@ -65,7 +65,7 @@ export class TensorFlow extends React.Component {
         return false
        }
       else if(tfArray.length>=2 && (slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")){
-      bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
+      bootbox.alert(statusMessages("warning", "Please select an alternate layer.", "small_mascot"));
       return false
       }
      else{
