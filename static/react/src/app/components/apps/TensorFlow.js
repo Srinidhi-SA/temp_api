@@ -26,6 +26,12 @@ export class TensorFlow extends React.Component {
       }
     }
 
+    componentDidMount(){
+      console.log("component did mount")
+      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
+      this.props.dispatch(updateAlgorithmData(algorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
+
+    }
     changeTextboxValue(item,e){
       let name = item.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
@@ -77,6 +83,7 @@ export class TensorFlow extends React.Component {
 
    let unitLength= document.getElementsByClassName("units").length
    let rateLength= document.getElementsByClassName("rate").length
+   var errMsgLen=document.getElementsByClassName("error").length
 
    for(let i=0; i<unitLength; i++){
     var unitFlag;
@@ -89,6 +96,12 @@ export class TensorFlow extends React.Component {
     if(document.getElementsByClassName("rate")[i].value==="")
     rateFlag = true;
    }
+   
+   for(let i=0; i<errMsgLen; i++){
+        var errMsgFlag;
+        if(document.getElementsByClassName("error")[i].innerText!="")
+        errMsgFlag = true;
+       }
 
       if ($(".activation option:selected").text().includes("--Select--")){
           this.props.dispatch(tensorValidateFlag(false));
@@ -101,9 +114,13 @@ export class TensorFlow extends React.Component {
       else if(rateFlag){
       this.props.dispatch(tensorValidateFlag(false));
       bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
-    }
-        else{
-             this.props.dispatch(tensorValidateFlag(true));
+     }
+      else if(errMsgFlag){
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer.", "small_mascot"));
+      }
+      else{
+         this.props.dispatch(tensorValidateFlag(true));
         }
      
   }
@@ -161,7 +178,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
+                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
                    <div className="error"></div>
                 </div>
                 </div> 

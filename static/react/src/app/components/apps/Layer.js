@@ -26,8 +26,8 @@ export default class Layer extends Component {
     let val = e.target.value === "--Select--"? null:e.target.value;
     if(name=="units" && val<1){
     e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
-    }else if(name=="rate" &&val<1){
-      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+    }else if(name=="rate" &&(val<=0||val>=1)){
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 0.1 to 0.9"
     }else{
     e.target.parentElement.lastElementChild.innerHTML=""
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
