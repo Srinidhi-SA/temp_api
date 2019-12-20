@@ -36,8 +36,19 @@ export class PyLayer extends React.Component {
             layerDt[parameterData.name].name = e.target.value;
             let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
             defValArr.parameters.map(idx=>{
-                let defVal = layerDt[parameterData.name];
-                defVal[idx.name] = idx.defaultValue;
+                if(idx.name === "add_bias_kv" || idx.name === "add_zero_attn" || idx.name === "bias" || idx.name === "head_bias" || idx.name === "affine" || idx.name === "track_running_stats"){
+                    let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
+                    let defVal = layerDt[parameterData.name];
+                    if(subDefaultVal === undefined){
+                        subDefaultVal = "false";
+                        defVal[idx.name] = subDefaultVal;
+                    }   
+                    else
+                        defVal[idx.name] = subDefaultVal.name;
+                }else{
+                    let defVal = layerDt[parameterData.name];
+                    defVal[idx.name] = idx.defaultValue;
+                }
             });
             this.props.dispatch(setPyTorchLayer(layerArry,layerDt,parameterData.name))
         }else{

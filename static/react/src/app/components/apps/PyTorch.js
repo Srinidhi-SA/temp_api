@@ -72,8 +72,14 @@ export class PyTorch extends React.Component {
 
             let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
             defValArr.parameters.map(idx=>{
-                let defVal = subParamDt[parameterData.name];
-                defVal[idx.name] = idx.defaultValue;
+                if(idx.name === "zero_infinity" || idx.name === "full" || idx.name === "log_input" || idx.name === "amsgrad" || idx.name === "line_search_fn" || idx.name === "centered" || idx.name === "nesterov"){
+                    let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
+                    let defVal = subParamDt[parameterData.name];
+                    defVal[idx.name] = subDefaultVal.name;
+                }else{
+                    let defVal = subParamDt[parameterData.name];
+                    defVal[idx.name] = idx.defaultValue;
+                }
             });
             this.props.dispatch(setPyTorchSubParams(subParamDt));
         }
