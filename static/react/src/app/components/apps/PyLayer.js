@@ -22,17 +22,16 @@ export class PyLayer extends React.Component {
     }
 
     componentWillMount(){
-        let layer = "layer"+ ((this.props.id)-1);
-        let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
-        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
+        // let lyrDt = { "activation": {"name":"none"}, "dropout": "none", "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
+        // this.props.dispatch(setPyTorchLayer(1,lyrDt));
     }
 
     selectHandleChange(parameterData,e){
-        let layerArry = "layer"+ ((this.props.id)-1);
+        let layerArry = this.props.id;
         if(parameterData.name === "activation" || parameterData.name === "batchnormalisation"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
-                layerDt[parameterData.name] = ""
+                layerDt[parameterData.name] = {"name":"none"}
             }
             layerDt[parameterData.name].name = e.target.value;
             this.props.dispatch(setPyTorchLayer(layerArry,layerDt,parameterData.name))
@@ -46,21 +45,21 @@ export class PyLayer extends React.Component {
     }
 
     changeTextBoxValue(parameterData,e){
-        let layerArry = "layer"+ ((this.props.id)-1);
+        let layerArry = this.props.id
         let newLyrVal = this.props.pyTorchLayer[layerArry];
         newLyrVal[parameterData.name] = e.target.value;
         this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
     }
 
     setLayerSubParams(subparameterData,defaultParamName,e){
-        let layerArry = "layer"+ ((this.props.id)-1);
+        let layerArry = this.props.id
         let newsubLyrVal = this.props.pyTorchLayer[layerArry];
         newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
         this.props.dispatch(setPyTorchLayer(layerArry,newsubLyrVal));
     }
 
     changeSliderValue(parameterData,e) {
-        let layerArry = "layer"+ ((this.props.id)-1);
+        let layerArry = this.props.id
         let newLyrVal = this.props.pyTorchLayer[layerArry];
         newLyrVal[parameterData.name] = e.target.value;
         this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal));
@@ -127,7 +126,7 @@ export class PyLayer extends React.Component {
     }
     
     renderPyTorchData(parameterData){
-        let lyr = "layer"+(this.props.id-1)
+        let lyr = this.props.id
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue

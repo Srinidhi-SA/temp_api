@@ -114,6 +114,7 @@ export default function reducer(state = {
         unselectedModelsCount:0,
         metricSelected:{},
         pyTorchLayer:{},
+        pyTorchSubParams:{}
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -1129,6 +1130,13 @@ export default function reducer(state = {
         return {
             ...state,
             pyTorchLayer : layerData
+        }
+    }
+    break;
+    case "SET_PYTORCH_SUBPARAMS":{
+        return {
+            ...state,
+            pyTorchSubParams : action.subParamDt
         }
     }
     break;
