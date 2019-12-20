@@ -202,14 +202,24 @@ PT_ACTIVATION_PreLU_PARAMS = [
         "name": "num_parameters",
         "displayName": "num_parameters",
         "description": "number of alpha to learn.",
-        "defaultValue": 1,
-        "paramType": "number",
-        "uiElemType": "slider",
-        "valueRange": [1, 10],
+        "defaultValue": [
+            {
+                "name": "1",
+                "selected": True,
+                "displayName": "1"
+            },
+            {
+                "name": "no of channels",
+                "selected": False,
+                "displayName": "No of Channels"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["int"],
-        "allowedDataType": ["int"]
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
     {
         "name": "init",
@@ -499,6 +509,17 @@ PYTORCH_DROPOUT_PARAMETERS = [
 
 PT_BATCHNORMALISATION_BatchNorm1d_PARAMS = [
     {
+        "name": "num_features",
+        "displayName": "num_features",
+        "description": "C from an expected input of size (N,C,L) or L from input of size (N, L).",
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+    {
         "name": "eps",
         "displayName": "eps",
         "description": "a value added to the denominator for numerical stability.",
@@ -595,13 +616,12 @@ PYTORCH_LINEAR_PARAMETERS = [
         "displayName": "Dropout",
         "description": "During training, randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoulli distribution.",
         "defaultValue": [obj for obj in PYTORCH_DROPOUT_PARAMETERS],
-        "paramType": "number",
-        "uiElemType": "slider",
+        "paramType": "list",
+        "uiElemType": "checkbox",
         "display": True,
-        "valueRange": [0.1, 1.0],
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
     {
         "name": "batchnormalisation",
