@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Redirect} from "react-router";
 import store from "../../store";
 import {updateAlgorithmData, tensorValidateFlag} from "../../actions/appActions";
 import Layer from './Layer';
@@ -12,7 +11,8 @@ import {statusMessages} from  "../../helpers/helper";
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         tensorValidateFlag: store.datasets.tensorValidateFlag,
-        datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value
+        datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
+        tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="TensorFlow")[0].algorithmSlug
     };
 })
 
@@ -26,13 +26,10 @@ export class TensorFlow extends React.Component {
       }
     }
 
-    componentDidMount(){
-      console.log("component did mount")
-      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
-      this.props.dispatch(updateAlgorithmData(algorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
-
+  componentDidMount(){
+      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
     }
-    changeTextboxValue(item,e){
+  changeTextboxValue(item,e){
       let name = item.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
       if(name=="number_of_epochs" && val<1){
@@ -44,84 +41,75 @@ export class TensorFlow extends React.Component {
       else{
         e.target.parentElement.lastElementChild.innerHTML = "" 
       }
-      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
-      this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
   }
   
-    handleSelectBox(item,e){
-      var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
-      this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
-   }
+  handleSelectBox(item,e){
+      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+  }
 
-    getOptions(item) {
+  getOptions(item) {
       var arr = item.defaultValue.map(j=>j.displayName);
       var options = arr.map(k => {
           return <option value={k} > {k}</option>
       })
       return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
-    }
+  }
     
     
-    layerValidate=(slectedLayer,tfArray)=>{
-      if(tfArray.length>=2)
-      var prevLayer=tfArray[tfArray.length-1].layer;
+  layerValidate=(slectedLayer,tfArray)=>{
+       if(tfArray.length>=2)
+       var prevLayer=tfArray[tfArray.length-1].layer;
 
       if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
         bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
         return false
-       }
+      }
       else if(tfArray.length>=2 && (slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")){
-      bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
+      bootbox.alert(statusMessages("warning", "Please select an alternate layer.", "small_mascot"));
       return false
       }
-     else{
-     this.addLayer(slectedLayer)      
-     }
   }
 
-  parameterValidate=()=>{
+   parameterValidate=()=>{
 
    let unitLength= document.getElementsByClassName("units").length
    let rateLength= document.getElementsByClassName("rate").length
    var errMsgLen=document.getElementsByClassName("error").length
 
-   for(let i=0; i<unitLength; i++){
-    var unitFlag;
-    if(document.getElementsByClassName("units")[i].value==="")
-    unitFlag = true;
-   }
-
-   for(let i=0; i<rateLength; i++){
-    var rateFlag;
-    if(document.getElementsByClassName("rate")[i].value==="")
-    rateFlag = true;
-   }
-   
-   for(let i=0; i<errMsgLen; i++){
-        var errMsgFlag;
-        if(document.getElementsByClassName("error")[i].innerText!="")
-        errMsgFlag = true;
-       }
-
-      if ($(".activation option:selected").text().includes("--Select--")){
-          this.props.dispatch(tensorValidateFlag(false));
-          bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
-      }
-      else if(unitFlag){
-           this.props.dispatch(tensorValidateFlag(false));
-           bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
-     }
-      else if(rateFlag){
-      this.props.dispatch(tensorValidateFlag(false));
-      bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
-     }
-      else if(errMsgFlag){
-      this.props.dispatch(tensorValidateFlag(false));
-      bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer.", "small_mascot"));
-      }
-      else{
-         this.props.dispatch(tensorValidateFlag(true));
+        for(let i=0; i<unitLength; i++){
+          var unitFlag;
+          if(document.getElementsByClassName("units")[i].value==="")
+          unitFlag = true;
         }
+
+        for(let i=0; i<rateLength; i++){
+          var rateFlag;
+          if(document.getElementsByClassName("rate")[i].value==="")
+          rateFlag = true;
+        }
+      
+        for(let i=0; i<errMsgLen; i++){
+            var errMsgFlag;
+            if(document.getElementsByClassName("error")[i].innerText!="")
+            errMsgFlag = true;
+        }
+
+    if ($(".activation option:selected").text().includes("--Select--")){
+       this.props.dispatch(tensorValidateFlag(false));
+       bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
+    }else if(unitFlag){
+       this.props.dispatch(tensorValidateFlag(false));
+       bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
+    }else if(rateFlag){
+       this.props.dispatch(tensorValidateFlag(false));
+       bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+    }else if(errMsgFlag){
+       this.props.dispatch(tensorValidateFlag(false));
+       bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer.", "small_mascot"));
+    }else{
+       this.props.dispatch(tensorValidateFlag(true));
+    }
      
   }
 
@@ -131,27 +119,26 @@ export class TensorFlow extends React.Component {
          panels: this.state.panels.concat([nextId]),
          layerType:slectedLayer
       })
-    }
+  }
 
-  handleClick(){
+  handleClick(){ 
   var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
   var tfArray= store.getState().apps.tensorFlowInputs;
   
-  if (tfArray.length>0) {
-    this.parameterValidate();
+    if (tfArray.length>0) {
+      this.parameterValidate();
+    }
+    if(store.getState().datasets.tensorValidateFlag || tfArray.length == 0){
+      this.layerValidate(slectedLayer,tfArray)
+    }
   }
-   if(store.getState().datasets.tensorValidateFlag || tfArray.length == 0){
-   this.layerValidate(slectedLayer,tfArray)
-   }
-}
-    render() {
-
-      if(this.state.layerType==="Dense")
+   render() {
+    if(this.state.layerType==="Dense")
     var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
     else if(this.state.layerType==="Dropout")
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
-     var rendercontent = algorithmData.map((item,index)=>{
+      var rendercontent = algorithmData.map((item,index)=>{
            if(item.paramType=="list"){
               return (
                 <div className ="row mb-20">
@@ -186,8 +173,8 @@ export class TensorFlow extends React.Component {
                 </div>
                 </div>                
               )
-       })
-        return (
+      })
+     return (
                 <div className="col-md-12">
                   <div className="row mb-20">
                   <div class="form-group">
@@ -221,7 +208,7 @@ export class TensorFlow extends React.Component {
                   <div id="layerArea"></div>
                     {rendercontent}
                 </div>
-        );
+     );
 
     }
 }

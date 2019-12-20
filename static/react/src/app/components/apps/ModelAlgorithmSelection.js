@@ -136,7 +136,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 }
 
                  
-                let msg= statusMessages("warning","Please resolve errors...","small_mascot");
+                let msg= statusMessages("warning","Please resolve errors.","small_mascot");
                 bootbox.alert(msg);
                 return false;
 
