@@ -51,7 +51,7 @@ export class PyLayer extends React.Component {
                             defVal[idx.name] = idx.defaultValue;
                         }
                     });
-            this.props.dispatch(setPyTorchLayer(layerArry,layerDt,parameterData.name))
+            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),layerDt,parameterData.name))
         }else{
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = e.target.value;
@@ -62,7 +62,7 @@ export class PyLayer extends React.Component {
                     defVal[idx.name] = idx.defaultValue;
                 });
             }
-            this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
 
@@ -83,7 +83,7 @@ export class PyLayer extends React.Component {
             let layerArry = this.props.id
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = val;
-            this.props.dispatch(setPyTorchLayer(layerArry,newLyrVal))
+            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
     }
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
@@ -94,7 +94,7 @@ export class PyLayer extends React.Component {
             let layerArry = this.props.id
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
-            this.props.dispatch(setPyTorchLayer(layerArry,newsubLyrVal));
+            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
     }
     setLayerSubParams(subparameterData,defaultParamName,e){
         let name = subparameterData.name;
@@ -177,7 +177,7 @@ export class PyLayer extends React.Component {
             let layerArry = this.props.id
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = parseFloat(e.target.value);
-            this.props.dispatch(setPyTorchLayer(layerArry,newsubLyrVal));
+            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
         }
     }
 

@@ -187,7 +187,7 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-                if(this.props.pytorchValidateFlag){
+                if(this.props.pytorchValidateFlag || (!$(".Optimizer option:selected").text().includes("--Select--"))){
                     let beta = this.props.pyTorchSubParams;
                     let tupVal = beta["optimizer"]["betas"].toString();
                     beta["optimizer"]["betas"] = "("+ tupVal + ")";
@@ -314,7 +314,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 <FormGroup role="form">
                                 {data.algorithmName === "TensorFlow"?
                                 <TensorFlow data/>
-                                :data.algorithmName === "PyTorch"?
+                                :data.algorithmName === "Neural Networks(pyTorch)"?
                                 <PyTorch parameterData={data} type="NonTuningParameter"/>:
                                 (
 								 <div className="xs-mt-20">
@@ -328,7 +328,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div class="clearfix"></div>
                                     </div>
                                  </div>)}
-                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":
+                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":
                                  (<span>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div>
@@ -351,7 +351,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 
-                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":parametersData}</div>
+                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":parametersData}</div>
 								</FormGroup>
                             </Tab>
                         );

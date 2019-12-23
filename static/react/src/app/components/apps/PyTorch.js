@@ -40,7 +40,7 @@ export class PyTorch extends React.Component {
     handleAddLayer(){
         let layer = Object.keys(this.props.pyTorchLayer).length+1
         let lyrDt = { "activation": {"name":"none"}, "dropout": {"name":"none","p":"none"}, "batchnormalisation": {"name":"none"}, "units_ip": "none","units_op": "none", "bias": "none" }
-        this.props.dispatch(setPyTorchLayer(layer,lyrDt));
+        this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         const newLayer = this.state.idLayer.length + 1
         this.setState({
             addLayer:true,
