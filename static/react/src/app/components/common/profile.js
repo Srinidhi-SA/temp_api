@@ -28,7 +28,6 @@ import {openImg, closeImg, uploadImg, getUserProfile, saveProfileImage} from "..
 export class Profile extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props)
   }
   componentWillMount() {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
@@ -73,7 +72,51 @@ export class Profile extends React.Component {
 
     }
   }
+  resetOnchange=(e)=>{
+      if(e.target.value!=""){
+        document.getElementById("resetMsg").innerText=""
+      }
+  }
 
+resetPassword=()=>{
+  var num=/[0-9]/;
+  var char= /[A-Za-z]/;
+  if($(".oldPass").val()==="" || $(".newPass").val()==="" || $(".confirmPass").val()===""  ){
+    document.getElementById("resetMsg").innerText="please enter *mandatory fields"
+  }
+  else if( $(".newPass").val()!= $(".confirmPass").val()){
+    document.getElementById("resetMsg").innerText="new password and confirm password should be same"
+  }
+  else if(($(".newPass").val().length<8) || !char.test($(".newPass").val()) || !num.test($(".newPass").val())){
+    document.getElementById("resetMsg").innerText="password must contain at least 8 characters and can't be entirely numeric."
+  }
+  else{
+  var oldPassword= $(".oldPass").val();
+  var newPassword= $(".confirmPass").val();
+  this.resetAPI(oldPassword,newPassword).then(([response, json]) =>{
+    if(response.status === 200){
+      $("#resetModal").modal('hide');
+        bootbox.alert(`Password changed successfully.`)
+    }
+    else{
+      document.getElementById("resetMsg").innerText="old password is wrong"
+    }
+})
+}
+}
+getHeader=(token)=>{
+  return {
+      'Authorization': token,
+      'Content-Type': 'application/json'
+  }
+}
+resetAPI=(oldPassword,newPassword) =>{
+   return fetch(API+'/api/change-user-password/',{
+      method: 'put',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "old_password": oldPassword, "new_password": newPassword})
+   }).then( response => Promise.all([response, response.json()]));
+}
   //in your component
   addDefaultSrc(ev) {
     ev.target.src = STATIC_URL + "assets/images/iconp_default.png"
@@ -268,8 +311,49 @@ export class Profile extends React.Component {
 									<td className="item xs-pt-5">
 									</td>
 									<td>
-										<a href="https://madvisor2.marlabsai.com/password-change/" target="_blank">Change Password</a>
-									</td>
+										<a data-toggle="modal" data-target="#resetModal" style={{cursor:'pointer'}}>Change Password</a>
+									  <div class="modal fade" id="resetModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Change Password</h4>
+        </div>
+        <div class="modal-body">
+        <div className="row mt-18">
+         <div className="col-sm-4">
+          <label className="mandate">Old Password:</label>
+         </div>
+        <div className="col-sm-8">
+          <input className="form-control oldPass" type="password" onChange={this.resetOnchange}/>
+       </div>
+        </div>
+        <div className="row mt-18">
+         <div className="col-sm-4">
+          <label className="mandate">New Password:</label>
+         </div>
+        <div className="col-sm-8">
+        <input className="form-control newPass" type="password" onChange={this.resetOnchange}/>
+       </div>
+        </div>
+        <div className="row mt-18">
+         <div className="col-sm-4">
+          <label className="mandate">Confirm New Password:</label>
+         </div>
+        <div className="col-sm-8">
+        <input className="form-control confirmPass" type="password" onChange={this.resetOnchange}/>
+       </div>
+        </div>
+      </div>
+      <div class="modal-footer" style={{marginTop: 18}}>
+          <div id="resetMsg"></div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onClick={this.resetPassword}>Save</button>
+        </div>
+    </div>
+  </div>
+  </div>
+                  </td>
 								  </tr>
                                 </tbody>
                               </table>

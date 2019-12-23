@@ -56,6 +56,28 @@ export class ModelAlgorithmSelection extends React.Component {
         Notification.requestPermission();
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
+    
+    let unitLength= document.getElementsByClassName("units").length
+    let rateLength= document.getElementsByClassName("rate").length
+    var errMsgLen=document.getElementsByClassName("error").length
+
+   for(let i=0; i<unitLength; i++){
+    var unitFlag;
+    if(document.getElementsByClassName("units")[i].value==="")
+    unitFlag = true;
+   }
+
+   for(let i=0; i<rateLength; i++){
+    var rateFlag;
+    if(document.getElementsByClassName("rate")[i].value==="")
+    rateFlag = true;
+   }
+   
+   for(let i=0; i<errMsgLen; i++){
+        var errMsgFlag;
+        if(document.getElementsByClassName("error")[i].innerText!="")
+        errMsgFlag = true;
+       }
             if(!isContinueRange || !isContinueMulticheck){
              if(document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Fit Intercept...","small_mascot");
@@ -148,7 +170,22 @@ export class ModelAlgorithmSelection extends React.Component {
                     }
                     this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
                 }
+            }else if ($(".activation option:selected").text().includes("--Select--")){
+                bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
+                return false
+            } else if(unitFlag){
+                bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
+                return false;
             }
+           else if(rateFlag){
+              bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+              return false;
+            }
+           else if(errMsgFlag){
+              bootbox.alert(statusMessages("warning", "Please resolve errors for Tensorflow.", "small_mascot"));
+              return false;
+            }
+
             else{
                 if(this.props.pytorchValidateFlag){
                     let beta = this.props.pyTorchSubParams;
