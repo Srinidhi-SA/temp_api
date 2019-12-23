@@ -2487,6 +2487,11 @@ export function setPyTorchSubParams(subParamDt){
     subParamDt,
   }
 }
+export function clearPyTorchValues(){
+  return {
+    type : "CLEAR_PYTORCH_VALUES"
+  }
+}
 export function setDefaultAutomatic(data) {
   return { type: "SET_REGRESSION_DEFAULT_AUTOMATIC", data }
 }

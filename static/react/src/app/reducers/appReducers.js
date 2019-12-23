@@ -1140,6 +1140,14 @@ export default function reducer(state = {
         }
     }
     break;
+    case "CLEAR_PYTORCH_VALUES":{
+        return {
+            ...state,
+            pyTorchLayer : {},
+            pyTorchSubParams : {}
+        }
+    }
+    break;
     case "UPDATE_REGRESSION_ALGORITHM_DATA":
     {
         return{
