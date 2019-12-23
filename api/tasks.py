@@ -789,7 +789,7 @@ def trigger_outlook_periodic_job():
                     if 'test_dataset' in key:
                         input_file = value
                         data['Testdataset'] = input_file
-                        data['name'] = configkey
+                        data['score_name'] = configkey
                     if 'emailAddress' in key:
                         data['email'] = value['emailAddress']['address']
                 except Exception as error:
@@ -820,7 +820,6 @@ def trigger_outlook_periodic_job():
 def trigger_metaData_autoML(data):
     print "metaData job triggered for autoML"
     ######################  User id for Email AutoML   ################
-    print data
     '''
     Create one user with Username "email" in order to use email for AutoML model creation.
 
@@ -851,7 +850,7 @@ def trigger_metaData_autoML(data):
         test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
         test_f = File(test_file)
         test_dataset_config = {}
-        test_dataset_config['name'] = data['name'] + '_Test'
+        test_dataset_config['name'] = data['score_name'] + '_Test'
         test_dataset_config['input_file'] = test_f
         test_dataset_config['datasource_type'] = 'fileUpload'
         test_dataset_config['created_by'] = user_id.id

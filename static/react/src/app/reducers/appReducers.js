@@ -75,6 +75,7 @@ export default function reducer(state = {
         appsCreateStockModal:false,
         appsStockSymbolsInputs:[],
         stockAnalysisList:{},
+        tensorFlowInputs:[],
         stockUploadDomainModal:false,
         stockUploadDomainFiles:[],
         stockSlug:"",
@@ -94,7 +95,7 @@ export default function reducer(state = {
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
-        targetLevelCounts:null,
+        targetLevelCounts:"",
         currentAppDetails:null,
         updateCreateModelHideShow:false,
         apps_regression_modelName:"",
@@ -112,6 +113,8 @@ export default function reducer(state = {
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
         metricSelected:{},
+        pyTorchLayer:{},
+        pyTorchSubParams:{}
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -199,6 +202,14 @@ export default function reducer(state = {
             algoList: action.data,
             latestAlgos:action.latestAlgos,
             current_page:action.current_page,
+        }
+    }
+    break;
+    case "CLEAR_APPS_ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList:{}
         }
     }
     break;
@@ -906,6 +917,42 @@ export default function reducer(state = {
     }
     break;
 
+    
+
+    case "ADD_LAYERS":
+    {
+        var curTfData = state.tensorFlowInputs
+        curTfData[action.id-1] =  action.tensorFlowArray;
+        return{
+            ...state,
+            tensorFlowInputs : curTfData
+          }
+      }
+
+    break;    
+    case "UPDATE_LAYERS":
+    { 
+        var stateval =state.tensorFlowInputs
+        action.tensorFlowInputs[action.name] = action.val;
+        stateval[action.id-1]=action.tensorFlowInputs        
+        return{
+          ...state,
+          tensorFlowInputs : stateval
+        }
+      }
+
+    break;
+    
+    case "CLEAR_LAYERS":
+    {
+        return{
+          ...state,
+          tensorFlowInputs :[]
+        }
+      }
+
+    break;
+
 
     case "STOCK_LIST":
     {
@@ -1069,6 +1116,27 @@ export default function reducer(state = {
             ...state,
             regression_algorithm_data:action.data.ALGORITHM_SETTING,
             regression_algorithm_data_manual:action.data.ALGORITHM_SETTING,
+        }
+    }
+    break;
+    case "SET_PYTORCH_LAYER":{
+        var layerData = state.pyTorchLayer
+        var curLayer = layerData[action.layerNum];
+        if(curLayer === undefined){
+            curLayer = {}
+        }
+        curLayer = action.lyrDt
+        layerData[action.layerNum] = curLayer
+        return {
+            ...state,
+            pyTorchLayer : layerData
+        }
+    }
+    break;
+    case "SET_PYTORCH_SUBPARAMS":{
+        return {
+            ...state,
+            pyTorchSubParams : action.subParamDt
         }
     }
     break;

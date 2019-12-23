@@ -86,6 +86,8 @@ export default function reducer(state = {
   convertUsingBin: "false",
   modelEditconfig:"",
   topLevelData:{},
+  tensorValidateFlag: false,
+  pytorchValidateFlag: false,
   
 }, action) {
   console.log("In DATA reducer!!");
@@ -112,6 +114,22 @@ export default function reducer(state = {
         }
       }
       break;
+      case "TENSOR_VALIDATE_FLAG":
+          {
+            return {
+              ...state,
+              tensorValidateFlag: action.flag,
+            }
+          }
+          break;
+          case "PYTORCH_VALIDATE_FLAG":
+            {
+              return {
+                ...state,
+                pytorchValidateFlag: action.flag,
+              }
+            }
+            break;
 
     case "DATA_LIST_ERROR":
       {
@@ -960,6 +978,7 @@ export default function reducer(state = {
         duplicateObservations : false,
 
       }
+      
     }
     break;
 

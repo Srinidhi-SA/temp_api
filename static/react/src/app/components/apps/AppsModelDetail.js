@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -21,7 +21,8 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
 		setAppsLoaderValues: store.apps.setAppsLoaderValues,
-		};
+		algoList: store.apps.algoList
+	};
 })
 
 
@@ -41,24 +42,55 @@ export class AppsModelDetail extends React.Component {
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
-		
+		this.props.dispatch(clearAppsAlgoList());
 	}
 	
-  print() {
+	print() {
 		window.print();
-  }
-  componentDidMount() {
+	}
+
+	componentDidMount() {
 		let currentModel= this.props.modelSlug;
 		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
 		}
 		window.scrollTo(0, 0);
-	  if(!isEmpty(store.getState().apps.modelSummary)){
-		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
-		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
-	  }
+		if(!isEmpty(store.getState().apps.modelSummary)){
+			if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
+			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+		}
+		this.props.dispatch(getAppsAlgoList(1));
+		
+		let algoDt = this.props.modelSummary.TrainAlgorithmMapping;
+		let selAlgoList = Object.values(algoDt)
+		let noOfHeads = $(".sm-mb-20").length;
+			for(var i=0;i<noOfHeads;i++){
+				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
+				let algorithmName = ""
+				if(algoNam === "LOGISTICREGRESSION")
+					algorithmName = "LG"
+				else if(algoNam === "XGBOOST")
+					algorithmName = "XG"
+				else if(algoNam === "RANDOMFOREST")
+					algorithmName = "RF"
+				else if(algoNam === "NAIVEBAYES")
+					algorithmName = "NB"
+				else algorithmName = "NN"
+				
+					let info = document.createElement('a');
+					var att = document.createAttribute("class");
+					att.value = "summaryLink";
+					info.setAttributeNode(att);
+					info.innerText = "For More Info Click Here";
 
-  }
+					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName) )
+					info.href = (sel.length !=0)?
+					this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug):"#"
+					$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
+			}
+
+	}
+
   componentDidUpdate(){
       $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
@@ -101,6 +133,7 @@ export class AppsModelDetail extends React.Component {
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
+				var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
 		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
 				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
 				var cardDataList = listOfCardList.map((data, i) => {
@@ -169,7 +202,9 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-							 
+												<div>
+											  {failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
+										  	</div>
 		                    <div className="col-md-12 text-right xs-mt-30">
 												{!$.isEmptyObject(hyperParameterData)?
 												<span>

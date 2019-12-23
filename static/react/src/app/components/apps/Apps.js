@@ -7,6 +7,8 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {Share} from "../common/Share"
+import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
+
 
 import {connect} from "react-redux";
 import {
@@ -29,10 +31,14 @@ import {
   updateSelectedApp,
   updateModelSummaryFlag,
   updateScoreSummaryFlag,
-  parameterTuningVisited
+  parameterTuningVisited,
+  clearTensorFlowArray,
+  selectMetricAction,
+  clearDataPreview,
+
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getAllUsersList} from "../../actions/dataActions";
+import {getAllUsersList,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -56,10 +62,20 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount() {
+    if(store.getState().datasets.editmodelFlag){
+     this.props.dispatch(clearDataPreview());
+    }
        this.props.dispatch(updateModelSummaryFlag(false));
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
        this.props.dispatch(parameterTuningVisited(false))
+       this.props.dispatch(clearTensorFlowArray())
+     
+       //have to recheck next 3actions needed or not
+      this.props.dispatch(setEditModelValues("","",false));
+      this.props.dispatch(fetchModelEdit(""))
+      this.props.dispatch(selectMetricAction("", "", ""));
+      this.props.dispatch(saveTopLevelValuesAction("false",""))
 
 
 

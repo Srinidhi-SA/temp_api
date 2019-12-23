@@ -29,6 +29,8 @@ import { hideTargetVariable } from "../../actions/signalActions";
 		selectedDataSrcType:store.dataSource.selectedDataSrcType,
 		currentAppDetails:store.apps.currentAppDetails,
 		allModelList: store.apps.allModelList,
+		editmodelFlag:store.datasets.editmodelFlag,
+
 		};
 })
 
@@ -178,7 +180,7 @@ export class AppsCreateModel extends React.Component {
 		let renderSelectBox = null;
 		let _link = "";
 		let hideCreate=false
-		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")){
+		if(store.getState().datasets.dataPreviewFlag && window.location.href.includes("analyst")&&(!this.props.editmodelFlag)){
 			//Added &&, To restrict route to dataPreview page once dataPreviewFlag set true in autoML mode
 			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/analyst/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);

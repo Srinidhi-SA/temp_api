@@ -2,32 +2,50 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {updateAlgorithmData} from "../../actions/appActions";
+import {updateAlgorithmData, tensorValidateFlag} from "../../actions/appActions";
+import Layer from './Layer';
+import {statusMessages} from  "../../helpers/helper";
 
 
 @connect((store) => {
     return {
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
+        tensorValidateFlag: store.datasets.tensorValidateFlag,
+        datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value
     };
 })
 
 export class TensorFlow extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+          panels : [],
+          layerType:"dense",
+          paramValidateFlag: false,
+      }
     }
 
     changeTextboxValue(item,e){
-      debugger
+      let name = item.name;
+      let val = e.target.value === "--Select--"? null:e.target.value;
+      if(name=="number_of_epochs" && val<1){
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+      }
+      else if(name=="batch_size" && (val < 0 ) || (val > this.props.datasetRow-1)){
+        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
+      else{
+        e.target.parentElement.lastElementChild.innerHTML = "" 
+      }
       var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
-
       this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
   }
+  
     handleSelectBox(item,e){
       var algorithmSlug="f77631ce2ab24cf78c55bb6a5fce4db8tfx";
       this.props.dispatch(updateAlgorithmData(algorithmSlug,item.name,e.target.value,"NonTuningParameter"));
-      console.log("111111111111111111111111",item.name,e.target.value)
-    }
+   }
 
     getOptions(item) {
       var arr = item.defaultValue.map(j=>j.displayName);
@@ -37,24 +55,84 @@ export class TensorFlow extends React.Component {
       return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
     }
     
-    addLayer(){
+    
+    layerValidate=(slectedLayer,tfArray)=>{
+      if(tfArray.length>=2)
+      var prevLayer=tfArray[tfArray.length-1].layer;
 
-    const div1 = document.createElement('div');
-  
-    div1.className = 'row layerPanel' ;
-      div1.innerHTML = `
-      <div class="layer">
-      <div class="layerHeader">Dense</div>
-      <div class="layerBody">
-      <div class="form-group"><label class="col-md-2 control-label read">Activation</label><label class="col-md-4 control-label read">Activation function for the hidden layer.</label><div class="col-md-6"><div class="row undefined"><div class="col-md-6 for_multiselect"><select class="form-control single" style=""><option class="0" value="relu">relu</option><option class="1" value="identity">identity</option><option class="2" value="logistic">logistic</option><option class="3" value="tanh">tanh</option></select></div><div class="clearfix"></div><!-- react-text: 5803 --><!-- /react-text --></div></div><div class="clearfix"></div></div>
-      <div class="form-group"><label class="col-md-2 control-label read">Shuffle</label><label class="col-md-4 control-label read">Activation function for the hidden layer.</label><div class="col-md-6"><div class="row undefined"><div class="col-md-6 for_multiselect"><select class="form-control single" style=""><option class="0" value="relu">relu</option><option class="1" value="identity">identity</option><option class="2" value="logistic">logistic</option><option class="3" value="tanh">tanh</option></select></div><div class="clearfix"></div><!-- react-text: 5803 --><!-- /react-text --></div></div><div class="clearfix"></div></div>
-      </div>
-      </div>
-      `;
-   
-    document.getElementById('layerArea').appendChild(div1);
+      if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
+        bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
+        return false
+       }
+      else if(tfArray.length>=2 && (slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")){
+      bootbox.alert(statusMessages("warning", "Please select an alternate level.", "small_mascot"));
+      return false
+      }
+     else{
+     this.addLayer(slectedLayer)      
+     }
   }
+
+  parameterValidate=()=>{
+
+   let unitLength= document.getElementsByClassName("units").length
+   let rateLength= document.getElementsByClassName("rate").length
+
+   for(let i=0; i<unitLength; i++){
+    var unitFlag;
+    if(document.getElementsByClassName("units")[i].value==="")
+    unitFlag = true;
+   }
+
+   for(let i=0; i<rateLength; i++){
+    var rateFlag;
+    if(document.getElementsByClassName("rate")[i].value==="")
+    rateFlag = true;
+   }
+
+      if ($(".activation option:selected").text().includes("--Select--")){
+          this.props.dispatch(tensorValidateFlag(false));
+          bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
+      }
+      else if(unitFlag){
+           this.props.dispatch(tensorValidateFlag(false));
+           bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
+     }
+      else if(rateFlag){
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+    }
+        else{
+             this.props.dispatch(tensorValidateFlag(true));
+        }
+     
+  }
+
+  addLayer=(slectedLayer)=>{
+    const nextId = this.state.panels.length + 1
+      this.setState({
+         panels: this.state.panels.concat([nextId]),
+         layerType:slectedLayer
+      })
+    }
+
+  handleClick(){
+  var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
+  var tfArray= store.getState().apps.tensorFlowInputs;
+  
+  if (tfArray.length>0) {
+    this.parameterValidate();
+  }
+   if(store.getState().datasets.tensorValidateFlag || tfArray.length == 0){
+   this.layerValidate(slectedLayer,tfArray)
+   }
+}
     render() {
+
+      if(this.state.layerType==="Dense")
+    var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
+    else if(this.state.layerType==="Dropout")
+     data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
      var rendercontent = algorithmData.map((item,index)=>{
            if(item.paramType=="list"){
@@ -83,8 +161,9 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className="form-control" onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.defaultValue} value={item.acceptedValue} />
-                   </div>
+                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.acceptedValue} />
+                   <div className="error"></div>
+                </div>
                 </div> 
                 </div>
                 </div>
@@ -103,14 +182,24 @@ export class TensorFlow extends React.Component {
                     {this.getOptions(this.props.manualAlgorithmData[5].parameters[0])}
                    </div>
                    <div className="col-md-6" style={{textAlign:'center'}}>
-                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.addLayer}>
-                      <span className="addLayer"> <i class="fa fa-plus" style={{color: '#fff'}}></i></span>
+                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
+                      <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
                       <span className="addLayerTxt">Add layer</span>
                   </div>
+                  
                    </div>
+                  
                  </div>
+                 
                  </div>
                 </div>
+                  </div>
+                  <div className='panel-wrapper'>
+                  {
+                    this.state.panels.map((panelId) => (
+                      <Layer key={panelId} id={panelId} parameters={data} layerType={this.state.layerType} />
+                    ))
+                  }
                   </div>
                   <div id="layerArea"></div>
                     {rendercontent}

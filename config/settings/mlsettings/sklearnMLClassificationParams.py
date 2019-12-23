@@ -1163,15 +1163,15 @@ SKLEARN_ML_NAIVE_BAYES_PARAMS = [
     },
 ]
 TENSORFLOW_ACTIVATION_PARAMETERS = [
-    {"name": "deserialize", "selected": True, "displayName": "deserialize"},
+    #{"name": "deserialize", "selected": True, "displayName": "deserialize"},
     {"name": "elu", "selected": False, "displayName": "elu"},
     {"name": "exponential", "selected": False, "displayName": "exponential"},
-    {"name":"get","selected":False,"displayName":"get"},
+    #{"name":"get","selected":False,"displayName":"get"},
     {"name": "hard_sigmoid", "selected": False, "displayName": "hard_sigmoid"},
-    {"name":"Linear","selected":False,"displayName":"Linear"},
+    {"name":"linear","selected":False,"displayName":"Linear"},
     {"name":"relu","selected":False,"displayName":"relu"},
     {"name":"selu","selected":False,"displayName":"selu"},
-    {"name":"serialize","selected":False,"displayName":"serialize"},
+    #{"name":"serialize","selected":False,"displayName":"serialize"},
     {"name":"sigmoid","selected":False,"displayName":"sigmoid"},
     {"name":"softmax","selected":False,"displayName":"softmax"},
     {"name":"softplus","selected":False,"displayName":"softplus"},
@@ -1208,19 +1208,22 @@ TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS = [
     {"name": "MinMaxNorm", "selected": False, "displayName": "MinMaxNorm"},
 ]
 TENSORFLOW_LAMBDA_FUNCTIONS = [
-    {"name": "2*X", "selected": True, "displayName": "2*X"},
+    {"name": "Addition", "selected": True, "displayName": "Addition"},
+    {"name": "Subtraction", "selected": True, "displayName": "Subtraction"},
+    {"name": "Multiplication", "selected": True, "displayName": "Multiplication"},
+    {"name": "Division", "selected": True, "displayName": "Division"},
 ]
 SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
+    {"name": "categorical_crossentropy", "selected": True, "displayName": "categorical_crossentropy"},
     {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
     {"name": "hinge", "selected": False, "displayName": "hinge"},
     {"name": "categorical_hinge", "selected": False, "displayName": "categorical_hinge"},
-    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
     {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
     {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
     {"name": "kullback_leibler_divergence", "selected": False, "displayName": "kullback_leibler_divergence"},
 ]
 SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
-    {"name": "SGD", "selected": False, "displayName": "SGD"},
+    {"name": "SGD", "selected": True, "displayName": "SGD"},
     {"name": "RMSprop", "selected": False, "displayName": "RMSprop"},
     {"name": "Adagrad", "selected": False, "displayName": "Adagrad"},
     {"name": "Adadelta", "selected": False, "displayName": "Adadelta"},
@@ -1229,13 +1232,13 @@ SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
     {"name": "Nadam", "selected": False, "displayName": "Nadam"},
 ]
 TF_CLASSIFICATION_METRICS = [
+    {"name": "sparse_categorical_crossentropy", "selected": True, "displayName": "sparse_categorical_crossentropy"},
     {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
     {"name": "categorical_accuracy", "selected": False, "displayName": "categorical_accuracy"},
     {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
     {"name": "FalseNegatives", "selected": False, "displayName": "FalseNegatives"},
     {"name": "FalsePositives", "selected": False, "displayName": "FalsePositives"},
     {"name": "sparse_categorical_accuracy", "selected": False, "displayName": "sparse_categorical_accuracy"},
-    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
 ]
 TENSORFLOW_DENSE_PARAMETERS = [
     {
@@ -1267,7 +1270,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "use_bias",
-        "displayName": "use_bias",
+        "displayName": "Use Bias",
         "description": "Whether the layer uses a bias vector.",
         "defaultValue": [
             {
@@ -1290,7 +1293,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_initializer",
-        "displayName": "kernel_initializer",
+        "displayName": "Kernel Initializer",
         "description": "Initializer for the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
         "paramType": "list",
@@ -1302,7 +1305,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_initializer",
-        "displayName": "bias_initializer",
+        "displayName": "Bias Initializer",
         "description": "Initializer for the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_INITIALIZER_PARAMETERS],
         "paramType": "list",
@@ -1314,7 +1317,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_regularizer",
-        "displayName": "kernel_regularizer",
+        "displayName": "Kernel Regularizer",
         "description": "Regularizer function applied to the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1326,7 +1329,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_regularizer",
-        "displayName": "bias_regularizer",
+        "displayName": "Bias Regularizer",
         "description": "Regularizer function applied to the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1338,7 +1341,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "activity_regularizer",
-        "displayName": "activity_regularizer",
+        "displayName": "Activity Regularizer",
         "description": "Regularizer function applied to the output of the layer.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_REGULARIZER_PARAMETERS],
         "paramType": "list",
@@ -1350,7 +1353,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "kernel_constraint",
-        "displayName": "kernel_constraint",
+        "displayName": "Kernel Constraint",
         "description": "Constraint function applied to the kernel weights matrix.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
         "paramType": "list",
@@ -1362,7 +1365,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
     },
     {
         "name": "bias_constraint",
-        "displayName": "bias_constraint",
+        "displayName": "Bias Constraint",
         "description": "Constraint function applied to the bias vector.",
         "defaultValue": [obj for obj in TENSORFLOW_COMMON_CONSTRAINT_PARAMETERS],
         "paramType": "list",
@@ -1373,6 +1376,7 @@ TENSORFLOW_DENSE_PARAMETERS = [
         "allowedDataType": ["string"]
     },
 ]
+
 TENSORFLOW_DROPOUT_PARAMETERS = [
     {
         "name": "rate",
@@ -1382,7 +1386,7 @@ TENSORFLOW_DROPOUT_PARAMETERS = [
         "acceptedValue": None,
         "valueRange": [0.0, 1.0],
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textbox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["float"],
@@ -1395,6 +1399,7 @@ TENSORFLOW_LAMBDA_PARAMETERS = [
         "displayName": "Lambda",
         "description": "Wraps arbitrary expression as a Layer object..",
         "defaultValue": [obj for obj in TENSORFLOW_LAMBDA_FUNCTIONS],
+        "acceptedValue": None,
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
@@ -1402,18 +1407,33 @@ TENSORFLOW_LAMBDA_PARAMETERS = [
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
+    {
+        "name": "units",
+        "displayName": "Units",
+        "description": "Dimensionality of the output space.",
+        "defaultValue": None,
+        "acceptedValue": None,
+        "valueRange": None,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": [],
+        "allowedDataType": []
+    },
 ]
 SKLEARN_ML_SUPPORTED_TF_LAYER = [
     {"name": "Dense", "selected": True, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
     {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
-    {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
+    # {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
 ]
+
 SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
     {
         "name": "layer",
         "displayName": "Layer",
         "description": "A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.",
-        "defaultValue":[obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_TF_LAYER],
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "list",
@@ -1455,29 +1475,29 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "name": "batch_size",
         "displayName": "Batch Size",
         "description": "The number of training examples in one Forward/Backward Pass.",
-        "defaultValue": 0.0,
-        "acceptedValue": None,
-        "valueRange": [0.0, 100.0],
+        "defaultValue": 0,
+        "acceptedValue": 100,
+        "valueRange": None,
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "number_of_epochs",
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
-        "defaultValue": 0.0,
+        "defaultValue": 100,
         "acceptedValue": None,
-        "valueRange": [0.0, 10000.0],
+        "valueRange": None,
         "paramType": "number",
-        "uiElemType": "slider",
+        "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "metrics",

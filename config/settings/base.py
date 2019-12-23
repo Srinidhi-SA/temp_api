@@ -1650,3 +1650,12 @@ MAX_LENGTH_OF_NAME = 100
 HIDE_FROM_CELERY_FROM_ADMIN = True
 KEEP_OTHERS_IN_ADMIN = False
 HIDE_AUDIT_LOGS = True
+
+USE_HTTPS = True
+
+LOGIN_EXEMPT_URLS = (
+      r'^reset-password/$',
+      r'^reset-password/done$',
+      r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$',
+      r'^reset-password/complete'
+ )

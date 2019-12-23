@@ -85,7 +85,7 @@ export function getAllModelList() {
   }
 }
 function fetchAllModelList(token) {
-  return fetch(API + '/api/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
+  return fetch(API + '/api/trainer/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
       method: 'get',
       headers: getHeader(token)
   }).then( response => Promise.all([response, response.json()]));
@@ -209,7 +209,11 @@ export function getAppsAlgoList(pageNo) {
     })
   }
 }
-
+export function clearAppsAlgoList(){
+  return {
+    type: "CLEAR_APPS_ALGO_LIST"
+  }
+}
 export function createDeploy(slug) {
   return (dispatch) => {
     return triggerCreateDeploy(getUserDetailsOrRestart.get().userToken, slug, dispatch).then(([response, json]) => {
@@ -576,11 +580,21 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={"hidden_layer_info":tensorFlow}
+
+    var pyLyr = {"pyTorchLayers":store.getState().apps.pyTorchLayer}
+    var pySub = store.getState().apps.pyTorchSubParams
+    var pyTorchmerged = {};
+    Object.assign(pyTorchmerged, pyLyr, pySub);
+
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "PYTORCH" : pyTorchmerged,
+      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
       "dataCleansing": dataCleansing,
@@ -631,9 +645,15 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
         "value": (50/100)
       }
     }
-		var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+    var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={
+      "hidden_layer_info":tensorFlow
+      }
+  
     var details = {
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
 			"targetLevel": targetLevel,
 			"targetColumn":targetVariable,
@@ -1043,6 +1063,47 @@ export function updateModelSlug(slug) {
 export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
+
+export function addTensorFlowArray(id,layerType,name,val) {
+    if(layerType==="Dense"){
+     var  tensorFlowArray={
+        "layer":"Dense",
+        "activation": null,
+        "activity_regularizer": null,
+        "bias_constraint": null,
+        "bias_initializer": null,
+        "bias_regularizer": null,
+        "kernel_constraint": null,
+        "kernel_initializer": null,
+        "kernel_regularizer": null,
+        "units": null,
+        "use_bias": null,
+      }    
+  }
+  else if(layerType==="Dropout"){
+      var  tensorFlowArray={
+        "layer":"Dropout",
+        "rate":null,
+      }
+    }
+    else{
+      var  tensorFlowArray={
+        "layer":"Lambda",
+        "lambda":null,
+        "units":null,
+      }
+    }
+  return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
+}
+
+export function updateTensorFlowArray(id,name,val) {
+  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
+  return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
+}
+export function clearTensorFlowArray() {
+  return { type: "CLEAR_LAYERS"}
+}
+
 
 export function getAppsRoboList(pageNo) {
   return (dispatch) => {
@@ -2254,7 +2315,7 @@ export function showLevelCountsForTarget(event) {
   var selOption = event.target.childNodes[event.target.selectedIndex];
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
-  var levelCounts = null;
+  var levelCounts = "";
   var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
   var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
@@ -2273,8 +2334,8 @@ export function showLevelCountsForTarget(event) {
   }
   return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
-export function updateTargetLevel(value) {
-  return { type: "SET_TARGET_LEVEL_COUNTS", value }
+export function updateTargetLevel(levelCounts) {
+  return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
 export function clearAppsIntervel() {
   clearInterval(appsInterval)
@@ -2380,7 +2441,7 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
                     });
                   }
               }else if (type == "NonTuningParameter" || type == "TuningOption"){
-                $.each(allValues, function (i, dat) {
+                  $.each(allValues, function (i, dat) {
                     if (dat.name == parVal) {
                         dat.selected = true;
                     }
@@ -2412,6 +2473,20 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   return { type: "UPDATE_REGRESSION_ALGORITHM_DATA", newAlgorithm }
 
 }
+export function setPyTorchLayer(layerNum,lyrDt,parameterName){
+  return {
+    type: "SET_PYTORCH_LAYER",
+    layerNum,
+    lyrDt,
+    parameterName,
+  }
+}
+export function setPyTorchSubParams(subParamDt){
+  return {
+    type: "SET_PYTORCH_SUBPARAMS",
+    subParamDt,
+  }
+}
 export function setDefaultAutomatic(data) {
   return { type: "SET_REGRESSION_DEFAULT_AUTOMATIC", data }
 }
@@ -2423,6 +2498,12 @@ export function updateCrossValidationValue(val) {
 }
 export function reSetRegressionVariables() {
   return { type: "RESET_REGRESSION_VARIABLES" }
+}
+export function tensorValidateFlag(flag) {
+  return { type: "TENSOR_VALIDATE_FLAG",flag }
+}
+export function pytorchValidateFlag(flag) {
+  return { type: "PYTORCH_VALIDATE_FLAG",flag }
 }
 export function checkAtleastOneSelected() {
   let isSelected = false;

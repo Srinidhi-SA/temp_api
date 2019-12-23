@@ -11,7 +11,7 @@ import {
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 import { getRemovedVariableNames } from "../../helpers/helper.js"
-import { getDataSetPreview } from "../../actions/dataActions";
+import { getDataSetPreview, checkAllAnalysisSelected } from "../../actions/dataActions";
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -33,6 +33,8 @@ import { statusMessages } from "../../helpers/helper";
     selectedVariables: store.datasets.selectedVariables,
     convertUsingBin: store.datasets.convertUsingBin,
     numberOfBins: store.datasets.topLevelData.numberOfBins,
+    editmodelFlag:store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -54,17 +56,219 @@ export class FeatureEngineering extends React.Component {
 
   componentWillMount() {
     if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
-      window.history.go(-1);
-    }
-    this.setState({ featureEngineering: this.props.featureEngineering });
-    if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
-      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+    }else{
+      this.setState({ featureEngineering: this.props.featureEngineering });
+      if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      }
     }
     console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
     };
+    if(this.props.editmodelFlag){
+      if(this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected){
+          let binningData = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0];
+          this.state.topLevelRadioButton = "true";
+          this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, binningData.number_of_bins));
+        }
+        this.setBinsOnEdit();
+        this.setLevelOnEdit();
+        this.setTransformOnEdit();
+    }
+    
+  }
+  setBinsOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let binsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
+    
+    if(binsList.filter(i=>i.name === "create_custom_bins" && i.selected).length != 0) {
+      let customBinData = binsList.filter(i=>i.name === "create_custom_bins" && i.selected)[0].columns;
+      for(var i=0; i<customBinData.length; i++){
+        let list = colList.filter(j=>j.name===customBinData[i].name)
+        let dataToSave = [];
+        dataToSave.push({newcolumnname:customBinData[i].actual_col_name, selectBinType:"create_custom_bins",specifyintervals:customBinData[i].list_of_intervals})
+        this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"binData",dataToSave[0]))
+      }
+    }
+    if(binsList.filter(i=>i.name === "create_equal_sized_bins" && i.selected).length != 0) {
+      let equalBinData = binsList.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns;
+      for(var i=0; i<equalBinData.length; i++){
+        let list = colList.filter(j=>j.name===equalBinData[i].name)
+        let dataToSave = [];
+        dataToSave.push({newcolumnname:equalBinData[i].actual_col_name, selectBinType:"create_equal_sized_bins",numberofbins:equalBinData[i].number_of_bins})
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"binData",dataToSave[0]))
+      }
+    }
+  }
+  setLevelOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let levelsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
+    
+    if(levelsList.filter(i=>i.name === "create_new_levels" && i.selected).length != 0) {
+      let dLevelData = levelsList.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns;
+      for(var i=0; i<dLevelData.length; i++){
+        let list = colList.filter(j=>j.name===dLevelData[i].name)
+        let levelsValue = Object.entries(dLevelData[i].mapping_dict);
+        let levelLen = levelsValue.length;
+        let dataToSave = [];
+        for(let i=0;i<levelLen;i++){
+          dataToSave.push({inputValue:levelsValue[i][0],multiselectValue:levelsValue[i][1]})
+        }
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"levelData",dataToSave))
+      }
+    }
+
+    if(levelsList.filter(i=>i.name === "create_new_datetime_levels" && i.selected).length != 0) {
+      let dtLevelData = levelsList.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns;
+      for(var i=0; i<dtLevelData.length; i++){
+        let list = colList.filter(j=>j.name===dtLevelData[i].name)
+        let levelsValue = Object.entries(dtLevelData[i].mapping_dict);
+        let levelLen = levelsValue.length;
+        let dataToSave = [];
+
+        for(let i=0;i<levelLen;i++){
+          let sDate = levelsValue[i][1][0].split("/").reverse().join("-");
+          let eDate = levelsValue[i][1][1].split("/").reverse().join("-")
+          dataToSave.push({inputValue:levelsValue[i][0],startDate:sDate,endDate:eDate})
+        }
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"levelData",dataToSave))
+      }
+    }
+  }
+
+  setTransformOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let transList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.transformation_settings.operations;
+  //for measure
+      let dataToSave = [];
+      let mTransData1 ={replace_values_with:false,replace_values_with_input:"",replace_values_with_selected:""};
+      let mTransData2 ={feature_scaling:false,perform_standardization_select:""};
+      let mTransData3 ={variable_transformation:false,variable_transformation_select:""};
+      let transSlug = "";
+
+      if(transList.filter(i=>i.name === "replace_values_with" && i.selected).length != 0){
+        let transData = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData1 = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns[0];
+          mTransData1.replace_values_with=true;
+          transSlug = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "perform_standardization" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData2 = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns[0];
+          mTransData2.feature_scaling=true;
+          transSlug = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "variable_transformation" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData3 = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns[0];
+          mTransData3.variable_transformation=true;
+          transSlug = list[0].slug;
+        } 
+      }
+      dataToSave.push({replace_values_with:mTransData1.replace_values_with,replace_values_with_input:mTransData1.replace_value,replace_values_with_selected:mTransData1.replace_by,
+          feature_scaling:mTransData2.feature_scaling,perform_standardization_select:mTransData2.standardization_type,
+          variable_transformation:mTransData3.variable_transformation,variable_transformation_select:mTransData3.transformation_type})
+      
+      if(transSlug != "") 
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug,"transformationData",dataToSave[0]));
+    
+      //for dimension
+      let dataToSave1 = [];
+      let dimData1 ={encoding_dimensions:false,encoding_type:""};
+        let dimData2 ={return_character_count:false};
+        let dimData3 ={is_custom_string_in:false,is_custom_string_in_input:""};
+      let transSlug1 = "";
+
+      if(transList.filter(i=>i.name === "encoding_dimensions" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData1 = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns[0];
+          dimData1.encoding_dimensions=true;
+          transSlug1 = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "return_character_count" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData2 = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns[0];
+          dimData2.return_character_count=true;
+          transSlug1 = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "is_custom_string_in" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData3 = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns[0];
+          dimData3.is_custom_string_in=true;
+          transSlug1 = list[0].slug;
+        } 
+      }
+      dataToSave1.push({encoding_dimensions:dimData1.encoding_dimensions,encoding_type:dimData1.encoding_type,
+        return_character_count:dimData2.return_character_count,
+        is_custom_string_in:dimData3.is_custom_string_in,is_custom_string_in_input:dimData3.user_given_string})
+        
+      if(transSlug1 != "")
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug1,"transformationData",dataToSave1[0]));
+    
+      //For datetime
+      let dataToSave2 = [];
+        let dtData1 ={is_date_weekend:false};
+        let dtData2 ={extract_time_feature:false,extract_time_feature_select:""};
+        let dtData3 ={time_since:false,time_since_input:""};
+        let transSlug2 = "";
+
+      if(transList.filter(i=>i.name === "is_date_weekend" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData1 = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns[0];
+          dtData1.is_date_weekend=true;
+          transSlug2 = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "extract_time_feature" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData2 = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns[0];
+          dtData2.extract_time_feature=true;
+          transSlug2 = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "time_since" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData3 = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns[0];
+          dtData3.time_since_is_true=true;
+          transSlug2 = list[0].slug;
+          dtData3.time_since_input = transData[0].time_since.split("/").reverse().join("-")
+        } 
+      }
+      dataToSave2.push({is_date_weekend:dtData1.is_date_weekend,
+        extract_time_feature:dtData2.extract_time_feature, extract_time_feature_select:dtData2.time_feature_to_extract,
+        time_since:dtData3.time_since_is_true, time_since_input:dtData3.time_since_input})
+      
+      if(transSlug2 != "")
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug2,"transformationData",dataToSave2[0]));
   }
 
   componentDidMount() {
@@ -88,7 +292,7 @@ export class FeatureEngineering extends React.Component {
     const from = this.getValueOfFromParam();
     if (from === 'algorithm_selection') {
     }
-    else {
+    else if(!this.props.editmodelFlag){
     this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
   }
 }

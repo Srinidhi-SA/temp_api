@@ -926,6 +926,8 @@ class Trainer(models.Model):
             try:
                 if 'TENSORFLOW' in configUI:
                     config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
+                if 'PYTORCH' in configUI:
+                    config['config']["ALGORITHM_SETTING"][6].update({'nnptc_params': configUI['PYTORCH']})    
             except Exception as err:
                 print "Error adding Tesorflow Selection to Algorithm"
                 print err

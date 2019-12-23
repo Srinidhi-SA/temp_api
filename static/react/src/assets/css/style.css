@@ -15216,7 +15216,7 @@ a:hover .icon-container .icon { background:#e6e6e6; }
 a .icon-container .class { color: #333333;}
 a:hover .icon-container .class { color: #02988c;}
 .drp_cst_width { width:280px; }
-.drp_cst_width li span { width: 48%; display: block; float:left; margin-left: 2%; text-align: center; }
+.drp_cst_width li span { width: 48%; display: block; float:left; margin-left: 2% !important; text-align: center; }
 .drp_cst_width li span:first-child { margin-left:0; }
 .drp_cst_width li span a { display:block;  padding: 5px; border-radius:2px }
 
@@ -16397,12 +16397,16 @@ div#replaceValues {
 .shareButton{
    	width: 48%!important;
    	margin-top: 2%!important;
-    margin-left: 26%!important;
-    margin-right: 26%!important;
-    display: block;
 
 }
-
+.shareButtonCenter{
+	width: 48%!important;
+	margin-top: 2%!important;
+	left: 26%!important;
+	margin-right: 26%!important;
+	display: block;
+	position: relative;
+}
 .width-multisel{
 	width :100%;
 }
@@ -16457,6 +16461,13 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .scrollable-menu li.greyDisable a {
 	color: #b1afaf !important;
 	cursor: not-allowed;
+}
+.summaryLink {
+	color:#6f9ec3;
+}
+.summaryLink:hover{
+	color:#6f9ec3;
+	text-decoration-line: underline;
 }
 .democlass {
 	font-weight: bold;
@@ -16562,11 +16573,51 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   margin-right: 1%;
 }
 .layerHeader{
-  background-color: #e6e6e6;
-    padding: 8px 10px;
-    font-size: 15px;
-    font-weight: 500;
+	background-color: #e6e6e6;
+	padding: 13px 10px;
+	font-size: 14px;
+	font-weight: 600;
 }
 .layerBody{
-  padding: 10px 0px;
+	padding: 10px 0px;
+	padding-top: 20px;
+}
+.dtImage{
+	  display: inline-block;
+    height: 15px;
+		padding-right: 2px;
+		padding-left: 5px;
+}
+.legends{
+	float: right;
+  padding-right: 30px;
+  padding-top: 20px;
+}
+.mandate:after {
+	content: "*";
+	color: #ff0000;
+	font-size: 15px;
+}
+.error{
+	color: #ff0000;
+}
+.layerHeader .fa-chevron-up{
+	float: right;
+	padding: 2px;
+	cursor: pointer;
+} 
+
+.collapsed:before {
+	content: "\f078" !important;
+}
+.Layer {
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
+}
+
+/* For IE10 */
+.Layer::-ms-expand {
+  display: none;
 }

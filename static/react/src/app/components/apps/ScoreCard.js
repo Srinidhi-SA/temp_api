@@ -137,7 +137,7 @@ export class ScoreCard extends React.Component {
 						{permissionDetails.rename_score == true ?
                     <span onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
                     <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>
+                    <i className="fa fa-pencil"></i>
                     &nbsp;&nbsp;Rename</a>
                     </span>:""}
                     {permissionDetails.remove_score == true ?
@@ -147,7 +147,7 @@ export class ScoreCard extends React.Component {
                                 ? "Stop"
                                 : "Delete"}</a>
                     </span>:""}
-                    {data.status == "SUCCESS"? <span  className="shareButton"onClick={this.openShareModal.bind(this,data.name,data.slug,"Score")}>
+                    {data.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,data.name,data.slug,"Score")}>
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}
