@@ -162,7 +162,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
                     this.props.dispatch(pytorchValidateFlag(false));
                 }else{
-                    if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("--Select--"))){
+                    if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("Adam"))){
                         let beta = this.props.pyTorchSubParams;
                         let tupVal = beta["optimizer"]["betas"].toString();
                         beta["optimizer"]["betas"] = "("+ tupVal + ")";
@@ -187,7 +187,7 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-                if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("--Select--"))){
+                if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("Adam"))){
                     let beta = this.props.pyTorchSubParams;
                     let tupVal = beta["optimizer"]["betas"].toString();
                     beta["optimizer"]["betas"] = "("+ tupVal + ")";

@@ -27,7 +27,7 @@ export class PyLayer extends React.Component {
 
     selectHandleChange(parameterData,e){
         let layerArry = this.props.id;
-        if(parameterData.name === "activation" || parameterData.name === "batchnormalisation" || parameterData.name === "dropout"){
+        if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
                 layerDt[parameterData.name] = {"name":"none"}
@@ -261,8 +261,8 @@ export class PyLayer extends React.Component {
                         selectedValue = options[prop].name;
                     }else if(parameterData.name === "activation"){
                         selectedValue = this.props.pyTorchLayer[lyr].activation.name
-                    }else if(parameterData.name === "batchnormalisation"){
-                        selectedValue = this.props.pyTorchLayer[lyr].batchnormalisation.name
+                    }else if(parameterData.name === "batchnormalization"){
+                        selectedValue = this.props.pyTorchLayer[lyr].batchnormalization.name
                     }else if(parameterData.name === "dropout"){
                         selectedValue = this.props.pyTorchLayer[lyr].dropout.name
                     }

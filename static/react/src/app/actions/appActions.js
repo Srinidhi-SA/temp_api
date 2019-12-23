@@ -590,6 +590,8 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
     let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Networks(pyTorch)")[0];
     let nnptc = {"nnptc_parameters":[pyTorchmerged]}
     Object.assign(algorithmChanges,nnptc);
+    console.log("+++++++++++++++++++++++++++++++")
+    console.log(nnptc);
 
     var details = {
       "metric": store.getState().apps.metricSelected,
