@@ -16621,3 +16621,13 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .Layer::-ms-expand {
   display: none;
 }
+.mt-18{
+	margin-top: 18px;
+}
+#resetMsg{
+    display: inline-block;
+    float: left;
+    color: #ff0000;
+    width: 70%;
+    text-align: left;
+}
