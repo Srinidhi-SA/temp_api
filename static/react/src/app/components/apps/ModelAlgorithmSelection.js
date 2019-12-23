@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -26,6 +26,11 @@ import { PyTorch } from "./PyTorch";
         apps_regression_modelName:store.apps.apps_regression_modelName,
         currentAppDetails:store.apps.currentAppDetails,
         modelSummaryFlag:store.apps.modelSummaryFlag,
+        pytorchValidateFlag: store.datasets.pytorchValidateFlag,
+        pyTorchLayer:store.apps.pyTorchLayer,
+        pyTorchSubParams:store.apps.pyTorchSubParams,
+
+
     };
 })
 
@@ -133,14 +138,38 @@ export class ModelAlgorithmSelection extends React.Component {
                     $(".batchGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                }
-
-                 
-                let msg= statusMessages("warning","Please resolve errors.","small_mascot");
+                }               
+                let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
                 return false;
-
+            }
             
+            else if(!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")){
+                let errormsg = statusMessages("warning","Please enter values of mandatory fields...","small_mascot");
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if (Object.keys(this.props.pyTorchLayer).length != 0){ 
+                if($(".bias option:selected").text().includes("--Select--")){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
+                }
+                else if($(".input_unit")[0].value === "" || $(".input_unit")[0].value === undefined){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
+                }
+                else if($(".output_unit")[0].value === "" || $(".output_unit")[0].value === undefined){
+                    bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
+                    this.props.dispatch(pytorchValidateFlag(false));
+                }else{
+                    if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("--Select--"))){
+                        let beta = this.props.pyTorchSubParams;
+                        let tupVal = beta["optimizer"]["betas"].toString();
+                        beta["optimizer"]["betas"] = "("+ tupVal + ")";
+                        this.props.dispatch(setPyTorchSubParams(beta));
+                    }
+                    this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
+                }
             }else if ($(".activation option:selected").text().includes("--Select--")){
                 bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
                 return false
@@ -158,7 +187,13 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
+                if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("--Select--"))){
+                    let beta = this.props.pyTorchSubParams;
+                    let tupVal = beta["optimizer"]["betas"].toString();
+                    beta["optimizer"]["betas"] = "("+ tupVal + ")";
+                    this.props.dispatch(setPyTorchSubParams(beta));
+                }
+                this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
             }
 
     }
@@ -279,7 +314,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 <FormGroup role="form">
                                 {data.algorithmName === "TensorFlow"?
                                 <TensorFlow data/>
-                                :data.algorithmName === "PyTorch"?
+                                :data.algorithmName === "Neural Networks(pyTorch)"?
                                 <PyTorch parameterData={data} type="NonTuningParameter"/>:
                                 (
 								 <div className="xs-mt-20">
@@ -293,7 +328,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div class="clearfix"></div>
                                     </div>
                                  </div>)}
-                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":
+                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":
                                  (<span>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div>
@@ -316,7 +351,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 
-                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "PyTorch")?"":parametersData}</div>
+                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":parametersData}</div>
 								</FormGroup>
                             </Tab>
                         );
