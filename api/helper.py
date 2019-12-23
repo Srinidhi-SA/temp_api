@@ -10,6 +10,7 @@ import re
 
 from django.conf import settings
 import yarn_api_client
+# from api.tasks import *
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 import pytz
@@ -1427,7 +1428,8 @@ def get_random_model_id(algo_name):
         "Random Forest Regression": "RFR",
         "Linear Regression": "LR",
         "Neural Network": "NN",
-        "TensorFlow": "TF"
+        "TensorFlow": "TF",
+        "Neural Networks(pyTorch)": "PT"
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number])
@@ -1459,19 +1461,15 @@ def get_mails_from_outlook():
         print "Access token received."
         ### Trigger mail receive action  ###
         result_message = get_outlook_mails(access_token)
-        if result_message == None:
+        if 'status' in result_message:
             print "result message not found."
-            return None
+            return {'status': 'FAILED', 'err': result_message['err']}
         else:
-            try:
-                print "result message found"
-                return result_message
-            except Exception as error:
-                print error
-                return None
-
-    except:
-        return 'Error retrieving token: {0} - {1}'.format(r.status_code, r.text)
+            print "got result message"
+            return result_message
+    except Exception:
+        err = "Error retrieving token: {0} - {1}".format(r.status_code, r.text)
+        return {'status': 'FAILED', 'err': err}
 
 
 def get_outlook_auth(auth_code, refresh_token, outlook_data):
@@ -1521,6 +1519,7 @@ def get_outlook_mails(access_token):
             return info_dict
     except Exception as err:
         print err
+        return {'status': 'FAILED', 'err': err}
 
 
 def time_conversion(t1):
@@ -1645,6 +1644,7 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
             # return "{0}: {1}".format(r.status_code, r.text)
     except Exception as err:
         print err
+        return {'status': 'FAILED', 'err': err}
 
 
 # Generic API Sending
@@ -1664,14 +1664,14 @@ def make_api_call(method, url, token, payload=None, parameters=None):
     # headers.update(instrumentation)
     response = None
 
-    if (method.upper() == 'GET'):
+    if method.upper() == 'GET':
         response = requests.get(url, headers=headers, params=parameters)
-    elif (method.upper() == 'DELETE'):
+    elif method.upper() == 'DELETE':
         response = requests.delete(url, headers=headers, params=parameters)
-    elif (method.upper() == 'PATCH'):
+    elif method.upper() == 'PATCH':
         headers.update({'Content-Type': 'application/json'})
         response = requests.patch(url, headers=headers, data=json.dumps(payload), params=parameters)
-    elif (method.upper() == 'POST'):
+    elif method.upper() == 'POST':
         headers.update({'Content-Type': 'application/json'})
         response = requests.post(url, headers=headers, data=json.dumps(payload), params=parameters)
 

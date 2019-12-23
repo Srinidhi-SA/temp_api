@@ -439,6 +439,7 @@ def save_results_to_job(slug, results):
         job.results = results
     job.save()
 
+
 @task(name='save_job_messages', queue=CONFIG_FILE_NAME)
 def save_job_messages(slug, messages):
     from api.helper import get_db_object
@@ -760,6 +761,7 @@ def check_if_autoML_model_job_needs_to_be_triggered(dataset_object_id):
             return
 
     except Exception as err:
+        outlook_autoML_failure_mail(trainer_object_id=None, error=err)
         print(err)
 
 
@@ -771,43 +773,50 @@ from celery.decorators import periodic_task
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
-
+    print 'mails >>> ', mails
     if mails is not None:
-        print "All set to proceed to upload dataset."
+        mail_id = ''
+        if 'status' and 'err' not in mails.keys():
+            print "All set to proceed to upload dataset."
 
-        for configkey, configvalue in mails.iteritems():
-            data = {}
-            for key, value in configvalue.iteritems():
-                try:
-                    # print key,value
-                    # value is a dict
-                    #############  Create config and trigger metadata job for train and test Dataset  #################
-                    if 'sub_target' in key:
-                        data['sub_target'] = value.capitalize()
-                    if 'target' in key:
-                        data['target'] = value.capitalize()
-                    if 'train_dataset' in key:
-                        input_file = value
-                        data['Traindataset'] = input_file
-                        data['name'] = configkey
-                    if 'test_dataset' in key:
-                        input_file = value
-                        data['Testdataset'] = input_file
-                        data['score_name'] = configkey
-                    if 'emailAddress' in key:
-                        data['email'] = value['emailAddress']['address']
-                except Exception as error:
-                    print error
-            if len(data) > 0:
-                print "Here is the collected data"
-                print data
-                trigger_metaData_autoML.delay(data)
-            else:
-                print "No mails found"
-                break
-            ##########################################################################################
-
-            # pass
+            for configkey, configvalue in mails.iteritems():
+                print configkey
+                data = {}
+                for key, value in configvalue.iteritems():
+                    try:
+                        print "inside try ... "
+                        # print key,value
+                        # value is a dict
+                        #############  Create config and trigger metadata job for train and test Dataset  #################
+                        if 'sub_target' in key:
+                            data['sub_target'] = value.capitalize()
+                        if 'target' in key:
+                            data['target'] = value.capitalize()
+                        if 'train_dataset' in key:
+                            input_file = value
+                            data['Traindataset'] = input_file
+                            data['name'] = configkey
+                        if 'test_dataset' in key:
+                            input_file = value
+                            data['Testdataset'] = input_file
+                            data['score_name'] = configkey
+                        if 'emailAddress' in key:
+                            data['email'] = value['emailAddress']['address']
+                            mail_id = data['email']
+                    except Exception as error:
+                        outlook_autoML_failure_mail(trainer_object_id=None, error=error, mail_id=mail_id)
+                        print 'failure mail sent'
+                if len(data) > 0:
+                    print "Here is the collected data"
+                    print data
+                    trigger_metaData_autoML.delay(data)
+                else:
+                    print "No mails found"
+                    break
+                ##########################################################################################
+        else:
+            outlook_autoML_failure_mail(trainer_object_id=None, error=mails['err'], mail_id=mail_id)
+            print 'failure mail sent'
     else:
         print "No mails."
     '''
@@ -835,11 +844,14 @@ def trigger_metaData_autoML(data):
     from django.core.files import File
     from api.datasets.helper import convert_to_string
     from api.datasets.serializers import DatasetSerializer
+
+    fail_log = dict()
+
     try:
         #########  Trainer dataset config   #########
         train_file = open(settings.BASE_DIR + '/media/datasets/' + data['Traindataset'])
         train_f = File(train_file)
-        train_dataset_config = {}
+        train_dataset_config = dict()
         train_dataset_config['name'] = data['name'] + '_Train'
         train_dataset_config['input_file'] = train_f
         train_dataset_config['datasource_type'] = 'fileUpload'
@@ -848,12 +860,13 @@ def trigger_metaData_autoML(data):
         train_dataset_serializer = DatasetSerializer(data=train_dataset_details)
         ###################################################################
     except Exception as err:
-        print err
+        fail_log['train_config_error'] = str(err)
+        pass
     try:
         #########  Test dataset config   #########
         test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
         test_f = File(test_file)
-        test_dataset_config = {}
+        test_dataset_config = dict()
         test_dataset_config['name'] = data['score_name'] + '_Test'
         test_dataset_config['input_file'] = test_f
         test_dataset_config['datasource_type'] = 'fileUpload'
@@ -861,22 +874,21 @@ def trigger_metaData_autoML(data):
         test_dataset_details = convert_to_string(test_dataset_config)
         test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
         ###################################################################
-    except:
+    except Exception as err:
+        fail_log['test_config_error'] = str(err)
         pass
 
     if train_dataset_serializer.is_valid():
         print "Saving train dataset Serializer"
         train_dataset_object = train_dataset_serializer.save()
         print(train_dataset_object)
-        ################################   Create config for model object that to be triggered after metedata job  ##################
+        ################################   Create config for model object that to be triggered after metadata job  ##################
         try:
-            model_config = {
-                "name": data['name'] + "_Trainer",
-                "app_id": 2,
-                "mode": "autoML",
-                "email": data['email'],
-                "config": {}
-            }
+            model_config = dict()
+            model_config['name'] = data['name'] + '_Trainer'
+            model_config['app_id'] = 2
+            model_config['mode'] = "autoML"
+            model_config['email'] = data['email']
             model_config['dataset'] = train_dataset_object.id
             model_config['config']['targetColumn'] = data['target']
             model_config['config']['targetLevel'] = data['sub_target']
@@ -899,11 +911,9 @@ def trigger_metaData_autoML(data):
                         test_dataset_object = test_dataset_serializer.save()
                         print(test_dataset_object)
                         ################ Create config for Score object that to be triggered after model job   ##############
-                        score_config = {
-                            "name": data['name'] + "_Score",
-                            "app_id": 2,
-                            # "config":{}
-                        }
+                        score_config = dict()
+                        score_config['name'] = data['name'] + '_Score'
+                        score_config['app_id'] = 2
                         score_config['trainer'] = trainer_object.id
                         score_config['dataset'] = test_dataset_object.id
                         score_config['created_by'] = user_id.id
@@ -916,20 +926,35 @@ def trigger_metaData_autoML(data):
                             print score_object
                             test_dataset_object.create()
                         else:
-                            print(score_serializer.errors)
+                            fail_log['score_serializer_error'] = str(score_serializer.errors)
+                            # print(score_serializer.errors)
                     else:
-                        print(test_dataset_serializer.errors)
-                except:
+                        fail_log['test_dataset_serializer_error'] = str(test_dataset_serializer.errors)
+                        # print(test_dataset_serializer.errors)
+                except Exception as err:
+                    fail_log['score_generation_error'] = str(err)
                     pass
+                    # outlook_autoML_failure_mail(trainer_object_id=None, error=err)
                     # print e
             else:
-                print(trainer_serializer.errors)
+                fail_log['trainer_serializer_error'] = str(trainer_serializer.errors)
+                # print(trainer_serializer.errors)
             ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
             train_dataset_object.create()
         except Exception as err:
-            print err
+            fail_log['model_config_error'] = str(err)
+            # outlook_autoML_failure_mail(trainer_object_id=None, error=err)
+            pass
     else:
+        fail_log['train_dataset_serializer_error'] = str(train_dataset_serializer.errors)
         print(train_dataset_serializer.errors)
+
+    if fail_log:
+        error = ''
+        for i in fail_log:
+            error = error + '\n' + i
+        outlook_autoML_failure_mail(trainer_object_id=None, error=error, mail_id=data['email'])
+        print 'failure mail sent'
 
 
 @task(name='create_model_autoML', queue=CONFIG_FILE_NAME)
@@ -1074,11 +1099,13 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             if settings.USE_HTTPS:
                 protocol = 'https'
 
-            Result_URL = '{}://{}/api/view_model_summary_autoML/?slug={}'.format(protocol, settings.THIS_SERVER_DETAILS['host'],trainer_object.slug)
-            #content = "AutoML Dataupload successful. Model is created."
+            Result_URL = '{}://{}/api/view_model_summary_autoML/?slug={}'.format(protocol,
+                                                                                 settings.THIS_SERVER_DETAILS['host'],
+                                                                                 trainer_object.slug)
+            # content = "AutoML Dataupload successful. Model is created."
             content = Result_URL
-            #app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
-            #attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
+            # app_slug = CustomApps.objects.get(app_id=trainer_object.app_id)
+            # attachment_path = get_model_summary_pdf(app_slug.slug, trainer_object.slug)
             mail_data = dict()
             mail_data['modelName'] = trainer_object.name
             mail_data['datasetName'] = trainer_object.dataset.name
@@ -1090,7 +1117,7 @@ def outlook_autoML_success_mail(trainer_object_id=None):
             try:
                 if trainer_object.email is not None:
                     return_mail_id = trainer_object.email
-                    #mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                    # mail('send', access_token=access_token, return_mail_id=return_mail_id,
                     #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                     mail('send', access_token=access_token, return_mail_id=return_mail_id,
                          subject='Marlabs-AutoML Success', content=content, mail_options=mail_data)
@@ -1099,10 +1126,60 @@ def outlook_autoML_success_mail(trainer_object_id=None):
                     user_object = User.objects.get(id=user_id)
                     return_mail_id = user_object.email
                     if return_mail_id is not None:
-                        #mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                        # mail('send', access_token=access_token, return_mail_id=return_mail_id,
                         #     subject='Marlabs-AutoML Success', content=content, attachments=attachment_path)
                         mail('send', access_token=access_token, return_mail_id=return_mail_id,
                              subject='Marlabs-AutoML Success', content=content, mail_options=mail_data)
+
+            except Exception as err:
+                print err
+                pass
+        else:
+            pass
+
+
+@task(name='outlook_autoML_failure_mail', queue=CONFIG_FILE_NAME)
+def outlook_autoML_failure_mail(trainer_object_id=None, error=None, mail_id=None):
+
+    print "Trying to send failure mail"
+    mail_data = dict()
+    from api.helper import get_outlook_auth
+    r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
+                         settings.OUTLOOK_DETAILS)
+    result = r.json()
+    access_token = result['access_token']
+    print "got access token"
+    if trainer_object_id is None:
+        mail_data['modelName'] = 'UNDEFINED'
+        mail_data['datasetName'] = 'UNDEFINED'
+        mail_data['createdAt'] = 'UNDEFINED'
+        mail_data['variable'] = 'UNDEFINED'
+        print "mail id : ", mail_id
+        err_mail('send', access_token=access_token, return_mail_id=mail_id,
+                 subject='Marlabs-AutoML Failure', error=error, mail_options=mail_data)
+    else:
+        trainer_object = Trainer.objects.get(id=trainer_object_id)
+        if trainer_object.mode == 'autoML':
+
+            mail_data['modelName'] = trainer_object.name
+            mail_data['datasetName'] = trainer_object.dataset.name
+            mail_data['createdAt'] = trainer_object.created_at
+            conf = json.loads(trainer_object.config)
+            for i in conf['config']['COLUMN_SETTINGS']['variableSelection']:
+                if i['targetColumn']:
+                    mail_data['variable'] = i['name']
+            try:
+                if trainer_object.email is not None:
+                    return_mail_id = trainer_object.email
+                    err_mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                             subject='Marlabs-AutoML Failure', error=error, mail_options=mail_data)
+                else:
+                    user_id = trainer_object.created_by_id
+                    user_object = User.objects.get(id=user_id)
+                    return_mail_id = user_object.email
+                    if return_mail_id is not None:
+                        err_mail('send', access_token=access_token, return_mail_id=return_mail_id,
+                                 subject='Marlabs-AutoML Failure', error=error, mail_options=mail_data)
 
             except Exception as err:
                 print err
@@ -1118,13 +1195,74 @@ def mail(action_type=None, access_token=None, return_mail_id=None, subject=None,
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
         try:
-            #messages = send_my_messages(access_token, return_mail_id, subject, content, attachments)
             messages = send_my_messages(access_token, return_mail_id, subject, content, mail_options)
             if messages[:3] == '202':
                 print "Mail Sent"
         except Exception as e:
             print e
             print "Some issue with mail sending module..."
+
+
+def err_mail(action_type=None, access_token=None, return_mail_id=None, subject=None, error=None, mail_options=None):
+    # access_token = access_token
+    # If there is no token in the session, redirect to home
+    if not access_token:
+        return HttpResponseRedirect(reverse('tutorial:home'))
+    else:
+        try:
+            messages = send_failure_messages(access_token, return_mail_id, subject, error, mail_options)
+            if messages[:3] == '202':
+                print "Mail Sent"
+        except Exception as e:
+            print e
+            print "Some issue with mail sending module..."
+
+
+def send_failure_messages(access_token, return_mail_id, subject, error, mail_options):
+    get_messages_url = 'https://graph.microsoft.com/v1.0/me/' + '/sendmail'
+
+    htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>Model creation has failed! \
+    </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable : {}</br>Reason for failure : {} \
+    </br></br></br></br>Sorry for the inconvenience.</br></br>Regards,</br>mAdvisor</body></html>""" \
+        .format(return_mail_id.split('@')[0],
+                mail_options['modelName'],
+                mail_options['createdAt'],
+                mail_options['datasetName'],
+                mail_options['variable'],
+                str(error))
+
+    payload = {
+
+        "Message": {
+
+            "Subject": subject,
+            "Body": {
+
+                "ContentType": "HTML",
+                "Content": htmlData,
+
+            },
+            "ToRecipients": [
+                {
+                    "EmailAddress": {
+                        "Address": return_mail_id
+                    }
+                }
+            ],
+            # 'Attachments': [attached_files]
+        },
+        "SaveToSentItems": "true",
+
+    }
+    from api.helper import make_api_call
+    import requests
+
+    r = make_api_call('POST', get_messages_url, access_token, payload=payload)
+    if r.status_code == requests.codes.ok:
+        print "Mail Sent"
+        return r.json()
+    else:
+        return "{0}: {1}".format(r.status_code, r.text)
 
 
 def send_my_messages(access_token, return_mail_id, subject, content, mail_options):
@@ -1151,12 +1289,12 @@ def send_my_messages(access_token, return_mail_id, subject, content, mail_option
     </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable : 
     {}</br></br>Please go through the attached link in order to view your Model Summary.
     </br></br></br><a href="{}">Model Summary</a></br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
-    .format(return_mail_id.split('@')[0],
-            mail_options['modelName'],
-            mail_options['createdAt'],
-            mail_options['datasetName'],
-            mail_options['variable'],
-            content)
+        .format(return_mail_id.split('@')[0],
+                mail_options['modelName'],
+                mail_options['createdAt'],
+                mail_options['datasetName'],
+                mail_options['variable'],
+                content)
 
     payload = {
 
@@ -1176,7 +1314,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, mail_option
                     }
                 }
             ],
-            #'Attachments': [attached_files]
+            # 'Attachments': [attached_files]
         },
         "SaveToSentItems": "true",
 
@@ -1190,6 +1328,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, mail_option
         return r.json()
     else:
         return "{0}: {1}".format(r.status_code, r.text)
+
 
 '''
 def send_devtools(driver, cmd, params={}):
