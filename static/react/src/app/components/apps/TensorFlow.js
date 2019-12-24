@@ -69,6 +69,9 @@ export class TensorFlow extends React.Component {
       bootbox.alert(statusMessages("warning", "Please select an alternate layer.", "small_mascot"));
       return false
       }
+      else{
+        this.addLayer(slectedLayer);
+      }
   }
 
    parameterValidate=()=>{
