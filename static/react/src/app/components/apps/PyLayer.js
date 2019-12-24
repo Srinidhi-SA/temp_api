@@ -30,7 +30,7 @@ export class PyLayer extends React.Component {
         if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
-                layerDt[parameterData.name] = {"name":"none"}
+                layerDt[parameterData.name] = {"name":"None"}
             }
             layerDt[parameterData.name].name = e.target.value;
             let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
@@ -203,7 +203,7 @@ export class PyLayer extends React.Component {
                         var mandateField = ["bias","add_bias_kv","add_zero_attn","head_bias","track_running_stats","affine"];
                         var selectedValue = ""
                         var optionsTemp = []
-                        optionsTemp.push(<option value="none">--select--</option>)
+                        optionsTemp.push(<option value="None">--select--</option>)
                         options.map(k => {
                             optionsTemp.push(<option value={k} > {k}</option>)
                         })
@@ -255,7 +255,7 @@ export class PyLayer extends React.Component {
                 var mandateField= ["Bias"]
                 var selectedValue = ""
                 var optionsTemp =[];
-                optionsTemp.push(<option value="none">--Select--</option>)
+                optionsTemp.push(<option value="None">--Select--</option>)
                 for (var prop in options) {
                     if(options[prop].selected){
                         selectedValue = options[prop].name;
@@ -281,7 +281,7 @@ export class PyLayer extends React.Component {
                                 <div className = "error"></div>
                             </div>
                         </div>
-                        {(selectedValue != "none" && selectedValue != "" && selectedValue != "undefined" && selectedValue != "bias" )?
+                        {(selectedValue != "None" && selectedValue != "" && selectedValue != "undefined" && selectedValue != "bias" )?
                                 parameterData.displayName === "dropout"?
                                     <div> {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)} </div>
                                 :
