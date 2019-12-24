@@ -486,7 +486,7 @@ export class PyTorch extends React.Component {
                                 var options = item[i].valueRange
                                 var selectedValue = ""
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="none">--Select--</option>)
+                                optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
                                     optionsTemp.push(<option value={k} > {k}</option>)
                                 })
@@ -507,7 +507,7 @@ export class PyTorch extends React.Component {
                                 var options = item[i].defaultValue.map(i=>i.name)
                                 var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity"];
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="none">--Select--</option>)
+                                optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
                                     optionsTemp.push(<option value={k} > {k}</option>)
                                 })
@@ -539,7 +539,7 @@ export class PyTorch extends React.Component {
                 var mandateField= ["Loss","Optimizer"];
                 var selectedValue = "";
                 var optionsTemp = []
-                parameterData.displayName != "Layer" && optionsTemp.push(<option value="none">--Select--</option>)
+                parameterData.displayName != "Layer" && optionsTemp.push(<option value="None">--Select--</option>)
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
@@ -573,7 +573,7 @@ export class PyTorch extends React.Component {
                                 </div>
                             : ""}
                             {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
-                                this.props.pyTorchSubParams[parameterData.name][parameterData.name] === "none"?""
+                                this.props.pyTorchSubParams[parameterData.name][parameterData.name] === "None"?""
                                     :<div>
                                         {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)}
                                     </div>
