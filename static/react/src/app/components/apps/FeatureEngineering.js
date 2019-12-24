@@ -547,7 +547,7 @@ export class FeatureEngineering extends React.Component {
         }
       }
       else if(this.props.selectedItem.columnType == "dimension"){
-        if(!document.getElementById("encoding_dimensions").checked || !document.getElementById("return_character_count").checked || !document.getElementById("is_custom_string_in").checked){
+        if(!document.getElementById("encoding_dimensions").checked && !document.getElementById("return_character_count").checked && !document.getElementById("is_custom_string_in").checked){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("No fields Selected");
         }else{
