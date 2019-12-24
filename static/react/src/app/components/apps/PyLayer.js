@@ -30,7 +30,7 @@ export class PyLayer extends React.Component {
         if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
-                layerDt[parameterData.name] = {"name":"none"}
+                layerDt[parameterData.name] = {"name":"None"}
             }
             layerDt[parameterData.name].name = e.target.value;
             let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
