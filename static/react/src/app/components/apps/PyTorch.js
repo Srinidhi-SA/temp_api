@@ -185,7 +185,7 @@ export class PyTorch extends React.Component {
       if(name == "number_of_epochs" && val<1){
         e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
       }
-      else if(name=="batch_size" && (val < 0 ) || (val > this.props.datasetRow-1) ){
+      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)) ){
         e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
       }
         else {
