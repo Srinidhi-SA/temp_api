@@ -400,10 +400,10 @@ else:
                 "description": "This is implementation of tensorflow algorithm"
             },
             {
-                "algorithmName": "PyTorch",
+                "algorithmName": "Neural Networks(pyTorch)",
                 "selected": False,
                 "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
-                "algorithmSlug": ALGORITHMRANDOMSLUG + "ptc",
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
                 "description": "This is an implementation of PyTorch algorithm"
             }
