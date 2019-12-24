@@ -149,24 +149,37 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(errormsg);
                 return false;
             }
-            else if (Object.keys(this.props.pyTorchLayer).length != 0){ 
-                if($(".bias option:selected").text().includes("--Select--")){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
-                }
-                else if($(".input_unit")[0].value === "" || $(".input_unit")[0].value === undefined){
+            else if (Object.keys(this.props.pyTorchLayer).length != 0){
+                if($(".input_unit")[0].value === "" || $(".input_unit")[0].value === undefined){
                     this.props.dispatch(pytorchValidateFlag(false));
                     bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
+                    return false;
                 }
                 else if($(".output_unit")[0].value === "" || $(".output_unit")[0].value === undefined){
                     bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
                     this.props.dispatch(pytorchValidateFlag(false));
-                }else{
-                    if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("Adam"))){
+                    return false;
+                }else if($(".bias option:selected").text().includes("--Select--")){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
+                    return false;
+                }
+                else if(this.props.pytorchValidateFlag){
+                     if($(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("Adamax") ){ 
                         let beta = this.props.pyTorchSubParams;
                         let tupVal = beta["optimizer"]["betas"].toString();
                         beta["optimizer"]["betas"] = "("+ tupVal + ")";
                         this.props.dispatch(setPyTorchSubParams(beta));
+                     }
+                    else if( $(".Optimizer option:selected").text().includes("Rprop")){
+                            let eta = this.props.pyTorchSubParams;
+                            let tupVal1 = eta["optimizer"]["eta"].toString();
+                            eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
+                            this.props.dispatch(setPyTorchSubParams(eta));
+
+                            let tupVal2 = eta["optimizer"]["step_sizes"].toString();
+                            eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
+                            this.props.dispatch(setPyTorchSubParams(eta));
                     }
                     this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
                 }
@@ -187,11 +200,20 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-                if(this.props.pytorchValidateFlag && ($(".Optimizer option:selected").text().includes("Adam"))){
+                if(this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") )){
                     let beta = this.props.pyTorchSubParams;
                     let tupVal = beta["optimizer"]["betas"].toString();
                     beta["optimizer"]["betas"] = "("+ tupVal + ")";
                     this.props.dispatch(setPyTorchSubParams(beta));
+                }else if(this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Rprop"))){
+                    let eta = this.props.pyTorchSubParams;
+                    let tupVal1 = eta["optimizer"]["eta"].toString();
+                    eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
+                    this.props.dispatch(setPyTorchSubParams(eta));
+
+                    let tupVal2 = eta["optimizer"]["step_sizes"].toString();
+                    eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
+                    this.props.dispatch(setPyTorchSubParams(eta));
                 }
                 this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
             }

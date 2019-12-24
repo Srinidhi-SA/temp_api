@@ -309,6 +309,70 @@ export class PyTorch extends React.Component {
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
             }
+        }else if(name === "eta"){
+            if(val === ""){
+                this.props.dispatch(pytorchValidateFlag(false));
+                e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+            }else if(val>1 || val<0){
+                this.props.dispatch(pytorchValidateFlag(false));
+                e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            }else if(e.target.className.includes("eta1")){
+                if(this.props.pyTorchSubParams["optimizer"]["eta"][1] < val ){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    e.target.parentElement.lastElementChild.innerHTML = "value of beta1 should be lesser than beta2"
+                }else{
+                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    this.props.dispatch(pytorchValidateFlag(true));
+                    let subParamArry = this.props.pyTorchSubParams;
+                    let selectedPar = subParamArry["optimizer"];
+                    selectedPar["eta"][0] = e.target.value;
+                    this.props.dispatch(setPyTorchSubParams(subParamArry));
+                }
+            }else if(e.target.className.includes("eta2")){
+                if(this.props.pyTorchSubParams["optimizer"]["eta"][0] > val ){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    e.target.parentElement.lastElementChild.innerHTML = "value of beta2 should be greater than beta2"
+                }else{
+                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    this.props.dispatch(pytorchValidateFlag(true));
+                    let subParamArry = this.props.pyTorchSubParams;
+                    let selectedPar = subParamArry["optimizer"];
+                    selectedPar["eta"][1] = e.target.value;
+                    this.props.dispatch(setPyTorchSubParams(subParamArry));
+                }
+            }
+        }else if(name === "step_sizes"){
+            if(val === ""){
+                this.props.dispatch(pytorchValidateFlag(false));
+                e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+            }else if(val>1 || val<0){
+                this.props.dispatch(pytorchValidateFlag(false));
+                e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            }else if(e.target.className.includes("step_sizes1")){
+                if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][1] < val ){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    e.target.parentElement.lastElementChild.innerHTML = "value of beta1 should be lesser than beta2"
+                }else{
+                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    this.props.dispatch(pytorchValidateFlag(true));
+                    let subParamArry = this.props.pyTorchSubParams;
+                    let selectedPar = subParamArry["optimizer"];
+                    selectedPar["step_sizes"][0] = e.target.value;
+                    this.props.dispatch(setPyTorchSubParams(subParamArry));
+                }
+            }else if(e.target.className.includes("step_sizes2")){
+                if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][0] > val ){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    e.target.parentElement.lastElementChild.innerHTML = "value of beta2 should be greater than beta2"
+                }else{
+                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    this.props.dispatch(pytorchValidateFlag(true));
+                    let subParamArry = this.props.pyTorchSubParams;
+                    let selectedPar = subParamArry["optimizer"];
+                    selectedPar["step_sizes"][1] = e.target.value;
+                    this.props.dispatch(setPyTorchSubParams(subParamArry));
+                }
+            }
         }
         else{
             e.target.parentElement.lastElementChild.innerHTML = ""
@@ -367,22 +431,32 @@ export class PyTorch extends React.Component {
         for(var i=0;i<item.length;i++){
             switch(item[i].uiElemType){
                 case "textBox":
+                    var mandateField = ["betas","eta","step_sizes"];
+
                     switch(item[i].name){
                         case "betas":
-                                var mandateField = [""];
+                            var classN1 = "form-control betas beta1"
+                            var classN2 = "form-control betas beta2"
+                        case "eta":
+                                var classN1 = "form-control eta eta1"
+                                var classN2 = "form-control eta eta2"
+                        case "step_sizes":
+                                var classN1 = "form-control step_sizes step_sizes1"
+                                var classN2 = "form-control step_sizes step_sizes2"
+                                
                                     arr1.push(
                                         <div className = "row mb-20">
                                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                             <label className = "col-md-4">{item[i].description}</label>
                                             <div>
                                                 <div className ="col-md-1">
-                                                    <label>beta1</label>
-                                                    <input type="number" className ="form-control betas beta1" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.9" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                                <label>{item[i].displayName}1</label>
+                                                    <input type="number" className ={classN1} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.9" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                                     <div className ="error"></div>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <label>beta2</label>
-                                                    <input type="number" class="form-control betas beta2" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.99" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                                    <label>{item[i].displayName}2</label>
+                                                    <input type="number" className={classN2} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.99" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                                     <div class="error"></div>
                                                 </div>
                                             </div>
