@@ -507,7 +507,7 @@ PYTORCH_DROPOUT_PARAMETERS = [
      "parameters": [obj for obj in PT_DROPOUT_P_PARAMS]}
 ]
 
-PT_BATCHNORMALISATION_BatchNorm1d_PARAMS = [
+PT_BATCHNORMALIZATION_BatchNorm1d_PARAMS = [
     {
         "name": "num_features",
         "displayName": "num_features",
@@ -593,9 +593,9 @@ PT_BATCHNORMALISATION_BatchNorm1d_PARAMS = [
     },
 ]
 
-PYTORCH_BATCHNORMALISATION_PARAMETERS = [
+PYTORCH_BATCHNORMALIZATION_PARAMETERS = [
     {"name": "BatchNorm1d", "selected": False, "displayName": "BatchNorm1d",
-     "parameters": [obj for obj in PT_BATCHNORMALISATION_BatchNorm1d_PARAMS]}
+     "parameters": [obj for obj in PT_BATCHNORMALIZATION_BatchNorm1d_PARAMS]}
 ]
 
 PYTORCH_LINEAR_PARAMETERS = [
@@ -624,10 +624,10 @@ PYTORCH_LINEAR_PARAMETERS = [
         "allowedDataType": ["string"]
     },
     {
-        "name": "batchnormalisation",
-        "displayName": "Batch Normalisation",
+        "name": "batchnormalization",
+        "displayName": "Batch Normalization",
         "description": "Applies Batch Normalization over a 2D or 3D input (a mini-batch of 1D inputs with optional additional channel dimension) as described in the paper.",
-        "defaultValue": [obj for obj in PYTORCH_BATCHNORMALISATION_PARAMETERS],
+        "defaultValue": [obj for obj in PYTORCH_BATCHNORMALIZATION_PARAMETERS],
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
