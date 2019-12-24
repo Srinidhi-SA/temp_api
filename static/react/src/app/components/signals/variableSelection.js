@@ -271,7 +271,7 @@ export class VariableSelection extends React.Component {
                     $("#chk_analysis_trend").prop("disabled",true);
                 }else{
                     $("#allAnalysis").prop("disabled",false);
-                    // $("#allAnalysis")[0].checked = true;
+                    //     $("#allAnalysis")[0].checked = true;    // Causing error while signal is created
                 }
             }
         }
