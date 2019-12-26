@@ -30,10 +30,7 @@ export class HeatMapTable extends React.Component {
 
   render() {
    var element = this.props.htmlElement;
-   console.log("checking html element");
-   console.log(element);
-
-  let renderTableThead = element.tableData[0].map((item,i)=>{
+   let renderTableThead = element.tableData[0].map((item,i)=>{
            return(
              <tr key={i}>
                <th style="border-bottom: 0px;">{item[0]}</th>

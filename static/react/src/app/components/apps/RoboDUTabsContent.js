@@ -23,6 +23,7 @@ import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
 
 export class RoboDUTabsContent extends React.Component {
   constructor(props) {
+		super(props);
   }
   render() {
      let dataPreview = store.getState().datasets.dataPreview;

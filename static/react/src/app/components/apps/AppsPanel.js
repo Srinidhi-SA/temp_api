@@ -163,6 +163,7 @@ export class AppsPanel extends React.Component {
     var appListTemplate = "";
     let filterListTemplate = "";
     let paginationTag = null
+    let filteredKeywords = this.props.app_filtered_keywords
     if (this.props.storeAppsSearchElement != "" && (this.props.location.search == "" || this.props.location.search == null)) {
       this.props.dispatch(appsStoreSearchEle(""));
       let search_element = document.getElementById('search_apps');
