@@ -61,9 +61,7 @@ export class ScoreCard extends React.Component {
             this.props.dispatch(createScoreSuccessAnalysis(data));
     }
     openShareModal(shareItem,slug,itemType) {
-        console.log("open ---openBinsOrLevelsModal");
         this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
-        //this.setState({NoModal: this.state.NoModal + 1});
        }
     render() {
         var scoreList = this.props.data;
@@ -105,16 +103,7 @@ export class ScoreCard extends React.Component {
                     
                     <div className="clearfix"></div>
                     {percentageDetails}
-                    
-                    {/*<!-- Popover Content link --> 
-                    <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a className="pover cursor">
-                    <div class="card_icon">
-                    <img src={STATIC_URL + "assets/images/apps_score_icon.png"} alt="LOADING"/>
-                        </div>
-                    </a>
-                    </OverlayTrigger> */}
-                    
+                  
                     </div>
                     </div>
                     </div>
@@ -126,7 +115,6 @@ export class ScoreCard extends React.Component {
 					
 					{
                         isDropDown == true ? <div class="btn-toolbar pull-right">
-                    {/*<!-- Rename and Delete BLock  -->*/}
                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                     <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                     </a>
@@ -155,7 +143,6 @@ export class ScoreCard extends React.Component {
 					</li>
                     
                     </ul>
-                    {/*<!-- End Rename and Delete BLock  -->*/}
                     </div>
                     :""}
 					

@@ -35,7 +35,6 @@ var dateFormat = require('dateformat');
 export class AppsStockAdvisorList extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(this.props);
 		this.state={
 			showLoader : false
 		}
@@ -94,21 +93,7 @@ export class AppsStockAdvisorList extends React.Component {
 				let _linkAnalysis = "/apps-stock-advisor/"+this.props.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
 		    	return (<Redirect to={_linkAnalysis}/>);
 		 }
-		/*let search_element = document.getElementById('search_stock');
-		if (this.props.stock_model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
-			console.log("search is empty");
-			this.props.dispatch(storeStockModelSearchElement(""));
-			if (search_element)
-			document.getElementById('search_stock').value = "";
-		}
-		if(this.props.stock_model_search_element==""&&this.props.history.location.search!=""){
-			if(search_element)
-			document.getElementById('search_stock').value = "";
-		}
-		//search element ends..
-		if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
-			this.props.dispatch(storeStockAppsModelSortElements("",null));
-		}*/
+	
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
@@ -119,7 +104,7 @@ export class AppsStockAdvisorList extends React.Component {
 			}
 			var stockList = <StocksCard data={stockAnalysisList} loadfunc={this.callShowloader}/>;
 			const {showLoader} = this.state;
-			if(showLoader) { // if your component doesn't have to wait for an async action, remove this block 
+			if(showLoader) {
 				return (
 					<img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
 				);

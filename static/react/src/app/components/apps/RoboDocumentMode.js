@@ -34,15 +34,11 @@ export class RoboDocumentMode extends React.Component {
 	}
 
   render() {
-    console.log("apps Robo Detail View is called##########3");
- 
-    
     const roboSummary = store.getState().signals.signalAnalysis;
-	if (!$.isEmptyObject(roboSummary)) {
+	 if (!$.isEmptyObject(roboSummary)) {
 		let firstSlug = this.props.signal.slug;
-	    let cardModeLink = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/"+ firstSlug;
-		console.log(this.props)
-		let listOfCardList = getListOfCards(roboSummary.listOfCards)
+	  let cardModeLink = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/"+ firstSlug;
+	  let listOfCardList = getListOfCards(roboSummary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
 			 return (<Card key={i} cardData={data} />)
 		                    });
@@ -84,16 +80,12 @@ export class RoboDocumentMode extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-		                   
-		             </div>
+		                    </div>
 		                    </div>
 		                  </div>
 		                </div>
 		              </div>
-		  
-		             
-			           
-			          </div>
+		   </div>
 			      );	
 		}
 	}

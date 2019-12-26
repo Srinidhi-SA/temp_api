@@ -164,7 +164,6 @@ export class ModelManagement extends React.Component {
   }
 
   getAlgoAnalysis(item,e) {
-    console.log("Link Onclick is called")
     this.props.dispatch(emptyAlgoAnalysis());
   }
 
@@ -210,7 +209,6 @@ export class ModelManagement extends React.Component {
         </div>
       );
     }else{
-      console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
       var mmTable = "";
       var deployPopup = "";
       var deployData = "";
@@ -416,12 +414,10 @@ export class ModelManagement extends React.Component {
   }
 
   openDeployModal(slug) {
-    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(slug));
   }
 
   closeDeployModal() {
-    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
   }
 }

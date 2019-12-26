@@ -84,7 +84,6 @@ var dateFormat = require('dateformat');
         _handleKeyPress = (e) => {
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             if (e.key === 'Enter') {
-                //console.log('searching in data list');
                 if (e.target.value != "" && e.target.value != null)
                     this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/models?search=' + e.target.value + '')
                     this.props.dispatch(storeModelSearchElement(e.target.value));
@@ -149,30 +148,8 @@ var dateFormat = require('dateformat');
         }
         
         render() {
-            console.log("apps model list is called##########3");
-            console.log(this.props);
-            //empty search element
-           /* let search_element = document.getElementById('model_insights');
-            if (this.props.model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
-                console.log("search is empty");
-                this.props.dispatch(storeModelSearchElement(""));
-                if (search_element)
-                    document.getElementById('model_insights').value = "";
-            }
-            if(this.props.model_search_element==""&&this.props.history.location.search!=""){
-                if(search_element)
-                    document.getElementById('model_insights').value = "";
-            }
-            //search element ends..
-            
-            if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
-                this.props.dispatch(storeAppsModelSortElements("",null));
-            }
-            */
-            
-            const modelList = store.getState().apps.modelList.data;
+           const modelList = store.getState().apps.modelList.data;
             const algoList = store.getState().apps.algoList;
-            console.log("modelllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
             var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {

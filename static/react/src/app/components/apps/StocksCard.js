@@ -30,7 +30,6 @@ var dateFormat = require('dateformat');
 export class StocksCard extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
     }
     getPreviewData(e) {
         this.props.dispatch(updateStockSlug(e.target.id))
@@ -80,26 +79,8 @@ export class StocksCard extends React.Component {
 						<div className="clearfix"></div>
                         <div className="clearfix"></div>
                         {percentageDetails}
-
-                        {/* <div class="inProgressIcon">
-                            <i class="fa fa-circle"></i>
-                            <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-                            </div> */}
-                            
-                        {/*<!-- Popover Content link -->
-                        <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                        <a  className="pover cursor">
-                        <div class="card_icon">
-                        <img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>
-                        </div>
-                        </a>
-                        </OverlayTrigger>   */}
-                            
-                        
-                        </div>
-                         
-                        
-                        </div>
+                           </div>
+                          </div>
                         </div>
                         <div className="card-footer">
                         <div className="left_div">
@@ -109,7 +90,6 @@ export class StocksCard extends React.Component {
 
 						{
                                 isDropDown == true ? <div class="btn-toolbar pull-right">
-                        {/*<!-- Rename and Delete BLock  -->*/}
                         <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                         </a>
@@ -133,12 +113,7 @@ export class StocksCard extends React.Component {
 						<div className="clearfix"></div>
 						</li>
 						
-						
-                        
-						
-						
-                        </ul>
-                        {/*<!-- End Rename and Delete BLock  -->*/}
+						</ul>
                         </div>
                         :""}
                          
