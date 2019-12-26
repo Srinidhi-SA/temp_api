@@ -43,11 +43,9 @@ export class AudioFileSummary extends React.Component {
 		this.props.dispatch(updateAudioFileSummaryFlag(false))
 	}
 	render() {
-		console.log("apps Audio Detail View is called##########3");
 		const audioSummary = store.getState().apps.audioFileSummary;
 
 		if (!$.isEmptyObject(audioSummary)) {
-			console.log(this.props)
 			let listOfCardList = getListOfCards(audioSummary.meta_data.listOfCards)
 			let cardDataList = listOfCardList.map((data, i) => {
 				if(i == 1)

@@ -42,8 +42,6 @@ import { statusMessages } from "../../helpers/helper";
 export class FeatureEngineering extends React.Component {
   constructor(props) {
     super(props);
-    console.log("FeatureEngineering constructor method is called...");
-    console.log(props);
     this.buttons = {};
     this.state = {
     };
@@ -64,7 +62,6 @@ export class FeatureEngineering extends React.Component {
         this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
       }
     }
-    console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
@@ -452,7 +449,6 @@ export class FeatureEngineering extends React.Component {
       }
     }
     
-    console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var levelData = this.state[this.props.selectedItem.slug][actionType];
@@ -468,7 +464,6 @@ export class FeatureEngineering extends React.Component {
             return;
           }
           else if ((Date.parse(startDate) > Date.parse(endDate))) {
-            console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
             return;
@@ -492,7 +487,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   validateTransformdata(actionType) {
-    console.log('transform validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var transformationData = this.state[this.props.selectedItem.slug][actionType];
@@ -649,7 +643,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   render() {
-    console.log("FeatureEngineering render method is called...");
     this.feTableSorter();
     var feHtml = "";
     var SV = "";
@@ -850,27 +843,21 @@ export class FeatureEngineering extends React.Component {
   }
 
   openBinsOrLevelsModal(item) {
-    console.log("open ---openBinsOrLevelsModal");
     this.props.dispatch(openBinsOrLevelsModalAction(item));
-    //this.setState({NoModal: this.state.NoModal + 1});
    }
 
   closeBinsOrLevelsModal(event) {
-    console.log("closeddddd ---closeBinsOrLevelsModal");
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
   openTransformColumnModal(item) {
-    console.log("open ---openTransformColumnModal");
     this.props.dispatch(openTransformColumnModalAction(item));
   }
 
   closeTransformColumnModal() {
-    console.log("closeddddd ---closeTransformColumnModal");
     this.props.dispatch(closeTransformColumnModalAction());
   }
 
   handleSelect(selectedKey) {
-    console.log(`selected ${selectedKey}`);
     this.props.dispatch(selectedBinsOrLevelsTabAction(selectedKey));
   }
 

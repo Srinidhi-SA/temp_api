@@ -249,10 +249,8 @@ var analysis = {
 getPrevNext = function (analysis, curSufix) {
     var listOfUrls = [];
     generateAllUrls = function (rootNode, prefix) {
-        // Generate all sets of urls for all cards
         for (var i = 0; i < rootNode.listOfCards.length; i++) {
             listOfUrls.push(prefix + rootNode.listOfCards[i]['slug']);
-            // console.log(prefix+rootNode.listOfCards[i]['slug']);
         }
         for (var i = 0; i < rootNode.listOfNodes.length; i++) {
             generateAllUrls(rootNode.listOfNodes[i], prefix + rootNode.listOfNodes[i]["slug"] + "/");
@@ -279,21 +277,3 @@ getPrevNext = function (analysis, curSufix) {
 
 }
 
-
-console.log(getPrevNext(analysis,"summary"))
-console.log(getPrevNext(analysis,"overview/overview"))
-console.log(getPrevNext(analysis,"trend/trend1"))
-console.log(getPrevNext(analysis,"trend/trend2"))
-console.log(getPrevNext(analysis,"trend/trend3"))
-console.log(getPrevNext(analysis,"performance/performanceOverview"))
-console.log(getPrevNext(analysis,"performance/AverageNumber1/performance1"))
-console.log(getPrevNext(analysis,"performance/AverageNumber1/performance2"))
-console.log(getPrevNext(analysis,"performance/AverageNumber1/performance3"))
-console.log(getPrevNext(analysis,"performance/AverageNumber2/performance1"))
-console.log(getPrevNext(analysis,"performance/AverageNumber2/performance2"))
-console.log(getPrevNext(analysis,"performance/AverageNumber2/performance3"))
-console.log(getPrevNext(analysis,"performance/AverageNumber3/performance1"))
-console.log(getPrevNext(analysis,"performance/AverageNumber3/performance2"))
-console.log(getPrevNext(analysis,"performance/AverageNumber3/performance3"))
-console.log(getPrevNext(analysis,"influencer/summary"))
-console.log(getPrevNext(analysis,"influencer/overview"))

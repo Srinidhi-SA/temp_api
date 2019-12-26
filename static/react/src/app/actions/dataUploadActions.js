@@ -71,7 +71,6 @@ function uploadFileOrDB(dbDetails){
             dispatch(dataUploadError(json))
           }
         }).catch(function(error) {
-              console.log(error);
               bootbox.alert("Connection lost. Please try again later.")
               dispatch(hideDULoaderPopup());
               dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
@@ -84,7 +83,6 @@ function triggerDataUpload(token,dbDetails) {
 
     var data = new FormData();
     data.append("input_file", store.getState().dataSource.fileUpload);
-    console.log(data)
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeaderWithoutContent(token),
@@ -205,9 +203,7 @@ export function dataSubsetting(subsetRq, slug) {
    dispatch(updateHideData(false));
  dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
-      //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
-      if (response.status === 200) {
-        console.log(json.slug)
+    if (response.status === 200) {
         dispatch(updateHideData(true));
         dispatch(updateDatasetName(json.slug))
         dispatch(dataUploadSuccess(json, dispatch))
@@ -221,8 +217,6 @@ export function dataSubsetting(subsetRq, slug) {
 }
 
 function triggerDataSubsetting(subsetRq, slug) {
-  console.log("subsetRq is-----------")
-  console.log(subsetRq)
   return fetch(API + '/api/datasets/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -231,8 +225,6 @@ function triggerDataSubsetting(subsetRq, slug) {
 
 }
 function updateSubsetSuccess(subsetRs) {
-  console.log("data subset from api to store")
-  //console.log(subsetRs)
   return {type: "SUBSETTED_DATASET", subsetRs}
 }
 export function clearDataPreview() {

@@ -16,16 +16,10 @@ import {showZoomChart, showChartData} from "../actions/signalActions";
   selected_signal_type:store.signals.selected_signal_type};
 })
 
-//var data= {}, toolData = [], toolLegend=[], chartDiv =null;
 export class C3Chart extends React.Component {
   constructor(props) {
 
     super(props);
-    console.log("yformat55555555555555");
-    //this.data ={};
-    //this.toolData = [];
-    //this.toolLegend =[];
-    //this.chartDiv = null;
     this.tableDownload = "";
     this.modalCls = "modal fade chart-modal" + props.classId;
     this.tableCls = "table-responsive table-area table" + props.classId;
@@ -108,7 +102,6 @@ export class C3Chart extends React.Component {
     var that = this;
     let data = this.props.data;
     if (this.props.sideChart) {
-      console.log(data);
       data['size'] = {
         height: 230
       }
@@ -171,11 +164,9 @@ export class C3Chart extends React.Component {
         yformat=this.props.yformat
     if(data.axis&&data.axis.y.tick.format){
     data.axis.y.tick.format=function(f){
-      //console.log("f of tick")
       if(f>999){
         let si = d3.format(yformat);
       return String(si(f));
-      //return d3.format(".2s")
     }  else {
       let si = d3.format('.0f');
     return String(si(f));
@@ -196,16 +187,11 @@ export class C3Chart extends React.Component {
       window.toolData.push(tooltip[1]);
       window.toolLegend = tooltip[2];
 
-      //window.tooltipFunc = data.tooltip.contents;
-
       data.tooltip.contents = c3Functions.set_tooltip;
-
-      //console.log(data.tooltip.contents);
     }
 
     if (this.props.xdata) {
       let xdata = this.props.xdata;
-      //console.log(this.props.xdata);
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
           return xdata[x].substr(0, 9) + "..";
@@ -221,10 +207,8 @@ export class C3Chart extends React.Component {
     }
 
 
-//fix for common point colour in trend
     if(this.props.selectedL1=="Trend"&&data.data.type=="line"&&this.props.selected_signal_type=="measure"){
-      console.log("in dtrend##########")
-      console.log(data)
+     
       let colors=data.color.pattern
       data.data.color= function (color, d) {
                return d.index === 0 ? colors[0] : color;
@@ -232,9 +216,7 @@ export class C3Chart extends React.Component {
     }
 
     this.chartData = data;
-    data['bindto'] = this.getChartElement().get(0); // binding chart to html element
-    console.log(data);
-
+    data['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(data);
     chart.destroy();
 
@@ -276,9 +258,7 @@ export class C3Chart extends React.Component {
     });
     if (this.props.tabledata) {
       var tabledata = this.props.tabledata;
-
       var collength = tabledata.length;
-      //console.log(collength);
       var rowlength = tabledata[0].length;
       var tablehtml = "<thead><tr>",
         tablehead = "",
@@ -300,13 +280,10 @@ export class C3Chart extends React.Component {
       $(".table" + this.props.classId + " table").html(tablehtml);
     }
 
-    //-----popup setup end------------------------------------------------
-
   }
 
   render() {
     var that = this;
-    console.log(this.props);
     if (this.props.classId != '_side' && !this.props.widthPercent) {
       this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
       this.modalCls = "modal fade chart-modal" + this.props.classId;
@@ -314,15 +291,11 @@ export class C3Chart extends React.Component {
     }
    var chartDownloadCls = "chartDownload"+this.props.classId;
     $(function() {
-
-      // alert("render");
       that.updateChart();
       if (that.props.classId == '_side' || that.props.classId == '_profile') {
         $(".chart-data-icon").empty();
 
-      }
-      //alert(API + that.props.tabledownload);
-      // $("#cddownload").attr("href", API + that.props.tabledownload);
+      };
 
     });
 
@@ -331,8 +304,6 @@ export class C3Chart extends React.Component {
       that.tableDownload = API + that.props.tabledownload;
 
     }
-    //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-
     return (
       <div className="chart-area">
 

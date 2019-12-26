@@ -53,8 +53,7 @@ export class AppsScoreList extends React.Component {
       }
     else{
     this.props.dispatch(updateAnalystModeSelectedFlag(false));
-    }    
-        console.log(this.props.history)
+    } 
         var pageNo = 1;
         if(this.props.history.location.search.indexOf("page") != -1){
             pageNo = this.props.history.location.search.split("page=")[1];
@@ -82,8 +81,6 @@ export class AppsScoreList extends React.Component {
         var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
 
         if (e.key === 'Enter') {
-            //console.log('searching in data list');
-            
             if (e.target.value != "" && e.target.value != null)
                 this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/scores?search=' + e.target.value + '')
                 
@@ -121,25 +118,6 @@ export class AppsScoreList extends React.Component {
     
     
     render() {
-        console.log("apps score list is called##########3");
-        //empty search element
-       /* let search_element = document.getElementById('score_insights');
-        if (this.props.score_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
-            console.log("search is empty");
-            this.props.dispatch(storeScoreSearchElement(""));
-            if (search_element)
-                document.getElementById('score_insights').value = "";
-        }
-        if (this.props.score_search_element == "" && this.props.history.location.search != "") {
-            if (search_element)
-                document.getElementById('score_insights').value = "";
-        }
-        //search element ends..*/
-        /*
-        if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
-            this.props.dispatch(storeAppsScoreSortElements("",null));
-        }
-        */
         const scoreList = store.getState().apps.scoreList.data;
         var appsScoreList = null;
         if (scoreList) {
