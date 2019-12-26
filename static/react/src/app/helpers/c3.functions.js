@@ -6,16 +6,11 @@ get_colors: function(color, d){
 
 
 set_tooltip:  function (d, defaultTitleFormat, defaultValueFormat, color) {
-                   console.log(d[0].value);
-
-      //alert("<table class='tooltip-table'><thead><tr class='text-center'><th colspan=2><b>"+ toolLegend[toolData[1].indexOf(d[0].value)]+"</b></th></tr></thead><tbody><tr><td>"+ toolData[0][0]+"   </td><td> |  </td><td>" + d3.format('.2f')(toolData[0][toolData[1].indexOf(d[0].value)]) + "</td></tr><tr><td>"+ toolData[1][0]+"  </td><td> | </td><td>"+ d3.format('.2f')(d[0].value)+ "</td></tr></tbody></table>");
-                                 //    return "Working";
           return "<table class='tooltip-table'><thead><tr class='text-center'><th colspan=3>"+ toolLegend[toolData[1].indexOf(d[0].value)]+"</th></tr></thead><tbody><tr><td>"+ toolData[0][0]+"   </td><td> |  </td><td>" + d3.format('.2f')(toolData[0][toolData[1].indexOf(d[0].value)]) + "</td></tr><tr><td>"+ toolData[1][0]+"  </td><td> | </td><td>"+ d3.format('.2f')(d[0].value)+ "</td></tr></tbody></table>";
 
 },
 
 set_negative_color: function(color, d){
-            //alert(d);
             if(d.value<0){
               return '#f47b16';
              }else{
@@ -50,10 +45,5 @@ set_donut_labels: function (value, ratio, id) {
 
                               }
 
-// set_format_m: d3.format(".2s"),
-//
-// set_format_$: d3.format("$"),
-//
-// set_format_$m: d3.format("$,.2s")
 
 }
