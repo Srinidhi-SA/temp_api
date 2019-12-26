@@ -70,12 +70,12 @@ export class PyLayer extends React.Component {
 
     changeTextBoxValue(parameterData,e){
         let name = parameterData.name;
-        let val = parseInt(e.target.value);
-        if(name === "input_unit" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        let val = e.target.value;
+        if(name === "input_unit" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "output_unit" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "output_unit" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -87,8 +87,6 @@ export class PyLayer extends React.Component {
         }
     }
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
-        let name = subparameterData.name;
-        let val = e.target.value;
         this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
             let layerArry = this.props.id
@@ -119,19 +117,19 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "embed_dim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "embed_dim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "num_heads" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "num_heads" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "kdim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "kdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "vdim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "vdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -147,15 +145,15 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "beta" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "beta" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "threshold" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "threshold" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "num_features" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "num_features" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -167,7 +165,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "p" && (!(Number.isInteger(parseInt(val))) || val<0 || val>1) || val === ""){
+        else if(name === "p" && (!(Number.isInteger(parseFloat(val))) || val<0 || val>1) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }

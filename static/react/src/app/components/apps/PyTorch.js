@@ -34,7 +34,6 @@ export class PyTorch extends React.Component {
     componentDidMount(){
         this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"batch_size",100,this.props.type));
         this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"number_of_epochs",20,this.props.type));
-
     }
 
     handleAddLayer(){
@@ -180,36 +179,37 @@ export class PyTorch extends React.Component {
     }
 
     changeTextboxValue(parameterData,e){
-      let name = parameterData.name;
-      let val = e.target.value === "--Select--"? null:e.target.value;
-      if(name == "number_of_epochs" && val<1){
-        e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
-      }
-      else if(name=="batch_size" && (val < 0 ) || (val > this.props.datasetRow-1) ){
-        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
-      }
+        let name = parameterData.name;
+        let val = e.target.value === "--Select--"? null:e.target.value;
+        if(name == "number_of_epochs" && val<1){
+            e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+        }
+        else if(name=="batch_size" && (val < 1 ) || (val > this.props.datasetRow-1) ){
+            e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+        }
         else {
             e.target.parentElement.lastElementChild.innerHTML = ""
             this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
         }
-    if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
+        if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
             let subParamArry = this.props.pyTorchSubParams;
             subParamArry[parameterData.name] = parseInt(e.target.value);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
-    }
+        }
     }
 
     setChangeSubValues(data,parameterData,e){
         let name = data.name;
         let val = e.target.value;
         if(name === "blank"){
-            if(val < 0 || val > 100){
+            if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to 100"
-            }else if(!Number.isInteger(parseInt(val))){
+            }else if(!Number.isInteger(parseFloat(val))){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
             }else{
+                e.target.parentElement.lastElementChild.innerHTML = ""
                 this.props.dispatch(pytorchValidateFlag(true));
                 let subParamArry = this.props.pyTorchSubParams;
                 let selectedPar = subParamArry["loss"];
@@ -217,7 +217,11 @@ export class PyTorch extends React.Component {
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
             }
         }
-        else if(name === "ignore_index" && (!Number.isInteger(parseInt(val)) || val<0 || val === "")){
+        else if(name === "weight" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
+        }
+        else if(name === "ignore_index" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
         }
@@ -253,11 +257,11 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "max_iter" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "max_iter" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "max_eval" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "max_eval" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -269,7 +273,7 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "history_size" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "history_size" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
