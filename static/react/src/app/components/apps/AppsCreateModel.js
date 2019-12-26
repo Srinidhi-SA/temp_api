@@ -134,8 +134,6 @@ export class AppsCreateModel extends React.Component {
 			this.setState({
 				autoMlVal:responseJson
 			})
-			
-			console.log(responseJson.meta_data.uiMetaData.varibaleSelectionArray,"555555555555555555");
 			this.props.dispatch(dispatchDataPreviewAutoML(responseJson,"1dnjnsj"));
 		})
 	}
@@ -146,11 +144,7 @@ export class AppsCreateModel extends React.Component {
 		}
 		this.props.dispatch(updateDatasetName(e.target.value));
 		this.levelCountsForAutoMl(e)
-		console.log("sending request");
-		// this.getDataSetPreview();
-		console.log("Data received");
-
-	}
+}
 	
  levelCountsForAutoMl(event) {
 	var selOption = event.target.childNodes[event.target.selectedIndex];

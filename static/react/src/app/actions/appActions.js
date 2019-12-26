@@ -76,7 +76,6 @@ export function getAllModelList() {
   return (dispatch) => {
     return fetchAllModelList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
         if(response.status === 200){
-            console.log(json)
             dispatch(fetchAllModelSuccess(json))
         }else{
           dispatch(fetchAllModelError(json))
@@ -116,7 +115,6 @@ export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchModelListSuccess(json))
       } else {
         dispatch(fetchModelListError(json))
@@ -130,21 +128,18 @@ function fetchModelList(pageNo, token) {
   let apps_model_sorton = store.getState().apps.apps_model_sorton;
   let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
   let filter_by_mode= store.getState().apps.filter_models_by_mode;
-  console.log(filter_by_mode)
   if (apps_model_sorttype == 'asc')
     apps_model_sorttype = ""
   else if (apps_model_sorttype == 'desc')
     apps_model_sorttype = "-"
 
     if (search_element != "" && search_element != null && filter_by_mode!=""&& filter_by_mode!=null) {
-      console.log("calling for model search element!!")
-      return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
         method: 'get',
         headers: getHeader(token)
       }).then(response => Promise.all([response, response.json()]));
     }
     else if (search_element != "" && search_element != null) {
-    console.log("calling for model search element!!")
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -201,7 +196,6 @@ export function getAppsAlgoList(pageNo) {
   return (dispatch) => {
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAlgoListSuccess(json))
       } else {
         dispatch(fetchAlgoListError(json))
@@ -218,7 +212,6 @@ export function createDeploy(slug) {
   return (dispatch) => {
     return triggerCreateDeploy(getUserDetailsOrRestart.get().userToken, slug, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(createDeploySuccess(json, slug, dispatch))
         dispatch(getDeploymentList(slug, store.getState().apps.current_page));
       }
@@ -231,7 +224,6 @@ export function createDeploy(slug) {
 
 function triggerCreateDeploy(token, slug, dispatch) {
   let deploy_details = store.getState().apps.deployData;
-  console.log(deploy_details);
   var slug = slug;
   var details = deploy_details;
   return fetch(API + '/api/deploymodel/', {
@@ -253,7 +245,6 @@ function createDeployError() {
 function fetchAlgoList(pageNo, token, filtername) {
   let search_element = store.getState().apps.algo_search_element;
   if ((search_element != "" && search_element != null) || (filtername)) {
-    console.log(filtername, "calling for algo search element!!")
     return fetch(API + '/api/trainalgomapping/search/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + ' &trainer=' + filtername + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -333,7 +324,6 @@ export function getAllProjectList(pageNo,appId) {
   return (dispatch) => {
     return fetchAllProjectList(appId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAllProjectSuccess(json))
       }
       else {
@@ -398,7 +388,6 @@ export function viewDeployment(slug) {
   return (dispatch) => {
     return viewDeploymentAPI(slug, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json);
         dispatch(viewDeploySuccess(json));
       }
       else {
@@ -465,7 +454,6 @@ export function getDeploymentList(errandId) {
   return (dispatch) => {
     return fetchDeploymentList(errandId, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchDeploymentListSuccess(json))
       } else {
         dispatch(fetchDeploymentListError(json))
@@ -476,25 +464,12 @@ export function getDeploymentList(errandId) {
 
 
 function fetchDeploymentList(errandId, token) {
-  // let search_element = store.getState().apps.algo_search_element;
-  // if (search_element != "" && search_element != null) {
-  //   console.log("calling for algo search element!!")
-  //   return fetch(API + '/api/deploymodel/?app_id=' + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-  //     method: 'get',
-  //     headers: getHeader(token)
-  //   }).then(response => Promise.all([response, response.json()]));
-  // }else 
-  // {
-  // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
-  return fetch(
-    //  API + '/api/deploymodel/?'+ '&page_number=' + pageNo + '&page_size=' + PERPAGE + slug +'', {
-    API + '/api/deploymodel/search/?deploytrainer=' + errandId, {
-      // deploymodel/search/?deploytrainer
-
+ return fetch(
+       API + '/api/deploymodel/search/?deploytrainer=' + errandId, {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  // }
+
 }
 
 
@@ -511,20 +486,12 @@ export function fetchDeploymentListSuccess(doc) {
 }
 
 export function updateTrainAndTest(trainValue) {
-  //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
   return { type: "UPDATE_MODEL_RANGE", trainValue, testValue }
 }
 
 export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {//add a mode in analyst mode
-  console.log(modelName);
-  console.log(targetVariable);
-  /*if($('#createModelAnalysisList option:selected').val() == ""){
-            let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
-              bootbox.alert(msg);
-            return false;
-        }*/
-
+ 
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
 
@@ -590,9 +557,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
     let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Networks(pyTorch)")[0];
     let nnptc = {"nnptc_parameters":[pyTorchmerged]}
     Object.assign(algorithmChanges,nnptc);
-    console.log("+++++++++++++++++++++++++++++++")
-    console.log(nnptc);
-
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
@@ -684,27 +648,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       dispatch(updateModelSummaryFlag(false));
       bootbox.alert("Unable to connect to server. Check your connection please try again.")
     });
-//   .then((response) => response.json())
-// 	.then((responseJson) => {
-// 	console.log(responseJson,"99999999009090909090909")
-// 	if (responseJson.status === 200) {
-// 		console.log(json,"pop should")
-// 		dispatch(createModelSuccess(responseJson, dispatch))
-// 	}
-// })
-
-// return fetch(API + '/api/trainer/', {
-//   method: 'post',
-//   headers: getHeader(token),
-//   body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "config": details })
-// }).then(response => Promise.all([response, response.json()])).catch(function (error) {
-//   dispatch(closeAppsLoaderValue());
-//   dispatch(updateModelSummaryFlag(false));
-//   bootbox.alert("Unable to connect to server. Check your connection please try again.")
-// }
-		
-
-
 
 }
 }
@@ -712,9 +655,7 @@ function createModelSuccess(data, dispatch) {
   var slug = data.slug;
   dispatch(setAppsLoaderValues(slug,data.completed_percentage,data.status));
   appsInterval = setInterval(function () {
-    /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-                dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }*/
+
     dispatch(getAppsModelSummary(data.slug, true));
     return { type: "CREATE_MODEL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
@@ -746,7 +687,6 @@ export function getAppsScoreList(pageNo) {
   return (dispatch) => {
     return fetchScoreList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchScoreListSuccess(json));
       } else {
         dispatch(fetchScoreListError(json))
@@ -765,7 +705,6 @@ function fetchScoreList(pageNo, token) {
     apps_score_sorttype = "-"
 
   if (search_element != "" && search_element != null) {
-    console.log("calling for score search element!!")
     return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -875,12 +814,10 @@ export function clearModelSummary() {
   return { type: "CLEAR_MODEL_SUMMARY" }
 }
 export function getListOfCards(totalCardList) {
-  console.log("In Apps Model Detail");
   let cardList = new Array();
   for (var i = 0; i < totalCardList.length; i++) {
     cardList.push(totalCardList[i].cardData)
   }
-  console.log(cardList)
   return cardList;
 }
 
@@ -889,8 +826,6 @@ export function updateSelectedAlg(name) {
 }
 
 export function createScore(scoreName, targetVariable) {
-  console.log(scoreName);
-  console.log(targetVariable);
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is scoring your model... "));
     return triggerCreateScore(getUserDetailsOrRestart.get().userToken, scoreName, targetVariable).then(([response, json]) => {
@@ -1114,7 +1049,6 @@ export function getAppsRoboList(pageNo) {
   return (dispatch) => {
     return fetchRoboList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchRoboListSuccess(json))
       } else {
         dispatch(fetchRoboListError(json))
@@ -1132,7 +1066,6 @@ function fetchRoboList(pageNo, token) {
   else if (robo_sorttype == 'desc')
     robo_sorttype = "-"
   if (search_element != "" && search_element != null) {
-    //console.log("calling for robo search element!!")
     return fetch(API + '/api/robo/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -1169,7 +1102,6 @@ export function openRoboDataPopup() {
 }
 
 export function saveFilesToStore(files, uploadData) {
-  console.log(files)
   var file = files[0]
   if (uploadData == CUSTOMERDATA) {
     return { type: "CUSTOMER_DATA_UPLOAD_FILE", files }
@@ -1326,7 +1258,6 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText, algoSlug) 
     bsSize: 'medium',
     onHide: (dialogBox) => {
       dialogBox.hide()
-      console.log('closed by clicking background.')
     }
   });
 }
@@ -1420,7 +1351,6 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
     bsSize: 'medium',
     onHide: (dialogBox) => {
       dialogBox.hide()
-      console.log('closed by clicking background.')
     }
   });
 }
@@ -1726,12 +1656,8 @@ export function getAudioFileList(pageNo) {
 }
 
 function fetchAudioList(pageNo, token) {
-
-  console.log(token)
   let search_element = store.getState().apps.audio_search_element
-  console.log(search_element)
   if (search_element != "" && search_element != null) {
-    console.log("calling for search element!!")
     return fetch(API + '/api/audioset/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -1946,7 +1872,6 @@ export function getAppsStockList(pageNo) {
   return (dispatch) => {
     return fetchStockList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchStockListSuccess(json))
       } else {
         dispatch(fetchStockListError(json))
@@ -2020,7 +1945,6 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
       dispatch(openAppsLoader(APPSLOADERPERVALUE, "Extracting historic stock prices.... "));
       return triggerCrawlingAPI(url, urlForNews, analysisName).then(([response, json]) => {
         if (response.status === 200) {
-          console.log(json.slug)
           dispatch(crawlSuccess(json, dispatch))
         } else {
           dispatch(crawlError(json))
@@ -2157,7 +2081,6 @@ export function getConceptsList() {
   return (dispatch) => {
     return fetchConceptList().then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchConceptListSuccess(json))
       } else {
         dispatch(fetchConceptListError(json))
@@ -2189,10 +2112,7 @@ export function getAppsList(token, pageNo) {
   return (dispatch) => {
     return fetchApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(fetchAppsSuccess(json))
-        // if(json.data)
-        // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
 
       } else {
         dispatch(fetchAppsError(json))
@@ -2231,7 +2151,6 @@ function fetchAppsSuccess(json) {
 }
 
 function fetchAppsError(json) {
-  //console.log("fetching list error!!",json)
   return { type: "APPS_LIST_ERROR", json }
 }
 export function appsStoreSearchEle(search_element) {
@@ -2243,10 +2162,6 @@ export function appsStoreSortElements(sort_by, sort_type) {
 
 export function updateAppsFilterList(filter_list) {
   let appList = store.getState().apps.appsList
-  //console.log(appList)
-
-  // if(filter_list.length==0 && appList.data )
-  // filter_list=[]
   return { type: "UPDATE_FILTER_LIST", filter_list }
 }
 
@@ -2255,7 +2170,6 @@ export function getAppsFilteredList(token, pageNo) {
   return (dispatch) => {
     return fetchFilteredApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(fetchAppsSuccess(json))
 
       } else {
@@ -2762,9 +2676,7 @@ export function getDeployPreview(pageNo, filtername) {
 
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken, filtername).then(([response, json]) => {
 
-      // return fetchAlgoList(pageNo,filtername,dispatch).then(([response, json]) =>{
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAlgoListSuccess(json, dispatch))
       }
       else {
@@ -2775,7 +2687,6 @@ export function getDeployPreview(pageNo, filtername) {
 }
 
 function fetchDeployPreview(filtername, dispatch) {
-  // return fetch(API+'/api/datasets/'+slug+'/',{
 
   return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {
 
