@@ -179,14 +179,14 @@ export class PyTorch extends React.Component {
     }
 
     changeTextboxValue(parameterData,e){
-        let name = parameterData.name;
-        let val = e.target.value === "--Select--"? null:e.target.value;
-        if(name == "number_of_epochs" && val<1){
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
-        }
-        else if(name=="batch_size" && (val < 1 ) || (val > this.props.datasetRow-1) ){
-            e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
-        }
+      let name = parameterData.name;
+      let val = e.target.value === "--Select--"? null:e.target.value;
+      if(name == "number_of_epochs" && val<1){
+        e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+      }
+      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)) ){
+        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
         else {
             e.target.parentElement.lastElementChild.innerHTML = ""
             this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
