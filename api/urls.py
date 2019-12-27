@@ -11,6 +11,7 @@ from .views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
 from .views import SignalView, get_datasource_config_list, get_algorithm_config_list, updateFromNifi, \
     view_model_summary_autoML, kill_timeout_job_from_ui, status, view_model_summary_detail
 from .views import AppView, ChangePasswordView
+from .views import AppView
 
 from .views import TrainerView
 from .views import RoboView
@@ -21,6 +22,8 @@ from .views import DatasetScoreDeployementView
 from .views import UserView
 from .dummyModel.models import DummyView
 from api.utils import ChangePasswordSerializer, UserListSerializer
+# from views import RegressionView
+from .dummyModel.models import DummyView
 
 # Start adding urlconf from here
 

@@ -63,10 +63,6 @@ from api.tasks import clean_up_on_delete, create_model_autoML
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
     SignalsRelatedPermission, StocksRelatedPermission, DatasetRelatedPermission
 
-import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8') #python 2.7
-
 # from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
 
@@ -229,7 +225,7 @@ class SignalView(viewsets.ModelViewSet):
 
         except Exception as err:
             print(err)
-            return JsonResponse({'message': 'Signals sharing failed.'})
+            return JsonResponse({'message':'Signals sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
@@ -576,7 +572,7 @@ class TrainerView(viewsets.ModelViewSet):
 
         except Exception as err:
             print(err)
-            return JsonResponse({'message': 'Models sharing failed.'})
+            return JsonResponse({'message':'Models sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
@@ -626,6 +622,12 @@ class TrainerView(viewsets.ModelViewSet):
             except Exception as err:
                 print(err)
             return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config, 'TENSORFLOW': tf_data})
+            #                     operation_items[index] = data_items
+            #                     print(operation_items)
+            #                 data_cleansing[op_index] = operation_items
+            # except Exception as err:
+            #     print(err)
+            # return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
         except Exception as err:
             print(err)
             return JsonResponse({'message': 'Config not found.'})
@@ -1561,7 +1563,7 @@ def set_result(request, slug=None):
         slug,
         results
     )
-    if "status=failed" in request.body:
+    if "status=failed" in request.body.decode('utf-8'):
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
@@ -1583,13 +1585,13 @@ def set_result(request, slug=None):
             results = tasks.write_into_databases.delay(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         else:
             results = tasks.write_into_databases1(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         job.status = 'SUCCESS'
         job.save()
@@ -5593,7 +5595,7 @@ def set_messages(request, slug=None):
 
     return_data = request.GET.get('data', None)
     data = request.body
-    data = json.loads(data)
+    data = json.loads(data.decode('utf-8'))
     if 'stageName' not in data:
         return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
@@ -6646,9 +6648,6 @@ def view_model_summary_autoML(request):
 
     except Exception as err:
         print(err)
-    # else:
-    #    from django.shortcuts import render
-    #    return render(request,'model_summary_expired.html')
 
 
 @csrf_exempt
@@ -6667,22 +6666,21 @@ def view_model_summary_detail(request):
             FI_dict_values = table_data[1]
             # import collections
             import operator
-            # FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = dict(list(zip(FI_dict_keys, FI_dict_values)))
-            FI_dict = sorted(list(FI_dict.items()), key=operator.itemgetter(1), reverse=True)
-            FI_dict = FI_dict[1:len(FI_dict):1]
+            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
+            FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
             model_summary_data['model_summary'] = data['model_summary']
             model_config.update(
                 {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data, 'table_data': FI_dict})
         except Exception as err:
             print(err)
-            # model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
         print(err)
-
 
 @csrf_exempt
 def dump_complete_messages(request, slug=None):
@@ -6699,7 +6697,6 @@ def dump_complete_messages(request, slug=None):
         return JsonResponse({'result': "Success"})
     except Exception as e:
         return JsonResponse({'result': "Failed"})
-        print(e)
 
 
 """

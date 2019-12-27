@@ -891,7 +891,6 @@ class Trainer(models.Model):
         }
 
         if self.mode == 'autoML':
-            # import pdb;pdb.set_trace()
             dataset_slug = self.dataset.slug
             # print "#############################"
             # print dataset_slug

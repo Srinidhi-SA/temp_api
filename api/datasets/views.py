@@ -229,6 +229,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
+
         try:
             instance = self.get_object_from_all()
         except:

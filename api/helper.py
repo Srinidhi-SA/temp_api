@@ -11,7 +11,6 @@ from builtins import str
 from builtins import range
 from past.utils import old_div
 from builtins import object
-# import md5
 import time
 from math import floor, log10
 import datetime
@@ -1371,6 +1370,7 @@ def encrypt_for_kylo(username, password_encrypted):
     return value
 
 
+
 def convert_fe_date_format(date_string):
     return datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%d/%m/%Y')
 
@@ -1494,7 +1494,6 @@ def get_mails_from_outlook():
         err = "Error retrieving token: {0} - {1}".format(r.status_code, r.text)
         return {'status': 'FAILED', 'err': err}
 
-
 def get_outlook_auth(auth_code, refresh_token, outlook_data):
     token_url = 'https://login.microsoftonline.com/' + outlook_data['tenant_id'] + '/oauth2/v2.0/token'
 
@@ -1543,7 +1542,6 @@ def get_outlook_mails(access_token):
     except Exception as err:
         print(err)
         return {'status': 'FAILED', 'err': err}
-
 
 def time_conversion(t1):
     from datetime import datetime, timedelta
@@ -1628,6 +1626,17 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                             # info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
                             info_dict[u_id]['target'] = info_dict[u_id]['mail'].split('||')[0].replace('target: ',
                                                                                                        '').strip()'''
+                        if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'sub-label: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['sub_target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['sub_target'] = check.group(1).replace("'", "")
+
+                        if 'target' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'target: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'", "")
 
                         get_my_messages(access_token, info_dict, message_id=id, id_element=u_id)
                     else:
@@ -1642,7 +1651,6 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
             else:
                 print("Downloading Attachments .")
                 jsondata = r.json()
-                # print jsondata
                 try:
                     for i in range(len(jsondata['value'])):
 
@@ -1687,14 +1695,14 @@ def make_api_call(method, url, token, payload=None, parameters=None):
     # headers.update(instrumentation)
     response = None
 
-    if method.upper() == 'GET':
+    if (method.upper() == 'GET'):
         response = requests.get(url, headers=headers, params=parameters)
-    elif method.upper() == 'DELETE':
+    elif (method.upper() == 'DELETE'):
         response = requests.delete(url, headers=headers, params=parameters)
-    elif method.upper() == 'PATCH':
+    elif (method.upper() == 'PATCH'):
         headers.update({'Content-Type': 'application/json'})
         response = requests.patch(url, headers=headers, data=json.dumps(payload), params=parameters)
-    elif method.upper() == 'POST':
+    elif (method.upper() == 'POST'):
         headers.update({'Content-Type': 'application/json'})
         response = requests.post(url, headers=headers, data=json.dumps(payload), params=parameters)
 

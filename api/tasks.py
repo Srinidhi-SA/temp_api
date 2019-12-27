@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 from __future__ import print_function
 
-from builtins import map
 from builtins import str
+from builtins import map
 import random
 import time
 import base64
@@ -816,6 +816,41 @@ def trigger_outlook_periodic_job():
         else:
             outlook_autoML_failure_mail(trainer_object_id=None, error=mails['err'], mail_id=mail_id)
             print('failure mail sent')
+        print("All set to proceed to upload dataset.")
+
+        for configkey, configvalue in mails.items():
+            data = {}
+            for key, value in configvalue.items():
+                try:
+                    # print key,value
+                    # value is a dict
+                    #############  Create config and trigger metadata job for train and test Dataset  #################
+                    if 'sub_target' in key:
+                        data['sub_target'] = value.capitalize()
+                    if 'target' in key:
+                        data['target'] = value.capitalize()
+                    if 'train_dataset' in key:
+                        input_file = value
+                        data['Traindataset'] = input_file
+                        data['name'] = configkey
+                    if 'test_dataset' in key:
+                        input_file = value
+                        data['Testdataset'] = input_file
+                        data['name'] = configkey
+                    if 'emailAddress' in key:
+                        data['email'] = value['emailAddress']['address']
+                except Exception as error:
+                    print(error)
+            if len(data) > 0:
+                print("Here is the collected data")
+                print(data)
+                trigger_metaData_autoML.delay(data)
+            else:
+                print("No mails found")
+                break
+            ##########################################################################################
+
+            # pass
     else:
         print("No mails.")
     '''
@@ -832,6 +867,7 @@ def trigger_outlook_periodic_job():
 def trigger_metaData_autoML(data):
     print("metaData job triggered for autoML")
     ######################  User id for Email AutoML   ################
+    print(data)
     '''
     Create one user with Username "email" in order to use email for AutoML model creation.
 
