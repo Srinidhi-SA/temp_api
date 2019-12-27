@@ -15263,7 +15263,7 @@ blockquote p:after {
     bottom: -0.7em;
     right: -12px;
 }
-#algosel .nav-tabs li a { font-weight:600 }
+#algosel .nav-tabs li a { font-weight:600; padding-right: 15px; padding-left: 15px; }
 .card_kpi .alert-primary { background-color: #f6f6f6; border: 1px solid #ececec; color: #00998c; border-radius: 2px;
 	/*background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px; */}
 .stockClassName .col-md-6, .stockClassName	.col-md-12 { padding-left:12px !important; margin-top:20px; }
@@ -16620,4 +16620,14 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 /* For IE10 */
 .Layer::-ms-expand {
   display: none;
+}
+.mt-18{
+	margin-top: 18px;
+}
+#resetMsg{
+    display: inline-block;
+    float: left;
+    color: #ff0000;
+    width: 70%;
+    text-align: left;
 }

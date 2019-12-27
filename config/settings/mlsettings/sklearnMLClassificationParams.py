@@ -1490,7 +1490,7 @@ SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS = [
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
         "defaultValue": 100,
-        "acceptedValue": None,
+        "acceptedValue": 100,
         "valueRange": None,
         "paramType": "number",
         "uiElemType": "textBox",

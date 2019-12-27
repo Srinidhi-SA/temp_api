@@ -1121,7 +1121,7 @@ export default function reducer(state = {
     break;
     case "SET_PYTORCH_LAYER":{
         var layerData = state.pyTorchLayer
-        var curLayer = layerData[action.layerNum];
+        var curLayer = layerData[parseInt(action.layerNum)];
         if(curLayer === undefined){
             curLayer = {}
         }
@@ -1137,6 +1137,14 @@ export default function reducer(state = {
         return {
             ...state,
             pyTorchSubParams : action.subParamDt
+        }
+    }
+    break;
+    case "CLEAR_PYTORCH_VALUES":{
+        return {
+            ...state,
+            pyTorchLayer : {},
+            pyTorchSubParams : {}
         }
     }
     break;

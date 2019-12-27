@@ -202,14 +202,24 @@ PT_ACTIVATION_PreLU_PARAMS = [
         "name": "num_parameters",
         "displayName": "num_parameters",
         "description": "number of alpha to learn.",
-        "defaultValue": 1,
-        "paramType": "number",
-        "uiElemType": "slider",
-        "valueRange": [1, 10],
+        "defaultValue": [
+            {
+                "name": "1",
+                "selected": True,
+                "displayName": "1"
+            },
+            {
+                "name": "no of channels",
+                "selected": False,
+                "displayName": "No of Channels"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["int"],
-        "allowedDataType": ["int"]
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
     {
         "name": "init",
@@ -443,24 +453,33 @@ PYTORCH_ACTIVATION_PARAMETERS = [
      "parameters": [obj for obj in PT_ACTIVATION_Hardtanh_PARAMS]},
     {"name": "LeakyReLU", "selected": False, "displayName": "LeakyReLU",
      "parameters": [obj for obj in PT_ACTIVATION_LeakyReLU_PARAMS]},
+    {"name": "LogSigmoid", "selected": False, "displayName": "LogSigmoid", "parameters":None},
     {"name": "MultiheadAttention", "selected": False, "displayName": "MultiheadAttention",
      "parameters": [obj for obj in PT_ACTIVATION_MultiheadAttention_PARAMS]},
     {"name": "PreLU", "selected": False, "displayName": "PreLU",
      "parameters": [obj for obj in PT_ACTIVATION_PreLU_PARAMS]},
+    {"name": "ReLU", "selected": False, "displayName": "ReLU", "parameters": None},
+    {"name": "ReLU6", "selected": False, "displayName": "ReLU6", "parameters": None},
     {"name": "RreLU", "selected": False, "displayName": "RreLU",
      "parameters": [obj for obj in PT_ACTIVATION_RreLU_PARAMS]},
+    {"name": "SELU", "selected": False, "displayName": "SELU", "parameters": None},
     {"name": "CELU", "selected": False, "displayName": "CELU",
      "parameters": [obj for obj in PT_ACTIVATION_CELU_PARAMS]},
+    {"name": "GELU", "selected": False, "displayName": "GELU", "parameters": None},
+    {"name": "Sigmoid", "selected": False, "displayName": "Sigmoid", "parameters": None},
     {"name": "Softplus", "selected": False, "displayName": "Softplus",
      "parameters": [obj for obj in PT_ACTIVATION_Softplus_PARAMS]},
     {"name": "Softshrink", "selected": False, "displayName": "Softshrink",
      "parameters": [obj for obj in PT_ACTIVATION_Softshrink_PARAMS]},
+    {"name": "Softsign", "selected": False, "displayName": "Softsign", "parameters": None},
+    {"name": "Tanh", "selected": False, "displayName": "Tanh", "parameters": None},
+    {"name": "Tanhshrink", "selected": False, "displayName": "Tanhshrink", "parameters": None},
     {"name": "Threshold", "selected": False, "displayName": "Threshold",
      "parameters": [obj for obj in PT_ACTIVATION_Threshold_PARAMS]},
     {"name": "Softmin", "selected": False, "displayName": "Softmin",
      "parameters": [obj for obj in PT_ACTIVATION_Softmin_PARAMS]},
-    {"name": "Softmax", "selected": False, "displayName": "Softmax",
-     "parameters": [obj for obj in PT_ACTIVATION_Softmax_PARAMS]},
+    {"name": "Softmax", "selected": False, "displayName": "Softmax", "parameters": [obj for obj in PT_ACTIVATION_Softmax_PARAMS]},
+    {"name": "Softmax2d", "selected": False, "displayName": "Softmax2d", "parameters": None},
     {"name": "LogSoftmax", "selected": False, "displayName": "LogSoftmax",
      "parameters": [obj for obj in PT_ACTIVATION_LogSoftmax_PARAMS]},
     {"name": "AdaptiveLogSoftmaxWithLoss", "selected": False, "displayName": "AdaptiveLogSoftmaxWithLoss",
@@ -488,7 +507,18 @@ PYTORCH_DROPOUT_PARAMETERS = [
      "parameters": [obj for obj in PT_DROPOUT_P_PARAMS]}
 ]
 
-PT_BATCHNORMALISATION_BatchNorm1d_PARAMS = [
+PT_BATCHNORMALIZATION_BatchNorm1d_PARAMS = [
+    {
+        "name": "num_features",
+        "displayName": "num_features",
+        "description": "C from an expected input of size (N,C,L) or L from input of size (N, L).",
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
     {
         "name": "eps",
         "displayName": "eps",
@@ -563,9 +593,9 @@ PT_BATCHNORMALISATION_BatchNorm1d_PARAMS = [
     },
 ]
 
-PYTORCH_BATCHNORMALISATION_PARAMETERS = [
+PYTORCH_BATCHNORMALIZATION_PARAMETERS = [
     {"name": "BatchNorm1d", "selected": False, "displayName": "BatchNorm1d",
-     "parameters": [obj for obj in PT_BATCHNORMALISATION_BatchNorm1d_PARAMS]}
+     "parameters": [obj for obj in PT_BATCHNORMALIZATION_BatchNorm1d_PARAMS]}
 ]
 
 PYTORCH_LINEAR_PARAMETERS = [
@@ -586,19 +616,18 @@ PYTORCH_LINEAR_PARAMETERS = [
         "displayName": "Dropout",
         "description": "During training, randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoulli distribution.",
         "defaultValue": [obj for obj in PYTORCH_DROPOUT_PARAMETERS],
-        "paramType": "number",
-        "uiElemType": "slider",
+        "paramType": "list",
+        "uiElemType": "checkbox",
         "display": True,
-        "valueRange": [0.1, 1.0],
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
     {
-        "name": "batchnormalisation",
-        "displayName": "Batch Normalisation",
+        "name": "batchnormalization",
+        "displayName": "Batch Normalization",
         "description": "Applies Batch Normalization over a 2D or 3D input (a mini-batch of 1D inputs with optional additional channel dimension) as described in the paper.",
-        "defaultValue": [obj for obj in PYTORCH_BATCHNORMALISATION_PARAMETERS],
+        "defaultValue": [obj for obj in PYTORCH_BATCHNORMALIZATION_PARAMETERS],
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
@@ -1401,7 +1430,6 @@ PT_LOSS_CrossEntropyLoss_PARAMETERS = [
         "name": "weight",
         "displayName": "weight",
         "description": "a manual rescaling weight given to each class. If given, has to be a Tensor of size C.",
-        "defaultValue": 0.9,
         "paramType": "tensor",
         "uiElemType": "textBox",
         "display": True,
@@ -1490,7 +1518,6 @@ PT_LOSS_NLLLoss_PARAMETERS = [
         "name": "weight",
         "displayName": "weight",
         "description": "a manual rescaling weight given to each class. If given, has to be a Tensor of size C.",
-        "defaultValue": 0.9,
         "paramType": "tensor",
         "uiElemType": "textBox",
         "display": True,
@@ -1602,7 +1629,6 @@ PT_LOSS_BCELoss_PARAMETERS = [
         "name": "weight",
         "displayName": "weight",
         "description": "a manual rescaling weight given to each class. If given, has to be a Tensor of size C.",
-        "defaultValue": 0.9,
         "paramType": "tensor",
         "uiElemType": "textBox",
         "display": True,
@@ -1629,7 +1655,6 @@ PT_LOSS_BCEWithLogitsLoss_PARAMETERS = [
         "name": "weight",
         "displayName": "weight",
         "description": "a manual rescaling weight given to each class. If given, has to be a Tensor of size C.",
-        "defaultValue": 0.9,
         "paramType": "tensor",
         "uiElemType": "textBox",
         "display": True,
