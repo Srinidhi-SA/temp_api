@@ -15274,7 +15274,7 @@ blockquote p:after {
 .form_withrowlabels .control-label { margin-top:10px;}
 .form_withrowlabels .ma-checkbox {margin:0;}
 .form_withrowlabels .form-group { margin-bottom: 10px;}
-input#flight_number { display: inherit; width: inherit; }
+input#flight_number { display: inherit; width: inherit; margin-left: 5px;}
 .mProcess { min-height:80px; }
 button.btn.btn-primary.b-inline.addn { position: absolute; right: 25px; top: 12px; }
 form .col-sm-4.control-label {
@@ -16630,4 +16630,8 @@ body .p-inputtext:enabled:focus:not(.p-error) {
     color: #ff0000;
     width: 70%;
     text-align: left;
+}
+#binErrorMsg {
+    float: left;
+    margin-left: 122px;
 }

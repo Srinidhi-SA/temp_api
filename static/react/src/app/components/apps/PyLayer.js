@@ -165,7 +165,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "p" && (!(Number.isInteger(parseFloat(val))) || val<0 || val>1) || val === ""){
+        else if(name === "p" && (val<0 || val>1 || val === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }

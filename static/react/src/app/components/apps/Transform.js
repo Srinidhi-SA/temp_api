@@ -320,7 +320,7 @@ console.log(rowCount,"count============================");
                   </div>
                   <div className="row form-group">
                     <div className="col-sm-12 text-center">
-                      <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                      <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                     </div>
                   </div>
               </form>
@@ -378,7 +378,7 @@ console.log(rowCount,"count============================");
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                   </div>
                 </div>
               </form>
@@ -431,7 +431,7 @@ console.log(rowCount,"count============================");
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                   </div>
                 </div>
               </form>
