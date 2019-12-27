@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues } from "../../actions/appActions";
+import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues, setIdLayer } from "../../actions/appActions";
 import {statusMessages} from  "../../helpers/helper"
 @connect((store)=>{
     return{
@@ -14,16 +14,13 @@ import {statusMessages} from  "../../helpers/helper"
         dataPreview:store.datasets.dataPreview,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
         pyTorchSubParams:store.apps.pyTorchSubParams,
+        idLayer: store.apps.idLayer
     }
 })
 
 export class PyTorch extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            addLayer : false,
-            idLayer : [],
-        }
     }
 
     componentWillMount(){
@@ -37,14 +34,16 @@ export class PyTorch extends React.Component {
     }
 
     handleAddLayer(){
-        let layer = Object.keys(this.props.pyTorchLayer).length+1
+        let lastLayerId = 0;
+        if(Object.keys(this.props.pyTorchLayer).length != 0){
+            let lr = Object.keys(this.props.pyTorchLayer)
+            lastLayerId = lr[lr.length-1];
+        }
+        let layer = parseInt(lastLayerId)+1
         let lyrDt = {"layer":"Linear", "activation": {"name":"None"}, "dropout": {"name":"None","p":"None"}, "batchnormalization": {"name":"None"}, "units_ip": "None","units_op": "None", "bias": "None" }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
-        const newLayer = this.state.idLayer.length + 1
-        this.setState({
-            addLayer:true,
-            idLayer:this.state.idLayer.concat([newLayer])
-        });
+        const newLayer = this.props.idLayer.length + 1;
+        this.props.dispatch(setIdLayer(newLayer));
     }
 
     handleClick(){
@@ -571,7 +570,7 @@ export class PyTorch extends React.Component {
                         </div>
                         {selectedValue === "Linear"?
                                 <div className='panel-wrapper'>
-                                    {this.state.idLayer.map(layer=>
+                                    {this.props.idLayer.map(layer=>
                                         <PyLayer key = {layer} id={layer} parameterData={this.props.parameterData}/>
                                     )}
                                 </div>

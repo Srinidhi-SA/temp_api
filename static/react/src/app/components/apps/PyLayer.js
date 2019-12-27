@@ -5,7 +5,7 @@ import store from "../../store";
 import {statusMessages} from  "../../helpers/helper"
 import { RegressionParameter } from "./RegressionParameter";
 import {Button} from "react-bootstrap";
-import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag } from "../../actions/appActions";
+import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag, deletePyTorchLayer } from "../../actions/appActions";
 import { ReactBootstrapSlider } from "react-bootstrap-slider";
 
 @connect((store)=>{
@@ -13,6 +13,7 @@ import { ReactBootstrapSlider } from "react-bootstrap-slider";
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
+        idLayer:store.apps.idLayer,
     }
 })
 
@@ -21,8 +22,10 @@ export class PyLayer extends React.Component {
         super(props);
     }
 
-    componentDidMount(){
-        // this.props.dispatch(pytorchValidateFlag(false));
+    deleteLayer(layerNumber){
+        this.props.dispatch(deletePyTorchLayer(layerNumber))
+        let layerElement = document.getElementById("layer"+layerNumber);
+        layerElement.parentNode.removeChild(layerElement);
     }
 
     selectHandleChange(parameterData,e){
@@ -71,13 +74,19 @@ export class PyLayer extends React.Component {
     changeTextBoxValue(parameterData,e){
         let name = parameterData.name;
         let val = e.target.value;
-        if(name === "input_unit" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        if(!Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "output_unit" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(val === ""){
+            e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+        }
+        else if(val<=0){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "value should be greater than 0"
+        }
+        else{
+            e.target.parentElement.lastElementChild.innerHTML = ""
         }
         if(!this.props.pytorchValidateFlag){
             let layerArry = this.props.id
@@ -347,6 +356,7 @@ export class PyLayer extends React.Component {
     }
     render() {
         var cls =`row layerPanel ${this.props.id}`
+        var clsId = `layer${this.props.id}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
@@ -359,12 +369,13 @@ export class PyLayer extends React.Component {
                 }
             });
         return (
-            <div class={cls}>
+            <div class={cls} id={clsId}>
                 <div class="layer">
+                    {/* Need to check with ML regarding Layer No  */}
                     <div class="layerHeader" id={this.props.id}>
                         Linear Layer {this.props.id}
-                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
-                        </i>
+                        <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.id)}/>
+                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`} />
                     </div>
                     <div className="collapse in" id={`collapseExample${this.props.id}`}>
                         <div className="card card-body">

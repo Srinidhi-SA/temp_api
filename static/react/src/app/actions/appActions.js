@@ -2478,6 +2478,12 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   return { type: "UPDATE_REGRESSION_ALGORITHM_DATA", newAlgorithm }
 
 }
+export function setIdLayer(newLayer){
+  return {
+    type: "ID_LAYER_ARRAY",
+    newLayer,
+  }
+}
 export function setPyTorchLayer(layerNum,lyrDt,parameterName){
   return {
     type: "SET_PYTORCH_LAYER",
@@ -2490,6 +2496,12 @@ export function setPyTorchSubParams(subParamDt){
   return {
     type: "SET_PYTORCH_SUBPARAMS",
     subParamDt,
+  }
+}
+export function deletePyTorchLayer(layerNum){
+  return {
+    type: "DELETE_LAYER",
+    layerNum,
   }
 }
 export function clearPyTorchValues(){

@@ -114,7 +114,8 @@ export default function reducer(state = {
         unselectedModelsCount:0,
         metricSelected:{},
         pyTorchLayer:{},
-        pyTorchSubParams:{}
+        pyTorchSubParams:{},
+        idLayer:[]
 
 }, action) {
     // console.log("In APPs reducer!!");
@@ -1119,6 +1120,14 @@ export default function reducer(state = {
         }
     }
     break;
+    case "ID_LAYER_ARRAY":{
+        let curIdArray = state.idLayer.concat([action.newLayer])
+        return{
+            ...state,
+            idLayer:curIdArray,
+        }
+    }
+    break;
     case "SET_PYTORCH_LAYER":{
         var layerData = state.pyTorchLayer
         var curLayer = layerData[parseInt(action.layerNum)];
@@ -1140,11 +1149,24 @@ export default function reducer(state = {
         }
     }
     break;
+    case "DELETE_LAYER":{
+        var newPyTorchLayer = state.pyTorchLayer
+        var newLayerId = state.idLayer
+        delete newPyTorchLayer[action.layerNum];
+        delete newLayerId[action.layerNum-1];
+        return {
+            ...state,
+            pyTorchLayer : newPyTorchLayer,
+            idLayer : newLayerId
+        }
+    }
+    break;
     case "CLEAR_PYTORCH_VALUES":{
         return {
             ...state,
             pyTorchLayer : {},
-            pyTorchSubParams : {}
+            pyTorchSubParams : {},
+            idLayer : [],
         }
     }
     break;
