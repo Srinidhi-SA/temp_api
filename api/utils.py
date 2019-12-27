@@ -39,7 +39,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         base_dir = correct_base_dir()
         scripts_dir = os.path.join(base_dir, "scripts")
 
-    egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
+    egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py3.6.egg")
     driver_file = os.path.join(scripts_dir, "driver.py")
 
     print("About to submit job through YARN")

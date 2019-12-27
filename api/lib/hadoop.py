@@ -15,7 +15,7 @@ def hadoop_put(from_path, to_dir):
     # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-put", from_path, to])
 
     hdfs_client = hadoop_hdfs()
-    with open(from_path, 'r') as file:
+    with open(from_path, newline='') as file:
         hdfs_client.create_file(hdfs_file_path, file)
 
 def hadoop_mkdir(path):

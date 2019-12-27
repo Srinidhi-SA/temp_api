@@ -1490,7 +1490,7 @@ def set_result(request, slug=None):
         slug,
         results
     )
-    if "status=failed" in request.body:
+    if "status=failed" in request.body.decode('utf-8'):
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
@@ -1512,13 +1512,13 @@ def set_result(request, slug=None):
             results = tasks.write_into_databases.delay(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         else:
             results = tasks.write_into_databases1(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         job.status = 'SUCCESS'
         job.save()
@@ -5522,7 +5522,7 @@ def set_messages(request, slug=None):
 
     return_data = request.GET.get('data', None)
     data = request.body
-    data = json.loads(data)
+    data = json.loads(data.decode('utf-8'))
     if 'stageName' not in data:
         return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
