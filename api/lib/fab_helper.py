@@ -1,3 +1,4 @@
+from builtins import str
 from fabric.api import *
 from fabric.contrib import files
 from django.conf import settings

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
+from __future__ import absolute_import
 import environ
 env = environ.Env(DEBUG=(bool, False),) # set default values and casting
 environ.Env.read_env()
@@ -16,9 +17,9 @@ environ.Env.read_env()
 import os
 
 import datetime
-import config_file_name_to_run
-from mlsettings import *
-from logger_config import *
+from . import config_file_name_to_run
+from .mlsettings import *
+from .logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1494,7 +1495,7 @@ YARN_QUEUE_NAMES = {
 SUBMIT_JOB_THROUGH_YARN = True
 LIST_OF_ADMIN_EMAILS = tuple(env.list('LIST_OF_ADMIN_EMAILS', default=[]))
 
-import config_file_name_to_run
+from . import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
 

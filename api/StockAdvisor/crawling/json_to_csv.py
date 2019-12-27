@@ -1,3 +1,4 @@
+from __future__ import print_function
 import csv
 import simplejson as json
 import sys
@@ -21,5 +22,5 @@ with open(sys.argv[2], 'wb') as f:
 			i+=1
 		try:
 			w.writerow(json_data)
-		except Exception,e:
-			print e
+		except Exception as e:
+			print(e)

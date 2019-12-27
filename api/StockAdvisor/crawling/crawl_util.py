@@ -1,8 +1,14 @@
-import generic_crawler
-import process
-import common_utils
+from __future__ import print_function
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from . import generic_crawler
+from . import process
+from . import common_utils
 import simplejson as json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sys
 from django.template.defaultfilters import slugify
 import random
@@ -52,7 +58,7 @@ def fetch_news_article_from_nasdaq(stock):
     stock_news = []
     urls = get_nasdaq_news_articles(stock)
 
-    print urls
+    print(urls)
     content_array = []
     for url in urls:
         content = crawl_obj.fetch_content(url, use_cache=False)
@@ -87,7 +93,7 @@ def fetch_news_article_from_nasdaq(stock):
                     json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
                 stock_news.append(json_obj)
 
-    print "Let us do sentiment on {0}".format(len(stock_news)) * 2
+    print("Let us do sentiment on {0}".format(len(stock_news)) * 2)
     stock_news_with_sentiments = []
     for news in stock_news:
         short_desc = news["short_desc"]
@@ -200,7 +206,7 @@ def get_transformation_settings(slug=None):
 def find_headers(news_data, type='historical_data', slug=None):
     if len(news_data) < 1:
         return []
-    headers_name = news_data[0].keys()
+    headers_name = list(news_data[0].keys())
     required_fields = get_required_fields(type)
     headers_name = list(set(required_fields).intersection(set(headers_name)))
     headers = []
@@ -236,7 +242,7 @@ def get_column_data_for_metadata(headers, slug=None):
 
 def get_sample_data(news_data, type='historical_data', slug=None):
     required_fields = get_required_fields(type)
-    headers_name = news_data[0].keys()
+    headers_name = list(news_data[0].keys())
     headers_name = list(set(required_fields).intersection(set(headers_name)))
     sampleData = []
     for row in news_data:
