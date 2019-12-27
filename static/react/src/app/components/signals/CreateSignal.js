@@ -37,7 +37,6 @@ export class CreateSignal extends React.Component {
 		this.props.dispatch(getAllDataList());
 	}
 	openSignalModal(){
-		//console.log(getUserDetailsOrRestart.get().view_data_permission)
 		if(getUserDetailsOrRestart.get().view_data_permission=="false"){
 			bootbox.alert("You don't have access to view datasets,Please contact admin for permissions!");
 		}else if($.isEmptyObject(store.getState().datasets.allDataSets)){
@@ -51,7 +50,6 @@ export class CreateSignal extends React.Component {
 	}
 
 	getPreviewData(e){
-		//this.selectedData = e.target.id;
 		var that = this;
 		if(!this.flag){
 			that.selectedData['name']= $('#signal_Dataset option:selected').val();

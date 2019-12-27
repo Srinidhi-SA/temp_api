@@ -25,17 +25,12 @@ export class ViewChartData extends React.Component {
       return true;
       else if(store.getState().signals.chartDataClassId == "")return true;
       else return false;
-     // return true;
   }
   render() {
-    console.log("in view chart@@@@@@@@@@@@")
-    console.log(this.props)
     let tabledata=<div/>
     if (this.props.tabledata) {
        tabledata = this.props.tabledata;
-
       var collength = tabledata.length;
-      //console.log(collength);
       var rowlength = tabledata[0].length;
       var tablehtml = "<thead><tr>",
         tablehead = "",
@@ -54,7 +49,6 @@ export class ViewChartData extends React.Component {
       }
       tablehtml += "</tbody></table>";
 
-    //  $(".table" + this.props.classId + " table").html(tablehtml);
     }
     var tableClass = "table chart-table"
     return (
@@ -76,8 +70,6 @@ export class ViewChartData extends React.Component {
                 }}/>}>
                   <table className={tableClass}>{
                     (this.props.tabledata)?renderHTML(tablehtml):""}</table>
-                  {/*<div class="form-group col-md-7;">*/}
-
                 </Scrollbars>
               </div>
 
@@ -91,7 +83,6 @@ export class ViewChartData extends React.Component {
         </Modal>
       </div>
     );
-    // return(<div></div>)
   }
 
 }

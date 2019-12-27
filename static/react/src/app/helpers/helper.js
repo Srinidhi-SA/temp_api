@@ -187,11 +187,9 @@ export function generateTextHeatMapRows(table) {
   var cols = table.tableData.map(function(rowData, i) {
     if (i != 0) {
       var row = rowData.map(function(colData, j) {
-        console.log(colData)
         if (colData.value == 0 && colData.text == "") {
           return <td key={j} value={colData.value}></td>;
         } else {
-          //return<td key={j}>{colData.text}<br/>{colData.value}</td>;
           return <td key={j} value={colData.value}>{colData.text}<br/>
             <b>{colData.value}</b>
           </td>;
@@ -251,10 +249,9 @@ else
 
 export function subTreeSetting(urlLength, length, paramL2, classname = ".sb_navigation #subTab i.mAd_icons.ic_perf ~ span") {
   $(function() {
-    if (urlLength == length) { //show -hide subtree and active class of subtree element
+    if (urlLength == length) {
       $(".sb_navigation").show();
       $(classname).each(function() {
-        console.log($(this).html() + " == " + paramL2);
         if ($(this).attr('id') == paramL2) {
           $(this).parent().addClass('active');
         } else {
@@ -264,27 +261,15 @@ export function subTreeSetting(urlLength, length, paramL2, classname = ".sb_navi
 
     } else {
       $(".sb_navigation").hide();
-    } // end of show -hide subtree and active class of subtree element
+    } 
 
-    if ($(".list-group").children()) { // show hide side panel list
+    if ($(".list-group").children()) { 
       if ($(".list-group").children().length == 1) {
         $('.row-offcanvas-left').addClass('active');
         $('.sdbar_switch i').removeClass('sw_on');
         $('.sdbar_switch i').addClass('sw_off');
       }
     }
-
-    /*  if(that.showSubTree){   // for sub tree active class check
-       $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
-        console.log($(this).html() +" == "+ that.props.match.params.l2);
-        if($(this).attr('id') == that.props.match.params.l2){
-          $(this).parent().addClass('active');
-        }else{
-          $(this).parent().removeClass('active');
-        }
-       });
-     }*/
-
   });
 
 }
@@ -350,11 +335,6 @@ export function showHideSubsetting(colType, subsetData, dateflag) {
 }
 
 export function decimalPlaces(number) {
-  // toFixed produces a fixed representation accurate to 20 decimal places
-  // without an exponent.
-  // The ^-?\d*\. strips off any sign, integer portion, and decimal point
-  // leaving only the decimal fraction.
-  // The 0+$ strips off any trailing zeroes.
   return ((+ number).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
 }
 
@@ -511,7 +491,6 @@ export function bytesToSize(bytes) {
 };
 
 export function downloadSVGAsPNG(chartClassId) {
-  //This is code to remove background black color in chart and ticks adjustment
   var nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
   var nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
   var nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
@@ -630,16 +609,11 @@ export function checkChatbotPresent() {
   return false
 }
 
-/**
-* Check dataset and get all the selected variables
-*/
 export function getRemovedVariableNames(dataset){
     var arr = [];
 
     var pickRemoved = function(item){
         if(item.targetColumn||!item.selected ){
-            // if(!item.selected ){
-            // if(item.selected="true"|| item.targetColumn=="true"){
             arr.push(item.name)
         }
     }

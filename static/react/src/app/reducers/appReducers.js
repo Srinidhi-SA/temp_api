@@ -117,10 +117,6 @@ export default function reducer(state = {
         pyTorchSubParams:{}
 
 }, action) {
-    // console.log("In APPs reducer!!");
-    // console.log(action);
-
-
 
     switch (action.type) {
         case "UPDATE_MODE_SELECTION":
@@ -264,17 +260,6 @@ export default function reducer(state = {
                 "data":{}
             }
         }
-    //     var curDepData = state.deployData
-    //     var curColSlug = curDepData[action.colSlug];
-    //     if(curColSlug == undefined){
-    //         curColSlug = { }
-    //       }
-    //       curDepData[action.colSlug] = action.dataToSave;
-    //       console.log(curColSlug);
-    //   return{
-    //     ...state,
-    //     deployData : curDepData
-    //   }
     }
     break;
 
@@ -333,7 +318,6 @@ export default function reducer(state = {
         deployShowModal: true,
         deployItem:action.selectedItem
       }
-      console.log(deployShowModal)
     }
     break;
 
@@ -787,7 +771,6 @@ export default function reducer(state = {
     break;
     case "AUDIO_UPLOAD_FILE":
     {
-        console.log(action.files[0])
         return{
             ...state,
             audioFileUpload:action.files[0],

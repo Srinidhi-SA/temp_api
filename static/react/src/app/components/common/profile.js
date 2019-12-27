@@ -117,13 +117,11 @@ resetAPI=(oldPassword,newPassword) =>{
       body: JSON.stringify({ "old_password": oldPassword, "new_password": newPassword})
    }).then( response => Promise.all([response, response.json()]));
 }
-  //in your component
   addDefaultSrc(ev) {
     ev.target.src = STATIC_URL + "assets/images/iconp_default.png"
   }
   render() {
     let lastLogin = null;
-    console.log("in profile")
     if (getUserDetailsOrRestart.get().last_login != "null") {
       lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
     } else {
@@ -133,7 +131,6 @@ resetAPI=(oldPassword,newPassword) =>{
     if (isEmpty(this.props.profileInfo)) {
       return (
         <div className="side-body">
-          {/*<!-- Page Title and Breadcrumbs -->*/}
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
@@ -149,8 +146,6 @@ resetAPI=(oldPassword,newPassword) =>{
         </div>
       )
     } else {
-      console.log("profile info!!")
-      console.log(this.props)
       var fileName = ""
       var fileSize=0
       if(store.getState().dataSource.fileUpload){
@@ -165,7 +160,6 @@ resetAPI=(oldPassword,newPassword) =>{
       if (!this.props.profileImgURL||this.props.profileImgURL==null||this.props.profileImgURL=="null")
         imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
-        console.log(analysis)
         return (
           <div key={i} className="col-md-2 co-sm-4 col-xs-6">
             <h2 className="text-center text-primary">{analysis.count}<br/>
@@ -175,7 +169,7 @@ resetAPI=(oldPassword,newPassword) =>{
           </div>
         )
       });
-      // Recent Activity Block
+      
       let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
 
         let img_name = STATIC_URL + "assets/images/iconp_" + recAct.content_type + ".png";
@@ -222,9 +216,7 @@ resetAPI=(oldPassword,newPassword) =>{
               </div>
             </div>
           </div>
-          {/*<!-- /.Page Title and Breadcrumbs -->
-
-            <!-- Page Content Area -->*/}
+        
           <div className="main-content">
             <div className="user-profile">
               <div className="panel panel-default xs-mb-15">
