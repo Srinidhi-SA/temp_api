@@ -926,6 +926,18 @@ export default function reducer(state = {
 
     break;
     
+    case "DELETE_LAYER":
+    { 
+        var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
+        // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
+        return{
+          ...state,
+          tensorFlowInputs :curTfData
+        }
+      }
+
+    break;
+    
     case "CLEAR_LAYERS":
     {
         return{

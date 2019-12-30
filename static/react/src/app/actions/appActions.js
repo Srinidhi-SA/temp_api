@@ -1018,12 +1018,14 @@ export function addTensorFlowArray(id,layerType,name,val) {
         "kernel_regularizer": null,
         "units": null,
         "use_bias": null,
+        "layerId":id
       }    
   }
   else if(layerType==="Dropout"){
       var  tensorFlowArray={
         "layer":"Dropout",
         "rate":null,
+        "layerId":id
       }
     }
     else{
@@ -1031,6 +1033,7 @@ export function addTensorFlowArray(id,layerType,name,val) {
         "layer":"Lambda",
         "lambda":null,
         "units":null,
+        "layerId":id
       }
     }
   return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
@@ -1039,6 +1042,11 @@ export function addTensorFlowArray(id,layerType,name,val) {
 export function updateTensorFlowArray(id,name,val) {
   var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
   return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
+}
+
+export function deleteTensorFlowArray(deleteId) {
+  // var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
+  return { type: "DELETE_LAYER", deleteId}
 }
 export function clearTensorFlowArray() {
   return { type: "CLEAR_LAYERS"}

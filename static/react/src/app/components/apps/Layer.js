@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {updateTensorFlowArray,addTensorFlowArray} from '../../actions/appActions'
+import {updateTensorFlowArray,addTensorFlowArray,deleteTensorFlowArray} from '../../actions/appActions'
 import store from "../../store";
 import { connect } from "react-redux";
 
@@ -42,6 +42,12 @@ export default class Layer extends Component {
         return <option value={k} > {k}</option>
     })
     return <div className= {`${item.name}`}><select className= {cls} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
+  }
+
+  deleteLayer=(id)=>{
+    document.getElementById(id).innerHTML=""
+    this.props.dispatch(deleteTensorFlowArray(id))
+
   }
   
   render() { 
@@ -88,11 +94,13 @@ export default class Layer extends Component {
          })
    
     return ( 
-      <div className={cls}>
+      <div className={cls} id={this.props.id}>
       <div className="layer">
       <div className="layerHeader">
-      {this.props.layerType} 
+      {this.props.layerType}
       <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
+      </i>
+      <i onClick={this.deleteLayer.bind(this,this.props.id)} className="fa fa-close" type="button">
       </i>
       </div>
       <div className="collapse in" id={`collapseExample${this.props.id}`}>
