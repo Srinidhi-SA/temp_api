@@ -172,7 +172,6 @@ export class DataValidationEditValues extends React.Component {
 		if(that.columnData != null){
 			replaceTypeList  = (function(){
 				var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
-				console.log(optionValues);
 				return optionValues;
 			})();
 		}

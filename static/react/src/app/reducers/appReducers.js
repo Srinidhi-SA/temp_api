@@ -114,13 +114,10 @@ export default function reducer(state = {
         unselectedModelsCount:0,
         metricSelected:{},
         pyTorchLayer:{},
-        pyTorchSubParams:{}
+        pyTorchSubParams:{},
+        idLayer:[]
 
 }, action) {
-    // console.log("In APPs reducer!!");
-    // console.log(action);
-
-
 
     switch (action.type) {
         case "UPDATE_MODE_SELECTION":
@@ -264,17 +261,6 @@ export default function reducer(state = {
                 "data":{}
             }
         }
-    //     var curDepData = state.deployData
-    //     var curColSlug = curDepData[action.colSlug];
-    //     if(curColSlug == undefined){
-    //         curColSlug = { }
-    //       }
-    //       curDepData[action.colSlug] = action.dataToSave;
-    //       console.log(curColSlug);
-    //   return{
-    //     ...state,
-    //     deployData : curDepData
-    //   }
     }
     break;
 
@@ -333,7 +319,6 @@ export default function reducer(state = {
         deployShowModal: true,
         deployItem:action.selectedItem
       }
-      console.log(deployShowModal)
     }
     break;
 
@@ -787,7 +772,6 @@ export default function reducer(state = {
     break;
     case "AUDIO_UPLOAD_FILE":
     {
-        console.log(action.files[0])
         return{
             ...state,
             audioFileUpload:action.files[0],
@@ -925,19 +909,33 @@ export default function reducer(state = {
         curTfData[action.id-1] =  action.tensorFlowArray;
         return{
             ...state,
-            tensorFlowInputs : curTfData
-          }
-      }
+            tensorFlowInputs : curTfData.filter(i=>i!=null)
+        }
+    }
 
     break;    
     case "UPDATE_LAYERS":
     { 
         var stateval =state.tensorFlowInputs
         action.tensorFlowInputs[action.name] = action.val;
-        stateval[action.id-1]=action.tensorFlowInputs        
+        stateval[action.arrayIndxToUpdate]=action.tensorFlowInputs        
         return{
           ...state,
           tensorFlowInputs : stateval
+        }
+    }
+
+    break;
+    
+    case "DELETE_LAYER":
+    { 
+        // var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
+        var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
+
+        // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
+        return{
+          ...state,
+          tensorFlowInputs :curTfData
         }
       }
 
@@ -1119,6 +1117,14 @@ export default function reducer(state = {
         }
     }
     break;
+    case "ID_LAYER_ARRAY":{
+        let curIdArray = state.idLayer.concat([action.newLayer])
+        return{
+            ...state,
+            idLayer:curIdArray,
+        }
+    }
+    break;
     case "SET_PYTORCH_LAYER":{
         var layerData = state.pyTorchLayer
         var curLayer = layerData[parseInt(action.layerNum)];
@@ -1140,11 +1146,24 @@ export default function reducer(state = {
         }
     }
     break;
+    case "DELETE_LAYER":{
+        var newPyTorchLayer = state.pyTorchLayer
+        var newLayerId = state.idLayer
+        delete newPyTorchLayer[action.layerNum];
+        delete newLayerId[action.layerNum-1];
+        return {
+            ...state,
+            pyTorchLayer : newPyTorchLayer,
+            idLayer : newLayerId
+        }
+    }
+    break;
     case "CLEAR_PYTORCH_VALUES":{
         return {
             ...state,
             pyTorchLayer : {},
-            pyTorchSubParams : {}
+            pyTorchSubParams : {},
+            idLayer : [],
         }
     }
     break;

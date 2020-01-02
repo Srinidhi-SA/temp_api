@@ -340,11 +340,9 @@
 				});
 			}
 
-			// initialized
 			table.hasInitialized = true;
 			table.isProcessing = false;
 			if ( c.debug ) {
-				console.log( 'Overall initialization time:' + ts.benchmark( $.data( table, 'startoveralltimer' ) ) );
 				if ( c.debug && console.groupEnd ) { console.groupEnd(); }
 			}
 			$table.triggerHandler( 'tablesorter-initialized', table );
@@ -632,16 +630,11 @@
 				scope: 'col',
 				role : 'columnheader'
 			});
-			// enable/disable sorting
 			ts.updateHeader( c );
 			if ( c.debug ) {
-				console.log( 'Built headers:' + ts.benchmark( timer ) );
-				console.log( c.$headers );
 			}
 		},
 
-		// Use it to add a set of methods to table.config which will be available for all tables.
-		// This should be done before table initialization
 		addInstanceMethods : function( methods ) {
 			$.extend( ts.instanceMethods, methods );
 		},
@@ -739,7 +732,6 @@
 				} else {
 					console.warn( '  No parsers detected!' );
 				}
-				console.log( 'Completed detecting parsers' + ts.benchmark( time ) );
 				if ( console.groupEnd ) { console.groupEnd(); }
 			}
 			c.parsers = list.parsers;
@@ -789,8 +781,6 @@
 						nodeValue = ts.getElementText( c, node, cellIndex );
 						$node = $( node );
 						if ( c.debug ) {
-							console.log( 'Checking if value was empty on row ' + rowIndex + ', column: ' +
-								cellIndex + ': "' + nodeValue + '"' );
 						}
 					}
 				} else {
@@ -1512,9 +1502,8 @@
 				c.appender( table, rows );
 			}
 			if ( c.debug ) {
-				console.log( 'Rebuilt table' + ts.benchmark( appendTime ) );
 			}
-			// apply table widgets; but not before ajax completes
+	
 			if ( !init && !c.appender ) {
 				ts.applyWidget( table );
 			}
@@ -1756,7 +1745,6 @@
 				});
 			}
 			if ( c.debug ) {
-				console.log( 'Applying sort ' + sortList.toString() + ts.benchmark( sortTime ) );
 			}
 		},
 
@@ -2588,7 +2576,6 @@
 				callback( table );
 			}
 			if ( debug ) {
-				console.log( 'tablesorter has been removed' );
 			}
 		}
 

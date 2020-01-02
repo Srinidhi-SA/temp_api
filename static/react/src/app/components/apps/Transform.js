@@ -25,7 +25,6 @@ import {  saveEncodingValuesAction, saveBinLevelTransformationValuesAction } fro
 export class Transform extends React.Component {
   constructor(props) {
     super(props);
-    console.log("Transform constructor method is called...");
     this.pickValue = this.pickValue.bind(this);
     this.state = {};
     this.state.encodingRadioButton;
@@ -143,11 +142,8 @@ componentDidMount(){
 
 checkCount(){
   let rowCount =  this.props.dataPreview.meta_data.scriptMetaData.metaData.filter(rows=>rows.name=="noOfRows").map(i=>i.value)[0];
-console.log(rowCount,"count============================");
-  // if(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i=>((i.ignoreSuggestionFlag==true) && (i.ignoreSuggestionPreviewFlag==false)))){
-    if((this.props.selectedItem.ignoreSuggestionFlag) && (!this.props.selectedItem.ignoreSuggestionPreviewFlag)){
+  if((this.props.selectedItem.ignoreSuggestionFlag) && (!this.props.selectedItem.ignoreSuggestionPreviewFlag)){
     if(rowCount >= 200){
-    //  $(".oneHot").addClass("noDisplay");
     }
 
   }
@@ -255,7 +251,6 @@ console.log(rowCount,"count============================");
   }
 
   render() {
-    console.log("Transforms render method is called...");
     var transformationData = this.getTransformationata();
        if(this.props.selectedItem.columnType == "measure"){
           return (
@@ -320,7 +315,7 @@ console.log(rowCount,"count============================");
                   </div>
                   <div className="row form-group">
                     <div className="col-sm-12 text-center">
-                      <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                      <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                     </div>
                   </div>
               </form>
@@ -378,7 +373,7 @@ console.log(rowCount,"count============================");
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                   </div>
                 </div>
               </form>
@@ -431,7 +426,7 @@ console.log(rowCount,"count============================");
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
                   </div>
                 </div>
               </form>

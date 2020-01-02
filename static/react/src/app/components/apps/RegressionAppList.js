@@ -15,7 +15,6 @@ import {updateCurrentAppByID, updateModelSummaryFlag, updateScoreSummaryFlag} fr
 export class RegressionAppList extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
   componentWillMount() {
     if (this.props.currentAppDetails == null)

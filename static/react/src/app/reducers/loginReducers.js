@@ -4,8 +4,6 @@ export default function reducer(state = {
   errmsg: "",
   profileImgURL: ""
 }, action) {
-  // console.log("in reducer!!");
-  // console.log(action);
 
   switch (action.type) {
     case "AUTHENTICATE_USER":
@@ -24,8 +22,7 @@ export default function reducer(state = {
           ...state,
           errmsg: action.json.non_field_errors
         }
-        //throw new Error("Authentication Failed!!");
-
+ 
       }
       break;
 

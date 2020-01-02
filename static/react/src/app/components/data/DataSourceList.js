@@ -47,24 +47,15 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(getDataSourceList());
     this.props.dispatch(getAllDataList());
   }
-  // componentDidUpdate(){
-  //   this.props.dispatch(getAllDataList());  
-  // }
   onDrop(files) {
     var duplicateName="";
-    console.log(this.props.datasets)
     if (files.length > 0) {
       if(this.props.datasets.length>0){
         this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
       duplicateName=true:"";     
       }
     if(this.props.allDataList!=""){
-      // for(var i=0;i<this.props.allDataList.data.length;i++){//datasets.dataList.data[""0""].name
-      //           if(this.props.allDataList.data[i].name.toLowerCase()==files[0].name.toLowerCase())
-      //           var duplicateName=true
-      //         } 
-      // refactored
-      this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+     this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
       duplicateName=true:"";  
 
             }
@@ -79,7 +70,6 @@ export class DataSourceList extends React.Component {
           "size": ""
         };
         this.props.dispatch(saveFileToStore(files))
-        // bootbox.alert(statusMessages("warning","File name must be unique ."));
         $("#fileErrorMsg").removeClass("visibilityHidden");
         $("#fileErrorMsg").html("Dataset with this name already exists");
       }
@@ -96,7 +86,6 @@ export class DataSourceList extends React.Component {
     }
   }
   popupMsg() {
-  //  console.log(e.taget.value)
     $("#fileErrorMsg").removeClass("visibilityHidden");
     $("#fileErrorMsg").html("The file format is not supported. Please try again with a csv file.");
 

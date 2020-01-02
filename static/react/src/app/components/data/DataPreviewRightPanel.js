@@ -12,17 +12,11 @@ import {C3Chart} from "../c3Chart";
 export class DataPreviewRightPanel extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log("checking slug");
-		console.log(props);
 	}
 	render() {
-		console.log("data prev right panel is called##########3");
 		let dataPrev = this.props.dataPreview.meta_data;
 		const sideChart = dataPrev.columnData[0].chartData;
-		console.log("chart----------))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))")
-		console.log(JSON.stringify(sideChart));
 		const sideTable = dataPrev.columnData;
-		console.log(sideTable);
 		const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 			return(  <tr key={tableIndex}>
 			<td className="item">{tableItem.name}</td>
@@ -35,7 +29,6 @@ export class DataPreviewRightPanel extends React.Component {
 
 		return(
 				<div className="col-md-3 preview_stats">
-				{ /*<!-- Start Tab Statistics -->*/}
 				<div id="tab_statistics" className="panel-group accordion accordion-semi">
 				<div className="panel panel-default">
 				<div className="panel-heading">
@@ -52,8 +45,6 @@ export class DataPreviewRightPanel extends React.Component {
 				</div>
 				</div>
 				</div>
-				{  /*<!-- ./ End Tab Statistics -->*/}
-				{ /* <!-- Start Tab Visualizations -->*/}
 				<div id="tab_visualizations" className="panel-group accordion accordion-semi">
 				<div className="panel panel-default">
 				<div className="panel-heading">
@@ -68,7 +59,6 @@ export class DataPreviewRightPanel extends React.Component {
 				</div>
 				</div>
 				</div>
-				{/*<!-- ./ End Tab Visualizations -->*/}
 				</div>
 		);
 }

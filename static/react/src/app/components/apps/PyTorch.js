@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
-import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues } from "../../actions/appActions";
+import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues, setIdLayer } from "../../actions/appActions";
 import {statusMessages} from  "../../helpers/helper"
 @connect((store)=>{
     return{
@@ -14,16 +14,13 @@ import {statusMessages} from  "../../helpers/helper"
         dataPreview:store.datasets.dataPreview,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
         pyTorchSubParams:store.apps.pyTorchSubParams,
+        idLayer: store.apps.idLayer
     }
 })
 
 export class PyTorch extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            addLayer : false,
-            idLayer : [],
-        }
     }
 
     componentWillMount(){
@@ -34,18 +31,19 @@ export class PyTorch extends React.Component {
     componentDidMount(){
         this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"batch_size",100,this.props.type));
         this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"number_of_epochs",20,this.props.type));
-
     }
 
     handleAddLayer(){
-        let layer = Object.keys(this.props.pyTorchLayer).length+1
+        let lastLayerId = 0;
+        if(Object.keys(this.props.pyTorchLayer).length != 0){
+            let lr = Object.keys(this.props.pyTorchLayer)
+            lastLayerId = lr[lr.length-1];
+        }
+        let layer = parseInt(lastLayerId)+1
         let lyrDt = {"layer":"Linear", "activation": {"name":"None"}, "dropout": {"name":"None","p":"None"}, "batchnormalization": {"name":"None"}, "units_ip": "None","units_op": "None", "bias": "None" }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
-        const newLayer = this.state.idLayer.length + 1
-        this.setState({
-            addLayer:true,
-            idLayer:this.state.idLayer.concat([newLayer])
-        });
+        const newLayer = this.props.idLayer.length + 1;
+        this.props.dispatch(setIdLayer(newLayer));
     }
 
     handleClick(){
@@ -192,24 +190,25 @@ export class PyTorch extends React.Component {
             e.target.parentElement.lastElementChild.innerHTML = ""
             this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
         }
-    if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
+        if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
             let subParamArry = this.props.pyTorchSubParams;
             subParamArry[parameterData.name] = parseInt(e.target.value);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
-    }
+        }
     }
 
     setChangeSubValues(data,parameterData,e){
         let name = data.name;
         let val = e.target.value;
         if(name === "blank"){
-            if(val < 0 || val > 100){
+            if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to 100"
-            }else if(!Number.isInteger(parseInt(val))){
+            }else if(!Number.isInteger(parseFloat(val))){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
             }else{
+                e.target.parentElement.lastElementChild.innerHTML = ""
                 this.props.dispatch(pytorchValidateFlag(true));
                 let subParamArry = this.props.pyTorchSubParams;
                 let selectedPar = subParamArry["loss"];
@@ -217,7 +216,11 @@ export class PyTorch extends React.Component {
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
             }
         }
-        else if(name === "ignore_index" && (!Number.isInteger(parseInt(val)) || val<0 || val === "")){
+        else if(name === "weight" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
+        }
+        else if(name === "ignore_index" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
         }
@@ -253,11 +256,11 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "max_iter" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "max_iter" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "max_eval" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "max_eval" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -269,7 +272,7 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "history_size" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "history_size" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -567,8 +570,8 @@ export class PyTorch extends React.Component {
                         </div>
                         {selectedValue === "Linear"?
                                 <div className='panel-wrapper'>
-                                    {this.state.idLayer.map(layer=>
-                                        <PyLayer key = {layer} id={layer} parameterData={this.props.parameterData}/>
+                                    {this.props.idLayer.map(layer=>
+                                        <PyLayer key = {layer} idNum={layer} parameterData={this.props.parameterData}/>
                                     )}
                                 </div>
                             : ""}

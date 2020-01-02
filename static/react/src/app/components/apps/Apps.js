@@ -59,7 +59,6 @@ import {getAllUsersList,fetchModelEdit,getDataSetPreview,setEditModelValues} fro
 export class Apps extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
   componentWillMount() {
     if(store.getState().datasets.editmodelFlag){
@@ -89,34 +88,23 @@ export class Apps extends React.Component {
   }
   modifyUrl(tabId) {
     this.props.dispatch(updateModelSummaryFlag(false));
-
     this.props.dispatch(activateModelScoreTabs(tabId));
-    //cleat Model Filters
     this.props.dispatch(storeModelSearchElement(""));
     this.props.dispatch(getAppsModelList(1));
-    //clear score Filters
     this.props.dispatch(storeScoreSearchElement(""));
     this.props.dispatch(getAppsScoreList(1));
     this.props.dispatch(getAppsAlgoList(1));
     if (tabId == "score") {
       let modelLink= window.location.href.includes("autoML") ? "/autoML/scores" : "/analyst/scores"
-      console.log(modelLink,"value333333333333333333333")
       this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink )
     } 
-    //  else if(tabId == "algo"){
-    //     this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
-    //   }
     
     else{
       
       let modelLink= window.location.href.includes("autoML") ? "/autoML/models" : "/analyst/models"
       this.props.history.push('/apps/' + this.props.match.params.AppId + modelLink)
     }
-    // else{
-    //   this.props.history.push('/apps/' + this.props.match.params.AppId + '/modelManagement')
-    // }
-  }
-
+   }
 
   proceedToModelManagement(tabId)
   {
@@ -135,16 +123,11 @@ export class Apps extends React.Component {
 
 
   render() {
-    //Here is the error with routing need to debug it
-    console.log("apps is called##########3");
-    console.log(this.props);
     var appId = this.props.currentAppId;
-    // if (store.getState().apps.modelSummaryFlag && this.props.location.pathname.includes("models")) {
-
+   
     if (store.getState().apps.modelSummaryFlag) {  
       let modelLink = this.props.location.pathname.includes("autoML") ? "/autoML/models/" : "/analyst/models/";
       let _link = "/apps/" + this.props.match.params.AppId + modelLink + store.getState().apps.modelSlug;
-      // alert("apps jsssssssssssss")
       return (<Redirect to={_link}/>);
     }
      if (store.getState().apps.scoreSummaryFlag) {
@@ -169,7 +152,6 @@ export class Apps extends React.Component {
         <div className="main-content">
         <div class="buttonRow pull-right">
         {modelManagement}
-            {/* <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="warning">Manage Models</Button> */}
         </div>
           <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")

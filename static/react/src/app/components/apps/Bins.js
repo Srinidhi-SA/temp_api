@@ -90,8 +90,6 @@ export class Bins extends React.Component {
   }
 
   render() {
-
-    console.log("Bins render method is called...");
     var bins = "";
     var binData = this.getBindata();
 

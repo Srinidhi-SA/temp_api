@@ -5,7 +5,7 @@ import store from "../../store";
 import {statusMessages} from  "../../helpers/helper"
 import { RegressionParameter } from "./RegressionParameter";
 import {Button} from "react-bootstrap";
-import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag } from "../../actions/appActions";
+import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag, deletePyTorchLayer } from "../../actions/appActions";
 import { ReactBootstrapSlider } from "react-bootstrap-slider";
 
 @connect((store)=>{
@@ -13,6 +13,7 @@ import { ReactBootstrapSlider } from "react-bootstrap-slider";
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         pyTorchLayer:store.apps.pyTorchLayer,
+        idLayer:store.apps.idLayer,
     }
 })
 
@@ -21,12 +22,17 @@ export class PyLayer extends React.Component {
         super(props);
     }
 
-    componentDidMount(){
-        // this.props.dispatch(pytorchValidateFlag(false));
+    deleteLayer(layerNumber){
+        // this.props.dispatch(deletePyTorchLayer(layerNumber))
+        // let layerElement = document.getElementById("layer"+layerNumber);
+        // layerElement.parentNode.removeChild(layerElement);
+        this.props.idLayer.filter(function(layerId){
+            return layerId != layerNumber
+        });
     }
 
     selectHandleChange(parameterData,e){
-        let layerArry = this.props.id;
+        let layerArry = this.props.idNum;
         if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
@@ -70,28 +76,32 @@ export class PyLayer extends React.Component {
 
     changeTextBoxValue(parameterData,e){
         let name = parameterData.name;
-        let val = parseInt(e.target.value);
-        if(name === "input_unit" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        let val = e.target.value;
+        if(!Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "output_unit" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(val === ""){
+            e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+        }
+        else if(val<=0){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "value should be greater than 0"
+        }
+        else{
+            e.target.parentElement.lastElementChild.innerHTML = ""
         }
         if(!this.props.pytorchValidateFlag){
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = val;
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
     }
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
-        let name = subparameterData.name;
-        let val = e.target.value;
         this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
@@ -119,19 +129,19 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "embed_dim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "embed_dim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "num_heads" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "num_heads" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "kdim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "kdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "vdim" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "vdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -147,15 +157,15 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "beta" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "beta" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "threshold" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "threshold" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
-        else if(name === "num_features" && (!(Number.isInteger(parseInt(val))) || val<0) || val === ""){
+        else if(name === "num_features" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
@@ -167,14 +177,14 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "p" && (!(Number.isInteger(parseInt(val))) || val<0 || val>1) || val === ""){
+        else if(name === "p" && (val<0 || val>1 || val === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
         else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = parseFloat(e.target.value);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
@@ -248,7 +258,7 @@ export class PyLayer extends React.Component {
     }
     
     renderPyTorchData(parameterData){
-        let lyr = this.props.id
+        let lyr = this.props.idNum
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue
@@ -348,7 +358,8 @@ export class PyLayer extends React.Component {
         }
     }
     render() {
-        var cls =`row layerPanel ${this.props.id}`
+        var cls =`row layerPanel ${this.props.idNum}`
+        var clsId = `layer${this.props.idNum}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
@@ -361,14 +372,14 @@ export class PyLayer extends React.Component {
                 }
             });
         return (
-            <div class={cls}>
+            <div class={cls} id={clsId}>
                 <div class="layer">
-                    <div class="layerHeader" id={this.props.id}>
-                        Linear Layer {this.props.id}
-                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
-                        </i>
+                    <div class="layerHeader" id={this.props.idNum}>
+                        Linear Layer {this.props.idNum}
+                        {/* <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/> */}
+                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
                     </div>
-                    <div className="collapse in" id={`collapseExample${this.props.id}`}>
+                    <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
                         <div className="card card-body">
                             <div class="layerBody" style={{'padding-left':'15px'}}>
                                 {renderPyTorchLayer}

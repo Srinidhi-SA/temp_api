@@ -56,7 +56,6 @@ function fetchDataList(pageNo,token,dispatch) {
 			else if(data_sorttype=='desc')
 				data_sorttype="-"
 					if(search_element!=""&&search_element!=null){
-						//console.log("calling for search element!!")
 						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
 						{
 							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -106,7 +105,6 @@ export function fetchModelEdit(slug,interval) {
 	return (dispatch) => {
 		return fetchModelEditAPI(slug).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
 				dispatch(fetchModelEditAPISuccess(json))
 			}
 			else{
@@ -133,7 +131,6 @@ export function getStockDataSetPreview(slug,interval) {
 	return (dispatch) => {
 		return fetchStockDataPreview(slug).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
 				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
 			}
 			else{
@@ -154,7 +151,6 @@ export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
         return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
-                console.log(json)
                 if(json.message && json.message == "failed"){
                     let myColor = { background: '#00998c', text: "#FFFFFF" };
                     notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
@@ -189,11 +185,9 @@ function fetchDataPreview(slug,dispatch,interval) {
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
-    console.log("data preview from api to store")
     dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
         column.checked = true;
     });
-    console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
     if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
@@ -280,15 +274,12 @@ export function setDataLoadedText(text){
 
 function dispatchDataPreviewLoadingMsg(dataPreview){
     let message = dataPreview.message
-    console.log("loading message########")
-    console.log(message)
     return {
         type: "CHANGE_LOADING_MSG",
         message
     }
 }
 function fetchDataPreviewError(json) {
-    console.log("fetching list error!!",json)
     return {
         type: "DATA_PREVIEW_ERROR",
         json
@@ -299,7 +290,6 @@ export function getAllUsersList() {
     return (dispatch) => {
         return fetchAllUsersList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
             if(response.status === 200){
-                console.log(json)
                 dispatch(fetchAllUsersSuccess(json))
             }
             else{
@@ -367,7 +357,6 @@ export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
             if(response.status === 200){
-                console.log(json)
                 dispatch(fetchAllDataSuccess(json))
             }
             else{
@@ -956,7 +945,6 @@ export function showDialogBox(slug,dialog,dispatch,evt){
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      console.log('closed by clicking background.')
                   }
     });
 }
@@ -1047,7 +1035,6 @@ function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      console.log('closed by clicking background.')
                   }
     });
 }
@@ -1314,7 +1301,6 @@ export function updateSubSetting(updatedSubSetting){
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
     let headers = store.getState().datasets.dataPreview.meta_data.uiMetaData.headersUI;
-    console.log(headers);
     const customBody = (
 		<div className="row">
 			<div className="col-md-4">
@@ -1354,7 +1340,6 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      //console.log('closed by clicking background.')
                   }
     });
 }

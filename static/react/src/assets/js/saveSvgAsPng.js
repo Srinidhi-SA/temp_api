@@ -54,7 +54,6 @@
             checkDone();
           }
           img.onerror = function() {
-            console.log("Could not load "+href);
             left--;
             checkDone();
           }

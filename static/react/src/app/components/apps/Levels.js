@@ -85,14 +85,11 @@ export class Levels extends React.Component {
   }
 
   componentWillMount() {
-    this.addNewLevel();
-    console.log("Levels componentWillMount method is called...");    
+    this.addNewLevel();  
   }
 
   componentWillUpdate() {
-    
-    this.props.parentUpdateLevelsData(this.state.levelsArray);
-    
+   this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
 
   componentDidMount() {
@@ -148,7 +145,6 @@ export class Levels extends React.Component {
   onClickCheckBox(event) {
     var checkedValue = event.target.checked;
     var checkedAttr = event.target.name;
-    console.log("checkedval:", checkedValue, "checkedAttr:", checkedAttr);
     if (checkedValue) {
       this.state.statesArray.filter(item => item.name == checkedAttr);
     } else {
@@ -176,9 +172,6 @@ export class Levels extends React.Component {
   }
 
   render() {
-    console.log("Levels render method is called...");
-
-
     if (this.props.selectedItem.columnType == "dimension") {
       var levelData = this.getLevelData();
       var levels = "";
@@ -213,7 +206,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
             </div>
           </div>
 
@@ -265,7 +258,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
             </div>
           </div>
         </Tab.Pane>
@@ -277,7 +270,6 @@ export class Levels extends React.Component {
         <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
-              {/* <Tab.Content animation>{levels}</Tab.Content> */}
               <Tab.Content animation>{(this.props.selectedItem.columnType == "dimension") ? levels : dtlevels}</Tab.Content>
             </Col>
           </Row>

@@ -12,10 +12,8 @@ export class GaugeMeter extends React.Component {
   constructor(){
     super();
   }
- //Using in stock Summary
   render() {
    var data = this.props.jsonData;
-   console.log("checking GaugeMeter element");
    return (
           <div className="gauageMeter">
         	    <ReactSpeedometer

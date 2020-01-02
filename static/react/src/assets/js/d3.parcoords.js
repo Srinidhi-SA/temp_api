@@ -657,13 +657,13 @@ function getNullPosition() {
 	} else if (__.nullValueSeparator=="top") {
 		return 1;
 	} else {
-		console.log("A value is NULL, but nullValueSeparator is not set; set it to 'bottom' or 'top'.");
-	}
+
+  	}
 	return h()+1;
 };
 
 function single_path(d, ctx) {
-	d3.entries(__.dimensions).forEach(function(p, i) {  //p isn't really p
+	d3.entries(__.dimensions).forEach(function(p, i) { 
 		if (i == 0) {
 			ctx.moveTo(position(p.key), typeof d[p.key] =='undefined' ? getNullPosition() : __.dimensions[p.key].yscale(d[p.key]));
 		} else {
@@ -2035,17 +2035,13 @@ pc.brushMode = function(mode) {
       var ev = d3.event,
           arc = arcs[arcs.active];
 
-      // Make sure that the point is within the bounds
       arc.p2[0] = Math.min(Math.max(arc.minX + 1, ev.x - __.margin.left), arc.maxX);
       arc.p2[1] = Math.min(Math.max(arc.minY, ev.y - __.margin.top), arc.maxY);
       arc.p3 = arc.p2.slice();
-//      console.log(arcs.angle(arcs.active));
-//      console.log(signedAngle(arcs.unsignedAngle(arcs.active)));
       drawStrum(arc, 1);
     };
   }
 
-  // some helper functions
   function hypothenuse(a, b) {
 	  return Math.sqrt(a*a + b*b);
   }
@@ -2064,7 +2060,6 @@ pc.brushMode = function(mode) {
 	  };
   })();
 
-  // [0, 2*PI] -> [-PI/2, PI/2]
   var signedAngle = function(angle) {
     var ret = angle;
     if (angle > Math.PI) {
@@ -2077,12 +2072,7 @@ pc.brushMode = function(mode) {
     return -ret;
   }
 
-  /**
-   * angles are stored in radians from in [0, 2*PI], where 0 in 12 o'clock.
-   * However, one can only select lines from 0 to PI, so we compute the
-   * 'signed' angle, where 0 is the horizontal line (3 o'clock), and +/- PI/2
-   * are 12 and 6 o'clock respectively.
-   */
+ 
   function containmentTest(arc) {
     var startAngle = signedAngle(arc.startAngle);
     var endAngle = signedAngle(arc.endAngle);
@@ -2093,7 +2083,6 @@ pc.brushMode = function(mode) {
     	endAngle = tmp;
     }
 
-    // test if segment angle is contained in angle interval
     return function(a) {
 
       if (a >= startAngle && a <= endAngle) {
@@ -2108,7 +2097,6 @@ pc.brushMode = function(mode) {
     var ids = Object.getOwnPropertyNames(arcs),
         brushed = __.data;
 
-    // Get the ids of the currently active arcs.
     ids = ids.filter(function(d) {
       return !isNaN(d);
     });
@@ -2123,7 +2111,7 @@ pc.brushMode = function(mode) {
           a = arcs.width(id),
           b = y1(d[d1]) - y2(d[d2]),
           c = hypothenuse(a, b),
-          angle = Math.asin(b/c);	// rad in [-PI/2, PI/2]
+          angle = Math.asin(b/c);	
       return test(angle);
     }
 
@@ -2157,8 +2145,6 @@ pc.brushMode = function(mode) {
       var brushed = __.data,
           arc = arcs[arcs.active];
 
-      // Okay, somewhat unexpected, but not totally unsurprising, a mousclick is
-      // considered a drag without move. So we have to deal with that case
       if (arc && arc.p1[0] === arc.p2[0] && arc.p1[1] === arc.p2[1]) {
         removeStrum(arcs);
       }
@@ -2200,13 +2186,8 @@ pc.brushMode = function(mode) {
   function install() {
     var drag = d3.behavior.drag();
 
-    // Map of current arcs. arcs are stored per segment of the PC. A segment,
-    // being the area between two axes. The left most area is indexed at 0.
     arcs.active = undefined;
-    // Returns the width of the PC segment where currently a arc is being
-    // placed. NOTE: even though they are evenly spaced in our current
-    // implementation, we keep for when non-even spaced segments are supported as
-    // well.
+  
     arcs.width = function(id) {
       var arc = arcs[id];
 
@@ -2291,8 +2272,7 @@ pc.brushMode = function(mode) {
         ids.forEach(function(d) {
           var dims = arcs[d].dims;
           arcs.active = d;
-          // If the two dimensions of the current arc are not next to each other
-          // any more, than we'll need to remove the arc. Otherwise we keep it.
+        
           if (!consecutive(dims.left, dims.right)) {
             removeStrum(arcs);
           }
@@ -2301,12 +2281,10 @@ pc.brushMode = function(mode) {
       }
     });
 
-    // Add a new svg group in which we draw the arcs.
     pc.selection.select("svg").append("g")
       .attr("id", "arcs")
       .attr("transform", "translate(" + __.margin.left + "," + __.margin.top + ")");
 
-    // Install the required brushReset function
     pc.brushReset = brushReset(arcs);
 
     drag
@@ -2314,9 +2292,6 @@ pc.brushMode = function(mode) {
       .on("drag", onDrag(arcs))
       .on("dragend", onDragEnd(arcs));
 
-    // NOTE: The styling needs to be done here and not in the css. This is because
-    //       for 1D brushing, the canvas layers should not listen to
-    //       pointer-events.
     strumRect = pc.selection.select("svg").insert("rect", "g#arcs")
       .attr("id", "arc-events")
       .attr("x", __.margin.left)
@@ -2353,8 +2328,6 @@ pc.ctx = ctx;
 pc.canvas = canvas;
 pc.g = function() { return g; };
 
-// rescale for height, width and margins
-// TODO currently assumes chart is brushable, and destroys old brushes
 pc.resize = function() {
   // selection size
   pc.selection.select("svg")
@@ -2399,8 +2372,6 @@ pc.unhighlight = function() {
   return this;
 };
 
-// calculate 2d intersection of line a->b with line c->d
-// points are objects with x and y properties
 pc.intersection =  function(a, b, c, d) {
   return {
     x: ((a.x * b.y - a.y * b.x) * (c.x - d.x) - (a.x - b.x) * (c.x * d.y - c.y * d.x)) / ((a.x - b.x) * (c.y - d.y) - (a.y - b.y) * (c.x - d.x)),
@@ -2416,13 +2387,9 @@ function position(d) {
   return v == null ? xscale(d) : v;
 }
 
-// Merges the canvases and SVG elements into one canvas element which is then passed into the callback
-// (so you can choose to save it to disk, etc.)
 pc.mergeParcoords = function(callback) {
   // Retina display, etc.
   var devicePixelRatio = window.devicePixelRatio || 1;
-
-  // Create a canvas element to store the merged canvases
   var mergedCanvas = document.createElement("canvas");
   mergedCanvas.width = pc.canvas.foreground.clientWidth * devicePixelRatio
   mergedCanvas.height = (pc.canvas.foreground.clientHeight + 30) * devicePixelRatio;

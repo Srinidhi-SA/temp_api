@@ -69,7 +69,6 @@ export class RoboInsightList extends React.Component {
   }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/apps-robo?search=' + e.target.value + '')
 
@@ -102,21 +101,6 @@ export class RoboInsightList extends React.Component {
         this.props.dispatch(getAppsRoboList(1));
   }
   render() {
-    console.log("apps robo list is called##########3");
-    console.log(this.props);
-    //empty search element
-    /*if (this.props.robo_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
-      console.log("search is empty");
-      this.props.dispatch(storeRoboSearchElement(""));
-      let search_element = document.getElementById('robo_insights');
-      if (search_element)
-        document.getElementById('robo_insights').value = "";
-      }
-    //search element ends..
-	 if(this.props.location.sort == "" || this.props.location.sort == null){
-		  this.props.dispatch(storeRoboSortElements("",null));
-	  }*/
-
     if (this.props.dataPreviewFlag) {
       let _link = "/apps-robo-list/" + store.getState().apps.roboDatasetSlug+"/customer/data/"+store.getState().apps.customerDataset_slug
       return (<Redirect to={_link}/>);
@@ -141,11 +125,6 @@ export class RoboInsightList extends React.Component {
         <LatestRoboInsights props={this.props}/>
           <div className="main-content">
             <div class="row">
-             {/*
-             <div className="col-md-8">
-                <h3 className="xs-mt-0">Robo Advisor Insights</h3>
-              </div>
-             */} 
               <div className="col-md-12">
                 <div class="btn-toolbar pull-right">				
 				<div className="input-group">

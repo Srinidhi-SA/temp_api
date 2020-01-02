@@ -6,8 +6,6 @@ export class Settings extends React.Component {
     super();
   }
   render() {
-    console.log("settings is called##########3");
-    console.log(this.props);
     return (
         <div>
           <div className="side-body">

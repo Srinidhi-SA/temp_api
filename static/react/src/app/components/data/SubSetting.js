@@ -59,7 +59,7 @@ export class SubSetting extends React.Component {
       if(selectAllChecked == true)
       $('#dim[type="checkbox"]').prop('checked', true);
 
-      $("#dim").click(function() { // select all dimension clicked
+      $("#dim").click(function() { 
         let count = 0;
         if ($(this).is(":checked")) {
           $('.dimension[type="checkbox"]').prop('checked', true);
@@ -76,13 +76,10 @@ export class SubSetting extends React.Component {
           }
         });
         that.state.curdimention = that.state.selectedDimention
-        console.log(that.state.selectedDimention);
         $("#saveButton").removeClass('btn-alt4')
         $("#saveButton").addClass('btn-primary')
         $("#saveButton").removeAttr('disabled')
       });
-
-      //Note:following will be called when we need to persist checklist on click of checkbox
 
       $('.dimension[type="checkbox"]').click(function() {
         let count = 0;
@@ -99,8 +96,6 @@ export class SubSetting extends React.Component {
         });
         if(checkSelectAll == true)
         $('#dim[type="checkbox"]').prop('checked', true);
-
-        console.log(that.state.selectedDimention);
         $("#saveButton").removeClass('btn-alt4')
         $("#saveButton").addClass('btn-primary')
         $("#saveButton").removeAttr('disabled')
@@ -119,7 +114,6 @@ export class SubSetting extends React.Component {
           }
         });
         that.state.curdimention = that.state.selectedDimention
-        console.log(that.state.selectedDimention);
         $('#saveButton').removeClass('btn-primary')
         $('#saveButton').addClass('btn-alt4')
         $('#saveButton').attr('disabled', true);
@@ -146,8 +140,6 @@ export class SubSetting extends React.Component {
         curmin: parseInt(e.target.value),
         textboxUpdated: true
       })
-      //this.state.curmin = Number(e.target.value)
-      console.log(e.target.value)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
       $("#saveButton").removeAttr('disabled')
@@ -161,8 +153,6 @@ export class SubSetting extends React.Component {
         curmax: parseInt(e.target.value),
         textboxUpdated: true
       })
-      //this.state.curmin = Number(e.target.value)
-      console.log(e.target.value)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
       $("#saveButton").removeAttr('disabled')
@@ -484,14 +474,9 @@ export class SubSetting extends React.Component {
           }
         }
       });
-      // $("#dim").click();
     });
   }
   render() {
-    console.log("subsetting is called####$$$$!!");
-    console.log(this.props)
-    console.log("state is")
-    console.log(this.state)
     this.callSubsetTableSorter()
     let subsettingsTemplate = "";
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
@@ -499,7 +484,6 @@ export class SubSetting extends React.Component {
     }
     if (this.props.item.columnStats != undefined) {
       this.props.item.columnStats.map((stats) => {
-        //  console.log(stats)
         if (stats.name == "min")
           this.state.min = stats.value
         else if (stats.name == "max") {
@@ -523,17 +507,11 @@ export class SubSetting extends React.Component {
         if (this.state.dimentionList)
           this.state.curdimention = Object.keys(this.state.dimentionList);
         }
-      console.log("after assign")
-      console.log(this.state)
-
       subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
     }
 
-    //console.log(subsettingsTemplate)
-
     return (
       <div>
-        {/*Start Tab Subsettings*/}
         <div id="tab_subsettings" className="panel-group accordion accordion-semi">
           <div className="panel panel-default box-shadow">
             <div className="panel-heading">
@@ -559,7 +537,6 @@ export class SubSetting extends React.Component {
           </div>
         </div>
 
-        {/* End Tab Subsettings */}
       </div>
 
     )

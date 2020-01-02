@@ -34,8 +34,6 @@ export default function reducer(state = {
   toggleValues:{},
   fromVariableSelectionPage:false,
 }, action) {
-  // console.log("in SIGNAL reducer!!");
-  // console.log(action);
 
   switch (action.type) {
     case "SIGNAL_LIST":
