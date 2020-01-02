@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 import hashlib
 import os
 
@@ -13,7 +15,7 @@ __email__ = "vivekananda.tadala@marlabs.com"
 __status__ = "Development"
 
 
-class Cache:
+class Cache(object):
     """
     Class to manage cache
     """
@@ -51,7 +53,7 @@ class Cache:
             file_obj.write(content)
             file_obj.close()
         except IOError:
-            print "CACHE: not able to cache the content"
+            print("CACHE: not able to cache the content")
         pass
 
     def get(self, key):
@@ -63,7 +65,7 @@ class Cache:
         try:
             file_path = self.__get_file_path(key)
             if os.path.exists(file_path):
-                print "CACHE HIT: " + key
+                print("CACHE HIT: " + key)
                 return open(file_path).read()
         except IOError:
             pass

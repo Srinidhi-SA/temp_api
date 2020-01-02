@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
@@ -45,7 +47,7 @@ class CustomPagination(PageNumberPagination):
                 "current_page_size": 0,
                 "current_data": []
             }
-        total_number_of_pages = ((total_data_count - 1) / page_size) + 1
+        total_number_of_pages = (old_div((total_data_count - 1), page_size)) + 1
         if page_number > total_number_of_pages:
             page_number = 1
             page_size = 10

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from knit import YARNAPI
 from django.conf import settings
 import subprocess
@@ -45,12 +46,12 @@ def get_brief_application_info(app_id=None):
 
 
 def kill_application(app_id=None):
-    print "################## Inside Kill Application ####################"
+    print("################## Inside Kill Application ####################")
     if None == app_id:
         return -1
 
     kill_status = yap.kill(app_id=app_id)
-    print ("Kill Status",kill_status)
+    print(("Kill Status",kill_status))
 
     if kill_status is True:
         print("Killed Application.")
@@ -94,11 +95,11 @@ def start_yarn_application_again(command_array=None):
             match = re.search('Submitted application (.*)$', line)
             if match:
                 application_id = match.groups()[0]
-                print "$$" * 100
-                print application_id
-                print "$$" * 100
+                print("$$" * 100)
+                print(application_id)
+                print("$$" * 100)
                 break
-        print "proc", cur_process
+        print("proc", cur_process)
         return {
             "application_id": application_id
         }

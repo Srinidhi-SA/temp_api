@@ -1,3 +1,4 @@
+from __future__ import print_function
 # from auditlog.middleware import AuditlogMiddleware
 #
 #
@@ -50,6 +51,7 @@
 #         request.user = SimpleLazyObject(lambda: get_user_jwt(request))
 
 
+from builtins import object
 from django.contrib.auth.middleware import get_user
 from django.utils.functional import SimpleLazyObject
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -83,7 +85,7 @@ class PrintRequestMiddleware(object):
 
     def __call__(self, request):
         if 'HTTP_AUTHORIZATION' in request.META:
-            print request.META['HTTP_AUTHORIZATION']
+            print(request.META['HTTP_AUTHORIZATION'])
         return self.get_response(request)
 
 #

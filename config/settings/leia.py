@@ -4,10 +4,14 @@ import datetime
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+import environ
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env()
 
-DEBUG = False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+MODE=env('MODE')
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS', default=[]))
 
 # DATABASES = {
 #     'default': {
@@ -31,7 +35,7 @@ DATABASES = {
         }
 }
 
-MODE = 'normal'
+MODE = env('MODE')
 
 PROJECT_APP = [
 ]
@@ -39,47 +43,19 @@ PROJECT_APP = [
 INSTALLED_APPS += PROJECT_APP
 
 
-HADOOP_MASTER = '172.31.64.29'
-"""
-HADOOP_MASTER = '172.31.50.84'
+HADOOP_MASTER = env('HADOOP_MASTER')
 
 YARN = {
-    "host": HADOOP_MASTER,
-    "port": 8088,
-    "timeout": 30
+    "host": env('YARN_HOST'),
+    "port": env('YARN_PORT'),
+    "timeout": env('YARN_TIMEOUT')
 }
 
-HDFS = {
-
-    # Give host name without http
-    'host': HADOOP_MASTER,
-    'port': '50070', #webhdfs port
-    'uri': '/webhdfs/v1',
-    'user.name': 'hduser',
-    'hdfs_port': '9000', #hdfs port
-    'base_path' : '/dev/dataset/'
-}
-"""
-
-HADOOP_MASTER = '172.31.64.29'
-
-YARN = {
-    "host": HADOOP_MASTER,
-    "port": 8088,
-    "timeout": 30
-}
-
-HDFS = {
-
-    # Give host name without http
-    'host': HADOOP_MASTER,
-    'port': '50070', #webhdfs port
-    'uri': '/webhdfs/v1',
-    'user.name': 'hduser',
-    'hdfs_port': '9000', #hdfs port
-    'base_path' : '/dev/dataset/'
-}
-
+import os
+import json
+hdfs_config_key=json.loads(os.environ['HADOOP_CONFIG_KEY'])
+hdfs_config_value=json.loads(os.environ['HADOOP_CONFIG_VALUE'])
+HDFS=dict(zip(hdfs_config_key,hdfs_config_value))
 
 EMR = {
     "emr_pem_path": "",
@@ -87,15 +63,15 @@ EMR = {
 }
 
 KAFKA = {
-    'host': 'localhost',
-    'port': '9092',
+    'host': env('KAFKA_HOST'),
+    'port': env('KAFKA_PORT'),
     'topic': 'my-topic'
 }
 
 
 JOBSERVER = {
-    'host': '172.31.50.84',
-    'port': '8090',
+    'host': env('JOBSERVER_HOST'),
+    'port': env('JOBSERVER_PORT'),
     'app-name': 'luke',
     'context': 'pysql-context',
     'master': 'bi.sparkjobs.JobScript',
@@ -109,15 +85,15 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "madvisor2.marlabsai.com",
-    "port": "80",
+    "host": env('THIS_SERVER_HOST'),
+    "port": env('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://172.31.53.141:6379/1",
+        "LOCATION": "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -131,7 +107,8 @@ REDIS_SALT = "123"
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
-SCORES_SCRIPTS_FOLDER = '/home/ubuntu/mAdvisorScores/'
+SCORES_SCRIPTS_FOLDER = env('SCORES_SCRIPTS_DIR')
+
 IMAGE_URL = "/api/get_profile_image/"
 
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -143,28 +120,20 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'madvisor.automl@marlabs.com'
 
-JOBSERVER_FROM_EMAIL = "ankush.patel@marlabs.com"
-JOBSERVER_SENDTO_EMAIL_LIST = [
-    'ankush.patel@marlabs.com',
-    'vivekananda.tadala@marlabs.com',
-    'gulshan.gaurav@marlabs.com',
-    'mukesh.kumar@marlabs.com'
-]
-FUNNY_EMAIL_LIST = [
-    'ankush.patel@marlabs.com',
-    'sabretooth.rog@gmail.com'
-]
+JOBSERVER_FROM_EMAIL = env('JOBSERVER_FROM_EMAIL')
+JOBSERVER_SENDTO_EMAIL_LIST = tuple(env.list('JOBSERVER_SENDTO_EMAIL_LIST', default=[]))
+FUNNY_EMAIL_LIST = tuple(env.list('FUNNY_EMAIL_LIST', default=[]))
 
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-DEPLOYMENT_ENV = "prod"
+DEPLOYMENT_ENV = env('DEPLOYMENT_ENV')
 
-HADOOP_CONF_DIR= False
-HADOOP_USER_NAME="hduser"
+HADOOP_CONF_DIR= env.bool('HADOOP_CONF_DIR')
+HADOOP_USER_NAME=env('HADOOP_USER_NAME')
 
-CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
-CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
+CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/1"
+CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/1"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -181,10 +150,10 @@ CELERY_QUEUES = {
     }
 }
 
-PEM_KEY = "/keyfiles/ankush.pem"
-ENABLE_KYLO = False
-KYLO_UI_URL = "http://data-management.marlabsai.com"
-
+PEM_KEY = env('PEM_KEY')
+ENABLE_KYLO = env.bool('ENABLE_KYLO')
+KYLO_UI_URL = env('KYLO_UI_URL')
+KYLO_UI_AUTH_URL= env('KYLO_UI_AUTH_URL')
 
 USE_YARN_DEFAULT_QUEUE=True
 # USE_YARN_DEFAULT_QUEUE=False
@@ -198,38 +167,31 @@ AUTHENTICATION_BACKENDS = (
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 
-CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+#CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
 
 CELERY_ONCE_CONFIG = {
   'backend': 'celery_once.backends.Redis',
   'settings': {
-    'url': 'redis://172.31.53.141:6379/',
+    'url': "edis://"+env('REDIS_IP')+":"env('REDIS_PORT')+'/',
     'default_timeout': 60 * 60
   }
 }
 
 KYLO_SERVER_DETAILS = {
-    "host": "34.200.233.5",
-    "port" : 8088,
-    "user": "ankush",
-    "key_path": "~/.ssh/ankush.pem",
+    "host": env('KYLO_SERVER_HOST'),
+    "port" : env('KYLO_SERVER_PORT'),
+    "user":  env('KYLO_SERVER_USER'),
+    "key_path": env('KYLO_SERVER_KEY'),
     "group_propertie_quote": "madvisor,user",
     "kylo_file_path":"/opt/kylo/"
 }
 
+USE_HTTPS=env.bool('USE_HTTPS',default=False)
 #MOdel Summary dowload key_path
 MODEL_SUMMARY_DOWNLOAD_PATH='/home/ubuntu/automlModelSummary'
 
-# if DEBUG == False:
-#     from logger_config import *
-#     server_log = BASE_DIR + '/server_log'
-#     if os.path.exists(server_log):
-#         pass
-#     else:
-#         os.mkdir(server_log)
-# else:
-#     pass
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',

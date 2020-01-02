@@ -1,4 +1,16 @@
-import md5
+from __future__ import print_function
+from __future__ import division
+
+import hashlib
+
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import map
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import time
 from math import floor, log10
 import datetime
@@ -107,7 +119,7 @@ class JobserverDetails(object):
     @classmethod
     def print_job_details(cls, job):
         job_url = "{0}/jobs/{1}".format(cls.get_jobserver_url(), job.jobId)
-        print "job_url: {0}".format(job_url)
+        print("job_url: {0}".format(job_url))
         return job_url
 
 
@@ -264,7 +276,7 @@ def limit_chart_data_length(chart_data, limit=None):
 
 def decode_and_convert_chart_raw_data(data, object_slug=None):
     if not check_chart_data_format(data):
-        print "chart data format not matched"
+        print("chart data format not matched")
         return {}
     from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
     chart_type = data['chart_type']
@@ -672,8 +684,8 @@ def replace_chart_data(data, axes=None):
 
 
 def convert_chart_data_to_pie_chart(chart_data):
-    pie_chart_data = zip(*chart_data)
-    pie_chart_data = map(list, pie_chart_data)
+    pie_chart_data = list(zip(*chart_data))
+    pie_chart_data = list(map(list, pie_chart_data))
     return pie_chart_data[1:]
 
 
@@ -712,7 +724,7 @@ def get_slug(name):
 def check_chart_data_format(data):
     keys = ['data', 'axes', 'label_text', 'legend', 'chart_type', 'types', 'axisRotation']
 
-    data_keys = data.keys()
+    data_keys = list(data.keys())
 
     if len(set(keys) - set(data_keys)) < 1:
         return True
@@ -755,7 +767,7 @@ def convert_listed_dict_objects(json_data):
     """
     if not json_data or not json_data[0]:
         return []
-    keys = json_data[0].keys()
+    keys = list(json_data[0].keys())
     column_data = [[] for _ in range(len(keys))]
     item_index_dictionary = dict()
     for index, item in enumerate(keys):
@@ -763,7 +775,7 @@ def convert_listed_dict_objects(json_data):
         item_index_dictionary[item] = index
 
     for data in json_data:
-        for item in data.keys():
+        for item in list(data.keys()):
             column_data[item_index_dictionary[item]].append(data[item])
     return column_data
 
@@ -800,7 +812,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
 
     """
 
-    all_key = data.keys()
+    all_key = list(data.keys())
 
     final_data = []
     xs = {}
@@ -817,7 +829,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
         mapp[d] = i
         i += 1
 
-    for d in data.keys():
+    for d in list(data.keys()):
         array_of_json = data[d]
         x_index = mapp[d + '_x']
         y_index = mapp[d]
@@ -1115,13 +1127,13 @@ def get_job_status(instance=None):
                 type(instance).__name__,
                 instance.slug
             )
-            print "JobStatusCheck QUEUED ---> {0} | {1}".format(type(instance).__name__, instance.slug)
+            print("JobStatusCheck QUEUED ---> {0} | {1}".format(type(instance).__name__, instance.slug))
         except AlreadyQueued:
-            print "JobStatusCheck ALREADY EXISTING ---> {0} | {1}".format(type(instance).__name__, instance.slug)
+            print("JobStatusCheck ALREADY EXISTING ---> {0} | {1}".format(type(instance).__name__, instance.slug))
             pass
         except Exception as err:
-            print "JobStatusCheck.."
-            print err
+            print("JobStatusCheck..")
+            print(err)
     else:
         get_job_status_from_jobserver(instance)
 
@@ -1138,13 +1150,13 @@ def normalize_job_status_for_yarn(status):
 
 
 def return_status_of_job_log(job_url):
-    import urllib, json
+    import urllib.request, urllib.parse, urllib.error, json
     final_status = "RUNNING"
-    check_status = urllib.urlopen(job_url)
+    check_status = urllib.request.urlopen(job_url)
     data = json.loads(check_status.read())
     if data.get("status") == "FINISHED":
         final_status = data.get("status")
-    elif data.get("status") == "ERROR" and "startTime" in data.keys():
+    elif data.get("status") == "ERROR" and "startTime" in list(data.keys()):
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")
@@ -1191,9 +1203,9 @@ def convert_to_humanize(size):
         5: 'TB'
     }
     i = 1
-    while size / 1024 > 0:
+    while old_div(size, 1024) > 0:
         i += 1
-        size = size / 1024
+        size = old_div(size, 1024)
 
     return str(size) + " " + size_name[i]
 
@@ -1318,9 +1330,13 @@ def generate_signature(json_obj):
     """
     secretKey = settings.ML_SECRET_KEY
     existing_key = json_obj["key1"] + "|" + json_obj["key2"] + "|" + secretKey
-    newhash = md5.new()
+    # newhash = md5.new() # python2.7
+    # newhash.update(existing_key) # python2.7
+    # value = newhash.hexdigest() # python2.7
+
+    newhash = hashlib.md5()
     newhash.update(existing_key)
-    value = newhash.hexdigest()
+    value = newhash.hexdigest()  # python3
     return value
 
 
@@ -1341,11 +1357,18 @@ def encrypt_url(url):
 
 
 def encrypt_for_kylo(username, password_encrypted):
-    newhash = md5.new()
+    # newhash = md5.new() # python2.7
     existing_key = username + password_encrypted
-    newhash.update(existing_key)
-    value = newhash.hexdigest()
+    # newhash.update(existing_key) # python2.7
+    # value = newhash.hexdigest() # python2.7
+
+    # newhash = hashlib.md5()
+    # newhash.update(existing_key)
+    # value = newhash.hexdigest()  # python3
+    value = hashlib.sha256(existing_key.encode('utf-8')).hexdigest()  # python3
     return value
+    return value
+
 
 
 def convert_fe_date_format(date_string):
@@ -1446,7 +1469,7 @@ def check_email_id(email=None):
             print("Invalid Email")
             return False
     except Exception as e:
-        print e
+        print(e)
 
 
 def get_mails_from_outlook():
@@ -1458,24 +1481,23 @@ def get_mails_from_outlook():
         refresh_token = result['refresh_token']
         access_token = result['access_token']
 
-        print "Access token received."
+        print("Access token received.")
         ### Trigger mail receive action  ###
         result_message = get_outlook_mails(access_token)
         if 'status' in result_message:
-            print "result message not found."
+            print("result message not found.")
             return {'status': 'FAILED', 'err': result_message['err']}
         else:
-            print "got result message"
+            print("got result message")
             return result_message
     except Exception:
         err = "Error retrieving token: {0} - {1}".format(r.status_code, r.text)
         return {'status': 'FAILED', 'err': err}
 
-
 def get_outlook_auth(auth_code, refresh_token, outlook_data):
     token_url = 'https://login.microsoftonline.com/' + outlook_data['tenant_id'] + '/oauth2/v2.0/token'
 
-    print token_url
+    print(token_url)
 
     post_data_auth_code = {
         'grant_type': 'authorization_code',
@@ -1507,7 +1529,7 @@ def get_outlook_mails(access_token):
     # If there is no token in the session, redirect to home
     try:
         if not access_token:
-            print "Access token not found"
+            print("Access token not found")
             return None
         else:
             info_dict = {}
@@ -1518,15 +1540,14 @@ def get_outlook_mails(access_token):
             info_dict = get_my_messages(access_token, info_dict, last_seen)
             return info_dict
     except Exception as err:
-        print err
+        print(err)
         return {'status': 'FAILED', 'err': err}
-
 
 def time_conversion(t1):
     from datetime import datetime, timedelta
     import time
     dt_object = datetime.fromtimestamp(t1)
-    print dt_object
+    print(dt_object)
     dt_object = dt_object - timedelta(hours=0, minutes=10)
     dt_object = str(dt_object)
     dt_object = dt_object.replace(' ', 'T')
@@ -1605,6 +1626,17 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                             # info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
                             info_dict[u_id]['target'] = info_dict[u_id]['mail'].split('||')[0].replace('target: ',
                                                                                                        '').strip()'''
+                        if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'sub-label: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['sub_target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['sub_target'] = check.group(1).replace("'", "")
+
+                        if 'target' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'target: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'", "")
 
                         get_my_messages(access_token, info_dict, message_id=id, id_element=u_id)
                     else:
@@ -1612,14 +1644,13 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                         info_dict[u_id] = {}
                         info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
                         info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
-                        if 'from' in jsondata['value'][i].keys():
+                        if 'from' in list(jsondata['value'][i].keys()):
                             info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
                         else:
                             info_dict[u_id]['emailAddress'] = 'External Sender'
             else:
-                print "Downloading Attachments ."
+                print("Downloading Attachments .")
                 jsondata = r.json()
-                # print jsondata
                 try:
                     for i in range(len(jsondata['value'])):
 
@@ -1637,13 +1668,13 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                                 info_dict[id_element]['test_dataset'] = id_element + '_' + jsondata['value'][i]["name"]
 
                 except Exception as e:
-                    print e
+                    print(e)
             return info_dict
         else:
             return None
             # return "{0}: {1}".format(r.status_code, r.text)
     except Exception as err:
-        print err
+        print(err)
         return {'status': 'FAILED', 'err': err}
 
 
@@ -1664,14 +1695,14 @@ def make_api_call(method, url, token, payload=None, parameters=None):
     # headers.update(instrumentation)
     response = None
 
-    if method.upper() == 'GET':
+    if (method.upper() == 'GET'):
         response = requests.get(url, headers=headers, params=parameters)
-    elif method.upper() == 'DELETE':
+    elif (method.upper() == 'DELETE'):
         response = requests.delete(url, headers=headers, params=parameters)
-    elif method.upper() == 'PATCH':
+    elif (method.upper() == 'PATCH'):
         headers.update({'Content-Type': 'application/json'})
         response = requests.patch(url, headers=headers, data=json.dumps(payload), params=parameters)
-    elif method.upper() == 'POST':
+    elif (method.upper() == 'POST'):
         headers.update({'Content-Type': 'application/json'})
         response = requests.post(url, headers=headers, data=json.dumps(payload), params=parameters)
 
