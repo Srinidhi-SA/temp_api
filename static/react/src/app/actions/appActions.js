@@ -2498,10 +2498,11 @@ export function setPyTorchSubParams(subParamDt){
     subParamDt,
   }
 }
-export function deletePyTorchLayer(layerNum){
+export function deletePyTorchLayer(layerNum,newIdArray){
   return {
     type: "DELETE_LAYER",
     layerNum,
+    newIdArray,
   }
 }
 export function clearPyTorchValues(){

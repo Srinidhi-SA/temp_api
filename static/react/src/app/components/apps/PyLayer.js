@@ -23,12 +23,10 @@ export class PyLayer extends React.Component {
     }
 
     deleteLayer(layerNumber){
-        // this.props.dispatch(deletePyTorchLayer(layerNumber))
-        // let layerElement = document.getElementById("layer"+layerNumber);
-        // layerElement.parentNode.removeChild(layerElement);
-        this.props.idLayer.filter(function(layerId){
-            return layerId != layerNumber
+        let newIdArray = this.props.idLayer.filter(function (items) {
+            return items != layerNumber
         });
+        this.props.dispatch(deletePyTorchLayer(layerNumber,newIdArray));
     }
 
     selectHandleChange(parameterData,e){
@@ -372,17 +370,19 @@ export class PyLayer extends React.Component {
                 }
             });
         return (
-            <div class={cls} id={clsId}>
+            <div class={cls} id={clsId} style={{'marginRight':'3%'}}>
                 <div class="layer">
-                    {/* Need to check with ML regarding Layer No  */}
                     <div class="layerHeader" id={this.props.idNum}>
                         Linear Layer {this.props.idNum}
-                        {/* <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/> */}
                         <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
+                        {(this.props.idLayer.length === this.props.idNum)?
+                            <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
+                            :""
+                        }
                     </div>
                     <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
                         <div className="card card-body">
-                            <div class="layerBody" style={{'padding-left':'15px'}}>
+                            <div class="layerBody" style={{'paddingLeft':'15px'}}>
                                 {renderPyTorchLayer}
                             </div>
                         </div>

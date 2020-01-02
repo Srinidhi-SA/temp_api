@@ -16637,4 +16637,5 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 i.fa.fa-trash {
 	margin-top: 2px;
+	padding-right: 1%;
 }

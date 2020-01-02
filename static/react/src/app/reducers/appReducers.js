@@ -1151,13 +1151,11 @@ export default function reducer(state = {
     break;
     case "DELETE_LAYER":{
         var newPyTorchLayer = state.pyTorchLayer
-        var newLayerId = state.idLayer
         delete newPyTorchLayer[action.layerNum];
-        delete newLayerId[action.layerNum-1];
         return {
             ...state,
             pyTorchLayer : newPyTorchLayer,
-            idLayer : newLayerId
+            idLayer : action.newIdArray
         }
     }
     break;
