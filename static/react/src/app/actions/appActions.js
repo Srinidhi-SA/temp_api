@@ -1039,13 +1039,13 @@ export function addTensorFlowArray(id,layerType,name,val) {
   return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
 }
 
-export function updateTensorFlowArray(id,name,val) {
-  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
-  return { type: "UPDATE_LAYERS", id ,tensorFlowInputs,name,val }
+export function updateTensorFlowArray(layerId,name,val) {
+  var arrayIndxToUpdate=store.getState().apps.tensorFlowInputs.filter(i=>i!==null).findIndex(p => p.layerId ==layerId)
+  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[arrayIndxToUpdate];
+  return { type: "UPDATE_LAYERS", arrayIndxToUpdate,layerId,tensorFlowInputs,name,val }
 }
 
 export function deleteTensorFlowArray(deleteId) {
-  // var tensorFlowInputs=store.getState().apps.tensorFlowInputs[id-1];
   return { type: "DELETE_LAYER", deleteId}
 }
 export function clearTensorFlowArray() {

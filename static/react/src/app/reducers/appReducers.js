@@ -908,27 +908,29 @@ export default function reducer(state = {
         curTfData[action.id-1] =  action.tensorFlowArray;
         return{
             ...state,
-            tensorFlowInputs : curTfData
-          }
-      }
+            tensorFlowInputs : curTfData.filter(i=>i!=null)
+        }
+    }
 
     break;    
     case "UPDATE_LAYERS":
     { 
         var stateval =state.tensorFlowInputs
         action.tensorFlowInputs[action.name] = action.val;
-        stateval[action.id-1]=action.tensorFlowInputs        
+        stateval[action.arrayIndxToUpdate]=action.tensorFlowInputs        
         return{
           ...state,
           tensorFlowInputs : stateval
         }
-      }
+    }
 
     break;
     
     case "DELETE_LAYER":
     { 
-        var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
+        // var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
+        var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
+
         // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
         return{
           ...state,

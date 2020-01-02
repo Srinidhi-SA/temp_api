@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import {updateTensorFlowArray,addTensorFlowArray,deleteTensorFlowArray} from '../../actions/appActions'
 import store from "../../store";
 import { connect } from "react-redux";
+import {statusMessages} from  "../../helpers/helper";
 
 
 
 @connect((store) => {
 	return {
     login_response: store.login.login_response, 
+    tensorFlowInputs:store.apps.tensorFlowInputs,
 		};
 })
 
@@ -45,13 +47,22 @@ export default class Layer extends Component {
   }
 
   deleteLayer=(id)=>{
+  var tfLayerList=this.props.tensorFlowInputs.filter(i=>i!==null).map(i=>i.layer).filter(i=>i!=null)
+  var arrayToId=this.props.tensorFlowInputs.filter(i=>i!==null).findIndex(p => p.layerId == id)
+  var currLayer=tfLayerList[arrayToId],prevLayer=tfLayerList[arrayToId-1];
+  var nextLayer=tfLayerList.length!=arrayToId?tfLayerList[arrayToId+1]:"";
+  if(arrayToId==0 && nextLayer=="Dropout"){
+    bootbox.alert(statusMessages("warning", "First layer should not be a Dropout.", "small_mascot"));
+  }
+  else if(tfLayerList.length>=2 && currLayer==="Dense" && prevLayer==="Dropout" && nextLayer==="Dropout"){
+    bootbox.alert(statusMessages("warning", "Consecutive Dropout layers are not allowed.", "small_mascot"));
+  }else{
     document.getElementById(id).innerHTML=""
     this.props.dispatch(deleteTensorFlowArray(id))
-
+  }
   }
   
   render() { 
-    var cls =`row layerPanel ${this.props.id}`
     var mandateField= ["Activation","Units","Rate"]
     var rendercontent = this.props.parameters.map((item,index)=>{
              if(item.paramType=="list"){
@@ -94,14 +105,14 @@ export default class Layer extends Component {
          })
    
     return ( 
-      <div className={cls} id={this.props.id}>
+      <div id={this.props.id}>
+      <div className="row layerPanel" >
       <div className="layer">
       <div className="layerHeader">
       {this.props.layerType}
       <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`}>
       </i>
-      <i onClick={this.deleteLayer.bind(this,this.props.id)} className="fa fa-close" type="button">
-      </i>
+      <i onClick={this.deleteLayer.bind(this,this.props.id)} className="fa fa-trash-o" type="button"></i>
       </div>
       <div className="collapse in" id={`collapseExample${this.props.id}`}>
        <div className="card card-body">
@@ -111,6 +122,7 @@ export default class Layer extends Component {
      </div>
     </div>
      
+      </div>
       </div>
       </div>
     )
