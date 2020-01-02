@@ -30,7 +30,6 @@ export class HeatMapTable extends React.Component {
        tableTitle = this.props.tableData.topHeader;
    }
    HeatMap(this.randomNum);
-   console.log("checking circular chart tabletable element");
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
    return (

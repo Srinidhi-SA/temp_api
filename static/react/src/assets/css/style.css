@@ -16603,7 +16603,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .layerHeader .fa-chevron-up{
 	float: right;
-	padding: 2px;
+	padding: 3px;
 	cursor: pointer;
 } 
 
@@ -16617,6 +16617,12 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   -webkit-appearance: none;
 }
 
+.layerHeader .fa-trash-o{
+	float: right;
+	padding: 3px;
+	cursor: pointer;
+	font-size: 15px;
+} 
 /* For IE10 */
 .Layer::-ms-expand {
   display: none;

@@ -35,7 +35,6 @@ function fetchPosts(username,password) {
 				password: password,
 		 })
 	}).then( response => Promise.all([response, response.json()])).catch(function(error) {
-        console.log(error);
         $("#errormsg").html("Login unsuccessful. Please try again in sometime.")
     });
 }
@@ -82,8 +81,6 @@ export function getUserProfile(token) {
 }
 
 function fetchUserProfile(token) {
-  // console.log("user and pass is:");
-  // console.log(username+" "+password);
   return fetch(API+'/api/get_info/',{
 		method: 'GET',
 		headers: {
@@ -112,13 +109,9 @@ function fetchProfileError(json) {
 
 export function uploadImg(){
     return (dispatch) => {
-      //dispatch(closeImg());
-      //dispatch(clearImageURL());
       return triggerImgUpload().then(([response, json]) => {
         if (response.status === 200) {
-        //  dispatch(retrieveProfileImg(json.image_url))
            dispatch(saveProfileImage(json.image_url))
-           console.log(json)
            dispatch(closeImg());
               } else {
           dispatch(imgUploadError(json))
@@ -153,36 +146,7 @@ export function uploadImg(){
     return {type: "IMG_UPLOAD_TO_SERVER_ERROR", json}
   }
 
-  // function retrieveProfileImg(imgURL){
-  //   return (dispatch) => {
-  //   return fetchUserProfileImg(imgURL).then(([response]) =>{
-  //       if(response.status === 200){
-  //         console.log("in rezsponse")
-  //         console.log(response)
-  //       dispatch(saveProfileImage(response))
-  //     }
-  //     else{
-  //       //dispatch(imgUploadError(response.body))
-  //     }
-  //   })
-  // }
-  //
-  // }
-  //
-  // function fetchUserProfileImg(imgURL){
-  //   return fetch(API+imgURL,{
-  // 		method: 'GET',
-  // 		headers: getHeaderWithoutContent(sessionStorage.userToken)
-  // 	}).then( response => Promise.all([response]));
-  // }
-
-
-
 export function saveProfileImage(imageURL) {
-//  alert("in save profile img")
-  console.log(imageURL)
-//  imageURL = "https://media.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAAyCAAAAJGQ4YTE4MDc2LTZmNjgtNDIxZC1iMTA2LTVjMDkyNjZjNGFkOA.jpg"
-
   return {
     type: "SAVE_PROFILE_IMAGE",
     imgUrl:imageURL

@@ -45,7 +45,6 @@ export class DataUpload extends React.Component {
     this.props.dispatch(updateSelectedDataSrc("fileUpload"))
   }
   onDrop(files) {
-    console.log("File Dropped" + this.props);
     this.props.dispatch(fileUpload(files[0]))
   }
   uploadData() {

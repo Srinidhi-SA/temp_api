@@ -183,7 +183,6 @@ export class RegressionParameter extends React.Component {
         else if($('.earlyStop').val() == "true" && (e.target.value == "lbfgs") ){
             $(".fractionCls").prop("disabled",true);
         }
-        console.log(e.target.value);
         this.setState({dropValues: e.value})
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }

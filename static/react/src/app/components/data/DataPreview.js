@@ -1,10 +1,7 @@
 import React from "react";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-//import {Redirect} from 'react-router';
-import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
@@ -59,10 +56,7 @@ export class DataPreview extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("in data");
-    console.log(props);
     this.buttons = {};
-    //this.buttonsTemplate=null;
     this.hideDataPreview = this.hideDataPreview.bind(this);
     this.chartId = "_side";
     this.firstTimeSideTable = [];
@@ -76,9 +70,6 @@ export class DataPreview extends React.Component {
   hideDataPreview() {
     this.props.dispatch(hideDataPreview());
   }
-  // getPreviewData(e){
-  //   this.props.dispatch(getData(e.target.id));
-  // }
 
   componentWillMount() {
     const from = this.getValueOfFromParam();
@@ -95,12 +86,12 @@ export class DataPreview extends React.Component {
             this.props.dispatch(fromVariableSelectionPage(true));
           }
     }else {
-    // this.props.dispatch(getAllDataList());
+   
     this.props.dispatch(getDataList(1));
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
-    //When user refresh get current app details
+    
     if (this.props.match.path.includes("AppId")) {
       this.props.dispatch(getAppDetails(this.props.match.params.AppId));
     }
@@ -145,69 +136,6 @@ export class DataPreview extends React.Component {
         text: CREATESIGNAL
       };
     }
-    /* console.log(store.getState().datasets.curUrl.indexOf("models"));
-    if (store.getState().datasets.curUrl) {
-      if (store.getState().datasets.curUrl.startsWith("/signals")) {
-        this.buttons['close'] = {
-          url: "/signals",
-          text: "Close"
-        };
-        this.buttons['create'] = {
-          url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: CREATESIGNAL
-        };
-
-      } else if (store.getState().datasets.curUrl.startsWith("/data")) {
-        this.buttons['close'] = {
-          url: "/data",
-          text: "Close"
-        };
-        this.buttons['create'] = {
-          url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: CREATESIGNAL
-        };
-
-      } else if (store.getState().datasets.curUrl.startsWith("/apps")) {
-        if (store.getState().datasets.curUrl.indexOf("robo") != -1) {
-          this.buttons['close'] = {
-            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/robo",
-            text: "Close"
-          };
-          this.buttons['create'] = {
-            url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
-            text: "Compose Insight"
-          };
-        } else if (store.getState().datasets.curUrl.indexOf("models") == -1) {
-          this.buttons['close'] = {
-            url: "/apps",
-            text: "Close"
-          };
-          this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
-            text: CREATESCORE
-          };
-        } else {
-          this.buttons['close'] = {
-            url: "/apps",
-            text: "Close"
-          };
-          this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/data/" + this.props.match.params.slug + "/createModel",
-            text: CREATEMODEL
-          };
-        }
-
-      }
-    } else {
-      this.buttons['close'] = {
-        url: "/data",
-        text: "Close"
-      };
-      this.buttons['create'] = {
-        url: "/data/" + this.props.match.params.slug + "/createSignal",
-        text: CREATESIGNAL
-      };
-    }*/
   }
   }
 
@@ -220,32 +148,6 @@ export class DataPreview extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.dispatch(getAllDataList());
-
-
-
-    {/*}$(function(){
-			console.log($(".cst_table"));
-			let initialCol= $(".cst_table td").first();
-			let initialColCls = $(initialCol).attr("class");
-			$(" td."+initialColCls).addClass("activeColumn");
-
-			$(".cst_table td,.cst_table th").click(function(){
-				$(".cst_table td").removeClass("activeColumn");
-				let cls = $(this).attr("class");
-				if(cls.indexOf(" ") !== -1){{}
-					let tmp =[];
-					tmp = cls.split(" ");
-					cls = tmp[0];
-				}
-				$(" td."+cls).addClass("activeColumn");
-			});
-
-
-
-		});*/
-    }
-
     showHideSideTable(this.firstTimeSideTable);
     showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
     hideDataPreviewDropDown(this.props.curUrl);
@@ -258,13 +160,10 @@ export class DataPreview extends React.Component {
     if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
       if (!this.props.match.path.includes("robo")) {
         let url = '/data/' + currentDataset;
-        console.log(this.props);
         this.props.history.push(url)
-        // return (<Redirect to={url}/>)
       }
     }
     if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
-      console.log("goitn to data url")
       this.props.dispatch(clearDataPreview())
       this.props.dispatch(clearLoadingMsg())
       let url = '/data/'
@@ -272,15 +171,11 @@ export class DataPreview extends React.Component {
     }
   }
   setSideElements(e) {
-
-    //renderFlag=true;
-    //alert("setting side element!!")
     const chkClass = $(e.target).attr('class');
     let dataPrev = this.props.dataPreview.meta_data.scriptMetaData;
     dataPrev.columnData.map((item, i) => {
 
       if (chkClass.indexOf(item.slug) !== -1) {
-        console.log(item);
         $("#side-chart").empty();
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
         toggleVisualization(item.slug,this.props.dataTransformSettings);
@@ -288,9 +183,6 @@ export class DataPreview extends React.Component {
           const sideChartUpdate = item.chartData.chart_c3;
           let yformat = item.chartData.yformat;
           let xdata = item.chartData.xdata;
-          console.log("checking side table data:; ");
-          console.log(sideTableUpdate);
-          //currently hardcoding charInfo as empty
           let chartInfo = []
           $("#side-chart").empty();
           ReactDOM.render(
@@ -318,31 +210,23 @@ export class DataPreview extends React.Component {
         ReactDOM.render(
           <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
         if (this.props.dataPreview.permission_details.subsetting_dataset) {
-          // column subsetting starts
           const sideSubsetting = item.columnStats;
           $("#sub_settings").empty();
           ReactDOM.render(
             <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
         }
-        // column subsetting ends
-
+       
       }
     });
   }
 
   closePreview() {
-
     const url = this.buttons.close.url;
-    //<Link to={this.buttons.close.url}>
     this.props.dispatch(hideDataPreview());
     this.props.history.push(url);
-
-    //return(<Redirect to={url}/>);
   }
 
   moveToVariableSelection() {
-    //alert(this.buttons.create.url);
-    //check for minimum rows in datasets
     if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET && this.buttons.create.url.indexOf("apps-robo") == -1)
       bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
     else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
@@ -350,7 +234,6 @@ export class DataPreview extends React.Component {
     } else {
       let url = this.buttons.create.url;
       if (this.buttons.create.url.indexOf("apps-robo") != -1) {
-        //  $(".cst_table").find("thead").find("." + colSlug).first()
         url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
         this.props.history.push(url);
       } else if (store.getState().datasets.curUrl.indexOf("scores") != -1) {
@@ -367,7 +250,6 @@ export class DataPreview extends React.Component {
     }
 
   applyDataSubset() {
-    // alert("working");
     if(this.props.datasets.length>0){
       this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes($("#newSubsetName").val().toLowerCase())?
      duplicateName=true:"";     
@@ -379,10 +261,8 @@ export class DataPreview extends React.Component {
     }
   }
 if(duplicateName){
-        // bootbox.alert(statusMessages("warning","File name must be unique ."));
       bootbox.alert("Same dataset name already exists, Please try changing name!")
-    
-}
+    }
 else{
     this.new_subset = $("#newSubsetName").val()
     if (this.new_subset == "" || this.new_subset == null) {
@@ -421,10 +301,6 @@ else{
   }
 
   render() {
-
-    console.log("data prev is called##########3");
-    //for active select in columnName
-    //console.log(this.props)
     var that = this;
     $(function() {
 
@@ -454,14 +330,6 @@ else{
     });
 
     this.isSubsetted = this.props.subsettingDone;
-    //  const data = store.getState().data.dataPreview.meta_data.data;
-
-    // const buttonsTemplate = <div className="col-md-12 text-right">
-    // 			<button onClick={this.closePreview}  className="btn btn-default" > {this.buttons.close.text} </button>
-    // 			<span>&nbsp;&nbsp;</span>
-    // 			<button className="btn btn-primary"> {this.buttons.create.text}</button>
-    // 	 </div>
-
     let dataPrev = this.props.dataPreview;
     let isSubsettingAllowed = false;
     let isDataValidationAllowed = false;
@@ -511,8 +379,7 @@ else{
         });
 
         const tableThTemplate = dataPrev.uiMetaData.columnDataUI.map((thElement, thIndex) => {
-          // console.log("th check::");
-          // console.log(thElement);
+       
           let cls = thElement.slug + " dropdown";
           let iconCls = null;
           let dataValidationCom = ""
@@ -533,7 +400,6 @@ else{
           if (isDataValidationAllowed)
             dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
-            // cls = cls + " greyout-col";
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
@@ -555,22 +421,10 @@ else{
             );
 
           }
-          // }
-          {/*else{
-            	   return(
-   						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-   						<a href="#"  id={thElement.slug} className={anchorCls} title={thElement.name}><i className={iconCls}></i> <span>{thElement.name}</span></a>
-   						</th>
-   				);
-               }*/
-          }
-
         });
-        //  data.splice(0,1);
         const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
           const tds = trElement.map((tdElement, tdIndex) => {
             if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider ) {
-              //to be removed after unc release
               if(dataPrev.uiMetaData.columnDataUI[tdIndex].ignoreSuggestionPreviewFlag){
                 let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
                 return (
@@ -602,7 +456,6 @@ else{
           const sideChart = dataPrev.scriptMetaData.columnData[0].chartData.chart_c3;
           let yformat = dataPrev.scriptMetaData.columnData[0].chartData.yformat;
           let xdata = dataPrev.scriptMetaData.columnData[0].chartData.xdata;
-          console.log("chart-----------")
           const sideTable = dataPrev.scriptMetaData.columnData[0].columnStats;
           this.firstTimeSideTable = sideTable; //show hide side table
           this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
@@ -614,10 +467,7 @@ else{
           }
           if (!isEmpty(dataPrev.scriptMetaData.columnData[0]))
             firstTimeSubSetting = dataPrev.scriptMetaData.columnData[0]
-          console.log("checking side table data:; ");
-          console.log(sideTable);
           sideTableTemaplte = sideTable
-          // .filter(item => item.name.toLowerCase() != "outliers")
           .map((tableItem, tableIndex) => {
             if (tableItem.display) {
               return (
@@ -635,19 +485,16 @@ else{
 
         return (
           <div className="side-body">
-            {/* <!-- Page Title and Breadcrumbs -->*/}
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
                   <span><h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4></h3>
                  </span>
-                 {/* style={{"color":"#5bc0de"}}/margin-top: -20px; padding-left: 133px; to allign next to data preview*/}
+                
                 </div>
               </div>
               <div className="clearfix"></div>
             </div>
-            {/*<!-- /.Page Title and Breadcrumbs -->*/}
-            {/*<!-- Page Content Area -->*/}
             <div className="main-content">
 			<div className="row d_preview">
 
@@ -680,7 +527,6 @@ else{
 
                 </div>
                 <div className="col-md-3 preview_stats">
-                  {/*<!-- Start Tab Statistics -->*/}
                   <div id="tab_statistics" className="panel-group accordion accordion-semi box-shadow">
                     <div className="panel panel-default">
                       <div className="panel-heading">
@@ -702,8 +548,6 @@ else{
                       </div>
                     </div>
                   </div>
-                  {/*<!-- ./ End Tab Statistics -->*/}
-                  {/* <!-- Start Tab Visualizations -->*/}
                   <div id="tab_visualizations" className="panel-group accordion accordion-semi box-shadow">
                     <div className="panel panel-default">
                       <div className="panel-heading">
@@ -726,16 +570,12 @@ else{
                       </div>
                     </div>
                   </div>
-                  {/*<!-- ./ End Tab Visualizations -->*/}
-
-                  {/*<!-- Start Tab Subsettings -->*/}
-
+                 
                   {isSubsettingAllowed == true
                     ? <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
                       </div>
                     : ""}
 
-                  {/* End Tab Subsettings */}
                 </div>
                 <div className="clearfix"></div>
               </div>

@@ -18,12 +18,10 @@ export class CardHtml extends React.Component {
     super(props);
   }
   componentDidMount() {
-    //  HeatMap("heat-table-map");
       predictionLabelClick();
   }
   render() {
    var element = this.props.htmlElement;
-   console.log("checking html element");
    if(this.props.classTag == "highlight"){
        return(
                <div class="row">

@@ -42,8 +42,6 @@ export class AudioFileUpload extends React.Component {
 		pauseAudioFile();	
 	}
 	render() {
-		console.log("audio file list is called##########3");
-		console.log(this.props)
 		var fileName = store.getState().apps.audioFileUpload.name;
         var fileSize = store.getState().apps.audioFileUpload.size;
  

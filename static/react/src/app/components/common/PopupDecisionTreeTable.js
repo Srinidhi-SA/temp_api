@@ -94,7 +94,6 @@ generateDecisionTreeRows(table) {
   render() {
    var data = this.props.tableData;
    var className = "table table-bordered popupDecisionTreeTable"
-   console.log("checking popup decision tree tabletable element");
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
 
@@ -102,15 +101,12 @@ generateDecisionTreeRows(table) {
    return (
            <div class="table-style_2">
              <DecisionTree/>
-           {/* <Scrollbars style={{ height: 200 }}
-               className="thumb-horizontal" > */}
            <table id="sorter" className={className}>
                <thead><tr>{headerComponents}<th className="sorter-false" width="2%">Details</th></tr></thead>
 
                <tbody>{rowComponents}</tbody>
 
            </table>
-             {/* </Scrollbars>*/}
            </div>
        );
   }

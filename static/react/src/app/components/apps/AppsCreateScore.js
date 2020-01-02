@@ -29,8 +29,6 @@ export class AppsCreateScore extends React.Component {
 		this.selectedData="";
 	}
 	componentWillMount() {
-		console.log("In model summary");
-		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());
 		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/analyst/scores"));
 		this.props.dispatch(hideCreateScorePopup());

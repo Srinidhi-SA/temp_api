@@ -32,7 +32,6 @@ import {isEmpty,CUSTOMER,HISTORIAL,EXTERNAL} from "../../helpers/helper";
 export class RoboDataUploadPreview extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
   componentWillMount(){
 	  this.props.dispatch(storeSignalMeta(null,this.props.match.url));
@@ -98,7 +97,6 @@ export class RoboDataUploadPreview extends React.Component {
 		});
    }
   render() {
-    console.log("apps is called##########3");
     return (
     		<div className="side-body">
             <div className="main-content">

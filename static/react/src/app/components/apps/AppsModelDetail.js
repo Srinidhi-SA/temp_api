@@ -122,7 +122,6 @@ export class AppsModelDetail extends React.Component {
   render() {
 		if(this.state.showHyperparameterSummary)
 		return(<AppsModelHyperDetail match={this.props.match}/>)
-    console.log("apps Model Detail View is called##########3");
   	const modelSummary = store.getState().apps.modelSummary;
 	 	var showExportPmml = true;
 		var showCreateScore = true;
@@ -130,13 +129,11 @@ export class AppsModelDetail extends React.Component {
 	let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
 	const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
 	if (!$.isEmptyObject(modelSummary)) {
-		console.log(this.props)
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
 				var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
-		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
-				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
+	      var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
 				var cardDataList = listOfCardList.map((data, i) => {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;

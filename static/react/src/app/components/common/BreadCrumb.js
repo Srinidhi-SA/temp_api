@@ -7,8 +7,6 @@ export class BreadCrumb extends React.Component {
   }
 
   render() {
-    console.log("breadcrumb is called!!");
-    console.log(this.props);
     let data = this.props.parameters;
 
     if (data) {

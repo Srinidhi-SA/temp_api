@@ -32,7 +32,6 @@ var dateFormat = require('dateformat');
 export class LatestStocks extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
     }
 
     getPreviewData(e) {
@@ -44,7 +43,6 @@ export class LatestStocks extends React.Component {
     }
     render() {
         var data = this.props.latestStocks;
-        console.log(this.props)
         let addButton =   <div onClick={this.resetAnalyzepopup.bind(this)}><AppsCreateStockAnalysis match={this.props.props.match}/></div>;
         let latestStocks = "";
         if(data){

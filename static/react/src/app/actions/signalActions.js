@@ -57,7 +57,6 @@ export function createSignal(metaData) {
     dispatch(hideDataPreview())
     return fetchCreateSignal(metaData,dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(updateHide(true));
         dispatch(fetchCreateSignalSuccess(json, dispatch))
       } else {
@@ -76,9 +75,7 @@ export function createSignal(metaData) {
 }
 
 function fetchCreateSignal(metaData,dispatch) {
-  //console.log(metaData)
-
-  return fetch(API + '/api/signals/', {
+ return fetch(API + '/api/signals/', {
     method: 'POST',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify(metaData)
@@ -104,10 +101,6 @@ export function triggerSignalAnalysis(signalData,percentage,message){
     }
 }
 export function fetchCreateSignalSuccess(signalData, dispatch) {
-  //console.log("signal list from api to store")
-  // if(signalData.type == "dimension"){
-  console.log("created in progress slug is:")
-  console.log(signalData)
   let msg = store.getState().signals.loaderText
   let loaderVal = store.getState().signals.createSignalLoaderValue
   if (signalData.hasOwnProperty("proceed_for_loading") && !signalData.proceed_for_loading) {
@@ -161,8 +154,6 @@ export function assignSignalData(signalData) {
 }
 
 function fetchCreateSignalError(json) {
-  //console.log("fetching list error!!",json)
-
   return {type: "CREATE_ERROR", json}
 }
 
@@ -171,7 +162,6 @@ export function getList(token, pageNo) {
   return (dispatch) => {
     return fetchPosts(token, pageNo,dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(hideLoading())
         dispatch(fetchPostsSuccess(json))
       } else {
@@ -183,18 +173,14 @@ export function getList(token, pageNo) {
 }
 
 function fetchPosts(token, pageNo,dispatch) {
-  //console.log(token)
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton = store.getState().signals.signal_sorton;
   let signal_sorttype = store.getState().signals.signal_sorttype;
-  console.log(search_element)
   if (signal_sorttype == 'asc')
     signal_sorttype = ""
   else if (signal_sorttype == 'desc')
     signal_sorttype = "-"
-    //console.log(search_element)
   if (search_element != "" && search_element != null) {
-    //console.log("calling for search element!!")
     if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
       return fetch(API + '/api/signals/?name=' + search_element + '&sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
         method: 'get',
@@ -241,11 +227,9 @@ function fetchPostsSuccess(signalList) {
 }
 
 function fetchPostsError(json) {
-  //console.log("fetching list error!!",json)
   return {type: "SIGNAL_LIST_ERROR", json}
 }
 
-//for getting signal analysis:
 export function getSignalAnalysis(token, errandId) {
 
   return (dispatch) => {
@@ -275,7 +259,6 @@ export function getAlgoAnalysis(token, errandId) {
 }
 
 function fetchAlgos_analysis(token, errandId) {
-  //console.log(token)
   return fetch(
   API + '/api/trainalgomapping/' + errandId + "/" ,{
     method: 'get',
@@ -290,12 +273,7 @@ function fetchAlgos_analysis(token, errandId) {
 }
 
 
-// return fetch(API + '/api/signals/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-
-
 function fetchPosts_analysis(token, errandId) {
-  //console.log(token)
-
   return fetch(API + '/api/signals/' + errandId + "/", {
     method: 'get',
     headers: {
@@ -355,12 +333,10 @@ function fetchAlgosSuccess_analysis(algoAnalysis, errandId, dispatch) {
 
 
 function fetchAlgosError_analysis(json) {
-  //console.log("fetching list error!!",json)
   return {type: "ALGO_ANALYSIS_ERROR", json}
 }
 
 function fetchPostsError_analysis(json) {
-  //console.log("fetching list error!!",json)
   return {type: "SIGNAL_ANALYSIS_ERROR", json}
 }
 export function setPossibleAnalysisList(varType,varText,varSlug) {
@@ -641,7 +617,6 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		  bsSize: 'medium',
 		  onHide: (dialogBox) => {
 		    dialogBox.hide()
-		    //console.log('closed by clicking background.')
 		  }
 		});
 }
@@ -665,8 +640,6 @@ function deleteSignal(slug, dialog, dispatch) {
   })
 }
 function deleteSignalAPI(slug) {
-  //console.log("deleteSignalAPI(slug)");
-  //console.log(slug);
   return fetch(API + '/api/signals/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -694,7 +667,6 @@ export function getAllSignalList() {
   return (dispatch) => {
     return fetchAllSignalList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
         if(response.status === 200){
-            console.log(json)
             dispatch(fetchAllSignalSuccess(json))
         }else{
           dispatch(fetchAllSignalError(json))
@@ -759,7 +731,6 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
       Dialog.OKAction(() => {
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
         var allSignalList=store.getState().signals.allSignalList;
-        console.log(allSignalList,"inside ok action")
         if($("#idRenameSignal").val()==""){
               document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
               showRenameDialogBox(slug, dialog, dispatch, name)
@@ -779,7 +750,6 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
     bsSize: 'medium',
     onHide: (dialogBox) => {
       dialogBox.hide()
-      //console.log('closed by clicking background.')
     }
   });
 }
@@ -811,8 +781,6 @@ export function advanceSettingsModal(flag) {
 
 function dispatchSignalLoadingMsg(signalAnalysis) {
   let message = signalAnalysis.message
-  console.log("loading message########")
-  console.log(message)
   return {type: "CHANGE_LOADING_MSG", message}
 }
 export function clearLoadingMsg() {

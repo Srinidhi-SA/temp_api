@@ -63,7 +63,6 @@ export class AppsModelHyperDetail extends React.Component {
 	}, 250);
   }
   render() {
-    console.log("apps Model Detail Hyper Parameter View is called##########3");
 	  const modelSummary = store.getState().apps.modelSummary;
 	  var hyperParameterData;
 	  var pageData = "";
@@ -78,7 +77,6 @@ export class AppsModelHyperDetail extends React.Component {
 			var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-pl-30 xs-pl-30 xs-pt-5 clearfix removeBreak";
 			var cardDataArray = data.cardData;
 			var cardId = "id_"+data.slug;
-			console.log(cardId);
 			return(
 				<Tab eventKey={data.slug} title={data.name} key={cardId}>
 					<div className="row" key={cardId}>

@@ -6,8 +6,6 @@ export class Stories extends React.Component {
     super();
   }
   render() {
-    console.log("stories is called##########3");
-    console.log(this.props);
     return (
         <div>
           <div className="side-body">
