@@ -87,4 +87,18 @@ def deleted_failed_exception(err):
 
     return response
 
+def sharing_failed_exception(err):
+    response = Response()
+    if response is not None:
+        response.data = {}
+        errors = []
+        for field, value in list(response.data.items()):
+            errors.append("{} : {}".format(field, " ".join(value)))
 
+        response.data['errors'] = "Sharing failed"
+        response.data['status'] = False
+        response.data['message'] = 'failed'
+
+        response.data['exception'] = err
+
+    return response
