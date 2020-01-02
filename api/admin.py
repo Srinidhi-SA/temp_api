@@ -1,6 +1,9 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 from django.contrib import admin
 from django.conf import settings
-from utils import json_prettify_for_admin
+from .utils import json_prettify_for_admin
 import json
 
 # Register your models here.
@@ -109,7 +112,7 @@ class JobAdmin(admin.ModelAdmin):
                 # if instance.status is 'KILLED' or instance.status is 'FAILED':
                 instance.start()
             except Exception as exc:
-                print exc
+                print(exc)
         return 'good grace'
 
     def refresh_status(self, request, queryset):
@@ -122,7 +125,7 @@ class JobAdmin(admin.ModelAdmin):
         message_count = len(message_log_json)
 
         error_report_json = json.loads(instance.error_report)
-        msgKeys = error_report_json.keys()
+        msgKeys = list(error_report_json.keys())
         msgKeys = list(set(msgKeys))
         errorKeys = [x for x in msgKeys if x != "jobRuntime"]
         timeMsg = "No"

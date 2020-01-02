@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import range
 import hashlib
 import string
 
@@ -6,8 +9,8 @@ import watson_developer_cloud.natural_language_understanding.features.v1 \
 from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
 
 from api.StockAdvisor.crawling.cache import Cache
-from settings import NUMBEROFTRIES, CACHESALT, TEMPDIR
-from settings import natural_language_understanding_settings as nlu_settings
+from .settings import NUMBEROFTRIES, CACHESALT, TEMPDIR
+from .settings import natural_language_understanding_settings as nlu_settings
 
 
 def clean_key(key):
@@ -95,7 +98,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
                     nl_understanding = natural_language_analyzer.analyze(
                         url=url,features=features )
             except Exception as err:
-                print "FAILED "*10, err
+                print("FAILED "*10, err)
 
             if nl_understanding:
                 break

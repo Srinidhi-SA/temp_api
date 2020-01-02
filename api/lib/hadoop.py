@@ -1,3 +1,4 @@
+from __future__ import print_function
 import subprocess
 # import hadoopy
 import json
@@ -10,15 +11,15 @@ from django.conf import settings
 
 def hadoop_put(from_path, to_dir):
     hdfs_file_path = to_dir + '/' + os.path.basename(from_path)
-    print "Uploading to hdfs {} : {}".format(from_path, to_dir)
+    print("Uploading to hdfs {} : {}".format(from_path, to_dir))
     # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-put", from_path, to])
 
     hdfs_client = hadoop_hdfs()
-    with open(from_path, 'r') as file:
+    with open(from_path, newline='') as file:
         hdfs_client.create_file(hdfs_file_path, file)
 
 def hadoop_mkdir(path):
-    print "Creating directory {}".format(path)
+    print("Creating directory {}".format(path))
     # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-mkdir", "-p", path])
     hadoop_hdfs().make_dir(path)
 
@@ -30,7 +31,7 @@ def hadoop_exists(path):
         return False
 
 def hadoop_ls(path='/'):
-    print "Looking for {}".format(path)
+    print("Looking for {}".format(path))
     result = hadoop_hdfs().list_dir(path)
     return result['FileStatuses']['FileStatus']
 
@@ -41,7 +42,7 @@ def hadoop_hdfs_url(path=''):
     return "hdfs://localhost:9000"
 
 def hadoop_read_file(path='', parse_json = True):
-    print "Reading file: " + path
+    print("Reading file: " + path)
     data = hadoop_hdfs().read_file(path)
     if parse_json :
         return json.loads(data.replace('\n', ''))
@@ -64,5 +65,5 @@ def hadoop_get_full_url(path):
 
 def hadoop_hdfs():
     conf = settings.HDFS
-    print "conf:", conf
+    print("conf:", conf)
     return PyWebHdfsClient(host= conf['host'],port= conf['port'], user_name=conf['user.name'])

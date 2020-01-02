@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import range
+from builtins import object
 from django.db import models
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
@@ -113,7 +116,7 @@ class Dummy(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         permissions = (
             ('view_task', 'View task'),
         )
@@ -130,7 +133,7 @@ class Dummy(models.Model):
 
 class DummySerializer(serializers.ModelSerializer):
 
-    class Meta:
+    class Meta(object):
         model = Dummy
         exclude = ( 'id', 'updated_at')
 

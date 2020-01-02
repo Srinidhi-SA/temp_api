@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import map, enumerate
+from builtins import zip
+from builtins import str
+from builtins import range
 import json
 import random
 import copy
@@ -50,21 +56,15 @@ from api.utils import \
     ChangePasswordSerializer, UserListSerializer
 # RegressionSerlializer,
 # RegressionListSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
+from .models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
     TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
 from api.tasks import clean_up_on_delete, create_model_autoML
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
     SignalsRelatedPermission, StocksRelatedPermission, DatasetRelatedPermission
 
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 # from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
-
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -201,7 +201,7 @@ class SignalView(viewsets.ModelViewSet):
         try:
             obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
-            signal_obj = Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
+            signal_obj = list(Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values()).first()
             signal_name = signal_obj['name']
             shared_by = User.objects.get(id=request.user.id)
             import ast
@@ -224,8 +224,8 @@ class SignalView(viewsets.ModelViewSet):
             return JsonResponse({'message': 'Signals shared.'})
 
         except Exception as err:
-            print err
-            return JsonResponse({'message': 'Signals sharing failed.'})
+            print(err)
+            return JsonResponse({'message':'Signals sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
@@ -235,7 +235,7 @@ class SignalView(viewsets.ModelViewSet):
             return JsonResponse({'name': signal_obj.name, 'config': config})
         except Exception as err:
             return JsonResponse({'message': 'Config not found.'})
-            print err
+            print(err)
 
     @list_route(methods=['get'])
     def get_all_signals(self, request,  *args, **kwargs):
@@ -424,7 +424,7 @@ class TrainerView(viewsets.ModelViewSet):
         d_d_c = uiMetaData['varibaleSelectionArray']
 
         t_d_c_s = set(
-            [item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in item.keys()])
+            [item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in list(item.keys())])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
@@ -459,7 +459,7 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def get_pmml(self, request, *args, **kwargs):
         from api.redis_access import AccessFeedbackMessage
-        from helper import generate_pmml_name
+        from .helper import generate_pmml_name
         jobslug = request.query_params.get('jobslug', None)
         algoname = request.query_params.get('algoname', None)
         ac = AccessFeedbackMessage()
@@ -547,7 +547,7 @@ class TrainerView(viewsets.ModelViewSet):
         try:
             obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
-            trainer_obj = Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values().first()
+            trainer_obj = list(Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values()).first()
             model_name = trainer_obj['name']
             shared_by = User.objects.get(id=request.user.id)
             import ast
@@ -571,8 +571,8 @@ class TrainerView(viewsets.ModelViewSet):
             return JsonResponse({'message': 'Models shared.'})
 
         except Exception as err:
-            print err
-            return JsonResponse({'message': 'Models sharing failed.'})
+            print(err)
+            return JsonResponse({'message':'Models sharing failed.'})
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
@@ -581,7 +581,7 @@ class TrainerView(viewsets.ModelViewSet):
             config = json.loads(trainer_obj.config)
             unmodified_column_list = list()
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                if 'isFeatureColumn' in variable.keys():
+                if 'isFeatureColumn' in list(variable.keys()):
                     variable['selected'] = False
                     unmodified_column_list.append(variable['originalColumnName'])
             for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
@@ -616,14 +616,20 @@ class TrainerView(viewsets.ModelViewSet):
                                 data_items['type'] = i['datatype']
                                 missing_value_treatment[index] = data_items
                                 index += 1
-                config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in x.keys()]
+                config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in list(x.keys())]
                 tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
 
             except Exception as err:
-                print err
+                print(err)
             return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config, 'TENSORFLOW': tf_data})
+            #                     operation_items[index] = data_items
+            #                     print(operation_items)
+            #                 data_cleansing[op_index] = operation_items
+            # except Exception as err:
+            #     print(err)
+            # return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
         except Exception as err:
-            print err
+            print(err)
             return JsonResponse({'message': 'Config not found.'})
 
     @list_route(methods=['get'])
@@ -820,8 +826,8 @@ class ScoreView(viewsets.ModelViewSet):
     def share(self, request, *args, **kwargs):
         try:
             obj = Score.objects.get(slug=self.kwargs.get('slug'))
-            score_obj = Score.objects.filter(created_by_id=request.user.id,
-                                             slug=self.kwargs.get('slug')).values().first()
+            score_obj = list(Score.objects.filter(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug')).values()).first()
             score_name = score_obj['name']
             shared_id = request.GET['shared_id'].split(",")
             shared_by = User.objects.get(id=request.user.id)
@@ -844,7 +850,7 @@ class ScoreView(viewsets.ModelViewSet):
                 Score.objects.create(**score_obj)
             return JsonResponse({'message': 'done'})
         except Exception as err:
-            print err
+            print(err)
 
 
 class RoboView(viewsets.ModelViewSet):
@@ -1209,7 +1215,6 @@ class AudiosetView(viewsets.ModelViewSet):
 
         return update_failed_exception(serializer.errors)
 
-
 '''
 create app_view for a new user
 http://<ip>:<port>/api/all_apps_for_users/?username=marlabs
@@ -1219,8 +1224,6 @@ http://<ip>:<port>/api/all_apps_for_users/
 
 Note: It looks into CustomApps table for apps.
 '''
-
-
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         from api.models import CustomAppsUserMapping
@@ -1350,7 +1353,7 @@ def get_datasource_config_list(request):
         "conf": []
     }
 
-    print data_source_config.keys()
+    print(list(data_source_config.keys()))
     for data in data_source_config['conf']:
         if data['dataSourceType'] in upload_permitted_list:
             permitted_source_config['conf'].append(data)
@@ -1560,7 +1563,7 @@ def set_result(request, slug=None):
         slug,
         results
     )
-    if "status=failed" in request.body:
+    if "status=failed" in request.body.decode('utf-8'):
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
@@ -1582,13 +1585,13 @@ def set_result(request, slug=None):
             results = tasks.write_into_databases.delay(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         else:
             results = tasks.write_into_databases1(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results)
+                results=json.loads(results.decode('utf-8'))
             )
         job.status = 'SUCCESS'
         job.save()
@@ -1733,7 +1736,7 @@ def add_slugs(results, object_slug=""):
     from api import helper
     if settings.DEBUG == True:
         print(results)
-        print results.keys()
+        print(list(results.keys()))
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -1764,7 +1767,7 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
             try:
                 card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
             except Exception as e:
-                print e
+                print(e)
                 card["data"] = {}
         if card["dataType"] == "button":
             button_card = card["data"]
@@ -1776,7 +1779,7 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
                                                                                    object_slug=object_slug)
                     card["data"] = button_card["data"]
                 except Exception as e:
-                    print e
+                    print(e)
                     button_card["data"] = {}
 
 
@@ -1787,6 +1790,8 @@ def home(request):
     protocol = "http"
     if settings.USE_HTTPS:
         protocol = "https"
+    else:
+        protocol = "http"
 
     SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
@@ -5496,7 +5501,7 @@ def get_chart_or_small_data(request, slug=None):
         return Response({'Message': 'Failed'})
 
     csv_data = data_object.get_data()
-    csv_data = map(list, zip(*csv_data))
+    csv_data = list(map(list, list(zip(*csv_data))))
     from django.http import HttpResponse
     import csv
     response = HttpResponse(content_type='text/csv')
@@ -5563,7 +5568,6 @@ def get_job_refreshed(request, slug=None):
         'message': 'refreshed'
     })
 
-
 @api_view(['GET'])
 def get_job_restarted(request, slug=None):
     job_object = Job.objects.filter(object_id=slug).first()
@@ -5591,7 +5595,7 @@ def set_messages(request, slug=None):
 
     return_data = request.GET.get('data', None)
     data = request.body
-    data = json.loads(data)
+    data = json.loads(data.decode('utf-8'))
     if 'stageName' not in data:
         return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
@@ -5622,7 +5626,7 @@ def set_pmml(request, slug=None):
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
-    from helper import generate_pmml_name
+    from .helper import generate_pmml_name
     ac = AccessFeedbackMessage()
     key_pmml_name = generate_pmml_name(slug)
     data = ac.append_using_key(key_pmml_name, data)
@@ -5649,7 +5653,7 @@ def get_pmml(request, slug=None, algoname='algo'):
                 }
             )
         from api.redis_access import AccessFeedbackMessage
-        from helper import generate_pmml_name
+        from .helper import generate_pmml_name
         ac = AccessFeedbackMessage()
         job_object = Job.objects.filter(object_id=slug).first()
         job_slug = job_object.slug
@@ -5679,7 +5683,7 @@ def set_job_reporting(request, slug=None, report_name=None):
     new_error = request.body
     error_log = json.loads(job.error_report)
     json_formatted_new_error = None
-    if isinstance(new_error, str) or isinstance(new_error, unicode):
+    if isinstance(new_error, str) or isinstance(new_error, str):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
@@ -5843,7 +5847,7 @@ def get_score_data_and_return_top_n(request):
                     csv_text_list.append(row)
                     if index > count:
                         break
-                    print row
+                    print(row)
 
             # csv_text = fp.read()
             # csv_list = csv_text.split('\n')
@@ -5949,7 +5953,7 @@ def get_algorithm_config_list(request):
         else:
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
     except Exception as e:
-        print e
+        print(e)
 
     # changes for metrics
     metric_obj = None
@@ -5976,7 +5980,6 @@ def get_algorithm_config_list(request):
 
     return JsonResponse(algorithm_config_list)
 
-
 def get_appID_appName_map(request):
     # from django.core import serializers
     from api.models import CustomApps
@@ -6001,8 +6004,8 @@ def updateFromNifi(request):
     request.data = json.loads(request.body)
     username = request.data['username']
 
-    print "request from nifi====================>"
-    print request.data
+    print("request from nifi====================>")
+    print(request.data)
     from django.contrib.auth.models import User
     request.user = User.objects.filter(username=username).first()
 
@@ -6513,74 +6516,11 @@ def disable_all_periodic_tasks(request):
                          'count_already_diabled': count_already_diabled,
                          'count_just_disabled': count_just_disabled
                          })
-
-
-# @csrf_exempt
-# def request_from_alexa(request):
-#     print "####  Got Request from Alexa ####"
-#     request.data = json.loads(request.body)
-#     print request.data
-#     ###################################  Hard-code Alexa User with username alexa ###############################
-#     '''
-#     Create one user with Username "alexa" in order to use alexa for AutoML model creation.
-#
-#     Question: Why are we hard-coding "alexa" user for the same and why it cann't be generic?
-#
-#     Answer: User 'alexa' is hard-coded so that anyone using alexa for AutoML job can use Datasets uploaded by Alexa user only.
-#             User Alexa can also see the results in UI if credentials are known for Alexa, although we will be sending results in email as well.
-#
-#     '''
-#     user_id = User.objects.get(username="alexa")
-#     ###################################  Filter Datasets uploaded by alexa user  ################################
-#     #dataset_obj = Dataset.objects.filter(name=request.data['dataset_name'], created_by=user_id)
-#     dataset_obj = Dataset.objects.filter(created_by=user_id)
-#     ###################################            Conditional checks           #################################
-#     if len(dataset_obj) > 0:
-#         # Dataset with the requested name exists (May be multiple datasets)
-#         ##############    Check for the Target variable in first dataset   ####################
-#         for dataset in dataset_obj:
-#             Target = request.data['target']
-#             Subtarget = request.data['subtarget']
-#             Target_flag = check_for_target_and_subtarget_variable_in_dataset(dataset, Target, Subtarget)
-#             break
-#         if Target_flag == True:
-#             # Target and Sub-Target Value Exists
-#             #######################    Go for Email-id Validation Check   ##############################
-#             email = request.data['email_id']
-#             from api.helper import check_email_id
-#             email_check = check_email_id(email)
-#             if email_check == True:
-#                 # email provided is valid
-#                 #################     Check for Valid Model Name   ######################
-#                 model_name = request.data['model_name']
-#                 from api.utils import name_check
-#                 model_name_check = name_check(model_name)
-#                 if model_name_check < 0:
-#                     if model_name_check == -1:
-#                         return JsonResponse({'message': 'Model name is empty.'})
-#                     elif model_name_check == -2:
-#                         return JsonResponse({'message': 'Model name is very large.'})
-#                     elif model_name_check == -3:
-#                         return JsonResponse({'message': 'Model name with special_characters not allowed.'})
-#                 else:
-#                     # Done with all validations. Proceed to trigger AutoML Job for Alexa
-#                     config = json.dumps(request.data)
-#                     # Trigget autoML job
-#                     create_model_autoML.delay(config)
-#                     return JsonResponse({'message': 'Done'})
-#             else:
-#                 return JsonResponse({'message': 'Invalid Email-id.'})
-#         else:
-#             return JsonResponse({'message': 'Target/Sub-Target not found.'})
-#     else:
-#         return JsonResponse({'message': 'Dataset not found.'})
-
-
 @csrf_exempt
 def request_from_alexa(request):
     response = {}
     if request.method == 'GET':
-        print "####  Got GET Request from Alexa ####"
+        print("####  Got GET Request from Alexa ####")
         if request.GET['data'] == 'dataset':
             # user_id = request.user.id
             user_id = User.objects.get(username="alexa")
@@ -6590,12 +6530,12 @@ def request_from_alexa(request):
             return JsonResponse(response)
 
     if request.method == 'POST':
-        print "####  Got POST Request from Alexa ####"
+        print("####  Got POST Request from Alexa ####")
         request.data = json.loads(request.body)
         dataset_obj = Dataset.objects.filter(slug=request.data['slug'])
         meta_data = json.loads(dataset_obj[0].meta_data)
         if request.data['attribute'] == 'target':
-            print "####  Fetching list of Dimension Columns ####"
+            print("####  Fetching list of Dimension Columns ####")
             dimension_column_list = []
             for meta_info in meta_data['metaData']:
                 if meta_info["name"] == "dimensionColumns":
@@ -6603,7 +6543,7 @@ def request_from_alexa(request):
             response.update(enumerate(dimension_column_list))
             return JsonResponse(response)
         if request.data['attribute'] == 'subtarget':
-            print "####  Fetching the list of subtarget values ####"
+            print("####  Fetching the list of subtarget values ####")
             subtarget_column_list = []
             for meta_info in meta_data['columnData']:
                 if meta_info['name'] == request.data['target']:
@@ -6611,7 +6551,7 @@ def request_from_alexa(request):
             response.update(enumerate(subtarget_column_list))
             return JsonResponse(response)
         if request.data['attribute'] == 'createmodel':
-            print "####  Trying to create AutoML model ####"
+            print("####  Trying to create AutoML model ####")
             email = request.data['email']
             from api.helper import check_email_id
             email_check = check_email_id(email)
@@ -6629,7 +6569,7 @@ def request_from_alexa(request):
                 else:
                     # Done with all validations. Proceed to trigger AutoML Job for Alexa
                     config = json.dumps(request.data)
-                    print config
+                    print(config)
                     # Trigger autoML job
                     create_model_autoML.delay(config=config)
                     return JsonResponse({'message': 'Done'})
@@ -6707,10 +6647,7 @@ def view_model_summary_autoML(request):
         return render(request, 'modelSummary.html', context)
 
     except Exception as err:
-        print err
-    # else:
-    #    from django.shortcuts import render
-    #    return render(request,'model_summary_expired.html')
+        print(err)
 
 
 @csrf_exempt
@@ -6729,22 +6666,21 @@ def view_model_summary_detail(request):
             FI_dict_values = table_data[1]
             # import collections
             import operator
-            # FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = dict(zip(FI_dict_keys, FI_dict_values))
-            FI_dict = sorted(FI_dict.items(), key=operator.itemgetter(1), reverse=True)
-            FI_dict = FI_dict[1:len(FI_dict):1]
+            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
+            FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
             model_summary_data['model_summary'] = data['model_summary']
             model_config.update(
                 {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data, 'table_data': FI_dict})
         except Exception as err:
-            print err
-            # model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
+            print(err)
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
         return JsonResponse({'modelDetail': model_config})
 
     except Exception as err:
-        print err
-
+        print(err)
 
 @csrf_exempt
 def dump_complete_messages(request, slug=None):
@@ -6761,7 +6697,6 @@ def dump_complete_messages(request, slug=None):
         return JsonResponse({'result': "Success"})
     except Exception as e:
         return JsonResponse({'result': "Failed"})
-        print e
 
 
 """

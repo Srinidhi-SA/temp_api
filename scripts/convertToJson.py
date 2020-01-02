@@ -1,5 +1,7 @@
+from __future__ import print_function
 
-class Node:
+from builtins import object
+class Node(object):
     name = "name"
     slug = "slug"
     listOfNodes = []
@@ -12,7 +14,7 @@ class Node:
         self.listOfCards = listOfCards
 
 
-class Card:
+class Card(object):
     name = ""
     slug = ""
     cardType = ""

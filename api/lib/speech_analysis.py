@@ -1,6 +1,10 @@
 """Sample code to use the IBM Watson Speech to Text API.
 See more at https://blog.rmotr.com.
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from builtins import object
 import json
 import unittest
 
@@ -17,7 +21,7 @@ nlu_settings = settings.NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS
 VOICE_TO_TEXT_SETTINGS = settings.VOICE_TO_TEXT_SETTINGS
 
 
-class SpeechAnalyzer:
+class SpeechAnalyzer(object):
     filepath = ""  # Audio file path
     converted_text = ""
     nl_understanding = None # will store the understanding
@@ -34,7 +38,7 @@ class SpeechAnalyzer:
         return_json = stt.recognize(audio_file, content_type="audio/wav", speaker_labels=True)
         
         
-        if "results" in return_json.keys() and "alternatives" in return_json.get("results")[0].keys() and "transcript" in return_json.get("results")[0].get("alternatives")[0].keys():
+        if "results" in list(return_json.keys()) and "alternatives" in list(return_json.get("results")[0].keys()) and "transcript" in list(return_json.get("results")[0].get("alternatives")[0].keys()):
             self.converted_text = return_json.get("results")[0].get("alternatives")[0].get("transcript")
 
         return self.converted_text
@@ -79,7 +83,7 @@ class SpeechAnalyzer:
         emotions_card = ""
         if "emotion" in self.nl_understanding:
             try:
-                emotions_html = '<div className="row">{}</div>'.format( "".join([ self.__get_emotions_html(k, v ) for (k,v) in self.nl_understanding.get("emotion").get("document").get("emotion").items()]))
+                emotions_html = '<div className="row">{}</div>'.format( "".join([ self.__get_emotions_html(k, v ) for (k,v) in list(self.nl_understanding.get("emotion").get("document").get("emotion").items())]))
                 emotions_card = self.__generate_normal_card("Emotions", emotions_html)
             except:
                 pass
@@ -274,8 +278,8 @@ class SpeechAnalyzer:
         return gauge_c3_chart_data
 
     def generate_para_html(self):
-        emotions_sorted = sorted(self.nl_understanding.get("emotion").get("document").get("emotion").items(),
-                                 key=lambda (key, val): val, reverse=True)
+        emotions_sorted = sorted(list(self.nl_understanding.get("emotion").get("document").get("emotion").items()),
+                                 key=lambda key_val: key_val[1], reverse=True)
         (best_emotion, best_value) = emotions_sorted[0]
         (second_best_emotion, second_best_value) = emotions_sorted[1]
         keywords = self.nl_understanding.get("keywords")
@@ -435,11 +439,11 @@ class C3chart_ML(object):
 
 
 
-class SpeechAnalyzerTest:
+class SpeechAnalyzerTest(object):
     def testSpeechToText(self):
         sa = SpeechAnalyzer("test/mohanbi.wav")
         sa.convert_speech_to_text()
-        print json.dumps(sa.converted_text)
+        print(json.dumps(sa.converted_text))
         pass
     
     def understand_text(self):
@@ -452,16 +456,16 @@ if __name__ == "__main__":
     sa = SpeechAnalyzer("test/mohanbi.wav")
 #     sa.convert_speech_to_text()
     sa.converted_text = "I am calling regarding my cellphone details regarding the AD and D. center and %HESITATION my bills that's not in proper order can you get back to me "
-    print json.dumps(sa.converted_text)
+    print(json.dumps(sa.converted_text))
 #     sa.understand_text()
     
     sa.nl_understanding = json.loads("""{"semantic_roles": [{"action": {"text": "calling", "verb": {"text": "call", "tense": "present"}, "normalized": "call"}, "sentence": "I am calling regarding my cellphone details regarding the AD and D. center and %HESITATION my bills that's not in proper order can you get back to me", "object": {"text": "regarding my cellphone details regarding the AD and D. center"}, "subject": {"text": "I"}}, {"action": {"text": "get", "verb": {"text": "get", "tense": "future"}, "normalized": "get"}, "sentence": "I am calling regarding my cellphone details regarding the AD and D. center and %HESITATION my bills that's not in proper order can you get back to me", "object": {"text": "to me"}, "subject": {"text": "you"}}], "emotion": {"document": {"emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}}}, "sentiment": {"document": {"score": -0.602607, "label": "negative"}}, "language": "en", "entities": [], "relations": [{"score": 0.941288, "type": "agentOf", "arguments": [{"text": "I", "entities": [{"text": "you", "type": "Person"}]}, {"text": "calling", "entities": [{"text": "calling", "type": "EventCommunication"}]}], "sentence": "I am calling regarding my cellphone details regarding the AD and D. center and %HESITATION my bills that's not in proper order can you get back to me"}], "keywords": [{"relevance": 0.986328, "text": "cellphone details", "emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}, "sentiment": {"score": -0.602607}}, {"relevance": 0.833305, "text": "proper order", "emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}, "sentiment": {"score": -0.602607}}, {"relevance": 0.670873, "text": "D. center", "emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}, "sentiment": {"score": -0.602607}}, {"relevance": 0.552041, "text": "HESITATION", "sentiment": {"score": -0.602607}}, {"relevance": 0.396277, "text": "bills", "emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}, "sentiment": {"score": -0.602607}}, {"relevance": 0.34857, "text": "AD", "emotion": {"anger": 0.128218, "joy": 0.023388, "sadness": 0.039954, "fear": 0.030219, "disgust": 0.022114}, "sentiment": {"score": -0.602607}}], "concepts": [], "usage": {"text_characters": 150, "features": 8, "text_units": 1}, "categories": [{"score": 0.301348, "label": "/finance/personal finance/lending/credit cards"}, {"score": 0.17561, "label": "/business and industrial"}, {"score": 0.165519, "label": "/technology and computing"}]}
     """)
     
-    print json.dumps(sa.nl_understanding)
+    print(json.dumps(sa.nl_understanding))
     
     sa.generate_node_structure()
-    print "=" * 100
+    print("=" * 100)
     print(json.dumps(sa.nl_understanding_nodestructure))
 
 

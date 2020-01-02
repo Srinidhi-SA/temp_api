@@ -1,3 +1,6 @@
+from __future__ import print_function
+from builtins import str
+from builtins import object
 from django.conf import settings
 REDIS_SALT = settings.REDIS_SALT
 from django.core.cache import cache
@@ -7,7 +10,7 @@ from api.models import SaveAnyData
 REDIS_TIMEOUT = 60*60
 
 
-class AccessFeedbackMessage:
+class AccessFeedbackMessage(object):
 
     # def __init__(self, obj=None):
     #     if obj is None:
@@ -110,6 +113,6 @@ class AccessFeedbackMessage:
             sd.delete()
             return cache.__delattr__(key)
         except:
-            print "No instance."
+            print("No instance.")
             return None
 

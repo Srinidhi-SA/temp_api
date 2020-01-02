@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import zip
 import csv
 import api.StockAdvisor.utils as myutils
 import json
@@ -14,11 +16,11 @@ for (i, row) in enumerate(csv_reader):
     if i == 0:
         csv_header = row
     else:
-        print i, row
+        print(i, row)
 
-        cur_dictionary = dict(zip(csv_header, row))
+        cur_dictionary = dict(list(zip(csv_header, row)))
         date_key = "time"
-        if date_key in cur_dictionary.keys():
+        if date_key in list(cur_dictionary.keys()):
             cur_dictionary[date_key] = myutils.normalize_date_time(cur_dictionary.get(date_key)).strftime("%Y%m%d")
 
         nl_understanding = myutils.get_nl_understanding_from_bluemix(row[2])

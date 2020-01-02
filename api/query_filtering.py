@@ -1,3 +1,4 @@
+from builtins import object
 from rest_framework.response import Response
 from api.exceptions import creation_failed_exception, update_failed_exception
 from django.db.models import Q

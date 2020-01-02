@@ -1,3 +1,4 @@
+from builtins import object
 import json
 from rest_framework.utils import humanize_datetime
 from django.conf import settings
@@ -10,7 +11,7 @@ def convert_to_string(data):
     for key in keys:
         if key in data:
             value = data[key]
-            if isinstance(value, str or unicode):
+            if isinstance(value, str or str):
                 pass
             elif isinstance(value, dict):
                 data[key] = json.dumps(value)
@@ -42,7 +43,8 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None, user=None):
 
     if meta_data is not None:
-        uiMetaData = meta_data
+        #uiMetaData = meta_data
+        uiMetaData=get_metaData_after_checking_ignoreSuggestionFlag(meta_data=meta_data)
     else:
         return {}
 
@@ -69,6 +71,15 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     )
     uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
     return uiMetaData
+
+def get_metaData_after_checking_ignoreSuggestionFlag(meta_data):
+    temp_columnDataUI=meta_data['meta_data']['uiMetaData']['columnDataUI']
+    temp_varibaleSelectionArray=meta_data['meta_data']['uiMetaData']['varibaleSelectionArray']
+    for iter in temp_columnDataUI:
+        if(iter['ignoreSuggestionFlag']==True):
+            for i in temp_varibaleSelectionArray:
+                if(iter['slug']==i['slug']):
+                    i['selected']=False
 
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user=None):
 
@@ -356,7 +367,6 @@ class MetaDataChange(object):
                 if data['columnType'] == match_in_columnstats[type]:
                     return ""
                 data['columnType'] = match_in_columnstats[type]
-
         if type == 'numeric':
             for data in self.metaData:
                 if data.get('name') == 'measures':
@@ -832,17 +842,17 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         uidobj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
         if len(uidobj) > 0:
             uidcols.append(uidobj[0])
-        polarityCols = filter(lambda x:x["actionName"] == "set_polarity" and x["status"]==True,colset)
+        polarityCols = [x for x in colset if x["actionName"] == "set_polarity" and x["status"]==True]
         if len(polarityCols) >0:
             polarityActions = polarityCols[0]["listOfActions"]
-            relevantAction = filter(lambda x:x["status"]==True,polarityActions)
+            relevantAction = [x for x in polarityActions if x["status"]==True]
             if len(relevantAction) >0:
                 polarity.append({"name":obj["name"],"slug":obj["slug"],"polarity":relevantAction[0]["name"]})
 
-        setVarAsCols = filter(lambda x: x["actionName"] == "set_variable" and x["status"] == True, colset)
+        setVarAsCols = [x for x in colset if x["actionName"] == "set_variable" and x["status"] == True]
         if len(setVarAsCols) > 0:
             setVarAsActions = setVarAsCols[0]["listOfActions"]
-            relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
+            relevantAction = [x for x in setVarAsActions if x["status"] == True]
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
 
@@ -857,19 +867,19 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if obj["slug"]==selctedDateSuggestedCol:
                 # obj.update({"selected":True})
                 obj.update({"selected":False})
-        uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
+        uidFilter = [x for x in uidcols if x["slug"] == obj["slug"]]
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
         else:
             obj.update({"uidCol": False})
 
-        polarityFilter = filter(lambda x:x["slug"] == obj["slug"],polarity)
+        polarityFilter = [x for x in polarity if x["slug"] == obj["slug"]]
         if len(polarityFilter) > 0:
             obj.update({"polarity": polarityFilter[0]["polarity"]})
         else:
             obj.update({"polarity": None})
 
-        setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAs)
+        setVarAsFilter = [x for x in setVarAs if x["slug"] == obj["slug"]]
         if len(setVarAsFilter) > 0:
             obj.update({"setVarAs": setVarAsFilter[0]["setVarAs"]})
         else:
