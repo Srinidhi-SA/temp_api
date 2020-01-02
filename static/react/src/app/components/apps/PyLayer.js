@@ -374,7 +374,6 @@ export class PyLayer extends React.Component {
         return (
             <div class={cls} id={clsId}>
                 <div class="layer">
-                    {/* Need to check with ML regarding Layer No  */}
                     <div class="layerHeader" id={this.props.idNum}>
                         Linear Layer {this.props.idNum}
                         {/* <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/> */}
