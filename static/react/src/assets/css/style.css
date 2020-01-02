@@ -16605,6 +16605,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	float: right;
 	padding: 3px;
 	cursor: pointer;
+	padding-left: 15px;
 } 
 
 .collapsed:before {
