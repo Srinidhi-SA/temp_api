@@ -28,15 +28,12 @@ import {AppsLoader} from "../common/AppsLoader";
 export class AppsStockDataPreview extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
   componentWillMount(){
-	  //if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
-		  this.props.dispatch(clearDataPreview());
+	    this.props.dispatch(clearDataPreview());
 		  this.props.dispatch(getStockDataSetPreview(this.props.match.params.slug));
 		  this.props.dispatch(updateStockSlug(this.props.match.params.slug));
-	 // }
-  }
+	}
   componentDidMount(){
       hideDataPreviewRightPanels();
 			this.props.dispatch(getConceptsList());

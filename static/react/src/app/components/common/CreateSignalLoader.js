@@ -33,7 +33,6 @@ export class CreateSignalLoader extends React.Component {
 	if(this.props.createSignalLoaderValue >= 0 && getText.length <= 1){ 
 		$("#loadingMsgs").empty()
 		getText = Object.values(store.getState().signals.signalLoadedText);
-		console.log(getText);
 	}else{
 		$("#loadingMsgs").empty();
 		getText.push(store.getState().signals.loaderText);
@@ -48,7 +47,6 @@ export class CreateSignalLoader extends React.Component {
     this.props.dispatch(closeCsLoaderModal());
     this.props.dispatch(hideDataPreview());
     clearCreateSignalInterval();
-    //this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
   cancelSignalProcessing() {
     this.props.dispatch(closeCsLoaderModal());

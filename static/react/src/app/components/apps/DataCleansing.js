@@ -91,7 +91,6 @@ export class DataCleansing extends React.Component {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 
     } else {
-      console.log("not updating dataPreview data from server");
     }
 
     var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');

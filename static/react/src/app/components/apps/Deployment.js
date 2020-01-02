@@ -133,7 +133,6 @@ export class Deployment extends React.Component {
     var deployData = "";
     var viewPopup = "";
     var viewData = "";
-    console.log("Deployment render method is called...");
 		var deploymentList = this.props.deploymentList;
     var deploymentTable = "";
     deployData = "deployData";
@@ -283,22 +282,14 @@ export class Deployment extends React.Component {
     }
   }
   openDeployModal(slug) {
-    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(slug));
   }
   
   closeDeployModal() {
-    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
   }
 
-  // openViewModal(slug) {
-  //   console.log("open ---openViewModal");
-  //   this.props.dispatch(openViewModalAction(slug));
-  // }
-  
   closeViewModal() {
-    console.log("closeddddd ---closeViewModal");
     this.props.dispatch(closeViewModalAction());
   }
 }

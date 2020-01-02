@@ -35,20 +35,12 @@ export class AppsLoader extends React.Component {
   constructor(){
     super();
 	}
-	// componentWillMount(){
-	// 	if(window.location.href.includes("\createModel")){
-	// 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-	// 		if (this.props.dataPreview == null) {
-	// 			this.props.dispatch(getDataSetPreview(this.props.match.params.slug));       
-	// 		}
-	// 	}
-	// }
+
 	componentWillUpdate(){
 		var getText = [];
 	  if(this.props.appsLoaderPerValue >= 0 && getText.length <= 1){ 
 		$("#loadingMsgs").empty()
 		getText = Object.values(store.getState().apps.appsLoadedText);
-		console.log(getText);
 	  }else{
 		$("#loadingMsgs").empty();
 		getText.push(store.getState().apps.appsLoaderText);
@@ -90,9 +82,6 @@ export class AppsLoader extends React.Component {
 	  this.valueStore();
 
 		clearAppsIntervel();
-		//if(this.props.app_type == "REGRESSION")
-		//if(this.props.app_type == "REGRESSION")
-    //this.props.dispatch(reSetRegressionVariables());
   }
   cancelCreateModel(){
 		this.props.dispatch(updateModelSummaryFlag(false));

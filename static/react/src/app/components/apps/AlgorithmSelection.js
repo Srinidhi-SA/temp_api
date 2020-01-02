@@ -69,7 +69,6 @@ export class AlgorithmSelection extends React.Component {
         this.props.history.push(proccedUrl);
     }
     changeAlgorithmSelection(data){
-        console.log(data);
         this.props.dispatch(updateAlgorithmData(data.algorithmSlug));
     }
   

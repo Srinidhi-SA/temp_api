@@ -111,11 +111,8 @@ componentDidMount = () => {
     }
     createModel(event) {
         event.preventDefault();
-        console.log("came here: ================================");
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
-        
         let allModlLst = Object.values(this.props.allModelList)
-        
         var creatModelName = $('#createModelName').val();
 
         if ($('#createModelAnalysisList option:selected').val() == "") {
@@ -194,14 +191,10 @@ componentDidMount = () => {
 
     
     componentWillReceiveProps(newProps){
-        console.log("6666666666666666666666666666666666666666666666")
-        console.log("newProps:",newProps);
         if(!isEmpty(newProps.modelEditconfig)&&newProps.modelEditconfig!="" && !isEmpty(newProps.dataPreview)&& newProps.editmodelFlag && this.state.perspective!=true){
             this.dispatchEditActions(newProps);
-    
-        }
-
-    }
+     }
+}
    
     dispatchEditActions(newProps){
         this.props=newProps;
@@ -249,16 +242,11 @@ componentDidMount = () => {
               </div>
             );
           }
-          else{    
-        console.log("Create Model Variable Selection  is called##########3");
+          else{
         let custom_word1 = "";
         let custom_word2 = "";
         var modelValidation = "";
-        // var noOfROws = "";
         var buttonName = "Create Model";
-        // noOfROws = store.getState().datasets.dataPreview.meta_data.uiMetaData.metaDataUI.filter(row => row.displayName === "Rows").find(function (elements) {
-        //     return elements;
-        // }).value;
         if (store.getState().apps.modelSummaryFlag) {
             let _link = "/apps/" + store.getState().apps.currentAppDetails.slug + '/analyst/models/' + store.getState().apps.modelSlug;
             return (<Redirect to={_link} />);
@@ -270,10 +258,6 @@ componentDidMount = () => {
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
         if (dataPrev && store.getState().apps.currentAppDetails != null) {
-            // if(isEmpty(this.props.modelEditconfig)||this.props.modelEditconfig==""){
-            // if(this.props.editmodelFlag && this.props.modelEditconfig!="")
-                // var metaData = this.props.modelEditconfig.config.config.COLUMN_SETTINGS.variableSelection               
-            // else
             var metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
                 const sortedMetaData = (metaData.sort((a, b) => {
                                         if (a.name < b.name)

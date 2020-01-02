@@ -31,7 +31,6 @@ var dateFormat = require('dateformat');
 export class AudioFileList extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount(){
@@ -54,7 +53,6 @@ export class AudioFileList extends React.Component {
   }
   _handleKeyPress = (e) => {
 	  if (e.key === 'Enter') {
-		  //console.log('searching in data list');
 		  if (e.target.value != "" && e.target.value != null)
 		  this.props.history.push('/apps/audio?search=' + e.target.value + '')
 		  this.props.dispatch(storeAudioSearchElement(e.target.value));
@@ -75,7 +73,6 @@ export class AudioFileList extends React.Component {
 		}
 	}
   render() {
-    console.log("audio file list is called##########3");
     if(store.getState().apps.audioFileSummaryFlag){
         let _link = "/apps/audio/"+store.getState().apps.audioFileSlug;
         return(<Redirect to={_link}/>);

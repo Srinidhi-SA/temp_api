@@ -67,14 +67,12 @@ export class Card extends React.Component {
                 return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
                 break;
             case "c3Chart":
-                //console.log("checking chart data:::::");
                 let chartInfo=[]
                 if(!$.isEmptyObject(story.data)){
                    if(story.chartInfo){
                      chartInfo=story.chartInfo
                    }
                     if(story.widthPercent &&  story.widthPercent != 100){
-                      //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
                         let divClass="col-md-"+width;
                         let sideChart=false;
@@ -96,7 +94,6 @@ export class Card extends React.Component {
                 }
                 break;
             case "tree":
-                //console.log("checking tree data");
                 return ( <DecisionTree key={randomNum} treeData={story.data}/>);
                 break;
             case "table":
@@ -151,7 +148,6 @@ export class Card extends React.Component {
             let boxData = story.data;
             let divClass = "text-center";
             if(story.widthPercent &&  story.widthPercent != 100){
-                        //let width  = parseInt((story.widthPercent/100)*20);
                         divClass="col-md-4 bgStockBox";
             }
             return(
@@ -178,7 +174,6 @@ export class Card extends React.Component {
         return htmlData;
     }
     render() {
-        console.log("card is called!!!! with data:----");
         cardData = this.props.cardData;
 		let stockClassName = "";
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)

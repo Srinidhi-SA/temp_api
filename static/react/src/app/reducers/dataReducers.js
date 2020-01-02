@@ -90,8 +90,6 @@ export default function reducer(state = {
   pytorchValidateFlag: false,
   
 }, action) {
-  console.log("In DATA reducer!!");
-  console.log(action);
 
   switch (action.type) {
     case "DATA_LIST":
@@ -813,7 +811,6 @@ export default function reducer(state = {
     break;
     case "DATA_CLEANSING_CHECK_UPDATE":
       {
-        console.log(action.checkedOrNot, action.index, 'anshulanshulanshul');
         return {
           ...state,
           dataPreview: {
