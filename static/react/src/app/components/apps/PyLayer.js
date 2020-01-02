@@ -23,13 +23,16 @@ export class PyLayer extends React.Component {
     }
 
     deleteLayer(layerNumber){
-        this.props.dispatch(deletePyTorchLayer(layerNumber))
-        let layerElement = document.getElementById("layer"+layerNumber);
-        layerElement.parentNode.removeChild(layerElement);
+        // this.props.dispatch(deletePyTorchLayer(layerNumber))
+        // let layerElement = document.getElementById("layer"+layerNumber);
+        // layerElement.parentNode.removeChild(layerElement);
+        this.props.idLayer.filter(function(layerId){
+            return layerId != layerNumber
+        });
     }
 
     selectHandleChange(parameterData,e){
-        let layerArry = this.props.id;
+        let layerArry = this.props.idNum;
         if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
             let layerDt = this.props.pyTorchLayer[layerArry];
             if(layerDt[parameterData.name].name != e.target.value){
@@ -89,7 +92,7 @@ export class PyLayer extends React.Component {
             e.target.parentElement.lastElementChild.innerHTML = ""
         }
         if(!this.props.pytorchValidateFlag){
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = val;
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
@@ -98,7 +101,7 @@ export class PyLayer extends React.Component {
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
         this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
@@ -181,7 +184,7 @@ export class PyLayer extends React.Component {
         else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
-            let layerArry = this.props.id
+            let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = parseFloat(e.target.value);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newsubLyrVal));
@@ -255,7 +258,7 @@ export class PyLayer extends React.Component {
     }
     
     renderPyTorchData(parameterData){
-        let lyr = this.props.id
+        let lyr = this.props.idNum
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue
@@ -355,8 +358,8 @@ export class PyLayer extends React.Component {
         }
     }
     render() {
-        var cls =`row layerPanel ${this.props.id}`
-        var clsId = `layer${this.props.id}`
+        var cls =`row layerPanel ${this.props.idNum}`
+        var clsId = `layer${this.props.idNum}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
@@ -372,12 +375,12 @@ export class PyLayer extends React.Component {
             <div class={cls} id={clsId}>
                 <div class="layer">
                     {/* Need to check with ML regarding Layer No  */}
-                    <div class="layerHeader" id={this.props.id}>
-                        Linear Layer {this.props.id}
-                        <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.id)}/>
-                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.id}`} aria-expanded="true" aria-controls={`collapseExample${this.props.id}`} />
+                    <div class="layerHeader" id={this.props.idNum}>
+                        Linear Layer {this.props.idNum}
+                        {/* <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/> */}
+                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
                     </div>
-                    <div className="collapse in" id={`collapseExample${this.props.id}`}>
+                    <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
                         <div className="card card-body">
                             <div class="layerBody" style={{'padding-left':'15px'}}>
                                 {renderPyTorchLayer}

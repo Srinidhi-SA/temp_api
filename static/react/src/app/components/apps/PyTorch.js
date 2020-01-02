@@ -571,7 +571,7 @@ export class PyTorch extends React.Component {
                         {selectedValue === "Linear"?
                                 <div className='panel-wrapper'>
                                     {this.props.idLayer.map(layer=>
-                                        <PyLayer key = {layer} id={layer} parameterData={this.props.parameterData}/>
+                                        <PyLayer key = {layer} idNum={layer} parameterData={this.props.parameterData}/>
                                     )}
                                 </div>
                             : ""}
