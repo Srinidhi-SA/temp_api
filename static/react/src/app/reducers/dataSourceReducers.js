@@ -9,7 +9,6 @@ export default function reducer(state = {
 		db_tablename:null,
 		db_password:null,
 }, action) {
-	console.log("In DATA Source reducer!!");
 	if(window.location.href.includes("autoML")){
 	$("#left-tabs-example-tab-MySQL").css("cursor", "not-allowed");
 	$("#left-tabs-example-tab-mssql").css("cursor", "not-allowed");
@@ -17,8 +16,6 @@ export default function reducer(state = {
 	$("#left-tabs-example-tab-Hdfs").css("cursor", "not-allowed");
 	$("#left-tabs-example-tab-S3").css("cursor", "not-allowed");
 	}
-	console.log(action.files);
-
 	switch (action.type) {
 	case "DATA_SOURCE_LIST":
 	{

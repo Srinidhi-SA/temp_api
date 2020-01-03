@@ -132,7 +132,6 @@ export class VariableSelection extends React.Component {
       countOfSelected:0,
       radioChecked:""
     };
-    console.log("preview data check");
 	props.dispatch(emptySignalAnalysis());
 	}
 
@@ -143,7 +142,6 @@ componentDidMount(){
  $(function(){
    selectedVariables.date = $("#rad_dt0").val();
     $("[type='radio']").click(function(){
-        // let count=0;
          let id=$(this).attr("id");
 
         selectedVariables.date = $("#"+id).val();
@@ -151,12 +149,10 @@ componentDidMount(){
           return {radioChecked:id
                     };
         });
-        console.log(selectedVariables);
-      //  $("#"+id).prop("checked", true);
 
     });
 
-   $("#mea").click(function(){   // select all measure clicked
+   $("#mea").click(function(){ 
      let count=0;
       if($(this).is(":checked")){
         $('.measure[type="checkbox"]').prop('checked', true);
@@ -181,18 +177,12 @@ componentDidMount(){
          }
       });
 
-      // if($('input:radio[name="date_type"]').is("checked")){
-      //   alert("working");
-      //   count++;
-      // }
-      console.log(selectedVariables);
-
       that.setState(previousState => {
        return { countOfSelected: count};
      });
    });
 
-   $("#dim").click(function(){     // select all dimension clicked
+   $("#dim").click(function(){    
      let count=0;
       if($(this).is(":checked")){
          $('.dimension[type="checkbox"]').prop('checked', true);
@@ -217,7 +207,6 @@ componentDidMount(){
          }
       });
 
-    console.log(selectedVariables);
 
       that.setState(previousState => {
        return { countOfSelected: count};
@@ -248,9 +237,6 @@ $('.measure[type="checkbox"]').click(function(){
        selectedVariables.dimensions.push($(this).val());
      }
   });
-
- console.log(selectedVariables);
-
   that.setState(previousState => {
    return { countOfSelected: count};
  });
@@ -279,9 +265,6 @@ $('.dimension[type="checkbox"]').click(function(){
         selectedVariables.measures.push($(this).val());
      }
   });
-
-   console.log(selectedVariables);
-
   that.setState(previousState => {
    return { countOfSelected: count};
  });
@@ -296,16 +279,12 @@ $('.dimension[type="checkbox"]').click(function(){
 
 
 	render() {
-    //const dataSets = store.getState().datasets.dataList.data;
     const metaData = dataSelection.columnData;
     var measures =[], dimensions =[],datetime =[];
     metaData.map((metaItem,metaIndex)=>{
-      console.log(metaItem)
       switch(metaItem.columnType){
         case "measure":
-         //m[metaItem.slug] = metaItem.name;
          measures.push(metaItem.name);
-         //m={};
          break;
         case "dimension":
 

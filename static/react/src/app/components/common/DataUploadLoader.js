@@ -35,7 +35,6 @@ export class DataUploadLoader extends React.Component {
 	  if(this.props.dULoaderValue >= 0 && this.props.dataLoadedText.length != 0){
 		$("#loadingMsgs").empty()
 		getText = Object.values(store.getState().datasets.dataLoadedText);
-		console.log(getText);
 	  }else{
 		$("#loadingMsgs").empty();
 		getText.push(store.getState().datasets.dataLoaderText);

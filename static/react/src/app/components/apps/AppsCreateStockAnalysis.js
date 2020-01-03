@@ -47,7 +47,6 @@ export class AppsCreateStockAnalysis extends React.Component {
 		this.props.dispatch(crawlDataForAnalysis(url,analysisName,urlForNews));
 	}
 	render() {
-		 console.log("apps create score list is called##########3");
 		  let stockSymbolsList = this.props.appsStockSymbolsInputs;
 		  const templateTextBoxes = stockSymbolsList.map((data,id) =>{
 			  return (<div className="row"><div className="form-group" id={data.id}>

@@ -21,7 +21,6 @@ export class Share extends React.Component {
   }
 
   closeShareModal() {
-    console.log("closeddddd ---closeBinsOrLevelsModal");
     this.props.dispatch(closeShareModalAction());
     this.setState({userIds:[]})
 

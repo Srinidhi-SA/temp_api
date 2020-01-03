@@ -23,10 +23,8 @@ import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,sav
 export class AdvanceSettings extends React.Component {
 	constructor(props){
 		super(props);
-		console.log(props)
 		this.openAdvanceSettingsModal = this.openAdvanceSettingsModal.bind(this);
 		this.dimensionSubLevel =null;
-		//this.dimensionCountForMeasure =
 
 	}
 
@@ -73,7 +71,6 @@ export class AdvanceSettings extends React.Component {
                 evt.target.value = "";
             }
         }else{
-            //evt.target.value = evt.target.defaultValue;
             this.props.dispatch(selectedAnalysisList(evt.target,"association"))
         }
 	}

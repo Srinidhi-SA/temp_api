@@ -72,17 +72,13 @@ export class DataCard extends React.Component {
         this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
     handleRename(slug, name,dataList) {
-        // console.log(this.props.allDataList)
         var allDataList=this.props.allDataList
         this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
     openShareModal(shareItem,slug,itemType) {
-        console.log("open ---openBinsOrLevelsModal");
         this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
-        //this.setState({NoModal: this.state.NoModal + 1});
        }
     closeShareModal(event) {
-        console.log("closeddddd ---closeBinsOrLevelsModal");
         this.props.dispatch(closeShareModalAction());
       }
     openDataLoaderScreen(slug, percentage, message, e){
@@ -155,16 +151,7 @@ export class DataCard extends React.Component {
                     
 					<div className="clearfix"></div>
                                 {percentageDetails}
-                                
-                             {/*   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                                <a  className="pover cursor">
-                                <div class="card_icon">
-                                {iconDetails}
-                                </div>
-                                </a>
-                                </OverlayTrigger> */}
-                                
-                                </div>
+                            </div>
                                 
                                 </div>
                                 </div>
@@ -174,7 +161,6 @@ export class DataCard extends React.Component {
                                 <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                                 </div>
 								
-                                {/*<!-- Rename and Delete BLock  -->*/}
                     {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                             <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                             </a>
@@ -200,9 +186,7 @@ export class DataCard extends React.Component {
                                 <div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}
-                                
-                                {/*popover*/}
-                                
+                            
                                 </div>
                                 </div>
                                   <Dialog ref={(el) => { this.dialog = el }}/>

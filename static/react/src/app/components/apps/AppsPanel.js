@@ -60,21 +60,17 @@ import {cookieObj} from '../../helpers/cookiesHandler'
 export class AppsPanel extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.handleSelect = this.handleSelect.bind(this);
 
   }
   componentWillMount() {
-
     var pageNo = 1;
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
-      //this.props.dispatch(updateAppsFilterList([]))
     } else
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
-    // this.props.dispatch(updateAnalystModeSelectedFlag(false));
   }
 
   onChangeAppsSearchBox(e) {
@@ -88,24 +84,19 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(appsStoreSearchEle(e.target.value));
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
     }
-      // Clear the Filter
       if(this.props.app_filtered_keywords!=null)
       this.props.dispatch(updateAppsFilterList([]));
  }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      console.log('searching');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/apps?search=' + e.target.value + '')
-
       this.props.dispatch(appsStoreSearchEle(e.target.value));
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
     }
   }
   handleCheckboxChange(e) {
-    console.log(e.target)
     e.preventDefault();
-    //console.log(e.target.checked)
     var array = this.props.app_filtered_keywords;
     var index = array.indexOf(e.target.name)
     if (e.target.checked && !index > -1) {
@@ -114,7 +105,6 @@ export class AppsPanel extends React.Component {
       if (index > -1)
         array.splice(index, 1);
       }
-    console.log(array)
     this.props.dispatch(updateAppsFilterList(array))
     this.props.dispatch(getAppsFilteredList(getUserDetailsOrRestart.get().userToken, 1))
     if(array.length>0)
@@ -157,8 +147,6 @@ export class AppsPanel extends React.Component {
   }
 
   render() {
-    console.log("Apps panel is called##########3");
-    //restrict apps to show to user as per env js file starts
     if(APPS_ALLOWED==false){
       if(getUserDetailsOrRestart.get().view_signal_permission=="true")
       return (<Redirect to="/signals"/>)
@@ -169,16 +157,13 @@ export class AppsPanel extends React.Component {
         return (<Redirect to="/login"/>)
       }
     }
-    //restrict user ends
+  
     var appsLists = this.props.appsList.data;
     var top3 = this.props.appsList.top_3;
     var appListTemplate = "";
     let filterListTemplate = "";
     let paginationTag = null
     let filteredKeywords = this.props.app_filtered_keywords
-    //check for filter list
-
-    //empty search element
     if (this.props.storeAppsSearchElement != "" && (this.props.location.search == "" || this.props.location.search == null)) {
       this.props.dispatch(appsStoreSearchEle(""));
       let search_element = document.getElementById('search_apps');
@@ -212,8 +197,7 @@ export class AppsPanel extends React.Component {
           <div class="col-md-4 xs-mb-20">
            <div key={index}>
              <div className="app-block">
-                {/* <Link onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} className="app-link" to={data.app_url}> */}
-                <Link className="app-link" onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
+               <Link className="app-link" onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
                   </div>

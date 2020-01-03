@@ -60,7 +60,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 return;
         }
         openShareModal(shareItem,slug,itemType) {
-            console.log("open ---openBinsOrLevelsModal");
             this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
            }
         handleEditModel(dataSlug,modelSlug){
@@ -72,11 +71,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 
             var modelList = this.props.data;
             var appsModelList = modelList.map((data, i) => {
-                // var modelEditLink = "/data/" + data.dataset;
-                // "/apps/"+this.props.match.params.AppId+ mlink + "/models"
                 var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel";
-                // var  modelEditLink = "/apps/"+this.props.match.params.AppId+"/analyst/models/data/" + data.dataset+"/createModel/fromedit/"+data.slug;
-                    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+                 var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
                     if(data.status==FAILED){
                         var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/";
                     }else{
@@ -124,17 +120,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                                 </div>
                                 </div>
                             </div>
-                            
-                            {/*<!-- Popover Content link -->
-                            <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
-                            <div class="card_icon">
-                            {store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}
-                                </div>
-                            </a></OverlayTrigger>*/}
-                            {/* {data.mode?data.mode:""} */}
-
-
-                            
+                         
                             </div>
                             
                             </div>
@@ -147,7 +133,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
 							{
                                 isDropDown == true ? <div class="btn-toolbar pull-right">
-                            {/*<!-- Rename and Delete BLock  -->*/}
                             <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                             <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                             </a>

@@ -34,15 +34,12 @@ export class ModelSummary extends React.Component {
   }
   
   componentWillMount() {
-  console.log("api call start");
   this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
   this.props.dispatch(getDeploymentList(this.props.match.params.slug));
-  console.log("api call end");
   setInterval(function() {
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false,window,0);
     window.dispatchEvent(evt);
-    console.log("I");
   }, 500);
   }
 
@@ -65,14 +62,12 @@ export class ModelSummary extends React.Component {
             return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
             break;
       case "c3Chart":
-            //console.log("checking chart data:::::");
             let chartInfo=[]
             if(!$.isEmptyObject(story.data)){
             if(story.chartInfo){
               chartInfo=story.chartInfo
             }
             if(story.widthPercent &&  story.widthPercent != 100){
-              //  let width  = story.widthPercent+"%";
               let width  = parseInt((story.widthPercent/100)*12)
               let divClass="col-md-"+width;
               let sideChart=false;
@@ -317,12 +312,10 @@ export class ModelSummary extends React.Component {
     );
   }
   openDeployModal(item) {
-    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(item));
   }
 
   closeDeployModal() {
-    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
   }
 }

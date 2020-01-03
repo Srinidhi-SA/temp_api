@@ -22,12 +22,9 @@ import {STATIC_URL} from "../../helpers/env.js"
 export class RoboDUHistorialData extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props)
   }
  
   render() {
-    console.log("robo is called##########3");
-    console.log(this.props)
      let dataPreview = store.getState().datasets.dataPreview;
     		if(dataPreview){
     			return (   <div className="apps_tabs_content">
@@ -41,7 +38,5 @@ export class RoboDUHistorialData extends React.Component {
  			          </div>
  			);
     		}
-       
-      
-  }
+   }
 }

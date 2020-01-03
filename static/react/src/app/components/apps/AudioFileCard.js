@@ -30,7 +30,6 @@ var dateFormat = require('dateformat');
 export class AudioFileCard extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
  
   handleAudioDelete(slug){
@@ -44,8 +43,6 @@ export class AudioFileCard extends React.Component {
   }
 
   render() {
-    console.log("audio file list is called##########3");
-   
     const audioList = this.props.data;
     
         const appsAudioList = audioList.map((data, i) => {
