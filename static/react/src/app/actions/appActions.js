@@ -562,7 +562,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
-      "PYTORCH" : pyTorchmerged,
       "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
@@ -757,14 +756,23 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
-          clearInterval(appsInterval);
-          dispatch(fetchModelSummarySuccess(json));
-          dispatch(closeAppsLoaderValue());
-          dispatch(hideDataPreview());
-          dispatch(updateModelSummaryFlag(true));
-          //if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
-          dispatch(reSetRegressionVariables());
+          if(!json.shared){
+            dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
+            clearInterval(appsInterval);
+            dispatch(fetchModelSummarySuccess(json));
+            dispatch(closeAppsLoaderValue());
+            dispatch(hideDataPreview());
+            dispatch(updateModelSummaryFlag(true));
+            dispatch(reSetRegressionVariables());
+          }
+          else{
+            clearInterval(appsInterval);
+            dispatch(fetchModelSummarySuccess(json));
+            dispatch(closeAppsLoaderValue());
+            dispatch(hideDataPreview());
+            dispatch(updateModelSummaryFlag(true));
+            dispatch(reSetRegressionVariables());
+          }
         }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function () {
@@ -1046,7 +1054,7 @@ export function updateTensorFlowArray(layerId,name,val) {
 }
 
 export function deleteTensorFlowArray(deleteId) {
-  return { type: "DELETE_LAYER", deleteId}
+  return { type: "DELETE_LAYER_TENSORFLOW", deleteId}
 }
 export function clearTensorFlowArray() {
   return { type: "CLEAR_LAYERS"}
@@ -2420,10 +2428,11 @@ export function setPyTorchSubParams(subParamDt){
     subParamDt,
   }
 }
-export function deletePyTorchLayer(layerNum){
+export function deletePyTorchLayer(layerNum,newIdArray){
   return {
-    type: "DELETE_LAYER",
+    type: "DELETE_LAYER_PYTORCH",
     layerNum,
+    newIdArray,
   }
 }
 export function clearPyTorchValues(){
