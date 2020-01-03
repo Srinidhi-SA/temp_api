@@ -23,16 +23,9 @@ import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
 
 export class RoboDUTabsContent extends React.Component {
   constructor(props) {
-    super(props);
-    console.log(this.props)
+		super(props);
   }
   render() {
-    console.log("robo is called##########3");
-    //This should be called only once
-    /*if(store.getState().apps.customerDataset_slug && store.getState().apps.roboUploadTabId == 1){
-		  this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug));
-		  this.props.dispatch(updateRoboUploadTab(2))
-	  }*/
      let dataPreview = store.getState().datasets.dataPreview;
     		if(dataPreview){
     			return (   <div className="apps_tabs_content">
@@ -46,7 +39,6 @@ export class RoboDUTabsContent extends React.Component {
  			          </div>
  			);
     		}
-       
       
   }
 }

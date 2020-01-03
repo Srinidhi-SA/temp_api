@@ -1,8 +1,6 @@
 //function to get first card details of provided node slug
 export function getFirstCard(output, node_slug) {
   var node = fetchNodeFromTree(node_slug, output);
-  //console.log("getFirstCard is called!! for node");
-  //console.log(node);
   if (node.listOfCards.length > 0) {
     return node.listOfCards[0];
   } else {
@@ -12,10 +10,7 @@ export function getFirstCard(output, node_slug) {
   }
 }
 
-//function to fetch card details for corresponding card slug form provided node object
 function fetchCardFromNode(card_slug, node) {
-  //console.log("fetchCardFromNode is called :" + card_slug);
-  //console.log(node);
   var listOfCards = node.listOfCards;
   for (var i = 0; i < listOfCards.length; i++) {
     if (listOfCards[i].slug === card_slug) {
@@ -24,19 +19,14 @@ function fetchCardFromNode(card_slug, node) {
   }
 }
 
-//function to fetch the node object from full json response
+
 export function fetchNodeFromTree(node_slug, output) {
-  //console.log("fetchNodeFromTree is called for: " + node_slug);
-  //console.log(output);
   var element = output;
   var result = searchTree(element, node_slug);
   return result;
 }
 
-//to search node in recursive manner
 function searchTree(element, matchingNode) {
-  //console.log("searchTree is called:" + matchingNode);
-  //console.log(element);
   if (element.slug == matchingNode) {
     return element;
   } else if (element.listOfNodes != null) {
@@ -50,11 +40,7 @@ function searchTree(element, matchingNode) {
   return null;
 }
 
-//fetch card based on params levels in url from json response
 export function fetchCard(params, output) {
-  //fetch specific card..
-  //console.log("fetchCard is called");
-  //console.log(params);
   var node = null;
   var card = null;
   if (Object.keys(params).length == 3) {
@@ -69,8 +55,7 @@ export function fetchCard(params, output) {
       card = getFirstCard(node, node.slug);
     }
   }
-  //console.log(card);
-
+ 
   return card;
 }
 
@@ -120,12 +105,8 @@ export function getPrevNext( rootNode, curSufix ) {
 }
 
 export function getLastCardOfTree(output){
-     //console.log("last card");
 if(output.listOfNodes.length!=0){
-  //console.log(output);
-  //console.log(output.listOfNodes.length-1);
   output= output.listOfNodes[output.listOfNodes.length-1];
-  //console.log(output);
 }
   if(output.listOfNodes.length>0){
     return getLastCardOfTree(output);

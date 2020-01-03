@@ -1,14 +1,11 @@
 import React from "react";
 import {Redirect} from 'react-router';
-import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
 import {cookieObj} from '../../helpers/cookiesHandler';
 import {getUserDetailsOrRestart,removeChatbotOnLogout,hidechatbot} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env";
 import {clearSignalAnalysisBeforeLogout} from "../../actions/signalActions";
-// import $ from 'jquery';
- import store from "../../store";
  import {connect} from "react-redux";
  @connect((store) => {
    return {login_res:store.login.login_response};
@@ -23,29 +20,21 @@ export default class TopPanel extends React.Component {
 		  this.setState({
              loginFlag: false
          });
-         //sessionObject.clearSession();
-         // cookieObj.clearCookies();
          hidechatbot()
          removeChatbotOnLogout()
-         //location.reload();
          cookieObj.clearCookies();
 	}
 	render(){
 		if(!this.state.loginFlag){
 			return(<Redirect to="/login" />);
 		}else{
-		console.log("top panel & user name"+getUserDetailsOrRestart.get().userName);
     var userManualPath=STATIC_URL+"userManual/UserManual.html"
 			return(
 		            <div>
-								{/* // Header Menu*/}
-
 								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
 								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
-									{/*/ Brand and toggle get grouped for better mobile display -->*/}
 									<div className="navbar-header">
 										<div className="brand-wrapper">
-											{/* Hamburger */}
 											<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#side-menu">
 												<span className="sr-only">Toggle navigation</span>
 												<span className="icon-bar"></span>
@@ -53,7 +42,6 @@ export default class TopPanel extends React.Component {
 												<span className="icon-bar"></span>
 											</button>
 
-											{/* Brand */}
 											<div className="brand-name-wrapper">
 												<a className="navbar-brand" href="/"></a>
 											</div>

@@ -38,11 +38,7 @@ export class Login extends React.Component {
   }
 
   doAuth() {
-
-    //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
-    console.log("checking login form fields");
-    // console.log(this.state.uId);
-    if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
+  if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
     this.state.errmsg = "Please enter the username!"
     $("#errormsg").text(this.state.errmsg);
   }else if(this.state.pwd==""||this.state.pwd==null){
@@ -55,13 +51,9 @@ export class Login extends React.Component {
   }
   render() {
     const forgotLink = API + "/reset-password/"; 
-    console.log("login is called!!")
-    console.log(this.props)
     this.state.errmsg = this.props.errmsg;
     if (document.cookie.indexOf("JWT ") > 0 ) {
-      console.log("authorized!!!");
       document.body.className = "";
-
       return (<Redirect to={"/"} />);
     } else {
     	document.body.className = "ma-splash-screen";
@@ -83,33 +75,21 @@ export class Login extends React.Component {
                     <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="mAdvisor" className="img-responsive logo-img"/></div>
                     <div className="panel-body no-border">
 
-                     {/* <h3>SIGN IN</h3> */}
                       <div className="login-form">
                         <div className="form-group">
                           <div className="input-group">
                             <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autoComplete="off" className="form-control"/>
-                            {/*  <span className="input-group-addon">
-                              <i className="fa fa-user"></i>
-                            </span>*/}
+                            
                           </div>
                         </div>
                         <div className="form-group">
                           <div className="input-group">
                             <input id="password" type="password" value={this.state.pwd} onChange={this.onChangePwd.bind(this)} placeholder="Password" className="form-control"/>
-                            {/*  <span className="input-group-addon">
-                              <i className="fa fa-key"></i>
-                            </span>*/}
+                          
                           </div>
                         </div>
                         <div className="form-group footer row">
-                          {/*<div className="col-xs-6 remember text-left">
-                            <div className="ma-checkbox">
-                              <input type="checkbox" id="remember" className="needsclick"/>
-                              <label htmlFor="remember"></label>
-                            </div>
-                            <label htmlFor="remember">Remember Me</label>
-
-                          </div>*/}
+                         
                           <div className="col-xs-6 text-right">
                             
                           </div>

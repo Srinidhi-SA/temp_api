@@ -27,14 +27,9 @@ export class LatestModels extends React.Component {
         super(props);
         this.props=props;
     }
-    
-    componentWillMount(){
-        
-    }
-    
+   
     render() {
         var data = this.props.latestModels;
-        console.log(this.props)
         let addButton  = "";
         addButton  = <AppsCreateModel match={this.props.props.match} isEnableCreate={this.props.permissions.create_trainer}/>;
         let latestModels = "";

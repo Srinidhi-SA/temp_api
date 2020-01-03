@@ -46,7 +46,6 @@
       }
       recorder = audioRecorder.createRecorder(silenceDetectionConfig);
       recorder.record(onSilence, visualizer);
-      console.log("xxxxxxxxxxxx");
     };
 
     /**

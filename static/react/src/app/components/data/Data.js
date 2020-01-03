@@ -77,7 +77,6 @@ export class Data extends React.Component {
   }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      //console.log('searching in data list');
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/data?search=' + e.target.value + '')
 
@@ -120,19 +119,6 @@ export class Data extends React.Component {
   }
 
   render() {
-    console.log("data is called");
-    console.log(this.props);
-		//empty search element
-    /*if (this.props.data_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
-    	console.log("search is empty");
-    	this.props.dispatch(storeSearchElement(""));
-    	let search_element = document.getElementById('search_data');
-    	if (search_element)
-    		document.getElementById('search_data').value = "";
-    }*/
-
-
-    //search element ends..
     if (store.getState().datasets.dataPreviewFlag && this.props.dataPreview &&this.props.dataPreview.status!="FAILED") {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
     	return (<Redirect to={_link}/>);
@@ -157,7 +143,6 @@ export class Data extends React.Component {
 
 			  <div class="btn-toolbar pull-right">
 				<div class="input-group">
-				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
 				<div className="search-wrapper">
 					<input type="text" name="search_data"  value= {this.props.data_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="type here to Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
@@ -166,9 +151,6 @@ export class Data extends React.Component {
 
 				</div>
                   <div class="btn-group">
-					{/*<button type="button" class="btn btn-default" title="Select All Card">
-                      <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>

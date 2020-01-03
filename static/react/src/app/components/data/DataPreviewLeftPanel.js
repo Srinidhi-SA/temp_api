@@ -30,7 +30,6 @@ export class DataPreviewLeftPanel extends React.Component {
 	     this.props.dispatch(emptyScoreCSVData())
 	 }
 	render() {
-		console.log("score data preview is called##########3");
          var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
          var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
 		var scoreSlug=(store.getState().apps.scoreSlug!=null||store.getState().apps.scoreSlug!=undefined)?store.getState().apps.scoreSlug:this.props.match.params.slug; 		
@@ -41,7 +40,6 @@ export class DataPreviewLeftPanel extends React.Component {
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
 		if(scoreData.length > 0){
-		    console.log(scoreData)
 		    tableThTemplate = scoreData.map(function(row,id){
                 let colData = "";
                 if(id == 0){

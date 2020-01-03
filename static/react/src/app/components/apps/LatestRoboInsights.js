@@ -48,7 +48,6 @@ export class LatestRoboInsights extends React.Component {
 
   render() {
       var data = this.props.latestRoboInsights;
-      console.log(this.props)
       let addButton =   <RoboDataUpload match={this.props.props.match}/>;
       let latestRoboInsights = "";
       if(data){

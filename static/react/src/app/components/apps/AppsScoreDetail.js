@@ -48,7 +48,6 @@ export class AppsScoreDetail extends React.Component {
       this.props.dispatch(updateScoreSummaryFlag(false));
   }
   render() {
-    console.log("apps Score Detail View is called##########3");
 	let scoreSummary = store.getState().apps.scoreSummary;
 	let slink = window.location.pathname.includes("analyst")?"/analyst":"/autoML";
 		let scoreLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores";
@@ -56,14 +55,8 @@ export class AppsScoreDetail extends React.Component {
     let scoreDataLink = "/apps/"+this.props.match.params.AppId+ slink +"/scores/"+scoreSlugtoDownload+"/dataPreview";
     var showViewButton = true;
     var showDownloadButton = true;
-    console.log(scoreSummary)
 		if (!$.isEmptyObject(scoreSummary)) {
-		console.log(this.props)
-		/*if(scoreSummary.data.listOfNodes.length>0&&this.props.match.params.AppId.indexOf("regression")!=-1){
-		var url = "/apps-regression-score/"+store.getState().apps.scoreSlug
-		//this.props.history.push(url)
-		return(<Redirect to={url}/>)
-	}else{*/
+	
 		showViewButton = scoreSummary.permission_details.download_score;
 		showDownloadButton = scoreSummary.permission_details.download_score;
 		if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
@@ -132,9 +125,6 @@ export class AppsScoreDetail extends React.Component {
 
 							<div className="clearfix"></div>
 		                <div className="panel panel-mAd documentModeSpacing box-shadow">
-		                     {/* <div className="panel-heading">
-		                     <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>
-		                    </div>*/}
 		                   <div className="panel-body no-border">
 		                   <div className="row-fluid">
 

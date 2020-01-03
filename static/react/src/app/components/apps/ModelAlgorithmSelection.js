@@ -233,7 +233,6 @@ export class ModelAlgorithmSelection extends React.Component {
         this.props.dispatch(setDefaultAutomatic(e.target.value));
     }
     changeAlgorithmSelection(data){
-        console.log(data);
         this.props.dispatch(updateAlgorithmData(data.algorithmSlug));
     }
     changeParameter(){

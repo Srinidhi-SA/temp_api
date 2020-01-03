@@ -15,9 +15,6 @@ export class KyloMenuList extends React.Component {
   }
 
   render() {
-
-    console.log("kylo=============")
-
     const cardListDetailsModified = LIST_OF_KYLO_OPERATIONS.map((card, i) => {
       var imageLink = STATIC_URL + "assets/images/" + card.logo
       var kyloCardLink = "/datamgmt/selected_menu/" + card.relative_url;
@@ -49,7 +46,6 @@ export class KyloMenuList extends React.Component {
       )
     })
 
-    console.log("from kylo!!!!!!")
     return (
       <div className="side-body">
         <div className="page-head">
