@@ -15,7 +15,7 @@ var config = {
         filename: "bundle.js",
         publicPath: "/app/"
     },
-    devtool: env === "buildProd" ? "eval" : "eval-source-map",
+    devtool: env === "buildDev" ? "eval" : "eval-source-map",
     module: {
         loaders: [
           {
