@@ -857,7 +857,7 @@ export class FeatureEngineering extends React.Component {
                   <div className="panel-body box-shadow">
                   <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
                     <div className="buttonRow" id="dataPreviewButton" style={{float:"right",display:"inline-block"}}>
-                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                      <Button id="FeProceed" onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
                     <div class="xs-p-10"></div>
                   </div>

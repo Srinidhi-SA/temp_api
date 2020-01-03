@@ -424,7 +424,7 @@ componentDidMount = () => {
                                         <div class="form-group xs-ml-10 xs-mr-10">
                                             <div class="input-group xs-mb-15">
                                                 <input type="text" defaultValue={store.getState().apps.apps_regression_modelName} name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
-                                                    <button type="submit" class="btn btn-primary">{buttonName}</button></span>
+                                                    <button type="submit" id="variableSelectionProceed" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>
                                     </div>
