@@ -40,7 +40,19 @@ export class PyTorch extends React.Component {
             lastLayerId = lr[lr.length-1];
         }
         let layer = parseInt(lastLayerId)+1
-        let lyrDt = {"layer":"Linear", "activation": {"name":"None"}, "dropout": {"name":"None","p":"None"}, "batchnormalization": {"name":"None"}, "units_ip": "None","units_op": "None", "bias": "None" }
+        if(layer>1){
+            var unitsIp = parseInt(this.props.pyTorchLayer[layer-1].units_op);
+        }else{
+            var unitsIp = "None"
+        }
+        let lyrDt = {   "layer":"Linear", 
+                        "activation": {"name":"None"}, 
+                        "dropout": {"name":"None","p":"None"}, 
+                        "batchnormalization": {"name":"None"}, 
+                        "units_ip": unitsIp,
+                        "units_op": "None", 
+                        "bias": "None" 
+                    }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
     }

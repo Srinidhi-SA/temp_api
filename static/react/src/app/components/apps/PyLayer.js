@@ -92,7 +92,7 @@ export class PyLayer extends React.Component {
         if(!this.props.pytorchValidateFlag){
             let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
-            newLyrVal[parameterData.name] = val;
+            newLyrVal[parameterData.name] = parseInt(val);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
     }
@@ -308,14 +308,25 @@ export class PyLayer extends React.Component {
                         case "Input Units":
                             var type = "number";
                             var classN= "form-control input_unit";
+                            if(this.props.idNum>1){
+                                var defVal = parseInt(this.props.pyTorchLayer[this.props.idNum-1].units_op)
+                                var disableVal = true
+                            }else{
+                                var defVal = parameterData.defaultValue;
+                                var disableVal = false
+                            }
                             break;
                         case "Output Units":
                             var type = "number";
                             var classN= "form-control output_unit";
+                            var defVal = parameterData.defaultValue;
+                            var disableVal = false
                             break;
                         default:
                             classN= "form-control";
                             var type= "number";
+                            var defVal = parameterData.defaultValue;
+                            var disableVal = false
                             break;
                     }
                     return (
@@ -323,7 +334,7 @@ export class PyLayer extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextBoxValue.bind(this,parameterData)} /*disabled={((parameterData.displayName === "Input Units") && (this.props.id === 1))?true:false} *//>
+                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
                                 <div className = "error"></div>
                             </div>
                             <div class = "clearfix"></div> 
