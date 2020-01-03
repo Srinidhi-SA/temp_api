@@ -143,12 +143,12 @@ export class ModelAlgorithmSelection extends React.Component {
                 return false;
             }
             
-            else if(this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")) ){
+            else if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")) ){
                 let errormsg = statusMessages("warning","Please enter values of mandatory fields...","small_mascot");
                 bootbox.alert(errormsg);
                 return false;
             }
-            else if (this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
+            else if (this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
                 for(let i=0;i<this.props.idLayer.length;i++){
                     if($(".input_unit")[i].value === "" || $(".input_unit")[i].value === undefined){
                         this.props.dispatch(pytorchValidateFlag(false));
@@ -201,12 +201,12 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-                if(this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) )){
+                if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) )){
                     let beta = this.props.pyTorchSubParams;
                     let tupVal = beta["optimizer"]["betas"].toString();
                     beta["optimizer"]["betas"] = "("+ tupVal + ")";
                     this.props.dispatch(setPyTorchSubParams(beta));
-                }else if((this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && this.props.pytorchValidateFlag) && ( $(".Optimizer option:selected").text().includes("Rprop"))){
+                }else if((this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && this.props.pytorchValidateFlag) && ( $(".Optimizer option:selected").text().includes("Rprop"))){
                     let eta = this.props.pyTorchSubParams;
                     let tupVal1 = eta["optimizer"]["eta"].toString();
                     eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
