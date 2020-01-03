@@ -107,8 +107,10 @@ class DataListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
-
-        ret['job_status'] = instance.job.status
+        try:
+            ret['job_status'] = instance.job.status
+        except:
+            ret['job_status'] = None    
 
         # permission details
         permission_details = get_permissions(
