@@ -200,28 +200,60 @@ class SignalView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
-            signal_obj = list(Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values()).first()
-            signal_name = signal_obj['name']
+            signal_obj = Insight.objects.get(slug=kwargs['slug'], created_by_id=request.user.id)
+            signal_name = signal_obj.name
             shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Models should not be shared to itself.','status':'failed'})
+                return sharing_failed_exception('Signals should not be shared to itself.')
 
             for i in shared_id:
                 import random, string
-                slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    signal_obj.update(
-                        {'name': signal_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
+                if signal_obj.shared is True:
+                    signal_details = {
+                        'name': signal_name + str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': signal_obj.shared_slug
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
                 else:
-                    signal_obj.update(
-                        {'name': signal_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
-                Insight.objects.create(**signal_obj)
+                    signal_details = {
+                        'name': model_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
             return JsonResponse({'message': 'Signals shared.','status': 'true'})
 
         except Exception as err:
@@ -236,7 +268,7 @@ class SignalView(viewsets.ModelViewSet):
             return JsonResponse({'name': signal_obj.name, 'config': config,'status':'true'})
         except Exception as err:
             print(err)
-            return JsonResponse({'message': 'Config not found.','status': 'false'})
+            return retrieve_failed_exception('Config not found.')
 
     @list_route(methods=['get'])
     def get_all_signals(self, request,  *args, **kwargs):
@@ -865,29 +897,63 @@ class ScoreView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Score.objects.get(slug=self.kwargs.get('slug'))
-            score_obj = list(Score.objects.filter(created_by_id=request.user.id,
-                                             slug=self.kwargs.get('slug')).values()).first()
-            score_name = score_obj['name']
+            score_obj = Score.objects.get(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug'))
+            score_name = score_obj.name
             shared_id = request.GET['shared_id'].split(",")
             shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Score should not be shared to itself.','status': 'false'})
+                return sharing_failed_exception('Score should not be shared to itself.')
             for id in shared_id:
                 import random, string
-                slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + str(random.randint(1, 100)),
-                                      'slug': slug, 'shared': True, 'shared_by': shared_by,
-                                      'shared_slug': obj.shared_slug})
+                if score_obj.shared is True:
+                    score_details = {
+                        'name': score_name + str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': score_obj.shared_slug
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
                 else:
-                    score_obj.update(
-                        {'id': None, 'created_by_id': id, 'name': score_name + '_shared' + str(random.randint(1, 100)),
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
-                Score.objects.create(**score_obj)
+                    score_details = {
+                        'name': score_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
             return JsonResponse({'message': 'Score Shared.','status': 'true'})
         except Exception as err:
             print(err)

@@ -423,7 +423,10 @@ class TrainerListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message'] = "Analyzing Target Variable"
-        ret['job_status'] = instance.job.status
+        try:
+            ret['job_status'] = instance.job.status
+        except:
+            ret['job_status'] = None
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -1065,7 +1068,9 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type == 'list':
             return {
-                'create_dataset': user.has_perm('api.create_dataset') and user.has_perm('api.view_dataset'),
+                'create_dataset': user.has_perm('api.create_dataset'),
+                'view_dataset': user.has_perm('api.view_dataset'),
+                'share_dataset': user.has_perm('api.share_dataset'),
                 'upload_from_file': user.has_perm('api.upload_from_file'),
                 'upload_from_mysql': user.has_perm('api.upload_from_mysql'),
                 'upload_from_mssql': user.has_perm('api.upload_from_mssql'),
@@ -1081,7 +1086,9 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type == 'list':
             return {
-                'create_signal': user.has_perm('api.create_signal') and user.has_perm('api.view_signal'),
+                'create_signal': user.has_perm('api.create_signal'),
+                'view_signal': user.has_perm('api.view_signal'),
+                'share_signal': user.has_perm('api.share_signal'),
             }
     if model == 'trainer':
         if type == 'retrieve':
@@ -1092,10 +1099,12 @@ def get_permissions(user, model, type='retrieve'):
                 'downlad_pmml': user.has_perm('api.downlad_pmml'),
                 'rename_trainer': user.has_perm('api.rename_trainer'),
                 'remove_trainer': user.has_perm('api.remove_trainer'),
+                'edit_signal': user.has_perm('api.edit_trainer'),
             }
         if type == 'list':
             return {
                 'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
+                'share_trainer': user.has_perm('api.share_trainer'),
             }
     if model == 'score':
         if type == 'retrieve':
@@ -1109,6 +1118,7 @@ def get_permissions(user, model, type='retrieve'):
             return {
                 'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm(
                     'api.view_trainer'),
+                'share_score': user.has_perm('api.share_score'),
             }
     if model == 'regression':
         if type == 'retrieve':

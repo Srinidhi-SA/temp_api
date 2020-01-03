@@ -29,8 +29,7 @@ import { PyTorch } from "./PyTorch";
         pytorchValidateFlag: store.datasets.pytorchValidateFlag,
         pyTorchLayer:store.apps.pyTorchLayer,
         pyTorchSubParams:store.apps.pyTorchSubParams,
-
-
+        idLayer:store.apps.idLayer,
     };
 })
 
@@ -144,27 +143,29 @@ export class ModelAlgorithmSelection extends React.Component {
                 return false;
             }
             
-            else if(this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")) ){
+            else if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")) ){
                 let errormsg = statusMessages("warning","Please enter values of mandatory fields...","small_mascot");
                 bootbox.alert(errormsg);
                 return false;
             }
-            else if (this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
-                if($(".input_unit")[0].value === "" || $(".input_unit")[0].value === undefined){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
-                    return false;
+            else if (this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
+                for(let i=0;i<this.props.idLayer.length;i++){
+                    if($(".input_unit")[i].value === "" || $(".input_unit")[i].value === undefined){
+                        this.props.dispatch(pytorchValidateFlag(false));
+                        bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
+                        return false;
+                    }
+                    else if($(".output_unit")[i].value === "" || $(".output_unit")[i].value === undefined){
+                        bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
+                        this.props.dispatch(pytorchValidateFlag(false));
+                        return false;
+                    }else if($(".bias option:selected").text().includes("--Select--")){
+                        this.props.dispatch(pytorchValidateFlag(false));
+                        bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
+                        return false;
+                    }
                 }
-                else if($(".output_unit")[0].value === "" || $(".output_unit")[0].value === undefined){
-                    bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    return false;
-                }else if($(".bias option:selected").text().includes("--Select--")){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
-                    return false;
-                }
-                else if(this.props.pytorchValidateFlag){
+                if(this.props.pytorchValidateFlag){
                      if($(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("Adamax") ){ 
                         let beta = this.props.pyTorchSubParams;
                         let tupVal = beta["optimizer"]["betas"].toString();
@@ -200,12 +201,12 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             else{
-                if(this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) )){
+                if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) )){
                     let beta = this.props.pyTorchSubParams;
                     let tupVal = beta["optimizer"]["betas"].toString();
                     beta["optimizer"]["betas"] = "("+ tupVal + ")";
                     this.props.dispatch(setPyTorchSubParams(beta));
-                }else if((this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && this.props.pytorchValidateFlag) && ( $(".Optimizer option:selected").text().includes("Rprop"))){
+                }else if((this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && this.props.pytorchValidateFlag) && ( $(".Optimizer option:selected").text().includes("Rprop"))){
                     let eta = this.props.pyTorchSubParams;
                     let tupVal1 = eta["optimizer"]["eta"].toString();
                     eta["optimizer"]["eta"] = "("+ tupVal1 + ")";

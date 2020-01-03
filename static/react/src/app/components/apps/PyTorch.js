@@ -40,10 +40,21 @@ export class PyTorch extends React.Component {
             lastLayerId = lr[lr.length-1];
         }
         let layer = parseInt(lastLayerId)+1
-        let lyrDt = {"layer":"Linear", "activation": {"name":"None"}, "dropout": {"name":"None","p":"None"}, "batchnormalization": {"name":"None"}, "units_ip": "None","units_op": "None", "bias": "None" }
+        if(layer>1){
+            var unitsIp = parseInt(this.props.pyTorchLayer[layer-1].units_op);
+        }else{
+            var unitsIp = "None"
+        }
+        let lyrDt = {   "layer":"Linear", 
+                        "activation": {"name":"None"}, 
+                        "dropout": {"name":"None","p":"None"}, 
+                        "batchnormalization": {"name":"None"}, 
+                        "units_ip": unitsIp,
+                        "units_op": "None", 
+                        "bias": "None" 
+                    }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
-        const newLayer = this.props.idLayer.length + 1;
-        this.props.dispatch(setIdLayer(newLayer));
+        this.props.dispatch(setIdLayer(parseInt(layer)));
     }
 
     handleClick(){
@@ -111,29 +122,34 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select Optimizer.", "small_mascot"));
         }
-        else if (Object.keys(this.props.pyTorchLayer).length != 0){ 
-            if($(".input_unit")[0].value === "" || $(".input_unit")[0].value === undefined){
-                this.props.dispatch(pytorchValidateFlag(false));
-                bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
-            }
-            else if($(".output_unit")[0].value === "" || $(".output_unit")[0].value === undefined){
-                bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
-                this.props.dispatch(pytorchValidateFlag(false));
-            }
-            else if(!$(".dropout option:selected").text().includes("--Select--")){
-                if($(".p")[0].value === "" || $(".p")[0].value === undefined){
+        else if (Object.keys(this.props.pyTorchLayer).length != 0){
+            for(let i=0;i<this.props.idLayer.length;i++){
+                if($(".input_unit")[i].value === "" || $(".input_unit")[i].value === undefined){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please enter p value for dropout.", "small_mascot"));
-                }else{
-                    this.props.dispatch(pytorchValidateFlag(true));
+                    bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
+                    return false;
                 }
-            }
-            else if($(".bias option:selected").text().includes("--Select--")){
-                this.props.dispatch(pytorchValidateFlag(false));
-                bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
-            }
-            else{
-                this.props.dispatch(pytorchValidateFlag(true));
+                else if($(".output_unit")[i].value === "" || $(".output_unit")[i].value === undefined){
+                    bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    return false;
+                }
+                else if($(".bias option:selected").text().includes("--Select--")){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
+                    return false;
+                }
+                else if(!$(".dropout option:selected").text().includes("--Select--")){
+                    if($(".p")[0].value === "" || $(".p")[0].value === undefined){
+                        this.props.dispatch(pytorchValidateFlag(false));
+                        bootbox.alert(statusMessages("warning", "Please enter p value for dropout.", "small_mascot"));
+                        return false;
+                    }else{
+                        this.props.dispatch(pytorchValidateFlag(true));
+                    }
+                }
+                else
+                    this.props.dispatch(pytorchValidateFlag(true));
             }
         }
         else{
@@ -560,7 +576,7 @@ export class PyTorch extends React.Component {
                                 </select>
                             </div>
                             {parameterData.displayName === "Layer"?
-                                <div style={{cursor:'pointer',display:'inline-block','margin-left':'100px'}} onClick={this.handleClick.bind(this)}>
+                                <div style={{cursor:'pointer',display:'inline-block','marginLeft':'100px'}} onClick={this.handleClick.bind(this)}>
                                     <span className = "addLayer">
                                         <i className = "fa fa-plus" style={{color:'#fff'}}></i>
                                     </span>
@@ -570,7 +586,7 @@ export class PyTorch extends React.Component {
                         </div>
                         {selectedValue === "Linear"?
                                 <div className='panel-wrapper'>
-                                    {this.props.idLayer.map(layer=>
+                                    {store.getState().apps.idLayer.map(layer=>
                                         <PyLayer key = {layer} idNum={layer} parameterData={this.props.parameterData}/>
                                     )}
                                 </div>
