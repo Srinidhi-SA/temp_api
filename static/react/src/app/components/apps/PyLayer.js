@@ -3,10 +3,8 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {statusMessages} from  "../../helpers/helper"
-import { RegressionParameter } from "./RegressionParameter";
 import {Button} from "react-bootstrap";
 import { setPyTorchLayer, updateAlgorithmData, pytorchValidateFlag, deletePyTorchLayer } from "../../actions/appActions";
-import { ReactBootstrapSlider } from "react-bootstrap-slider";
 
 @connect((store)=>{
     return{
@@ -80,20 +78,26 @@ export class PyLayer extends React.Component {
             e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
         }
         else if(val === ""){
+            this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "Enter value"
         }
         else if(val<=0){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value should be greater than 0"
-        }
-        else{
+        }else{
+            this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
-        }
-        if(!this.props.pytorchValidateFlag){
             let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = parseInt(val);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
+        }
+        if(document.getElementsByClassName("input_unit")[this.props.idNum-1].value === ""){
+            this.props.dispatch(pytorchValidateFlag(false));
+        }else if(document.getElementsByClassName("output_unit")[this.props.idNum-1].value === ""){
+            this.props.dispatch(pytorchValidateFlag(false));
+        }else if($(".bias option:selected").text().includes("--Select--")){
+            this.props.dispatch(pytorchValidateFlag(false));
         }
     }
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
@@ -387,7 +391,7 @@ export class PyLayer extends React.Component {
                         Linear Layer {this.props.idNum}
                         <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
                         {(this.props.idLayer.length === this.props.idNum)?
-                            <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
+                            <i className="fa fa-trash-o" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
                             :""
                         }
                     </div>
