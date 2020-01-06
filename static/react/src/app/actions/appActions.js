@@ -550,13 +550,16 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
     var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
     var hidden_layer_info={"hidden_layer_info":tensorFlow}
 
-    var pyLyr = {"hidden_layer_info":store.getState().apps.pyTorchLayer}
-    var pySub = store.getState().apps.pyTorchSubParams
-    var pyTorchmerged = {};
-    Object.assign(pyTorchmerged, pyLyr, pySub);
-    let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Networks(pyTorch)")[0];
-    let nnptc = {"nnptc_parameters":[pyTorchmerged]}
-    Object.assign(algorithmChanges,nnptc);
+    if(store.getState().apps.currentAppId === 2){
+      var pyLyr = {"hidden_layer_info":store.getState().apps.pyTorchLayer}
+      var pySub = store.getState().apps.pyTorchSubParams
+      var pyTorchmerged = {};
+      Object.assign(pyTorchmerged, pyLyr, pySub);
+      let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Networks(pyTorch)")[0];
+      let nnptc = {"nnptc_parameters":[pyTorchmerged]}
+      Object.assign(algorithmChanges,nnptc);
+    }
+
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
