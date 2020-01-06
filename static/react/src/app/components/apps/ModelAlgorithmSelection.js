@@ -149,6 +149,15 @@ export class ModelAlgorithmSelection extends React.Component {
                 return false;
             }
             else if (this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
+                let targetCount = store.getState().apps.targetLevelCounts;
+                let pyTorchLastLayer = Object.keys(this.props.pyTorchLayer).length;
+                if(pyTorchLastLayer < targetCount.length || pyTorchLastLayer > targetCount.length){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                        bootbox.alert(statusMessages("warning", "Number of output units in the final layer should be equal to the number of unique values/levels in the target column("+targetCount.length+").", "small_mascot"));
+                        return false;
+                }
+            }
+            else if (this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
                 for(let i=0;i<this.props.idLayer.length;i++){
                     if($(".input_unit")[i].value === "" || $(".input_unit")[i].value === undefined){
                         this.props.dispatch(pytorchValidateFlag(false));
