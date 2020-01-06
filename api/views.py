@@ -5948,7 +5948,7 @@ def get_score_data_and_return_top_n(request):
 
             import csv
             csv_text_list = []
-            with open(download_path, 'rb') as f:
+            with open(download_path, 'r') as f:
                 reader = csv.reader(f)
                 for index, row in enumerate(reader):
                     csv_text_list.append(row)
