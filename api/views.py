@@ -234,7 +234,7 @@ class SignalView(viewsets.ModelViewSet):
                         print(signal_serializer.errors)
                 else:
                     signal_details = {
-                        'name': model_name + '_shared' +str(random.randint(1, 100)),
+                        'name': signal_name + '_shared' +str(random.randint(1, 100)),
                         'dataset': signal_obj.dataset.id,
                         'created_by': User.objects.get(pk=i).id,
                         'type': signal_obj.type,
