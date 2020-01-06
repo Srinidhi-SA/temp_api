@@ -1292,6 +1292,29 @@ TENSORFLOW_DENSE_PARAMETERS = [
         "allowedDataType": ["bool"]
     },
     {
+        "name": "batch_normalization",
+        "displayName": "Batch Normalization",
+        "description": "It is used to normalize the input layer by adjusting and scaling the activations.",
+        "defaultValue": [
+            {
+                "name": "false",
+                "selected": True,
+                "displayName": "False"
+            },
+            {
+                "name": "true",
+                "selected": False,
+                "displayName": "True"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+    {
         "name": "kernel_initializer",
         "displayName": "Kernel Initializer",
         "description": "Initializer for the kernel weights matrix.",
