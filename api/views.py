@@ -234,7 +234,7 @@ class SignalView(viewsets.ModelViewSet):
                         print(signal_serializer.errors)
                 else:
                     signal_details = {
-                        'name': model_name + '_shared' +str(random.randint(1, 100)),
+                        'name': signal_name + '_shared' +str(random.randint(1, 100)),
                         'dataset': signal_obj.dataset.id,
                         'created_by': User.objects.get(pk=i).id,
                         'type': signal_obj.type,
@@ -5948,7 +5948,7 @@ def get_score_data_and_return_top_n(request):
 
             import csv
             csv_text_list = []
-            with open(download_path, 'rb') as f:
+            with open(download_path, 'r') as f:
                 reader = csv.reader(f)
                 for index, row in enumerate(reader):
                     csv_text_list.append(row)
@@ -6861,6 +6861,7 @@ class UserView(viewsets.ModelViewSet):
     def get_all_users(self, request):
         try:
             queryset = User.objects.filter(~Q(is_active=False))
+            queryset = queryset.exclude(id=request.user)
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):

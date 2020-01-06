@@ -354,7 +354,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         'file_remote': dataset_obj.file_remote,
                         'shared': True,
                         'shared_by': shared_by,
-                        'shared_slug': dataset_obj.shared_slug
+                        'shared_slug': dataset_obj.shared_slug,
+                        'meta_data': dataset_obj.meta_data
                     }
                     dataset_details = convert_to_string(dataset_details)
                     dataset_serializer = DatasetSerializer(data=dataset_details)
@@ -375,7 +376,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         'file_remote': dataset_obj.file_remote,
                         'shared': True,
                         'shared_by': shared_by,
-                        'shared_slug': self.kwargs.get('slug')
+                        'shared_slug': self.kwargs.get('slug'),
+                        'meta_data': dataset_obj.meta_data
                     }
                     dataset_details = convert_to_string(dataset_details)
                     dataset_serializer = DatasetSerializer(data=dataset_details)
