@@ -6861,7 +6861,7 @@ class UserView(viewsets.ModelViewSet):
     def get_all_users(self, request):
         try:
             queryset = User.objects.filter(~Q(is_active=False))
-            queryset = queryset.exclude(id=request.user)
+            queryset = queryset.exclude(id=request.user.id)
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):
