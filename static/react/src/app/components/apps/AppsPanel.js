@@ -376,11 +376,11 @@ export class AppsPanel extends React.Component {
 
         <div className="main-content">
           <div className="row">
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
           <div className="app-block">
                 <Link className="app-link"  to= "/apps/lex">
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-                    <img src= "/assets/images/app_lex1.png" className="img-responsive"/>
+                  <img src={STATIC_URL + "assets/images/app_lex1.png"} class="img-responsive" />
                   </div>
                   <div className="col-md-8 col-sm-9 col-xs-7">
                     <h4>
@@ -404,7 +404,7 @@ export class AppsPanel extends React.Component {
                   </div>
                 </div>
               </div>
-              </div>
+              </div> */}
             {appListTemplate}
             <div className="clearfix"></div>
           </div>
