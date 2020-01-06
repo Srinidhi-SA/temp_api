@@ -43,8 +43,8 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None, user=None):
 
     if meta_data is not None:
-        #uiMetaData = meta_data
-        uiMetaData=get_metaData_after_checking_ignoreSuggestionFlag(meta_data=meta_data)
+        uiMetaData = meta_data
+        #uiMetaData=get_metaData_after_checking_ignoreSuggestionFlag(meta_data=meta_data)
     else:
         return {}
 
