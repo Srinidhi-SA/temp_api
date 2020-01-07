@@ -16608,7 +16608,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	padding-left: 15px;
 } 
 
-.collapsed:before {
+.layerHeader .collapsed:before {
 	content: "\f078" !important;
 }
 .Layer {
