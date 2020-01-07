@@ -45,7 +45,29 @@ export class TensorFlow extends React.Component {
   }
   
   handleSelectBox(item,e){
+    var loss=$(".loss").val()
+    if(e.target.classList.value=="form-control metrics" && loss=="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")==-1){
+      document.getElementById("loss").innerText=""
+      document.getElementById("metrics").innerText="Metrics should be sparse 1"
+    }
+    else if(e.target.classList.value=="form-control loss" && loss!="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")!=-1){
+      document.getElementById("metrics").innerText=""
+      document.getElementById("loss").innerText="loss should  be sparse 2"
+    }
+    else if($(".loss").val().indexOf("sparse")==-1&& $(".metrics").val().indexOf("sparse")!=-1){
+      document.getElementById("loss").innerText=""
+      document.getElementById("metrics").innerText="metrics should not be sparse 3"
+    }
+    else if($(".metrics").val().indexOf("sparse")==-1 && $(".loss").val().indexOf("sparse")!=-1){
+      document.getElementById("metrics").innerText=""
+      document.getElementById("loss").innerText="Metrics & Loss combination does not work 4."
+    }
+    else
+    {
+      document.getElementById("metrics").innerText=""
+      document.getElementById("loss").innerText=""
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+    }
   }
 
   getOptions(item) {
@@ -53,7 +75,7 @@ export class TensorFlow extends React.Component {
       var options = arr.map(k => {
           return <option value={k} > {k}</option>
       })
-      return <select onChange={this.handleSelectBox.bind(this,item)} className="form-control"> {options} </select>
+      return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}`}> {options} </select>
   }
     
     
@@ -100,16 +122,19 @@ export class TensorFlow extends React.Component {
 
     if ($(".activation option:selected").text().includes("--Select--")){
        this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
+       bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
     }else if(unitFlag){
        this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
+       bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
+    }else if ($(".batch_normalization option:selected").text().includes("--Select--")){
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer in TensorFlow.", "small_mascot"));
     }else if(rateFlag){
        this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+       bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
     }else if(errMsgFlag){
        this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer.", "small_mascot"));
+       bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer in TensorFlow.", "small_mascot"));
     }else{
        this.props.dispatch(tensorValidateFlag(true));
     }
@@ -142,6 +167,7 @@ export class TensorFlow extends React.Component {
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
       var rendercontent = algorithmData.map((item,index)=>{
+        var uniqueId=item.name;
            if(item.paramType=="list"){
               return (
                 <div className ="row mb-20">
@@ -152,6 +178,7 @@ export class TensorFlow extends React.Component {
                  <div className ="row">
                  <div className="col-md-6">
                   {this.getOptions(item)}
+                  <div id={uniqueId}className="error"></div>
                   </div>
                   </div>
                    </div>

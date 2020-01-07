@@ -1018,6 +1018,7 @@ export function addTensorFlowArray(id,layerType,name,val) {
         "kernel_regularizer": null,
         "units": null,
         "use_bias": null,
+        "batch_normalization":"false",
         "layerId":id
       }    
   }

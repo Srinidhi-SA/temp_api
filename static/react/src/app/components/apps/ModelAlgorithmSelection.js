@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams,updateTensorFlowArray} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -60,6 +60,8 @@ export class ModelAlgorithmSelection extends React.Component {
     let unitLength= document.getElementsByClassName("units").length
     let rateLength= document.getElementsByClassName("rate").length
     var errMsgLen=document.getElementsByClassName("error").length
+    var tfInputs=store.getState().apps.tensorFlowInputs;
+    var finalActivation = ["sigmoid","softmax"]
 
    for(let i=0; i<unitLength; i++){
     var unitFlag;
@@ -183,18 +185,25 @@ export class ModelAlgorithmSelection extends React.Component {
                     }
                     this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
                 }
-            }else if ($(".activation option:selected").text().includes("--Select--")){
-                bootbox.alert(statusMessages("warning", "Please select Activation for dense layer.", "small_mascot"));
+            }else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
+                bootbox.alert(statusMessages("warning", "Final layer must be 'Dense' for tensor flow.", "small_mascot"));
                 return false
-            } else if(unitFlag){
-                bootbox.alert(statusMessages("warning", "Please enter Unit for dense layer.", "small_mascot"));
+            }else if ($(".activation option:selected").text().includes("--Select--")){
+                bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
+                return false
+            }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
+                bootbox.alert(statusMessages("warning", "Final Dense layer for tensorflow must have 'Softmax' or 'Sigmoid' as activation.", "small_mascot"));
                 return false;
-            }
-           else if(rateFlag){
-              bootbox.alert(statusMessages("warning", "Please enter Rate for dropout layer.", "small_mascot"));
+            }else if(unitFlag){
+                bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
+                return false;
+            }else if($(".batch_normalization option:selected").text().includes("--Select--")){
+                bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer  in TensorFlow.", "small_mascot"));
+                return false;            
+            }else if(rateFlag){
+              bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
               return false;
-            }
-           else if(errMsgFlag){
+            }else if(errMsgFlag){
               bootbox.alert(statusMessages("warning", "Please resolve errors for Tensorflow.", "small_mascot"));
               return false;
             }
@@ -215,6 +224,10 @@ export class ModelAlgorithmSelection extends React.Component {
                     eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
                     this.props.dispatch(setPyTorchSubParams(eta));
                 }
+        
+        if( tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
+            this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",store.getState().apps.targetLevelCounts.length.toString()))
+        }
                 this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
             }
 
