@@ -376,7 +376,11 @@ export class PyLayer extends React.Component {
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
-                    var formClassName =`form-group row ${layerData.name}`
+                    if(layerData.name === "activation"){
+                        var formClassName =`form-group row py${layerData.name}`
+                    }else{
+                        var formClassName =`form-group row ${layerData.name}`
+                    }
                     return(
                         <div className = {formClassName}>
                             {lyr}
