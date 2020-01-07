@@ -191,8 +191,8 @@ export class PyTorch extends React.Component {
                         let defVal = subParamDt[parameterData.name];
                         defVal[idx.name] = idx.defaultValue;
                     }
+                    this.props.dispatch(pytorchValidateFlag(true));
                 });
-                this.props.dispatch(pytorchValidateFlag(true));
             }
             this.props.dispatch(setPyTorchSubParams(subParamDt));
         }

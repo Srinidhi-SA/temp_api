@@ -55,13 +55,6 @@ export class ModelAlgorithmSelection extends React.Component {
         Notification.requestPermission();
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
-    
-        var pyTorchClassFlag = false;
-        if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected){
-            pyTorchClassFlag = true;
-            let targetCount = store.getState().apps.targetLevelCounts;
-            let pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
-        }
 
     let unitLength= document.getElementsByClassName("units").length
     let rateLength= document.getElementsByClassName("rate").length
@@ -165,22 +158,31 @@ export class ModelAlgorithmSelection extends React.Component {
               return false;
             }
 
-            else if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
+            var pyTorchClassFlag = false;
+            var targetCount;
+            var pyTorchLayerCount;
+            if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected){
+                pyTorchClassFlag = true;
+                targetCount = store.getState().apps.targetLevelCounts;
+                pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
+            }
+
+            if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
                 let errormsg = statusMessages("warning","Please input mandatory fields for pyTorch Algorithm...","small_mascot");
                 bootbox.alert(errormsg);
                 return false;
             }
-            else if(pyTorchClassFlag && !this.props.pytorchValidateFlag && pyTorchLayerCount == 0){
+            else if(pyTorchClassFlag && (pyTorchLayerCount === 0)){
                 this.props.dispatch(pytorchValidateFlag(false));
-                bootbox.alert(statusMessages("warning", "Please add a layer", "small_mascot"));
+                bootbox.alert(statusMessages("warning", "Please Add Layers", "small_mascot"));
                 return false;
             }
-            else if(pyTorchClassFlag && pyTorchLayerCount != 0 && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
+            else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
                 bootbox.alert(statusMessages("warning", "Number of output units in the final layer should be equal to the number of unique values/levels in the target column("+targetCount.length+").", "small_mascot"));
                 this.props.dispatch(pytorchValidateFlag(false));
                 return false;
             }
-            else if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) ){
+            if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) ){
                 let beta = this.props.pyTorchSubParams;
                 let tupVal = beta["optimizer"]["betas"].toString();
                 beta["optimizer"]["betas"] = "("+ tupVal + ")";
