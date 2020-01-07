@@ -91,7 +91,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Dataset
-        exclude = ( 'id', 'updated_at','shared_slug')
+        exclude = ( 'id', 'updated_at',)
 
 
 class DataListSerializer(serializers.ModelSerializer):
@@ -110,7 +110,7 @@ class DataListSerializer(serializers.ModelSerializer):
         try:
             ret['job_status'] = instance.job.status
         except:
-            ret['job_status'] = None    
+            ret['job_status'] = None
 
         # permission details
         permission_details = get_permissions(
