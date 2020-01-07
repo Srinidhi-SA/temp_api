@@ -1214,11 +1214,11 @@ TENSORFLOW_LAMBDA_FUNCTIONS = [
     {"name": "Division", "selected": True, "displayName": "Division"},
 ]
 SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
-    {"name": "categorical_crossentropy", "selected": True, "displayName": "categorical_crossentropy"},
+    {"name": "sparse_categorical_crossentropy", "selected": True, "displayName": "sparse_categorical_crossentropy"},
     {"name": "squared_hinge", "selected": False, "displayName": "squared_hinge"},
     {"name": "hinge", "selected": False, "displayName": "hinge"},
     {"name": "categorical_hinge", "selected": False, "displayName": "categorical_hinge"},
-    {"name": "sparse_categorical_crossentropy", "selected": False, "displayName": "sparse_categorical_crossentropy"},
+    {"name": "categorical_crossentropy", "selected": False, "displayName": "categorical_crossentropy"},
     {"name": "binary_crossentropy", "selected": False, "displayName": "binary_crossentropy"},
     {"name": "kullback_leibler_divergence", "selected": False, "displayName": "kullback_leibler_divergence"},
 ]
