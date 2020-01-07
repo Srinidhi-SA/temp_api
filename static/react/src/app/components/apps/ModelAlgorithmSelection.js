@@ -168,7 +168,7 @@ export class ModelAlgorithmSelection extends React.Component {
             }
 
             if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
-                let errormsg = statusMessages("warning","Please input mandatory fields for pyTorch Algorithm...","small_mascot");
+                let errormsg = statusMessages("warning","Please enter mandatory field values of PyTorch Algorithm...","small_mascot");
                 bootbox.alert(errormsg);
                 return false;
             }
@@ -178,7 +178,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 return false;
             }
             else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
-                bootbox.alert(statusMessages("warning", "Number of output units in the final layer should be equal to the number of unique values/levels in the target column("+targetCount.length+").", "small_mascot"));
+                bootbox.alert(statusMessages("warning", "No. of output units in the final layer should be equal to the no. of levels in the target column(i.e."+targetCount.length+").", "small_mascot"));
                 this.props.dispatch(pytorchValidateFlag(false));
                 return false;
             }

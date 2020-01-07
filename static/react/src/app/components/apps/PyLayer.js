@@ -64,6 +64,7 @@ export class PyLayer extends React.Component {
                     defVal[idx.name] = idx.defaultValue;
                 });
             }
+            this.props.dispatch(pytorchValidateFlag(true));
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
