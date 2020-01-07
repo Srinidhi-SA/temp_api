@@ -372,15 +372,15 @@ export class PyLayer extends React.Component {
         }
     }
     render() {
-        var cls =`row layerPanel ${this.props.idNum}`
+        var cls =`layerPanel ${this.props.idNum}`
         var clsId = `layer${this.props.idNum}`
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
                     if(layerData.name === "activation"){
-                        var formClassName =`form-group row py${layerData.name}`
+                        var formClassName =`row py${layerData.name}`
                     }else{
-                        var formClassName =`form-group row ${layerData.name}`
+                        var formClassName =`row ${layerData.name}`
                     }
                     return(
                         <div className = {formClassName}>

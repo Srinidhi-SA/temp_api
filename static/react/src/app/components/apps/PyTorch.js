@@ -637,7 +637,7 @@ export class PyTorch extends React.Component {
         let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
             if(pydata.display){
                 const pyTorchparams = this.renderPyTorchData(pydata);
-                var formClassName =`row ${pydata.name}`
+                var formClassName =`${pydata.name}`
                 return(
                     <div className = {formClassName}>
                         {pyTorchparams}
