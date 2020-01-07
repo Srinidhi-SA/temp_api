@@ -97,7 +97,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 
                     return (
                             <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                            <div className="rep_block newCardStyle" name={data.name}>
+                            <div id={data.name} className="rep_block newCardStyle" name={data.name}>
                             <div className="card-header"></div>
                             <div className="card-center-tile">
                             <div className="row">
@@ -156,7 +156,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
 								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
                                 </span>: ""} 
-                                     {(data.status == "SUCCESS" && data.mode ==="analyst")? 
+                                     {(data.status == "SUCCESS" && data.mode ==="analyst" && data.shared != true)? 
                                     <span onClick={this.handleEditModel.bind(this,data.dataset,data.slug)} style={{marginTop:'2%'}}>
                                     <Link to={modelEditLink} id={data.slug} className="editButton btn-primary">
                                     <i className="fa fa-edit"></i>&nbsp;&nbsp;{"Edit"}</Link>

@@ -16608,7 +16608,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	padding-left: 15px;
 } 
 
-.collapsed:before {
+.layerHeader .collapsed:before {
 	content: "\f078" !important;
 }
 .Layer {
@@ -16641,10 +16641,6 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 #binErrorMsg {
     float: left;
     margin-left: 122px;
-}
-i.fa.fa-trash {
-	margin-top: 2px;
-	padding-right: 1%;
 }
 /* css for lex app */
 .white-circle {

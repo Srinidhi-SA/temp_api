@@ -109,7 +109,7 @@ export class SignalCard extends React.Component {
 
             return (
               <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                <div className="rep_block newCardStyle" name={story.name}>
+                <div id={story.name} className="rep_block newCardStyle" name={story.name}>
                   <div className="card-header"></div>
                   <div className="card-center-tile">
                     <div className="row">

@@ -63,7 +63,7 @@ export default class Layer extends Component {
   }
   
   render() { 
-    var mandateField= ["Activation","Units","Rate"]
+    var mandateField= ["Activation","Units","Rate","Batch Normalization"]
     var rendercontent = this.props.parameters.map((item,index)=>{
              if(item.paramType=="list"){
               return (

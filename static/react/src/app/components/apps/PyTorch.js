@@ -55,6 +55,7 @@ export class PyTorch extends React.Component {
                     }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
+        this.props.dispatch(pytorchValidateFlag(false));
     }
 
     handleClick(){
@@ -163,10 +164,14 @@ export class PyTorch extends React.Component {
     selectHandleChange(parameterData,e){
         if(parameterData.name === "loss" || parameterData.name === "optimizer"){
             let subParamDt = this.props.pyTorchSubParams;
-            if(parameterData.name === "loss")
+            if(parameterData.name === "loss"){
                 subParamDt[parameterData.name] = {"loss":"None"}
-            else 
+                this.props.dispatch(pytorchValidateFlag(false));
+            }
+            else {
                 subParamDt[parameterData.name] = {"optimizer":"None"}
+                this.props.dispatch(pytorchValidateFlag(false));
+            }
             let subParam = subParamDt[parameterData.name];
             subParam[parameterData.name] = e.target.value;
 
@@ -186,6 +191,7 @@ export class PyTorch extends React.Component {
                         let defVal = subParamDt[parameterData.name];
                         defVal[idx.name] = idx.defaultValue;
                     }
+                    this.props.dispatch(pytorchValidateFlag(true));
                 });
             }
             this.props.dispatch(setPyTorchSubParams(subParamDt));
@@ -198,15 +204,16 @@ export class PyTorch extends React.Component {
       let val = e.target.value === "--Select--"? null:e.target.value;
       if(name == "number_of_epochs" && val<1){
         e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+        this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)) ){
         e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+        this.props.dispatch(pytorchValidateFlag(false));
       }
         else {
             e.target.parentElement.lastElementChild.innerHTML = ""
             this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
-        }
-        if(parameterData.name === "batch_size" || parameterData.name === "number_of_epochs"){
+            this.props.dispatch(pytorchValidateFlag(true));
             let subParamArry = this.props.pyTorchSubParams;
             subParamArry[parameterData.name] = parseInt(e.target.value);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -216,6 +223,7 @@ export class PyTorch extends React.Component {
     setChangeSubValues(data,parameterData,e){
         let name = data.name;
         let val = e.target.value;
+        let subParamArry = this.props.pyTorchSubParams;
         if(name === "blank"){
             if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
@@ -226,7 +234,6 @@ export class PyTorch extends React.Component {
             }else{
                 e.target.parentElement.lastElementChild.innerHTML = ""
                 this.props.dispatch(pytorchValidateFlag(true));
-                let subParamArry = this.props.pyTorchSubParams;
                 let selectedPar = subParamArry["loss"];
                 selectedPar[data.name] = parseInt(e.target.value);
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -297,6 +304,7 @@ export class PyTorch extends React.Component {
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
         else if(name === "betas"){
+            let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "Enter value"
@@ -310,8 +318,6 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["betas"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
@@ -322,13 +328,12 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["betas"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
             }
         }else if(name === "eta"){
+            let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "Enter value"
@@ -342,8 +347,6 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["eta"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
@@ -354,13 +357,12 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["eta"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
             }
         }else if(name === "step_sizes"){
+            let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerHTML = "Enter value"
@@ -374,8 +376,6 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["step_sizes"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
@@ -386,8 +386,6 @@ export class PyTorch extends React.Component {
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
-                    let subParamArry = this.props.pyTorchSubParams;
-                    let selectedPar = subParamArry["optimizer"];
                     selectedPar["step_sizes"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
                 }
@@ -397,7 +395,6 @@ export class PyTorch extends React.Component {
             e.target.parentElement.lastElementChild.innerHTML = ""
             if(parameterData === "loss"){
                 this.props.dispatch(pytorchValidateFlag(true));
-                let subParamArry = this.props.pyTorchSubParams;
                 let selectedPar = subParamArry["loss"];
                 if(data.name != "reduction" || data.name != "zero_infinity" || data.name != "log_input" || data.name != "full"){
                     selectedPar[data.name] = parseFloat(e.target.value);
@@ -408,7 +405,6 @@ export class PyTorch extends React.Component {
                 }
             }else if(parameterData === "optimizer"){
                 this.props.dispatch(pytorchValidateFlag(true));
-                let subParamArry = this.props.pyTorchSubParams;
                 let selectedPar = subParamArry["optimizer"];
                     if(data.name != "amsgrad" || data.name != "line_search_fn" || data.name!="nesterov" ||data.name != "centered"){
                         selectedPar[data.name] = parseFloat(e.target.value);
@@ -420,7 +416,6 @@ export class PyTorch extends React.Component {
                     }
             }else{
                 this.props.dispatch(pytorchValidateFlag(true));
-                let subParamArry = this.props.pyTorchSubParams;
                 subParamArry[data.name] = parseFloat(e.target.value);
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
             }
@@ -428,18 +423,16 @@ export class PyTorch extends React.Component {
     }
 
     setSubValues(data,parameterData,e){
+        let subParamArry = this.props.pyTorchSubParams;
         if(parameterData === "loss"){
-            let subParamArry = this.props.pyTorchSubParams;
             let selectedPar = subParamArry["loss"];
             selectedPar[data.name] = e.target.value;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else if(parameterData === "optimizer"){
-            let subParamArry = this.props.pyTorchSubParams;
             let selectedPar = subParamArry["optimizer"];
             selectedPar[data.name] = e.target.value;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else{
-            let subParamArry = this.props.pyTorchSubParams;
             subParamArry[data.name] = e.target.value;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }
@@ -644,7 +637,7 @@ export class PyTorch extends React.Component {
         let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
             if(pydata.display){
                 const pyTorchparams = this.renderPyTorchData(pydata);
-                var formClassName =`row ${pydata.name}`
+                var formClassName =`${pydata.name}`
                 return(
                     <div className = {formClassName}>
                         {pyTorchparams}

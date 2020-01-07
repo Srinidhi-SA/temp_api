@@ -759,23 +759,13 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          if(!json.shared){
-            dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
+          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
             clearInterval(appsInterval);
             dispatch(fetchModelSummarySuccess(json));
             dispatch(closeAppsLoaderValue());
             dispatch(hideDataPreview());
             dispatch(updateModelSummaryFlag(true));
             dispatch(reSetRegressionVariables());
-          }
-          else{
-            clearInterval(appsInterval);
-            dispatch(fetchModelSummarySuccess(json));
-            dispatch(closeAppsLoaderValue());
-            dispatch(hideDataPreview());
-            dispatch(updateModelSummaryFlag(true));
-            dispatch(reSetRegressionVariables());
-          }
         }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function () {
@@ -1029,6 +1019,7 @@ export function addTensorFlowArray(id,layerType,name,val) {
         "kernel_regularizer": null,
         "units": null,
         "use_bias": null,
+        "batch_normalization":"false",
         "layerId":id
       }    
   }
