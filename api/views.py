@@ -6638,9 +6638,9 @@ def request_from_alexa(request):
 
     if request.method == 'POST':
         print("####  Got POST Request from Alexa ####")
-        request.data = json.loads(request.body)
-        dataset_obj = Dataset.objects.filter(slug=request.data['slug'])
-        meta_data = json.loads(dataset_obj[0].meta_data)
+        request.data = json.loads(request.body.decode('utf-8'))
+        dataset_obj = Dataset.objects.get(slug=request.data['slug'])
+        meta_data = json.loads(dataset_obj.meta_data)
         if request.data['attribute'] == 'target':
             print("####  Fetching list of Dimension Columns ####")
             dimension_column_list = []
@@ -6654,8 +6654,9 @@ def request_from_alexa(request):
             subtarget_column_list = []
             for meta_info in meta_data['columnData']:
                 if meta_info['name'] == request.data['target']:
-                    subtarget_column_list = meta_info['chartData']['chart_c3']['data']['columns'][0][1:]
-            response.update(enumerate(subtarget_column_list))
+                    col_list = meta_info['chartData']['chart_c3']['data']['columns']
+                    subtarget_column_list = [filtered_data[1:] for filtered_data in col_list if 'name' in filtered_data]
+            response.update(enumerate(*subtarget_column_list))
             return JsonResponse(response)
         if request.data['attribute'] == 'createmodel':
             print("####  Trying to create AutoML model ####")
