@@ -45,22 +45,23 @@ export class TensorFlow extends React.Component {
   }
   
   handleSelectBox(item,e){
+    // var categorical_crossentropy =this.props.algorithmData.filter(i=>i.algorithmName==="TensorFlow")[0].parameters.filter(i=>i.name==="loss")[0].defaultValue.filter(ind=>(ind.name==="categorical_crossentropy")).map(val=>val.selected)[0]
     var loss=$(".loss").val()
     if(e.target.classList.value=="form-control metrics" && loss=="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")==-1){
       document.getElementById("loss").innerText=""
-      document.getElementById("metrics").innerText="Metrics should be sparse 1"
+      document.getElementById("metrics").innerText="Metrics should be sparse."
     }
     else if(e.target.classList.value=="form-control loss" && loss!="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")!=-1){
       document.getElementById("metrics").innerText=""
-      document.getElementById("loss").innerText="loss should  be sparse 2"
+      document.getElementById("loss").innerText="Loss should be sparse."
     }
     else if($(".loss").val().indexOf("sparse")==-1&& $(".metrics").val().indexOf("sparse")!=-1){
       document.getElementById("loss").innerText=""
-      document.getElementById("metrics").innerText="metrics should not be sparse 3"
+      document.getElementById("metrics").innerText="Metrics should not be sparse."
     }
     else if($(".metrics").val().indexOf("sparse")==-1 && $(".loss").val().indexOf("sparse")!=-1){
       document.getElementById("metrics").innerText=""
-      document.getElementById("loss").innerText="Metrics & Loss combination does not work 4."
+      document.getElementById("loss").innerText="Loss should not be sparse."
     }
     else
     {

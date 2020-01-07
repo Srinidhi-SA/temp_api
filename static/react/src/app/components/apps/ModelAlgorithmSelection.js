@@ -187,13 +187,13 @@ export class ModelAlgorithmSelection extends React.Component {
                     this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
                 }
             }else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
-                bootbox.alert(statusMessages("warning", "Final layer must be 'Dense' for tensor flow.", "small_mascot"));
+                bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
                 return false
             }else if ($(".activation option:selected").text().includes("--Select--")){
                 bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
                 return false
             }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
-                bootbox.alert(statusMessages("warning", "Final Dense layer for tensorflow must have 'Softmax' or 'Sigmoid' as activation.", "small_mascot"));
+                bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Softmax' or 'Sigmoid' for activation.", "small_mascot"));
                 return false;
             }else if(unitFlag){
                 bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
@@ -205,7 +205,7 @@ export class ModelAlgorithmSelection extends React.Component {
               bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
               return false;
             }else if(errMsgFlag){
-              bootbox.alert(statusMessages("warning", "Please resolve errors for Tensorflow.", "small_mascot"));
+              bootbox.alert(statusMessages("warning", "Please resolve errors for TensorFlow.", "small_mascot"));
               return false;
             }
 
