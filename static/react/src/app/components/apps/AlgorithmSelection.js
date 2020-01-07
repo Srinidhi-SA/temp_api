@@ -121,7 +121,7 @@ export class AlgorithmSelection extends React.Component {
 							        <div className="clearfix"></div>
                             <div>
                             <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                            <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{"Proceed"} <i class="fa fa-angle-double-right"></i></Button>
+                            <Button id="algoSelectionProceed" type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{"Proceed"} <i class="fa fa-angle-double-right"></i></Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

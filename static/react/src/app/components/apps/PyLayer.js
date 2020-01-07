@@ -23,12 +23,10 @@ export class PyLayer extends React.Component {
     }
 
     deleteLayer(layerNumber){
-        // this.props.dispatch(deletePyTorchLayer(layerNumber))
-        // let layerElement = document.getElementById("layer"+layerNumber);
-        // layerElement.parentNode.removeChild(layerElement);
-        this.props.idLayer.filter(function(layerId){
-            return layerId != layerNumber
+        let newIdArray = this.props.idLayer.filter(function (items) {
+            return items != layerNumber
         });
+        this.props.dispatch(deletePyTorchLayer(layerNumber,newIdArray));
     }
 
     selectHandleChange(parameterData,e){
@@ -94,7 +92,7 @@ export class PyLayer extends React.Component {
         if(!this.props.pytorchValidateFlag){
             let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
-            newLyrVal[parameterData.name] = val;
+            newLyrVal[parameterData.name] = parseInt(val);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
     }
@@ -310,14 +308,25 @@ export class PyLayer extends React.Component {
                         case "Input Units":
                             var type = "number";
                             var classN= "form-control input_unit";
+                            if(this.props.idNum>1){
+                                var defVal = parseInt(this.props.pyTorchLayer[this.props.idNum-1].units_op)
+                                var disableVal = true
+                            }else{
+                                var defVal = parameterData.defaultValue;
+                                var disableVal = false
+                            }
                             break;
                         case "Output Units":
                             var type = "number";
                             var classN= "form-control output_unit";
+                            var defVal = parameterData.defaultValue;
+                            var disableVal = false
                             break;
                         default:
                             classN= "form-control";
                             var type= "number";
+                            var defVal = parameterData.defaultValue;
+                            var disableVal = false
                             break;
                     }
                     return (
@@ -325,7 +334,7 @@ export class PyLayer extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={parameterData.defaultValue} onChange={this.changeTextBoxValue.bind(this,parameterData)} /*disabled={((parameterData.displayName === "Input Units") && (this.props.id === 1))?true:false} *//>
+                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
                                 <div className = "error"></div>
                             </div>
                             <div class = "clearfix"></div> 
@@ -372,16 +381,19 @@ export class PyLayer extends React.Component {
                 }
             });
         return (
-            <div class={cls} id={clsId}>
+            <div class={cls} id={clsId} style={{'marginRight':'3%'}}>
                 <div class="layer">
                     <div class="layerHeader" id={this.props.idNum}>
                         Linear Layer {this.props.idNum}
-                        {/* <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/> */}
                         <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
+                        {(this.props.idLayer.length === this.props.idNum)?
+                            <i className="fa fa-trash pull-right" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
+                            :""
+                        }
                     </div>
                     <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
                         <div className="card card-body">
-                            <div class="layerBody" style={{'padding-left':'15px'}}>
+                            <div class="layerBody" style={{'paddingLeft':'15px'}}>
                                 {renderPyTorchLayer}
                             </div>
                         </div>

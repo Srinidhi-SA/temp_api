@@ -17,7 +17,7 @@ from django.http import Http404, JsonResponse
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception, sharing_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from api.utils import name_check
@@ -330,30 +330,65 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Dataset.objects.get(slug=self.kwargs.get('slug'))
-            dataset_obj = list(Dataset.objects.filter(created_by_id=request.user.id,
-                                                 slug=self.kwargs.get('slug')).values()).first()
-            dataset_name = dataset_obj['name']
             shared_id = request.GET['shared_id'].split(",")
+            dataset_obj = Dataset.objects.get(slug=self.kwargs.get('slug'), created_by_id=request.user.id)
+            dataset_name = dataset_obj.name
             shared_by=User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Dataset should not be shared to itself.'})
+                return sharing_failed_exception('Dataset should not be shared to itself.')
             for id in shared_id:
                 import random,string
-                slug = dataset_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    dataset_obj.update(
-                        {'id': None, 'created_by_id': id, 'name':dataset_name+str(random.randint(1,100)) ,'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':obj.shared_slug})
+                if dataset_obj.shared is True:
+                    dataset_details = {
+                        'name': dataset_name + str(random.randint(1, 100)),
+                        'input_file': dataset_obj.input_file,
+                        'created_by': User.objects.get(pk=id).id,
+                        'datasource_type': dataset_obj.datasource_type,
+                        'datasource_details': dataset_obj.datasource_details,
+                        'analysis_done': True,
+                        'status': dataset_obj.status,
+                        'subsetting': dataset_obj.subsetting,
+                        'file_remote': dataset_obj.file_remote,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': dataset_obj.shared_slug,
+                        'meta_data': dataset_obj.meta_data
+                    }
+                    dataset_details = convert_to_string(dataset_details)
+                    dataset_serializer = DatasetSerializer(data=dataset_details)
+                    if dataset_serializer.is_valid():
+                        shared_dataset_object = dataset_serializer.save()
+                    else:
+                        print(dataset_serializer.errors)
                 else:
-                    dataset_obj.update(
-                        {'id': None, 'created_by_id': id, 'name':dataset_name + '_shared'+str(random.randint(1,100)),'slug':slug,'shared': True,'shared_by':shared_by,'shared_slug':self.kwargs.get('slug')})
-                Dataset.objects.create(**dataset_obj)
-            return JsonResponse({'message': 'done'})
+                    dataset_details = {
+                        'name': dataset_name +'_shared'+ str(random.randint(1, 100)),
+                        'input_file': dataset_obj.input_file,
+                        'created_by': User.objects.get(pk=id).id,
+                        'datasource_type': dataset_obj.datasource_type,
+                        'datasource_details': dataset_obj.datasource_details,
+                        'analysis_done': True,
+                        'status': dataset_obj.status,
+                        'subsetting': dataset_obj.subsetting,
+                        'file_remote': dataset_obj.file_remote,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug'),
+                        'meta_data': dataset_obj.meta_data
+                    }
+                    dataset_details = convert_to_string(dataset_details)
+                    dataset_serializer = DatasetSerializer(data=dataset_details)
+                    if dataset_serializer.is_valid():
+                        shared_dataset_object = dataset_serializer.save()
+                    else:
+                        print(dataset_serializer.errors)
+            return JsonResponse({'message': 'Dataset shared.','status': 'true'})
         except Exception as err:
-            print(err)
+            print (err)
+            return sharing_failed_exception('Dataset sharing failed.')
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):

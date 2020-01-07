@@ -714,8 +714,8 @@ export class FeatureEngineering extends React.Component {
           <tr className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase() + item.columnType.slice(1)}</td>
-            <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
-            <td> <Button onClick={this.openTransformColumnModal.bind(this, item)} bsStyle="cst_button">Transform</Button></td>
+            <td> <Button id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
+            <td> <Button id={`tranform_${item.name}`} onClick={this.openTransformColumnModal.bind(this, item)} bsStyle="cst_button">Transform</Button></td>
           </tr>
         );
       })
@@ -745,8 +745,8 @@ export class FeatureEngineering extends React.Component {
             <div id="errorMsgs" className="text-danger"></div>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-            <Button bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
+            <Button id="binsCancel" onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
+            <Button id="binsCreate" bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -762,8 +762,8 @@ export class FeatureEngineering extends React.Component {
               <Transform parentPickValue={this.pickValue} />
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "transformationData")}>Create</Button>
+              <Button id="transformCancel"  onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
+              <Button id="transformCreate"  bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "transformationData")}>Create</Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -855,9 +855,9 @@ export class FeatureEngineering extends React.Component {
                     </div>
                   </div>
                   <div className="panel-body box-shadow">
-                  <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                  <Button id="FeBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
                     <div className="buttonRow" id="dataPreviewButton" style={{float:"right",display:"inline-block"}}>
-                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                      <Button id="FeProceed" onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
                     <div class="xs-p-10"></div>
                   </div>

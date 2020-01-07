@@ -16605,6 +16605,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 	float: right;
 	padding: 3px;
 	cursor: pointer;
+	padding-left: 15px;
 } 
 
 .collapsed:before {
@@ -16643,4 +16644,44 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 i.fa.fa-trash {
 	margin-top: 2px;
+	padding-right: 1%;
 }
+/* css for lex app */
+.white-circle {
+	cursor: pointer;
+	background-color: #fff;
+	box-shadow: 0 0 8px #d8dbe3;
+	border-radius: 100px;
+	height: 100px;
+	margin: 0 auto;
+	width: 100px;
+}
+
+.white-circle:hover {
+	box-shadow: 0 0 8px #02988c;
+}
+
+.white-circle img {
+	position: relative;
+	top: 18px;
+}
+
+.audio-control {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -50px;
+	margin-left: -50px;
+	text-align: center;
+}
+canvas {
+	height: 100px;
+	width: 100vw;
+	margin-top: -50px;
+	display: block;
+	position: fixed;
+	top: 50%;
+	left: 0;
+	z-index: -1;
+}
+/* css for lex app */

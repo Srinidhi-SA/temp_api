@@ -10,6 +10,7 @@ from builtins import range
 import json
 import random
 import copy
+import datetime
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -26,7 +27,7 @@ from rest_framework.renderers import JSONRenderer
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
-from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception, sharing_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
 from django.contrib.auth.models import User
@@ -199,43 +200,75 @@ class SignalView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
-            signal_obj = list(Insight.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values()).first()
-            signal_name = signal_obj['name']
+            signal_obj = Insight.objects.get(slug=kwargs['slug'], created_by_id=request.user.id)
+            signal_name = signal_obj.name
             shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Models should not be shared to itself.'})
+                return sharing_failed_exception('Signals should not be shared to itself.')
 
             for i in shared_id:
                 import random, string
-                slug = signal_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    signal_obj.update(
-                        {'name': signal_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
+                if signal_obj.shared is True:
+                    signal_details = {
+                        'name': signal_name + str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': signal_obj.shared_slug
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
                 else:
-                    signal_obj.update(
-                        {'name': signal_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
-                Insight.objects.create(**signal_obj)
-            return JsonResponse({'message': 'Signals shared.'})
+                    signal_details = {
+                        'name': signal_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
+            return JsonResponse({'message': 'Signals shared.','status': 'true'})
 
         except Exception as err:
             print(err)
-            return JsonResponse({'message':'Signals sharing failed.'})
+            return sharing_failed_exception('Signal sharing failed.')
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
         try:
             signal_obj = Insight.objects.get(slug=self.kwargs.get('slug'))
             config = json.loads(signal_obj.config)
-            return JsonResponse({'name': signal_obj.name, 'config': config})
+            return JsonResponse({'name': signal_obj.name, 'config': config,'status':'true'})
         except Exception as err:
-            return JsonResponse({'message': 'Config not found.'})
             print(err)
+            return retrieve_failed_exception('Config not found.')
 
     @list_route(methods=['get'])
     def get_all_signals(self, request,  *args, **kwargs):
@@ -545,34 +578,73 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
             shared_id = request.query_params.get('shared_id', None).split(',')
-            trainer_obj = list(Trainer.objects.filter(slug=kwargs['slug'], created_by_id=request.user.id).values()).first()
-            model_name = trainer_obj['name']
+            trainer_obj = Trainer.objects.get(slug=kwargs['slug'], created_by_id=request.user.id)
+            model_name = trainer_obj.name
             shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Models should not be shared to itself.'})
+                return sharing_failed_exception('Models should not be shared to itself.')
 
             for i in shared_id:
                 import random, string
-                slug = trainer_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    trainer_obj.update(
-                        {'name': model_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i, 'slug': slug,
-                         'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
+                if trainer_obj.shared is True:
+                    trainer_details = {
+                        'name': model_name + str(random.randint(1, 100)),
+                        'dataset': trainer_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'config': trainer_obj.config,
+                        'job': trainer_obj.job,
+                        'data': trainer_obj.data,
+                        'analysis_done': True,
+                        'status': trainer_obj.status,
+                        'mode': trainer_obj.mode,
+                        'app_id': trainer_obj.app_id,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': trainer_obj.shared_slug
+                    }
+                    trainer_details = convert_to_string(trainer_details)
+                    trainer_serializer = TrainerSerlializer(data=trainer_details)
+                    if trainer_serializer.is_valid():
+                        shared_trainer_object = trainer_serializer.save()
+                    else:
+                        print(trainer_serializer.errors)
+                    #trainer_obj.update(
+                    #    {'name': model_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i, 'slug': slug,
+                    #     'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
                 else:
-                    trainer_obj.update(
-                        {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
-                Trainer.objects.create(**trainer_obj)
-            return JsonResponse({'message': 'Models shared.'})
+                    trainer_details = {
+                        'name': model_name + '_shared' + str(random.randint(1, 100)),
+                        'dataset': trainer_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'config': trainer_obj.config,
+                        'data': trainer_obj.data,
+                        'analysis_done': True,
+                        'status': trainer_obj.status,
+                        'mode': trainer_obj.mode,
+                        'app_id': trainer_obj.app_id,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    trainer_details = convert_to_string(trainer_details)
+                    trainer_serializer = TrainerSerlializer(data=trainer_details)
+                    if trainer_serializer.is_valid():
+                        shared_trainer_object = trainer_serializer.save()
+                    else:
+                        print(trainer_serializer.errors)
+                    #trainer_obj.update(
+                    #    {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
+                    #     'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
+                #shared_trainer_object.create()
+            return JsonResponse({'message': 'Models shared.','status': 'true'})
 
         except Exception as err:
             print(err)
-            return JsonResponse({'message':'Models sharing failed.'})
+            return sharing_failed_exception('Models sharing failed.')
 
     @detail_route(methods=['get'])
     def edit(self, request, *args, **kwargs):
@@ -825,32 +897,67 @@ class ScoreView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def share(self, request, *args, **kwargs):
         try:
-            obj = Score.objects.get(slug=self.kwargs.get('slug'))
-            score_obj = list(Score.objects.filter(created_by_id=request.user.id,
-                                             slug=self.kwargs.get('slug')).values()).first()
-            score_name = score_obj['name']
+            score_obj = Score.objects.get(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug'))
+            score_name = score_obj.name
             shared_id = request.GET['shared_id'].split(",")
             shared_by = User.objects.get(id=request.user.id)
             import ast
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
 
             if request.user.id in [int(i) for i in shared_id]:
-                return JsonResponse({'message': 'Score should not be shared to itself.'})
+                return sharing_failed_exception('Score should not be shared to itself.')
             for id in shared_id:
                 import random, string
-                slug = score_obj['slug'].join(random.choice(string.ascii_uppercase + string.digits) for _ in range(2))
-                if obj.shared is True:
-                    score_obj.update({'id': None, 'created_by_id': id, 'name': score_name + str(random.randint(1, 100)),
-                                      'slug': slug, 'shared': True, 'shared_by': shared_by,
-                                      'shared_slug': obj.shared_slug})
+                if score_obj.shared is True:
+                    score_details = {
+                        'name': score_name + str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': score_obj.shared_slug
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
                 else:
-                    score_obj.update(
-                        {'id': None, 'created_by_id': id, 'name': score_name + '_shared' + str(random.randint(1, 100)),
-                         'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
-                Score.objects.create(**score_obj)
-            return JsonResponse({'message': 'done'})
+                    score_details = {
+                        'name': score_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
+            return JsonResponse({'message': 'Score Shared.','status': 'true'})
         except Exception as err:
             print(err)
+            return sharing_failed_exception('Score sharing failed.')
 
 
 class RoboView(viewsets.ModelViewSet):
@@ -5841,7 +5948,7 @@ def get_score_data_and_return_top_n(request):
 
             import csv
             csv_text_list = []
-            with open(download_path, 'rb') as f:
+            with open(download_path, 'r') as f:
                 reader = csv.reader(f)
                 for index, row in enumerate(reader):
                     csv_text_list.append(row)
@@ -6754,6 +6861,7 @@ class UserView(viewsets.ModelViewSet):
     def get_all_users(self, request):
         try:
             queryset = User.objects.filter(~Q(is_active=False))
+            queryset = queryset.exclude(id=request.user.id)
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):

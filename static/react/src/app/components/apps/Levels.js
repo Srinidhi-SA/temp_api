@@ -183,7 +183,7 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} defaultValue={levelData.inputValue}  onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
+                 <input id={`Level#${idx + 1}`} type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} defaultValue={levelData.inputValue}  onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
                </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>

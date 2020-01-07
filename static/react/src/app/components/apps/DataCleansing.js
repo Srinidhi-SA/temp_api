@@ -303,7 +303,7 @@ tableHead.addEventListener('click', function (e) {
         return <option value={item.toLowerCase()} > {item}</option>
       }
     })
-    return <select className="form-control" onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
+    return <select className="form-control" id={colSlug} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -534,8 +534,8 @@ tableHead.addEventListener('click', function (e) {
                 </div>
                 <div className="panel-body box-shadow">
                 <div class="buttonRow">
-                    <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                    <Button onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button>
+                    <Button id="dataCleanBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                    <Button id="dataCleanProceed" onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button>
                 </div>
                   <div class="xs-p-10"></div>
                 </div>

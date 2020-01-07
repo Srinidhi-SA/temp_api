@@ -81,7 +81,8 @@ export class AppsModelDetail extends React.Component {
 					var att = document.createAttribute("class");
 					att.value = "summaryLink";
 					info.setAttributeNode(att);
-					info.innerText = "For More Info Click Here";
+					var modelName= store.getState().apps.modelSummary.name;
+					info.innerText = 	modelName.includes("shared") ? " ":"For More Info Click Here";
 
 					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName) )
 					info.href = (sel.length !=0)?

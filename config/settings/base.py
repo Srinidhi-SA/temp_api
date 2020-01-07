@@ -1524,6 +1524,7 @@ PERMISSIONS_RELATED_TO_DATASET = (
     ('upload_from_s3', 'Upload from s3'),
     ('data_validation', 'Data Validation'),
     ('subsetting_dataset', 'Subsetting dataset'),
+    ('share_dataset', 'Share Dataset')
 )
 
 
@@ -1532,6 +1533,7 @@ PERMISSIONS_RELATED_TO_SIGNAL = (
     ('create_signal', 'Create signal'),
     ('rename_signal', 'Rename signal'),
     ('remove_signal', 'remove signal'),
+    ('share_signal', 'Share Signal')
 )
 
 PERMISSIONS_RELATED_TO_TRAINER = (
@@ -1539,7 +1541,9 @@ PERMISSIONS_RELATED_TO_TRAINER = (
     ('create_trainer', 'Create trainer'),
     ('rename_trainer', 'Rename trainer'),
     ('remove_trainer', 'remove trainer'),
-    ('downlad_pmml', 'Download PMML')
+    ('downlad_pmml', 'Download PMML'),
+    ('share_trainer', 'Share Trainer'),
+    ('edit_trainer', 'Edit Trainer')
 )
 
 PERMISSIONS_RELATED_TO_SCORE = (
@@ -1547,7 +1551,8 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('create_score', 'Create score'),
     ('rename_score', 'Rename score'),
     ('remove_score', 'remove score'),
-    ('download_score', 'Download Score')
+    ('download_score', 'Download Score'),
+    ('share_score', 'Share Score')
 )
 
 PERMISSIONS_RELATED_TO_REGRESSION = (
