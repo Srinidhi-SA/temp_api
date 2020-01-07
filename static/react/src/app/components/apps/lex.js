@@ -67,7 +67,7 @@ export class LexClass extends React.Component {
               <button className="lexBtn" id="pauseLex">
                <span class="glyphicon glyphicon-refresh" style={{paddingRight:5}}></span>Reset
               </button> 
-            <div className="audio-control">
+              <div className="audio-control">
                 <p id="audio-control" className="white-circle">
                     <img style={{height:55,marginTop:6}} src= { STATIC_URL + "assets/images/LexIcon.png"} />
                     <canvas className="visualizer"></canvas>

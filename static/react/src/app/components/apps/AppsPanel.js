@@ -197,7 +197,7 @@ export class AppsPanel extends React.Component {
           <div class="col-md-4 xs-mb-20">
            <div key={index}>
              <div className="app-block">
-               <Link className="app-link" onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
+               <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
                   </div>
@@ -380,7 +380,7 @@ export class AppsPanel extends React.Component {
           <div className="app-block">
                 <Link className="app-link"  to= "/apps/lex">
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-                    <img src= "/assets/images/app_lex1.png" className="img-responsive"/>
+                  <img src={STATIC_URL + "assets/images/app_lex1.png"} class="img-responsive" />
                   </div>
                   <div className="col-md-8 col-sm-9 col-xs-7">
                     <h4>

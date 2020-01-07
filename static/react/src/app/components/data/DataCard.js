@@ -138,7 +138,7 @@ export class DataCard extends React.Component {
             
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                    <div className="rep_block newCardStyle" name={data.name}>
+                    <div id={data.name} className="rep_block newCardStyle" name={data.name}>
                     <div className="card-header"></div>
                     <div className="card-center-tile">
                     <div className="row">

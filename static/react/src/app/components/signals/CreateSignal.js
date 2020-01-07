@@ -134,8 +134,8 @@ export class CreateSignal extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 
-				<Button  onClick={this.closeSignalModal.bind(this)}>Close</Button>
-				<Button bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
+				<Button id="createSignalClose"  onClick={this.closeSignalModal.bind(this)}>Close</Button>
+				<Button id="createSignalCreate" bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
 
 				</Modal.Footer>
 				</Modal>

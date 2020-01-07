@@ -600,7 +600,7 @@ else{
                           </li>
 
                           <li className="text-right">
-                            <Button onClick={this.closePreview.bind(this)}>
+                            <Button id="dpClose" onClick={this.closePreview.bind(this)}>
                               {this.buttons.close.text}
                             </Button>
                             {(this.isSubsetted && !this.props.location.pathname.includes("/models/data"))
@@ -608,7 +608,7 @@ else{
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )
                               : (
-                                <Button onClick={this.moveToVariableSelection.bind(this)} disabled={!isCreateAllowed} bsStyle="primary">
+                                <Button id="dataPreviewCreateModel" onClick={this.moveToVariableSelection.bind(this)} disabled={!isCreateAllowed} bsStyle="primary">
                                   {this.buttons.create.text}</Button>
                               )
 }
