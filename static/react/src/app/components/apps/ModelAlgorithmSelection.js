@@ -55,7 +55,7 @@ export class ModelAlgorithmSelection extends React.Component {
         Notification.requestPermission();
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
-    
+
     let unitLength= document.getElementsByClassName("units").length
     let rateLength= document.getElementsByClassName("rate").length
     var errMsgLen=document.getElementsByClassName("error").length
@@ -144,49 +144,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(msg);
                 return false;
             }
-            
-            else if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (!this.props.pytorchValidateFlag || $(".Optimizer option:selected").text().includes("--Select--") || $(".Loss option:selected").text().includes("--Select--")) ){
-                let errormsg = statusMessages("warning","Please enter values of mandatory fields...","small_mascot");
-                bootbox.alert(errormsg);
-                return false;
-            }
-            else if (this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && Object.keys(this.props.pyTorchLayer).length != 0){
-                for(let i=0;i<this.props.idLayer.length;i++){
-                    if($(".input_unit")[i].value === "" || $(".input_unit")[i].value === undefined){
-                        this.props.dispatch(pytorchValidateFlag(false));
-                        bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
-                        return false;
-                    }
-                    else if($(".output_unit")[i].value === "" || $(".output_unit")[i].value === undefined){
-                        bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
-                        this.props.dispatch(pytorchValidateFlag(false));
-                        return false;
-                    }else if($(".bias option:selected").text().includes("--Select--")){
-                        this.props.dispatch(pytorchValidateFlag(false));
-                        bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
-                        return false;
-                    }
-                }
-                if(this.props.pytorchValidateFlag){
-                     if($(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("Adamax") ){ 
-                        let beta = this.props.pyTorchSubParams;
-                        let tupVal = beta["optimizer"]["betas"].toString();
-                        beta["optimizer"]["betas"] = "("+ tupVal + ")";
-                        this.props.dispatch(setPyTorchSubParams(beta));
-                     }
-                    else if( $(".Optimizer option:selected").text().includes("Rprop")){
-                            let eta = this.props.pyTorchSubParams;
-                            let tupVal1 = eta["optimizer"]["eta"].toString();
-                            eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
-                            this.props.dispatch(setPyTorchSubParams(eta));
-
-                            let tupVal2 = eta["optimizer"]["step_sizes"].toString();
-                            eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
-                            this.props.dispatch(setPyTorchSubParams(eta));
-                    }
-                    this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
-                }
-            }else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
+            else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
                 bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
                 return false
             }else if ($(".activation option:selected").text().includes("--Select--")){
@@ -208,30 +166,52 @@ export class ModelAlgorithmSelection extends React.Component {
               bootbox.alert(statusMessages("warning", "Please resolve errors for TensorFlow.", "small_mascot"));
               return false;
             }
-
-            else{
-                if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && (this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) )){
-                    let beta = this.props.pyTorchSubParams;
-                    let tupVal = beta["optimizer"]["betas"].toString();
-                    beta["optimizer"]["betas"] = "("+ tupVal + ")";
-                    this.props.dispatch(setPyTorchSubParams(beta));
-                }else if((this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected && this.props.pytorchValidateFlag) && ( $(".Optimizer option:selected").text().includes("Rprop"))){
-                    let eta = this.props.pyTorchSubParams;
-                    let tupVal1 = eta["optimizer"]["eta"].toString();
-                    eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
-                    this.props.dispatch(setPyTorchSubParams(eta));
-
-                    let tupVal2 = eta["optimizer"]["step_sizes"].toString();
-                    eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
-                    this.props.dispatch(setPyTorchSubParams(eta));
-                }
-        
         if( tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
             this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",store.getState().apps.targetLevelCounts.length.toString()))
         }
-                this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
-            }
 
+        var pyTorchClassFlag = false;
+        var targetCount;
+        var pyTorchLayerCount;
+        if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected){
+            pyTorchClassFlag = true;
+            targetCount = store.getState().apps.targetLevelCounts;
+            pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
+        }
+
+        if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
+            let errormsg = statusMessages("warning","Please enter mandatory field values of PyTorch Algorithm...","small_mascot");
+            bootbox.alert(errormsg);
+            return false;
+        }
+        else if(pyTorchClassFlag && (pyTorchLayerCount === 0)){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please Add Layers", "small_mascot"));
+            return false;
+        }
+        else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
+            bootbox.alert(statusMessages("warning", "No. of output units in the final layer should be equal to the no. of levels in the target column(i.e."+targetCount.length+").", "small_mascot"));
+            this.props.dispatch(pytorchValidateFlag(false));
+            return false;
+        }
+        
+        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) ){
+            let beta = this.props.pyTorchSubParams;
+            let tupVal = beta["optimizer"]["betas"].toString();
+            beta["optimizer"]["betas"] = "("+ tupVal + ")";
+            this.props.dispatch(setPyTorchSubParams(beta));
+        }
+        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".Optimizer option:selected").text().includes("Rprop")){
+            let eta = this.props.pyTorchSubParams;
+            let tupVal1 = eta["optimizer"]["eta"].toString();
+            eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
+            this.props.dispatch(setPyTorchSubParams(eta));
+
+            let tupVal2 = eta["optimizer"]["step_sizes"].toString();
+            eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
+            this.props.dispatch(setPyTorchSubParams(eta));
+        }
+        this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
     }
     handleOptionChange(e){
         if(e.target.value == 1){
