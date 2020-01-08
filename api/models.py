@@ -858,8 +858,8 @@ class Trainer(models.Model):
     viewed = models.BooleanField(default=False)
     email = models.EmailField(null=True, blank=True)
     shared = models.BooleanField(default=False)
-    shared_by = models.CharField(max_length=100, null=True)
-    shared_slug = models.SlugField(null=True, max_length=300)
+    shared_by = models.CharField(max_length=100, null=True, blank=True)
+    shared_slug = models.SlugField(null=True, max_length=300, blank=True)
 
     class Meta(object):
         ordering = ['-created_at', '-updated_at']
@@ -2118,7 +2118,7 @@ class Score(models.Model):
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
         try:
-            config['config']['one_click'] = {json.dumps(self.trainer.fe_config)}
+            config['config']['one_click'] = json.loads(self.trainer.fe_config)
         except Exception as e:
             print('Could not add one click config as {}'.format(e))
 
