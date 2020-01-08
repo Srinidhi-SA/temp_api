@@ -64,27 +64,27 @@ class LeftPanel extends React.Component {
               <ul className="nav navbar-nav">
               {(view_signal_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
+                  <NavLink id="signalTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
                     <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
                     SIGNALS</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
-                  <NavLink className="sdb sdb_signal deactivate" to="/signals">
+                  <NavLink id="signalTab" className="sdb sdb_signal deactivate" to="/signals">
                     <span></span>
                     SIGNALS</NavLink>
                 </li>}
                 {(APPS_ALLOWED==true)?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
+                  <NavLink id="appsTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
                      <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br />
                     APPS</NavLink>
                 </li>:""}
                 {(view_data_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
+                  <NavLink id="dataTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
                     <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />
                     DATA</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
-                  <NavLink className="sdb sdb_data deactivate" to="/data">
+                  <NavLink id="dataTab" className="sdb sdb_data deactivate" to="/data">
                     <span></span>
                     DATA</NavLink>
                 </li>}

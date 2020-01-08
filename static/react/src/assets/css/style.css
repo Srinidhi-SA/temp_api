@@ -16642,10 +16642,6 @@ body .p-inputtext:enabled:focus:not(.p-error) {
     float: left;
     margin-left: 122px;
 }
-i.fa.fa-trash {
-	margin-top: 2px;
-	padding-right: 1%;
-}
 /* css for lex app */
 .white-circle {
 	cursor: pointer;

@@ -394,13 +394,13 @@ export class VariableSelection extends React.Component {
 				
 				<div class="clearfix xs-m-10"></div>
                <div className="col-lg-2">
-                <Button onClick={this.handleBack} bsStyle="primary"><i className="fa fa-angle-double-left"></i> Back</Button>
+                <Button id="signalBack" onClick={this.handleBack} bsStyle="primary"><i className="fa fa-angle-double-left"></i> Back</Button>
 
                </div>
                 <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
                     <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary">Create Signal</button></span>
+                    <button id="signalCreate" type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>
                
