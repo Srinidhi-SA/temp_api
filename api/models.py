@@ -2114,6 +2114,10 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
+        try:
+            config['config']['one_click'] = {json.dumps(self.trainer.fe_config)}
+        except Exception as e:
+            print('Could not add one click config as {}'.format(e))
 
         self.config = json.dumps(config)
         self.save()
