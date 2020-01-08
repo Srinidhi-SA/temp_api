@@ -899,7 +899,7 @@ class Trainer(models.Model):
             # print "#############################"
             self.get_targetColumn_for_variableSelection_autoML()
         else:
-            config['config']["TRAINER_MODE"] = "analyst"    
+            config['config']["TRAINER_MODE"] = "analyst"
         # creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
@@ -2117,6 +2117,11 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
+
+        if self.trainer.mode == "autoML":
+            config['config']["TRAINER_MODE"] = "autoML"
+        else:
+            config['config']["TRAINER_MODE"] = "analyst"
 
         self.config = json.dumps(config)
         self.save()
