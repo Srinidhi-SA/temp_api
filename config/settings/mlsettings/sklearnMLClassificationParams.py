@@ -201,6 +201,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
     {
         "name": "n_jobs",
         "displayName": "No Of Jobs",
+        "className": "n_jobs_rf",
         "description": "Number of CPU cores to be used when parallelizing over classes",
         "defaultValue": [
             {
@@ -297,6 +298,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
     },
     {
         "name": "warm_start",
+        "className": "warm_start_rf",
         "displayName": "Warm Start",
         "description": "When set to True, reuse the solution of the previous call to fit as initialization",
         "defaultValue": [
@@ -320,6 +322,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
     },
     {
         "name": "class_weight",
+        "className": "class_weight_rf",
         "displayName": "Class Weight",
         "description": "Weights associated with classes of the target column",
         "defaultValue": [
@@ -357,6 +360,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
     },
     {
         "name": "random_state",
+        "className": "random_state_rf",
         "displayName": "Random Seed",
         "description": "The seed of the pseudo random number generator to use when shuffling the data",
         "defaultValue": None,
@@ -375,6 +379,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     {
         "name": "max_iter",
         "displayName": "Maximum Solver Iterations",
+        "className": "max_iter_lr",
         "description": "Maximum number of iterations to be attempted for solver operations",
         "defaultValue": 100,
         "acceptedValue": None,
@@ -389,6 +394,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     {
         "name": "tol",
         "displayName": "Convergence tolerance of iterations(e^-n)",
+        "className": "tol_lr",
         "description": "Tolerance for the stopping criteria",
         "defaultValue": 4,
         "acceptedValue": None,
@@ -404,6 +410,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     {
         "name": "n_jobs",
         "displayName": "No Of Jobs",
+        "className": "n_jobs_lr",
         "description": "Number of CPU cores to be used when parallelizing over classes",
         "defaultValue": [
             {
@@ -465,6 +472,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     {
         "name": "solver",
         "displayName": "Solver Used",
+        "className": "solver_lr",
         "description": "Algorithm to use in the Optimization",
         # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
         "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
@@ -514,6 +522,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     },
     {
         "name": "class_weight",
+        "className": "class_weight_lr",
         "displayName": "Class Weight",
         "description": "Weights associated with classes of the target column",
         "defaultValue": [
@@ -537,6 +546,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
     },
     {
         "name": "random_state",
+        "className": "random_state_lr",
         "displayName": "Random Seed",
         "description": "The seed of the pseudo random number generator to use when shuffling the data",
         "defaultValue": None,
@@ -570,6 +580,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     {
         "name": "max_iter",
         "displayName": "Maximum Solver Iterations",
+        "className": "max_iter_nn",
         "description": "Maximum number of iterations to be attempted for solver operations",
         "defaultValue": 200,
         "acceptedValue": None,
@@ -584,6 +595,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     {
         "name": "tol",
         "displayName": "Convergence tolerance of iterations(e^-n)",
+        "className": "tol_nn",
         "description": "Tolerance for the stopping criteria",
         "defaultValue": 4,
         "neural": True,
@@ -628,6 +640,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     {
         "name": "solver",
         "displayName": "Solver Used",
+        "className": "solver_nn",
         "description": "The solver for weight optimization.",
         # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
         "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_NNSOLVER_CLASSIFICATION],
@@ -640,6 +653,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     },
     {
         "name": "activation",
+        "className": "activation_nn",
         "displayName": "Activation",
         "description": "Activation function for the hidden layer.",
         # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
@@ -676,6 +690,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     },
     {
         "name": "learning_rate",
+        "className": "learning_rate_nn",
         "displayName": "Learning Rate",
         "description": "Learning rate schedule for weight updates.",
         # "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
@@ -750,6 +765,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     },
     {
         "name": "warm_start",
+        "className": "warm_start_nn",
         "displayName": "Warm Start",
         "description": "It reuses the solution of the previous call to fit as initialization",
         "defaultValue": [
@@ -824,6 +840,7 @@ SKLEARN_ML_NEURAL_NETWORK_PARAMS = [
     },
     {
         "name": "alpha",
+        "className": "alpha_nn",
         "displayName": "Alpha",
         "description": "L2 penalty (regularization term) parameter.",
         "defaultValue": 0.0001,
@@ -957,6 +974,7 @@ SKLEARN_ML_SUPPORTED_XGB_TREE_ALGORITHMS = [
 SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
     {
         "name": "eta",
+        "className": "eta_xg",
         "displayName": "Learning Rate",
         "description": "It is the step size shrinkage used to prevent Overfitting",
         "defaultValue": 0.3,
@@ -1123,6 +1141,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
     },
     {
         "name": "class_weight",
+        "className": "class_weight_xg",
         "displayName": "Class Weight",
         "description": "Weights associated with classes of the target column",
         "defaultValue": [
@@ -1149,6 +1168,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
 SKLEARN_ML_NAIVE_BAYES_PARAMS = [
     {
         "name": "alpha",
+        "className": "alpha_nb",
         "displayName": "Alpha",
         "description": "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).",
         "defaultValue": 1.0,
