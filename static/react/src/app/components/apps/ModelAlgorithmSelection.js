@@ -56,21 +56,21 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
     
-    let unitLength= document.getElementsByClassName("units").length
-    let rateLength= document.getElementsByClassName("rate").length
+    let unitLength= document.getElementsByClassName("units_tf").length
+    let rateLength= document.getElementsByClassName("rate_tf").length
     var errMsgLen=document.getElementsByClassName("error").length
     var tfInputs=store.getState().apps.tensorFlowInputs;
     var finalActivation = ["sigmoid","softmax"]
 
    for(let i=0; i<unitLength; i++){
     var unitFlag;
-    if(document.getElementsByClassName("units")[i].value==="")
+    if(document.getElementsByClassName("units_tf")[i].value==="")
     unitFlag = true;
    }
 
    for(let i=0; i<rateLength; i++){
     var rateFlag;
-    if(document.getElementsByClassName("rate")[i].value==="")
+    if(document.getElementsByClassName("rate_tf")[i].value==="")
     rateFlag = true;
    }
    
@@ -189,7 +189,7 @@ export class ModelAlgorithmSelection extends React.Component {
             }else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
                 bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
                 return false
-            }else if ($(".activation option:selected").text().includes("--Select--")){
+            }else if ($(".activation_tf option:selected").text().includes("--Select--")){
                 bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
                 return false
             }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
@@ -198,7 +198,7 @@ export class ModelAlgorithmSelection extends React.Component {
             }else if(unitFlag){
                 bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
                 return false;
-            }else if($(".batch_normalization option:selected").text().includes("--Select--")){
+            }else if($(".batch_normalization_tf option:selected").text().includes("--Select--")){
                 bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer  in TensorFlow.", "small_mascot"));
                 return false;            
             }else if(rateFlag){

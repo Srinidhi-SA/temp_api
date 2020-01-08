@@ -38,12 +38,11 @@ export default class Layer extends Component {
   getOptions(item) {
 
     var arr = item.defaultValue.map(j=>j.displayName);
-    var cls= `form-control ${item.name}`
     arr.unshift("--Select--")
     var optionsHtml = arr.map(k => {
         return <option value={k} > {k}</option>
     })
-    return <div className= {`${item.name}`}><select className= {cls} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
+    return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
 
   deleteLayer=(id)=>{
@@ -92,7 +91,7 @@ export default class Layer extends Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className= "col-md-2">
-                   <input type="number" className= {`form-control ${item.name}`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
+                   <input type="number" className={`form-control ${item.name}_tf`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
                    <div className="error"></div>
                    </div>
                 </div> 
