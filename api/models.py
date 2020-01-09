@@ -842,6 +842,7 @@ class Trainer(models.Model):
     mode = models.CharField(max_length=10, null=True, blank=True)
 
     data = models.TextField(default="{}")
+    fe_config = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -857,8 +858,8 @@ class Trainer(models.Model):
     viewed = models.BooleanField(default=False)
     email = models.EmailField(null=True, blank=True)
     shared = models.BooleanField(default=False)
-    shared_by = models.CharField(max_length=100, null=True)
-    shared_slug = models.SlugField(null=True, max_length=300)
+    shared_by = models.CharField(max_length=100, null=True, blank=True)
+    shared_slug = models.SlugField(null=True, max_length=300, blank=True)
 
     class Meta(object):
         ordering = ['-created_at', '-updated_at']
@@ -891,12 +892,14 @@ class Trainer(models.Model):
         }
 
         if self.mode == 'autoML':
+            config['config']["TRAINER_MODE"] = "autoML"
             dataset_slug = self.dataset.slug
             # print "#############################"
             # print dataset_slug
             # print "#############################"
             self.get_targetColumn_for_variableSelection_autoML()
-
+        else:
+            config['config']["TRAINER_MODE"] = "analyst"
         # creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
@@ -931,7 +934,7 @@ class Trainer(models.Model):
                 if 'TENSORFLOW' in configUI:
                     config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
                 if 'PYTORCH' in configUI:
-                    config['config']["ALGORITHM_SETTING"][6].update({'nnptc_params': configUI['PYTORCH']})    
+                    config['config']["ALGORITHM_SETTING"][6].update({'nnptc_params': configUI['PYTORCH']})
             except Exception as err:
                 print("Error adding Tesorflow Selection to Algorithm")
                 print(err)
@@ -2114,6 +2117,15 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
+        try:
+            config['config']['one_click'] = json.loads(self.trainer.fe_config)
+        except Exception as e:
+            print('Could not add one click config as {}'.format(e))
+
+        if self.trainer.mode == "autoML":
+            config['config']["TRAINER_MODE"] = "autoML"
+        else:
+            config['config']["TRAINER_MODE"] = "analyst"
 
         self.config = json.dumps(config)
         self.save()

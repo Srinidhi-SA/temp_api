@@ -35,38 +35,43 @@ export class TensorFlow extends React.Component {
       if(name=="number_of_epochs" && val<1){
       e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
       }
-      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1))){
+      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)||val=="")){
         e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
+      else if(!Number.isInteger(parseFloat(val)) && val!=""){
+        e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
       }
       else{
         e.target.parentElement.lastElementChild.innerHTML = "" 
+        this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,Math.trunc(Number(val)).toString(),"NonTuningParameter"));
       }
-      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
   }
   
   handleSelectBox(item,e){
     // var categorical_crossentropy =this.props.algorithmData.filter(i=>i.algorithmName==="TensorFlow")[0].parameters.filter(i=>i.name==="loss")[0].defaultValue.filter(ind=>(ind.name==="categorical_crossentropy")).map(val=>val.selected)[0]
-    var loss=$(".loss").val()
-    if(e.target.classList.value=="form-control metrics" && loss=="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")==-1){
-      document.getElementById("loss").innerText=""
-      document.getElementById("metrics").innerText="Metrics should be sparse."
+    var loss=$(".loss_tf").val()
+    if(e.target.classList.value=="form-control layer_tf"||e.target.classList.value=="form-control optimizer_tf"){
+      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
+    }else if(e.target.classList.value=="form-control metrics_tf" && loss=="sparse_categorical_crossentropy" && $(".metrics_tf").val().indexOf("sparse")==-1){
+      document.getElementById("loss_tf").innerText=""
+      document.getElementById("metrics_tf").innerText="Metrics should be sparse."
     }
-    else if(e.target.classList.value=="form-control loss" && loss!="sparse_categorical_crossentropy" && $(".metrics").val().indexOf("sparse")!=-1){
-      document.getElementById("metrics").innerText=""
-      document.getElementById("loss").innerText="Loss should be sparse."
+    else if(e.target.classList.value=="form-control loss_tf" && loss!="sparse_categorical_crossentropy" && $(".metrics_tf").val().indexOf("sparse")!=-1){
+      document.getElementById("metrics_tf").innerText=""
+      document.getElementById("loss_tf").innerText="Loss should be sparse."
     }
-    else if($(".loss").val().indexOf("sparse")==-1&& $(".metrics").val().indexOf("sparse")!=-1){
-      document.getElementById("loss").innerText=""
-      document.getElementById("metrics").innerText="Metrics should not be sparse."
+    else if($(".loss_tf").val().indexOf("sparse")==-1&& $(".metrics_tf").val().indexOf("sparse")!=-1){
+      document.getElementById("loss_tf").innerText=""
+      document.getElementById("metrics_tf").innerText="Metrics should not be sparse."
     }
-    else if($(".metrics").val().indexOf("sparse")==-1 && $(".loss").val().indexOf("sparse")!=-1){
-      document.getElementById("metrics").innerText=""
-      document.getElementById("loss").innerText="Loss should not be sparse."
+    else if($(".metrics_tf").val().indexOf("sparse")==-1 && $(".loss_tf").val().indexOf("sparse")!=-1){
+      document.getElementById("metrics_tf").innerText=""
+      document.getElementById("loss_tf").innerText="Loss should not be sparse."
     }
     else
     {
-      document.getElementById("metrics").innerText=""
-      document.getElementById("loss").innerText=""
+      document.getElementById("metrics_tf").innerText=""
+      document.getElementById("loss_tf").innerText=""
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
     }
   }
@@ -76,7 +81,7 @@ export class TensorFlow extends React.Component {
       var options = arr.map(k => {
           return <option value={k} > {k}</option>
       })
-      return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}`}> {options} </select>
+      return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
   }
     
     
@@ -99,19 +104,19 @@ export class TensorFlow extends React.Component {
 
    parameterValidate=()=>{
 
-   let unitLength= document.getElementsByClassName("units").length
-   let rateLength= document.getElementsByClassName("rate").length
+   let unitLength= document.getElementsByClassName("units_tf").length
+   let rateLength= document.getElementsByClassName("rate_tf").length
    var errMsgLen=document.getElementsByClassName("error").length
 
         for(let i=0; i<unitLength; i++){
           var unitFlag;
-          if(document.getElementsByClassName("units")[i].value==="")
+          if(document.getElementsByClassName("units_tf")[i].value==="")
           unitFlag = true;
         }
 
         for(let i=0; i<rateLength; i++){
           var rateFlag;
-          if(document.getElementsByClassName("rate")[i].value==="")
+          if(document.getElementsByClassName("rate_tf")[i].value==="")
           rateFlag = true;
         }
       
@@ -121,13 +126,13 @@ export class TensorFlow extends React.Component {
             errMsgFlag = true;
         }
 
-    if ($(".activation option:selected").text().includes("--Select--")){
+    if ($(".activation_tf option:selected").text().includes("--Select--")){
        this.props.dispatch(tensorValidateFlag(false));
        bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
     }else if(unitFlag){
        this.props.dispatch(tensorValidateFlag(false));
        bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
-    }else if ($(".batch_normalization option:selected").text().includes("--Select--")){
+    }else if ($(".batch_normalization_tf option:selected").text().includes("--Select--")){
       this.props.dispatch(tensorValidateFlag(false));
       bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer in TensorFlow.", "small_mascot"));
     }else if(rateFlag){
@@ -168,7 +173,6 @@ export class TensorFlow extends React.Component {
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
       var rendercontent = algorithmData.map((item,index)=>{
-        var uniqueId=item.name;
            if(item.paramType=="list"){
               return (
                 <div className ="row mb-20">
@@ -179,7 +183,7 @@ export class TensorFlow extends React.Component {
                  <div className ="row">
                  <div className="col-md-6">
                   {this.getOptions(item)}
-                  <div id={uniqueId}className="error"></div>
+                  <div id={`${item.name}_tf`} className="error"></div>
                   </div>
                   </div>
                    </div>
@@ -196,7 +200,7 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className= {`form-control ${item.name}`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
+                   <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
                    <div className="error"></div>
                 </div>
                 </div> 

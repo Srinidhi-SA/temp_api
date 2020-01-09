@@ -32,15 +32,21 @@ export class Share extends React.Component {
     });
   }
   proceedToShare(userIds){
-    handleShareItem(userIds,this.props.shareItemSlug,this.props.shareItemType,this.props.shareItemName);
-    this.closeShareModal()
-    this.setState({userIds:[]})
+    if($(".shareMultiselect .p-multiselect-label").text() === "Choose users"){
+      document.getElementById("resetMsg").innerText= "Please Choose user";
+    }
+    else{
+      document.getElementById("resetMsg").innerText= " ";
+      handleShareItem(userIds,this.props.shareItemSlug,this.props.shareItemType,this.props.shareItemName);
+      this.closeShareModal()
+      this.setState({userIds:[]})
+    }
   }
 
   render() {
    var rendermultiselect= (this.props.usersList.allUsersList!=undefined? <div className="form-group">
        <div className="content-section implementation multiselect-demo width-multisel">
-       <MultiSelect  value={this.state.userIds} options={this.getMultiSelectOptions()} onChange={(e) => this.setState({userIds: e.value})}
+       <MultiSelect className="shareMultiselect" value={this.state.userIds} options={this.getMultiSelectOptions()} onChange={(e) => this.setState({userIds: e.value})}
         style={{ "minWidth": '22em',"maxWidth":"22em","width": "90%"}}  filter={true} placeholder="Choose users" />
        </div>
        </div>:"")
@@ -75,6 +81,7 @@ export class Share extends React.Component {
       </div>
     </Modal.Body>
     <Modal.Footer>
+    <div id="resetMsg"></div>
       <Button onClick={this.closeShareModal.bind(this)}>Cancel</Button>
       <Button bsStyle="primary" form="shareForm" content="Submit" onClick={this.proceedToShare.bind(this,this.state.userIds)} value="Submit">Share</Button>
     </Modal.Footer>

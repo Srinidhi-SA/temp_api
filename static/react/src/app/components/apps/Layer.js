@@ -22,28 +22,30 @@ export default class Layer extends Component {
     shouldComponentUpdate(nextProps){
         return false
     }
-  
+
   myChangeHandler(item,e){
     let name = item.name;
-    let val = e.target.value === "--Select--"? null:e.target.value;
+    let val = e.target.value === "--Select--"? null:e.target.value; 
     if(name=="units" && val<1){
-    e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+      e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+    }else if(name=="units" &&!Number.isInteger(parseFloat(e.target.value))){
+      e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
     }else if(name=="rate" &&(val<=0||val>=1)){
       e.target.parentElement.lastElementChild.innerHTML = "value range is 0.1 to 0.9"
     }else{
     e.target.parentElement.lastElementChild.innerHTML=""
+    val=name=="units"?Math.trunc(Number(val)).toString():val
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
     }
   }
   getOptions(item) {
 
     var arr = item.defaultValue.map(j=>j.displayName);
-    var cls= `form-control ${item.name}`
     arr.unshift("--Select--")
     var optionsHtml = arr.map(k => {
         return <option value={k} > {k}</option>
     })
-    return <div className= {`${item.name}`}><select className= {cls} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
+    return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
 
   deleteLayer=(id)=>{
@@ -92,7 +94,7 @@ export default class Layer extends Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className= "col-md-2">
-                   <input type="number" className= {`form-control ${item.name}`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
+                   <input type="number" className={`form-control ${item.name}_tf`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
                    <div className="error"></div>
                    </div>
                 </div> 

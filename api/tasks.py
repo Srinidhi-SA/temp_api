@@ -779,7 +779,6 @@ def trigger_outlook_periodic_job():
             print("All set to proceed to upload dataset.")
 
             for configkey, configvalue in mails.items():
-                print(configkey)
                 data = {}
                 for key, value in configvalue.items():
                     try:
@@ -787,9 +786,9 @@ def trigger_outlook_periodic_job():
                         # print key,value
                         # value is a dict
                         #############  Create config and trigger metadata job for train and test Dataset  #################
-                        if 'sub_target' in key:
+                        if key == 'sub_target':
                             data['sub_target'] = value.capitalize()
-                        if 'target' in key:
+                        if key == 'target':
                             data['target'] = value.capitalize()
                         if 'train_dataset' in key:
                             input_file = value
@@ -816,6 +815,9 @@ def trigger_outlook_periodic_job():
         else:
             outlook_autoML_failure_mail(trainer_object_id=None, error=mails['err'], mail_id=mail_id)
             print('failure mail sent')
+    else:
+        print("No mails.")
+    '''
         print("All set to proceed to upload dataset.")
 
         for configkey, configvalue in mails.items():
@@ -850,9 +852,8 @@ def trigger_outlook_periodic_job():
                 break
             ##########################################################################################
 
-            # pass
-    else:
-        print("No mails.")
+            # pass'''
+
     '''
     Task1: Look for auth Code, Access Token and Refresh Token : DONE
     Task2: Get mails from outlook
@@ -881,6 +882,8 @@ def trigger_metaData_autoML(data):
     from api.datasets.serializers import DatasetSerializer
 
     fail_log = dict()
+    test_dataset_serializer = None
+    train_dataset_serializer = None
 
     try:
         #########  Trainer dataset config   #########
@@ -899,18 +902,19 @@ def trigger_metaData_autoML(data):
         pass
     try:
         #########  Test dataset config   #########
-        test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
-        test_f = File(test_file)
-        test_dataset_config = dict()
-        test_dataset_config['name'] = data['score_name'] + '_Test'
-        test_dataset_config['input_file'] = test_f
-        test_dataset_config['datasource_type'] = 'fileUpload'
-        test_dataset_config['created_by'] = user_id.id
-        test_dataset_details = convert_to_string(test_dataset_config)
-        test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
-        ###################################################################
+        if 'Testdataset' in data:
+            test_file = open(settings.BASE_DIR + '/media/datasets/' + data['Testdataset'])
+            test_f = File(test_file)
+            test_dataset_config = dict()
+            test_dataset_config['name'] = data['score_name'] + '_Test'
+            test_dataset_config['input_file'] = test_f
+            test_dataset_config['datasource_type'] = 'fileUpload'
+            test_dataset_config['created_by'] = user_id.id
+            test_dataset_details = convert_to_string(test_dataset_config)
+            test_dataset_serializer = DatasetSerializer(data=test_dataset_details)
+            ###################################################################
     except Exception as err:
-        fail_log['test_config_error'] = str(err)
+        # fail_log['test_config_error'] = str(err)
         pass
 
     if train_dataset_serializer.is_valid():
@@ -925,6 +929,7 @@ def trigger_metaData_autoML(data):
             model_config['mode'] = "autoML"
             model_config['email'] = data['email']
             model_config['dataset'] = train_dataset_object.id
+            model_config['config'] = dict()
             model_config['config']['targetColumn'] = data['target']
             model_config['config']['targetLevel'] = data['sub_target']
             model_config['created_by'] = user_id.id
@@ -939,33 +944,32 @@ def trigger_metaData_autoML(data):
             if trainer_serializer.is_valid():
                 print("Saving trainer Serializer")
                 trainer_object = trainer_serializer.save()
-                print(trainer_object)
                 try:
-                    if test_dataset_serializer.is_valid():
-                        print("Saving test dataset Serializer")
-                        test_dataset_object = test_dataset_serializer.save()
-                        print(test_dataset_object)
-                        ################ Create config for Score object that to be triggered after model job   ##############
-                        score_config = dict()
-                        score_config['name'] = data['name'] + '_Score'
-                        score_config['app_id'] = 2
-                        score_config['trainer'] = trainer_object.id
-                        score_config['dataset'] = test_dataset_object.id
-                        score_config['created_by'] = user_id.id
+                    if 'Testdataset' in data:
+                        if test_dataset_serializer.is_valid():
+                            print("Saving test dataset Serializer")
+                            test_dataset_object = test_dataset_serializer.save()
+                            print(test_dataset_object)
+                            ################ Create config for Score object that to be triggered after model job   ##############
+                            score_config = dict()
+                            score_config['name'] = data['name'] + '_Score'
+                            score_config['app_id'] = 2
+                            score_config['trainer'] = trainer_object.id
+                            score_config['dataset'] = test_dataset_object.id
+                            score_config['created_by'] = user_id.id
 
-                        from api.utils import ScoreSerlializer
-                        score_serializer = ScoreSerlializer(data=score_config, context={})
-                        if score_serializer.is_valid():
-                            print("Saving score Serializer")
-                            score_object = score_serializer.save()
-                            print(score_object)
-                            test_dataset_object.create()
-                        else:
-                            fail_log['score_serializer_error'] = str(score_serializer.errors)
-                            # print(score_serializer.errors)
+                            from api.utils import ScoreSerlializer
+                            score_serializer = ScoreSerlializer(data=score_config, context={})
+                            if score_serializer.is_valid():
+                                print("Saving score Serializer")
+                                score_object = score_serializer.save()
+                                print(score_object)
+                                test_dataset_object.create()
+                            else:
+                                fail_log['score_serializer_error'] = str(score_serializer.errors)
+                                # print(score_serializer.errors)
                     else:
-                        fail_log['test_dataset_serializer_error'] = str(test_dataset_serializer.errors)
-                        # print(test_dataset_serializer.errors)
+                        print("There's no test data!")
                 except Exception as err:
                     fail_log['score_generation_error'] = str(err)
                     pass
@@ -975,6 +979,7 @@ def trigger_metaData_autoML(data):
                 fail_log['trainer_serializer_error'] = str(trainer_serializer.errors)
                 # print(trainer_serializer.errors)
             ######### MODEL OBJECT SAVED  ---->  GO FOR METADATA CREATE ###########
+            print("Going for metadata creation!!!")
             train_dataset_object.create()
         except Exception as err:
             fail_log['model_config_error'] = str(err)
@@ -988,6 +993,7 @@ def trigger_metaData_autoML(data):
         error = ''
         for i in fail_log:
             error = error + '\n' + i
+        print('fail log >> ', fail_log)
         outlook_autoML_failure_mail(trainer_object_id=None, error=error, mail_id=data['email'])
         print('failure mail sent')
 
