@@ -303,7 +303,7 @@ class InsightListSerializers(serializers.ModelSerializer):
         try:
             ret['job_status'] = instance.job.status
         except:
-            ret['job_status'] = None      
+            ret['job_status'] = None
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,
@@ -493,7 +493,10 @@ class ScoreSerlializer(serializers.ModelSerializer):
         # except:
         #   ret['file_size']=-1
         #  ret['proceed_for_loading'] = True
-        ret['job_status'] = instance.job.status
+        try:
+            ret['job_status'] = instance.job.status
+        except:
+            ret['job_status'] = None    
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
