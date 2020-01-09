@@ -914,7 +914,7 @@ class ScoreView(viewsets.ModelViewSet):
                         'name': score_name + str(random.randint(1, 100)),
                         'dataset': score_obj.dataset.id,
                         'trainer': score_obj.trainer.id,
-                        'created_by': User.objects.get(pk=i).id,
+                        'created_by': User.objects.get(pk=id).id,
                         'model_data': score_obj.model_data,
                         'app_id': score_obj.app_id,
                         'config': score_obj.config,
@@ -936,7 +936,7 @@ class ScoreView(viewsets.ModelViewSet):
                         'name': score_name + '_shared' +str(random.randint(1, 100)),
                         'dataset': score_obj.dataset.id,
                         'trainer': score_obj.trainer.id,
-                        'created_by': User.objects.get(pk=i).id,
+                        'created_by': User.objects.get(pk=id).id,
                         'model_data': score_obj.model_data,
                         'app_id': score_obj.app_id,
                         'config': score_obj.config,
@@ -6776,6 +6776,7 @@ def view_model_summary_detail(request):
             import operator
             #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
             FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
             FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
             FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()

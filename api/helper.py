@@ -1618,14 +1618,14 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                                     info_dict[u_id]['sub_target'] = info.replace('sub-label', '').replace(':', '').strip()
                                 elif 'target' in info:
                                     info_dict[u_id]['target'] = info.replace('target', '').replace(':', '').strip()
-
                         '''if 'target' in info_dict[u_id]['mail'].lower():
                             # check = re.search(r'target: (\S+)',info_dict[u_id]['mail'].lower())
                             # if check:
                             # info_dict[u_id]['target'] = check.group(1).replace('"','')
                             # info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
                             info_dict[u_id]['target'] = info_dict[u_id]['mail'].split('||')[0].replace('target: ',
-                                                                                                       '').strip()'''
+                                                                                                     '').strip()'''
+                        ''' 
                         if 'sub-label' in info_dict[u_id]['mail'].lower():
                             check = re.search(r'sub-label: (\S+)', info_dict[u_id]['mail'].lower())
                             if check:
@@ -1637,7 +1637,7 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                             if check:
                                 info_dict[u_id]['target'] = check.group(1).replace('"', '')
                                 info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'", "")
-
+                        '''
                         get_my_messages(access_token, info_dict, message_id=id, id_element=u_id)
                     else:
                         u_id = str(datetime.datetime.now())
