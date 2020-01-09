@@ -195,13 +195,13 @@ export class ModelAlgorithmSelection extends React.Component {
             return false;
         }
         
-        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) ){
+        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
             let beta = this.props.pyTorchSubParams;
             let tupVal = beta["optimizer"]["betas"].toString();
             beta["optimizer"]["betas"] = "("+ tupVal + ")";
             this.props.dispatch(setPyTorchSubParams(beta));
         }
-        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".Optimizer option:selected").text().includes("Rprop")){
+        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".optimizer_pt option:selected").text().includes("Rprop")){
             let eta = this.props.pyTorchSubParams;
             let tupVal1 = eta["optimizer"]["eta"].toString();
             eta["optimizer"]["eta"] = "("+ tupVal1 + ")";

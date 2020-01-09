@@ -93,11 +93,11 @@ export class PyLayer extends React.Component {
             newLyrVal[parameterData.name] = parseInt(val);
             this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
         }
-        if(document.getElementsByClassName("input_unit")[this.props.idNum-1].value === ""){
+        if(document.getElementsByClassName("input_unit_pt")[this.props.idNum-1].value === ""){
             this.props.dispatch(pytorchValidateFlag(false));
-        }else if(document.getElementsByClassName("output_unit")[this.props.idNum-1].value === ""){
+        }else if(document.getElementsByClassName("output_unit_pt")[this.props.idNum-1].value === ""){
             this.props.dispatch(pytorchValidateFlag(false));
-        }else if($(".bias option:selected").text().includes("--Select--")){
+        }else if($(".bias_pt option:selected").text().includes("--Select--")){
             this.props.dispatch(pytorchValidateFlag(false));
         }
     }
@@ -209,7 +209,7 @@ export class PyLayer extends React.Component {
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className ="col-md-4">{item[i].description}</label>
                             <div className="col-md-1">
-                                <input type="number" class="form-control" onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
+                                <input type="number" class={`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
                                 <div className="error"></div>
                             </div>
                         </div>
@@ -229,7 +229,7 @@ export class PyLayer extends React.Component {
                                 <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                 <label className="col-md-4">{item[i].description}</label>
                                 <div className = "col-md-3">
-                                    <select className="form-control" ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
+                                    <select className={`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
                                         {optionsTemp}
                                     </select>
                                     <div className="error"></div>
@@ -244,7 +244,7 @@ export class PyLayer extends React.Component {
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className="col-md-4">{item[i].description}</label>
                                 <div className="col-md-1">
-                                    <input type="number" className="form-control p" defaultValue={item[i].defaultValue} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
+                                    <input type="number" className={`form-control ${item[i].name}_pt`} defaultValue={item[i].defaultValue} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
                                     <div className="error"></div>
                                 </div>
                         </div>
@@ -292,7 +292,7 @@ export class PyLayer extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-3">
-                                <select ref={(el) => { this.eleSel = el }} className="form-control" onChange={this.selectHandleChange.bind(this,parameterData)} >
+                                <select ref={(el) => { this.eleSel = el }} className={`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)} >
                                     {optionsTemp}
                                 </select>
                                 <div className = "error"></div>
@@ -315,7 +315,7 @@ export class PyLayer extends React.Component {
                     var mandateField = ["Input Units","Output Units"]
                     switch(parameterData.displayName){
                         case "Input Units":
-                            var classN= "form-control input_unit";
+                            var classN= "form-control input_unit_pt";
                             if(this.props.idNum>1){
                                 var defVal = parseInt(this.props.pyTorchLayer[this.props.idNum-1].units_op)
                                 var disableVal = true
@@ -325,7 +325,7 @@ export class PyLayer extends React.Component {
                             }
                             break;
                         case "Output Units":
-                            var classN= "form-control output_unit";
+                            var classN= "form-control output_unit_pt";
                             var defVal = parameterData.defaultValue;
                             var disableVal = false
                             break;
