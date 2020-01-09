@@ -6776,6 +6776,7 @@ def view_model_summary_detail(request):
             import operator
             #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
             FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
             FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
             FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
