@@ -35,13 +35,16 @@ export class TensorFlow extends React.Component {
       if(name=="number_of_epochs" && val<1){
       e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
       }
-      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1))){
+      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)||val=="")){
         e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+      }
+      else if(!Number.isInteger(parseFloat(val)) && val!=""){
+        e.target.parentElement.lastElementChild.innerHTML = "Decimals are not allowed"
       }
       else{
         e.target.parentElement.lastElementChild.innerHTML = "" 
+        this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,Math.trunc(Number(val)).toString(),"NonTuningParameter"));
       }
-      this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
   }
   
   handleSelectBox(item,e){

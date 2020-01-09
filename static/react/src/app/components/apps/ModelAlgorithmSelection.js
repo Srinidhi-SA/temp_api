@@ -61,6 +61,7 @@ export class ModelAlgorithmSelection extends React.Component {
     var errMsgLen=document.getElementsByClassName("error").length
     var tfInputs=store.getState().apps.tensorFlowInputs;
     var finalActivation = ["sigmoid","softmax"]
+    var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="TensorFlow")[0].selected
 
    for(let i=0; i<unitLength; i++){
     var unitFlag;
