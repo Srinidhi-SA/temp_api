@@ -67,6 +67,10 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
         }
+        else if( ($(".zero_infinity")[0] != undefined) && ($(".zero_infinity option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
+        }
         else if( ($(".blank")[0] != undefined) && ($(".blank")[0].value === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter blank value", "small_mascot"));
@@ -202,22 +206,30 @@ export class PyTorch extends React.Component {
     changeTextboxValue(parameterData,e){
       let name = parameterData.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
-      if(name == "number_of_epochs" && val<1){
+      if(name == "number_of_epochs" && (val<1 || val==="")){
         e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
         this.props.dispatch(pytorchValidateFlag(false));
       }
-      else if(name=="batch_size" && ((val < 0 ) || (val > this.props.datasetRow-1)) ){
+      else if(name === "number_of_epochs" && (!Number.isInteger(parseFloat(val))) ){
+        e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+        this.props.dispatch(pytorchValidateFlag(false));
+      }
+      else if(name=="batch_size" && ( val<0 || val>this.props.datasetRow-1 || val==="") ){
         e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
         this.props.dispatch(pytorchValidateFlag(false));
       }
-        else {
-            e.target.parentElement.lastElementChild.innerHTML = ""
-            this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
-            this.props.dispatch(pytorchValidateFlag(true));
-            let subParamArry = this.props.pyTorchSubParams;
-            subParamArry[parameterData.name] = parseInt(e.target.value);
-            this.props.dispatch(setPyTorchSubParams(subParamArry));
-        }
+      else if(name === "batch_size" && (!Number.isInteger(parseFloat(val))) ){
+        e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+        this.props.dispatch(pytorchValidateFlag(false));
+      }
+    else {
+        e.target.parentElement.lastElementChild.innerHTML = ""
+        this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
+        this.props.dispatch(pytorchValidateFlag(true));
+        let subParamArry = this.props.pyTorchSubParams;
+        subParamArry[parameterData.name] = parseInt(e.target.value);
+        this.props.dispatch(setPyTorchSubParams(subParamArry));
+    }
     }
 
     setChangeSubValues(data,parameterData,e){
@@ -230,7 +242,7 @@ export class PyTorch extends React.Component {
                 e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to 100"
             }else if(!Number.isInteger(parseFloat(val))){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
+                e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
             }else{
                 e.target.parentElement.lastElementChild.innerHTML = ""
                 this.props.dispatch(pytorchValidateFlag(true));
@@ -239,69 +251,77 @@ export class PyTorch extends React.Component {
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
             }
         }
-        else if(name === "weight" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
+        else if(name === "weight" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "ignore_index" && (!Number.isInteger(parseFloat(val)) || val<0 || val === "")){
+        else if(name === "ignore_index" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive interger"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "eps" && (val>1 || val<0) || val === ""){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
-        }
-        else if(name === "rho" && (val>1 || val<0) || val === ""){
+        else if(name === "eps" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "lr" && (val>1 || val<0) || val === ""){
+        else if(name === "rho" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "weight_decay" && (val>0.1 || val<0) || val === ""){
+        else if(name === "lr" && (val>1 || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+        }
+        else if(name === "weight_decay" && (val>0.1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 0.1"
         }
-        else if(name === "lr_decay" && (val>1 || val<0) || val === ""){
+        else if(name === "lr_decay" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "lambd" && (val>1 || val<0) || val === ""){
+        else if(name === "lambd" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "alpha" && (val>1 || val<0) || val === ""){
+        else if(name === "alpha" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "t0" && (val>1 || val<0) || val === ""){
+        else if(name === "t0" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "max_iter" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "max_iter" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "max_eval" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "max_eval" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "tolerance_grad" && (val>1 || val<0) || val === ""){
+        else if(name === "tolerance_grad" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "tolerance_change" && (val>1 || val<0) || val === ""){
+        else if(name === "tolerance_change" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "history_size" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "history_size" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "momentum" && (val>1 || val<0) || val === ""){
+        else if(name === "momentum" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+        }
+        else if(name === "dampening" && (val>1 || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+        }
+        else if( (name === "weight" || name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && !Number.isInteger(parseFloat(val)) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
         }
         else if(name === "betas"){
             let selectedPar = subParamArry["optimizer"];
@@ -447,34 +467,37 @@ export class PyTorch extends React.Component {
 
                     switch(item[i].name){
                         case "betas":
-                            var classN1 = "form-control betas beta1"
-                            var classN2 = "form-control betas beta2"
                         case "eta":
+                        case "step_sizes":
+                            if(item[i].name === "betas"){
+                                var classN1 = "form-control betas beta1"
+                                var classN2 = "form-control betas beta2"
+                            }else if(item[i].name === "eta"){
                                 var classN1 = "form-control eta eta1"
                                 var classN2 = "form-control eta eta2"
-                        case "step_sizes":
+                            }else if(item[i].name === "step_sizes"){
                                 var classN1 = "form-control step_sizes step_sizes1"
                                 var classN2 = "form-control step_sizes step_sizes2"
-                                
-                                    arr1.push(
-                                        <div className = "row mb-20">
-                                            <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
-                                            <label className = "col-md-4">{item[i].description}</label>
-                                            <div>
-                                                <div className ="col-md-1">
-                                                <label>{item[i].displayName}1</label>
-                                                    <input type="number" className ={classN1} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.9" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                                    <div className ="error"></div>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label>{item[i].displayName}2</label>
-                                                    <input type="number" className={classN2} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.99" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                                    <div class="error"></div>
-                                                </div>
-                                            </div>
+                            }
+                            arr1.push(
+                                <div className = "row mb-20">
+                                    <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
+                                    <label className = "col-md-4">{item[i].description}</label>
+                                    <div>
+                                        <div className ="col-md-1">
+                                        <label>{item[i].displayName}1</label>
+                                            <input type="number" className ={classN1} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.9" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <div className ="error"></div>
                                         </div>
-                                    );
-                                break;
+                                        <div class="col-md-1">
+                                            <label>{item[i].displayName}2</label>
+                                            <input type="number" className={classN2} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue="0.99" onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <div class="error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        break;
                         default :
                                 var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0"]
                                 arr1.push(
@@ -485,7 +508,6 @@ export class PyTorch extends React.Component {
                                             <input type ="number" className = {`form-control ${item[i].displayName}`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                             <div className = "error"></div>
                                         </div>
-                                        <div className="clearfix"></div>
                                     </div>
                                 );
                             break;
@@ -524,7 +546,7 @@ export class PyTorch extends React.Component {
                                     optionsTemp.push(<option value={k} > {k}</option>)
                                 })
                                 arr1.push(
-                                        <div className = "row mb-20">
+                                    <div className = "row mb-20">
                                         <label className ={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
@@ -533,7 +555,6 @@ export class PyTorch extends React.Component {
                                             </select>
                                             <div className = "error"></div>
                                         </div>
-                                        <div className ="clearfix"></div>
                                     </div>
                                 );
                         break;
@@ -586,39 +607,25 @@ export class PyTorch extends React.Component {
                             : ""}
                             {(selectedValue != "Linear" && selectedValue != "" && selectedValue != undefined )?
                                 this.props.pyTorchSubParams[parameterData.name][parameterData.name] === "None"?""
-                                    :<div>
-                                        {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)}
-                                    </div>
+                                    :
+                                this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
+                                    
                                 :""
                             }
-                        <div className = "clearfix"></div>
-                    </div>                    
+                        </div>
                    );
                 break;
             case "number":
                 if(parameterData.uiElemType == "textBox"){
                     let mandateField = ["Batch Size","Number of Epochs"];
-                    switch(parameterData.displayName){
-                        case "Batch Size":
-                            var classN = "form-control batchCls";
-                            break;
-                        case "Number of Epochs":
-                            classN = "form-control epochsCls"
-                            break;
-                        default:
-                            classN = "form-control";
-                            var type = "number";
-                            break;
-                    }
                     return (
                         <div className = "row mb-20">
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label class = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-1">
-                                <input type = "number" className = {classN} onKeyDown = { (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue = {parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                                <input type = "number" className = "form-control" onKeyDown = { (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue = {parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
                                 <div className = "error"></div>
                             </div>
-                            <div className = "clearfix"></div>
                         </div>
                     );
                 }
@@ -637,23 +644,13 @@ export class PyTorch extends React.Component {
         let renderPyTorchContent = pyTochData.parameters.map((pydata,index) =>{
             if(pydata.display){
                 const pyTorchparams = this.renderPyTorchData(pydata);
-                var formClassName =`${pydata.name}`
-                return(
-                    <div className = {formClassName}>
-                        {pyTorchparams}
-                    </div>
-
-                );
+                return pyTorchparams;
             }
         });
         return (
             <div className = "col-md-12">
-                <div className = "row mb-20">
-                    <div className = "form-group row">
-                        {renderPyTorchContent}
-                    </div>
-                </div>
-          </div>
+                {renderPyTorchContent}
+            </div>
         );
 
     }

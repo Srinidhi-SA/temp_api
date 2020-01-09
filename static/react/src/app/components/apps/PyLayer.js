@@ -76,7 +76,7 @@ export class PyLayer extends React.Component {
         let val = e.target.value;
         if(!Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
         else if(val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -84,7 +84,7 @@ export class PyLayer extends React.Component {
         }
         else if(val<=0){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be greater than 0"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter value greater than 0"
         }else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerHTML = ""
@@ -112,65 +112,65 @@ export class PyLayer extends React.Component {
     setLayerSubParams(subparameterData,defaultParamName,e){
         let name = subparameterData.name;
         let val = e.target.value;
-        if(name === "alpha" && (val>1 || val<0) || val === ""){
+        if(name === "alpha" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "lambd" && (val>1 || val<0) || val === ""){
+        else if(name === "lambd" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "min_val" && (val>1 || val<-1) || val === ""){
+        else if(name === "min_val" && (val>1 || val<-1 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "max_val" && (val>1 || val<0) || val === ""){
+        else if(name === "max_val" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "negative_slope" && (val>1 || val<0) || val === ""){
+        else if(name === "negative_slope" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "embed_dim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "embed_dim" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "num_heads" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "num_heads" && ( val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "kdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "kdim" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
-        else if(name === "vdim" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "vdim" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive value"
         }
-        else if(name === "init" && (val>1 || val<0) || val === ""){
+        else if(name === "init" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "lower" && (val>1 || val<0) || val === ""){
+        else if(name === "lower" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "upper" && (val>1 || val<0) || val === ""){
+        else if(name === "upper" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
         }
-        else if(name === "beta" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "beta" && ( val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive value"
         }
-        else if(name === "threshold" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "threshold" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive value"
         }
-        else if(name === "num_features" && (!(Number.isInteger(parseFloat(val))) || val<0) || val === ""){
+        else if(name === "num_features" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value should be a positive integer"
+            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
         }
         else if(name === "eps" && (val>1 || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -183,6 +183,10 @@ export class PyLayer extends React.Component {
         else if(name === "p" && (val<0 || val>1 || val === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+        }
+        else if( (name === "embed_dim" || name === "num_heads" || name === "kdim" || name === "vdim" || name === "num_features") && !Number.isInteger(parseFloat(val)) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
         }
         else{
             this.props.dispatch(pytorchValidateFlag(true));
@@ -296,10 +300,10 @@ export class PyLayer extends React.Component {
                         </div>
                         {(selectedValue != "None" && selectedValue != "" && selectedValue != "undefined" && selectedValue != "bias" )?
                                 parameterData.displayName === "dropout"?
-                                    <div> {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)} </div>
+                                    this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
                                 :
                                 options.filter(i=>i.name === selectedValue)[0].parameters === null?"":
-                                    <div> {this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)} </div>
+                                    this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
                                 :""
                             }
                         <div className = "clearfix"></div>
@@ -308,10 +312,9 @@ export class PyLayer extends React.Component {
                 break;
             case "number":
                 if(parameterData.uiElemType == "textBox"){
-                    var mandateField = ["Input Units","Output Units","Dropout"]
+                    var mandateField = ["Input Units","Output Units"]
                     switch(parameterData.displayName){
                         case "Input Units":
-                            var type = "number";
                             var classN= "form-control input_unit";
                             if(this.props.idNum>1){
                                 var defVal = parseInt(this.props.pyTorchLayer[this.props.idNum-1].units_op)
@@ -322,14 +325,12 @@ export class PyLayer extends React.Component {
                             }
                             break;
                         case "Output Units":
-                            var type = "number";
                             var classN= "form-control output_unit";
                             var defVal = parameterData.defaultValue;
                             var disableVal = false
                             break;
                         default:
                             classN= "form-control";
-                            var type= "number";
                             var defVal = parameterData.defaultValue;
                             var disableVal = false
                             break;
@@ -339,25 +340,11 @@ export class PyLayer extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
-                                <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
+                                <input type="number" className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
                                 <div className = "error"></div>
                             </div>
                             <div class = "clearfix"></div> 
                         </div>
-                    );
-                }else if(parameterData.uiElemType == "slider"){
-                    var mandateField = ["dropout"]
-                    return(
-                        <div className = "row mb-20">
-                            <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
-                            <label className = "col-md-4">{parameterData.description}</label>
-                                <div className="col-md-1">
-                                    <input type="number" className="form-control" defaultValue={parameterData.defaultVal} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.changeTextBoxValue.bind(this,parameterData)}/>
-                                    <div className="error"></div>
-                                </div>
-                            <div class="clearfix"></div> 
-                        </div>
-                                
                     );
                 }
                 break;
@@ -377,34 +364,23 @@ export class PyLayer extends React.Component {
         let renderPyTorchLayer = this.props.parameterData.parameters.filter(i=>i.displayName === "Layer")[0].defaultValue[0].parameters.map((layerData,index)=>{
                 if(layerData.display){
                     const lyr = this.renderPyTorchData(layerData);
-                    if(layerData.name === "activation"){
-                        var formClassName =`row py${layerData.name}`
-                    }else{
-                        var formClassName =`row ${layerData.name}`
-                    }
-                    return(
-                        <div className = {formClassName}>
-                            {lyr}
-                        </div>
-                    );
+                    return lyr;
                 }
             });
         return (
-            <div class={cls} id={clsId} style={{'marginRight':'3%'}}>
-                <div class="layer">
-                    <div class="layerHeader" id={this.props.idNum}>
-                        Linear Layer {this.props.idNum}
-                        <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
-                        {(this.props.idLayer.length === this.props.idNum)?
-                            <i className="fa fa-trash-o" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
-                            :""
-                        }
-                    </div>
-                    <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
-                        <div className="card card-body">
-                            <div class="layerBody" style={{'paddingLeft':'15px'}}>
-                                {renderPyTorchLayer}
-                            </div>
+            <div class={cls} id={clsId}>
+                <div class="layerHeader" id={this.props.idNum}>
+                    Linear Layer {this.props.idNum}
+                    <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
+                    {(this.props.idLayer.length === this.props.idNum)?
+                        <i className="fa fa-trash-o" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
+                        :""
+                    }
+                </div>
+                <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
+                    <div className="card card-body">
+                        <div class="layerBody" style={{'paddingLeft':'15px'}}>
+                            {renderPyTorchLayer}
                         </div>
                     </div>
                 </div>
