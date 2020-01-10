@@ -55,31 +55,10 @@ export class ModelAlgorithmSelection extends React.Component {
         Notification.requestPermission();
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
-    
-    let unitLength= document.getElementsByClassName("units_tf").length
-    let rateLength= document.getElementsByClassName("rate_tf").length
-    var errMsgLen=document.getElementsByClassName("error").length
-    var tfInputs=store.getState().apps.tensorFlowInputs;
-    var finalActivation = ["sigmoid","softmax"]
-
-   for(let i=0; i<unitLength; i++){
-    var unitFlag;
-    if(document.getElementsByClassName("units_tf")[i].value==="")
-    unitFlag = true;
-   }
-
-   for(let i=0; i<rateLength; i++){
-    var rateFlag;
-    if(document.getElementsByClassName("rate_tf")[i].value==="")
-    rateFlag = true;
-   }
-   
-   for(let i=0; i<errMsgLen; i++){
-        var errMsgFlag;
-        if(document.getElementsByClassName("error")[i].innerText!="")
-        errMsgFlag = true;
-       }
-            if(!isContinueRange || !isContinueMulticheck){
+            
+            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="TensorFlow")[0].selected
+            
+        if(!isContinueRange || !isContinueMulticheck){
              if(document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Fit Intercept...","small_mascot");
                     bootbox.alert(msg);
@@ -143,33 +122,59 @@ export class ModelAlgorithmSelection extends React.Component {
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
                 return false;
+        }
+        if(tfFlag){
+       var tfInputs=store.getState().apps.tensorFlowInputs;
+       let units= document.getElementsByClassName("units_tf")
+       let rates= document.getElementsByClassName("rate_tf")
+       var errMsgs=document.getElementsByClassName("error")
+       var finalActivation = ["sigmoid","softmax"]
+        for(let i=0; i<units.length; i++){
+            var unitFlag;
+            if(units[i].value==="")
+            unitFlag = true;
+           }
+        
+        for(let i=0; i<rates.length; i++){
+            var rateFlag;
+            if(rates[i].value==="")
+            rateFlag = true;
+           }
+           
+        for(let i=0; i<errMsgs.length; i++){
+            var errMsgFlag;
+            if(errMsgs[i].innerText!="")
+            errMsgFlag = true;
             }
-            else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
-                bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
-                return false
-            }else if ($(".activation_tf option:selected").text().includes("--Select--")){
-                bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
-                return false
-            }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
-                bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Softmax' or 'Sigmoid' for activation.", "small_mascot"));
-                return false;
-            }else if(unitFlag){
-                bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
-                return false;
-            }else if($(".batch_normalization_tf option:selected").text().includes("--Select--")){
-                bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer  in TensorFlow.", "small_mascot"));
-                return false;            
-            }else if(rateFlag){
-              bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
-              return false;
-            }else if(errMsgFlag){
-              bootbox.alert(statusMessages("warning", "Please resolve errors for TensorFlow.", "small_mascot"));
-              return false;
-            }
-        if( tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
+
+        if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
+        bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
+        return false
+        }else if ($(".activation_tf option:selected").text().includes("--Select--")){
+            bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
+            return false
+        }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
+            bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Softmax' or 'Sigmoid' for activation.", "small_mascot"));
+            return false;
+        }else if(unitFlag){
+            bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
+            return false;
+        }else if($(".batch_normalization_tf option:selected").text().includes("--Select--")){
+            bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer  in TensorFlow.", "small_mascot"));
+            return false;            
+        }else if(rateFlag){
+            bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
+            return false;
+        }else if(errMsgFlag){
+            bootbox.alert(statusMessages("warning", "Please resolve errors for TensorFlow.", "small_mascot"));
+            return false;
+        }
+       
+     if(tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
             this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",store.getState().apps.targetLevelCounts.length.toString()))
         }
-
+        
+    }
         var pyTorchClassFlag = false;
         var targetCount;
         var pyTorchLayerCount;
@@ -186,22 +191,22 @@ export class ModelAlgorithmSelection extends React.Component {
         }
         else if(pyTorchClassFlag && (pyTorchLayerCount === 0)){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please Add Layers", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
             return false;
         }
         else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
-            bootbox.alert(statusMessages("warning", "No. of output units in the final layer should be equal to the no. of levels in the target column(i.e."+targetCount.length+").", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
             this.props.dispatch(pytorchValidateFlag(false));
             return false;
         }
         
-        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".Optimizer option:selected").text().includes("Adam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("SparseAdam") || $(".Optimizer option:selected").text().includes("AdamW") || $(".Optimizer option:selected").text().includes("Adamax") ) ){
+        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
             let beta = this.props.pyTorchSubParams;
             let tupVal = beta["optimizer"]["betas"].toString();
             beta["optimizer"]["betas"] = "("+ tupVal + ")";
             this.props.dispatch(setPyTorchSubParams(beta));
         }
-        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".Optimizer option:selected").text().includes("Rprop")){
+        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".optimizer_pt option:selected").text().includes("Rprop")){
             let eta = this.props.pyTorchSubParams;
             let tupVal1 = eta["optimizer"]["eta"].toString();
             eta["optimizer"]["eta"] = "("+ tupVal1 + ")";

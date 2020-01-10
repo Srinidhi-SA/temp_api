@@ -101,7 +101,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 data['name'] = data.get('name',
                                         data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
             else:
-                data['name'] = data.get('name', data['input_file'].name)
+                data['name'] = data.get('name', data['input_file'].name[:-4].replace('.', '_'))
             datasetname_list = []
             dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
             for index, i in enumerate(dataset_query):
