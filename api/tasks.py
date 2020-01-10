@@ -107,6 +107,8 @@ def submit_job_separate_task(command_array, slug):
                 os.rename("/tmp/SparkDriver.log",dist_file_name)
                 break
 '''
+
+
 def submit_job_separate_task1(command_array, slug):
     import subprocess, os
     my_env = os.environ.copy()
@@ -129,6 +131,7 @@ def submit_job_separate_task1(command_array, slug):
             model_instance.url = application_id
             model_instance.save()
             break
+
 
 @task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
@@ -644,6 +647,7 @@ def call_dataset_then_score(*args, **kwrgs):
     else:
         print(serializer.errors)
 
+
 '''
 Things to do
 - call dataset object create function (uncomment in above code)
@@ -772,7 +776,6 @@ from celery.decorators import periodic_task
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
     mails = get_mails_from_outlook()
-    print('mails >>> ', mails)
     if mails is not None:
         mail_id = ''
         if 'status' and 'err' not in list(mails.keys()):
@@ -804,6 +807,7 @@ def trigger_outlook_periodic_job():
                     except Exception as error:
                         outlook_autoML_failure_mail(trainer_object_id=None, error=error, mail_id=mail_id)
                         print('failure mail sent')
+                        break
                 if len(data) > 0:
                     print("Here is the collected data")
                     print(data)
@@ -817,42 +821,6 @@ def trigger_outlook_periodic_job():
             print('failure mail sent')
     else:
         print("No mails.")
-    '''
-        print("All set to proceed to upload dataset.")
-
-        for configkey, configvalue in mails.items():
-            data = {}
-            for key, value in configvalue.items():
-                try:
-                    # print key,value
-                    # value is a dict
-                    #############  Create config and trigger metadata job for train and test Dataset  #################
-                    if 'sub_target' in key:
-                        data['sub_target'] = value.capitalize()
-                    if 'target' in key:
-                        data['target'] = value.capitalize()
-                    if 'train_dataset' in key:
-                        input_file = value
-                        data['Traindataset'] = input_file
-                        data['name'] = configkey
-                    if 'test_dataset' in key:
-                        input_file = value
-                        data['Testdataset'] = input_file
-                        data['name'] = configkey
-                    if 'emailAddress' in key:
-                        data['email'] = value['emailAddress']['address']
-                except Exception as error:
-                    print(error)
-            if len(data) > 0:
-                print("Here is the collected data")
-                print(data)
-                trigger_metaData_autoML.delay(data)
-            else:
-                print("No mails found")
-                break
-            ##########################################################################################
-
-            # pass'''
 
     '''
     Task1: Look for auth Code, Access Token and Refresh Token : DONE
@@ -1181,7 +1149,6 @@ def outlook_autoML_success_mail(trainer_object_id=None):
 
 @task(name='outlook_autoML_failure_mail', queue=CONFIG_FILE_NAME)
 def outlook_autoML_failure_mail(trainer_object_id=None, error=None, mail_id=None):
-
     print("Trying to send failure mail")
     mail_data = dict()
     from api.helper import get_outlook_auth
@@ -1262,6 +1229,11 @@ def err_mail(action_type=None, access_token=None, return_mail_id=None, subject=N
 def send_failure_messages(access_token, return_mail_id, subject, error, mail_options):
     get_messages_url = 'https://graph.microsoft.com/v1.0/me/' + '/sendmail'
 
+    htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>Model creation has failed for some reason! \
+    </br></br>Please contact the Admin team for further assistance.</br></br> \
+    Sorry for the inconvenience.</br></br>Regards,</br>mAdvisor</body></html>""" \
+        .format(return_mail_id.split('@')[0])
+    '''
     htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>Model creation has failed! \
     </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable : {}</br>Reason for failure : {} \
     </br></br></br></br>Sorry for the inconvenience.</br></br>Regards,</br>mAdvisor</body></html>""" \
@@ -1270,7 +1242,7 @@ def send_failure_messages(access_token, return_mail_id, subject, error, mail_opt
                 mail_options['createdAt'],
                 mail_options['datasetName'],
                 mail_options['variable'],
-                str(error))
+                str(error))'''
 
     payload = {
 
