@@ -1421,7 +1421,8 @@ CUSTOM_WORD1_APPS = {
     'SPEECH_ANALYTICS': 'speech',
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
-    'REGRESSION_APP': 'regression'
+    'REGRESSION_APP': 'regression',
+    'LEX': 'lex'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1455,7 +1456,8 @@ CUSTOM_WORD2_APPS = {
     'SPEECH_ANALYTICS': 'speech',
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
-    'REGRESSION_APP': 'regression'
+    'REGRESSION_APP': 'regression',
+    'LEX': 'lex'
 }
 
 ############# YARN related items
