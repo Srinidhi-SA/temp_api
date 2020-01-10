@@ -63,13 +63,17 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select Loss.", "small_mascot"));
         }
-        else if( ($(".zero_infinity_pt")[0] != undefined) && ($(".zero_infinity_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
-        }
         else if( ($(".blank_pt")[0] != undefined) && ($(".blank_pt")[0].value === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter blank value", "small_mascot"));
+        }
+        else if( ($(".reduction_pt")[0] != undefined) && ($(".reduction_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
+        }
+        else if( ($(".zero_infinity_pt")[0] != undefined) && ($(".zero_infinity_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
         }
         else if( ($(".log_input_pt")[0] != undefined) && ($(".log_input_pt option:selected").text().includes("--Select--"))){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -79,10 +83,6 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select full.", "small_mascot"));
         }
-        else if( ($(".eps_pt")[0] != undefined) && ($(".eps_pt")[0].value === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter eps value", "small_mascot"));
-        }
         else if( ($(".rho_pt")[0] != undefined) && ($(".rho_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter rho value", "small_mascot"));
@@ -91,25 +91,57 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lr value", "small_mascot"));
         }
+        else if( ($(".lr_decay_pt")[0] != undefined) && ($(".lr_decay_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter lr_decay value", "small_mascot"));
+        }
         else if( ($(".weight_decay_pt")[0] != undefined) && ($(".weight_decay_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter weight_decay value", "small_mascot"));
         }
-        else if( ($(".lr_decay_pt")[0] != undefined) && ($(".lr_decay_pt")[0].value === "") ){
+        else if( ($(".eps_pt")[0] != undefined) && ($(".eps_pt")[0].value === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter lr_decay value", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter eps value", "small_mascot"));
+        }
+        else if( ($(".max_iter_pt")[0] != undefined) && ($(".max_iter_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter max_iter value", "small_mascot"));
+        }
+        else if( ($(".max_eval_pt")[0] != undefined) && ($(".max_eval_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter max_eval value", "small_mascot"));
+        }
+        else if( ($(".tolerance_grad_pt")[0] != undefined) && ($(".tolerance_grad_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter tolerance_grad value", "small_mascot"));
+        }
+        else if( ($(".tolerance_change_pt")[0] != undefined) && ($(".tolerance_change_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter tolerance_change value", "small_mascot"));
+        }
+        else if( ($(".dampening_pt")[0] != undefined) && ($(".dampening_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter dampening value", "small_mascot"));
         }
         else if( ($(".amsgrad_pt")[0] != undefined) && ($(".amsgrad_pt option:selected").text().includes("--Select--")) ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select amsgrad.", "small_mascot"));
         }
-        else if( ($(".reduction_pt")[0] != undefined) && ($(".reduction_pt option:selected").text().includes("--Select--")) ){
+        else if( ($(".nesterov_pt")[0] != undefined) && ($(".nesterov_pt option:selected").text().includes("--Select--")) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please select nesterov.", "small_mascot"));
         }
         else if( ($(".lambd_pt")[0] != undefined) && ($(".lambd_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lambd value", "small_mascot"));
+        }
+        else if( ($(".momentum_pt")[0] != undefined) && ($(".momentum_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter momentum value", "small_mascot"));
+        }
+        else if( ($(".alpha_pt")[0] != undefined) && ($(".alpha_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter alpha value", "small_mascot"));
         }
         else if( ($(".t0_pt")[0] != undefined) && ($(".t0_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -123,9 +155,37 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select line_search_fn.", "small_mascot"));
         }
+        else if( ($(".centered_pt")[0] != undefined) && ($(".centered_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select centered.", "small_mascot"));
+        }
         else if($(".optimizer_pt option:selected").text().includes("--Select--")){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select Optimizer.", "small_mascot"));
+        }
+        else if( ($(".betas1_pt")[0] != undefined) && ($(".betas1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter beta1 value", "small_mascot"));
+        }
+        else if( ($(".betas2_pt")[0] != undefined) && ($(".betas2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter beta2 value", "small_mascot"));
+        }
+        else if( ($(".eta1_pt")[0] != undefined) && ($(".eta1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter eta1 value", "small_mascot"));
+        }
+        else if( ($(".eta2_pt")[0] != undefined) && ($(".eta2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter eta2 value", "small_mascot"));
+        }
+        else if( ($(".step_sizes1_pt")[0] != undefined) && ($(".step_sizes1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter step_sizes1 value", "small_mascot"));
+        }
+        else if( ($(".step_sizes2_pt")[0] != undefined) && ($(".step_sizes2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter step_sizes2 value", "small_mascot"));
         }
         else if (Object.keys(this.props.pyTorchLayer).length != 0){
             for(let i=0;i<this.props.idLayer.length;i++){
@@ -344,7 +404,7 @@ export class PyTorch extends React.Component {
             }else if(e.target.className.includes("betas2")){
                 if(this.props.pyTorchSubParams["optimizer"]["betas"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of beta2 should be greater than beta2"
+                    e.target.parentElement.lastElementChild.innerHTML = "value of beta2 should be greater than beta1"
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
@@ -373,7 +433,7 @@ export class PyTorch extends React.Component {
             }else if(e.target.className.includes("eta2")){
                 if(this.props.pyTorchSubParams["optimizer"]["eta"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of eta2 should be greater than eta2"
+                    e.target.parentElement.lastElementChild.innerHTML = "value of eta2 should be greater than eta1"
                 }else{
                     e.target.parentElement.lastElementChild.innerHTML = ""
                     this.props.dispatch(pytorchValidateFlag(true));
@@ -487,7 +547,7 @@ export class PyTorch extends React.Component {
                             );
                         break;
                         default :
-                                var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0"]
+                                var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0","max_iter","max_eval","tolerance_grad","tolerance_change","dampening"]
                                 arr1.push(
                                     <div className = "row mb-20">
                                         <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
@@ -504,7 +564,7 @@ export class PyTorch extends React.Component {
                 case "checkbox":
                     switch(item[i].name){
                         case "reduction":
-                            var mandateField = ["reduction","centered"]
+                            var mandateField = ["reduction"]
                                 var options = item[i].valueRange
                                 var selectedValue = ""
                                 var optionsTemp = []
@@ -527,7 +587,7 @@ export class PyTorch extends React.Component {
                             break;
                         default:
                                 var options = item[i].defaultValue.map(i=>i.name)
-                                var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity"];
+                                var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity","centered","nesterov"];
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
