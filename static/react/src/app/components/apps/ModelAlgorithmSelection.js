@@ -199,17 +199,14 @@ export class ModelAlgorithmSelection extends React.Component {
         }
         for(let i=0;i<pyTorchLayerCount;i++){
             if(pyTorchClassFlag && (document.getElementsByClassName("input_unit_pt")[i].value === "") ){
-                document.getElementsByClassName("input_unit_pt")[i].parentElement.lastElementChild.innerText = "Please enter value"
                 bootbox.alert(errormsg);
                 return false;
             }
             else if(pyTorchClassFlag && (document.getElementsByClassName("output_unit_pt")[i].value === "")){
-                document.getElementsByClassName("output_unit_pt")[i].parentElement.lastElementChild.innerText = "Please enter value"
                 bootbox.alert(errormsg);
                 return false;
             }
             else if(pyTorchClassFlag && ($(".bias_pt option:selected")[i].value === "None")){
-                document.getElementsByClassName("bias_pt")[0].parentElement.lastElementChild.innerText = "Please Select"
                 bootbox.alert(errormsg);
                 return false;
             }
