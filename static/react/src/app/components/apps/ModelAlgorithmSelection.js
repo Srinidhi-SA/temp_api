@@ -183,21 +183,36 @@ export class ModelAlgorithmSelection extends React.Component {
             targetCount = store.getState().apps.targetLevelCounts;
             pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
         }
+        let errormsg = statusMessages("warning","Please Enter Mandatory Fields of PyTorch Algorithm...","small_mascot");
 
         if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
-            let errormsg = statusMessages("warning","Please enter mandatory field values of PyTorch Algorithm...","small_mascot");
             bootbox.alert(errormsg);
             return false;
         }
         else if(pyTorchClassFlag && (pyTorchLayerCount === 0)){
-            this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
             return false;
         }
         else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
             bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
-            this.props.dispatch(pytorchValidateFlag(false));
             return false;
+        }
+        for(let i=0;i<pyTorchLayerCount;i++){
+            if(pyTorchClassFlag && (document.getElementsByClassName("input_unit_pt")[i].value === "") ){
+                document.getElementsByClassName("input_unit_pt")[i].parentElement.lastElementChild.innerText = "Please enter value"
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if(pyTorchClassFlag && (document.getElementsByClassName("output_unit_pt")[i].value === "")){
+                document.getElementsByClassName("output_unit_pt")[i].parentElement.lastElementChild.innerText = "Please enter value"
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if(pyTorchClassFlag && ($(".bias_pt option:selected")[i].value === "None")){
+                document.getElementsByClassName("bias_pt")[0].parentElement.lastElementChild.innerText = "Please Select"
+                bootbox.alert(errormsg);
+                return false;
+            }
         }
         
         if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
