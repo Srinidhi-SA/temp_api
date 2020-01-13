@@ -193,10 +193,6 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
         }
-        else if(name === "num_features" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-        }
         else if(name === "eps" && (val>1 || val<0) || val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
@@ -213,7 +209,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
-        else if( (name === "embed_dim" || name === "num_heads" || name === "dim" || name === "n_classes" || name === "kdim" || name === "vdim" || name === "num_features") && !Number.isInteger(parseFloat(val)) ){
+        else if( (name === "embed_dim" || name === "num_heads" || name === "dim" || name === "n_classes" || name === "kdim" || name === "vdim") && !Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
@@ -232,21 +228,23 @@ export class PyLayer extends React.Component {
         for(var i=0;i<item.length;i++){
             switch(item[i].uiElemType){
                 case "textBox":
-                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","num_parameters","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum","num_features"];
+                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","num_parameters","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum"];
                     if(item[i].name === "num_features"){
                         var defVal = item[i].defaultValue;
                         if(this.props.pyTorchLayer[this.props.idNum].units_op != "None"){
                             defVal = parseInt(this.props.pyTorchLayer[this.props.idNum].units_op)
                         }
+                        var disableField = true;
                     }else{
                         var defVal = item[i].defaultValue;
+                        var disableField = false;
                     }
                     arr1.push(
                         <div class="row mb-20">
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className ="col-md-4">{item[i].description}</label>
                             <div className="col-md-1">
-                                <input type="number" key={`form-control ${item[i].name}_pt`} class={`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
+                                <input type="number" key={`form-control ${item[i].name}_pt`} class={`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)} disabled={disableField}/>
                                 <div key={`${item[i].name}_pt`} className="error"></div>
                             </div>
                         </div>
