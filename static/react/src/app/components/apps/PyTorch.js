@@ -569,7 +569,7 @@ export class PyTorch extends React.Component {
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
-                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                    optionsTemp.push(<option value={k} selected={k===item[i].defaultValue?true:false}> {k}</option>)
                                 })
                                 arr1.push(
                                         <div className = "row mb-20">
@@ -585,12 +585,12 @@ export class PyTorch extends React.Component {
                                     );
                             break;
                         default:
-                                var options = item[i].defaultValue.map(i=>i.name)
+                                var options = item[i].defaultValue.map(i=>{return {name: i.name, sel: i.selected} })
                                 var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity","centered","nesterov"];
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
-                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                    optionsTemp.push(<option value={k.name} selected={k.sel}> {k.name}</option>)
                                 })
                                 arr1.push(
                                     <div className = "row mb-20">

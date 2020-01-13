@@ -253,13 +253,13 @@ export class PyLayer extends React.Component {
                     );
                     break;
                 case "checkbox":
-                        var options = item[i].defaultValue.map(i=>i.name)
+                        var options = item[i].defaultValue.map(i=>{ return {name: i.name, sel: i.selected} })
                         var mandateField = ["bias","add_bias_kv","add_zero_attn","head_bias","track_running_stats","affine","num_parameters"];
                         var selectedValue = ""
                         var optionsTemp = []
                         optionsTemp.push(<option value="None">--select--</option>)
                         options.map(k => {
-                            optionsTemp.push(<option value={k} > {k}</option>)
+                            optionsTemp.push(<option value={k.name} selected={k.sel}> {k.name}</option>)
                         })
                         arr1.push(
                             <div class="row mb-20">
