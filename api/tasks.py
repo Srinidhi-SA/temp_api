@@ -234,6 +234,12 @@ def write_into_databases(job_type, object_slug, results):
                         train_algo_object = serializer.save()
                     else:
                         print(serializer.errors)
+        if "one_click" in results:
+            trainer_object.fe_config = json.dumps(results["one_click"])
+            results["one_click"]={}
+            trainer_object.data=json.dumps(results)
+            trainer_object.save()
+
         outlook_autoML_success_mail(trainer_object.id)
         return "Done Succesfully."
         return results
@@ -775,6 +781,7 @@ from celery.decorators import periodic_task
 @periodic_task(run_every=(crontab(minute='*/10')), name="trigger_outlook_periodic_job", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def trigger_outlook_periodic_job():
+
     mails = get_mails_from_outlook()
     if mails is not None:
         mail_id = ''
@@ -1299,7 +1306,7 @@ def send_my_messages(access_token, return_mail_id, subject, content, mail_option
                       'Name': file_to_attach.split('/')[-1]}
     '''
     htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>Model has been successfully created through AutoML.
-    </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable : 
+    </br></br>Details:</br>Model Name : {}</br>Created on : {}</br>Dataset : {}</br>Target Variable :
     {}</br></br>Please go through the attached link in order to view your Model Summary.
     </br></br></br><a href="{}">Model Summary</a></br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
         .format(return_mail_id.split('@')[0],

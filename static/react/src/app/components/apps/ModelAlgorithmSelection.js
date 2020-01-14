@@ -183,38 +183,54 @@ export class ModelAlgorithmSelection extends React.Component {
             targetCount = store.getState().apps.targetLevelCounts;
             pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
         }
-
-        if(pyTorchClassFlag && !this.props.pytorchValidateFlag){
-            let errormsg = statusMessages("warning","Please enter mandatory field values of PyTorch Algorithm...","small_mascot");
-            bootbox.alert(errormsg);
-            return false;
-        }
-        else if(pyTorchClassFlag && (pyTorchLayerCount === 0)){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
-            return false;
-        }
-        else if(pyTorchClassFlag && (pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
-            bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
-            this.props.dispatch(pytorchValidateFlag(false));
-            return false;
-        }
-        
-        if(pyTorchClassFlag && this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
-            let beta = this.props.pyTorchSubParams;
-            let tupVal = beta["optimizer"]["betas"].toString();
-            beta["optimizer"]["betas"] = "("+ tupVal + ")";
-            this.props.dispatch(setPyTorchSubParams(beta));
-        }
-        else if(pyTorchClassFlag && this.props.pytorchValidateFlag && $(".optimizer_pt option:selected").text().includes("Rprop")){
-            let eta = this.props.pyTorchSubParams;
-            let tupVal1 = eta["optimizer"]["eta"].toString();
-            eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
-            this.props.dispatch(setPyTorchSubParams(eta));
-
-            let tupVal2 = eta["optimizer"]["step_sizes"].toString();
-            eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
-            this.props.dispatch(setPyTorchSubParams(eta));
+        let errormsg = statusMessages("warning","Please Enter Mandatory Fields of PyTorch Algorithm...","small_mascot");
+        if(pyTorchClassFlag){
+            if(!this.props.pytorchValidateFlag){
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if( ($(".loss_pt")[0].value === "None") || ($(".optimizer_pt")[0].value === "None") ){
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if(pyTorchLayerCount === 0){
+                bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
+                return false;
+            }
+            else if((pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
+                bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
+                return false;
+            }
+            for(let i=0;i<pyTorchLayerCount;i++){
+                if(document.getElementsByClassName("input_unit_pt")[i].value === ""){
+                    bootbox.alert(errormsg);
+                    return false;
+                }
+                else if(document.getElementsByClassName("output_unit_pt")[i].value === ""){
+                    bootbox.alert(errormsg);
+                    return false;
+                }
+                else if($(".bias_pt option:selected")[i].value === "None"){
+                    bootbox.alert(errormsg);
+                    return false;
+                }
+            }
+            if(this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
+                let beta = this.props.pyTorchSubParams;
+                let tupVal = beta["optimizer"]["betas"].toString();
+                beta["optimizer"]["betas"] = "("+ tupVal + ")";
+                this.props.dispatch(setPyTorchSubParams(beta));
+            }
+            else if(this.props.pytorchValidateFlag && $(".optimizer_pt option:selected").text().includes("Rprop")){
+                let eta = this.props.pyTorchSubParams;
+                let tupVal1 = eta["optimizer"]["eta"].toString();
+                eta["optimizer"]["eta"] = "("+ tupVal1 + ")";
+                this.props.dispatch(setPyTorchSubParams(eta));
+    
+                let tupVal2 = eta["optimizer"]["step_sizes"].toString();
+                eta["optimizer"]["step_sizes"] = "("+ tupVal2 + ")";
+                this.props.dispatch(setPyTorchSubParams(eta));
+            }
         }
         this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount,store.getState().datasets.dataPreview.slug,"analyst"));
     }
