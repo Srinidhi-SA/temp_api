@@ -17,6 +17,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from api.helper import CustomImageField
 
 from .StockAdvisor.crawling.common_utils import get_regex
 from .StockAdvisor.crawling.crawl_util import crawl_extract, \
@@ -160,6 +161,7 @@ class Dataset(models.Model):
     auto_update_duration = models.IntegerField(default=99999)
 
     input_file = models.FileField(upload_to='datasets', null=True)
+    image = CustomImageField(upload_to='photos', null=True)
     datasource_type = models.CharField(max_length=100, null=True)
     datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
@@ -216,6 +218,10 @@ class Dataset(models.Model):
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
+
+    def get_upload_to(self, field_attname):
+        """Get upload_to path specific to this photo."""
+        return 'photos/%d' % self.id
 
     def create_for_subsetting(
             self,
@@ -5511,3 +5517,30 @@ class DatasetScoreDeployment(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(DatasetScoreDeployment, self).save(*args, **kwargs)
+
+
+import uuid
+
+from django.db import models
+from django.template.defaultfilters import slugify
+
+
+def unique_dir():
+    return 'images/' + str(uuid.uuid1().hex)
+
+
+class Images(models.Model):
+    file = models.ImageField(upload_to=unique_dir())
+    slug = models.SlugField(null=True, max_length=300)
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify("IMG-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def upload_tree(self):
+        return 'images/' + self.slug
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Images, self).save(*args, **kwargs)

@@ -6871,3 +6871,32 @@ class UserView(viewsets.ModelViewSet):
             return JsonResponse({'allUsersList': UsersList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
+
+
+from .models import Images
+from django.views.generic.edit import FormView
+from .forms import FileFieldForm
+import json
+
+
+class FileFieldView(FormView):
+    form_class = FileFieldForm
+    template_name = 'form.html'  # Replace with your template.
+    success_url = 'done/'  # Replace with your URL or reverse().
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('file_field')
+        if form.is_valid():
+            for f in files:
+                Attachment.objects.create(file=f)
+                # data = {}
+                # with open('media/multi_attachments/' + f.name, mode='rb') as file:
+                #     img = file.read()
+                # data['img'] = base64.encodebytes(img).decode("utf-8")
+                # with open('img.json', 'w') as fi:
+                #     fi.write(json.dumps(data))
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

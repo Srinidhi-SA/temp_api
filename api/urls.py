@@ -156,6 +156,7 @@ urlpatterns = [
     # url(r'^get_all_users', views.get_all_users, name="get_all_users"),
     url(r'^kill_timeout_job_from_ui', views.kill_timeout_job_from_ui, name="kill_timeout_job_from_ui"),
     url(r'^change-user-password/', ChangePasswordView.as_view(serializer_class=ChangePasswordSerializer)),
+    url(r'^upload-images/$', views.FileFieldView.as_view()),
     # url(r'^get_all_user/', UserView.as_view()),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
 ]
