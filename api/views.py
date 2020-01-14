@@ -23,7 +23,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.decorators import method_decorator
-from rest_framework.renderers import JSONRenderer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
@@ -54,7 +54,7 @@ from api.utils import \
     DatasetScoreDeploymentSerializer, \
     DatasetScoreDeploymentListSerializer, \
     TrainerNameListSerializer, \
-    ChangePasswordSerializer, UserListSerializer
+    ChangePasswordSerializer, UserListSerializer, ImageSerializer
 # RegressionSerlializer,
 # RegressionListSerializer
 from .models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
@@ -6890,7 +6890,15 @@ class FileFieldView(FormView):
         files = request.FILES.getlist('file_field')
         if form.is_valid():
             for f in files:
-                Attachment.objects.create(file=f)
+                data = {'file': f}
+                serializer = ImageSerializer(data=data, context={"request": self.request})
+                if serializer.is_valid():
+                    image_object = serializer.save()
+                    Images.objects.create(file=f)
+                    # image_object.create()
+                    return JsonResponse(serializer.data)
+                return creation_failed_exception(serializer.errors)
+                # Images.objects.create(file=f)
                 # data = {}
                 # with open('media/multi_attachments/' + f.name, mode='rb') as file:
                 #     img = file.read()

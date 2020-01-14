@@ -1487,3 +1487,17 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
         fields = ("username", "id")
+
+
+from .models import Images
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Images
+        fields = ("file", )
+
+    """
+    Serializer for password change endpoint.
+    """
+    file = serializers.ImageField(allow_null=True)
