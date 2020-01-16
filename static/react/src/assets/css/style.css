@@ -16601,6 +16601,9 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 .error{
 	color: #ff0000;
 }
+.error_pt{
+	color: #ff0000;
+}
 .layerHeader .fa-chevron-up{
 	float: right;
 	padding: 3px;
