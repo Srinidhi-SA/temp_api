@@ -244,7 +244,7 @@ export class PyTorch extends React.Component {
                         let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                         let defVal = subParamDt[parameterData.name];
                         if(subDefaultVal === undefined){
-                            subDefaultVal = "false";
+                            subDefaultVal = "None";
                             defVal[idx.name] = subDefaultVal;
                         }
                         else
@@ -534,12 +534,12 @@ export class PyTorch extends React.Component {
                                     <div className ="col-md-1">
                                     <label>{item[i].displayName}1</label>
                                         <input type="number" key={`form-control ${item[i].name}1_pt`} className ={`form-control ${item[i].name}1_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={this.props.pyTorchSubParams[parameterData][item[1].name][0]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                        <div key={`${item[i].name}1_pt`} className ="error"></div>
+                                        <div key={`${item[i].name}1_pt`} className ="error_pt"></div>
                                     </div>
                                     <div class="col-md-1">
                                         <label>{item[i].displayName}2</label>
                                         <input type="number" key={`form-control ${item[i].name}2_pt`} className={`form-control ${item[i].name}2_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={this.props.pyTorchSubParams[parameterData][item[1].name][1]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                        <div key={`${item[i].name}2_pt`} className="error"></div>
+                                        <div key={`${item[i].name}2_pt`} className="error_pt"></div>
                                     </div>
                                 </div>
                             );
@@ -552,7 +552,7 @@ export class PyTorch extends React.Component {
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-1">
                                             <input type ="number" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={this.props.pyTorchSubParams[parameterData][item[i].name]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                            <div key={`form-control ${item[i].name}1_pt`} className = "error"></div>
+                                            <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
                                 );
@@ -581,7 +581,7 @@ export class PyTorch extends React.Component {
                                                 <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
-                                                <div key = {`${item[i].name}_pt`} className = "error"></div>
+                                                <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
                                             </div>
                                         </div>
                                     );
@@ -609,7 +609,7 @@ export class PyTorch extends React.Component {
                                             <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`}  ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                 {optionsTemp}
                                             </select>
-                                            <div key = {`${item[i].name}_pt`} className = "error"></div>
+                                            <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
                                 );
@@ -680,7 +680,7 @@ export class PyTorch extends React.Component {
                             <label class = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-1">
                                 <input type = "number" key= {`form-control ${parameterData.name}_pt`} className = {`form-control ${parameterData.name}_pt`} onKeyDown = { (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue = {this.props.pyTorchSubParams[parameterData.name]} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
-                                <div key= {`${parameterData.name}_pt`} className = "error"></div>
+                                <div key= {`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
                     );

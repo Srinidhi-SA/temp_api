@@ -48,7 +48,7 @@ export class PyLayer extends React.Component {
                             let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                             let defVal = layerDt[parameterData.name];
                             if(subDefaultVal === undefined){
-                                subDefaultVal = "false";
+                                subDefaultVal = "None";
                                 defVal[idx.name] = subDefaultVal;
                             }   
                             else
@@ -57,7 +57,7 @@ export class PyLayer extends React.Component {
                             let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                             let defVal = layerDt[parameterData.name];
                             if(subDefaultVal === undefined){
-                                subDefaultVal = "false";
+                                subDefaultVal = "None";
                                 defVal[idx.name] = subDefaultVal;
                             }   
                             else
@@ -255,7 +255,7 @@ export class PyLayer extends React.Component {
                             <label className ="col-md-4">{item[i].description}</label>
                             <div className="col-md-1">
                                 <input type="number" key={`form-control ${item[i].name}_pt`} class={`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)} disabled={disableField}/>
-                                <div key={`${item[i].name}_pt`} className="error"></div>
+                                <div key={`${item[i].name}_pt`} className="error_pt"></div>
                             </div>
                         </div>
                     );
@@ -280,7 +280,7 @@ export class PyLayer extends React.Component {
                                     <select key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
                                         {optionsTemp}
                                     </select>
-                                    <div key={`${item[i].name}_pt`} className="error"></div>
+                                    <div key={`${item[i].name}_pt`} className="error_pt"></div>
                                 </div>
                             </div>
                         );
@@ -293,7 +293,7 @@ export class PyLayer extends React.Component {
                             <label className="col-md-4">{item[i].description}</label>
                                 <div className="col-md-1">
                                     <input type="number" key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} defaultValue={this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name]} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
-                                    <div key={`${item[i].name}_pt`} className="error"></div>
+                                    <div key={`${item[i].name}_pt`} className="error_pt"></div>
                                 </div>
                         </div>
                     );
@@ -350,7 +350,7 @@ export class PyLayer extends React.Component {
                                 <select ref={(el) => { this.eleSel = el }} key={`form-control ${parameterData.name}_pt`} className={`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)} >
                                     {optionsTemp}
                                 </select>
-                                <div key={`${parameterData.name}_pt`} className = "error"></div>
+                                <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
                         {(selectedValue != "None" && selectedValue != "" && selectedValue != "undefined" && parameterData.name != "bias" )?
@@ -395,7 +395,7 @@ export class PyLayer extends React.Component {
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
                                 <input type="number" key={`form-control ${parameterData.name}_pt`} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
-                                <div key={`${parameterData.name}_pt`} className = "error"></div>
+                                <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                             <div class = "clearfix"></div> 
                         </div>
@@ -407,7 +407,7 @@ export class PyLayer extends React.Component {
                     <div className = "row mb-20">
                         <label className="col-md-4">{parameterData.displayName}</label>
                         <label className="col-md-4">{parameterData.description}</label>
-                        <div className="error"></div>
+                        <div className="error_pt"></div>
                     </div>
                 );
         }
