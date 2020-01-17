@@ -7,7 +7,7 @@ from builtins import map, enumerate
 from builtins import zip
 from builtins import str
 from builtins import range
-import json
+import simplejson as json
 import random
 import copy
 import datetime
@@ -6876,11 +6876,14 @@ class UserView(viewsets.ModelViewSet):
 from .models import Images
 from django.views.generic.edit import FormView
 from .forms import FileFieldForm
-import json
+# import json
 
 
 class FileFieldView(FormView):
     form_class = FileFieldForm
+    serializer_class = ImageSerializer
+    model = Images
+    permission_classes = (IsAuthenticated,)
     template_name = 'form.html'  # Replace with your template.
     success_url = 'done/'  # Replace with your URL or reverse().
 
@@ -6896,7 +6899,7 @@ class FileFieldView(FormView):
                     image_object = serializer.save()
                     Images.objects.create(file=f)
                     # image_object.create()
-                    return JsonResponse(serializer.data)
+                    # return JsonResponse(serializer.data)
                 return creation_failed_exception(serializer.errors)
                 # Images.objects.create(file=f)
                 # data = {}

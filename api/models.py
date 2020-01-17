@@ -7,7 +7,7 @@ from builtins import str
 from builtins import range
 from builtins import object
 import csv
-import json
+import simplejson as json
 import os
 import random
 import string
@@ -2258,7 +2258,7 @@ class Score(models.Model):
         return '/tmp/' + self.slug
 
     def get_config(self):
-        import json
+
         return json.loads(self.config)
 
     def get_variable_details_from_variable_selection(self):

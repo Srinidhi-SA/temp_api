@@ -17,7 +17,7 @@ import datetime
 import random
 import requests
 import base64
-import json
+import simplejson as json
 import re
 
 from django.conf import settings
@@ -1244,7 +1244,7 @@ def get_message(instance):
     if instance is None:
         return None
     from api.redis_access import AccessFeedbackMessage
-    import json
+    import simplejson as json
     ac = AccessFeedbackMessage()
     message_log = json.loads(instance.message_log)
     data = None
