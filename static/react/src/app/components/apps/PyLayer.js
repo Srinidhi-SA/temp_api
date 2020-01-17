@@ -48,7 +48,16 @@ export class PyLayer extends React.Component {
                             let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                             let defVal = layerDt[parameterData.name];
                             if(subDefaultVal === undefined){
-                                subDefaultVal = "false";
+                                subDefaultVal = "None";
+                                defVal[idx.name] = subDefaultVal;
+                            }   
+                            else
+                                defVal[idx.name] = subDefaultVal.name;
+                        }else if(idx.name === "num_parameters"){
+                            let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
+                            let defVal = layerDt[parameterData.name];
+                            if(subDefaultVal === undefined){
+                                subDefaultVal = "None";
                                 defVal[idx.name] = subDefaultVal;
                             }   
                             else
@@ -228,15 +237,16 @@ export class PyLayer extends React.Component {
         for(var i=0;i<item.length;i++){
             switch(item[i].uiElemType){
                 case "textBox":
-                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","num_parameters","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum"];
+                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum"];
+                    let itemName = item[i].name;
                     if(item[i].name === "num_features"){
-                        var defVal = item[i].defaultValue;
+                        var defVal = this.props.pyTorchLayer[this.props.idNum][defaultParamName][itemName];
                         if(this.props.pyTorchLayer[this.props.idNum].units_op != "None"){
                             defVal = parseInt(this.props.pyTorchLayer[this.props.idNum].units_op)
                         }
                         var disableField = true;
                     }else{
-                        var defVal = item[i].defaultValue;
+                        var defVal = this.props.pyTorchLayer[this.props.idNum][defaultParamName][itemName];
                         var disableField = false;
                     }
                     arr1.push(
@@ -245,7 +255,7 @@ export class PyLayer extends React.Component {
                             <label className ="col-md-4">{item[i].description}</label>
                             <div className="col-md-1">
                                 <input type="number" key={`form-control ${item[i].name}_pt`} class={`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)} disabled={disableField}/>
-                                <div key={`${item[i].name}_pt`} className="error"></div>
+                                <div key={`${item[i].name}_pt`} className="error_pt"></div>
                             </div>
                         </div>
                     );
@@ -257,7 +267,10 @@ export class PyLayer extends React.Component {
                         var optionsTemp = []
                         optionsTemp.push(<option value="None">--select--</option>)
                         options.map(k => {
-                            optionsTemp.push(<option value={k.name} selected={k.sel}> {k.name}</option>)
+                            if(k.name === this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name])
+                                        selectedValue = true;
+                                    else selectedValue = false;
+                            optionsTemp.push(<option value={k.name} selected={selectedValue}> {k.name}</option>)
                         })
                         arr1.push(
                             <div class="row mb-20">
@@ -267,7 +280,7 @@ export class PyLayer extends React.Component {
                                     <select key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
                                         {optionsTemp}
                                     </select>
-                                    <div key={`${item[i].name}_pt`} className="error"></div>
+                                    <div key={`${item[i].name}_pt`} className="error_pt"></div>
                                 </div>
                             </div>
                         );
@@ -279,8 +292,8 @@ export class PyLayer extends React.Component {
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className="col-md-4">{item[i].description}</label>
                                 <div className="col-md-1">
-                                    <input type="number" key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} defaultValue={item[i].defaultValue} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
-                                    <div key={`${item[i].name}_pt`} className="error"></div>
+                                    <input type="number" key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} defaultValue={this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name]} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } onChange={this.setLayerSubParams.bind(this,item[i],defaultParamName)}/>
+                                    <div key={`${item[i].name}_pt`} className="error_pt"></div>
                                 </div>
                         </div>
                     );
@@ -307,18 +320,25 @@ export class PyLayer extends React.Component {
                 var mandateField= ["Bias"]
                 var selectedValue = ""
                 var optionsTemp =[];
+                var sel = ";"
                 optionsTemp.push(<option value="None">--Select--</option>)
                 for (var prop in options) {
                     if(options[prop].selected){
                         selectedValue = options[prop].name;
                     }else if(parameterData.name === "activation"){
                         selectedValue = this.props.pyTorchLayer[lyr].activation.name
+                        sel = (options[prop].name === selectedValue)?true:false
                     }else if(parameterData.name === "batchnormalization"){
                         selectedValue = this.props.pyTorchLayer[lyr].batchnormalization.name
+                        sel = (options[prop].name === selectedValue)?true:false
                     }else if(parameterData.name === "dropout"){
                         selectedValue = this.props.pyTorchLayer[lyr].dropout.name
+                        sel = (options[prop].name === selectedValue)?true:false
+                    }else if(parameterData.name === "bias"){
+                        selectedValue = this.props.pyTorchLayer[lyr][parameterData.name]
+                        sel = (options[prop].name === selectedValue)?true:false
                     }
-                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={sel}>{options[prop].displayName}</option>);
                 }
                 
                 return(
@@ -330,15 +350,14 @@ export class PyLayer extends React.Component {
                                 <select ref={(el) => { this.eleSel = el }} key={`form-control ${parameterData.name}_pt`} className={`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)} >
                                     {optionsTemp}
                                 </select>
-                                <div key={`${parameterData.name}_pt`} className = "error"></div>
+                                <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
-                        {(selectedValue != "None" && selectedValue != "" && selectedValue != "undefined" && selectedValue != "bias" )?
-                                parameterData.displayName === "dropout"?
-                                    this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
-                                :
-                                options.filter(i=>i.name === selectedValue)[0].parameters === null?"":
-                                    this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
+                        {(selectedValue != "None" && selectedValue != "" && selectedValue != "undefined" && parameterData.name != "bias" )?
+                                (parameterData.displayName === "dropout"? 
+                                this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
+                                : options.filter(i=>i.name === selectedValue)[0].parameters === null? ""
+                                :this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)) 
                                 :""
                             }
                         <div className = "clearfix"></div>
@@ -355,18 +374,18 @@ export class PyLayer extends React.Component {
                                 var defVal = parseInt(this.props.pyTorchLayer[this.props.idNum-1].units_op)
                                 var disableVal = true
                             }else{
-                                var defVal = parameterData.defaultValue;
+                                var defVal = this.props.pyTorchLayer[this.props.idNum][parameterData.name];
                                 var disableVal = false
                             }
                             break;
                         case "Output Units":
                             var classN= "form-control output_unit_pt";
-                            var defVal = parameterData.defaultValue;
+                            var defVal = this.props.pyTorchLayer[this.props.idNum][parameterData.name];
                             var disableVal = false
                             break;
                         default:
                             classN= "form-control";
-                            var defVal = parameterData.defaultValue;
+                            var defVal = this.props.pyTorchLayer[this.props.idNum][parameterData.name];
                             var disableVal = false
                             break;
                     }
@@ -376,7 +395,7 @@ export class PyLayer extends React.Component {
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
                                 <input type="number" key={`form-control ${parameterData.name}_pt`} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.changeTextBoxValue.bind(this,parameterData)} disabled={disableVal} />
-                                <div key={`${parameterData.name}_pt`} className = "error"></div>
+                                <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                             <div class = "clearfix"></div> 
                         </div>
@@ -388,7 +407,7 @@ export class PyLayer extends React.Component {
                     <div className = "row mb-20">
                         <label className="col-md-4">{parameterData.displayName}</label>
                         <label className="col-md-4">{parameterData.description}</label>
-                        <div className="error"></div>
+                        <div className="error_pt"></div>
                     </div>
                 );
         }

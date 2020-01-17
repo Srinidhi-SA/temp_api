@@ -197,7 +197,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
                 return false;
             }
-            else if((pyTorchLayerCount != 0) && (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length || this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length)){
+            else if((pyTorchLayerCount != 0) && ( (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length) || (this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length) )){
                 bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
                 return false;
             }
