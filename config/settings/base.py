@@ -1422,7 +1422,8 @@ CUSTOM_WORD1_APPS = {
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
     'REGRESSION_APP': 'regression',
-    'LEX': 'lex'
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1457,7 +1458,8 @@ CUSTOM_WORD2_APPS = {
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
     'REGRESSION_APP': 'regression',
-    'LEX': 'lex'
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 ############# YARN related items
