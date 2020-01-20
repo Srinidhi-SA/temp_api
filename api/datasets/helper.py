@@ -1,5 +1,5 @@
 from builtins import object
-import json
+import simplejson as json
 from rest_framework.utils import humanize_datetime
 from django.conf import settings
 

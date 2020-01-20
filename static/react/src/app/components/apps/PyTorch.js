@@ -24,13 +24,12 @@ export class PyTorch extends React.Component {
     }
 
     componentWillMount(){
-        this.props.dispatch(clearPyTorchValues());
-        let subParamDt = { "loss": {"loss":"None"}, "optimizer": {"optimizer":"None"}, "batch_size": 100, "number_of_epochs": 10 }
+        if(Object.keys(this.props.pyTorchSubParams).length != 0){
+            var subParamDt = this.props.pyTorchSubParams
+        }else{
+            var subParamDt = { "loss": {"loss":"None"}, "optimizer": {"optimizer":"None"}, "batch_size": 100, "number_of_epochs": 10 }
+        }
         this.props.dispatch(setPyTorchSubParams(subParamDt));
-    }
-    componentDidMount(){
-        this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"batch_size",100,this.props.type));
-        this.props.dispatch(updateAlgorithmData(this.props.algorithmData[6].algorithmSlug,"number_of_epochs",20,this.props.type));
     }
 
     handleAddLayer(){
@@ -55,7 +54,6 @@ export class PyTorch extends React.Component {
                     }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
-        this.props.dispatch(pytorchValidateFlag(false));
     }
 
     handleClick(){
@@ -63,13 +61,17 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select Loss.", "small_mascot"));
         }
-        else if( ($(".zero_infinity_pt")[0] != undefined) && ($(".zero_infinity_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
-        }
         else if( ($(".blank_pt")[0] != undefined) && ($(".blank_pt")[0].value === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter blank value", "small_mascot"));
+        }
+        else if( ($(".reduction_pt")[0] != undefined) && ($(".reduction_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
+        }
+        else if( ($(".zero_infinity_pt")[0] != undefined) && ($(".zero_infinity_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
         }
         else if( ($(".log_input_pt")[0] != undefined) && ($(".log_input_pt option:selected").text().includes("--Select--"))){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -79,10 +81,6 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select full.", "small_mascot"));
         }
-        else if( ($(".eps_pt")[0] != undefined) && ($(".eps_pt")[0].value === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter eps value", "small_mascot"));
-        }
         else if( ($(".rho_pt")[0] != undefined) && ($(".rho_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter rho value", "small_mascot"));
@@ -91,25 +89,57 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lr value", "small_mascot"));
         }
+        else if( ($(".lr_decay_pt")[0] != undefined) && ($(".lr_decay_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter lr_decay value", "small_mascot"));
+        }
         else if( ($(".weight_decay_pt")[0] != undefined) && ($(".weight_decay_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter weight_decay value", "small_mascot"));
         }
-        else if( ($(".lr_decay_pt")[0] != undefined) && ($(".lr_decay_pt")[0].value === "") ){
+        else if( ($(".eps_pt")[0] != undefined) && ($(".eps_pt")[0].value === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter lr_decay value", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter eps value", "small_mascot"));
+        }
+        else if( ($(".max_iter_pt")[0] != undefined) && ($(".max_iter_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter max_iter value", "small_mascot"));
+        }
+        else if( ($(".max_eval_pt")[0] != undefined) && ($(".max_eval_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter max_eval value", "small_mascot"));
+        }
+        else if( ($(".tolerance_grad_pt")[0] != undefined) && ($(".tolerance_grad_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter tolerance_grad value", "small_mascot"));
+        }
+        else if( ($(".tolerance_change_pt")[0] != undefined) && ($(".tolerance_change_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter tolerance_change value", "small_mascot"));
+        }
+        else if( ($(".dampening_pt")[0] != undefined) && ($(".dampening_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter dampening value", "small_mascot"));
         }
         else if( ($(".amsgrad_pt")[0] != undefined) && ($(".amsgrad_pt option:selected").text().includes("--Select--")) ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select amsgrad.", "small_mascot"));
         }
-        else if( ($(".reduction_pt")[0] != undefined) && ($(".reduction_pt option:selected").text().includes("--Select--")) ){
+        else if( ($(".nesterov_pt")[0] != undefined) && ($(".nesterov_pt option:selected").text().includes("--Select--")) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please select nesterov.", "small_mascot"));
         }
         else if( ($(".lambd_pt")[0] != undefined) && ($(".lambd_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lambd value", "small_mascot"));
+        }
+        else if( ($(".momentum_pt")[0] != undefined) && ($(".momentum_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter momentum value", "small_mascot"));
+        }
+        else if( ($(".alpha_pt")[0] != undefined) && ($(".alpha_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter alpha value", "small_mascot"));
         }
         else if( ($(".t0_pt")[0] != undefined) && ($(".t0_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -123,9 +153,37 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select line_search_fn.", "small_mascot"));
         }
+        else if( ($(".centered_pt")[0] != undefined) && ($(".centered_pt option:selected").text().includes("--Select--")) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select centered.", "small_mascot"));
+        }
         else if($(".optimizer_pt option:selected").text().includes("--Select--")){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please select Optimizer.", "small_mascot"));
+        }
+        else if( ($(".betas1_pt")[0] != undefined) && ($(".betas1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter beta1 value", "small_mascot"));
+        }
+        else if( ($(".betas2_pt")[0] != undefined) && ($(".betas2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter beta2 value", "small_mascot"));
+        }
+        else if( ($(".eta1_pt")[0] != undefined) && ($(".eta1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter eta1 value", "small_mascot"));
+        }
+        else if( ($(".eta2_pt")[0] != undefined) && ($(".eta2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter eta2 value", "small_mascot"));
+        }
+        else if( ($(".step_sizes1_pt")[0] != undefined) && ($(".step_sizes1_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter step_sizes1 value", "small_mascot"));
+        }
+        else if( ($(".step_sizes2_pt")[0] != undefined) && ($(".step_sizes2_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter step_sizes2 value", "small_mascot"));
         }
         else if (Object.keys(this.props.pyTorchLayer).length != 0){
             for(let i=0;i<this.props.idLayer.length;i++){
@@ -186,7 +244,7 @@ export class PyTorch extends React.Component {
                         let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                         let defVal = subParamDt[parameterData.name];
                         if(subDefaultVal === undefined){
-                            subDefaultVal = "false";
+                            subDefaultVal = "None";
                             defVal[idx.name] = subDefaultVal;
                         }
                         else
@@ -207,23 +265,23 @@ export class PyTorch extends React.Component {
       let name = parameterData.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
       if(name == "number_of_epochs" && (val<1 || val==="")){
-        e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to infinity"
+        e.target.parentElement.lastElementChild.innerText = "value range is 1 to infinity"
         this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name === "number_of_epochs" && (!Number.isInteger(parseFloat(val))) ){
-        e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+        e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name=="batch_size" && ( val<0 || val>this.props.datasetRow-1 || val==="") ){
-        e.target.parentElement.lastElementChild.innerHTML = `value range is 1 to ${this.props.datasetRow-1}`
+        e.target.parentElement.lastElementChild.innerText = `value range is 1 to ${this.props.datasetRow-1}`
         this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name === "batch_size" && (!Number.isInteger(parseFloat(val))) ){
-        e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+        e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         this.props.dispatch(pytorchValidateFlag(false));
       }
     else {
-        e.target.parentElement.lastElementChild.innerHTML = ""
+        e.target.parentElement.lastElementChild.innerText = ""
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
         this.props.dispatch(pytorchValidateFlag(true));
         let subParamArry = this.props.pyTorchSubParams;
@@ -239,12 +297,12 @@ export class PyTorch extends React.Component {
         if(name === "blank"){
             if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "value range is 1 to 100"
+                e.target.parentElement.lastElementChild.innerText = "value range is 1 to 100"
             }else if(!Number.isInteger(parseFloat(val))){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+                e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
             }else{
-                e.target.parentElement.lastElementChild.innerHTML = ""
+                e.target.parentElement.lastElementChild.innerText = ""
                 this.props.dispatch(pytorchValidateFlag(true));
                 let selectedPar = subParamArry["loss"];
                 selectedPar[data.name] = parseInt(e.target.value);
@@ -253,90 +311,90 @@ export class PyTorch extends React.Component {
         }
         else if(name === "weight" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
         else if(name === "ignore_index" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
         else if(name === "eps" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "rho" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "lr" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "weight_decay" && (val>0.1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 0.1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 0.1"
         }
         else if(name === "lr_decay" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "lambd" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "alpha" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "t0" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "max_iter" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
         else if(name === "max_eval" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
         else if(name === "tolerance_grad" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "tolerance_change" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "history_size" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
         else if(name === "momentum" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "dampening" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if( (name === "weight" || name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && !Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerHTML = "Decimals not allowed"
+            e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
         else if(name === "betas"){
             let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+                e.target.parentElement.lastElementChild.innerText = "Enter value"
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+                e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             }else if(e.target.className.includes("betas1")){
                 if(this.props.pyTorchSubParams["optimizer"]["betas"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of beta1 should be lesser than beta2"
+                    e.target.parentElement.lastElementChild.innerText = "value of beta1 should be lesser than beta2"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["betas"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -344,9 +402,9 @@ export class PyTorch extends React.Component {
             }else if(e.target.className.includes("betas2")){
                 if(this.props.pyTorchSubParams["optimizer"]["betas"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of beta2 should be greater than beta2"
+                    e.target.parentElement.lastElementChild.innerText = "value of beta2 should be greater than beta1"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["betas"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -356,16 +414,16 @@ export class PyTorch extends React.Component {
             let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+                e.target.parentElement.lastElementChild.innerText = "Enter value"
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+                e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             }else if(e.target.className.includes("eta1")){
                 if(this.props.pyTorchSubParams["optimizer"]["eta"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of eta1 should be lesser than eta2"
+                    e.target.parentElement.lastElementChild.innerText = "value of eta1 should be lesser than eta2"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["eta"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -373,9 +431,9 @@ export class PyTorch extends React.Component {
             }else if(e.target.className.includes("eta2")){
                 if(this.props.pyTorchSubParams["optimizer"]["eta"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of eta2 should be greater than eta2"
+                    e.target.parentElement.lastElementChild.innerText = "value of eta2 should be greater than eta1"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["eta"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -385,16 +443,16 @@ export class PyTorch extends React.Component {
             let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "Enter value"
+                e.target.parentElement.lastElementChild.innerText = "Enter value"
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
-                e.target.parentElement.lastElementChild.innerHTML = "value range is 0 to 1"
+                e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
             }else if(e.target.className.includes("step_sizes1")){
                 if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of step_sizes1 should be lesser than step_sizes2"
+                    e.target.parentElement.lastElementChild.innerText = "value of step_sizes1 should be lesser than step_sizes2"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["step_sizes"][0] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -402,9 +460,9 @@ export class PyTorch extends React.Component {
             }else if(e.target.className.includes("step_sizes2")){
                 if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    e.target.parentElement.lastElementChild.innerHTML = "value of step_sizes2 should be greater than step_sizes1"
+                    e.target.parentElement.lastElementChild.innerText = "value of step_sizes2 should be greater than step_sizes1"
                 }else{
-                    e.target.parentElement.lastElementChild.innerHTML = ""
+                    e.target.parentElement.lastElementChild.innerText = ""
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["step_sizes"][1] = e.target.value;
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -412,7 +470,7 @@ export class PyTorch extends React.Component {
             }
         }
         else{
-            e.target.parentElement.lastElementChild.innerHTML = ""
+            e.target.parentElement.lastElementChild.innerText = ""
             if(parameterData === "loss"){
                 this.props.dispatch(pytorchValidateFlag(true));
                 let selectedPar = subParamArry["loss"];
@@ -475,26 +533,26 @@ export class PyTorch extends React.Component {
                                     <label className = "col-md-4">{item[i].description}</label>
                                     <div className ="col-md-1">
                                     <label>{item[i].displayName}1</label>
-                                        <input type="number" className ={`form-control ${item[i].name}1_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={item[i].defaultValue[0]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                        <div className ="error"></div>
+                                        <input type="number" key={`form-control ${item[i].name}1_pt`} className ={`form-control ${item[i].name}1_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={this.props.pyTorchSubParams[parameterData][item[1].name][0]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                        <div key={`${item[i].name}1_pt`} className ="error_pt"></div>
                                     </div>
                                     <div class="col-md-1">
                                         <label>{item[i].displayName}2</label>
-                                        <input type="number" className={`form-control ${item[i].name}2_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={item[i].defaultValue[1]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                        <div class="error"></div>
+                                        <input type="number" key={`form-control ${item[i].name}2_pt`} className={`form-control ${item[i].name}2_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} defaultValue={this.props.pyTorchSubParams[parameterData][item[1].name][1]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                        <div key={`${item[i].name}2_pt`} className="error_pt"></div>
                                     </div>
                                 </div>
                             );
                         break;
                         default :
-                                var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0"]
+                            var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0","max_iter","max_eval","tolerance_grad","tolerance_change","dampening"]
                                 arr1.push(
                                     <div className = "row mb-20">
                                         <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-1">
-                                            <input type ="number" className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={item[i].defaultValue} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
-                                            <div className = "error"></div>
+                                            <input type ="number" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={this.props.pyTorchSubParams[parameterData][item[i].name]} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
                                 );
@@ -504,44 +562,54 @@ export class PyTorch extends React.Component {
                 case "checkbox":
                     switch(item[i].name){
                         case "reduction":
-                            var mandateField = ["reduction","centered"]
+                            var mandateField = ["reduction"]
                                 var options = item[i].valueRange
                                 var selectedValue = ""
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
                                 options.map(k => {
-                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                    if(k === this.props.pyTorchSubParams[parameterData][item[i].name])
+                                        selectedValue = true;
+                                    else selectedValue = false;
+                                    optionsTemp.push(<option value={k} selected={selectedValue}> {k}</option>)
                                 })
                                 arr1.push(
                                         <div className = "row mb-20">
                                             <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                             <label className = "col-md-4">{item[i].description}</label>
                                             <div className = "col-md-3">
-                                                <select className = {`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
+                                                <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
-                                                <div className = "error"></div>
+                                                <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
                                             </div>
                                         </div>
                                     );
                             break;
                         default:
                                 var options = item[i].defaultValue.map(i=>i.name)
-                                var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity"];
+                                var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity","centered","nesterov"];
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
+                                var selectedValue = ""
+                                selectedValue = this.props.pyTorchSubParams[parameterData][item[i].name]
+                                var sel = ""
                                 options.map(k => {
-                                    optionsTemp.push(<option value={k} > {k}</option>)
+                                    if(k === selectedValue)
+                                        sel = true
+                                    else
+                                        sel = false
+                                    optionsTemp.push(<option value={k} selected={sel}> {k}</option>)
                                 })
                                 arr1.push(
                                     <div className = "row mb-20">
                                         <label className ={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
-                                            <select className = {`form-control ${item[i].name}_pt`}  ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
+                                            <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`}  ref={(el) => { this.eleSel = el }} onChange={this.setSubValues.bind(this,item[i],parameterData)}>
                                                 {optionsTemp}
                                             </select>
-                                            <div className = "error"></div>
+                                            <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
                                 );
@@ -564,7 +632,7 @@ export class PyTorch extends React.Component {
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
-                    optionsTemp.push(<option key={prop} className={prop} defaultValue={options[prop].name}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} defaultValue={options[prop].name} selected={options[prop].selected}>{options[prop].displayName}</option>);
                 }
                 
                 return(
@@ -573,7 +641,7 @@ export class PyTorch extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-3">
-                                <select ref={(el) => { this.eleSel = el }} className= {`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)}>
+                                <select ref={(el) => { this.eleSel = el }} key= {`form-control ${parameterData.name}_pt`} className= {`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)}>
                                     {optionsTemp}
                                 </select>
                             </div>
@@ -611,8 +679,8 @@ export class PyTorch extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label class = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-1">
-                                <input type = "number" className = {`form-control ${parameterData.name}_pt`} onKeyDown = { (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue = {parameterData.displayName ==="Batch Size"? this.props.datasetRow -1 : parameterData.defaultValue} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
-                                <div className = "error"></div>
+                                <input type = "number" key= {`form-control ${parameterData.name}_pt`} className = {`form-control ${parameterData.name}_pt`} onKeyDown = { (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue = {this.props.pyTorchSubParams[parameterData.name]} onChange={this.changeTextboxValue.bind(this,parameterData)}/>
+                                <div key= {`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
                     );
