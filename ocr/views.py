@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
-
+from django_filters.rest_framework import DjangoFilterBackend
 from api.exceptions import creation_failed_exception
 from .models import OCRImageset, OCRImage
 from rest_framework import viewsets
@@ -12,6 +12,7 @@ from api.utils import name_check
 import simplejson as json
 import random
 import copy
+from .permission import OCRImageRelatedPermission
 
 # Create your views here.
 '''
@@ -49,6 +50,9 @@ def ocr_datasource_config_list(request):
 class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     queryset = OCRImage.objects.all()
     serializer_class = OCRImageSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    permission_classes = (OCRImageRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
 

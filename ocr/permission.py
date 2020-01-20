@@ -1,3 +1,6 @@
+from rest_framework import permissions
+
+
 class OCRImageRelatedPermission(permissions.BasePermission):
     message = 'Permission for OCR.'
 
