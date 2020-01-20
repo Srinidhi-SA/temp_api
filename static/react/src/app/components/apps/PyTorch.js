@@ -248,7 +248,7 @@ export class PyTorch extends React.Component {
                             defVal[idx.name] = subDefaultVal;
                         }
                         else
-                            defVal[idx.name] = subDefaultVal.name;
+                            defVal[idx.name] = subDefaultVal.displayName;
                     }else{
                         let defVal = subParamDt[parameterData.name];
                         defVal[idx.name] = idx.defaultValue;
@@ -501,17 +501,23 @@ export class PyTorch extends React.Component {
     }
 
     setSubValues(data,parameterData,e){
+        let val = e.target.value
+        if(val === "True"){
+            val = true;
+        }else if(val === "False"){
+            val = false;
+        }
         let subParamArry = this.props.pyTorchSubParams;
         if(parameterData === "loss"){
             let selectedPar = subParamArry["loss"];
-            selectedPar[data.name] = e.target.value;
+            selectedPar[data.name] = val;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else if(parameterData === "optimizer"){
             let selectedPar = subParamArry["optimizer"];
-            selectedPar[data.name] = e.target.value;
+            selectedPar[data.name] = val;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else{
-            subParamArry[data.name] = e.target.value;
+            subParamArry[data.name] = val;
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }
     }
@@ -587,7 +593,7 @@ export class PyTorch extends React.Component {
                                     );
                             break;
                         default:
-                                var options = item[i].defaultValue.map(i=>i.name)
+                                var options = item[i].defaultValue.map(i=> {return{name:i.displayName,selected:i.selected}} )
                                 var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity","centered","nesterov"];
                                 var optionsTemp = []
                                 optionsTemp.push(<option value="None">--Select--</option>)
@@ -595,11 +601,11 @@ export class PyTorch extends React.Component {
                                 selectedValue = this.props.pyTorchSubParams[parameterData][item[i].name]
                                 var sel = ""
                                 options.map(k => {
-                                    if(k === selectedValue)
+                                    if(k.name === selectedValue)
                                         sel = true
                                     else
                                         sel = false
-                                    optionsTemp.push(<option value={k} selected={sel}> {k}</option>)
+                                    optionsTemp.push(<option value={k.name} selected={sel}> {k.name}</option>)
                                 })
                                 arr1.push(
                                     <div className = "row mb-20">

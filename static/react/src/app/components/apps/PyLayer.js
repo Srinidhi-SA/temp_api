@@ -52,7 +52,7 @@ export class PyLayer extends React.Component {
                                 defVal[idx.name] = subDefaultVal;
                             }   
                             else
-                                defVal[idx.name] = subDefaultVal.name;
+                                defVal[idx.name] = subDefaultVal.displayName;
                         }else if(idx.name === "num_parameters"){
                             let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                             let defVal = layerDt[parameterData.name];
@@ -61,7 +61,7 @@ export class PyLayer extends React.Component {
                                 defVal[idx.name] = subDefaultVal;
                             }   
                             else
-                                defVal[idx.name] = subDefaultVal.name;
+                                defVal[idx.name] = subDefaultVal.displayName;
                         }else{
                             let defVal = layerDt[parameterData.name];
                             defVal[idx.name] = idx.defaultValue;
@@ -261,15 +261,17 @@ export class PyLayer extends React.Component {
                     );
                     break;
                 case "checkbox":
-                        var options = item[i].defaultValue.map(i=>{ return {name: i.name, sel: i.selected} })
+                        var options = item[i].defaultValue.map(i=>{ return {name: i.displayName, sel: i.selected} })
                         var mandateField = ["bias","add_bias_kv","add_zero_attn","head_bias","track_running_stats","affine","num_parameters"];
                         var selectedValue = ""
+                        var sel = ""
+                        sel = this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name];
                         var optionsTemp = []
                         optionsTemp.push(<option value="None">--select--</option>)
                         options.map(k => {
-                            if(k.name === this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name])
-                                        selectedValue = true;
-                                    else selectedValue = false;
+                            if(k.name === sel)
+                                selectedValue = true;
+                            else selectedValue = false;
                             optionsTemp.push(<option value={k.name} selected={selectedValue}> {k.name}</option>)
                         })
                         arr1.push(
@@ -336,9 +338,9 @@ export class PyLayer extends React.Component {
                         sel = (options[prop].name === selectedValue)?true:false
                     }else if(parameterData.name === "bias"){
                         selectedValue = this.props.pyTorchLayer[lyr][parameterData.name]
-                        sel = (options[prop].name === selectedValue)?true:false
+                        sel = (options[prop].displayName === selectedValue)?true:false
                     }
-                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={sel}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={(parameterData.name === "bias")?options[prop].displayName:options[prop].name} selected={sel}>{options[prop].displayName}</option>);
                 }
                 
                 return(
