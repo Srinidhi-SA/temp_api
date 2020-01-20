@@ -71,7 +71,6 @@ PT_ACTIVATION_MultiheadAttention_PARAMS = [
         "name": "embed_dim",
         "displayName": "embed_dim",
         "description": "total dimension of the model.",
-        "defaultValue": 0.01,
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,

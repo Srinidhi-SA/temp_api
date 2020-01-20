@@ -15,7 +15,7 @@ from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django.conf import settings
 import datetime
-import json
+import simplejson as json
 import copy
 from api.helper import get_random_model_id, get_mails_from_outlook
 from django.contrib.auth.models import User
@@ -136,7 +136,7 @@ def submit_job_separate_task1(command_array, slug):
 @task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
     from api import helper
-    import json
+    # import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
 
@@ -293,7 +293,7 @@ def write_into_databases(job_type, object_slug, results):
 
 def write_into_databases1(job_type, object_slug, results):
     from api import helper
-    import json
+    # import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
 
@@ -435,7 +435,7 @@ def write_into_databases1(job_type, object_slug, results):
 @task(name='save_results_to_job', queue=CONFIG_FILE_NAME)
 def save_results_to_job(slug, results):
     from api.helper import get_db_object
-    import json
+    # import json
 
     job = get_db_object(model_name=Job.__name__,
                         model_slug=slug
@@ -452,7 +452,7 @@ def save_results_to_job(slug, results):
 @task(name='save_job_messages', queue=CONFIG_FILE_NAME)
 def save_job_messages(slug, messages):
     from api.helper import get_db_object
-    import json
+    # import json
     try:
         job = get_db_object(model_name=Job.__name__,
                             model_slug=slug
@@ -471,7 +471,7 @@ def save_job_messages(slug, messages):
 @task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
 def save_results_to_job1(slug, results):
     from api.helper import get_db_object
-    import json
+    # import json
 
     job = get_db_object(model_name=Job.__name__,
                         model_slug=slug
@@ -581,7 +581,7 @@ def kill_application_using_fabric(app_id=None):
 @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
     from api import helper
-    import json
+    # import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
     print("stock_sense_crawl" * 2)
@@ -696,7 +696,7 @@ def check_if_dataset_is_part_of_datascore_table_and_do_we_need_to_trigger_score(
             print("Found User")
 
             # create score
-            import json
+            # import json
             original_meta_data_from_scripts = json.loads(dataset_object.meta_data)
             print("Got metedata from dataset")
 
