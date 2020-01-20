@@ -32,6 +32,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
+    url(r'^ocr/', include('ocr.urls')),
     url(r'^reset-password/$', password_reset, {'html_email_template_name': 'registration/password_reset_html_email.html'}, name='password_reset'),
     #url(r'^reset-password/$', auth_views.PasswordResetView.as_view(html_email_template_name='registration/password_reset_html_email.html'), name='password_reset'),
     url(r'^reset-password/done$', password_reset_done, {'template_name': 'registration/password_reset_html_done.html'}, name='password_reset_done'),
