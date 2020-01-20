@@ -8,6 +8,7 @@ import dataUpload from "./dataUploadReducers"
 import dataSource from "./dataSourceReducers"
 import apps from "./appReducers"
 import chartObject from "./chartReducers"
+import ocr from "./ocrReducers"
 import { loadingBarReducer } from 'react-redux-loading-bar'
 
 export default combineReducers({
@@ -18,6 +19,7 @@ export default combineReducers({
   dataSource,
   apps,
   chartObject,
+  ocr,
   loadingBar: loadingBarReducer,
 
 })
