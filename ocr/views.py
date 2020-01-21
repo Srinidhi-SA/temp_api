@@ -2,23 +2,42 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from api.exceptions import creation_failed_exception
-from .models import OCRImageset, OCRImage
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .serialisers import OCRImageSerializer
-from api.datasets.helper import convert_to_string
-from api.utils import name_check
 import simplejson as json
 import random
 import copy
+
+#---------------------EXCEPTIONS-----------------------------
+from api.exceptions import creation_failed_exception, \
+    retrieve_failed_exception
+#------------------------------------------------------------
+#-----------------------MODELS-------------------------------
+from .models import OCRImageset, \
+    OCRImage
+#------------------------------------------------------------
+
+#---------------------SERIALIZERS----------------------------
+from .serialisers import OCRImageSerializer, \
+    OCRImageListSerializer
+#------------------------------------------------------------
+#---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
+#------------------------------------------------------------
+
+from api.datasets.helper import convert_to_string
+from api.utils import name_check
+from api.query_filtering import get_listed_data
+
+
 
 # Create your views here.
+#-------------------------------------------------------------------------------
 '''
-OCR DATASOURCES CONFIG LIST BASED ON USER PERMISSIONS
+METHOD: OCR DATASOURCES CONFIG LIST BASED ON USER PERMISSIONS
+ALLOWED REQUESTS : [GET]
+PARAMETERS: None
 '''
-
 
 def ocr_datasource_config_list(request):
     user = request.user
@@ -45,17 +64,37 @@ def ocr_datasource_config_list(request):
             permitted_source_config['conf'].append(data)
 
     return JsonResponse(data_source_config)
+#-------------------------------------------------------------------------------
 
-
+#-------------------------------------------------------------------------------
+'''
+Model: OCRImage
+Viewset : OCRImageView
+Description :
+'''
 class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
-    queryset = OCRImage.objects.all()
+
     serializer_class = OCRImageSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     permission_classes = (OCRImageRelatedPermission,)
 
-    def create(self, request, *args, **kwargs):
+    def get_queryset(self):
+        queryset = OCRImage.objects.filter(
+            created_by=self.request.user,
+            deleted=False,)
+        return queryset
 
+    def get_object_from_all(self):
+        return OCRImage.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
+
+    #queryset = OCRImage.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        print("im here111")
         # try:
         serializer_data, serializer_error = [], []
         if 'data' in kwargs:
@@ -87,16 +126,36 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = img_data.get('name', f.name[:-4].replace('.', '_'))
                 imagename_list = []
-                image_query = OCRImage.objects.filter(deleted=False, created_by=request.user.id)
+                #image_query = OCRImage.objects.filter(deleted=False, created_by=request.user.id)
+                image_query = OCRImage.objects.filter(created_by=request.user.id)
                 for index, i in enumerate(image_query):
-                    imagename_list.append(i.name)
+                    imagename_list.append(i.file.name)
                 if img_data['name'] in imagename_list:
                     serializer_error.append(creation_failed_exception("Image name already exists!."))
 
+                img_data['created_by'] = request.user.id
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
-                    serializer_data.append(Response(serializer.data))
-                serializer_error.append(creation_failed_exception(serializer.errors))
-        return {'serializer_data': serializer_data, 'serializer_error': serializer_error}
+                    return Response(serializer.data)
+                return creation_failed_exception(serializer.errors)
+                    #serializer_data.append(Response(serializer.data))
+                #serializer_error.append(creation_failed_exception(serializer.errors))
+        #return {'serializer_data': serializer_data, 'serializer_error': serializer_error}
+        
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = OCRImageListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object_from_all()
+
+        if instance is None:
+            return retrieve_failed_exception("File Doesn't exist.")
+
+        serializer = OCRImageSerializer(instance=instance, context={'request': request})
+        object_details = serializer.data
+
+        return Response(object_details)

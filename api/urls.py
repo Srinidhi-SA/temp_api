@@ -105,13 +105,6 @@ router.register(
     UserView,
     base_name='users'
 )
-
-router.register(
-    'ocr',
-    OCRImageView,
-    base_name='ocr'
-)
-
 # router.register(
 #     'regression',
 #     RegressionView,
