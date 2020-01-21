@@ -35,6 +35,7 @@ import {
   clearTensorFlowArray,
   selectMetricAction,
   clearDataPreview,
+  clearPyTorchValues,
 
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
@@ -68,8 +69,9 @@ export class Apps extends React.Component {
        this.props.dispatch(updateScoreSummaryFlag(false));
        this.props.dispatch(getAllUsersList());
        this.props.dispatch(parameterTuningVisited(false))
-       this.props.dispatch(clearTensorFlowArray())
-     
+       this.props.dispatch(clearTensorFlowArray());
+       this.props.dispatch(clearPyTorchValues());
+      
        //have to recheck next 3actions needed or not
       this.props.dispatch(setEditModelValues("","",false));
       this.props.dispatch(fetchModelEdit(""))
