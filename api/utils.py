@@ -2,7 +2,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from builtins import zip
 from builtins import object
-import json
+import simplejson as json
 
 import os
 import re
@@ -21,7 +21,7 @@ from .models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, Stock
 from django.conf import settings
 import subprocess
 
-import json
+# import json
 from pygments import highlight
 from pygments.lexers import JsonLexer
 from pygments.formatters import HtmlFormatter

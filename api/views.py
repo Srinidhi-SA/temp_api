@@ -7,7 +7,7 @@ from builtins import map, enumerate
 from builtins import zip
 from builtins import str
 from builtins import range
-import json
+import simplejson as json
 import random
 import copy
 import datetime
@@ -23,7 +23,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.decorators import method_decorator
-from rest_framework.renderers import JSONRenderer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer

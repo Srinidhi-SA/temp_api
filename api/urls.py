@@ -24,7 +24,7 @@ from .dummyModel.models import DummyView
 from api.utils import ChangePasswordSerializer, UserListSerializer
 # from views import RegressionView
 from .dummyModel.models import DummyView
-
+from ocr.views import OCRImageView
 # Start adding urlconf from here
 
 router = routers.DefaultRouter()
@@ -104,6 +104,12 @@ router.register(
     'users',
     UserView,
     base_name='users'
+)
+
+router.register(
+    'ocr',
+    OCRImageView,
+    base_name='ocr'
 )
 
 # router.register(

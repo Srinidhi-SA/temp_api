@@ -13,7 +13,7 @@ from api.models import Dataset
 from .helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
-import json
+import simplejson as json
 
 from api.utils import get_permissions
 

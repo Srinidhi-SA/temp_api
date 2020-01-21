@@ -4,7 +4,7 @@ from builtins import str
 from django.contrib import admin
 from django.conf import settings
 from .utils import json_prettify_for_admin
-import json
+import simplejson as json
 
 # Register your models here.
 
