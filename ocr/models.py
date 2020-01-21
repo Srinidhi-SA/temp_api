@@ -12,7 +12,7 @@ from django.template.defaultfilters import slugify
 
 def unique_dir():
     """Unique Directory"""
-    return 'images/' + str(uuid.uuid1())
+    return 'images/' + str(uuid.uuid1().hex)
 
 
 def validate_file_extension(value):
@@ -32,7 +32,7 @@ class OCRImage(models.Model):
     Router :
     Description :
     """
-    # name = models.CharField(max_length=300, null=True)
+    name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
     file = models.FileField(null=True, upload_to=unique_dir(), validators=[validate_file_extension])
     datasource_type = models.CharField(max_length=300, null=True)
@@ -40,6 +40,7 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     def generate_slug(self):
         """generate slug"""

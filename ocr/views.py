@@ -1,33 +1,28 @@
-from django.shortcuts import render
+import copy
+import random
+
 from django.conf import settings
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.response import Response
-import simplejson as json
-import random
-import copy
 
+from api.datasets.helper import convert_to_string
 # ---------------------EXCEPTIONS-----------------------------
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 # -----------------------MODELS-------------------------------
-from .models import OCRImageset, \
-    OCRImage
-# ------------------------------------------------------------
-
-# ---------------------SERIALIZERS----------------------------
-from .serializers import OCRImageSerializer, \
-    OCRImageListSerializer
+from .models import OCRImage
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
-# ------------------------------------------------------------
+# ---------------------SERIALIZERS----------------------------
+from .serializers import OCRImageSerializer, \
+    OCRImageListSerializer
 
-from api.datasets.helper import convert_to_string
-from api.utils import name_check
-from api.query_filtering import get_listed_data
+# ------------------------------------------------------------
+# ------------------------------------------------------------
 
 # Create your views here.
 # -------------------------------------------------------------------------------
@@ -73,6 +68,11 @@ Model: OCRImage
 Viewset : OCRImageView
 Description :
 '''
+STATUS_CHOICES = [
+    'Not Registered',
+    'SUCCESS',
+    'FAILED'
+]
 
 
 class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -110,8 +110,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             # data['file'] = request.FILES.get('file')
             files = request.FILES.getlist('file')
             for f in files:
-                print(f.name)
-                # img_data['datasource_type'] = 'fileUpload'
                 img_data['file'] = f
                 if f is None:
                     img_data['name'] = img_data.get('name',
@@ -127,17 +125,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     serializer_error.append(creation_failed_exception("Image name already exists!."))
 
                 img_data['created_by'] = request.user.id
+                img_data['status'] = 'SUCCESS'
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
-                    # return Response(serializer.data)
                     serializer_data.append(serializer.data)
                 else:
                     serializer_error.append(creation_failed_exception(serializer.errors))
-                # return creation_failed_exception(serializer.errors)
-                # serializer_data.append(Response(serializer.data))
-                # serializer_error.append(creation_failed_exception(serializer.errors))
                 response = {'serializer_data': serializer_data, 'serializer_error': str(serializer_error)}
         return JsonResponse(response)
 
