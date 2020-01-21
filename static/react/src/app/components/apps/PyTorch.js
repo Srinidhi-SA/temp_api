@@ -10,10 +10,10 @@ import {statusMessages} from  "../../helpers/helper"
     return{
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
-        pyTorchLayer:store.apps.pyTorchLayer,
         dataPreview:store.datasets.dataPreview,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
         pyTorchSubParams:store.apps.pyTorchSubParams,
+        pyTorchLayer:store.apps.pyTorchLayer,
         idLayer: store.apps.idLayer,
         editmodelFlag:store.datasets.editmodelFlag,
         modelEditconfig: store.datasets.modelEditconfig,
