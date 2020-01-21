@@ -8,36 +8,35 @@ import simplejson as json
 import random
 import copy
 
-#---------------------EXCEPTIONS-----------------------------
+# ---------------------EXCEPTIONS-----------------------------
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
-#------------------------------------------------------------
-#-----------------------MODELS-------------------------------
+# ------------------------------------------------------------
+# -----------------------MODELS-------------------------------
 from .models import OCRImageset, \
     OCRImage
-#------------------------------------------------------------
+# ------------------------------------------------------------
 
-#---------------------SERIALIZERS----------------------------
-from .serialisers import OCRImageSerializer, \
+# ---------------------SERIALIZERS----------------------------
+from .serializers import OCRImageSerializer, \
     OCRImageListSerializer
-#------------------------------------------------------------
-#---------------------PERMISSIONS----------------------------
+# ------------------------------------------------------------
+# ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
-#------------------------------------------------------------
+# ------------------------------------------------------------
 
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
 from api.query_filtering import get_listed_data
 
-
-
 # Create your views here.
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 '''
 METHOD: OCR DATASOURCES CONFIG LIST BASED ON USER PERMISSIONS
 ALLOWED REQUESTS : [GET]
 PARAMETERS: None
 '''
+
 
 def ocr_datasource_config_list(request):
     user = request.user
@@ -64,16 +63,19 @@ def ocr_datasource_config_list(request):
             permitted_source_config['conf'].append(data)
 
     return JsonResponse(data_source_config)
-#-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 '''
 Model: OCRImage
 Viewset : OCRImageView
 Description :
 '''
-class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
+
+class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     serializer_class = OCRImageSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -82,7 +84,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def get_queryset(self):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
-            deleted=False,)
+            deleted=False, )
         return queryset
 
     def get_object_from_all(self):
@@ -91,12 +93,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user
         )
 
-    #queryset = OCRImage.objects.all()
+    # queryset = OCRImage.objects.all()
 
     def create(self, request, *args, **kwargs):
-        print("im here111")
         # try:
-        serializer_data, serializer_error = [], []
+        serializer_data, serializer_error, response = [], [], {}
         if 'data' in kwargs:
             data = kwargs.get('data')
             self.request = request
@@ -104,29 +105,21 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = request.data
         data = convert_to_string(data)
         img_data = data
-        '''if 'name' in data:
-            should_proceed = name_check(data['name'])
-            if should_proceed < 0:
-                if should_proceed == -1:
-                    return creation_failed_exception("Name is empty.")
-                elif should_proceed == -2:
-                    return creation_failed_exception("Name is very large.")
-                elif should_proceed == -3:
-                    return creation_failed_exception("Name have special_characters.")'''
 
         if 'file' in data:
             # data['file'] = request.FILES.get('file')
             files = request.FILES.getlist('file')
             for f in files:
-                img_data['datasource_type'] = 'fileUpload'
-                if img_data['file'] is None:
+                print(f.name)
+                # img_data['datasource_type'] = 'fileUpload'
+                img_data['file'] = f
+                if f is None:
                     img_data['name'] = img_data.get('name',
                                                     img_data.get('datasource_type', "H") + "_" + str(
                                                         random.randint(1000000, 10000000)))
                 else:
-                    img_data['name'] = img_data.get('name', f.name[:-4].replace('.', '_'))
+                    img_data['name'] = f.name[:-4].replace('.', '_')
                 imagename_list = []
-                #image_query = OCRImage.objects.filter(deleted=False, created_by=request.user.id)
                 image_query = OCRImage.objects.filter(created_by=request.user.id)
                 for index, i in enumerate(image_query):
                     imagename_list.append(i.file.name)
@@ -138,12 +131,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
-                    return Response(serializer.data)
-                return creation_failed_exception(serializer.errors)
-                    #serializer_data.append(Response(serializer.data))
-                #serializer_error.append(creation_failed_exception(serializer.errors))
-        #return {'serializer_data': serializer_data, 'serializer_error': serializer_error}
-        
+                    # return Response(serializer.data)
+                    serializer_data.append(serializer.data)
+                else:
+                    serializer_error.append(creation_failed_exception(serializer.errors))
+                # return creation_failed_exception(serializer.errors)
+                # serializer_data.append(Response(serializer.data))
+                # serializer_error.append(creation_failed_exception(serializer.errors))
+                response = {'serializer_data': serializer_data, 'serializer_error': str(serializer_error)}
+        return JsonResponse(response)
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = OCRImageListSerializer(queryset, many=True)

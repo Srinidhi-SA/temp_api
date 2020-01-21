@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from .models import OCRImage
 
-from api.datasets.helper import convert_to_json, convert_time_to_human
 from api.user_helper import UserSerializer
+from .models import OCRImage, OCRImageset
 
 '''
     *Serializers*
@@ -14,13 +13,25 @@ Defined Serilizers :
     - List Serializer : OCRImageListSerializer
 -------------------------------------------------
 '''
+
+
 class OCRImageSerializer(serializers.ModelSerializer):
+    """
+        *Serializers*
+    -------------------------------------------------
+    Model : OCRImage
+    Viewset : OCRImageView
+    Defined Serilizers :
+        - Details Serializer : OCRImageSerializer
+        - List Serializer : OCRImageListSerializer
+    -------------------------------------------------
+    """
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageSerializer, self).to_representation(instance)
-        #serialized_data = convert_to_json(serialized_data)
-        #serialized_data = convert_time_to_human(serialized_data)
-        serialized_data['created_by'] = UserSerializer(instance.created_by).data
+        # serialized_data = convert_to_json(serialized_data)
+        # serialized_data = convert_time_to_human(serialized_data)
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
 
         '''
         if instance.viewed == False and instance.status=='SUCCESS':
@@ -59,11 +70,12 @@ class OCRImageSerializer(serializers.ModelSerializer):
         model = OCRImage
         fields = ['slug', 'file', 'datasource_type', 'created_at', 'created_by']
 
+
 class OCRImageListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
-        #ret['brief_info'] = instance.get_brief_info()
+        # ret['brief_info'] = instance.get_brief_info()
 
         # permission details
         # permission_details = get_permissions(
@@ -75,4 +87,28 @@ class OCRImageListSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = OCRImage
+        fields = ['slug', 'file']
+
+
+class OCRImageSetSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageSetSerializer, self).to_representation(instance)
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data
+
+        return serialized_data
+
+    class Meta:
+        model = OCRImageset
+        fields = ['slug', 'file', 'datasource_type', 'created_at', 'created_by']
+
+
+class OCRImageSetListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageSetListSerializer, self).to_representation(instance)
+        return serialized_data
+
+    class Meta(object):
+        model = OCRImageset
         fields = ['slug', 'file']

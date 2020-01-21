@@ -12,7 +12,8 @@ from django.template.defaultfilters import slugify
 
 def unique_dir():
     """Unique Directory"""
-    return 'images/' + str(uuid.uuid1().hex)
+    return 'images/' + str(uuid.uuid1())
+
 
 def validate_file_extension(value):
     """ METHOD : To Validate file extension for OCRImage model FileField. """
@@ -56,7 +57,8 @@ class OCRImage(models.Model):
         if self.datasource_type in ['fileUpload']:
             self.save()
 
-#pylint: disable=too-few-public-methods
+
+# pylint: disable=too-few-public-methods
 class OCRImageset(models.Model):
     """
     Model :
