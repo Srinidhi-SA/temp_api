@@ -21,10 +21,13 @@
 	<link href="css/theme.ice.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
 
+	<link rel="stylesheet" href="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css" type="text/css" />
+	
+ 	
 </head>
    <body>
    
-   
+   <!-- Instructions Modal Popup -->
 	<div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
@@ -177,7 +180,30 @@
 			</div>
 		</div>
 	</div>
+<!-- End Instructions Modal Popup -->
 
+<!-- Equal, Greater Than and Less Than Modal Popup -->
+<div class="modal fade" id="modal_equal" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Equal</h4>
+			</div>
+			<div class="modal-body">			
+				<!-- Wrapper for slides -->
+				<div class="form-group">
+				<label for="txt_bscan">Enter the value:</label>
+				<input type="text" class="form-control" id="txt_novalue" placeholder="Enter number">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+			</div>	 
+			</div>
+		</div>
+	</div>
    
    
    
@@ -260,8 +286,8 @@
    <section class="ocr_section">
    <div class="tab-container">
 		<ul class="nav nav-tabs cst_ocr_tabs">
-		  <li class="active"><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-		  <li class=""><a href="document_ocr.html"><i class="fa fa-book fa-lg"></i> Document</a></li>
+		  <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
+		  <li class="active"><a href="document_ocr.html"><i class="fa fa-book fa-lg"></i> Document</a></li>
 		  <li class=""><a href="#"><i class="fa fa-bug fa-lg"></i> Dignostic</a></li>
 		 <!-- <li class=""><a href="#"><i class="fa fa-briefcase fa-lg"></i> Framework</a></li> -->
 		</ul>
@@ -272,109 +298,132 @@
 		<div class="xs-mt-20"></div>		  
 	  <div class="row">
 	  <div class="col-sm-6">
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ocr_Instructions_modal">
-			Introduction
-			</button>
+			 
+			<button class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
 	  </div>
-        
+        <div class="col-sm-6 text-right"> 
+		  <button class="btn btn-default disabled" id="btn_r1"><i class="fa fa-file-text"></i> Recognize</button> 
+		  <button class="btn btn-default disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button> 
+        </div> 
       </div>
 	  <div class="xs-mt-20"></div>
 	<div class="row">
-       <div class="col-md-5">
-		<div class="widget widget-pie">
-              <div class="widget-head"><span class="title">Overview</span></div>
-              <div class="row chart-container">
-                <div class="col-md-6">
-                  <div class="chart" id="widget-top-1" style="padding: 0px; position: relative;"><canvas class="flot-base" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas><canvas class="flot-overlay" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas></div>
-                </div>
-                <div class="col-md-6">
-                  <div class="legend">
-					<table style="font-size:smaller;color:#545454">
-						<tbody>
-							<tr>
-								<td class="legendColorBox">
-								<div style="border:1px solid #ccc;padding:1px">
-								<div style="width:4px;height:0;border:5px solid rgb(241,121,121);overflow:hidden">
-								</div>
-								</div>
-								</td>
-								<td class="legendLabel">Jeera</td>
-							</tr>
-							<tr>
-								<td class="legendColorBox">
-								<div style="border:1px solid #ccc;padding:1px">
-								<div style="width:4px;height:0;border:5px solid rgb(255,220,122);overflow:hidden"></div>
-								</div>
-							</td>
-							<td class="legendLabel">Slack</td>
-							</tr>
-							<tr>
-							<td class="legendColorBox">
-							<div style="border:1px solid #ccc;padding:1px">
-								<div style="width:4px;height:0;border:5px solid rgb(149,217,240);overflow:hidden">
-								</div>
-							</div>
-							</td>
-							<td class="legendLabel">Asana</td>
-							</tr></tbody>
-					</table>
-				  </div>
-                </div>
-              </div>
-              <div class="row chart-info">
-                <div class="col-md-4"><span class="title">Automation Test</span><span class="number" data-toggle="counter" data-end="180">180</span></div>
-                <div class="col-md-4"><span class="title">Realtime Test</span><span class="number" data-toggle="counter" data-end="500" data-prefix="$">$500</span></div>
-                <div class="col-md-4"><span class="title">Screenshot Test</span><span class="number" data-toggle="counter" data-end="90">90</span></div>
-              </div>
-            </div>
-	   </div>
-	   <div class="col-md-5">
-			<div class="widget widget-pie widget-pie-stats">
-              <div class="widget-head"><span class="title">Advertisement</span></div>
-              <div class="row chart-container">
-                <div class="col-md-6">
-                  <div class="chart" id="widget-top-3" style="padding: 0px; position: relative;"><canvas class="flot-base" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas><canvas class="flot-overlay" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas></div>
-                </div>
-                <div class="col-md-6">
-                  <div class="legend">
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td class="legendColorBox">
-                            <div>
-                              <div class="clr-alt3" style="width:10px;height:10px;overflow:hidden;"></div>
-                            </div>
-                          </td>
-                          <td class="legendLabel">Google Ads</td>
-                          <td class="legendData">$752</td>
-                        </tr>
-                        <tr>
-                          <td class="legendColorBox">
-                            <div>
-                              <div class="clr-alt4" style="width:10px;height:10px;overflow:hidden;"></div>
-                            </div>
-                          </td>
-                          <td class="legendLabel">Facebook</td>
-                          <td class="legendData">$300</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div class="row chart-info">
-                <div class="col-md-6">
-                  <div class="sparkline" id="spk1"><canvas width="54" height="30" style="display: inline-block; width: 54px; height: 30px; vertical-align: top;"></canvas></div><span class="title">Profit</span><span class="number" data-toggle="counter" data-end="70" data-suffix="%">70%</span>
-                </div>
-                <div class="col-md-6">
-                  <div class="sparkline" id="spk2"><canvas width="54" height="30" style="display: inline-block; width: 54px; height: 30px; vertical-align: top;"></canvas></div><span class="title">Return</span><span class="number" data-toggle="counter" data-end="30" data-suffix="%">30%</span>
-                </div>
-              </div>
-            </div>
-	   </div>
-	    <div class="col-md-2">
-	   
-	   </div>
+        <div class="col-sm-12">
+			<table class="table table-condensed table-hover table-bordered cst_table ">
+				<thead>
+				<tr>
+					<th></th>
+					<th>Name</th>
+					<th class="dropdown" >
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+					<span>Status</span> <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu scrollable-menu">
+					<li><a class="cursor" name="ready to verify">Ready to verify</a></li>
+					<li><a class="cursor" name="ready to export">Ready to export</a></li>
+					 
+					</ul>
+					</th>
+					 
+					<th class="dropdown" >
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+					<span>Confidence Level</span> <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu scrollable-menu"> 
+					 
+					<li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+					<li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Gtreter than</a></li>
+					<li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+					</ul>
+					</th>
+					<th class="dropdown" >
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
+					<span>Assignee</span> <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu scrollable-menu">
+					<li><a class="cursor" name="ready to verify">Assignee 1</a></li>
+					<li><a class="cursor" name="ready to export">Assignee 2</a></li>
+					 
+					</ul>
+					</th>
+					 
+					<th>Notes</th>
+				</tr>
+				</thead>
+				<tbody class="no-border-x">
+				<tr onclick="selectRow(this)">
+					<td align="center">
+					<div class="ma-checkbox">
+					<input type="checkbox" id="row1" value="row1">
+					<label for="row1" class="radioLabels"></label>
+					</div>
+					</td>
+					<td>
+						<a href="document_view.html">Diabetes</a>
+					</td>
+					<td>
+					
+					<div class="progress">
+						<div class="progress-bar bg-success progress-bar-striped " style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">Progressing 70%</div>
+					</div>
+					
+					 
+					</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr onclick="selectRow(this)">
+					<td align="center">
+					<div class="ma-checkbox">
+					<input type="checkbox" id="row2" value="row2">
+					<label for="row2" class="radioLabels"></label>
+					</div>
+					</td>
+					<td>
+						<a href="document_view.html">Markshe</a>
+					</td>
+					<td>Ready to export d</td>
+					<td></td>
+					<td> <a href="#" id="status1" data-type="select" data-pk="1" data-title="Assignee"></a>
+      </td>
+					<td></td>
+				</tr>
+				<tr onclick="selectRow(this)">
+					<td align="center">
+					<div class="ma-checkbox">
+					<input type="checkbox" id="row3" value="row3">
+					<label for="row3" class="radioLabels"></label>
+					</div>
+					</td>
+					<td>
+						<a href="document_view.html">Invoice_x</a>
+					</td>
+					<td>Ready to verify</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr onclick="selectRow(this)">
+					<td align="center">
+					<div class="ma-checkbox">
+					<input type="checkbox" id="row4" value="row4">
+					<label for="row4" class="radioLabels"></label>
+					</div>
+					</td>
+					<td>
+						<a href="document_view.html">Joan</a>
+					</td>
+					<td>Ready to recognize</td>
+					<td></td>
+					<td class="editCell">
+						Kalyan
+					</td>
+					<td></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	  
 	  </div>
@@ -396,8 +445,11 @@
 <script src="js/bootstrap-slider.js"></script>
 <script src="js/bootbox.min.js"></script>
 <script src="js/wow.min.js"></script>
-<script type="text/javascript" src="s/jquery.tablesorter.js"></script>
-<script type="text/javascript" src="js/jquery.tablesorter.widgets.js"></script>
+ 
+
+<script type="text/javascript" src="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+<script type="text/javascript" src="https://rawgit.com/wenzhixin/bootstrap-table/master/src/extensions/editable/bootstrap-table-editable.js"></script>
+ 
 <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
 
 <script src="js/uiScripts.js"></script>
@@ -424,6 +476,32 @@ function selectRow(row)
     firstInput.checked = !firstInput.checked;
 	$("#btn_r1,#btn_r2").removeClass("disabled"); 
 }
+
+$('table.cst_table .editCell').click(function () {
+    var cellId = [$(this).attr('class'), $(this).parent('tr').attr('id')];
+    
+    if ($(this).attr("contentEditable") == true) {
+        console.debug('Cell', cellId, 'is now *not* editable');
+        $(this).attr("contentEditable", "false");
+    } 
+    else {        
+        console.debug('Cell', cellId, 'is now editable');
+        $(this).attr("contentEditable", "true");
+        $(this).select();
+    }
+})
+
+ 
+      $(function(){
+          $('#status1').editable({
+              value: 2,    
+              source: [
+                    {value: 1, text: 'Assignee 1'},
+                    {value: 2, text: 'Assignee 2'},
+                    {value: 3, text: 'Assignee 3'}
+                 ]
+          });
+      }); 
 </script>
 </body>
 </html>
