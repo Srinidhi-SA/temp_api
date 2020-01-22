@@ -2671,7 +2671,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   border: 1px solid #ddd;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) {ocr-mq44ewz7bp/
   .nav-tabs.nav-justified > li {
     display: table-cell;
     width: 1%;
@@ -21984,7 +21984,34 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
   color: #ffffff;
   border-color: #cccccc;
 }
+.modal-steps { margin-left:10px; }
+.modal-steps.active { color:#FFFFFF; }
+.ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; }
 
+/*** OCR Introduction Styles ***/
+.carousel.slide .modal-body { background: #e2e2e2; }
+.carousel-indicators.cst_indicators li {border: 1px solid #e0e0e0;}
+.carousel-indicators.cst_indicators .active {background-color: #00998c;}
+.cst_indicators { position: absolute; left: 11%; bottom: 2%; }
+.cst-tab-steps li { margin: 3em 0.4em; }
+.img_block { background: #f7f7f7; border-radius: 50%; height: 100px; width: 100px; line-height: 7.4em; }
+.img_block img { vertical-align: middle; max-height: 36px; }
+.cst_carousel {min-height:320px;}
+.i_steps { margin-top:13%; }
+.i_steps .img_block { margin:40px auto 0 auto }
+.cst-tab-steps h5, .i_steps h5 { color: #989898; }
+
+/*** OCR Dashboard Styles ***/
+.cst_ocr_tabs { background: #2e3c56; border-radius: 4px; overflow: hidden;}
+.cst_ocr_tabs li a, .cst_ocr_tabs li a:active, .cst_ocr_tabs li a:link { color: #8c96a9; text-transform:capitalize; background:none; }
+.cst_ocr_tabs li a .fa { margin-right:5px; }
+.cst_ocr_tabs li.active { background: #232e42; }
+
+.cst_ocr_tabs li:hover a .fa, .cst_ocr_tabs li.active a .fa { color: #1cc5b8; }
+.cst_ocr_tabs li:hover a, .cst_ocr_tabs li.active a, .cst_ocr_tabs li a:hover { color:#FFFFFF; background: #232e42; }
+.cst_table .progress { margin-bottom:0; }
+.cst_ocr_tabs .nav-tabs>li.active>a, .cst_ocr_tabs li.active a { border-width:2 ; border-bottom-color:transparent ; }
+.ocr_section .cst_table thead th a .caret { float: right; margin-top: 6px; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
