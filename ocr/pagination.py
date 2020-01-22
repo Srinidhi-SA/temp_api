@@ -7,6 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 from ocr.permission import get_permissions
 
+
 class CustomOCRPagination(PageNumberPagination):
     """
     OCR Pagination
@@ -63,7 +64,8 @@ class CustomOCRPagination(PageNumberPagination):
         initial_count = (page_number - 1) * page_size
         end_count = initial_count + page_size
         page_data = page[initial_count:end_count]
-        serialized_page_data = self.list_serializer(page_data, many=True, context={"request": self.request}) #pylint: disable= line-too-long
+        serialized_page_data = self.list_serializer(page_data, many=True,
+                                                    context={"request": self.request})  # pylint: disable= line-too-long
         return {
             "count": total_number_of_pages,
             "current_page": page_number,

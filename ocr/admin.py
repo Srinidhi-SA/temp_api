@@ -18,6 +18,11 @@ class OCRImageAdmin(admin.ModelAdmin):
     list_filter = ["status", "deleted", "created_by"]
     readonly_fields = ["created_at", "deleted", "created_by", "slug"]
 
+    def get_queryset(self, request):
+        queryset = super(OCRImageAdmin, self).get_queryset(request)
+        queryset = queryset.order_by('created_at')
+        return queryset
+
 
 # pylint: disable=too-few-public-methods
 class OCRImagesetAdmin(admin.ModelAdmin):
@@ -29,6 +34,11 @@ class OCRImagesetAdmin(admin.ModelAdmin):
     list_display = ["name", "status", "created_by"]
     list_filter = ["status", "created_by"]
     readonly_fields = ["created_by"]
+
+    def get_queryset(self, request):
+        queryset = super(OCRImagesetAdmin, self).get_queryset(request)
+        queryset = queryset.order_by('created_at')
+        return queryset
 
 
 admin.site.register(OCRImage, OCRImageAdmin)

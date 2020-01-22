@@ -63,7 +63,7 @@ class OCRImage(models.Model):
     """
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
-    file = models.FileField(null=True, upload_to=unique_dir(), validators=[validate_file_extension])
+    imagefile = models.FileField(null=True, upload_to='ocrData', validators=[validate_file_extension])
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)
     datasource_details = models.CharField(max_length=3000, null=True)
@@ -97,6 +97,3 @@ class OCRImage(models.Model):
         """Create OCRImage model"""
         if self.datasource_type in ['fileUpload']:
             self.save()
-
-
-
