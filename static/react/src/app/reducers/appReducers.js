@@ -940,9 +940,12 @@ export default function reducer(state = {
         var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
 
         // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
+        var delPanel = state.panels;
+        delPanel.pop(action.deleteId)
         return{
           ...state,
-          tensorFlowInputs :curTfData
+          tensorFlowInputs :curTfData,
+          panels : delPanel
         }
       }
 
