@@ -1,5 +1,24 @@
 from rest_framework import permissions
 
+def get_permissions(user, model, type='retrieve'):
+    if model == 'ocrimage':
+        if type == 'retrieve':
+            return {
+                'view_ocrimage': user.has_perm('ocr.view_ocrimage'),
+                'rename_ocrimage': user.has_perm('ocr.rename_ocrimage'),
+                'remove_ocrimage': user.has_perm('ocr.remove_ocrimage'),
+                'create_ocrimage': user.has_perm('ocr.create_ocrimage'),
+            }
+        if type == 'list':
+            return {
+                'create_ocrimage': user.has_perm('ocr.create_ocrimage'),
+                'view_ocrimage': user.has_perm('ocr.view_ocrimage'),
+                'upload_from_file': user.has_perm('ocr.upload_from_file'),
+                'upload_from_sftp': user.has_perm('ocr.upload_from_sftp'),
+                'upload_from_s3': user.has_perm('ocr.upload_from_s3'),
+            }
+
+    return {}
 
 class OCRImageRelatedPermission(permissions.BasePermission):
     message = 'Permission for OCR.'

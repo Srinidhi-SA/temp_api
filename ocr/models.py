@@ -73,3 +73,5 @@ class OCRImageset(models.Model):
     imagepath = models.CharField(max_length=300, null=True)
     deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(User, null=True, db_index=True)
