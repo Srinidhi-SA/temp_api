@@ -21986,7 +21986,7 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 }
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
-.ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; }
+.ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; padding-bottom: 20px; }
 
 /*** OCR Introduction Styles ***/
 .carousel.slide .modal-body { background: #e2e2e2; }
@@ -22002,8 +22002,8 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .cst-tab-steps h5, .i_steps h5 { color: #989898; }
 
 /*** OCR Dashboard Styles ***/
-.cst_ocr_tabs { background: #2e3c56; border-radius: 4px; overflow: hidden;}
-.cst_ocr_tabs li a, .cst_ocr_tabs li a:active, .cst_ocr_tabs li a:link { color: #8c96a9; text-transform:capitalize; background:none; }
+.cst_ocr_tabs { background: #d9d9d9; border-radius: 4px; overflow: hidden;}
+.cst_ocr_tabs li a, .cst_ocr_tabs li a:active, .cst_ocr_tabs li a:link { color: #333; text-transform:capitalize; background:none; }
 .cst_ocr_tabs li a .fa { margin-right:5px; }
 .cst_ocr_tabs li.active { background: #232e42; }
 
@@ -23548,4 +23548,6 @@ canvas {
 	flex-direction: column;
 	justify-content: center;
 }
-
+.ocr_section .tab-container{
+  margin-bottom: 20px;
+}

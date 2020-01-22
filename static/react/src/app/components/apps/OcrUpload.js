@@ -56,7 +56,7 @@ export class OcrUpload extends React.Component {
     var data = new FormData();
     console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
-      data.append("file", acceptedFiles[x]);
+      data.append("imagefile", acceptedFiles[x]);
     }
     return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
       method: "POST",
@@ -76,8 +76,8 @@ export class OcrUpload extends React.Component {
       : ""
 
   return (
-    <div class="row">
-     <Button style={{ marginLeft: "35px" }} bsStyle="primary" onClick={this.openPopup.bind(this)}>Upload</Button>
+    <div>
+     <Button bsStyle="primary" onClick={this.openPopup.bind(this)}><i class="fa fa-upload"></i> Upload</Button>
       <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
         <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
           <Modal.Header closeButton>
