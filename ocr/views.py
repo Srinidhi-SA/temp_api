@@ -116,11 +116,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
-        if 'file' in data:
+        if 'imagefile' in data:
             # data['file'] = request.FILES.get('file')
-            files = request.FILES.getlist('file')
+            files = request.FILES.getlist('imagefile')
             for f in files:
-                img_data['file'] = f
+                img_data['imagefile'] = f
                 if f is None:
                     img_data['name'] = img_data.get('name',
                                                     img_data.get('datasource_type', "H") + "_" + str(
@@ -130,7 +130,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 imagename_list = []
                 image_query = self.get_queryset()
                 for index, i in enumerate(image_query):
-                    imagename_list.append(i.file.name)
+                    imagename_list.append(i.imagefile.name)
                 if img_data['name'] in imagename_list:
                     serializer_error.append(creation_failed_exception("Image name already exists!."))
 

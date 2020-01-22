@@ -80,8 +80,8 @@ class OCRImage(models.Model):
 
     def add_to_imageset(self, *args, **kwargs):
         imageset = OCRImageset()
-        imageset.name = self.file.name.split('.')[0]
-        imageset.imagepath = self.file.path
+        imageset.name = self.imagefile.name.split('.')[0]
+        imageset.imagepath = self.imagefile.path
         imageset.status = 'SUCCESS'
         imageset.created_by = self.created_by
         imageset.save()
