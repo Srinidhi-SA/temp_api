@@ -838,6 +838,20 @@ class Insight(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'signal')
 
 
+def convert2native(dict_input):
+    for k, v in dict_input.items():
+        if isinstance(v, dict):
+            v = convert2native(v)
+        else:
+            if v in ['true', 'True']:
+                dict_input[k] = True
+            if v in ['false', 'False']:
+                dict_input[k] = False
+            if v in ['none', 'None']:
+                dict_input[k] = None
+    return dict_input
+
+
 class Trainer(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
@@ -939,8 +953,8 @@ class Trainer(models.Model):
             try:
                 if 'TENSORFLOW' in configUI:
                     config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
-                if 'PYTORCH' in configUI:
-                    config['config']["ALGORITHM_SETTING"][6].update({'nnptc_params': configUI['PYTORCH']})
+                if 'nnptc_parameters' in config['config']["ALGORITHM_SETTING"][6]:
+                    config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
             except Exception as err:
                 print("Error adding Tesorflow Selection to Algorithm")
                 print(err)
