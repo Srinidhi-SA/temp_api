@@ -14,6 +14,7 @@ from api.exceptions import creation_failed_exception, \
 # ------------------------------------------------------------
 # -----------------------MODELS-------------------------------
 from .models import OCRImage
+from .models import OCRImageset
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
@@ -28,6 +29,7 @@ from .serializers import OCRImageSerializer, \
 from .pagination import CustomOCRPagination
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data
+
 
 # Create your views here.
 # -------------------------------------------------------------------------------
@@ -62,6 +64,7 @@ def ocr_datasource_config_list(request):
             permitted_source_config['conf'].append(data)
 
     return JsonResponse(data_source_config)
+
 
 # -------------------------------------------------------------------------------
 
@@ -123,7 +126,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = f.name[:-4].replace('.', '_')
                 imagename_list = []
-                image_query = OCRImage.objects.filter(created_by=request.user.id)
+                image_query = self.get_queryset()
                 for index, i in enumerate(image_query):
                     imagename_list.append(i.file.name)
                 if img_data['name'] in imagename_list:
@@ -142,7 +145,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
-        
+
         return get_listed_data(
             viewset=self,
             request=request,
@@ -159,3 +162,4 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details = serializer.data
 
         return Response(object_details)
+
