@@ -68,7 +68,7 @@ class OCRImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OCRImage
-        fields = ['slug', 'file', 'datasource_type', 'created_at', 'status', 'created_by']
+        fields = ['slug', 'name', 'file', 'datasource_type', 'created_at', 'status', 'created_by']
 
 
 class OCRImageListSerializer(serializers.ModelSerializer):

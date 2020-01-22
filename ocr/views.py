@@ -25,7 +25,7 @@ from .serializers import OCRImageSerializer, \
     OCRImageListSerializer
 # ------------------------------------------------------------
 
-# ---------------------PEGINATION----------------------------
+# ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data
@@ -92,7 +92,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def get_queryset(self):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
-            deleted=False, )
+            deleted=False,
+            status__in=['SUCCESS']
+        ).order_by('-created_at')
         return queryset
 
     def get_object_from_all(self):
