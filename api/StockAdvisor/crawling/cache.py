@@ -32,7 +32,7 @@ class Cache(object):
         private method to generate md5 or sha1 hash of the key
         :return:
         """
-        return hashlib.sha1(key).hexdigest()
+        return hashlib.sha1(key.encode('utf-8')).hexdigest()
 
     def __get_file_path(self, key):
         return os.path.join(self.base_dir, self.namespace, self.__get_hash(key))
@@ -49,7 +49,7 @@ class Cache(object):
             if not os.path.exists(os.path.dirname(file_path)):
                 os.makedirs(os.path.dirname(file_path))
 
-            file_obj = open(file_path, "w")
+            file_obj = open(file_path, "wb")
             file_obj.write(content)
             file_obj.close()
         except IOError:
