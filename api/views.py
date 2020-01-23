@@ -58,7 +58,7 @@ from api.utils import \
 # RegressionSerlializer,
 # RegressionListSerializer
 from .models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
-    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
+    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment, convert2native
 from api.tasks import clean_up_on_delete, create_model_autoML
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
@@ -689,6 +689,8 @@ class TrainerView(viewsets.ModelViewSet):
                                 missing_value_treatment[index] = data_items
                                 index += 1
                 config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in list(x.keys())]
+                config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(
+                    config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
                 tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
 
             except Exception as err:
