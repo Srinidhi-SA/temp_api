@@ -36,3 +36,6 @@ config/settings/config_file_name_to_run.py
 static/react/dist_*
 scripts/data/
 .env
+api/migrations/
+ocr/migrations/
+
