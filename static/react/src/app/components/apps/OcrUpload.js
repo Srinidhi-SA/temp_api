@@ -70,14 +70,14 @@ export class OcrUpload extends React.Component {
   };
 
   handleSubmit(acceptedFiles ){
-    this.setState({loader: true})
-    $("#dataCloseBtn").hide()
-
     if(acceptedFiles.length==0){
       document.getElementById("resetMsg").innerText= "Please select files to upload.";
       return false
     }
-
+    
+    $("#dataCloseBtn").hide()
+    this.setState({loader: true})
+    
     var data = new FormData();
     console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
