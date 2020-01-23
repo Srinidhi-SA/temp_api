@@ -23543,7 +23543,7 @@ canvas {
 	z-index: 99;
 }
 .ocrUploadHeight{
-	height: 310px;
+	height: 310px !important;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

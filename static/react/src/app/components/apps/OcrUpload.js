@@ -87,14 +87,14 @@ export class OcrUpload extends React.Component {
             <div className="row">
               <div className="col-md-5 ocrUploadHeight">
                 <div className="dropzoneOcr">
-                  <input className="ocrUpload" type="file" multiple onChange={this.onDrop} />
+                  <input className="ocrUpload" type="file" multiple onChange={this.onDrop} title=" "/>
                   <img style={{ height: 64, width: 64, opacity: 0.4, zIndex: 0, cursor: 'pointer' }} src={STATIC_URL + "assets/images/ocrUpload.svg"} />
                   <span>Upload files</span>
                 </div>
               </div>
-              <div className="col-md-7 ocrUploadHeight">
-                <Scrollbars>
-                <ul className="list-unstyled bullets_primary ocrUploadHeight">
+              <div className="col-md-7">
+                <Scrollbars className="ocrUploadHeight">
+                <ul className="list-unstyled bullets_primary" style={{display:'table-cell',margin:'auto',height:300,verticalAlign:'middle'}}>
                   {fileNames}
                 </ul>
                 </Scrollbars>
