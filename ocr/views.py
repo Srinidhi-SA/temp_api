@@ -143,7 +143,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     serializer_data.append(serializer.data)
                 else:
                     serializer_error.append(creation_failed_exception(serializer.errors))
-                response = {'serializer_data': serializer_data, 'serializer_error': str(serializer_error)}
+                if not serializer_error:
+                    response = {'serializer_data': serializer_data, 'message': 'SUCCESS'}
+                else:
+                    response = {'serializer_error': str(serializer_error), 'message': 'FAILED'}
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
