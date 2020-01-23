@@ -55,12 +55,17 @@ class OCRImageset(models.Model):
 
 class OCRImage(models.Model):
     """
-    Model :
-    Viewset :
-    Serializers :
-    Router :
+    Model : OCRImage
+    Viewset : OCRImageView
+    Serializers : OCRImageSerializer, OCRImageListSerializer
+    Router : ocrimage
     Description :
     """
+    STATUS_CHOICES = [
+        ('1', 'Ready to recognize.'),
+        ('2', 'Ready to verify.'),
+        ('3', 'Ready to export.'),
+    ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
     imagefile = models.FileField(null=True, upload_to='ocrData', validators=[validate_file_extension])
@@ -70,7 +75,9 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True,choices=STATUS_CHOICES,default='Ready to recognize.')
+    confidence = models.CharField(max_length=3,default="",null=True)
+    comment = models.CharField(max_length=300,default={},null=True)
 
     def generate_slug(self):
         """generate slug"""
