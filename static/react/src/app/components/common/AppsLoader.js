@@ -36,19 +36,21 @@ export class AppsLoader extends React.Component {
     super();
 	}
 
-	componentWillUpdate(){
-		var getText = [];
-	  if(this.props.appsLoaderPerValue >= 0 && getText.length <= 1){ 
-		$("#loadingMsgs").empty()
-		getText = Object.values(store.getState().apps.appsLoadedText);
-	  }else{
-		$("#loadingMsgs").empty();
-		getText.push(store.getState().apps.appsLoaderText);
-	  }
-		if(document.getElementById('loadingMsgs') != null)
-		document.getElementById('loadingMsgs').appendChild(this.makeUL(getText));
-	}
-	
+
+
+componentWillUpdate(){
+            var getText = [];
+            if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
+                $("#loadingMsgs1").empty()
+                $("#loadingMsgs2").empty()
+            }
+            else if((this.props.appsLoaderPerValue >= 0) && (Object.keys(this.props.appsLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
+                getText = Object.values(this.props.appsLoadedText)
+                this.makeUL(getText);
+            } 
+    } 
+
+
 	openModelPopup(){
   		this.props.dispatch(openAppsLoaderValue())
   	}
@@ -98,39 +100,29 @@ export class AppsLoader extends React.Component {
 		clearAppsIntervel();
 	}
 
+
 	makeUL(array) {
-		var list = document.createElement('ul');
-		var indexNum = Object.keys(this.props.appsLoadedText).find(key => this.props.appsLoadedText[key] === this.props.appsLoaderText);
-		for(var i = 0; i < array.length; i++) {
-			if(indexNum == i){
-				var item = document.createElement('li');
-				var att = document.createAttribute("class");
-				att.value = "democlass";
-				item.setAttributeNode(att);
-				item.appendChild(document.createTextNode(array[i]));
-				list.appendChild(item);
-			}else if(i < indexNum){
-				var item = document.createElement('li');
-				var att = document.createAttribute("class");
-				att.value = "democlass1";
-				item.setAttributeNode(att);
-				item.appendChild(document.createTextNode(array[i]));
-				list.appendChild(item);
-			}else if(array.length === 1){
-				var item = document.createElement('li');
-				item.appendChild(document.createTextNode(array[i]));
-				list.appendChild(item);
-			}else{
-				var item = document.createElement('li');
-				var att = document.createAttribute("class");
-				att.value = "democlass2";
-				item.setAttributeNode(att);
-				item.appendChild(document.createTextNode(array[i]));
-				list.appendChild(item);
-			}
+        var x = document.getElementById("loadingMsgs");
+        var x1 = document.getElementById("loadingMsgs1");
+        var x2 = document.getElementById("loadingMsgs2");
+        var myTimer;
+        for (var i = 0; i < array.length-5; i++) {
+            (function(i) {
+                myTimer = setTimeout(function() {
+                    x.innerHTML = "Step " + i + " " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
+                }, 10000 * i);
+            })(i);
+        }
+		for(var i=array.length-5;i<array.length;i++){
+			x.innerHTML = "Step " + i + " " + array[i];
+			x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
+			x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
 		}
-		return list;
-	}
+    }
+
+	 
 
   render() {
 		$('#text-carousel').carousel();
@@ -320,8 +312,12 @@ export class AppsLoader extends React.Component {
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
 							<div class="modal-steps" id="loadingMsgs">
-								&nbsp;&nbsp;&nbsp;Please wait while analysing...
+								Please wait while analysing...
 							</div>
+							<div class="modal-steps active" id="loadingMsgs1">
+                                </div>
+                                <div class="modal-steps" id="loadingMsgs2">
+                                </div>
 								{/* <ul class="modal-steps"> */}
 								{/*	<li>----</li>*/}
 									{/* <li class="active"></li> */}

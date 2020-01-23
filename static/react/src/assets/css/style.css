@@ -15510,7 +15510,9 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 .ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; }
-
+.modal_stepsBlock .col-sm-9 p b {
+    margin-left: 10px; color:#0fc4b5; font-size:14px;
+}
 /*** OCR Introduction Styles ***/
 .carousel.slide .modal-body { background: #e2e2e2; }
 .carousel-indicators.cst_indicators li {border: 1px solid #e0e0e0;}
@@ -15534,7 +15536,10 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .cst_ocr_tabs li:hover a, .cst_ocr_tabs li.active a, .cst_ocr_tabs li a:hover { color:#FFFFFF; background: #232e42; }
 .cst_table .progress { margin-bottom:0; }
 .cst_ocr_tabs .nav-tabs>li.active>a, .cst_ocr_tabs li.active a { border-width:2 ; border-bottom-color:transparent ; }
-.ocr_section .cst_table thead th a .caret { float: right; margin-top: 6px; }
+ 
+.ocr_section .cst_table { background: #FFFFFF; }
+.ocr_section .cst_table tr { border-bottom: 1px solid #efefef; }
+.ocr_section .cst_table thead th a span { width: inherit; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight { display: block; height: 250px; overflow-x:hidden;}
 #prediction_dropdown{
@@ -15898,21 +15903,6 @@ display: inline-block;
 .d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(5) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(5) h3{ border-bottom:2px solid #d5e449;}
 .d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(6) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(6) h3{ border-bottom:2px solid #65eafc}
 
-.list-boxes .rep_block  { text-transform: capitalize; animation: color-me-in 5s; }
-
-@keyframes color-me-in {
-  /* You could think of as "step 1" */
-  0% {
-    background: #f3f3f3;
-  }
-  50% {
-    background: #fafafa;
-  }
-  /* You could think of as "step 2" */
-  100% {
-    background: #FFFFFF;
-  }
-}
 
 .ov_card_boxes .row { text-align:center }
 .modal-body.chart-data-modal-body table td { text-align: left }
