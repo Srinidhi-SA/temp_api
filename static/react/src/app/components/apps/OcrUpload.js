@@ -43,14 +43,18 @@ export class OcrUpload extends React.Component {
   onDrop=event=>{
     document.getElementById("resetMsg").innerText= "";
 
-    if(Object.values(event.target.files).map(i=>i.type).filter(j=>j!="image/png").length!=0){
+    var allowType=['image/png','image/jpeg','image/jpg','image/tif']
+    var formatErr= Object.values(event.target.files).map(i=>i.type).map((i,ind)=>{
+      return allowType.includes(i)
+    })
+
+
+    if(formatErr.includes(false)){
       document.getElementById("resetMsg").innerText= "Only image files are accepted. Please try again.";
       return false
     }
     console.log(event.target.files);
-    this.setState({
-      selectedFiles: Object.values(event.target.files),
-    })
+    this.setState({selectedFiles: Object.values(event.target.files),})
   }
 
   removeFile(item){
