@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 def get_permissions(user, model, type='retrieve'):
     if model == 'ocrimage':
         if type == 'retrieve':
@@ -19,6 +20,7 @@ def get_permissions(user, model, type='retrieve'):
             }
 
     return {}
+
 
 class OCRImageRelatedPermission(permissions.BasePermission):
     message = 'Permission for OCR.'
