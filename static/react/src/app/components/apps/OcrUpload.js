@@ -12,7 +12,6 @@ import { updateSelectedDataSrc } from "../../actions/dataSourceListActions";
     OcrfileUpload: store.ocr.OcrfileUpload,
     login_response: store.login.login_response,
     showModal: store.dataUpload.dataUploadShowModal,
-    // fileDataUpload: store.dataUpload.fileUpload
   };
 })
 
@@ -21,20 +20,27 @@ export class OcrUpload extends React.Component {
     super(props);
     this.props.dispatch(close());
     this.state = {
-      selectedFiles:""
+      selectedFiles:"",
+      uploaded:false,
+      loader:false
     }
   }
 
   openPopup() {
+    this.setState({
+      selectedFiles: "",
+      loader:false,
+      uploaded:false
+    })
     this.props.dispatch(open());
   }
+
+
   closePopup() {
     this.props.dispatch(close())
-    this.props.dispatch(updateSelectedDataSrc("fileUpload"))
   }
 
   onDrop=event=>{
-    // console.log()
     document.getElementById("resetMsg").innerText= "";
 
     if(Object.values(event.target.files).map(i=>i.type).filter(j=>j!="image/png").length!=0){
@@ -44,7 +50,7 @@ export class OcrUpload extends React.Component {
     console.log(event.target.files);
     this.setState({
       selectedFiles: Object.values(event.target.files),
-     })
+    })
   }
 
   removeFile(item){
@@ -60,11 +66,13 @@ export class OcrUpload extends React.Component {
   };
 
   handleSubmit(acceptedFiles ){
+    this.setState({loader: true})
+    $("#dataCloseBtn").hide()
+
     if(acceptedFiles.length==0){
       document.getElementById("resetMsg").innerText= "Please select files to upload.";
       return false
     }
-    
 
     var data = new FormData();
     console.log(this.state.selectedFiles);
@@ -75,8 +83,15 @@ export class OcrUpload extends React.Component {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: data
-    });
-  };
+    }).then(response => response.json()).then(json => {
+      if(json.message==="SUCCESS")
+      this.setState({ uploaded:true})})
+  }
+
+  proceedClick(){
+    this.closePopup()  
+  }
+
 
   render() {
     var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map(i => i.name).map((item, index) => (
@@ -96,11 +111,14 @@ export class OcrUpload extends React.Component {
           <Modal.Header closeButton>
             <h3 className="modal-title">Upload Data</h3>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body >
             <div className="row">
+              
+              {!this.state.loader&&
+              <div>
               <div className="col-md-5 ocrUploadHeight">
                 <div className="dropzoneOcr">
-                  <input className="ocrUpload" type="file" accept="image/*" multiple onChange={this.onDrop} />
+                  <input className="ocrUpload" type="file" multiple onChange={this.onDrop} />
                   <img style={{ height: 64, width: 64, opacity: 0.4, zIndex: 0, cursor: 'pointer' }} src={STATIC_URL + "assets/images/ocrUpload.svg"} />
                   <span>Upload files</span>
                 </div>
@@ -112,12 +130,27 @@ export class OcrUpload extends React.Component {
                 </ul>
                 </Scrollbars>
               </div>
+              </div>
+              }
+
+              {(this.state.loader && !this.state.uploaded)&&
+              <div>
+              <img id="loading" style={{paddingBottom:"10%"}} src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+              </div>
+              }
+              
+              {this.state.uploaded &&
+              <div>
+              <img id="loading" style={{paddingBottom:"10%"}} src={STATIC_URL + "assets/images/success.gif"}/>
+              </div>
+              }
+
             </div>
           </Modal.Body>
           <Modal.Footer>
             <div id="resetMsg"></div>
             <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this,this.state.selectedFiles)}>Upload Data</Button>
-            <Button id="loadDataBtn" bsStyle="primary" disabled>Proceed</Button>
+            <Button id="loadDataBtn" bsStyle="primary"  onClick={this.proceedClick.bind(this)} disabled={!this.state.uploaded}>Proceed</Button>
           </Modal.Footer>
         </Modal>
       </div>
