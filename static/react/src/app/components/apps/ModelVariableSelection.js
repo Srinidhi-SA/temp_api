@@ -66,7 +66,7 @@ export class ModelVariableSelection extends React.Component {
     componentWillMount() {
         const from = this.getValueOfFromParam();
          if (from === 'data_cleansing') {
-        } else if(this.props.currentAppDetails === null || this.props.dataPreview === null){
+        } else if((this.props.currentAppDetails === null || this.props.dataPreview === null) && !this.props.editmodelFlag){
             let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
             this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
         }else{
@@ -232,7 +232,7 @@ componentDidMount = () => {
 
     }
     render() {
-        if(isEmpty(this.props.modelEditconfig)|| (isEmpty(this.props.dataPreview))){ //&&(Object.keys(this.props.dataPreview).length==0)
+        if(this.props.editmodelFlag && (this.props.dataPreview===null || Object.keys(this.props.dataPreview).length ===0) ){
             return (
               <div className="side-body">
                 <div className="page-head"></div>

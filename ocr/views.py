@@ -71,13 +71,6 @@ def ocr_datasource_config_list(request):
 
 # -------------------------------------------------------------------------------
 
-STATUS_CHOICES = [
-    'Not Registered',
-    'SUCCESS',
-    'FAILED'
-]
-
-
 class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
     Model: OCRImage
@@ -136,7 +129,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     serializer_error.append(creation_failed_exception("Image name already exists!."))
 
                 img_data['created_by'] = request.user.id
-                img_data['status'] = 'SUCCESS'
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
@@ -205,3 +197,4 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+

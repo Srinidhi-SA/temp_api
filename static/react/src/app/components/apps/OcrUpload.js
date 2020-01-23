@@ -12,7 +12,6 @@ import { updateSelectedDataSrc } from "../../actions/dataSourceListActions";
     OcrfileUpload: store.ocr.OcrfileUpload,
     login_response: store.login.login_response,
     showModal: store.dataUpload.dataUploadShowModal,
-    // fileDataUpload: store.dataUpload.fileUpload
   };
 })
 
@@ -21,29 +20,47 @@ export class OcrUpload extends React.Component {
     super(props);
     this.props.dispatch(close());
     this.state = {
-      selectedFiles: ""
+      selectedFiles:"",
+      uploaded:false,
+      loader:false
     }
   }
 
   openPopup() {
+    this.setState({
+      selectedFiles: "",
+      loader:false,
+      uploaded:false
+    })
     this.props.dispatch(open());
   }
+
+
   closePopup() {
     this.props.dispatch(close())
-    this.props.dispatch(updateSelectedDataSrc("fileUpload"))
   }
 
   onDrop=event=>{
+    document.getElementById("resetMsg").innerText= "";
+
+    var allowType=['image/png','image/jpeg','image/jpg','image/tif']
+    var formatErr= Object.values(event.target.files).map(i=>i.type).map((i,ind)=>{
+      return allowType.includes(i)
+    })
+
+
+    if(formatErr.includes(false)){
+      document.getElementById("resetMsg").innerText= "Only image files are accepted. Please try again.";
+      return false
+    }
     console.log(event.target.files);
-    this.setState({
-      selectedFiles: Object.values(event.target.files),
-     })
+    this.setState({selectedFiles: Object.values(event.target.files),})
   }
 
   removeFile(item){
-  this.setState({
-    selectedFiles: Object.values(this.state.selectedFiles).filter(i=>i.name!=item),
-   })
+    this.setState({
+      selectedFiles: Object.values(this.state.selectedFiles).filter(i=>i.name!=item),
+    })
   }
 
   getHeader = token => {
@@ -53,6 +70,14 @@ export class OcrUpload extends React.Component {
   };
 
   handleSubmit(acceptedFiles ){
+    if(acceptedFiles.length==0){
+      document.getElementById("resetMsg").innerText= "Please select files to upload.";
+      return false
+    }
+    
+    $("#dataCloseBtn").hide()
+    this.setState({loader: true})
+    
     var data = new FormData();
     console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
@@ -62,8 +87,15 @@ export class OcrUpload extends React.Component {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: data
-    });
-  };
+    }).then(response => response.json()).then(json => {
+      if(json.message==="SUCCESS")
+      this.setState({ uploaded:true})})
+  }
+
+  proceedClick(){
+    this.closePopup()  
+  }
+
 
   render() {
     var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map(i => i.name).map((item, index) => (
@@ -83,8 +115,11 @@ export class OcrUpload extends React.Component {
           <Modal.Header closeButton>
             <h3 className="modal-title">Upload Data</h3>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body >
             <div className="row">
+              
+              {!this.state.loader&&
+              <div>
               <div className="col-md-5 ocrUploadHeight">
                 <div className="dropzoneOcr">
                   <input className="ocrUpload" type="file" multiple onChange={this.onDrop} />
@@ -99,11 +134,27 @@ export class OcrUpload extends React.Component {
                 </ul>
                 </Scrollbars>
               </div>
+              </div>
+              }
+
+              {(this.state.loader && !this.state.uploaded)&&
+              <div>
+              <img id="loading" style={{paddingBottom:"10%"}} src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+              </div>
+              }
+              
+              {this.state.uploaded &&
+              <div>
+              <img id="loading" style={{paddingBottom:"10%"}} src={STATIC_URL + "assets/images/success.gif"}/>
+              </div>
+              }
+
             </div>
           </Modal.Body>
           <Modal.Footer>
-                <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this,this.state.selectedFiles)}>Upload Data</Button>
-                <Button id="loadDataBtn" bsStyle="primary" disabled>Proceed</Button>
+            <div id="resetMsg"></div>
+            <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this,this.state.selectedFiles)}>Upload Data</Button>
+            <Button id="loadDataBtn" bsStyle="primary"  onClick={this.proceedClick.bind(this)} disabled={!this.state.uploaded}>Proceed</Button>
           </Modal.Footer>
         </Modal>
       </div>

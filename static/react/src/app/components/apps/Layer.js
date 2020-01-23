@@ -16,6 +16,7 @@ import {statusMessages} from  "../../helpers/helper";
 export default class Layer extends Component {
     
   componentDidMount(){
+    if(this.props.tensorFlowInputs[this.props.id-1] === undefined)
       this.props.dispatch(addTensorFlowArray(this.props.id,this.props.layerType))
     }
     
@@ -42,8 +43,13 @@ export default class Layer extends Component {
 
     var arr = item.defaultValue.map(j=>j.displayName);
     arr.unshift("--Select--")
+    var selectedValue = "";
+    if(this.props.tensorFlowInputs[this.props.id-1] != undefined){
+      selectedValue = this.props.tensorFlowInputs[this.props.id-1][item.name]
+    }
     var optionsHtml = arr.map(k => {
-        return <option value={k} > {k}</option>
+      var sel = (k === selectedValue)?true:false
+        return <option value={k} selected={sel}> {k}</option>
     })
     return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
@@ -84,7 +90,11 @@ export default class Layer extends Component {
                 </div>
               )
              }
-             else
+             else{
+              var defVal = ""
+              if(this.props.tensorFlowInputs[this.props.id-1] != undefined){
+                defVal = this.props.tensorFlowInputs[this.props.id-1][item.name]
+              }
               return (
    
                 <div className ="row mb-20">
@@ -94,7 +104,7 @@ export default class Layer extends Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className= "col-md-2">
-                   <input type="number" className={`form-control ${item.name}_tf`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)}></input>
+                   <input type="number" className={`form-control ${item.name}_tf`}  name={item.name} onChange={this.myChangeHandler.bind(this,item)} defaultValue={defVal}></input>
                    <div className="error"></div>
                    </div>
                 </div> 
@@ -102,7 +112,7 @@ export default class Layer extends Component {
                 </div>
                 </div>
                     
-                )
+                )}
    
          })
    
