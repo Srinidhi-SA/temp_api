@@ -21,7 +21,7 @@ export class OcrUpload extends React.Component {
     super(props);
     this.props.dispatch(close());
     this.state = {
-      selectedFiles: ""
+      selectedFiles:""
     }
   }
 
@@ -34,6 +34,13 @@ export class OcrUpload extends React.Component {
   }
 
   onDrop=event=>{
+    // console.log()
+    document.getElementById("resetMsg").innerText= "";
+
+    if(Object.values(event.target.files).map(i=>i.type).filter(j=>j!="image/png").length!=0){
+      document.getElementById("resetMsg").innerText= "Only image files are accepted. Please try again.";
+      return false
+    }
     console.log(event.target.files);
     this.setState({
       selectedFiles: Object.values(event.target.files),
@@ -41,9 +48,9 @@ export class OcrUpload extends React.Component {
   }
 
   removeFile(item){
-  this.setState({
-    selectedFiles: Object.values(this.state.selectedFiles).filter(i=>i.name!=item),
-   })
+    this.setState({
+      selectedFiles: Object.values(this.state.selectedFiles).filter(i=>i.name!=item),
+    })
   }
 
   getHeader = token => {
@@ -53,6 +60,12 @@ export class OcrUpload extends React.Component {
   };
 
   handleSubmit(acceptedFiles ){
+    if(acceptedFiles.length==0){
+      document.getElementById("resetMsg").innerText= "Please select files to upload.";
+      return false
+    }
+    
+
     var data = new FormData();
     console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
@@ -87,7 +100,7 @@ export class OcrUpload extends React.Component {
             <div className="row">
               <div className="col-md-5 ocrUploadHeight">
                 <div className="dropzoneOcr">
-                  <input className="ocrUpload" type="file" multiple onChange={this.onDrop} />
+                  <input className="ocrUpload" type="file" accept="image/*" multiple onChange={this.onDrop} />
                   <img style={{ height: 64, width: 64, opacity: 0.4, zIndex: 0, cursor: 'pointer' }} src={STATIC_URL + "assets/images/ocrUpload.svg"} />
                   <span>Upload files</span>
                 </div>
@@ -102,8 +115,9 @@ export class OcrUpload extends React.Component {
             </div>
           </Modal.Body>
           <Modal.Footer>
-                <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this,this.state.selectedFiles)}>Upload Data</Button>
-                <Button id="loadDataBtn" bsStyle="primary" disabled>Proceed</Button>
+            <div id="resetMsg"></div>
+            <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this,this.state.selectedFiles)}>Upload Data</Button>
+            <Button id="loadDataBtn" bsStyle="primary" disabled>Proceed</Button>
           </Modal.Footer>
         </Modal>
       </div>
