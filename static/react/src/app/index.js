@@ -46,6 +46,7 @@ import {SampleFrame} from "./components/common/SampleFrame";
 import {KyloMenuList} from "./components/common/KyloMenuList";
 import {LexClass} from "./components/apps/lex";
 import {Ocr} from "./components/apps/Ocr";
+import {OcrDocument} from "./components/apps/OcrDocument";
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -332,6 +333,7 @@ class App extends React.Component {
             <Route exact path="/" component={Home}/>
             <Route exact path="/apps/lex" component={LexClass}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/" component={Ocr}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/document" component={OcrDocument}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
             <Route exact path="/signals/:slug" render={signals}/>
