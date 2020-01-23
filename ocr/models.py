@@ -90,7 +90,7 @@ class OCRImage(models.Model):
     def save(self, *args, **kwargs):
         """Save OCRImage model"""
         self.generate_slug()
-        self.imageset = self.add_to_imageset()
+        # self.imageset = self.add_to_imageset()
         super(OCRImage, self).save(*args, **kwargs)
 
     def create(self):
