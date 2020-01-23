@@ -1005,6 +1005,19 @@ export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
 
+export function changeLayerType(layerTyp){
+  return { type: "CHANGE_LAYER_TYPE",layerTyp}
+}
+
+export function addPanels(nextId){
+  let newPanel = store.getState().apps.panels.concat([nextId]);
+  return { type: "PANELS_TENSOR",newPanel}
+}
+
+export function saveEditTfInput(editTfInput){
+  return { type:"EDIT_TENSORFLOW_INPUT",editTfInput}
+}
+
 export function addTensorFlowArray(id,layerType,name,val) {
     if(layerType==="Dense"){
      var  tensorFlowArray={
