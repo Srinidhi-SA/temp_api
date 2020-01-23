@@ -19,7 +19,7 @@ import os
 import datetime
 from . import config_file_name_to_run
 from .mlsettings import *
-from .logger_config import *
+#from .logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'django_filters',
     'auditlog',
     'guardian',
-    'django_celery_beat'
+    'django_celery_beat',
+    'ocr'
 ]
 
 MIDDLEWARE = [
@@ -1422,7 +1423,8 @@ CUSTOM_WORD1_APPS = {
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
     'REGRESSION_APP': 'regression',
-    'LEX': 'lex'
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1457,7 +1459,8 @@ CUSTOM_WORD2_APPS = {
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
     'REGRESSION_APP': 'regression',
-    'LEX': 'lex'
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 ############# YARN related items
@@ -1573,6 +1576,16 @@ PERMISSIONS_RELATED_TO_STOCK = (
     ('remove_stock', 'remove stock'),
 )
 
+PERMISSIONS_RELATED_TO_OCRIMAGE = (
+    ('view_ocrimage', 'View OCRImage'),
+    ('create_ocrimage', 'Create OCRImage'),
+    ('rename_ocrimage', 'Rename OCRImage'),
+    ('remove_ocrimage', 'remove OCRImage'),
+    ('upload_from_file', 'Upload from file'),
+    ('upload_from_sftp', 'Upload from sftp'),
+    ('upload_from_s3', 'Upload from s3'),
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",
@@ -1667,3 +1680,134 @@ LOGIN_EXEMPT_URLS = (
       r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$',
       r'^reset-password/complete'
  )
+
+ #### OCR RELATED CONFIGS
+
+OCR_DATA_SOURCES_CONFIG = {"conf": [{
+         "dataSourceType": "fileUpload",
+         "dataSourceName": "File",
+         "formFields": [
+             {
+                 "fieldType": "file",
+                 "name": "File"
+             }
+         ]
+     },
+     {
+         "dataSourceType": "SFTP",
+         "dataSourceName": "SFTP",
+         "formFields": [
+             {
+                 "fieldType": "text",
+                 "fieldName" : "datasetname",
+                 "placeHolder": "Dataset Name",
+                 "labelName": "Name",
+                 "required" : "true"
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName" : "host",
+                 "placeHolder": "Host",
+                 "labelName": "host",
+                 "required" : "true"
+             },
+             {
+
+                 "fieldType": "number",
+                 "fieldName": "port",
+                 "placeHolder": "Port",
+                 "labelName": "Port",
+                 "required": "true",
+                 "defaultValue" : 3306,
+                 "maxLength":5
+
+
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "databasename",
+                 "placeHolder": "DataBase Name",
+                 "labelName": "DBName",
+                 "required": "true"
+
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "tablename",
+                 "placeHolder": "tablename",
+                 "labelName": "Table Name",
+                 "required": "true"
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "username",
+                 "placeHolder": "username",
+                 "labelName": "Username",
+                  "required": "true"
+             },
+             {
+
+
+                 "fieldType": "Password",
+                 "fieldName": "password",
+                 "placeHolder": "password",
+                 "labelName": "Password",
+                  "required": "true"
+             }
+
+         ]
+     },
+    {
+        "dataSourceType": "S3",
+        "dataSourceName": "S3",
+        "formFields": [
+            {
+                "fieldType": "text",
+                "fieldName": "datasetname",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "bucket_name",
+                "placeHolder": "bucket",
+                "labelName": "Bucket",
+                "required": "true"
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "file_name",
+                "placeHolder": "data.csv",
+                "labelName": "File Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "password",
+                "fieldName": "access_key_id",
+                "placeHolder": "AccessKey",
+                "labelName": "Access Key",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "secret_key",
+                "placeHolder": "SecretKey",
+                "labelName": "Secret Key",
+                "required": "true"
+            }
+
+        ]
+    }
+
+]
+}

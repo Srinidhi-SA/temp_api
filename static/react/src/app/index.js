@@ -3,11 +3,9 @@ import {render} from "react-dom";
 import {BrowserRouter, Route, Switch, IndexRoute} from "react-router-dom";
 import {Provider} from "react-redux"
 import store from "./store"
-
 import {Main} from "./components/Main";
 import {Home} from "./components/Home";
 import {Login} from "./components/Login";
-//import {Signal} from "./components/Signal";
 import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
@@ -18,19 +16,16 @@ import {Signal} from "./components/signals/Signal";
 import {SignalDocumentMode} from "./components/signals/SignalDocumentMode";
 import {OverViewPage} from "./components/signals/overViewPage";
 import {VariableSelection} from "./components/signals/variableSelection";
-import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
 import {DataCleansing} from "./components/apps/DataCleansing"
 import {FeatureEngineering} from "./components/apps/FeatureEngineering"
 import {ModelManagement} from "./components/apps/ModelManagement"
 import {ModelSummary} from "./components/apps/ModelSummary"
-import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
 import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
 import {AppsPanel} from "./components/apps/AppsPanel";
-import {AppsScoreList} from "./components/apps/AppsScoreList";
 import {RoboInsightList} from "./components/apps/RoboInsightList";
 import {RoboDataUploadPreview} from "./components/apps/RoboDataUploadPreview";
 import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
@@ -43,7 +38,6 @@ import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
 import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection";
 import {AlgorithmSelection} from "./components/apps/AlgorithmSelection";
-
 import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
@@ -51,6 +45,8 @@ import {APPS_ALLOWED} from "./helpers/env.js";
 import {SampleFrame} from "./components/common/SampleFrame";
 import {KyloMenuList} from "./components/common/KyloMenuList";
 import {LexClass} from "./components/apps/lex";
+import {Ocr} from "./components/apps/Ocr";
+import {OcrDocument} from "./components/apps/OcrDocument";
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -336,9 +332,10 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home}/>
             <Route exact path="/apps/lex" component={LexClass}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/" component={Ocr}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/document" component={OcrDocument}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
-            {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
             <Route exact path="/signals/:slug" render={signals}/>
             <Route exact path="/signals/:slug/:l1" render={signals}/>
             <Route exact path="/signals/:slug/:l1/:l2/:l3" render={signals}/>
@@ -398,11 +395,8 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/analyst/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/autoML/scores/:slug/dataPreview" render={score}/>
-             {/* above line was not added for autoMl*/}
-
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/algorithmSelection" component={AlgorithmSelection}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug/createModel/parameterTuning" component={ModelAlgorithmSelection}/>
-            {/* <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/> */}
             <Route exact path="/apps/:AppId/modeSelection" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>

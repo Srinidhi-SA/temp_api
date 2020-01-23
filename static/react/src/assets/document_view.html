@@ -8,6 +8,8 @@
 	<!-- Custom Fonts -->
 	<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	<!-- Latest compiled and minified CSS -->
+	
+	<link rel="stylesheet" href="css/animate.css">
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link href="css/bootstrap-slider.css" rel="stylesheet">
@@ -17,68 +19,34 @@
 	<link rel="icon" href="images/favicon.ico" />
 	<link rel="stylesheet" href="css/fancy_fileupload.css?v=6234992" type="text/css" media="all" />
 	<link href="css/theme.ice.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" /> 
-	
-
-	
+	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />	
 </head>
    <body>
    
    
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content">
-  <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+	<div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Bad Scan</h4>
+			</div>
+			<div class="modal-body">			
+				<!-- Wrapper for slides -->
+				<div class="form-group">
+				<label for="txt_bscan">Brief about the bad scan:</label>
+				<input type="text" class="form-control" id="txt_bscan" placeholder="Enter text">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+			</div>	 
+			</div>
+		</div>
+	</div>
 
-
-
-<!-- Wrapper for slides -->
-
-
-
-<div class="carousel-inner">
-<div class="item active">
- <img class="img-responsive" src="images/step1.png" alt="STEP 1">
-  
-</div>
-<div class="item">
-  <img class="img-responsive" src="images/step2.png" alt="STEP 2">
    
-</div>
- <div class="item">
-  <img class="img-responsive" src="images/step3.png" alt="...">
-  <div class="carousel-caption" style="display:none">
-	Another Image
-  </div>
-</div>
-<div class="item">
-  <img class="img-responsive" src="images/step4.png" alt="...">
-  <div class="carousel-caption" style="display:none">
-	Another Image
-  </div>
-</div>
-<div class="item">
-  <img class="img-responsive" src="images/step5.png" alt="...">
-  <div class="carousel-caption" style="display:none">
-	Another Image
-  </div>
-</div>
-
-
-</div>
-
-<!-- Controls -->
-<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-<span class="glyphicon glyphicon-chevron-left"></span>
-</a>
-<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-<span class="glyphicon glyphicon-chevron-right"></span>
-</a>
-</div>
-</div>
- <button type="button" class="btn btn-default" data-dismiss="modal">SKIP</button> 
-</div>
-</div>
    
    
       <!-- Main Wrapper ** Mandatory -->
@@ -157,32 +125,104 @@
       </div>
    </div>
    <div class="main-content">
-      
+   <section class="ocr_section">
+   <div class="tab-container">
+		<ul class="nav nav-tabs cst_ocr_tabs">
+		  <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
+		  <li class="active"><a href="document_ocr.html"><i class="fa fa-book fa-lg"></i> Document</a></li>
+		  <li class=""><a href="#"><i class="fa fa-bug fa-lg"></i> Dignostic</a></li>
+		 <!-- <li class=""><a href="#"><i class="fa fa-briefcase fa-lg"></i> Framework</a></li> -->
+		</ul>
+	</div>
+	<div class="container-fluid">
+		
+	
+		<div class="xs-mt-20"></div>		  
 	  <div class="row">
-        <div class="col-sm-12">
-          <div class="tab-container">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="ocr_intro.html"><i class="fa fa-home"></i> Introduction</a></li>
-              <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-home"></i> Dashboard</a></li>
-              <li class=""><a href="#">Other</a></li>
-            </ul>
-            
-          </div>
-        </div>
-        
+	<div class="col-md-3">
+		 
+	<div class="input-group">
+	<input type="text" placeholder="Enter Text" class="form-control">
+	<span class="input-group-btn">
+	<button class="btn btn-primary" type="button"><span class="fa fa-save" aria-hidden="true">
+	&nbsp; </span> Save!</button>
+	</span>
+	</div>
+	</div>
+	<div class="col-md-3">
+		<div class="form-group">
+			<label class="control-label sr-only" for="Company">Confidence Level</label>
+			<select id="Company" class="form-control" name="Company">
+			<option>Confidence Level</option>
+			<option value="1">Highlight feilds with confidence less than : 40%</option>
+			<option value="2">Highlight feilds with confidence less than : 80%</option>
+			<option value="3">Highlight feilds with confidence less than : 20%</option>
+			</select> 
+		</div>
+	</div>
+	<div class="col-md-6">
+		<button class="btn btn-info">Add Fields</button>
+		<button class="btn btn-info">Not Clear</button>
+		<button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-info-circle"></i> Bad Scan</button>
+		<button class="btn btn-info">Properties</button>
+	</div>
+	  
+         
       </div>
-	  
-	  
-	   <div class="row">
-        <div class="col-sm-12">
-	  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-  Launch demo modal
-</button>
-	  
+	  <div class="xs-mt-20"></div>
+	 
+	<div class="row">
+        <div class="col-md-6">
+			
+			
+			<div class="widget widget-pie widget-pie-stats">
+              <div class="widget-head"><span class="title">Original</span></div>
+               
+             <img src="images/scanned-invoice.jpg" class="img-responsive">
+            </div>
+			
+			
+		</div>
+		<div class="col-md-6">
+			<div class="widget widget-pie widget-pie-stats">
+              <div class="widget-head"><span class="title">OCR</span></div>
+               
+            <img src="images/scanned-invoice_changes.jpg" class="img-responsive">
+            </div>
+			
+		</div>
+	</div>
+	<div class="xs-mt-20"></div>
+	 
+	<div class="ma-datatable-footer" id="idOcrViewPagination">
+   <div class="dataTables_paginate">
+      <ul class="pagination pagination-md">
+         <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="First">«</span></a></li>
+         <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="Previous">‹</span></a></li>
+         <li class="active"><a role="button" href="#">1</a></li>
+         <li class=""><a role="button" href="#">2</a></li>
+         <li class=""><a role="button" href="#">3</a></li>
+          
+         <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="More">…</span></a></li>
+         <li class=""><a role="button" href="#">10</a></li>
+         <li class=""><a role="button" href="#"><span aria-label="Next">›</span></a></li>
+         <li class=""><a role="button" href="#"><span aria-label="Last">»</span></a></li>
+      </ul>
+   </div>
+</div>
+	  <div class="xs-mt-20"></div>
+	  <hr>
+	  <div class="xs-mt-20"></div>
+	  <div class="row">
+		<div class="col-md-6 col-md-offset-6 text-right">
+			<button class="btn btn-default"><i class="fa fa-save"></i> &nbsp; Save as draft</button>
+			<button class="btn btn-primary"><i class="fa fa-check-circle"></i> &nbsp; Submit</button>
+		</div>
+		</div>
+	 <div class="xs-mt-20"></div>
 	  
 	  </div>
-	  </div>
-       
+       </section>
    </div>
 </div>
 		 
@@ -199,13 +239,16 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-slider.js"></script>
 <script src="js/bootbox.min.js"></script>
-
+<script src="js/wow.min.js"></script>
 <script type="text/javascript" src="s/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.widgets.js"></script>
 <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
 
 <script src="js/uiScripts.js"></script>
-
- 
-   </body>
+<script>
+$('.dropdown-menu a').on('click', function(){    
+    $(this).parent().parent().prev().html($(this).html() + '<span class="caret"></span>');    
+})
+</script>
+</body>
 </html>
