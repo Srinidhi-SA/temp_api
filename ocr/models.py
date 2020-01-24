@@ -35,11 +35,14 @@ class OCRImageset(models.Model):
     """
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
-    imagepath = models.CharField(max_length=30000, null=True)
+    imagepath = models.CharField(max_length=2000, null=True)
     deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=True, db_index=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
@@ -83,6 +86,9 @@ class OCRImage(models.Model):
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
     confidence = models.CharField(max_length=3, default="", null=True)
     comment = models.CharField(max_length=300, default={}, null=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
