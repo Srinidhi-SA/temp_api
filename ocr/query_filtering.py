@@ -106,3 +106,31 @@ def get_listed_data(
 
     resp = page_class.modified_get_paginate_response(page)
     return resp
+
+
+def get_image_list_data(viewset, queryset, request, serializer):
+
+    qcf = QueryCommonFiltering(
+        query_set=queryset,
+        request=request
+    )
+    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    if 'page' in request.query_params:
+        if request.query_params.get('page') == 'all':
+            serializer = serializer(query_set, many=True)
+            return Response({
+                "data": serializer.data
+            })
+    page_class = viewset.pagination_class()
+    page = page_class.paginate_queryset(
+        queryset=query_set,
+        request=request,
+        list_serializer=serializer,
+        view=viewset
+    )
+
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
+
+

@@ -1,6 +1,6 @@
 import copy
 import random
-
+import ast
 from django.conf import settings
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,6 +16,7 @@ from api.exceptions import creation_failed_exception, \
 from api.utils import name_check
 from .models import OCRImage
 from .models import OCRImageset
+
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
@@ -23,13 +24,15 @@ from .permission import OCRImageRelatedPermission
 
 # ---------------------SERIALIZERS----------------------------
 from .serializers import OCRImageSerializer, \
-    OCRImageListSerializer
+    OCRImageListSerializer, \
+    OCRImageSetSerializer, \
+    OCRImageSetListSerializer
 # ------------------------------------------------------------
 
 # ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
 # ------------------------------------------------------------
-from ocr.query_filtering import get_listed_data
+from ocr.query_filtering import get_listed_data, get_image_list_data
 
 
 # Create your views here.
@@ -87,8 +90,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['SUCCESS']
-        ).order_by('-created_at')
+            status__in=['Ready to recognize.', 'Ready to verify.', 'Ready to export.']
+        ).order_by('-created_at').select_related('imageset')
         return queryset
 
     def get_object_from_all(self):
@@ -101,7 +104,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         # try:
-        serializer_data, serializer_error, response = [], [], {}
+        global imageset_id
+        serializer_data, serializer_error, imagepath, response = list(), list(), list(), dict()
         if 'data' in kwargs:
             data = kwargs.get('data')
             self.request = request
@@ -114,13 +118,32 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             # data['file'] = request.FILES.get('file')
             files = request.FILES.getlist('imagefile')
             for f in files:
+                imagepath.append(f.name[:-4].replace('.', '_'))
+            imageset_data = dict()
+            imageset_data['imagepath'] = str(imagepath)
+            imageset_data['created_by'] = request.user.id
+            serializer = OCRImageSetSerializer(data=imageset_data, context={"request": self.request})
+
+            if serializer.is_valid():
+                imageset_object = serializer.save()
+                imageset_object.create()
+                imageset_id = imageset_object.id
+                response['imageset_serializer_data'] = serializer.data
+                response['imageset_message'] = 'SUCCESS'
+            else:
+                response['imageset_serializer_error'] = serializer.errors
+                response['imageset_message'] = 'FAILED'
+
+            for f in files:
                 img_data['imagefile'] = f
+                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                 if f is None:
                     img_data['name'] = img_data.get('name',
                                                     img_data.get('datasource_type', "H") + "_" + str(
                                                         random.randint(1000000, 10000000)))
                 else:
                     img_data['name'] = f.name[:-4].replace('.', '_')
+
                 imagename_list = []
                 image_query = self.get_queryset()
                 for index, i in enumerate(image_query):
@@ -130,16 +153,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
                 img_data['created_by'] = request.user.id
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                print(serializer.initial_data)
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
                     serializer_data.append(serializer.data)
                 else:
                     serializer_error.append(creation_failed_exception(serializer.errors))
-                if not serializer_error:
-                    response = {'serializer_data': serializer_data, 'message': 'SUCCESS'}
-                else:
-                    response = {'serializer_error': str(serializer_error), 'message': 'FAILED'}
+            if not serializer_error:
+                response['serializer_data'] = str(serializer_data)
+                response['message'] = 'SUCCESS'
+            else:
+                response['serializer_error'] = str(serializer_error)
+                response['message'] = 'FAILED'
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
@@ -168,7 +194,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if 'name' in data:
             imagename_list = []
             image_query = OCRImage.objects.filter(deleted=False, created_by=request.user)
-            for index, i in enumerate(image_query):
+            for _, i in enumerate(image_query):
                 imagename_list.append(i.name)
             if data['name'] in imagename_list:
                 return creation_failed_exception("Name already exists!.")
@@ -198,3 +224,53 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=attribute-defined-outside-init
+class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
+    """
+    Model: OCRImage
+    Viewset : OCRImageView
+    Description :
+    """
+    serializer_class = OCRImageSetSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    pagination_class = CustomOCRPagination
+    permission_classes = (OCRImageRelatedPermission,)
+
+    def get_queryset(self):
+        queryset = OCRImageset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['Not Registered']
+        ).order_by('-created_at')
+        return queryset
+
+    def get_object_from_all(self):
+        return OCRImageset.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
+
+    # pylint: disable=unused-argument
+    def retrieve(self, request, *args, **kwargs):
+        ocrimageset_object = OCRImageset.objects.get(slug=self.kwargs.get('slug'))
+        imageset_list = ocrimageset_object.imagepath
+        imageset_list = ast.literal_eval(imageset_list)
+        image_queryset = OCRImage.objects.filter(name__in=imageset_list, imageset=ocrimageset_object.id)
+        return get_image_list_data(
+            viewset=OCRImageView,
+            queryset=image_queryset,
+            request=request,
+            serializer=OCRImageListSerializer
+        )
+
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageSetListSerializer
+        )

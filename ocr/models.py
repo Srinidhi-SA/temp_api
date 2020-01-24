@@ -35,22 +35,30 @@ class OCRImageset(models.Model):
     """
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
-    imagepath = models.CharField(max_length=300, null=True)
+    imagepath = models.CharField(max_length=2000, null=True)
     deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=True, db_index=True)
 
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
     def generate_slug(self):
         """generate slug"""
         if not self.slug:
-            self.slug = slugify("imgset-" + ''.join(
+            self.slug = slugify(''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+            self.name = "imgset-" + self.slug
 
     def save(self, *args, **kwargs):
         """Save OCRImage model"""
         self.generate_slug()
         super(OCRImageset, self).save(*args, **kwargs)
+
+    def create(self):
+        """Create OCRImageset model"""
+        self.save()
 
 
 class OCRImage(models.Model):
@@ -75,9 +83,12 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True,choices=STATUS_CHOICES,default='Ready to recognize.')
-    confidence = models.CharField(max_length=3,default="",null=True)
-    comment = models.CharField(max_length=300,default={},null=True)
+    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
+    confidence = models.CharField(max_length=3, default="", null=True)
+    comment = models.CharField(max_length=300, default="", null=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
@@ -85,19 +96,9 @@ class OCRImage(models.Model):
             self.slug = slugify("img-" + ''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
-    def add_to_imageset(self, *args, **kwargs):
-        imageset = OCRImageset()
-        imageset.name = self.imagefile.name.split('.')[0]
-        imageset.imagepath = self.imagefile.path
-        imageset.status = 'SUCCESS'
-        imageset.created_by = self.created_by
-        imageset.save()
-        return imageset
-
     def save(self, *args, **kwargs):
         """Save OCRImage model"""
         self.generate_slug()
-        # self.imageset = self.add_to_imageset()
         super(OCRImage, self).save(*args, **kwargs)
 
     def create(self):
