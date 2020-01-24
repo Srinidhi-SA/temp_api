@@ -85,7 +85,7 @@ class OCRImage(models.Model):
     deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
     confidence = models.CharField(max_length=3, default="", null=True)
-    comment = models.CharField(max_length=300, default={}, null=True)
+    comment = models.CharField(max_length=300, default="", null=True)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])

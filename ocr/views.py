@@ -1,6 +1,6 @@
 import copy
 import random
-
+import ast
 from django.conf import settings
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -25,13 +25,14 @@ from .permission import OCRImageRelatedPermission
 # ---------------------SERIALIZERS----------------------------
 from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
-    OCRImageSetSerializer
+    OCRImageSetSerializer, \
+    OCRImageSetListSerializer
 # ------------------------------------------------------------
 
 # ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
 # ------------------------------------------------------------
-from ocr.query_filtering import get_listed_data
+from ocr.query_filtering import get_listed_data, get_image_list_data
 
 
 # Create your views here.
@@ -117,7 +118,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             # data['file'] = request.FILES.get('file')
             files = request.FILES.getlist('imagefile')
             for f in files:
-                imagepath.append(f.name)
+                imagepath.append(f.name[:-4].replace('.', '_'))
             imageset_data = dict()
             imageset_data['imagepath'] = str(imagepath)
             imageset_data['created_by'] = request.user.id
@@ -127,7 +128,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 imageset_object = serializer.save()
                 imageset_object.create()
                 imageset_id = imageset_object.id
-                print('imageset_id : ', imageset_id)
                 response['imageset_serializer_data'] = serializer.data
                 response['imageset_message'] = 'SUCCESS'
             else:
@@ -194,7 +194,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if 'name' in data:
             imagename_list = []
             image_query = OCRImage.objects.filter(deleted=False, created_by=request.user)
-            for index, i in enumerate(image_query):
+            for _, i in enumerate(image_query):
                 imagename_list.append(i.name)
             if data['name'] in imagename_list:
                 return creation_failed_exception("Name already exists!.")
@@ -223,3 +223,54 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=attribute-defined-outside-init
+class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
+    """
+    Model: OCRImage
+    Viewset : OCRImageView
+    Description :
+    """
+    serializer_class = OCRImageSetSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    pagination_class = CustomOCRPagination
+    permission_classes = (OCRImageRelatedPermission,)
+
+    def get_queryset(self):
+        queryset = OCRImageset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['Not Registered']
+        ).order_by('-created_at')
+        return queryset
+
+    def get_object_from_all(self):
+        return OCRImageset.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
+
+    # pylint: disable=unused-argument
+    def retrieve(self, request, *args, **kwargs):
+        ocrimageset_object = OCRImageset.objects.get(slug=self.kwargs.get('slug'))
+        imageset_list = ocrimageset_object.imagepath
+        imageset_list = ast.literal_eval(imageset_list)
+        image_queryset = OCRImage.objects.filter(name__in=imageset_list, imageset=ocrimageset_object.id)
+        return get_image_list_data(
+            viewset=OCRImageView,
+            queryset=image_queryset,
+            request=request,
+            serializer=OCRImageListSerializer
+        )
+
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageSetListSerializer
+        )
