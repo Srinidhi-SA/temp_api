@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { OcrUpload } from "../apps/OcrUpload";
+import { OcrTable } from "./OcrTable";
+import {getUserDetailsOrRestart} from "../../helpers/helper"
+
 @connect((store) => {
   return {
     login_response: store.login.login_response
@@ -10,7 +13,25 @@ import { OcrUpload } from "../apps/OcrUpload";
 export class OcrDocument extends React.Component {
   constructor(props) {
     super(props);
+    this.tableContentAPI();
+    this.state={OcrTableData:""}
 
+  }
+  componentDidMount(){
+  }
+  getHeader = token => {
+    return {
+      Authorization: token
+    };
+  };
+  tableContentAPI(){
+    var data = new FormData();
+    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
+      method: "GET",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    }).then(response => response.json()).then(json => {
+      if(json.message==="SUCCESS")
+      this.setState({ OcrTableData:json})})
   }
 
   render() {
@@ -34,6 +55,7 @@ export class OcrDocument extends React.Component {
             </div>
             <div class="container-fluid">
               <OcrUpload />
+              <OcrTable tableData={this.state.OcrTableData}/>
             </div>
           </section>
         </div>
