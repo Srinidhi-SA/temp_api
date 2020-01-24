@@ -115,7 +115,9 @@ export default function reducer(state = {
         metricSelected:{},
         pyTorchLayer:{},
         pyTorchSubParams:{},
-        idLayer:[]
+        idLayer:[],
+        layerType:"Dense",
+        panels:[],
 
 }, action) {
 
@@ -900,8 +902,13 @@ export default function reducer(state = {
         }
     }
     break;
-
-    
+    case "EDIT_TENSORFLOW_INPUT":{
+        return{
+            ...state,
+            tensorFlowInputs : action.editTfInput
+        }
+    }
+    break;
 
     case "ADD_LAYERS":
     {
@@ -933,9 +940,12 @@ export default function reducer(state = {
         var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
 
         // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
+        var delPanel = state.panels;
+        delPanel.pop(action.deleteId)
         return{
           ...state,
-          tensorFlowInputs :curTfData
+          tensorFlowInputs :curTfData,
+          panels : delPanel
         }
       }
 
@@ -945,12 +955,28 @@ export default function reducer(state = {
     {
         return{
           ...state,
-          tensorFlowInputs :[]
+          tensorFlowInputs :[],
+          panels : [],
+          layerType:"Dense",
         }
       }
 
     break;
 
+    case "CHANGE_LAYER_TYPE":{
+        return{
+            ...state,
+            layerType:action.layerTyp,
+        }
+    }
+    break;
+    case "PANELS_TENSOR":{
+        return{
+            ...state,
+            panels:action.newPanel
+        }
+    }
+    break;
 
     case "STOCK_LIST":
     {
@@ -1271,6 +1297,7 @@ export default function reducer(state = {
             }
         }
     }
+    break;
     }
     return state
 }

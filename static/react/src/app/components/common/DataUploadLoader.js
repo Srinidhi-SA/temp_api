@@ -62,15 +62,20 @@ componentDidMount() {
         var x = document.getElementById("loadingMsgs");
         var x1 = document.getElementById("loadingMsgs1");
         var x2 = document.getElementById("loadingMsgs2");
-        
-        for (var i = 0; i < array.length; i++) {
+        var myTimer;
+        for (var i = 0; i < array.length-3; i++) {
             (function(i) {
-                setTimeout(function() {
+                myTimer = setTimeout(function() {
                     x.innerHTML = "Step " + i + " " + array[i];
                     x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
                     x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
                 }, 8000 * i);
             })(i);
+        }
+        for(var i=array.length-3;i<array.length;i++){
+            x.innerHTML = "Step " + i + " " + array[i];
+            x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
+            x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
         }
     }
   render() {
@@ -248,7 +253,7 @@ componentDidMount() {
 							<p><b>mAdvisor evaluating your data set</b></p>
 
                                 <div class="modal-steps" id="loadingMsgs">
-                                &nbsp;&nbsp;&nbsp;Please wait while preparing data...
+                                Please wait while preparing data...
                                 </div>
                                 <div class="modal-steps active" id="loadingMsgs1">
                                 </div>

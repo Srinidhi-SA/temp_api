@@ -13,6 +13,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 # -----------------------MODELS-------------------------------
+from api.utils import name_check
 from .models import OCRImage
 from .models import OCRImageset
 # ------------------------------------------------------------
@@ -69,13 +70,6 @@ def ocr_datasource_config_list(request):
 # -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
-
-STATUS_CHOICES = [
-    'Not Registered',
-    'SUCCESS',
-    'FAILED'
-]
-
 
 class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
@@ -135,7 +129,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     serializer_error.append(creation_failed_exception("Image name already exists!."))
 
                 img_data['created_by'] = request.user.id
-                img_data['status'] = 'SUCCESS'
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
@@ -167,4 +160,41 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details = serializer.data
 
         return Response(object_details)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        if 'name' in data:
+            imagename_list = []
+            image_query = OCRImage.objects.filter(deleted=False, created_by=request.user)
+            for index, i in enumerate(image_query):
+                imagename_list.append(i.name)
+            if data['name'] in imagename_list:
+                return creation_failed_exception("Name already exists!.")
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                elif should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                elif should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
+
+        try:
+            instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted']:
+                    print('let us deleted')
+                    instance.delete()
+                    # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
+                    return JsonResponse({'message': 'Deleted'})
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 

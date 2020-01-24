@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import store from "../../store";
-import {updateAlgorithmData, tensorValidateFlag} from "../../actions/appActions";
+import {updateAlgorithmData, tensorValidateFlag, changeLayerType, addPanels, saveEditTfInput} from "../../actions/appActions";
 import Layer from './Layer';
 import {statusMessages} from  "../../helpers/helper";
 
@@ -11,20 +11,31 @@ import {statusMessages} from  "../../helpers/helper";
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         tensorValidateFlag: store.datasets.tensorValidateFlag,
+        tensorFlowInputs:store.apps.tensorFlowInputs,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
-        tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="TensorFlow")[0].algorithmSlug
+        tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="TensorFlow")[0].algorithmSlug,
+        layerType:store.apps.layerType,
+        panels:store.apps.panels,
+        editmodelFlag:store.datasets.editmodelFlag,
+        modelEditconfig: store.datasets.modelEditconfig,
     };
 })
 
 export class TensorFlow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-          panels : [],
-          layerType:"dense",
-          paramValidateFlag: false,
+    }
+
+  componentWillMount(){
+    if(this.props.editmodelFlag && this.props.panels.length ===0){
+      let editTfInput = Object.assign([],this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="TensorFlow")[0].tensorflow_params.hidden_layer_info);
+      this.props.dispatch(saveEditTfInput(editTfInput));
+      let len = editTfInput.length;
+      for(var i=1;i<=len;i++){
+        this.props.dispatch(addPanels(i));
       }
     }
+  }
 
   componentDidMount(){
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
@@ -77,9 +88,9 @@ export class TensorFlow extends React.Component {
   }
 
   getOptions(item) {
-      var arr = item.defaultValue.map(j=>j.displayName);
+      var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
       var options = arr.map(k => {
-          return <option value={k} > {k}</option>
+          return <option value={k.name} selected={k.selected}> {k.name}</option>
       })
       return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
   }
@@ -148,11 +159,9 @@ export class TensorFlow extends React.Component {
   }
 
   addLayer=(slectedLayer)=>{
-    const nextId = this.state.panels.length + 1
-      this.setState({
-         panels: this.state.panels.concat([nextId]),
-         layerType:slectedLayer
-      })
+    const nextId = this.props.panels.length + 1
+    this.props.dispatch(changeLayerType(slectedLayer));
+    this.props.dispatch(addPanels(nextId));
   }
 
   handleClick(){ 
@@ -167,9 +176,9 @@ export class TensorFlow extends React.Component {
     }
   }
    render() {
-    if(this.state.layerType==="Dense")
+    if(this.props.layerType==="Dense")
     var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
-    else if(this.state.layerType==="Dropout")
+    else if(this.props.layerType==="Dropout")
      data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
       var rendercontent = algorithmData.map((item,index)=>{
@@ -235,9 +244,17 @@ export class TensorFlow extends React.Component {
                   </div>
                   <div className='panel-wrapper'>
                   {
-                    this.state.panels.map((panelId) => (
-                      <Layer key={panelId} id={panelId} parameters={data} layerType={this.state.layerType} />
-                    ))
+                    store.getState().apps.panels.map((panelId) => {
+                      let tenFlwInp = store.getState().apps.tensorFlowInputs;
+                      if( (tenFlwInp.length != 0) && (panelId <= tenFlwInp.length)){
+                        data = (tenFlwInp[panelId-1].layer === "Dense")? this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters;
+                        var layrTyp = tenFlwInp[panelId-1].layer
+                      }else{
+                        data = (this.props.layerType === "Dense")? this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters;
+                        var layrTyp = this.props.layerType
+                      }
+                      return (<Layer key={panelId} id={panelId} parameters={data} layerType={layrTyp} />);
+                    })
                   }
                   </div>
                   <div id="layerArea"></div>

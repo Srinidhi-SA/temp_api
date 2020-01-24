@@ -42,14 +42,18 @@ export class OcrUpload extends React.Component {
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
 
-    if (Object.values(event.target.files).map(i => i.type).filter(j => j != "image/png").length != 0) {
-      document.getElementById("resetMsg").innerText = "Only image files are accepted. Please try again.";
+    var allowType=['image/png','image/jpeg','image/jpg','image/tif']
+    var formatErr= Object.values(event.target.files).map(i=>i.type).map((i,ind)=>{
+      return allowType.includes(i)
+    })
+
+
+    if(formatErr.includes(false)){
+      document.getElementById("resetMsg").innerText= "Only image files are accepted. Please try again.";
       return false
     }
     console.log(event.target.files);
-    this.setState({
-      selectedFiles: Object.values(event.target.files),
-    })
+    this.setState({selectedFiles: Object.values(event.target.files),})
   }
 
   removeFile(item) {
@@ -64,15 +68,15 @@ export class OcrUpload extends React.Component {
     };
   };
 
-  handleSubmit(acceptedFiles) {
-    this.setState({ loader: true })
-    $("#dataCloseBtn").hide()
-
-    if (acceptedFiles.length == 0) {
-      document.getElementById("resetMsg").innerText = "Please select files to upload.";
+  handleSubmit(acceptedFiles ){
+    if(acceptedFiles.length==0){
+      document.getElementById("resetMsg").innerText= "Please select files to upload.";
       return false
     }
-
+    
+    $("#dataCloseBtn").hide()
+    this.setState({loader: true})
+    
     var data = new FormData();
     console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
