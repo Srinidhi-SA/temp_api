@@ -23577,3 +23577,6 @@ canvas {
   height: 310px;
   align-items: center;
 }
+.ocrTable > tbody > tr > td{
+  vertical-align: middle;
+}
