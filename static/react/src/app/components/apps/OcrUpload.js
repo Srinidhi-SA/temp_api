@@ -6,6 +6,7 @@ import { STATIC_URL } from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import store from "../../store";
 import { open, close } from "../../actions/dataUploadActions";
+import {getOcrUploadedFiles} from '../../actions/ocrActions'
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -37,6 +38,7 @@ export class OcrUpload extends React.Component {
 
   closePopup() {
     this.props.dispatch(close())
+    this.props.dispatch(getOcrUploadedFiles())
   }
 
   onDrop = event => {
@@ -94,6 +96,7 @@ export class OcrUpload extends React.Component {
 
   proceedClick() {
     this.closePopup()
+    this.props.dispatch(getOcrUploadedFiles())
   }
 
 

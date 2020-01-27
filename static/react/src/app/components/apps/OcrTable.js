@@ -1,28 +1,55 @@
 import React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars';
-import {getUserDetailsOrRestart} from "../../helpers/helper"
+import {getOcrUploadedFiles} from '../../actions/ocrActions'
+import {connect} from "react-redux";
+import {store} from '../../store'
+import {Pagination} from "react-bootstrap";
 
+
+
+
+@connect((store) => {
+  return {
+    login_response: store.login.login_response,
+    OcrDataList:store.ocr.OcrDataList
+  };
+})
 
 export class OcrTable extends React.Component{
 
   constructor(props){
     super(props)
-    this.state={
-      response:false
-    }
+    this.props.dispatch(getOcrUploadedFiles())
   }
 
 
-  getHeader = token => {
-    return {
-      Authorization: token
-    };
-  };
-
-  
+  handleSelect(pageNo){
+   this.props.dispatch(getOcrUploadedFiles(pageNo))
+  }
 
   render(){
-    console.log(this.props)
+    const pages = this.props.OcrDataList.total_number_of_pages;
+    const current_page = this.props.OcrDataList.current_page;
+    let paginationTag = null
+      if(pages > 1){
+        paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+      }
+        
+   var  OcrTableHtml=(
+     this.props.OcrDataList!="" ?(this.props.OcrDataList.data.map((item,index)=>{
+       console.log(this.props.OcrDataList,"inside return");
+       return(<tr id={index}>
+          <td></td>
+          <td>{item.name}</td>
+          <td>{item.status}</td>
+          <td></td>
+          <td></td>
+          <td>{item.comment}</td>
+        </tr>
+       )
+     })):(<div>Fetching data...</div>)
+   )
+
     return(
       <div class="row">
       <div class="col-md-12">
@@ -32,7 +59,7 @@ export class OcrTable extends React.Component{
               <Scrollbars style={{
                 height: 500
               }}>
-                <table id="dctable" className="tablesorter table table-condensed table-hover table-bordered">
+                <table id="dctable" className="tablesorter table table-condensed table-hover cst_table">
                 <thead>
 				<tr>
 					<th></th>
@@ -74,18 +101,19 @@ export class OcrTable extends React.Component{
 				</tr>
 				</thead>
                   <tbody className="no-border-x">
-                    {/* {OcrTableHtml} */}
+                    {OcrTableHtml}
                   </tbody>
                 </table>
+
+                <div class="col-md-12 text-center">
+                    <div className="footer"  id="Pagination">
+                      <div className="pagination">
+                        {paginationTag}
+                      </div>
+                    </div>
+                  </div>
               </Scrollbars>
             </div>
-          </div>
-          <div className="panel-body box-shadow">
-          <div class="buttonRow">
-              {/* <Button id="dataCleanBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button> */}
-              {/* <Button id="dataCleanProceed" onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button> */}
-          </div>
-            <div class="xs-p-10"></div>
           </div>
         </div>
       </div>
