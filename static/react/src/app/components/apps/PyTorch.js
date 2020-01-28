@@ -411,10 +411,24 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
-        else if(data.name === "dampening" && parseFloat(val) != 0 && $(".nesterov_pt")[0].value === "True"){
+        else if(data.name === "nesterov" && val === "True" && ($(".dampening_pt")[0].value != 0) && ($(".momentum_pt")[0].value <= 0)){
+            document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
         }
-        else if(data.name === "nesterov" && val === "True" && $(".dampening_pt")[0].value != 0){
+        else if(data.name === "nesterov" && val === "True" && ($(".momentum_pt")[0].value <= 0)){
+            document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
+        }
+        else if(data.name === "nesterov" && val === "True" && ($(".dampening_pt")[0].value != 0)){
+            document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
+        }
+        else if(data.name === "nesterov" && (val === "False" || val === "None")){
+            document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = ""
+            document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = ""
+        }
+        else if(data.name === "momentum" && parseFloat(val) <= 0 && $(".nesterov_pt")[0].value === "True"){
+            document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
+        }
+        else if(data.name === "dampening" && parseFloat(val) != 0 && $(".nesterov_pt")[0].value === "True"){
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
         }
         else if(name === "betas"){
