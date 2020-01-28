@@ -16,6 +16,13 @@ export function saveOcrFilesToStore(files) {
 	}
 }
 
+export function saveImagePageFlag(flag) {
+	return {
+		type: "SAVE_IMAGE_FLAG",
+		flag
+	}
+}
+
 
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {

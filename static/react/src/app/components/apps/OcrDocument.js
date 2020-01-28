@@ -2,10 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import { OcrUpload } from "../apps/OcrUpload";
 import { OcrTable } from "./OcrTable";
+import {OcrImage} from "./ocrImage";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response
+    login_response: store.login.login_response,
+    imageFlag: store.ocr.imageFlag,
   };
 })
 
@@ -34,8 +36,15 @@ export class OcrDocument extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
+              {this.props.imageFlag ?
+              <OcrImage/>
+              :
+              <div>
               <OcrUpload />
               <OcrTable/>
+              </div>
+              }
+              
             </div>
           </section>
         </div>

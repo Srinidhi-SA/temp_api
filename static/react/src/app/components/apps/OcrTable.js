@@ -1,6 +1,6 @@
 import React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars';
-import { getOcrUploadedFiles } from '../../actions/ocrActions'
+import { getOcrUploadedFiles,saveImagePageFlag } from '../../actions/ocrActions'
 import { connect } from "react-redux";
 import { store } from '../../store'
 import { Pagination } from "react-bootstrap";
@@ -8,7 +8,7 @@ import { Pagination } from "react-bootstrap";
 @connect((store) => {
   return {
     login_response: store.login.login_response,
-    OcrDataList: store.ocr.OcrDataList
+    OcrDataList: store.ocr.OcrDataList,
   };
 })
 
@@ -21,6 +21,10 @@ export class OcrTable extends React.Component {
 
   handleSelect(pageNo) {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
+  }
+
+  handleImagePageFlag=()=>{
+    this.props.dispatch(saveImagePageFlag(true));
   }
 
   render() {
@@ -40,7 +44,7 @@ export class OcrTable extends React.Component {
               <label for="myCheckAll"></label>
             </div>
           </td>
-          <td>{item.name}</td>
+          <td><a href="#" onClick={this.handleImagePageFlag}>{item.name}</a></td>
           <td>{item.status}</td>
           <td></td>
           <td></td>
