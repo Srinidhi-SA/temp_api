@@ -532,11 +532,6 @@ export class PyTorch extends React.Component {
 
     setSubValues(data,parameterData,e){
         let val = e.target.value
-        if(val === "True"){
-            val = true;
-        }else if(val === "False"){
-            val = false;
-        }
         let subParamArry = this.props.pyTorchSubParams;
         if(parameterData === "loss"){
             let selectedPar = subParamArry["loss"];
