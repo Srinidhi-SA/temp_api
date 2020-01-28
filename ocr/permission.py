@@ -45,26 +45,13 @@ class OCRImageRelatedPermission(permissions.BasePermission):
                     return user.has_perm('ocr.upload_from_file')
 
             return False
-        '''
+
         if request.method in ['PUT']:
             data = request.data
-            path = request.path
-
-            if 'meta_data_modifications' in path:
-                return user.has_perm('api.data_validation')
-
-            if 'advanced_settings_modification' in path:
-                return user.has_perm('api.create_signal')
-
-            if 'subsetting' in data:
-                if data['subsetting'] == True:
-                    return user.has_perm('api.subsetting_dataset')
 
             if 'deleted' in data:
-                if data['deleted'] == True:
-                    return user.has_perm('api.remove_dataset')
+                if data['deleted']:
+                    return user.has_perm('ocr.remove_ocrimage')
 
+            return user.has_perm('ocr.rename_ocrimage')
 
-
-            return user.has_perm('api.rename_dataset')
-        '''

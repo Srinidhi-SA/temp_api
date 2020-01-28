@@ -51,11 +51,11 @@ export class DataSourceList extends React.Component {
     var duplicateName="";
     if (files.length > 0) {
       if(this.props.datasets.length>0){
-        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase().split('.').slice(0, -1).join('.'))?
       duplicateName=true:"";     
       }
     if(this.props.allDataList!=""){
-     this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase())?
+     this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase().split('.').slice(0, -1).join('.'))?
       duplicateName=true:"";  
 
             }
