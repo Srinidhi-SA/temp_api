@@ -106,11 +106,11 @@ export class OcrUpload extends React.Component {
         </span>
       </li>
     ))
-      : ""
+      : <div>No files chosen.<br/>Please select file to proceed.</div>
 
     return (
       <div>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)}><i class="fa fa-upload"></i> Upload</Button>
+        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{marginBottom:20}}><i class="fa fa-upload"></i> Upload</Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
