@@ -1,18 +1,24 @@
+"""
+    Serializers implementation for OCRImage and OCRImageset models.
+"""
+
 from rest_framework import serializers
 
 from api.user_helper import UserSerializer
 from .models import OCRImage, OCRImageset
 
-'''
-    *Serializers*
--------------------------------------------------
-Model : OCRImage
-Viewset : OCRImageView
-Defined Serilizers :
-    - Details Serializer : OCRImageSerializer
-    - List Serializer : OCRImageListSerializer
--------------------------------------------------
-'''
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=useless-object-inheritance
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-few-public-methods
+# pylint: disable=pointless-string-statement
+# -------------------------------------------------------------------------------
 
 
 class OCRImageSerializer(serializers.ModelSerializer):
@@ -21,10 +27,6 @@ class OCRImageSerializer(serializers.ModelSerializer):
     -------------------------------------------------
     Model : OCRImage
     Viewset : OCRImageView
-    Defined Serilizers :
-        - Details Serializer : OCRImageSerializer
-        - List Serializer : OCRImageListSerializer
-    -------------------------------------------------
     """
 
     def to_representation(self, instance):
@@ -67,11 +69,21 @@ class OCRImageSerializer(serializers.ModelSerializer):
         return serialized_data
 
     class Meta:
+        """
+        Meta class definition for OCRImageSerializer
+        """
         model = OCRImage
         fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by',]
 
 
 class OCRImageListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageListSerializer
+    -------------------------------------------------
+    """
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
@@ -86,11 +98,20 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         return serialized_data
 
     class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
         model = OCRImage
         fields = ['name', 'slug', 'status', 'confidence', 'comment']
 
 
 class OCRImageSetSerializer(serializers.ModelSerializer):
+    """
+        *Serializers*
+    -------------------------------------------------
+    Model : OCRImageset
+    Viewset : OCRImagesetView
+    """
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageSetSerializer, self).to_representation(instance)
@@ -99,16 +120,29 @@ class OCRImageSetSerializer(serializers.ModelSerializer):
         return serialized_data
 
     class Meta:
+        """
+        Meta class definition for OCRImageSetSerializer
+        """
         model = OCRImageset
         fields = ['name', 'slug', 'imagepath', 'deleted', 'status', 'created_at', 'created_by']
 
 
 class OCRImageSetListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImageset
+    -------------------------------------------------
+    Model : OCRImageset
+    List Serializer : OCRImageSetListSerializer
+    -------------------------------------------------
+    """
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageSetListSerializer, self).to_representation(instance)
         return serialized_data
 
     class Meta(object):
+        """
+        Meta class definition for OCRImageSetListSerializer
+        """
         model = OCRImageset
         fields = ['slug', 'name']
