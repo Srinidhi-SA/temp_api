@@ -6,6 +6,7 @@ import { STATIC_URL } from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import store from "../../store";
 import { open, close } from "../../actions/dataUploadActions";
+import {getOcrUploadedFiles} from '../../actions/ocrActions'
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -37,23 +38,23 @@ export class OcrUpload extends React.Component {
 
   closePopup() {
     this.props.dispatch(close())
+    this.props.dispatch(getOcrUploadedFiles())
   }
 
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
 
-    var allowType=['image/png','image/jpeg','image/jpg','image/tif']
-    var formatErr= Object.values(event.target.files).map(i=>i.type).map((i,ind)=>{
+    var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif']
+    var formatErr = Object.values(event.target.files).map(i => i.type).map((i, ind) => {
       return allowType.includes(i)
     })
 
 
-    if(formatErr.includes(false)){
-      document.getElementById("resetMsg").innerText= "Only image files are accepted. Please try again.";
+    if (formatErr.includes(false)) {
+      document.getElementById("resetMsg").innerText = "Only image files are accepted. Please try again.";
       return false
     }
-    console.log(event.target.files);
-    this.setState({selectedFiles: Object.values(event.target.files),})
+    this.setState({ selectedFiles: Object.values(event.target.files), })
   }
 
   removeFile(item) {
@@ -68,17 +69,16 @@ export class OcrUpload extends React.Component {
     };
   };
 
-  handleSubmit(acceptedFiles ){
-    if(acceptedFiles.length==0){
-      document.getElementById("resetMsg").innerText= "Please select files to upload.";
+  handleSubmit(acceptedFiles) {
+    if (acceptedFiles.length == 0) {
+      document.getElementById("resetMsg").innerText = "Please select files to upload.";
       return false
     }
-    
+
     $("#dataCloseBtn").hide()
-    this.setState({loader: true})
-    
+    this.setState({ loader: true })
+
     var data = new FormData();
-    console.log(this.state.selectedFiles);
     for (var x = 0; x < acceptedFiles.length; x++) {
       data.append("imagefile", acceptedFiles[x]);
     }
@@ -94,29 +94,30 @@ export class OcrUpload extends React.Component {
 
   proceedClick() {
     this.closePopup()
+    this.props.dispatch(getOcrUploadedFiles())
   }
 
 
   render() {
     var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map(i => i.name).map((item, index) => (
       <li>{item}
-        <span style={{ marginLeft: "10px" }} onClick={this.removeFile.bind(this, item)}>
-          <i class="fa fa-times" aria-hidden="true" style={{ color: '#555' }}></i>
+        <span style={{ marginLeft: "15px" }} onClick={this.removeFile.bind(this, item)}>
+          <i class="fa fa-times" aria-hidden="true" style={{ color: '#555', cursor: 'pointer' }}></i>
         </span>
       </li>
     ))
-      : ""
+      : <div>No files chosen.<br/>Please select file to proceed.</div>
 
     return (
       <div>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)}><i class="fa fa-upload"></i> Upload</Button>
+        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{marginBottom:20}}><i class="fa fa-upload"></i> Upload</Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
             <Modal.Body style={{ padding: 0 }} >
-              <div className="row">
+              <div className="row" style={{ margin: 0 }}>
                 {!this.state.uploaded &&
                   <div>
                     <div className="col-md-5 ocrUploadHeight">
