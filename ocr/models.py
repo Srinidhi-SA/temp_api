@@ -6,8 +6,20 @@ import uuid
 import random
 import string
 from django.db import models
-from api.models import User
 from django.template.defaultfilters import slugify
+from django.core.exceptions import ValidationError
+from api.models import User
+
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=arguments-differ
+# -------------------------------------------------------------------------------
 
 
 def unique_dir():
@@ -17,7 +29,6 @@ def unique_dir():
 
 def validate_file_extension(value):
     """ METHOD : To Validate file extension for OCRImage model FileField. """
-    from django.core.exceptions import ValidationError
     ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
     valid_extensions = ['.jpg', '.png', '.jpeg', '.tif', '.pdf']
     if ext.lower() not in valid_extensions:
@@ -42,7 +53,7 @@ class OCRImageset(models.Model):
     created_by = models.ForeignKey(User, null=True, db_index=True)
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+        return " : ".join(["{}".format(x) for x in ["OCRImageSet", self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
@@ -88,7 +99,7 @@ class OCRImage(models.Model):
     comment = models.CharField(max_length=300, default="", null=True)
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+        return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
