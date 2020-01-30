@@ -1,10 +1,30 @@
-from builtins import object
+"""
+Commomly used queries implementations for increased re-usability.
+"""
+# from itertools import chain
+# from builtins import object
+import ast
 from rest_framework.response import Response
 #from api.exceptions import creation_failed_exception, update_failed_exception
 #from django.db.models import Q
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-few-public-methods
+# pylint: disable=literal-comparison
+# -------------------------------------------------------------------------------
 
-class QueryCommonFiltering(object):
+
+class QueryCommonFiltering:
+    """
+    Performs commonly used query filtering.
+    """
     query_set = None
     request = None
     sorted_by = None
@@ -48,13 +68,15 @@ class QueryCommonFiltering(object):
                 self.filter_fields = temp_app_filter
 
     def execute_common_filtering_and_sorting_and_ordering(self):
+        """
+        Method that handles filtering, sorting and ordering.
+        """
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
 
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
-            self.filter_fields = eval(self.filter_fields)
-            from itertools import chain
+            self.filter_fields = ast.literal_eval(self.filter_fields)
             final_query_set = self.query_set.none()
 
             for tag in self.filter_fields:
@@ -109,7 +131,9 @@ def get_listed_data(
 
 
 def get_image_list_data(viewset, queryset, request, serializer):
-
+    """
+    Method that returns paginated response pertaining to images GET call.
+    """
     qcf = QueryCommonFiltering(
         query_set=queryset,
         request=request
@@ -132,5 +156,3 @@ def get_image_list_data(viewset, queryset, request, serializer):
 
     resp = page_class.modified_get_paginate_response(page)
     return resp
-
-

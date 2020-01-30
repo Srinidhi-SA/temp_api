@@ -6,8 +6,17 @@ from django.contrib import admin
 # Register your models here.
 from ocr.models import OCRImage, OCRImageset
 
-
+# -------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# -------------------------------------------------------------------------------
+
+
 class OCRImageAdmin(admin.ModelAdmin):
     """
     Model: OCRImage
@@ -24,7 +33,6 @@ class OCRImageAdmin(admin.ModelAdmin):
         return queryset
 
 
-# pylint: disable=too-few-public-methods
 class OCRImagesetAdmin(admin.ModelAdmin):
     """
     Model: OCRImageset
