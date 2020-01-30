@@ -66,7 +66,7 @@ export class OcrTable extends React.Component {
                       <th></th>
                       <th>Name</th>
                       <th class="dropdown" >
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+                        <a href="#" data-toggle="dropdown" style={{marginRight: "45px"}} class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                           <span>Status</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu scrollable-menu">
@@ -75,7 +75,7 @@ export class OcrTable extends React.Component {
                         </ul>
                       </th>
                       <th class="dropdown" >
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                        <a href="#" data-toggle="dropdown" style={{marginRight: "45px"}} class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
                           <span>Confidence Level</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu scrollable-menu">
@@ -85,7 +85,7 @@ export class OcrTable extends React.Component {
                         </ul>
                       </th>
                       <th class="dropdown" >
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
+                        <a href="#" data-toggle="dropdown" style={{marginRight: "45px"}} class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
                           <span>Assignee</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu scrollable-menu">
