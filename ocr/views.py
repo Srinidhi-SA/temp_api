@@ -130,6 +130,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
+        """
+        TODO:
+        1. Implement multiple datasource type.
+        2. Limit no of attachments. (TBD)
+        3. Limit FileSize to be uploaded. (TBD)
+        """
+
         if 'imagefile' in data:
             # data['file'] = request.FILES.get('file')
             files = request.FILES.getlist('imagefile')
@@ -269,15 +276,19 @@ class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         """
         return OCRImageset.objects.get(
             slug=self.kwargs.get('slug'),
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted = False
         )
 
     # pylint: disable=unused-argument
     def retrieve(self, request, *args, **kwargs):
-        ocrimageset_object = OCRImageset.objects.get(slug=self.kwargs.get('slug'))
+        ocrimageset_object = self.get_object_from_all()
         imageset_list = ocrimageset_object.imagepath
         imageset_list = ast.literal_eval(imageset_list)
-        image_queryset = OCRImage.objects.filter(name__in=imageset_list, imageset=ocrimageset_object.id)
+        image_queryset = OCRImage.objects.filter(
+            name__in=imageset_list,
+            imageset=ocrimageset_object.id,
+            deleted=False)
         return get_image_list_data(
             viewset=OCRImageView,
             queryset=image_queryset,
