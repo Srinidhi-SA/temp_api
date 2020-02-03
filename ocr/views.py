@@ -53,11 +53,11 @@ from .pagination import CustomOCRPagination
 # -------------------------------------------------------------------------------
 
 def ocr_datasource_config_list(request):
-    '''
+    """
     METHOD: OCR DATASOURCES CONFIG LIST BASED ON USER PERMISSIONS
     ALLOWED REQUESTS : [GET]
     PARAMETERS: None
-    '''
+    """
     user = request.user
     data_source_config = copy.deepcopy(settings.OCR_DATA_SOURCES_CONFIG)
     upload_permission_map = {
@@ -174,7 +174,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_object.create()
                     serializer_data.append(serializer.data)
                 else:
-                    serializer_error.append(creation_failed_exception(serializer.errors))
+                    # serializer_error.append(creation_failed_exception(serializer.errors))
+                    serializer_error.append(serializer.errors)
             if not serializer_error:
                 response['serializer_data'] = str(serializer_data)
                 response['message'] = 'SUCCESS'

@@ -11,11 +11,12 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from django.test import TestCase, RequestFactory
-
+import tempfile
 from ocr.serializers import OCRImageSerializer, OCRImageListSerializer
 from ocr.models import OCRImage
 
 from PIL import Image
+
 
 class TestOCRImageUpload(TestCase):
 
@@ -30,10 +31,11 @@ class TestOCRImageUpload(TestCase):
             'username': 'dladmin',
             'password': 'thinkbig',
             'email': 'test@mail.com'}
-        test_user=User.objects.create_superuser(**self.credentials)
+        test_user = User.objects.create_superuser(**self.credentials)
 
         self.client = APIClient()
-        response = self.client.post('http://localhost:8000/api-token-auth/',{'username': 'dladmin', "password" : "thinkbig"}, format='json')
+        response = self.client.post('http://localhost:8000/api-token-auth/',
+                                    {'username': 'dladmin', "password": "thinkbig"}, format='json')
         self.token = response.json()['token']
         self.client.credentials(HTTP_AUTHORIZATION=self.token)
 
@@ -44,25 +46,64 @@ class TestOCRImageUpload(TestCase):
         TestCase3: "Test valid/Invalid file extensions."
         """
 
-        import tempfile
         image = Image.new('RGB', (100, 100))
 
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
-        image.save(tmp_file,format='jpeg')
+        image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
-
         response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file}, format='multipart')
-        print(response.json())
+        print(response.json()['imageset_message'], response.json()['message'])
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
-        #List of OCRImage
+        # List of OCRImage
         response = self.client.get('http://localhost:8000/ocr/ocrimage/', format='json')
-        print(response.json())
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
+    def test_OCRImage_create_multiple(self):
+        """
+        TestCase1: "Test single image upload."
+        TestCase2: "Test multiple image upload."
+        TestCase3: "Test valid/Invalid file extensions."
+        """
 
+        img_list = list()
+        for i in range(3):
+            image = Image.new('RGB', (100, 100), color='red')
+            tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+            image.save(tmp_file, format=image.format)
+            tmp_file.seek(0)
+            img_list.append(tmp_file)
+
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': img_list}, format='multipart')
+        print(response.json()['imageset_message'], response.json()['message'])
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        # List of OCRImage
+        # response = self.client.get('http://localhost:8000/ocr/ocrimage/', format='json')
+        # print(response.json())
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_OCRImage_extension_validation(self):
+        """
+        TestCase1: "Test single image upload."
+        TestCase2: "Test multiple image upload."
+        TestCase3: "Test valid/Invalid file extensions."
+        """
+
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
+        tmp_file.write(b'test')
+        tmp_file.seek(0)
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file}, format='multipart')
+        res = response.json()
+        # if 'Unsupported file extension.' in res['serializer_error']:
+        print('Unsupported file extension.' in res['serializer_error'])
+        self.assertEqual('Unsupported file extension.' in res['serializer_error'], True)
+
+        # self.assertEqual(status.HTTP_200_OK, response.status_code)
 
 '''
 class RegistrationTestCase(APITestCase):
