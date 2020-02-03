@@ -41,9 +41,18 @@ class TestOCRImageUpload(TestCase):
 
     def test_OCRImage_CRUD(self):
         """
-        TestCase1: "Test single image upload."
-        TestCase2: "Test multiple image upload."
-        TestCase3: "Test valid/Invalid file extensions."
+        METHOD: [CREATE]
+            TestCase1: "Test single image upload."
+            TestCase2: "Test multiple image upload."
+            TestCase3: "Test valid/Invalid file extensions."
+        METHOD: [GET]
+            TestCase1: "List of image uploaded."
+        METHOD: [RETRIEVE]
+            TestCase1: "Retrieve image uploaded with particular slug."
+        METHOD: [PUT/UPDATE]
+            TestCase1: "Update image uploaded with particular slug."
+        METHOD: [DELETE]
+            TestCase1: "Delete image uploaded with particular slug."
         """
 
         image = Image.new('RGB', (100, 100))

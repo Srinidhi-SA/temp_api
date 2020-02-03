@@ -382,15 +382,12 @@ function fetchAllDataError(json) {
 }
 export function fetchAllDataSuccess(doc){
     var data = ""
-        var slug = "";
     if(doc.data[0] != undefined){
-        slug  = doc.data[0].slug;
         data = doc;
     }
     return {
         type: "DATA_ALL_LIST",
         data,
-        slug
     }
 }
 
