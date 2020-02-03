@@ -184,7 +184,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     # serializer_error.append(creation_failed_exception(serializer.errors))
                     serializer_error.append(serializer.errors)
             if not serializer_error:
-                response['serializer_data'] = str(serializer_data)
+                response['serializer_data'] = serializer_data
                 response['message'] = 'SUCCESS'
             else:
                 response['serializer_error'] = str(serializer_error)
