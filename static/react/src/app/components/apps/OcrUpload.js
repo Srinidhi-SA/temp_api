@@ -117,7 +117,15 @@ export class OcrUpload extends React.Component {
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
             <Modal.Body style={{ padding: 0 }} >
-              <div className="row" style={{ margin: 0 }}>
+            <header class="header">
+                <ul class="ocrUploadTabs">
+                  <li class="active"><a class="nav-link" data-toggle="tab" href="#images">Image Files</a></li>
+                  <li><a class="nav-link" data-toggle="tab" href="#s3">s3 Files</a></li>
+                  <li><a class="nav-link" data-toggle="tab" href="#pdf">PDF Files</a></li>
+                </ul>
+            </header>
+            <div class="tab-content">
+              <div id="images" className="tab-pane active row" style={{ margin: 0 }}>
                 {!this.state.uploaded &&
                   <div>
                     <div className="col-md-5 ocrUploadHeight">
@@ -151,8 +159,45 @@ export class OcrUpload extends React.Component {
                       <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
                   </div>
                 }
-
               </div>
+
+              <div className="tab-pane fade" id="s3">
+                <div className="form-group row">
+                  <label className="col-sm-3 control-label">Name</label>
+                  <div className="col-sm-6">
+                    <input type="text" className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 control-label">Bucket</label>
+                  <div className="col-sm-6">
+                    <input type="text" className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 control-label">File Name</label>
+                  <div className="col-sm-6">
+                    <input type="text" className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 control-label">Access key</label>
+                  <div className="col-sm-6">
+                    <input type="text" className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 control-label">Secret key</label>
+                  <div className="col-sm-6">
+                    <input type="text" className="form-control"/>
+                  </div>
+                </div>
+              </div>
+
+              <div id="pdf" className="tab-pane fade">
+                Oops! <br/>No Content
+              </div>
+            </div>
             </Modal.Body>
             <Modal.Footer>
               <div id="resetMsg"></div>
