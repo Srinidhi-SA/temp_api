@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 from api.utils import get_permissions
 
+
 class CustomPagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
@@ -78,4 +79,3 @@ class CustomPagination(PageNumberPagination):
         self.queryset = queryset
         self.list_serializer = list_serializer
         return queryset
-
