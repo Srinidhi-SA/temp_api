@@ -97,6 +97,11 @@ export class OcrUpload extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
 
+  getS3Details(e){
+    let name = e.target.name;
+    let value = e.target.value;
+    console.log(name,value);
+  }
 
   render() {
     var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map(i => i.name).map((item, index) => (
@@ -165,31 +170,31 @@ export class OcrUpload extends React.Component {
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Name</label>
                   <div className="col-sm-6">
-                    <input type="text" className="form-control"/>
+                    <input type="text" name="name" placeholder="Enter Name" defaultValue="" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Bucket</label>
                   <div className="col-sm-6">
-                    <input type="text" className="form-control"/>
+                    <input type="text" name="targetBucket" placeholder="Target Bucket" defaultValue="" onInput="" className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">File Name</label>
                   <div className="col-sm-6">
-                    <input type="text" className="form-control"/>
+                    <input type="text" name="fileName" placeholder="File Name" defaultValue="" onInput="" className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Access key</label>
                   <div className="col-sm-6">
-                    <input type="text" className="form-control"/>
+                    <input type="text" name="accessKey" placeholder="Access Key" defaultValue="" onInput="" className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Secret key</label>
                   <div className="col-sm-6">
-                    <input type="text" className="form-control"/>
+                    <input type="text" name="secretKey" placeholder="Secret Key" defaultValue="" onInput="" className="form-control"/>
                   </div>
                 </div>
               </div>
