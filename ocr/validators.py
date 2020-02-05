@@ -2,16 +2,18 @@
 OCR Validations
 """
 
+import socket
+from django.core.exceptions import ValidationError
+
 # -------------------------------------------------------------------------------
-"""
-Validate Hostname/IP Address
-"""
 
 
 def validate_host(host):
+    """
+    Validate Hostname/IP Address
+    """
     # Remove leading zeroes in hostname (if provided)
-    new_ip = ".".join([str(int(i)) for i in ip.split(".")])
-    import socket
+    new_ip = ".".join([str(int(i)) for i in host.split(".")])
     try:
         socket.inet_aton(new_ip)
         return True
@@ -22,29 +24,23 @@ def validate_host(host):
 # -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
-"""
-Validate SSH Port for SFTP
-"""
 
 
 def validate_port(port):
-    try:
-        if port == 22:
-            return True
-        elif port in range(1024, 65535):
-            return True
-    except Exception as err:
-        print(err)
-
-    # -------------------------------------------------------------------------------
-
+    """
+    Validate SSH Port for SFTP
+    """
+    if port == 22:
+        return True
+    if port in range(1024, 65535):
+        return True
 
 # -------------------------------------------------------------------------------
 
-"""
-Validation for OCR Image file extension, max_file_size and no of attachments
-"""
-from django.core.exceptions import ValidationError
+# Validation for OCR Image file extension, max_file_size and no of attachments
+
+# -------------------------------------------------------------------------------
+
 
 VALID_EXTENSIONS = ['jpg', 'png', 'jpeg', 'tif', 'pdf']
 VALIDATION_ERROR_MESSAGE = 'Unsupported file extension.'
