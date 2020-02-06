@@ -51,6 +51,7 @@ from .pagination import CustomOCRPagination
 # pylint: disable=too-many-branches
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 # -------------------------------------------------------------------------------
 
 def ocr_datasource_config_list(request):
@@ -131,16 +132,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
-        """
-        TODO:
-        1. Implement multiple datasource type.
-        2. Limit no of attachments. (TBD)
-        3. Limit FileSize to be uploaded. (TBD)
-        """
-
         if data['dataSourceType'] == 'fileUpload':
             if 'imagefile' in data:
-                # data['file'] = request.FILES.get('file')
                 files = request.FILES.getlist('imagefile')
                 for file in files:
                     imagepath.append(file.name[:-4].replace('.', '_'))

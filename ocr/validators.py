@@ -2,6 +2,17 @@
 OCR Validations
 """
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=inconsistent-return-statements
+# -------------------------------------------------------------------------------
+
 import socket
 from django.core.exceptions import ValidationError
 
