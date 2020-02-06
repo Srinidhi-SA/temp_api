@@ -1,9 +1,12 @@
 import React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars';
-import { getOcrUploadedFiles,saveImagePageFlag } from '../../actions/ocrActions'
+import { getOcrUploadedFiles,saveImagePageFlag ,storeOcrSortElements} from '../../actions/ocrActions'
 import { connect } from "react-redux";
 import { store } from '../../store'
 import { Pagination } from "react-bootstrap";
+import tinysort from 'tinysort';
+import { STATIC_URL } from '../../helpers/env';
+
 
 @connect((store) => {
   return {
@@ -19,12 +22,77 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
 
+//   componentDidMount() {
+
+
+//     var table = document.getElementById('dctable'),
+//     tableHead = table.querySelector('thead'),
+//     tableHeaders = tableHead.querySelectorAll('th'),
+//     tableBody = table.querySelector('tbody');
+
+
+// tableHead.addEventListener('click', function (e) {
+//     var tableHeader = e.target,
+//         textContent = tableHeader.textContent,
+//         tableHeaderIndex, isAscending, order;
+//     while (tableHeader.nodeName !== 'TH') {
+//         tableHeader = tableHeader.parentNode;
+//     }
+//     tableHeaderIndex = Array.prototype.indexOf.call(tableHeaders, tableHeader);
+//     isAscending = tableHeader.getAttribute('data-order') === 'asc';
+//     order = isAscending ? 'desc' : 'asc';
+
+//     //reset other columns
+//     $('#backpackGrid').find('th').removeClass('asc desc').attr('data-order','none').attr('aria-sort','none');
+
+
+//     //set order on clicked header
+//     tableHeader.setAttribute('data-order', order);
+
+//     /* accessibility */
+//     //set aria sort attr
+//     tableHeader.setAttribute('aria-sort', order);
+//     tableHeader.setAttribute("class", order);
+//     // build aria-live message
+//     var sortOrder;
+//     if (isAscending) {
+//         sortOrder = "Ascending order";
+//     } else {
+//         sortOrder = "Descending order";
+//     }
+    
+//     /* end accessibility */
+    
+//     // call tinysort
+//     tinysort(
+//     tableBody.querySelectorAll('tr'), {
+//         selector: 'td:nth-child(' + (tableHeaderIndex + 1) + ')',
+//         order: order
+//     });
+// });
+
+//     $("#dctable").addSortWidget();
+
+
+
+//   }
+
   handleSelect(pageNo) {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
   handleImagePageFlag=()=>{
     this.props.dispatch(saveImagePageFlag(true));
+  }
+
+  sortOcrList(sortBy,sortOrder){
+    this.props.dispatch(storeOcrSortElements(sortBy,sortOrder))
+    
+    this.props.dispatch(getOcrUploadedFiles())
+  }
+
+  filterOcrList(filtertBy){
+    alert(filtertBy,"hello")
   }
 
   render() {
@@ -60,19 +128,20 @@ export class OcrTable extends React.Component {
           <div className="panel box-shadow ">
             <div class="panel-body no-border xs-p-20">
               <div className="table-responsive noSwipe xs-pb-10">
-                <table id="dctable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+                <table id="ocrSort" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                   <thead>
                     <tr>
                       <th></th>
-                      <th>Name</th>
+                      <th>Name<img onClick={this.sortOcrList.bind(this,'name','desc')}src={STATIC_URL+"assets/images/ice-desc.gif"}></img>
+                      <img onClick={this.sortOcrList.bind(this,'name','asc')}src={STATIC_URL+"assets/images/ice-asc.gif"}></img></th>
                       <th class="dropdown" >
                         <a href="#" data-toggle="dropdown" style={{marginRight: "45px"}} class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                           <span>Status</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="ready to verify">Ready to Verify</a></li>
-                          <li><a class="cursor" name="ready to export">Ready to Export</a></li>
-                        </ul>
+                          <li><a class="cursor" onClick={this.filterOcrList.bind(this,'verify')} name="ready to verify">Ready to Verify</a></li>
+                          <li><a class="cursor" onClick={this.filterOcrList.bind(this,'export')} name="ready to export">Ready to Export</a></li>
+                        </ul>              
                       </th>
                       <th class="dropdown" >
                         <a href="#" data-toggle="dropdown" style={{marginRight: "45px"}} class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">

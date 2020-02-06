@@ -2,6 +2,8 @@
 export default function reducer(state = {
   OcrfileUpload:"",
   OcrDataList:"",
+  ocrFilesSortType:null,
+  ocrFilesSortOn:null,
   imageFlag: false
 },action) {
 switch (action.type) {
@@ -35,6 +37,15 @@ return{
   ...state,
   imageFlag:action.flag
 }
+}
+break;
+case "OCR_FILES_SORT":
+{
+    return{
+        ...state,
+        ocrFilesSortOn:action.ocrFilesSortOn,
+        ocrFilesSortType:action.ocrFilesSortType
+    }
 }
 break;
 }
