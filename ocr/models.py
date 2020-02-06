@@ -1,30 +1,28 @@
 """
 OCR MODELS
 """
-import os
-import uuid
+
 import random
 import string
 from django.db import models
-from api.models import User
 from django.template.defaultfilters import slugify
+from django.core.validators import FileExtensionValidator
+from api.models import User
+from ocr import validators
 
 
-def unique_dir():
-    """Unique Directory"""
-    return 'images/' + str(uuid.uuid1().hex)
-
-
-def validate_file_extension(value):
-    """ METHOD : To Validate file extension for OCRImage model FileField. """
-    from django.core.exceptions import ValidationError
-    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
-    valid_extensions = ['.jpg', '.png', '.jpeg', '.tif', '.pdf']
-    if ext.lower() not in valid_extensions:
-        raise ValidationError(u'Unsupported file extension.')
-
-
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=arguments-differ
 # pylint: disable=too-few-public-methods
+# -------------------------------------------------------------------------------
+
 class OCRImageset(models.Model):
     """
     Model :
@@ -42,7 +40,7 @@ class OCRImageset(models.Model):
     created_by = models.ForeignKey(User, null=True, db_index=True)
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+        return " : ".join(["{}".format(x) for x in ["OCRImageSet", self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""
@@ -76,7 +74,9 @@ class OCRImage(models.Model):
     ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
-    imagefile = models.FileField(null=True, upload_to='ocrData', validators=[validate_file_extension])
+    imagefile = models.FileField(null=True, upload_to='ocrData', validators=[
+        FileExtensionValidator(allowed_extensions=validators.VALID_EXTENSIONS,
+                               message=validators.VALIDATION_ERROR_MESSAGE)])
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)
     datasource_details = models.CharField(max_length=3000, null=True)
@@ -88,7 +88,7 @@ class OCRImage(models.Model):
     comment = models.CharField(max_length=300, default="", null=True)
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+        return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
 
     def generate_slug(self):
         """generate slug"""

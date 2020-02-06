@@ -7,15 +7,27 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 from ocr.permission import get_permissions
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=arguments-differ
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+# -------------------------------------------------------------------------------
+
 
 class CustomOCRPagination(PageNumberPagination):
     """
     OCR Pagination
     """
-    query_set = None
-    request = None
-    view = None
-    list_serializer = None
+    def __init__(self):
+        self.query_set = None
+        self.request = None
+        self.view = None
+        self.list_serializer = None
 
     def modified_get_paginate_response(self, page):
         """
@@ -79,6 +91,6 @@ class CustomOCRPagination(PageNumberPagination):
         """
         self.request = request
         self.view = view
-        self.queryset = queryset
+        self.query_set = queryset
         self.list_serializer = list_serializer
-        return queryset
+        return self.query_set

@@ -75,6 +75,10 @@ export class AppsModelDetail extends React.Component {
 					algorithmName = "RF"
 				else if(algoNam === "NAIVEBAYES")
 					algorithmName = "NB"
+				else if(algoNam === "NEURALNETWORKS(PYTORCH)")
+					algorithmName = "PT"
+				else if(algoNam === "TENSORFLOW")
+				  algorithmName = "TF"
 				else algorithmName = "NN"
 				
 					let info = document.createElement('a');

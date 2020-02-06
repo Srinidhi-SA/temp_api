@@ -1,19 +1,25 @@
+"""
+View Implementations for OCRImage and OCRImageset models.
+"""
+
 import copy
+import os
 import random
 import ast
 from django.conf import settings
+from django.core.files import File
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.response import Response
-
 from api.datasets.helper import convert_to_string
+from api.utils import name_check
 # ---------------------EXCEPTIONS-----------------------------
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
+from ocr.query_filtering import get_listed_data, get_image_list_data
 # -----------------------MODELS-------------------------------
-from api.utils import name_check
 from .models import OCRImage
 from .models import OCRImageset
 
@@ -31,19 +37,29 @@ from .serializers import OCRImageSerializer, \
 
 # ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
+
+
 # ------------------------------------------------------------
-from ocr.query_filtering import get_listed_data, get_image_list_data
 
 
 # Create your views here.
 # -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+# -------------------------------------------------------------------------------
 
 def ocr_datasource_config_list(request):
-    '''
+    """
     METHOD: OCR DATASOURCES CONFIG LIST BASED ON USER PERMISSIONS
     ALLOWED REQUESTS : [GET]
     PARAMETERS: None
-    '''
+    """
     user = request.user
     data_source_config = copy.deepcopy(settings.OCR_DATA_SOURCES_CONFIG)
     upload_permission_map = {
@@ -95,6 +111,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def get_object_from_all(self):
+        """
+        Returns the queryset of OCRImage filtered by the slug.
+        """
         return OCRImage.objects.get(
             slug=self.kwargs.get('slug'),
             created_by=self.request.user
@@ -103,69 +122,93 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     # queryset = OCRImage.objects.all()
 
     def create(self, request, *args, **kwargs):
-        # try:
-        global imageset_id
+
+        imageset_id = None
         serializer_data, serializer_error, imagepath, response = list(), list(), list(), dict()
         if 'data' in kwargs:
             data = kwargs.get('data')
-            self.request = request
         else:
             data = request.data
         data = convert_to_string(data)
         img_data = data
 
-        if 'imagefile' in data:
-            # data['file'] = request.FILES.get('file')
-            files = request.FILES.getlist('imagefile')
-            for f in files:
-                imagepath.append(f.name[:-4].replace('.', '_'))
-            imageset_data = dict()
-            imageset_data['imagepath'] = str(imagepath)
-            imageset_data['created_by'] = request.user.id
-            serializer = OCRImageSetSerializer(data=imageset_data, context={"request": self.request})
+        if data['dataSourceType'] == 'fileUpload':
+            if 'imagefile' in data:
+                files = request.FILES.getlist('imagefile')
+                for file in files:
+                    imagepath.append(file.name[:-4].replace('.', '_'))
 
-            if serializer.is_valid():
-                imageset_object = serializer.save()
-                imageset_object.create()
-                imageset_id = imageset_object.id
-                response['imageset_serializer_data'] = serializer.data
-                response['imageset_message'] = 'SUCCESS'
-            else:
-                response['imageset_serializer_error'] = serializer.errors
-                response['imageset_message'] = 'FAILED'
+        if data['dataSourceType'] == 'S3':
+            if 's3Dir' in data:
+                files = [f for f in os.listdir(data['s3Dir']) if os.path.isfile(os.path.join(data['s3Dir'], f))]
+                for file in files:
+                    imagepath.append(file[:-4].replace('.', '_'))
 
-            for f in files:
-                img_data['imagefile'] = f
+        if data['dataSourceType'] == 'SFTP':
+            pass
+
+        imageset_data = dict()
+        imageset_data['imagepath'] = str(imagepath)
+        imageset_data['created_by'] = request.user.id
+        serializer = OCRImageSetSerializer(data=imageset_data, context={"request": self.request})
+
+        if serializer.is_valid():
+            imageset_object = serializer.save()
+            imageset_object.create()
+            imageset_id = imageset_object.id
+            response['imageset_serializer_data'] = serializer.data
+            response['imageset_message'] = 'SUCCESS'
+        else:
+            response['imageset_serializer_error'] = serializer.errors
+            response['imageset_message'] = 'FAILED'
+
+        for file in files:
+            if data['dataSourceType'] == 'S3':
+                img_data = dict()
+                django_file = File(open(os.path.join(data['s3Dir'], file), 'rb'), name=file)
+                img_data['imagefile'] = django_file
                 img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
-                if f is None:
+                if file is None:
                     img_data['name'] = img_data.get('name',
                                                     img_data.get('datasource_type', "H") + "_" + str(
                                                         random.randint(1000000, 10000000)))
                 else:
-                    img_data['name'] = f.name[:-4].replace('.', '_')
+                    img_data['name'] = file[:-4].replace('.', '_')
 
-                imagename_list = []
-                image_query = self.get_queryset()
-                for index, i in enumerate(image_query):
-                    imagename_list.append(i.imagefile.name)
-                if img_data['name'] in imagename_list:
-                    serializer_error.append(creation_failed_exception("Image name already exists!."))
-
-                img_data['created_by'] = request.user.id
-                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
-                print(serializer.initial_data)
-                if serializer.is_valid():
-                    image_object = serializer.save()
-                    image_object.create()
-                    serializer_data.append(serializer.data)
+            if data['dataSourceType'] == 'fileUpload':
+                img_data['imagefile'] = file
+                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
+                if file is None:
+                    img_data['name'] = img_data.get('name',
+                                                    img_data.get('datasource_type', "H") + "_" + str(
+                                                        random.randint(1000000, 10000000)))
                 else:
-                    serializer_error.append(creation_failed_exception(serializer.errors))
-            if not serializer_error:
-                response['serializer_data'] = str(serializer_data)
-                response['message'] = 'SUCCESS'
+                    img_data['name'] = file.name[:-4].replace('.', '_')
+
+            if data['dataSourceType'] == 'SFTP':
+                pass
+
+            imagename_list = []
+            image_query = self.get_queryset()
+            for i in image_query:
+                imagename_list.append(i.imagefile.name)
+            if img_data['name'] in imagename_list:
+                serializer_error.append(creation_failed_exception("Image name already exists!."))
+
+            img_data['created_by'] = request.user.id
+            serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+            if serializer.is_valid():
+                image_object = serializer.save()
+                image_object.create()
+                serializer_data.append(serializer.data)
             else:
-                response['serializer_error'] = str(serializer_error)
-                response['message'] = 'FAILED'
+                serializer_error.append(serializer.errors)
+        if not serializer_error:
+            response['serializer_data'] = serializer_data
+            response['message'] = 'SUCCESS'
+        else:
+            response['serializer_error'] = str(serializer_error)
+            response['message'] = 'FAILED'
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
@@ -202,9 +245,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if should_proceed < 0:
                 if should_proceed == -1:
                     return creation_failed_exception("Name is empty.")
-                elif should_proceed == -2:
+                if should_proceed == -2:
                     return creation_failed_exception("Name is very large.")
-                elif should_proceed == -3:
+                if should_proceed == -3:
                     return creation_failed_exception("Name have special_characters.")
 
         try:
@@ -215,7 +258,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     instance.delete()
                     # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
                     return JsonResponse({'message': 'Deleted'})
-        except:
+        except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
 
         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
@@ -225,9 +268,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(serializer.errors)
 
 
-# pylint: disable=too-many-ancestors
-# pylint: disable=no-member
-# pylint: disable=attribute-defined-outside-init
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
     Model: OCRImage
@@ -241,6 +281,9 @@ class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     permission_classes = (OCRImageRelatedPermission,)
 
     def get_queryset(self):
+        """
+        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        """
         queryset = OCRImageset.objects.filter(
             created_by=self.request.user,
             deleted=False,
@@ -249,17 +292,24 @@ class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def get_object_from_all(self):
+        """
+        Returns the queryset of OCRImageset filtered by the slug.
+        """
         return OCRImageset.objects.get(
             slug=self.kwargs.get('slug'),
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
 
     # pylint: disable=unused-argument
     def retrieve(self, request, *args, **kwargs):
-        ocrimageset_object = OCRImageset.objects.get(slug=self.kwargs.get('slug'))
+        ocrimageset_object = self.get_object_from_all()
         imageset_list = ocrimageset_object.imagepath
         imageset_list = ast.literal_eval(imageset_list)
-        image_queryset = OCRImage.objects.filter(name__in=imageset_list, imageset=ocrimageset_object.id)
+        image_queryset = OCRImage.objects.filter(
+            name__in=imageset_list,
+            imageset=ocrimageset_object.id,
+            deleted=False)
         return get_image_list_data(
             viewset=OCRImageView,
             queryset=image_queryset,
@@ -268,7 +318,6 @@ class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def list(self, request, *args, **kwargs):
-
         return get_listed_data(
             viewset=self,
             request=request,

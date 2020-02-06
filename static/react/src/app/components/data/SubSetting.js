@@ -463,6 +463,12 @@ export class SubSetting extends React.Component {
         this.props.dispatch(updateSubSetting(this.state.subSettingRs));
       }
     }
+    else if(this.props.item.columnType == "dimension"){
+      $('#saveButton').removeClass('btn-primary')
+      $('#saveButton').addClass('btn-alt4')
+      $('#saveButton').attr('disabled', true);
+      this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+    }
   }
   callSubsetTableSorter() {
     $(function() {
