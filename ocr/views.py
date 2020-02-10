@@ -11,6 +11,7 @@ from django.core.files import File
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
@@ -19,6 +20,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data
+from ocr.tasks import extract_from_image
 # -----------------------MODELS-------------------------------
 from .models import OCRImage
 from .models import OCRImageset
@@ -267,8 +269,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    @list_route(methods=['get'])
     def extract(self, request, *args, **kwargs):
-        pass
+        data = request.data
+        if 'imageset' in data:
+            images_queryset = OCRImage.objects.filter(imageset_id=int(data['imageset']))
+            for image in images_queryset:
+                extract_from_image.delay(image.imagefile.path)
+        return JsonResponse({'message': 'Done'})
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
