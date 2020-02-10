@@ -110,7 +110,7 @@ export class OcrUpload extends React.Component {
         </span>
       </li>
     ))
-      : <div>No files chosen.<br/>Please select file to proceed.</div>
+      : <div style={{textAlign:"center",paddingLeft:"20px"}}>No files chosen.<br/>Please select file to proceed.</div>
 
     return (
       <div>
@@ -173,7 +173,7 @@ export class OcrUpload extends React.Component {
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">Bucket</label>
+                  <label className="col-sm-3 control-label">Bucket Name</label>
                   <div className="col-sm-6">
                     <input type="text" name="targetBucket" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>

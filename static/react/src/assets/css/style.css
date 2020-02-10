@@ -23666,9 +23666,9 @@ ul.ocrUploadTabs{
   color: #505050;
   background-color: #ffffff;
 }
-.ocrUploadTabs li.active{ 
+/* .ocrUploadTabs li.active{ 
   border-bottom: 2px solid #6b6b6b
-}
+} */
 #s3{
-  margin-left: 70px;
+  margin-left: 65px;
 }
