@@ -344,6 +344,7 @@ class Dataset(models.Model):
     def csv_header_clean(self):
         CLEAN_DATA = []
         cleaned_header = []
+        os.chmod(self.input_file.path, 0o777)
         with open(self.input_file.path) as file:
             rows = csv.reader(file)
             for (i, row) in enumerate(rows):
@@ -2721,7 +2722,7 @@ class StockDataset(models.Model):
 
     def create(self):
         from api.tasks import stock_sense_crawl
-        stock_sense_crawl(object_slug=self.slug)
+        stock_sense_crawl.delay(object_slug=self.slug)
 
     def crawl_news_data(self):
 

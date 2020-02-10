@@ -10,7 +10,7 @@ python-sjsclient==0.8.0
 pywebhdfs==0.4.1
 Fabric==1.13.2
 Fabric3
-watson-developer-cloud==0.26.1
+#watson-developer-cloud==0.26.1
 gunicorn==19.7.1
 django-redis==4.8.0
 redis==3.2.0
@@ -34,3 +34,5 @@ psycopg2
 django_celery_beat==1.4.0
 django-environ
 boto3
+ibm-watson==4.2.1
+ibm-cloud-sdk-core==1.5.1
