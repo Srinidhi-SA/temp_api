@@ -23580,6 +23580,70 @@ canvas {
 .ocrTable > tbody > tr > td{
   vertical-align: middle;
 }
+.ocrCanvas{
+  width: auto;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  top: 0px;
+  margin-top: 0px;
+  border: 1px solid #d3d3d3;
+}
+#myCanvas:hover{
+  transform: scale(1);
+  transition: all 250ms ease-in;
+}
+#popoverOcr{
+width: 270px;
+height: 90px;
+background: #fff;
+margin-left: -108px;
+margin-top: -43px;
+}
+#popoverOcr .popover-title{
+  background-color: #f2f2f2;
+}
+#popoverOcr input{
+  border: 1px solid #68d8ca;
+  background-color: #fff;
+  height: 30px;
+  padding: 5px;
+  width: 100%;
+}
+#popoverOcr button {
+height: 30px;
+background-color: #44b0a0;
+border-radius: 2px;
+border: 1px solid #44b0a0;
+color: #fff;
+font-size: 14px;
+}
+.ocrbgDiv{
+  height: 500px;
+  width: 500px;
+  position: absolute;
+  left: 14px;
+  top: 0px;
+  /* background: rgba(0,0,0,0.4); */
+}
+#originalOcrImg {
+  width: 100%;
+  -webkit-transition: all 2s ease;
+  -moz-transition: all 2s ease;
+  -ms-transition: all 2s ease;
+  transition: all 2s ease;
+}
+#originalOcrImg:hover{
+  width: calc(100% + 100px);
+}
+.ocrImgDiv:hover{
+  z-index:9999;
+}
+.ocrImgTitle{
+  margin-bottom: 20px;
+  display: block;
+  font-size: 16px;
+}
 
 ul { margin: 0; padding: 0;list-style: none; }
 a { color: #34495e;text-decoration: none;}

@@ -43,7 +43,6 @@ export class OcrUpload extends React.Component {
 
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
-
     var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif']
     var formatErr = Object.values(event.target.files).map(i => i.type).map((i, ind) => {
       return allowType.includes(i)
