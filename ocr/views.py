@@ -267,6 +267,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    def extract(self, request, *args, **kwargs):
+        pass
+
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
