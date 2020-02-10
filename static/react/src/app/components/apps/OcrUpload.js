@@ -99,7 +99,7 @@ export class OcrUpload extends React.Component {
   getS3Details(e){
     let name = e.target.name;
     let value = e.target.value;
-    console.log(name,value);
+    
   }
 
   render() {
@@ -121,15 +121,15 @@ export class OcrUpload extends React.Component {
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
             <Modal.Body style={{ padding: 0 }} >
-            <header class="header">
-                <ul class="ocrUploadTabs">
-                  <li class="active"><a class="nav-link" data-toggle="tab" href="#images">Image Files</a></li>
-                  <li><a class="nav-link" data-toggle="tab" href="#s3">s3 Files</a></li>
-                  <li><a class="nav-link" data-toggle="tab" href="#pdf">PDF Files</a></li>
+            <div className="tab-container">
+                <ul className="ocrUploadTabs nav-tab">
+                  <li className="active"><a className="nav-link" data-toggle="tab" href="#images">Image Files</a></li>
+                  <li><a className="nav-link" data-toggle="tab" href="#s3">s3 Files</a></li>
+                  <li><a className="nav-link" data-toggle="tab" href="#pdf">PDF Files</a></li>
                 </ul>
-            </header>
-            <div class="tab-content">
-              <div id="images" className="tab-pane active row" style={{ margin: 0 }}>
+            </div>
+            <div className="tab-content">
+              <div id="images" className="tab-pane active row">
                 {!this.state.uploaded &&
                   <div>
                     <div className="col-md-5 ocrUploadHeight">
@@ -141,7 +141,7 @@ export class OcrUpload extends React.Component {
                     </div>
                     <div className="col-md-7">
                       <Scrollbars className="ocrUploadHeight">
-                        <ul className="list-unstyled bullets_primary" style={{ display: 'table-cell', margin: 'auto', height: 300, verticalAlign: 'middle' }}>
+                        <ul className="list-unstyled bullets_primary" style={{ display: 'table-cell', margin: 'auto', height: 250, verticalAlign: 'middle' }}>
                           {fileNames}
                         </ul>
                       </Scrollbars>
@@ -169,37 +169,37 @@ export class OcrUpload extends React.Component {
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Name</label>
                   <div className="col-sm-6">
-                    <input type="text" name="name" placeholder="Enter Name" defaultValue="" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="name" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Bucket</label>
                   <div className="col-sm-6">
-                    <input type="text" name="targetBucket" placeholder="Target Bucket" defaultValue="" onInput="" className="form-control"/>
+                    <input type="text" name="targetBucket" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">File Name</label>
                   <div className="col-sm-6">
-                    <input type="text" name="fileName" placeholder="File Name" defaultValue="" onInput="" className="form-control"/>
+                    <input type="text" name="fileName" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Access key</label>
                   <div className="col-sm-6">
-                    <input type="text" name="accessKey" placeholder="Access Key" defaultValue="" onInput="" className="form-control"/>
+                    <input type="text" name="accessKey" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-group row">
                   <label className="col-sm-3 control-label">Secret key</label>
                   <div className="col-sm-6">
-                    <input type="text" name="secretKey" placeholder="Secret Key" defaultValue="" onInput="" className="form-control"/>
+                    <input type="text" name="secretKey" onInput={this.getS3Details.bind(this)} className="form-control"/>
                   </div>
                 </div>
               </div>
 
               <div id="pdf" className="tab-pane fade">
-                Oops! <br/>No Content
+                !!<br/>!!!<br/>!<br/>!<br/>!<br/><br/>Nothing Here
               </div>
             </div>
             </Modal.Body>

@@ -59,3 +59,23 @@ export function fetchUploadsFail(data){
 		data,
 	}
 }
+
+export function getS3ConnectorDetails(){
+	return (dispatch) => {
+		return fetchS3Details().then((response,json) => {
+			if(response.status === 200){
+				dispatch(fetchs3DetailsSuccess(json))
+			}else{
+				dispatch(fetchs3DetailsError(json))
+			}
+		})
+	}
+}
+
+function fetchs3DetailsSuccess(data){
+
+}
+
+function fetchs3DetailsError(data){
+	
+}
