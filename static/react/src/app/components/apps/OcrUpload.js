@@ -151,7 +151,7 @@ export class OcrUpload extends React.Component {
                 }
 
                 {(this.state.loader && !this.state.uploaded) &&
-                  <div style={{ height: 310, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                  <div style={{ height: 275, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
                     <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                   </div>
                 }
