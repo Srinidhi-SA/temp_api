@@ -180,7 +180,6 @@ export default function reducer(state = {
         return {
           ...state,
           allDataSets: action.data,
-          selectedDataSet: action.slug
         }
       }
       break;

@@ -2,9 +2,9 @@ Django==1.11.4
 django-cors-headers==2.1.0
 djangorestframework==3.6.3
 djangorestframework-jwt==1.11.0
-PyJWT==1.5.2
-pytz==2017.2
-six==1.11.0
+#PyJWT==1.5.2
+#pytz==2017.2
+#six==1.11.0
 django-filter==1.0.4
 python-sjsclient==0.8.0
 pywebhdfs==0.4.1
@@ -22,9 +22,9 @@ django-material==1.1.1
 django-auditlog==0.4.4
 yarn-api-client==0.2.3
 fabric-gunicorn==0.1
-matplotlib==2.2.4
+#matplotlib==2.2.4
 knit==0.2.4
-pygments
+#pygments
 celery==4.2.1
 django-guardian==1.4.9
 deprecation
@@ -33,6 +33,6 @@ celery-once==2.0.0
 psycopg2
 django_celery_beat==1.4.0
 django-environ
-boto3
+#boto3
 ibm-watson==4.2.1
 ibm-cloud-sdk-core==1.5.1

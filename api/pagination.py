@@ -5,7 +5,27 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 from api.utils import get_permissions
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+# pylint: disable=arguments-differ
+# -------------------------------------------------------------------------------
+
+
 class CustomPagination(PageNumberPagination):
+
+    def __init__(self):
+        self.top_3 = None
+        self.view = None
+        self.request = None
+        self.queryset = None
+        self.list_serializer = None
 
     def get_paginated_response(self, data):
         return None
@@ -78,4 +98,3 @@ class CustomPagination(PageNumberPagination):
         self.queryset = queryset
         self.list_serializer = list_serializer
         return queryset
-

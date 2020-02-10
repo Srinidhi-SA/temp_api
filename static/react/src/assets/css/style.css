@@ -21986,7 +21986,13 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 }
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
+
 .ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; padding-bottom: 20px; }
+
+
+.modal_stepsBlock .col-sm-9 p b {
+    margin-left: 10px; color:#0fc4b5; font-size:14px;
+}
 
 /*** OCR Introduction Styles ***/
 .carousel.slide .modal-body { background: #e2e2e2; }
@@ -22011,7 +22017,10 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .cst_ocr_tabs li:hover a, .cst_ocr_tabs li.active a, .cst_ocr_tabs li a:hover { color:#FFFFFF; background: #232e42; }
 .cst_table .progress { margin-bottom:0; }
 .cst_ocr_tabs .nav-tabs>li.active>a, .cst_ocr_tabs li.active a { border-width:2 ; border-bottom-color:transparent ; }
-.ocr_section .cst_table thead th a .caret { float: right; margin-top: 6px; }
+ 
+.ocr_section .cst_table { background: #FFFFFF; }
+.ocr_section .cst_table tr { border-bottom: 1px solid #efefef; }
+.ocr_section .cst_table thead th a span { width: inherit; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
@@ -22402,6 +22411,7 @@ svg[class^="chart"] {
   font-size: 70%;
 }
 
+ 
 .data_preview .bgStockBox {
   display: block;
   color: #969696;
@@ -22461,6 +22471,7 @@ svg[class^="chart"] {
     background: #ffffff;
   }
 }
+ 
 
 .ov_card_boxes .row {
   text-align: center;
@@ -23543,11 +23554,93 @@ canvas {
 	z-index: 99;
 }
 .ocrUploadHeight{
-	height: 310px;
+	height: 310px !important;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 }
 .ocr_section .tab-container{
   margin-bottom: 20px;
+}
+.ocrLoader{
+  position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+.ocrSuccess{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 310px;
+  align-items: center;
+}
+.ocrTable > tbody > tr > td{
+  vertical-align: middle;
+}
+.ocrCanvas{
+  width: auto;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  top: 0px;
+  margin-top: 0px;
+  border: 1px solid #d3d3d3;
+}
+#myCanvas:hover{
+  transform: scale(1);
+  transition: all 250ms ease-in;
+}
+#popoverOcr{
+width: 270px;
+height: 90px;
+background: #fff;
+margin-left: -108px;
+margin-top: -43px;
+}
+#popoverOcr .popover-title{
+  background-color: #f2f2f2;
+}
+#popoverOcr input{
+  border: 1px solid #68d8ca;
+  background-color: #fff;
+  height: 30px;
+  padding: 5px;
+  width: 100%;
+}
+#popoverOcr button {
+height: 30px;
+background-color: #44b0a0;
+border-radius: 2px;
+border: 1px solid #44b0a0;
+color: #fff;
+font-size: 14px;
+}
+.ocrbgDiv{
+  height: 500px;
+  width: 500px;
+  position: absolute;
+  left: 14px;
+  top: 0px;
+  /* background: rgba(0,0,0,0.4); */
+}
+#originalOcrImg {
+  width: 100%;
+  -webkit-transition: all 2s ease;
+  -moz-transition: all 2s ease;
+  -ms-transition: all 2s ease;
+  transition: all 2s ease;
+}
+#originalOcrImg:hover{
+  width: calc(100% + 100px);
+}
+.ocrImgDiv:hover{
+  z-index:9999;
+}
+.ocrImgTitle{
+  margin-bottom: 20px;
+  display: block;
+  font-size: 16px;
 }

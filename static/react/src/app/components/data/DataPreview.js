@@ -72,6 +72,7 @@ export class DataPreview extends React.Component {
   }
 
   componentWillMount() {
+		this.props.dispatch(getAllDataList());
     const from = this.getValueOfFromParam();
         if (from === 'createSignal') {
           if (this.props.match.path.includes("slug")) {

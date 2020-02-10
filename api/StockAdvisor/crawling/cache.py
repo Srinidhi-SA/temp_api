@@ -66,7 +66,9 @@ class Cache(object):
             file_path = self.__get_file_path(key)
             if os.path.exists(file_path):
                 print("CACHE HIT: " + key)
-                return open(file_path).read()
+                # return open(file_path).read()
+                with open(file_path, 'rb') as f:
+                    return f.read()
         except IOError:
             pass
         return None
