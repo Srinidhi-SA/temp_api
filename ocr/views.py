@@ -122,7 +122,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user
         )
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
         """
         Returns the lists of files from the s3 bucket.
@@ -289,10 +289,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        if 'imageset' in data:
-            images_queryset = OCRImage.objects.filter(imageset_id=int(data['imageset']))
-            for image in images_queryset:
-                extract_from_image.delay(image.imagefile.path)
+        if 'imageslug' in data:
+            images_queryset = OCRImage.objects.get(slug=data['imageslug'])
+            extract_from_image.delay(images_queryset.imagefile.path)
         return JsonResponse({'message': 'Done'})
 
 
