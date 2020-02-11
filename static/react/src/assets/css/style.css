@@ -8721,7 +8721,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding: 0
 }
 .widget-weather .wt-container .wt-hour {
-	background-color: #ff7373;
+	background-color: #00998c;
 	color: #fff;
 	font-size: 35px;
 	font-weight: 300;
@@ -8784,7 +8784,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding: 0
 }
 .widget-download-list>.widget-head {
-	background-color: #ff7373;
+	background-color: #00998c;
 	color: #fff;
 	line-height: 33px;
 	overflow: hidden;
@@ -8810,16 +8810,18 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	border-bottom: 1px solid #e6e6e6
 }
 .widget-download-list .widget-list li a {
-	padding: 21px 20px;
-	color: #555;
+	padding: 21px 20px; 
 	display: block;
 	font-weight: 300;
 	font-size: 12px
 }
-.widget-download-list .widget-list li a .icon {
-	float: right;
-	color: #00998c;
-	font-size: 20px
+.widget-download-list .widget-list li a .fa {
+    color: #191919;
+    font-size: 36px;
+    display: block;
+    float: left;
+    margin-right: 10px;
+    margin-top: 9px;
 }
 .widget-download-list .widget-list li a:hover {
 	background-color: #fafafa
@@ -15287,14 +15289,22 @@ form .col-sm-4.control-label {
 }
 .content-section.implementation.multiselect-demo { height: 32px;}
 .algSelection .col-md-algo .bg-highlight-parent { padding: 10px 15px; min-height: 310px; border: 1px solid #e6e6e6; }
-.algSelection .col-md-3 .bg-highlight-parent { padding: 10px 15px; min-height: 290px; border: 1px solid #e6e6e6; }
+.algSelection .col-md-3 .bg-highlight-parent {
+    padding: 10px 15px;
+    min-height: 290px;
+    border: 1px solid #f8f8f8;
+    border-radius: 4px;
+}
 
 .bg-highlight-parent .ma-checkbox {
     border-bottom: 1px solid #e6e6e6;
 }
-div.algSelection .checkbox .ma-checkbox label { font-size: 14px; text-transform: capitalize; padding: 10px; }
+div.algSelection .checkbox .ma-checkbox label { font-size: 14px;
+    text-transform: capitalize;
+    padding: 10px 10px 10px 0;
+    font-weight: 500; }
 .algSelection .ma-checkbox { margin-bottom: 15px;}
-.algSelection .ma-checkbox label { font-weight:bold; }
+.algSelection .ma-checkbox input[type=checkbox]+label:before {    margin-right: 15px; }
 .modal-lg-dimSEdate { width:805px; }
 .modal-lg-dimSEdate .modal-content { max-width:inherit; }
 button.btn.btn-cst_button { border: none; background: transparent; color: #0078ff; padding: 2px 5px; transition: background-color 0.5s ease;  -webkit-transition:opacity .5s ease;
@@ -15417,11 +15427,11 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
 .panel-body.no-border .img-responsive { margin:0 auto; width:70%; }
 
 .modal_bg_processing {
-	/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#efefef+1,ffffff+100 */
-background: #efefef; /* Old browsers */
-background: -moz-linear-gradient(top,  #efefef 1%, #ffffff 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top,  #efefef 1%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom,  #efefef 1%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#efefef+1,ffffff+100 * /
+background: #efefef; /* Old browsers * /
+background: -moz-linear-gradient(top,  #efefef 1%, #ffffff 100%); /* FF3.6-15 * /
+background: -webkit-linear-gradient(top,  #efefef 1%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 * /
+background: linear-gradient(to bottom,  #efefef 1%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ * /
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
 .modal_stepsBlock { background-color: #226666;
@@ -15431,7 +15441,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', end
     border-radius: 5px 5px 5px 5px; }
 
 .carousel-content h4 {
-    color: #7b7b7b;
+    color: #444444;
     min-height: 40px;
     vertical-align: middle;
 }
@@ -16402,9 +16412,10 @@ div#replaceValues {
 
 .customeTheme{
 	color: #0f0f0f !important;
-	background-color: #f0f5f4 !important;
+	background-color: #FFFFFF !important;
 	pointer-events: auto !important;
 	text-align: left;
+	    border: 1px solid #595959;
 }
 .btn-sig-info ul { list-style-type: none; ;}
 .__react_component_tooltip.type-dark.place-bottom:after{

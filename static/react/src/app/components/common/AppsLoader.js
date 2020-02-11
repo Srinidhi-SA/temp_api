@@ -109,9 +109,9 @@ componentWillUpdate(){
         for (var i = 0; i < array.length-5; i++) {
             (function(i) {
                 myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + " " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
+                    x.innerHTML = "Step " + i + ": " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
                 }, 10000 * i);
             })(i);
         }
