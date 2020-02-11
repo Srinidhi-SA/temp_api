@@ -22,7 +22,9 @@ export class OcrUpload extends React.Component {
     this.state = {
       selectedFiles: "",
       uploaded: false,
-      loader: false
+      loader: false,
+      s3Uploaded: false,
+      s3Loader: false
     }
   }
 
@@ -30,7 +32,9 @@ export class OcrUpload extends React.Component {
     this.setState({
       selectedFiles: "",
       loader: false,
-      uploaded: false
+      uploaded: false,
+      s3Uploaded: false,
+      s3Loader: false
     })
     this.props.dispatch(open());
   }
@@ -68,21 +72,15 @@ export class OcrUpload extends React.Component {
     };
   };
 
-  validateS3Fields(){
-    if($(".file_name")[0].value === "" || $(".file_name")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+  validateAndFetchS3Files(){
+    if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please Enter Bucket Name";
       return false;
     }else if($(".access_key_id")[0].value === "" || $(".access_key_id")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      document.getElementById("resetMsg").innerText = "Please Enter Access Key";
       return false;
     }else if($(".secret_key")[0].value === "" || $(".secret_key")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
-      return false;
-    }else if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
-      return false;
-    }else if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      document.getElementById("resetMsg").innerText = "Please Enter Secret Key";
       return false;
     }else{
       this.props.dispatch(getS3BucketFileList());
@@ -114,7 +112,7 @@ export class OcrUpload extends React.Component {
       })
     }
     else if(activeId === "ocrS3"){
-      this.validateS3Fields();
+      // this.validateAndFetchS3Files();
     }
   }
 
@@ -124,6 +122,7 @@ export class OcrUpload extends React.Component {
   }
 
   getS3Details(e){
+    document.getElementById("resetMsg").innerText = "";
     let name = e.target.name;
     let value = e.target.value;
     this.props.dispatch(saveS3BucketDetails(name,value));
@@ -192,36 +191,34 @@ export class OcrUpload extends React.Component {
               </div>
 
               <div id="ocrS3" className="tab-pane fade">
-                <div className="form-group row">
-                  <label className="col-sm-3 control-label mandate">Name</label>
-                  <div className="col-sm-6">
-                    <input type="text" name="file_name" onInput={this.getS3Details.bind(this)} className="form-control file_name"/>
+              {!this.state.s3Uploaded &&
+                <div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 control-label mandate">Bucket Name</label>
+                    <div className="col-sm-6">
+                      <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
+                    </div>
                   </div>
-                </div>
-                <div className="form-group row">
-                  <label className="col-sm-3 control-label mandate">Bucket Name</label>
-                  <div className="col-sm-6">
-                    <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
+                  <div className="form-group row">
+                    <label className="col-sm-3 control-label mandate">Access key</label>
+                    <div className="col-sm-6">
+                      <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
+                    </div>
                   </div>
-                </div>
-                <div className="form-group row">
-                  <label className="col-sm-3 control-label mandate">Access key</label>
-                  <div className="col-sm-6">
-                    <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
+                  <div className="form-group row">
+                    <label className="col-sm-3 control-label mandate">Secret key</label>
+                    <div className="col-sm-6">
+                      <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
+                    </div>
                   </div>
+                  <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
                 </div>
-                <div className="form-group row">
-                  <label className="col-sm-3 control-label mandate">Secret key</label>
-                  <div className="col-sm-6">
-                    <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
+              }
+              {(this.state.s3Loader && !this.state.s3Uploaded) &&
+                  <div style={{ height: 275, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                    <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                   </div>
-                </div>
-                <div className="form-group row">
-                  <label className="col-sm-3 control-label mandate">File Name</label>
-                  <div className="col-sm-6">
-                    <input type="text" name="new_dataset_name" onInput={this.getS3Details.bind(this)} className="form-control new_dataset_name"/>
-                  </div>
-                </div>
+                }
               </div>
             </div>
             </Modal.Body>

@@ -23672,3 +23672,6 @@ ul.ocrUploadTabs{
 #ocrS3{
   margin-left: 65px;
 }
+#fetchS3FileBtn {
+  margin-left: 400px;
+}
