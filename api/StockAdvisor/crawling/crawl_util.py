@@ -40,8 +40,9 @@ def fetch_news_sentiments_from_newsapi(stock):
         nl_understanding = myutils.get_nl_understanding_from_bluemix(
             url=news['final_url'], content_of_the_url=short_desc)
         if nl_understanding:
-            keywords = nl_understanding.get('keywords', [])
-            sentiment = nl_understanding.get('sentiment', [])
+            # nl_understanding = json.loads(nl_understanding.decode("utf-8"))
+            keywords = nl_understanding.result.get('keywords', [])
+            sentiment = nl_understanding.result.get('sentiment', [])
 
             if len(keywords) > 0 and len(sentiment) > 0:
                 news['keywords'] = keywords
@@ -52,6 +53,7 @@ def fetch_news_sentiments_from_newsapi(stock):
                     stock_news_with_sentiments.append(news)
 
     return stock_news_with_sentiments
+
 
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
