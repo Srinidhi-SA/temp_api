@@ -5,7 +5,7 @@ import os
 
 
 def get_sha(key):
-    return hashlib.sha1(key).hexdigest()
+    return hashlib.sha1(key.encode('utf-8')).hexdigest()
 
 def get_regex(regex_file):
     file_path = os.path.dirname(__file__) + "/" + regex_file

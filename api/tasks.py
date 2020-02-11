@@ -120,7 +120,7 @@ def submit_job_separate_task1(command_array, slug):
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
-        match = re.search('Submitted application (.*)$', line)
+        match = re.search('Submitted application (.*)$', line.decode("utf-8"))
         if match:
             application_id = match.groups()[0]
             from api.helper import get_db_object
@@ -590,7 +590,7 @@ def stock_sense_crawl(object_slug):
                                          )
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
-    # stock_dataset_object.call_mlscripts()
+    stock_dataset_object.call_mlscripts()
 
 
 @task(name='print_this_every_minute', queue=CONFIG_FILE_NAME)
