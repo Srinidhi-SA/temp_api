@@ -13,6 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from rest_framework.decorators import list_route
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
 # ---------------------EXCEPTIONS-----------------------------
@@ -40,8 +41,8 @@ from .serializers import OCRImageSerializer, \
 # ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
 
-
-# ------------------------------------------------------------
+# ---------------------S3 Files-----------------------------
+from .dataloader import download_file_from_s3, s3_files
 
 
 # Create your views here.
@@ -121,6 +122,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user
         )
 
+    @list_route(methods=['get'])
+    def get_s3_files(self, request, **kwargs):
+        """
+        Returns the lists of files from the s3 bucket.
+        """
+        if 'data' in kwargs:
+            data = kwargs.get('data')
+        else:
+            data = request.data
+        data = convert_to_string(data)
+        files_list = s3_files(**data)
+        response = files_list
+        return JsonResponse(response)
+
     # queryset = OCRImage.objects.all()
 
     def create(self, request, *args, **kwargs):
@@ -141,10 +156,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
-            if 's3Dir' in data:
-                files = [f for f in os.listdir(data['s3Dir']) if os.path.isfile(os.path.join(data['s3Dir'], f))]
+            files_download = download_file_from_s3(**data)
+            if files_download['status'] == 'SUCCESS':
+                s3_dir = files_download['file_path']
+                files = [f for f in os.listdir(s3_dir) if os.path.isfile(os.path.join(s3_dir, f))]
                 for file in files:
-                    imagepath.append(file[:-4].replace('.', '_'))
+                    imagepath.append(file)
 
         if data['dataSourceType'] == 'SFTP':
             pass
@@ -167,7 +184,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         for file in files:
             if data['dataSourceType'] == 'S3':
                 img_data = dict()
-                django_file = File(open(os.path.join(data['s3Dir'], file), 'rb'), name=file)
+                django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                 img_data['imagefile'] = django_file
                 img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                 if file is None:
