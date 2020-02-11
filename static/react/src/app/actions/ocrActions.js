@@ -2,12 +2,12 @@
 import {API} from "../helpers/env";
 import {getUserDetailsOrRestart} from "../helpers/helper";
 import store from "../store";
+
 function getHeader(token){
 	return {
 		Authorization: token
 	};
 };
-
 
 export function saveOcrFilesToStore(files) {
 	return {
@@ -23,7 +23,6 @@ export function saveImagePageFlag(flag) {
 	}
 }
 
-
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
@@ -36,7 +35,6 @@ export function getOcrUploadedFiles(pageNo){
 		})
 	}
 }
-
 
 function fetchUploadedFiles(pageNo=1,token){
     return fetch(API+'/ocr/ocrimage/?page_number=' + pageNo, {
@@ -60,9 +58,17 @@ export function fetchUploadsFail(data){
 	}
 }
 
-export function getS3ConnectorDetails(){
+export function saveS3BucketDetails(name,val){
+	return{
+		type: "SAVE_S3_BUCKET_DETAILS",
+		name,
+		val,
+	}
+}
+
+export function getS3BucketFileList(){
 	return (dispatch) => {
-		return fetchS3Details().then((response,json) => {
+		return fetchS3FileDetails(getUserDetailsOrRestart.get().userToken,dispatch).then((response,json) => {
 			if(response.status === 200){
 				dispatch(fetchs3DetailsSuccess(json))
 			}else{
@@ -72,10 +78,23 @@ export function getS3ConnectorDetails(){
 	}
 }
 
-function fetchs3DetailsSuccess(data){
-
+function fetchS3FileDetails(token){
+	return fetch(API,{
+		method: 'get',
+		headers: getHeader(token)
+	}).then(response => Promise.all([response,response.json()]));
 }
 
-function fetchs3DetailsError(data){
-	
+function fetchs3DetailsSuccess(data){
+	return {
+		type : "SAVE_S3_FILE_LIST",
+		data
+	}
+}
+
+function fetchs3DetailsError(errMsg){
+	return {
+		type : "S3_FILE_ERROR_MSG",
+		errMsg
+	}
 }

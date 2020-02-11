@@ -6,7 +6,7 @@ import { STATIC_URL } from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import store from "../../store";
 import { open, close } from "../../actions/dataUploadActions";
-import {getOcrUploadedFiles} from '../../actions/ocrActions'
+import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList} from '../../actions/ocrActions'
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -68,27 +68,54 @@ export class OcrUpload extends React.Component {
     };
   };
 
+  validateS3Fields(){
+    if($(".file_name")[0].value === "" || $(".file_name")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      return false;
+    }else if($(".access_key_id")[0].value === "" || $(".access_key_id")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      return false;
+    }else if($(".secret_key")[0].value === "" || $(".secret_key")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      return false;
+    }else if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      return false;
+    }else if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
+      document.getElementById("resetMsg").innerText = "Please enter values for all fields";
+      return false;
+    }else{
+      this.props.dispatch(getS3BucketFileList());
+    }
+  }
+
   handleSubmit(acceptedFiles) {
-    if (acceptedFiles.length == 0) {
-      document.getElementById("resetMsg").innerText = "Please select files to upload.";
-      return false
-    }
+    let activeTab = $(".tab-content").find(".active");
+    let activeId = activeTab.attr('id');
 
-    $("#dataCloseBtn").hide()
-    this.setState({ loader: true })
-
-    var data = new FormData();
-    for (var x = 0; x < acceptedFiles.length; x++) {
-      data.append("imagefile", acceptedFiles[x]);
+    if(activeId === "ocrImage"){
+      if (acceptedFiles.length == 0) {
+        document.getElementById("resetMsg").innerText = "Please select files to upload.";
+        return false
+      }
+      $("#dataCloseBtn").hide()
+      this.setState({ loader: true })
+      var data = new FormData();
+      for (var x = 0; x < acceptedFiles.length; x++) {
+        data.append("imagefile", acceptedFiles[x]);
+      }
+      return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
+        method: "POST",
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+        body: data
+      }).then(response => response.json()).then(json => {
+        if (json.message === "SUCCESS")
+          this.setState({ uploaded: true })
+      })
     }
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
-      method: "POST",
-      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: data
-    }).then(response => response.json()).then(json => {
-      if (json.message === "SUCCESS")
-        this.setState({ uploaded: true })
-    })
+    else if(activeId === "ocrS3"){
+      this.validateS3Fields();
+    }
   }
 
   proceedClick() {
@@ -99,7 +126,7 @@ export class OcrUpload extends React.Component {
   getS3Details(e){
     let name = e.target.name;
     let value = e.target.value;
-    
+    this.props.dispatch(saveS3BucketDetails(name,value));
   }
 
   render() {
@@ -123,13 +150,12 @@ export class OcrUpload extends React.Component {
             <Modal.Body style={{ padding: 0 }} >
             <div className="tab-container">
                 <ul className="ocrUploadTabs nav-tab">
-                  <li className="active"><a className="nav-link" data-toggle="tab" href="#images">Image Files</a></li>
-                  <li><a className="nav-link" data-toggle="tab" href="#s3">s3 Files</a></li>
-                  <li><a className="nav-link" data-toggle="tab" href="#pdf">PDF Files</a></li>
+                  <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage">Image Files</a></li>
+                  <li><a className="nav-link" data-toggle="tab" href="#ocrS3">s3 Files</a></li>
                 </ul>
             </div>
             <div className="tab-content">
-              <div id="images" className="tab-pane active row">
+              <div id="ocrImage" className="tab-pane active row">
                 {!this.state.uploaded &&
                   <div>
                     <div className="col-md-5 ocrUploadHeight">
@@ -165,41 +191,37 @@ export class OcrUpload extends React.Component {
                 }
               </div>
 
-              <div className="tab-pane fade" id="s3">
+              <div id="ocrS3" className="tab-pane fade">
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">Name</label>
+                  <label className="col-sm-3 control-label mandate">Name</label>
                   <div className="col-sm-6">
-                    <input type="text" name="name" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="file_name" onInput={this.getS3Details.bind(this)} className="form-control file_name"/>
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">Bucket Name</label>
+                  <label className="col-sm-3 control-label mandate">Bucket Name</label>
                   <div className="col-sm-6">
-                    <input type="text" name="targetBucket" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">File Name</label>
+                  <label className="col-sm-3 control-label mandate">Access key</label>
                   <div className="col-sm-6">
-                    <input type="text" name="fileName" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">Access key</label>
+                  <label className="col-sm-3 control-label mandate">Secret key</label>
                   <div className="col-sm-6">
-                    <input type="text" name="accessKey" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label className="col-sm-3 control-label">Secret key</label>
+                  <label className="col-sm-3 control-label mandate">File Name</label>
                   <div className="col-sm-6">
-                    <input type="text" name="secretKey" onInput={this.getS3Details.bind(this)} className="form-control"/>
+                    <input type="text" name="new_dataset_name" onInput={this.getS3Details.bind(this)} className="form-control new_dataset_name"/>
                   </div>
                 </div>
-              </div>
-
-              <div id="pdf" className="tab-pane fade">
-                !!<br/>!!!<br/>!<br/>!<br/>!<br/><br/>Nothing Here
               </div>
             </div>
             </Modal.Body>
