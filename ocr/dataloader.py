@@ -24,11 +24,10 @@ def download_file_from_s3(**kwargs):
         if not os.path.exists(dir):
             os.makedirs(dir)
 
-    file_names = kwargs['file_names'][0]
-    print('file_names', file_names)
-    access_key = kwargs['access_key_id'][0]
-    secret_key = kwargs['secret_key'][0]
-    s3_bucket_name = kwargs['bucket_name'][0]
+    file_names = kwargs['file_names']
+    access_key = kwargs['access_key_id']
+    secret_key = kwargs['secret_key']
+    s3_bucket_name = kwargs['bucket_name']
 
     # datasetname = data['new_dataset_name']
 
@@ -65,10 +64,10 @@ def download_file_from_s3(**kwargs):
 
 def s3_files(**kwargs):
 
-    file_name = kwargs['file_name'][0]
-    access_key = kwargs['access_key_id'][0]
-    secret_key = kwargs['secret_key'][0]
-    s3_bucket_name = kwargs['bucket_name'][0]
+    file_name = kwargs['file_name']
+    access_key = kwargs['access_key_id']
+    secret_key = kwargs['secret_key']
+    s3_bucket_name = kwargs['bucket_name']
     files = []
 
     def get_boto_session():

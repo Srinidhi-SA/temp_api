@@ -122,7 +122,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user
         )
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
         """
         Returns the lists of files from the s3 bucket.
