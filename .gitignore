@@ -38,4 +38,5 @@ scripts/data/
 .env
 api/migrations/
 ocr/migrations/
+*.egg
 
