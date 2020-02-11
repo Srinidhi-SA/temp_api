@@ -84,7 +84,7 @@ class OCRImage(models.Model):
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
-    confidence = models.CharField(max_length=3, default="", null=True)
+    confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
 
     def __str__(self):
