@@ -24,7 +24,8 @@ def download_file_from_s3(**kwargs):
         if not os.path.exists(dir):
             os.makedirs(dir)
 
-    file_name = kwargs['file_name'][0]
+    file_names = kwargs['file_names'][0]
+    print('file_names', file_names)
     access_key = kwargs['access_key_id'][0]
     secret_key = kwargs['secret_key'][0]
     s3_bucket_name = kwargs['bucket_name'][0]
@@ -45,9 +46,9 @@ def download_file_from_s3(**kwargs):
 
     try:
         bucket = get_boto_bucket()
-        for file in get_boto_bucket().objects.all():
-            file_name_dst = str(random.randint(10000, 99999)) + '_' + file.key
-            bucket.download_file(file_name, os.path.join(S3_DIR, DIR_NAME, file_name_dst))
+        for file in eval(file_names):
+            file_name_dst = str(random.randint(10000, 99999)) + '_' + file
+            bucket.download_file(file, os.path.join(S3_DIR, DIR_NAME, file_name_dst))
 
         return {
             'status': 'SUCCESS',
@@ -84,7 +85,6 @@ def s3_files(**kwargs):
     try:
         for file in get_boto_bucket().objects.all():
             files.append(file.key)
-        print('filesssssssssss', files)
 
         return {
             'status': 'SUCCESS',
