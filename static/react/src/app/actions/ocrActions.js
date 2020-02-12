@@ -9,6 +9,10 @@ function getHeader(token){
 	};
 };
 
+export function getHeaderForJson(token) {
+	return { Authorization: token, 'Content-Type': 'application/json' };
+  }
+
 export function saveOcrFilesToStore(files) {
 	return {
 		type: "OCR_UPLOAD_FILE",
@@ -66,35 +70,87 @@ export function saveS3BucketDetails(name,val){
 	}
 }
 
-export function getS3BucketFileList(){
+export function getS3BucketFileList(s3BucketDetails){
 	return (dispatch) => {
-		return fetchS3FileDetails(getUserDetailsOrRestart.get().userToken,dispatch).then((response,json) => {
+		return fetchS3FileDetails(s3BucketDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
+				dispatch(setS3Uploaded(true));
 				dispatch(fetchs3DetailsSuccess(json))
 			}else{
-				dispatch(fetchs3DetailsError(json))
+				dispatch(fetchs3DetailsError(true))
 			}
 		})
 	}
 }
 
-function fetchS3FileDetails(token){
-	return fetch(API,{
-		method: 'get',
-		headers: getHeader(token)
+function fetchS3FileDetails(s3BucketDetails,token){
+	return fetch(API+'/ocr/ocrimage/get_s3_files/',{
+		method: 'post',
+		headers: getHeaderForJson(token),
+		body: JSON.stringify(s3BucketDetails)
 	}).then(response => Promise.all([response,response.json()]));
 }
 
-function fetchs3DetailsSuccess(data){
+export function fetchs3DetailsSuccess(data){
 	return {
-		type : "SAVE_S3_FILE_LIST",
-		data
+		type : "SAVE_S3_FILE_LIST",data
 	}
 }
 
-function fetchs3DetailsError(errMsg){
+export function fetchs3DetailsError(errMsgFlag){
 	return {
-		type : "S3_FILE_ERROR_MSG",
-		errMsg
+		type : "S3_FILE_ERROR_MSG",errMsgFlag
+	}
+}
+
+export function saveS3SelFiles(fileName){
+	return {
+		type : "SAVE_SEL_S3_FILE_LIST",fileName
+	}
+}
+
+export function setS3Uploaded(flag){
+	return {
+		type : "SET_S3_UPLOADED",flag
+	}
+}
+
+export function setS3Loader(flag){
+	return {
+		type : "SET_S3_LOADER",flag
+	}
+}
+
+export function uploadS3Files(selectedFiles){
+	let data = Object.assign({"dataSourceType":"S3"},store.getState().ocr.ocrS3BucketDetails,{"file_names":selectedFiles})
+	return (dispatch) => {
+		return uploadS3FilesAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(setS3Uploaded(true));
+				// dispatch(uploadS3FileSuccess(json))
+			}else{
+				dispatch(uploadS3FileError(true))
+			}
+		})
+	}
+}
+
+function uploadS3FilesAPI(data,token){
+	return fetch(API+'/ocr/ocrimage/',{
+		method: 'post',
+		headers: getHeaderForJson(token),
+		body: JSON.stringify(data)
+	}).then(response => Promise.all([response,response.json()]));
+}
+
+export function uploadS3FileSuccess(data){
+	return {
+		// type : "SAVE_S3_FILE_LIST"
+	}
+}
+
+export function uploadS3FileError(errMsgFlag){
+	return {
+		// type : "S3_FILE_ERROR_MSG",errMsgFlag
 	}
 }

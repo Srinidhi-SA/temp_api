@@ -4,6 +4,12 @@ export default function reducer(state = {
   OcrDataList:"",
   imageFlag: false,
   ocrS3BucketDetails: {},
+  s3Uploaded: false,
+  s3Loader: false,
+  s3FileList:"",
+  s3FileFetchErrorFlag:false,
+  s3SelFileList:[]
+
 },action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -49,14 +55,41 @@ export default function reducer(state = {
     case "SAVE_S3_FILE_LIST": {
       return {
         ...state,
-        s3FileList : action.data
+        s3FileList : action.data.file_list,
+        s3FileFetchSuccessFlag : true
+      }
+    }
+    break;
+    case "SAVE_SEL_S3_FILE_LIST": {
+      let curSelFiles = [];
+      curSelFiles.push(action.fileName)
+      return {
+        ...state,
+        s3SelFileList : curSelFiles[0]
       }
     }
     break;
     case "S3_FILE_ERROR_MSG": {
       return {
         ...state,
-        s3FileFetchErrorMsg : action.errMsg
+        s3FileFetchErrorFlag : action.errMsgFlag,
+        s3Loader : false,
+      //Below Line To Success
+        s3FileFetchSuccessFlag : true
+      }
+    }
+    break;
+    case "SET_S3_UPLOADED": {
+      return {
+        ...state,
+        s3Uploaded : action.flag
+      }
+    }
+    break;
+    case "SET_S3_LOADER": {
+      return {
+        ...state,
+        s3Loader : action.flag
       }
     }
     break;

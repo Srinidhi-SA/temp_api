@@ -22299,7 +22299,7 @@ canvas {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 310px;
+  height: 260px;
   align-items: center;
 }
 .ocrTable > tbody > tr > td{
@@ -22390,12 +22390,6 @@ ul.ocrUploadTabs{
 .ocrUploadTabs li.active a{ 
   color: #505050;
   background-color: #ffffff;
-}
-/* .ocrUploadTabs li.active{ 
-  border-bottom: 2px solid #6b6b6b
-} */
-#ocrS3{
-  margin-left: 65px;
 }
 #fetchS3FileBtn {
   margin-left: 400px;
