@@ -42,7 +42,7 @@ from .serializers import OCRImageSerializer, \
 from .pagination import CustomOCRPagination
 
 # ---------------------S3 Files-----------------------------
-from .dataloader import download_file_from_s3, s3_files
+from .dataloader import S3File
 
 
 # Create your views here.
@@ -132,7 +132,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data = request.data
         data = convert_to_string(data)
-        files_list = s3_files(**data)
+        s3_file_lists = S3File()
+        files_list = s3_file_lists.s3_files(**data)
         response = files_list
         return JsonResponse(response)
 
@@ -156,7 +157,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
-            files_download = download_file_from_s3(**data)
+            s3_downloader = S3File()
+            files_download = s3_downloader.download_file_from_s3(**data)
             if files_download['status'] == 'SUCCESS':
                 s3_dir = files_download['file_path']
                 files = [f for f in os.listdir(s3_dir) if os.path.isfile(os.path.join(s3_dir, f))]
