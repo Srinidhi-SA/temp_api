@@ -47,7 +47,7 @@ class S3File:
 
         try:
             bucket = self.get_boto_bucket(s3_bucket_name, access_key, secret_key)
-            for file in eval(file_names):
+            for file in file_names:
                 file_name_dst = str(random.randint(10000, 99999)) + '_' + file
                 bucket.download_file(file, os.path.join(s3_dir, dir_name, file_name_dst))
 
