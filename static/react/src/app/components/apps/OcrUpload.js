@@ -277,7 +277,7 @@ export class OcrUpload extends React.Component {
             <Modal.Footer>
               <div id="resetMsg"></div>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
-              <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} disabled={!this.state.uploaded || !this.props.s3Uploaded}>Proceed</Button>
+              <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} disabled={!this.state.uploaded}>Proceed</Button>
             </Modal.Footer>
           </Modal>
         </div>
