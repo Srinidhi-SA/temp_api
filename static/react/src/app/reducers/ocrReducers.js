@@ -56,26 +56,23 @@ export default function reducer(state = {
       return {
         ...state,
         s3FileList : action.data.file_list,
-        s3FileFetchSuccessFlag : true
+        s3FileFetchSuccessFlag : true,
+        s3Loader : false
       }
     }
     break;
-    case "SAVE_SEL_S3_FILE_LIST": {
-      let curSelFiles = [];
-      curSelFiles.push(action.fileName)
+    case "SAVE_SEL_S3_FILES": {
       return {
         ...state,
-        s3SelFileList : curSelFiles[0]
+        s3SelFileList : action.fileName
       }
     }
     break;
     case "S3_FILE_ERROR_MSG": {
       return {
         ...state,
-        s3FileFetchErrorFlag : action.errMsgFlag,
+        s3FileFetchErrorFlag : true,
         s3Loader : false,
-      //Below Line To Success
-        s3FileFetchSuccessFlag : true
       }
     }
     break;

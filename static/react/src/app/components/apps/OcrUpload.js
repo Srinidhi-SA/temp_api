@@ -33,16 +33,14 @@ export class OcrUpload extends React.Component {
       uploaded: false,
       loader: false,
       s3FileList1:[],
-      s3FileList: ['MotgageOpportunity-test.csv', 'MotgageOpportunity-train.csv', 'SalesOpportunity-test.csv', 'SalesOpportunity-train.csv', 'StudentPerformancedataset-Test.csv', 'StudentPerformancedataset-Train.csv', 'credit_card_churn_model.csv', 'credit_card_churn_score.csv', 'credit_card_churn_score_finale.csv', 'oil_pipelines-test.csv', 'oil_pipelines.csv', 'retail_store_orders.csv', 'retail_store_returns.csv', 's3_sample.csv', 'unc_score.csv', 'unc_train.csv']
     }
   }
 
   componentDidUpdate(){
-    //Below Code N
-    // if(this.props.s3FileFetchErrorFlag){
-    //   $("#fetchS3FileBtn").show();
-    //   document.getElementById("resetMsg").innerText = "Failed to fetch files, Please try again";
-    // }
+    if(this.props.s3FileFetchErrorFlag){
+      $("#fetchS3FileBtn").show();
+      document.getElementById("resetMsg").innerText = "Failed to fetch files, Please try again";
+    }
   }
   openPopup() {
     this.setState({
@@ -50,8 +48,6 @@ export class OcrUpload extends React.Component {
       loader: false,
       uploaded: false,
     })
-    this.props.dispatch(setS3Uploaded(false));
-    this.props.dispatch(setS3Loader(false));
     this.props.dispatch(open());
   }
 
@@ -173,8 +169,8 @@ export class OcrUpload extends React.Component {
     ))
       : <div /*style={{textAlign:"center",paddingLeft:"20px"}}*/>No files chosen.<br/>Please select file to proceed.</div>
     let optionsTemp = [];
-    for(var i=0; i<this.state.s3FileList.length; i++){
-      optionsTemp.push({"value":this.state.s3FileList[i],"label":this.state.s3FileList[i]});
+    for(var i=0; i<this.props.s3FileList.length; i++){
+      optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
     }
     return (
       <div>
@@ -230,7 +226,7 @@ export class OcrUpload extends React.Component {
 
               <div id="ocrS3" className="tab-pane row">
               {!this.props.s3Uploaded &&
-                <div>
+                <div style={{paddingLeft:"60px",paddingTop:"10px"}}>
                   <div className="form-group row">
                     <label className="col-sm-3 control-label mandate">Bucket Name</label>
                     <div className="col-sm-6">
@@ -253,12 +249,12 @@ export class OcrUpload extends React.Component {
                 </div>
               }
               {this.props.s3Loader && !this.props.s3Uploaded &&
-                  <div style={{ height: 300, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                  <div /*style={{ height: 300, background: 'rgba(0,0,0,0.1)', position: 'relative' }}*/>
                     <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                   </div>
               }
-              {!this.props.s3Uploaded && this.props.s3FileFetchErrorFlag && /*this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&*/
-                    <div className="form-group row">
+              {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
+                    <div className="form-group row" style={{paddingLeft:"60px"}}>
                       <label className="col-sm-3 control-label mandate">Select Files</label>
                       <div className="col-sm-6 for_multiselect">
                         <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>

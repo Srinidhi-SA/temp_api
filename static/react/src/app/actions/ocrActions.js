@@ -62,6 +62,18 @@ export function fetchUploadsFail(data){
 	}
 }
 
+export function setS3Uploaded(flag){
+	return {
+		type : "SET_S3_UPLOADED",flag
+	}
+}
+
+export function setS3Loader(flag){
+	return {
+		type : "SET_S3_LOADER",flag
+	}
+}
+
 export function saveS3BucketDetails(name,val){
 	return{
 		type: "SAVE_S3_BUCKET_DETAILS",
@@ -74,10 +86,9 @@ export function getS3BucketFileList(s3BucketDetails){
 	return (dispatch) => {
 		return fetchS3FileDetails(s3BucketDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
-				dispatch(setS3Uploaded(true));
 				dispatch(fetchs3DetailsSuccess(json))
 			}else{
-				dispatch(fetchs3DetailsError(true))
+				dispatch(fetchs3DetailsError())
 			}
 		})
 	}
@@ -97,27 +108,15 @@ export function fetchs3DetailsSuccess(data){
 	}
 }
 
-export function fetchs3DetailsError(errMsgFlag){
+export function fetchs3DetailsError(){
 	return {
-		type : "S3_FILE_ERROR_MSG",errMsgFlag
+		type : "S3_FILE_ERROR_MSG"
 	}
 }
 
 export function saveS3SelFiles(fileName){
 	return {
-		type : "SAVE_SEL_S3_FILE_LIST",fileName
-	}
-}
-
-export function setS3Uploaded(flag){
-	return {
-		type : "SET_S3_UPLOADED",flag
-	}
-}
-
-export function setS3Loader(flag){
-	return {
-		type : "SET_S3_LOADER",flag
+		type : "SAVE_SEL_S3_FILES",fileName
 	}
 }
 
