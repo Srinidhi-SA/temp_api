@@ -21987,7 +21987,7 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 
-.ocr_section { background: #fafafa; padding-top: 0; border-radius: 10px; overflow: hidden; padding-bottom: 20px; }
+.ocr_section { background: #f6f6f6; padding-top: 0; border-radius: 10px; overflow: hidden; padding-bottom: 20px; }
 
 
 .modal_stepsBlock .col-sm-9 p b {
@@ -23587,7 +23587,6 @@ canvas {
   z-index: 1;
   top: 0px;
   margin-top: 0px;
-  border: 1px solid #d3d3d3;
 }
 #myCanvas:hover{
   transform: scale(1);
@@ -23643,4 +23642,5 @@ font-size: 14px;
   margin-bottom: 20px;
   display: block;
   font-size: 16px;
+  height: 20px;
 }
