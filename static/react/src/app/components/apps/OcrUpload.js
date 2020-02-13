@@ -123,17 +123,19 @@ export class OcrUpload extends React.Component {
       $("#dataCloseBtn").hide()
       this.setState({ loader: true })
       var data = new FormData();
-      for (var x = 0; x < acceptedFiles.length; x++) {
-        data.append("imagefile", acceptedFiles[x]);
-      }
-      return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
-        method: "POST",
-        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-        body: data
-      }).then(response => response.json()).then(json => {
-        if (json.message === "SUCCESS")
-          this.setState({ uploaded: true })
-      })
+    for (var x = 0; x < acceptedFiles.length; x++) {
+      data.append("imagefile", acceptedFiles[x]);
+      data.append("dataSourceType", "fileUpload");
+    }
+
+    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
+      method: "POST",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json()).then(json => {
+      if (json.message === "SUCCESS")
+        this.setState({ uploaded: true })
+    })
     }
     else if(activeId === "ocrS3"){
       if($(".p-multiselect-label")[0].innerHTML === "Choose"){
@@ -174,7 +176,7 @@ export class OcrUpload extends React.Component {
     }
     return (
       <div>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{marginBottom:20}}><i class="fa fa-upload"></i> Upload</Button>
+        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{ marginBottom: 20 }}><i class="fa fa-upload"></i> Upload</Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>

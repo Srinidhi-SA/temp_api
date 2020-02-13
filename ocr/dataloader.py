@@ -1,6 +1,4 @@
-######################################################################
-# Get Files from AWS S3
-######################################################################
+""" Get Files from AWS S3 """
 
 import os
 import random
@@ -8,91 +6,84 @@ import string
 import boto3
 
 
-def download_file_from_s3(**kwargs):
-    """
-    Description: Used for downloading s3 bucket files
-    Parameteres : kwargs will return the details of s3
-    """
-    DIR_NAME = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
+class S3File:
+    """ Description : Used for S3 file Operations"""
 
-    SFTP_DIR = '/tmp/sftp/'
-    S3_DIR = '/tmp/s3/'
-
-    DATASOURCEDIRECTORY = [S3_DIR + DIR_NAME, SFTP_DIR]
-
-    for dir in DATASOURCEDIRECTORY:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-
-    file_names = kwargs['file_names']
-    access_key = kwargs['access_key_id']
-    secret_key = kwargs['secret_key']
-    s3_bucket_name = kwargs['bucket_name']
-
-    # datasetname = data['new_dataset_name']
-
-    def get_boto_session():
+    def get_boto_session(self, access_key=None, secret_key=None):
+        """ Parameteres : s3 bucket details captured from user as parameter"""
         return boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
-    def get_boto_resourse():
-        session = get_boto_session()
+    def get_boto_resourse(self, access_key=None, secret_key=None):
+        """ Parameteres : s3 bucket details captured from user as parameter"""
+        session = self.get_boto_session(access_key, secret_key)
         return session.resource('s3')
 
-    def get_boto_bucket():
-        resource = get_boto_resourse()
+    def get_boto_bucket(self, s3_bucket_name=None, access_key=None, secret_key=None):
+        """ Parameteres : s3 bucket details captured from user as parameter"""
+        resource = self.get_boto_resourse(access_key, secret_key)
         return resource.Bucket(s3_bucket_name)
 
+    def download_file_from_s3(self, **kwargs):
+        """
+        Description: Used for downloading s3 bucket files
+        Parameteres : kwargs will return the details of s3
+        """
 
-    try:
-        bucket = get_boto_bucket()
-        for file in eval(file_names):
-            file_name_dst = str(random.randint(10000, 99999)) + '_' + file
-            bucket.download_file(file, os.path.join(S3_DIR, DIR_NAME, file_name_dst))
+        file_names = kwargs['file_names']
+        access_key = kwargs['access_key_id']
+        secret_key = kwargs['secret_key']
+        s3_bucket_name = kwargs['bucket_name']
 
-        return {
-            'status': 'SUCCESS',
-            'file_path': os.path.join(S3_DIR, DIR_NAME)
-        }
+        dir_name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
 
-    except Exception as err:
-        print(err)
-        return {
-            'status': 'FAILED',
-            'Exception': str(err)
-        }
+        sftp_dir = '/tmp/sftp/'
+        s3_dir = '/tmp/s3/'
 
+        data_source_directory = [s3_dir + dir_name, sftp_dir]
 
-def s3_files(**kwargs):
+        for dir in data_source_directory:
+            if not os.path.exists(dir):
+                os.makedirs(dir)
 
-    file_name = kwargs['file_name']
-    access_key = kwargs['access_key_id']
-    secret_key = kwargs['secret_key']
-    s3_bucket_name = kwargs['bucket_name']
-    files = []
+        try:
+            bucket = self.get_boto_bucket(s3_bucket_name, access_key, secret_key)
+            for file in eval(file_names):
+                file_name_dst = str(random.randint(10000, 99999)) + '_' + file
+                bucket.download_file(file, os.path.join(s3_dir, dir_name, file_name_dst))
 
-    def get_boto_session():
-        return boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+            return {
+                'status': 'SUCCESS',
+                'file_path': os.path.join(s3_dir, dir_name)
+            }
 
-    def get_boto_resourse():
-        session = get_boto_session()
-        return session.resource('s3')
+        except Exception as err:
+            return {
+                'status': 'FAILED',
+                'Exception': str(err)
+            }
 
-    def get_boto_bucket():
-        resource = get_boto_resourse()
-        return resource.Bucket(s3_bucket_name)
+    def s3_files(self, **kwargs):
+        """
+        Description: Used for getting list of files from s3 bucket
+        Parameteres : kwargs will return the details of s3
+        """
+        # file_names = kwargs['file_names']
+        access_key = kwargs['access_key_id']
+        secret_key = kwargs['secret_key']
+        s3_bucket_name = kwargs['bucket_name']
+        files = []
 
-    try:
-        for file in get_boto_bucket().objects.all():
-            files.append(file.key)
+        try:
+            for file in self.get_boto_bucket(s3_bucket_name, access_key, secret_key).objects.all():
+                files.append(file.key)
 
-        return {
-            'status': 'SUCCESS',
-            'file_list': files
-        }
+            return {
+                'status': 'SUCCESS',
+                'file_list': files
+            }
 
-    except Exception as err:
-        print(err)
-        return {
-            'status': 'FAILED',
-            'Exception': str(err)
-        }
+        except Exception as err:
+            return {
+                'status': 'FAILED',
+                'Exception': str(err)
+            }
