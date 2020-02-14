@@ -24,28 +24,28 @@ export class OcrImage extends React.Component {
     imgObj.onload = () => {
       // c.height= imgObj.height;
       // c.width= imgObj.width;
-      canvas.height = 700;
-      canvas.width = 660;
-      ctx.drawImage(imgObj, 0, 0, 660, 700);
+      canvas.height = 800;
+      canvas.width = 700;
+      ctx.drawImage(imgObj, 0, 0, 700, 800);
     };
     $('[data-toggle="popover"]').popover({
       placement: 'top'
     });
   }
   handleCoords = (event) => {
-    let elem = document.getElementById("myCanvas");
-    var ctx = elem.getContext("2d");
-    let rect = elem.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
-    let pointX = x - 179;
-    let pointY = y - 25;
-    console.log("Coordinate x: " + x, "Coordinate y: " + y);
-    console.log("Coordinate x: " + pointX, "Coordinate y: " + pointY);
+    let canvasElem = document.getElementById("myCanvas");
+    var ctx = canvasElem.getContext("2d");
+    let canvasrect = canvasElem.getBoundingClientRect();
+    let canvasX = event.clientX - canvasrect.left;
+    let canvasY = event.clientY - canvasrect.top;
+    console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
     // ctx.stroke();
-
+    let canvasBack = document.getElementById("popDiv");
+    let rect = canvasBack.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top - 40;
     var popOver = document.getElementById("popoverOcr");
     popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
 
@@ -61,36 +61,40 @@ export class OcrImage extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className="col-sm-5 ocrImgDiv">
+          <div className="col-sm-6 ocrImgDiv">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
-              <div className="ocrImgTitle">Original</div>
-              <img
-                id="originalOcrImg"
-                src="https://i.picsum.photos/id/993/500/500.jpg"
-              />
+              <div style={{ overflowX: 'auto' }}>
+                <div className="ocrImgTitle">Original</div>
+                <img style={{ height: 800, width: 700 }}
+                  id="originalOcrImg"
+                  src="https://madvisor-dev.marlabsai.com/media/ocrData/ocr.jpeg"
+                />
+              </div>
             </div>
           </div>
-          <div className="col-sm-7">
+          <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
-              <div className="ocrImgTitle">OCR</div>
-              <canvas
-                onClick={this.handleCoords}
-                id="myCanvas"
-                className="ocrCanvas"
-              ></canvas>
-              <div className="ocrbgDiv"></div>
-              <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
-                <div class="arrow" style={{ left: '50%' }}></div>
-                <h3 class="popover-title">Replace Text
+              <div style={{ overflowX: 'auto' }} id="popDiv">
+                <div className="ocrImgTitle">OCR</div>
+                <canvas
+                  onClick={this.handleCoords}
+                  id="myCanvas"
+                  className="ocrCanvas"
+                ></canvas>
+                <div className="ocrbgDiv"></div>
+                <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
+                  <div class="arrow" style={{ left: '50%' }}></div>
+                  <h3 class="popover-title">Replace Text
                 <span onClick={this.closePopOver} style={{ float: 'right', cursor: 'pointer' }}><i class="fa fa-close"></i></span>
-                </h3>
-                <div class="popover-content">
-                  <div className="row">
-                    <div className="col-sm-10">
-                      <input type="text" />
-                    </div>
-                    <div className="col-sm-2" style={{ paddingLeft: 0 }}>
-                      <button ><i class="fa fa-check"></i></button>
+                  </h3>
+                  <div class="popover-content">
+                    <div className="row">
+                      <div className="col-sm-10">
+                        <input type="text" />
+                      </div>
+                      <div className="col-sm-2" style={{ paddingLeft: 0 }}>
+                        <button ><i class="fa fa-check"></i></button>
+                      </div>
                     </div>
                   </div>
                 </div>
