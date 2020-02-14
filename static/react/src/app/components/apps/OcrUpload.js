@@ -6,7 +6,7 @@ import { STATIC_URL } from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import store from "../../store";
 import { open, close } from "../../actions/dataUploadActions";
-import {getOcrUploadedFiles} from '../../actions/ocrActions'
+import { getOcrUploadedFiles } from '../../actions/ocrActions'
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -43,7 +43,6 @@ export class OcrUpload extends React.Component {
 
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
-
     var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif']
     var formatErr = Object.values(event.target.files).map(i => i.type).map((i, ind) => {
       return allowType.includes(i)
@@ -81,7 +80,9 @@ export class OcrUpload extends React.Component {
     var data = new FormData();
     for (var x = 0; x < acceptedFiles.length; x++) {
       data.append("imagefile", acceptedFiles[x]);
+      data.append("dataSourceType", "fileUpload");
     }
+
     return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -106,11 +107,11 @@ export class OcrUpload extends React.Component {
         </span>
       </li>
     ))
-      : <div>No files chosen.<br/>Please select file to proceed.</div>
+      : <div>No files chosen.<br />Please select file to proceed.</div>
 
     return (
       <div>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{marginBottom:20}}><i class="fa fa-upload"></i> Upload</Button>
+        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{ marginBottom: 20 }}><i class="fa fa-upload"></i> Upload</Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>

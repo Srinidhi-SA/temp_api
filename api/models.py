@@ -344,6 +344,7 @@ class Dataset(models.Model):
     def csv_header_clean(self):
         CLEAN_DATA = []
         cleaned_header = []
+        os.chmod(self.input_file.path, 0o777)
         with open(self.input_file.path) as file:
             rows = csv.reader(file)
             for (i, row) in enumerate(rows):
@@ -3068,7 +3069,7 @@ class StockDataset(models.Model):
         file_path = path + name + "." + type
         print("Writing {1} for {0}".format(stockName, stockDataType))
         print(file_path)
-        with open(file_path, "wb") as file_to_write_on:
+        with open(file_path, "w") as file_to_write_on:
             if 'csv' == type:
                 writer = csv.writer(file_to_write_on)
                 writer.writerow(data)
