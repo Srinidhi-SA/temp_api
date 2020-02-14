@@ -4,7 +4,10 @@ export default function reducer(state = {
   OcrDataList:"",
   ocrFilesSortType:null,
   ocrFilesSortOn:null,
-  imageFlag: false
+  imageFlag: false,
+  filter_status:'',
+  filter_confidence:'',
+  filter_assignee:''
 },action) {
 switch (action.type) {
 case "OCR_UPLOAD_FILE":
@@ -45,6 +48,47 @@ case "OCR_FILES_SORT":
         ...state,
         ocrFilesSortOn:action.ocrFilesSortOn,
         ocrFilesSortType:action.ocrFilesSortType
+    }
+}
+break;
+case "FILTER_BY_STATUS":
+{
+    return{
+        ...state,
+        filter_status:action.status,
+    }
+}
+break;
+case "FILTER_BY_CONFIDENCE":
+{
+    return{
+        ...state,
+        filter_confidence:action.confidence,
+    }
+}
+break;
+case "FILTER_BY_ASSIGNEE":
+{
+    return{
+        ...state,
+        filter_assignee:action.assignee
+    }
+}
+break;
+
+case "UPDATE_CHECKLIST":
+{
+  debugger;
+  var stateval =state.OcrDataList
+  // action.tensorFlowInputs[action.name] = action.val;
+  stateval[action.id]=action.tensorFlowInputs        
+  return{
+    ...state,
+    tensorFlowInputs : stateval
+  }
+    return{
+        ...state,
+      
     }
 }
 break;
