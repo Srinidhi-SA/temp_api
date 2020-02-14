@@ -7,7 +7,8 @@ export default function reducer(state = {
   imageFlag: false,
   filter_status:'',
   filter_confidence:'',
-  filter_assignee:''
+  filter_assignee:'',
+  checked_list:''
 },action) {
 switch (action.type) {
 case "OCR_UPLOAD_FILE":
@@ -78,18 +79,10 @@ break;
 
 case "UPDATE_CHECKLIST":
 {
-  debugger;
-  var stateval =state.OcrDataList
-  // action.tensorFlowInputs[action.name] = action.val;
-  stateval[action.id]=action.tensorFlowInputs        
   return{
     ...state,
-    tensorFlowInputs : stateval
+    checked_list : action.list
   }
-    return{
-        ...state,
-      
-    }
 }
 break;
 }

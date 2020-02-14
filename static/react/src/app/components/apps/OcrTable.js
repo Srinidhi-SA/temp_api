@@ -61,6 +61,7 @@ export class OcrTable extends React.Component {
       bootbox.alert("Please select image files to recognize.") 
       return false;
     }
+    this.props.dispatch(updateCheckList(this.state.checkedList))
   }
 
 

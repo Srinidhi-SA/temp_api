@@ -91,9 +91,9 @@ export function storeOcrFilterAssignee(assignee){
 		assignee
 	}
 }
-export function updateCheckList(id){
+export function updateCheckList(list){
 	return{
 		type:"UPDATE_CHECKLIST",
-		id
+		list
 	}
 }
