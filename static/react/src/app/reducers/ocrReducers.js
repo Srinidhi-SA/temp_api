@@ -2,7 +2,8 @@
 export default function reducer(state = {
   OcrfileUpload:"",
   OcrDataList:"",
-  imageFlag: false
+  imageFlag: false,
+  imagePath:""
 },action) {
 switch (action.type) {
 case "OCR_UPLOAD_FILE":
@@ -34,6 +35,14 @@ case "SAVE_IMAGE_FLAG":
 return{
   ...state,
   imageFlag:action.flag
+}
+}
+break;
+case "SAVE_IMAGE_DETAILS":
+{
+return{
+  ...state,
+  imagePath:"https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png"
 }
 }
 break;
