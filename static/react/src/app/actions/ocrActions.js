@@ -44,10 +44,16 @@ export function getOcrUploadedFiles(pageNo){
 
 
 function fetchUploadedFiles(pageNo=1,token){
-    return fetch(API+'/ocr/ocrimage/?page_number=' + pageNo, {
+	let sortBy = store.getState().ocr.ocrFilesSortOn;
+	let sortOrder = store.getState().ocr.ocrFilesSortType;
+	let filter_status=store.getState().ocr.filter_status
+	let filter_confidence=store.getState().ocr.filter_confidence
+	let filter_assignee=store.getState().ocr.filter_assignee
+
+	return fetch(API + '/ocr/ocrimage/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
-    }).then(response => Promise.all([response, response.json()]));
+  }).then(response => Promise.all([response, response.json()]));
 }
 
 export function fetchUploadsSuccess(doc){
@@ -62,5 +68,37 @@ export function fetchUploadsFail(data){
 	return {
 		type: "OCR_UPLOADS_LIST_FAIL",
 		data,
+	}
+}
+
+export function storeOcrSortElements(ocrFilesSortOn,ocrFilesSortType){
+	return{
+		type: "OCR_FILES_SORT",
+		ocrFilesSortOn,
+		ocrFilesSortType
+	}
+}
+export function storeOcrFilterStatus(status){
+	return{
+		type: "FILTER_BY_STATUS",
+		status,
+	}
+}
+export function storeOcrFilterConfidence(confidence){
+	return{
+		type: "FILTER_BY_CONFIDENCE",
+		confidence,
+	}
+}
+export function storeOcrFilterAssignee(assignee){
+	return{
+		type: "FILTER_BY_ASSIGNEE",
+		assignee
+	}
+}
+export function updateCheckList(list){
+	return{
+		type:"UPDATE_CHECKLIST",
+		list
 	}
 }
