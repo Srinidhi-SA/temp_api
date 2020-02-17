@@ -12,7 +12,7 @@ OCR Validations
 # pylint: disable=line-too-long
 # pylint: disable=inconsistent-return-statements
 # -------------------------------------------------------------------------------
-
+import re
 import socket
 from django.core.exceptions import ValidationError
 
@@ -68,5 +68,13 @@ def max_num_files(value):
     """ METHOD : To Validate max number of file upload for OCRImage model FileField. """
     if len(value) > 100:
         raise ValidationError("Can't upload more than 100 files")
+
+def validate_phone_number(phone):
+    """ METHOD : To Validate mobile number for OCRUserProfile model."""
+    rule = re.compile(r'(^[+0-9]{1,3})*([0-9]{10,11}$)')
+
+    if rule.search(phone):
+        msg = u"Invalid Phone number."
+        raise ValidationError(msg)
 
 # ---------------------------------------------------------------------------------

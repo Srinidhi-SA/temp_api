@@ -68,16 +68,16 @@ export class CreateSignalLoader extends React.Component {
         for (var i = 0; i < array.length-5; i++) {
             (function(i) {
                 myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + " " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
+                    x.innerHTML = "Step " + i + ": " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
                 }, 8000 * i);
             })(i);
         }
 				for(var i=array.length-5;i<array.length;i++){
-					x.innerHTML = "Step " + i + " " + array[i];
-					x1.innerHTML ="Step " + (i+1) + " " + array[i+1];
-					x2.innerHTML ="Step " + (i+2) + " " + array[i+2];
+					x.innerHTML = "Step " + i + ": " + array[i];
+					x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+					x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
 				}
 }
     render() {

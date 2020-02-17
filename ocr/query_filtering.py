@@ -32,6 +32,7 @@ class QueryCommonFiltering:
     filter_fields = None
     name = None
     status = None
+    confidence = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -51,6 +52,13 @@ class QueryCommonFiltering:
                 self.status = self.status
             else:
                 self.status = temp_name
+
+        if 'confidence' in request.query_params:
+            temp_name = self.request.query_params.get('confidence')
+            if temp_name is None or temp_name is "":
+                self.confidence = self.confidence
+            else:
+                self.confidence = temp_name
 
         if 'sorted_by' in self.request.query_params:
             temp_name = self.request.query_params.get('sorted_by')
@@ -81,8 +89,11 @@ class QueryCommonFiltering:
         """
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
+        if self.confidence is not None:
+            confidence_mapping_dict = {'E': 'Equal', 'G': 'Greater than', 'L': 'Less than'}
+            self.query_set = self.query_set.filter(confidence=confidence_mapping_dict[self.confidence])
         if self.status is not None:
-            status_mapping_dict = {'1': 'Ready to recognize.', '2': 'Ready to verify.', '3': 'Ready to export.'}
+            status_mapping_dict = {'R': 'Ready to recognize.', 'V': 'Ready to verify.', 'E': 'Ready to export.'}
             self.query_set = self.query_set.filter(status=status_mapping_dict[str(self.status)])
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
