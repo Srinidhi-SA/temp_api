@@ -269,7 +269,7 @@ export class OcrUpload extends React.Component {
                   }
                 </div>
 
-                <div id="ocrS3" className="tab-pane" style={{height:"260px"}}>
+                <div id="ocrS3" className="tab-pane" style={{height:"260px",position:"relative"}}>
                   {!this.props.s3Uploaded &&
                     <div>
                       <div className="row s3Detail">
@@ -290,20 +290,20 @@ export class OcrUpload extends React.Component {
                           <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
                         </div>
                       </div>
-                      <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
-                    </div>
-                  }
-                  {this.props.s3Loader && (this.props.s3Uploaded === false) &&
-                      <div style={{ height: 260, background: 'rgba(0,0,0,0.1)', position: 'absolute' }} >
-                        <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                      </div>
-                  }
-                  {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
+                      {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
                         <div className="row s3Detail">
                           <label className="col-sm-4 mandate">Select Files</label>
                           <div className="col-sm-8 s3Multiselect">
                             <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>
                           </div>
+                        </div>
+                      }
+                      <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
+                    </div>
+                  }
+                  {this.props.s3Loader && (this.props.s3Uploaded === false) &&
+                        <div style={{position: "absolute",background: "rgba(0,0,0,0.1)",width: "100%",top: "0px",height: "260px" }} >
+                          <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                         </div>
                   }
                   {this.props.s3Uploaded &&
