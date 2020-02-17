@@ -1,9 +1,6 @@
 import React from 'react'
-import { Scrollbars } from 'react-custom-scrollbars';
-import { getOcrUploadedFiles,saveImagePageFlag,saveImageDetails } from '../../actions/ocrActions'
-import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles,saveImagePageFlag ,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../actions/ocrActions'
+import { getOcrUploadedFiles,saveImagePageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../actions/ocrActions'
 import { connect } from "react-redux";
 import { store } from '../../store'
 import { Pagination,Button } from "react-bootstrap";
