@@ -22392,5 +22392,32 @@ ul.ocrUploadTabs{
   background-color: #ffffff;
 }
 #fetchS3FileBtn {
-  margin-left: 430px;
+  margin-left: 472px;
+  margin-top: 32px;
+}
+.s3Detail {
+  margin: 0px 30px 0px 20px;
+  padding-top: 20px;
+}
+.ocrS3 {
+  text-align: center;
+  position: relative;
+}
+.s3Multiselect .p-multiselect-items-wrapper {
+  max-height: 75px !important
+}
+.s3Multiselect .p-multiselect-label-container{
+  margin: -4px;
+}
+.s3Multiselect .p-multiselect-header::after {
+  content: "Select All";
+}
+.s3Multiselect .p-multiselect-label{
+  white-space: nowrap;
+}
+.s3Multiselect .p-multiselect-item label{
+  width: 275px !important
+}
+.s3Multiselect .p-multiselect-close.p-link{
+  display: none;
 }

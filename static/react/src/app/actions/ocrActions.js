@@ -62,12 +62,6 @@ export function fetchUploadsFail(data){
 	}
 }
 
-export function setS3Uploaded(flag){
-	return {
-		type : "SET_S3_UPLOADED",flag
-	}
-}
-
 export function setS3Loader(flag){
 	return {
 		type : "SET_S3_LOADER",flag
@@ -82,11 +76,19 @@ export function saveS3BucketDetails(name,val){
 	}
 }
 
+export function clearS3Data(){
+	return {
+		type : "CLEAR_S3_DATA"
+	}
+}
+
 export function getS3BucketFileList(s3BucketDetails){
 	return (dispatch) => {
 		return fetchS3FileDetails(s3BucketDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200){
+			if(response.status === 200 && json.status != "FAILED"){
 				dispatch(fetchs3DetailsSuccess(json))
+			}else if(response.status === 200 && json.status != "FAILED"){
+				dispatch(fetchs3DetailsError())
 			}else{
 				dispatch(fetchs3DetailsError())
 			}
@@ -103,8 +105,15 @@ function fetchS3FileDetails(s3BucketDetails,token){
 }
 
 export function fetchs3DetailsSuccess(data){
+	var len = (data.file_list).length;
+	let fileList = [];
+	for(var i=0;i<len;i++){
+		if(/\.(jpe?g|tif|png|pdf)$/i.test(data.file_list[i])){
+			fileList.push(data.file_list[i]);
+		}
+	}
 	return {
-		type : "SAVE_S3_FILE_LIST",data
+		type : "SAVE_S3_FILE_LIST",fileList
 	}
 }
 
@@ -121,19 +130,19 @@ export function saveS3SelFiles(fileName){
 }
 
 export function uploadS3Files(selectedFiles){
-	let data = Object.assign({"dataSourceType":"S3"},store.getState().ocr.ocrS3BucketDetails,{"file_names":selectedFiles})
+	let data = Object.assign({"dataSourceType":"S3"},{"file_names":selectedFiles},store.getState().ocr.ocrS3BucketDetails)
 	return (dispatch) => {
 		return uploadS3FilesAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200){
-				dispatch(setS3Uploaded(true));
-				// dispatch(uploadS3FileSuccess(json))
+			if(response.status === 200 && json.message != "FAILED"){
+				dispatch(uploadS3FileSuccess(true));
+			}else if(response.status === 200 && json.message === "FAILED"){
+				dispatch(uploadS3FileError())
 			}else{
-				dispatch(uploadS3FileError(true))
+				dispatch(uploadS3FileError())
 			}
 		})
 	}
 }
-
 function uploadS3FilesAPI(data,token){
 	return fetch(API+'/ocr/ocrimage/',{
 		method: 'post',
@@ -141,15 +150,13 @@ function uploadS3FilesAPI(data,token){
 		body: JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-
-export function uploadS3FileSuccess(data){
+export function uploadS3FileSuccess(flag){
 	return {
-		// type : "SAVE_S3_FILE_LIST"
+		type : "SET_S3_UPLOADED",flag
 	}
 }
-
-export function uploadS3FileError(errMsgFlag){
+export function uploadS3FileError(){
 	return {
-		// type : "S3_FILE_ERROR_MSG",errMsgFlag
+		type : "S3_FILE_UPLOAD_ERROR_MSG"
 	}
 }

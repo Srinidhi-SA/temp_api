@@ -6,7 +6,7 @@ import { STATIC_URL } from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import store from "../../store";
 import { open, close } from "../../actions/dataUploadActions";
-import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Uploaded, setS3Loader, fetchs3DetailsSuccess, saveS3SelFiles, uploadS3Files} from '../../actions/ocrActions'
+import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Loader, saveS3SelFiles, uploadS3Files, clearS3Data, uploadS3FileSuccess} from '../../actions/ocrActions'
 import {MultiSelect} from "primereact/multiselect";
 
 @connect((store) => {
@@ -20,7 +20,8 @@ import {MultiSelect} from "primereact/multiselect";
     s3FileList: store.ocr.s3FileList,
     s3FileFetchErrorFlag: store.ocr.s3FileFetchErrorFlag,
     s3FileFetchSuccessFlag : store.ocr.s3FileFetchSuccessFlag,
-    s3SelFileList : store.ocr.s3SelFileList
+    s3SelFileList : store.ocr.s3SelFileList,
+    s3FileUploadErrorFlag : store.ocr.s3FileUploadErrorFlag
   };
 })
 
@@ -36,10 +37,26 @@ export class OcrUpload extends React.Component {
     }
   }
 
+  getHeader = token => {
+    return { Authorization: token };
+  };
+
   componentDidUpdate(){
     if(this.props.s3FileFetchErrorFlag){
       $("#fetchS3FileBtn").show();
-      document.getElementById("resetMsg").innerText = "Failed to fetch files, Please try again";
+      document.getElementById("resetMsg").innerText = "Failed to fetch files.";
+    }
+    if(this.props.s3Uploaded){
+      document.getElementById("resetMsg").innerText = "";
+    }
+    let activeTab = $(".tab-content").find(".active");
+    let activeId = activeTab.attr('id');
+    if(activeId === "ocrImage" && this.state.uploaded){
+      $("#loadDataBtn")[0].disabled = false
+    }else if(activeId === "ocrS3" && this.props.s3Uploaded){
+      $("#loadDataBtn")[0].disabled = false
+    }else{
+      $("#loadDataBtn")[0].disabled = true
     }
   }
   openPopup() {
@@ -47,25 +64,23 @@ export class OcrUpload extends React.Component {
       selectedFiles: "",
       loader: false,
       uploaded: false,
+      s3FileList1:[]
     })
     this.props.dispatch(open());
   }
 
-
   closePopup() {
     this.props.dispatch(close())
     this.props.dispatch(getOcrUploadedFiles())
-    this.props.dispatch(setS3Uploaded(false));
-    this.props.dispatch(setS3Loader(false));
+    this.props.dispatch(clearS3Data());
   }
 
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
-    var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif']
+    var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif','application/pdf']
     var formatErr = Object.values(event.target.files).map(i => i.type).map((i, ind) => {
       return allowType.includes(i)
     })
-
 
     if (formatErr.includes(false)) {
       document.getElementById("resetMsg").innerText = "Only image files are accepted. Please try again.";
@@ -80,12 +95,12 @@ export class OcrUpload extends React.Component {
     })
   }
 
-  getHeader = token => {
-    return {
-      Authorization: token
-    };
-  };
-
+  getS3Details(e){
+    document.getElementById("resetMsg").innerText = "";
+    let name = e.target.name;
+    let value = e.target.value;
+    this.props.dispatch(saveS3BucketDetails(name,value));
+  }
   saveFileForUpload(e){
     let fileName = e.target.value;
     this.setState({s3FileList1: fileName})
@@ -154,11 +169,38 @@ export class OcrUpload extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
 
-  getS3Details(e){
+  getTabContent(e){
     document.getElementById("resetMsg").innerText = "";
-    let name = e.target.name;
-    let value = e.target.value;
-    this.props.dispatch(saveS3BucketDetails(name,value));
+    if(e.target.id === "ocrImageTab"){
+      if(!this.state.loader && this.state.uploaded){
+        this.setState({uploaded:false,loader:false,selectedFiles:""})
+        $("#dataCloseBtn").show();
+        $("#loadDataBtn").show();
+      } 
+      else if(this.state.loader && this.state.uploaded){
+        this.setState({loader:false})
+        $("#dataCloseBtn").hide();
+        $("#loadDataBtn")[0].disabled = false;
+      } 
+      else if( !this.state.loader && (this.state.selectedFiles != "") ){
+        this.setState({selectedFiles:""})
+      }
+    }
+    else if(e.target.id === "ocrS3Tab"){
+      if(this.props.s3Loader && (this.props.s3Uploaded === false) ){
+        $("#dataCloseBtn").show();
+        $("#loadDataBtn")[0].disabled = true;
+      }
+      else if(this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && this.props.s3Loader){
+        this.props.dispatch(setS3Loader(false));
+        $("#loadDataBtn")[0].disabled = false;
+      }
+      else if(this.props.s3Uploaded && !this.props.s3Loader){
+        this.props.dispatch(uploadS3FileSuccess(false));
+        $("#dataCloseBtn").show();
+        $("#loadDataBtn")[0].disabled = true;
+      }
+    }
   }
 
   render() {
@@ -169,7 +211,7 @@ export class OcrUpload extends React.Component {
         </span>
       </li>
     ))
-      : <div /*style={{textAlign:"center",paddingLeft:"20px"}}*/>No files chosen.<br/>Please select file to proceed.</div>
+      : <div style={{textAlign:"center",paddingLeft:"20px"}}>No files chosen.<br/>Please select file to proceed.</div>
     let optionsTemp = [];
     for(var i=0; i<this.props.s3FileList.length; i++){
       optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
@@ -182,102 +224,102 @@ export class OcrUpload extends React.Component {
             <Modal.Header closeButton>
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
-            <Modal.Body style={{ padding: 0, height:"300px"}} >
-            <div className="tab-container">
-                <ul className="ocrUploadTabs nav-tab">
-                  <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage">Image Files</a></li>
-                  <li><a className="nav-link" data-toggle="tab" href="#ocrS3">s3 Files</a></li>
-                </ul>
-            </div>
-            <div className="tab-content" style={{padding:"0px"}}>
-              <div id="ocrImage" className="tab-pane active row">
-                {!this.state.uploaded &&
-                  <div>
-                    <div className="col-md-5 ocrUploadHeight">
-                      <div className="dropzoneOcr">
-                        <input className="ocrUpload" type="file" multiple onChange={this.onDrop} title=" " />
-                        <img style={{ height: 64, width: 64, opacity: 0.4, zIndex: 0, cursor: 'pointer' }} src={STATIC_URL + "assets/images/ocrUpload.svg"} />
-                        <span>Upload files</span>
+
+            <Modal.Body style={{ padding:"0px"}} >
+              <div className="tab-container">
+                  <ul className="ocrUploadTabs nav-tab" onClick={this.getTabContent.bind(this)}>
+                    <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Image Files</a></li>
+                    <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">s3 Files</a></li>
+                  </ul>
+              </div>
+              <div className="tab-content" style={{padding:"0px"}}>
+                <div id="ocrImage" className="tab-pane active row" style={{margin:"0px"}}>
+                  {!this.state.uploaded &&
+                    <div>
+                      <div className="col-md-5 ocrUploadHeight">
+                        <div className="dropzoneOcr">
+                          <input className="ocrUpload" type="file" multiple onChange={this.onDrop} title=" " />
+                          <img style={{ height: 64, width: 64, opacity: 0.4, zIndex: 0, cursor: 'pointer' }} src={STATIC_URL + "assets/images/ocrUpload.svg"} />
+                          <span>Upload files</span>
+                        </div>
+                      </div>
+                      <div className="col-md-7">
+                        <Scrollbars className="ocrUploadHeight">
+                          <ul className="list-unstyled bullets_primary" style={{ display: 'table-cell', margin: 'auto', height: 250, verticalAlign: 'middle' }}>
+                            {fileNames}
+                          </ul>
+                        </Scrollbars>
                       </div>
                     </div>
-                    <div className="col-md-7">
-                      <Scrollbars className="ocrUploadHeight">
-                        <ul className="list-unstyled bullets_primary" style={{ display: 'table-cell', margin: 'auto', height: 250, verticalAlign: 'middle' }}>
-                          {fileNames}
-                        </ul>
-                      </Scrollbars>
+                  }
+
+                  {(this.state.loader  && !this.state.uploaded) &&
+                    <div style={{ height: 260, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                      <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                     </div>
-                  </div>
-                }
+                  }
 
-                {(this.state.loader && !this.state.uploaded) &&
-                  <div style={{ height: 300, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
-                    <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                  </div>
-                }
+                  {this.state.uploaded &&
+                    <div className="col-md-12 ocrSuccess">
+                      <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
 
-                {this.state.uploaded &&
-                  <div className="col-md-12 ocrSuccess">
+                      <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
+                        <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
+                    </div>
+                  }
+                </div>
+
+                <div id="ocrS3" className="tab-pane" style={{height:"260px"}}>
+                  {!this.props.s3Uploaded &&
+                    <div>
+                      <div className="row s3Detail">
+                        <label className="col-sm-4 mandate">Bucket Name</label>
+                        <div className="col-sm-8">
+                          <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
+                        </div>
+                      </div>
+                      <div className="row s3Detail">
+                        <label className="col-sm-4 mandate">Access key</label>
+                        <div className="col-sm-8">
+                          <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
+                        </div>
+                      </div>
+                      <div className="row s3Detail">
+                        <label className="col-sm-4 mandate">Secret key</label>
+                        <div className="col-sm-8">
+                          <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
+                        </div>
+                      </div>
+                      <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
+                    </div>
+                  }
+                  {this.props.s3Loader && (this.props.s3Uploaded === false) &&
+                      <div style={{ height: 260, background: 'rgba(0,0,0,0.1)', position: 'absolute' }} >
+                        <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                      </div>
+                  }
+                  {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
+                        <div className="row s3Detail">
+                          <label className="col-sm-4 mandate">Select Files</label>
+                          <div className="col-sm-8 s3Multiselect">
+                            <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>
+                          </div>
+                        </div>
+                  }
+                  {this.props.s3Uploaded &&
+                    <div className="col-md-12 ocrSuccess">
                     <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
-
                     <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
                       <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
                   </div>
-                }
-              </div>
-
-              <div id="ocrS3" className="tab-pane row">
-              {!this.props.s3Uploaded &&
-                <div style={{paddingLeft:"60px",paddingTop:"10px"}}>
-                  <div className="form-group row">
-                    <label className="col-sm-3 control-label mandate">Bucket Name</label>
-                    <div className="col-sm-6">
-                      <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-3 control-label mandate">Access key</label>
-                    <div className="col-sm-6">
-                      <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-3 control-label mandate">Secret key</label>
-                    <div className="col-sm-6">
-                      <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
-                    </div>
-                  </div>
-                  <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)} style={{marginBottom: "25px", marginTop: "10px"}}>Fetch Files</Button>
+                  }
                 </div>
-              }
-              {this.props.s3Loader && !this.props.s3Uploaded &&
-                  <div /*style={{ height: 300, background: 'rgba(0,0,0,0.1)', position: 'relative' }}*/>
-                    <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                  </div>
-              }
-              {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
-                    <div className="form-group row" style={{paddingLeft:"60px"}}>
-                      <label className="col-sm-3 control-label mandate">Select Files</label>
-                      <div className="col-sm-6 for_multiselect">
-                        <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>
-                      </div>
-                    </div>
-              }
-              {this.props.s3Uploaded &&
-                <div className="ocrSuccess">
-                <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
-
-                <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                  <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
-              </div>
-              }
-              </div>
             </div>
             </Modal.Body>
             <Modal.Footer>
               <div id="resetMsg"></div>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
-              <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} disabled={!this.state.uploaded}>Proceed</Button>
+              <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} >Proceed</Button>
             </Modal.Footer>
           </Modal>
         </div>
