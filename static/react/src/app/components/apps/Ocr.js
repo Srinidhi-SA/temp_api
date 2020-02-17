@@ -27,7 +27,7 @@ export class Ocr extends React.Component {
             <div class="tab-container">
               <ul class="nav nav-tabs cst_ocr_tabs">
                 <li class="active"><a href="/apps/ocr-mq44ewz7bp/"><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/document"><i class="fa fa-book fa-lg"></i> Document</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/document/"><i class="fa fa-book fa-lg"></i> Document</a></li>
                 <li class=""><a href="#"><i class="fa fa-bug fa-lg"></i> Dignostic</a></li>
               </ul>
             </div>

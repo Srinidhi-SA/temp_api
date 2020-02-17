@@ -23,6 +23,11 @@ export function saveImagePageFlag(flag) {
 	}
 }
 
+export function saveImageDetails() {
+	return {
+		type: "SAVE_IMAGE_DETAILS",
+	}
+}
 
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {

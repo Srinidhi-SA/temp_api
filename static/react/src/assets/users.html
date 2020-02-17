@@ -253,18 +253,29 @@
                   <div class="container-fluid">
                      <div class="xs-mt-20"></div>
                      <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-md-3 col-sm-12">
+							<h4 class="nText">Manage users</h4>
                         </div>
-                        <div class="col-sm-6 text-right">
+						<div class="col-md-4 col-sm-12 text-right pull-right">
                            <div class="form-inline">
                               <a class="btn btn-info btn-rounded xs-mr-10" data-toggle="modal" data-target="#modal_adduser" id="btn_ceate_user" title="Add User"><i class="fa fa-plus "></i> <i class="fa fa-user-o "></i></a> 
                               <div class="form-group pull-right"><input type="text" id="search" class="form-control btn-rounded" placeholder="Search user..."></div>
                            </div>
                         </div>
+						<div class="col-md-5 col-sm-12">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="javascript:;">All</a></li>
+								<li><a href="javascript:;">Superuser</a></li>
+								<li><a href="javascript:;">Reviewer L1</a></li>
+								<li><a href="javascript:;">Reviewer L2</a></li>
+							</ul>
+						</div>
+                        
                      </div>
                      <div class="xs-mt-20"></div>
                      <div class="row">
                         <div class="col-sm-12">
+						 <div class="table-responsive box-shadow">
                            <table class="table table-condensed table-hover cst_table ">
                               <thead>
                                  <tr>
@@ -408,8 +419,10 @@
                                  </tr>
                               </tbody>
                            </table>
-                        </div>
+						 </div>
+						</div>
                      </div>
+					 <div class="xs-mb-20"></div>
                   </div>
                </section>
             </div>
