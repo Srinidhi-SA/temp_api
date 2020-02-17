@@ -56,15 +56,15 @@ body .pi {
       -webkit-transition: background-color 0.2s, border-color 0.2s;
       transition: background-color 0.2s, border-color 0.2s; }
       body .p-checkbox .p-checkbox-box:not(.p-disabled):hover {
-        border-color: #212121; }
+        border-color: #8ed3c9; }
       body .p-checkbox .p-checkbox-box.p-focus {
         border-color: #007ad9;
         background-color: #ffffff;#6cc1b6
         color: #007ad9; }
       body .p-checkbox .p-checkbox-box.p-highlight {
-        border-color: #2e8679;
-        background-color: #3b9a8c;
-        color: #ffffff; }
+        border-color: #8ed3c9;
+        color: #37ab9c;
+      }
         body .p-checkbox .p-checkbox-box.p-highlight:not(.p-disabled):hover {
           border-color: #2e8679;
           background-color: #3b9a8c;

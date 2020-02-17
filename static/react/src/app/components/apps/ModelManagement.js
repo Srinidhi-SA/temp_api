@@ -250,6 +250,8 @@ export class ModelManagement extends React.Component {
             <option value="LG_">Linear Regression</option>
             <option value="NB_">Naive Bayes</option>
             <option value="NN_">Neural Network</option>
+            <option value="TF_">Tensor Flow</option>
+            <option value="PT_">Neural Networks(pyTorch)</option>
           </select>);
 
     // mapping of list items into table

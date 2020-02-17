@@ -20745,6 +20745,13 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .ocr_section .cst_table { background: #FFFFFF; }
 .ocr_section .cst_table tr { border-bottom: 1px solid #efefef; }
 .ocr_section .cst_table thead th a span { width: inherit; }
+.ocr_section .cst_table thead th { text-transform: uppercase; font-weight: 400; }
+.cst_table td .label-success, .cst_table td .label-danger { padding: 1px 8px; color: #FFFFFF; border-radius: 10px; min-width: 70px; text-align: center;  }
+
+.cst_table a { color:#232e42 }
+.cst_table a i { color:#1cb4e8 }
+.cst_table a:hover i { color:#00998c }
+.cst_table .ma-checkbox { margin:0; padding: 0; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
