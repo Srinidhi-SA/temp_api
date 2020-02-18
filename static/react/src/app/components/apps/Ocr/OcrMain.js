@@ -6,7 +6,7 @@ import { connect } from "react-redux";
     };
 })
 
-export class Ocr extends React.Component {
+export class OcrMain extends React.Component {
   constructor(props) {
     super(props);
     
@@ -27,8 +27,10 @@ export class Ocr extends React.Component {
             <div class="tab-container">
               <ul class="nav nav-tabs cst_ocr_tabs">
                 <li class="active"><a href="/apps/ocr-mq44ewz7bp/"><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/document"><i class="fa fa-book fa-lg"></i> Document</a></li>
-                <li class=""><a href="#"><i class="fa fa-bug fa-lg"></i> Dignostic</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-book fa-lg"></i> Projects</a></li>
+                <li class=""><a href="#"><i class="fa fa-sliders fa-lg"></i> Configure</a></li>
+                <li class=""><a href="#"><i class="fa fa-linode fa-lg"></i> Reviewers</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Manage Users</a></li>
               </ul>
             </div>
             <div class="container-fluid">

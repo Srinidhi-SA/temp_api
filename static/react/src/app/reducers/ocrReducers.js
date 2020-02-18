@@ -1,8 +1,9 @@
 //all the ocr related reducers..
 export default function reducer(state = {
-  OcrfileUpload:"",
-  OcrDataList:"",
+  OcrfileUpload: "",
+  OcrDataList: "",
   imageFlag: false,
+  imagePath: "",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -12,8 +13,14 @@ export default function reducer(state = {
   s3FileUploadErrorFlag:false,
   s3FileFetchSuccessFlag:false,
   s3FileFetchErrorMsg:"",
-
-},action) {
+  ocrFilesSortType: null,
+  ocrFilesSortOn: null,
+  imageFlag: false,
+  filter_status: '',
+  filter_confidence: '',
+  filter_assignee: '',
+  checked_list: ''
+}, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
       {
@@ -35,14 +42,6 @@ export default function reducer(state = {
       return{
         ...state,
         OcrDataList:action.data
-      }
-    }
-    break;
-    case "SAVE_IMAGE_FLAG":
-    {
-      return{
-        ...state,
-        imageFlag:action.flag
       }
     }
     break;
@@ -123,6 +122,64 @@ export default function reducer(state = {
       }
     }
     break;
+    case "SAVE_IMAGE_FLAG":
+      {
+        return {
+          ...state,
+          imageFlag: action.flag
+        }
+      }
+      break;
+    case "SAVE_IMAGE_DETAILS":
+      {
+        return {
+          ...state,
+          imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png"
+        }
+      }
+      break;
+    case "OCR_FILES_SORT":
+      {
+        return {
+          ...state,
+          ocrFilesSortOn: action.ocrFilesSortOn,
+          ocrFilesSortType: action.ocrFilesSortType
+        }
+      }
+      break;
+    case "FILTER_BY_STATUS":
+      {
+        return {
+          ...state,
+          filter_status: action.status,
+        }
+      }
+      break;
+    case "FILTER_BY_CONFIDENCE":
+      {
+        return {
+          ...state,
+          filter_confidence: action.confidence,
+        }
+      }
+      break;
+    case "FILTER_BY_ASSIGNEE":
+      {
+        return {
+          ...state,
+          filter_assignee: action.assignee
+        }
+      }
+      break;
+
+    case "UPDATE_CHECKLIST":
+      {
+        return {
+          ...state,
+          checked_list: action.list
+        }
+      }
+      break;
   }
   return state
 }

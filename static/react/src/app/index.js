@@ -45,12 +45,12 @@ import {APPS_ALLOWED} from "./helpers/env.js";
 import {SampleFrame} from "./components/common/SampleFrame";
 import {KyloMenuList} from "./components/common/KyloMenuList";
 import {LexClass} from "./components/apps/lex";
-import {Ocr} from "./components/apps/Ocr";
-import {OcrDocument} from "./components/apps/OcrDocument";
+import {OcrMain} from "./components/apps/Ocr/OcrMain";
+import {OcrProject} from "./components/apps/Ocr/OcrProject";
+import {OcrManageUser} from "./components/apps/Ocr/OcrMangeUser";
 
 class App extends React.Component {
   hasSignalRoutePermission() {
-    //alert("working!!!")
     if (getUserDetailsOrRestart.get().view_signal_permission == "true")
       return true
     else
@@ -332,8 +332,10 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home}/>
             <Route exact path="/apps/lex" component={LexClass}/>
-            <Route exact path="/apps/ocr-mq44ewz7bp/" component={Ocr}/>
-            <Route exact path="/apps/ocr-mq44ewz7bp/document" component={OcrDocument}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/" component={OcrMain}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/project/" component={OcrProject}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/project/:imageSlug" component={OcrProject}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/manageUser/" component={OcrManageUser}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
             <Route exact path="/signals/:slug" render={signals}/>

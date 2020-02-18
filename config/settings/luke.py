@@ -164,6 +164,8 @@ CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
 
+USE_OCR = True
+
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',

@@ -93,7 +93,7 @@ class QueryCommonFiltering:
             confidence_mapping_dict = {'E': 'Equal', 'G': 'Greater than', 'L': 'Less than'}
             self.query_set = self.query_set.filter(confidence=confidence_mapping_dict[self.confidence])
         if self.status is not None:
-            status_mapping_dict = {'1': 'Ready to recognize.', '2': 'Ready to verify.', '3': 'Ready to export.'}
+            status_mapping_dict = {'R': 'Ready to recognize.', 'V': 'Ready to verify.', 'E': 'Ready to export.'}
             self.query_set = self.query_set.filter(status=status_mapping_dict[str(self.status)])
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')

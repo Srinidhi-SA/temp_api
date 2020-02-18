@@ -97,7 +97,7 @@ class LeftPanel extends React.Component {
 
                 
                  <li>
-                  <NavLink id="dataTab" onClick={this.hideDataPrev.bind(this)} target="_blank" activeClassName="active" className="sdb" to="/userManual/UserManual.html">
+                  <NavLink onClick={this.hideDataPrev.bind(this)} target="_blank" activeClassName="active" className="sdb" to="/static/userManual/UserManual.html">
                     <i className="fa fa-question-circle fa-2x" aria-hidden="true"></i><br />
                     Help</NavLink>
                 </li>

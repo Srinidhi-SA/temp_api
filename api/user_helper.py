@@ -172,6 +172,11 @@ def create_profile(sender, **kwargs):
     user = kwargs["instance"]
     if kwargs["created"]:
         user_profile = Profile(user=user)
+
+        if settings.USE_OCR:
+            from ocr.models import OCRUserProfile
+            ocr_user_profile = OCRUserProfile(ocr_user=user)
+            ocr_user_profile.save()
         #Loading all customapps for the user
         ########################################
         from api.views import all_apps_for_users
