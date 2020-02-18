@@ -20759,7 +20759,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
 .cst_table .fa-folder-open { color:#FFC107; }
 .cst_table .fa-file-text { color:#9E9E9E; }
 .cst_table .fa-briefcase { color:#607D8B; }
-
+.ocr_section .cst_table thead th.text-center { padding-right: 7px; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;

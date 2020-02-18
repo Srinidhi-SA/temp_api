@@ -140,48 +140,36 @@
                         <div class="col-md-6">
                            <div class="form-group">
                               <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
-                              <ul class="list-unstyled">
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" checked name="roles_type" id="roles_type1"><label for="roles_type1">Admin</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type2"><label for="roles_type2">Reviewer L1</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Reviewer L2</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Superuser</label></div>
-                                 </li>
-                              </ul>
+                              <select class="form-control" id="uRoles">
+								<option>Admin</option>
+								<option>Reviewer L1</option>
+								<option>Reviewer L2</option>
+								<option>Superuser</option>								
+							  </select>
+							  
+							  
                            </div>
                         </div>
+						 <div class="col-md-6">
                         <div class="form-group">
                            <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
-                           <ul class="list-unstyled">
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio" checked name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
-                              </li>
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio"  name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
-                              </li>
-                           </ul>
+						   
+						    <select class="form-control" id="uRoles">
+								<option selected>Active</option>
+								<option>Inactive</option>						
+							  </select>
+						   
+                           
                         </div>
 						</div>
-						<div class="row">
-                        <div class="col-md-12">
-						
-						<div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
-                           							
-                        </div>
-						
 						</div>
+						
                      
                  
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
                </div> </form>
             </div>
          </div>
@@ -298,7 +286,12 @@
                            <table class="table table-condensed table-hover cst_table ">
                               <thead>
                                  <tr>
-                                    <th></th>
+                                    <th class="text-center">
+											<div class="ma-checkbox">
+											<input type="checkbox" id="row1" value="row1">
+											<label for="row1" class="radioLabels"></label>
+											</div>
+									</th>
                                     <th>First Name</th>
                                     <th>
                                        Last Name
@@ -324,7 +317,10 @@
                               <tbody class="no-border-x">
                                  <tr>
                                     <td align="center">
-                                       1
+													<div class="ma-checkbox">
+													<input type="checkbox" id="row2" value="row2">
+													<label for="row2" class="radioLabels"></label>
+													</div>
                                     </td>
                                     <td>
                                        <a href="#" data-toggle="modal" data-target="#modal_edituser">Sejal</a>
@@ -351,7 +347,10 @@
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       2
+										<div class="ma-checkbox">
+										<input type="checkbox" id="row3" value="row3">
+										<label for="row3" class="radioLabels"></label>
+										</div>
                                     </td>
                                     <td>
                                        <a href="#">Akaash</a>
@@ -378,7 +377,10 @@
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       3
+											<div class="ma-checkbox">
+											<input type="checkbox" id="row4" value="row4">
+											<label for="row4" class="radioLabels"></label>
+											</div>
                                     </td>
                                     <td>
                                        <a href="#">Sandeep</a>
@@ -401,7 +403,10 @@
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       4
+										<div class="ma-checkbox">
+										<input type="checkbox" id="row5" value="row5">
+										<label for="row5" class="radioLabels"></label>
+										</div>
                                     </td>
                                     <td>
                                        <a href="ocr_userprofile.html">Kalyan</a>
