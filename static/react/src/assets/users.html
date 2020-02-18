@@ -110,21 +110,24 @@
             <div class="modal-content">
                <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Edit User</h4>
+                  <h4 class="modal-title">User Details</h4>
+				  
+				  
                </div> <form>
                <div class="modal-body xs-pt-20">
-                 
+					 
+					 
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
                               <label for="ufName" class="form-label">First Name <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="ufName" placeholder="First Name" value="Sejal">						 
+                              <input type="text" class="form-control" id="ufName" placeholder="First Name" value="Sejal" disabled>						 
                            </div>
                         </div>
                         <div class="col-md-6">
                            <div class="form-group">
                               <label for="ulName" class="form-label">Last Name</label>					
-                              <input type="text" class="form-control" id="ulName" placeholder="Last Name" value="Oroosh">					
+                              <input type="text" class="form-control" id="ulName" placeholder="Last Name" value="Oroosh" disabled>					
                            </div>
                         </div>
                      </div>
@@ -132,7 +135,7 @@
                         <div class="col-md-12">
                            <div class="form-group">
                               <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com">						 
+                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com" disabled>						 
                            </div>
                         </div>
                      </div>
@@ -140,7 +143,7 @@
                         <div class="col-md-6">
                            <div class="form-group">
                               <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
-                              <select class="form-control" id="uRoles">
+                              <select class="form-control" id="uRoles" disabled>
 								<option>Admin</option>
 								<option>Reviewer L1</option>
 								<option>Reviewer L2</option>
@@ -154,7 +157,7 @@
                         <div class="form-group">
                            <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
 						   
-						    <select class="form-control" id="uRoles">
+						    <select class="form-control" id="uRoles" disabled>
 								<option selected>Active</option>
 								<option>Inactive</option>						
 							  </select>
@@ -168,8 +171,8 @@
                  
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+			    <button class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
                </div> </form>
             </div>
          </div>
@@ -242,7 +245,7 @@
             <div class="page-head">
                <div class="row">
                   <div class="col-md-7">
-                     <h3 class="xs-mt-0 nText">OCR APP</h3>
+                     <h3 class="xs-mt-0 nText">Intelligent Text Extractor</h3>
                   </div>
                </div>
             </div>
@@ -267,7 +270,29 @@
                            <div class="form-inline">
                               <a class="btn btn-info btn-rounded xs-mr-10" data-toggle="modal" data-target="#modal_adduser" id="btn_ceate_user" title="Add User"><i class="fa fa-plus "></i> <i class="fa fa-user-o "></i></a> 
                               <div class="form-group pull-right"><input type="text" id="search" class="form-control btn-rounded" placeholder="Search user..."></div>
-                           </div>
+							
+							<div class="btn-group xs-mr-10">
+   <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span class="caret"></span></button>
+   <ul role="menu" class="dropdown-menu dropdown-menu-right">
+	  <li>
+         <a href="#">
+            <i class="fa fa-plus-circle text-primary"></i> Activate
+         </a>
+      </li>
+      <li>
+         <a href="#">
+            <i class="fa fa-minus-circle text-warning"></i> Deactivate
+         </a>
+      </li>
+      <li>
+         <a href="#">
+            <i class="fa fa-trash text-danger"></i> Delete
+         </a>
+      </li>
+   </ul>
+</div>
+
+						  </div>
                         </div>
 						<div class="col-md-5 col-sm-12">
 							<ul class="nav nav-tabs">
@@ -311,7 +336,7 @@
                                     <th>
                                        Status
                                     </th>
-                                   
+                                     
                                  </tr>
                               </thead>
                               <tbody class="no-border-x">
@@ -343,7 +368,6 @@
                                     <td>
                                        <label class="label-success">Active</label>
                                     </td>
-                                     
                                  </tr>
                                  <tr>
                                     <td align="center">
@@ -371,9 +395,8 @@
                                        17:15 PM
                                     </td>
                                     <td>
-                                       <label class="label-success">Active</label>
+                                       <label class="label-warning">Inctive</label>
                                     </td>
-                                   
                                  </tr>
                                  <tr>
                                     <td align="center">
@@ -399,7 +422,6 @@
                                     <td>
                                        <label class="label-success">Active</label>
                                     </td>
-                                     
                                  </tr>
                                  <tr>
                                     <td align="center">
@@ -423,9 +445,8 @@
                                        17:32 PM
                                     </td>
                                     <td>
-                                       <label class="label-danger">Inactive</label>
+                                       <label class="label-danger">Delete</label>
                                     </td>
-                                    
                                  </tr>
                               </tbody>
                            </table>
