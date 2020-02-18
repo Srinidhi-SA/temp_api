@@ -85,6 +85,16 @@
                            </ul>
                         </div>
                      </div>
+					 
+					<div class="row">
+                        <div class="col-md-12">
+						
+						<div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
+                           							
+                        </div>
+						
+						</div>
+						
                   </form>
                </div>
                <div class="modal-footer">
@@ -101,9 +111,9 @@
                <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">Edit User</h4>
-               </div>
+               </div> <form>
                <div class="modal-body xs-pt-20">
-                  <form>
+                 
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
@@ -130,40 +140,37 @@
                         <div class="col-md-6">
                            <div class="form-group">
                               <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
-                              <ul class="list-unstyled">
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" checked name="roles_type" id="roles_type1"><label for="roles_type1">Admin</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type2"><label for="roles_type2">Reviewer L1</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Reviewer L2</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Superuser</label></div>
-                                 </li>
-                              </ul>
+                              <select class="form-control" id="uRoles">
+								<option>Admin</option>
+								<option>Reviewer L1</option>
+								<option>Reviewer L2</option>
+								<option>Superuser</option>								
+							  </select>
+							  
+							  
                            </div>
                         </div>
+						 <div class="col-md-6">
                         <div class="form-group">
                            <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
-                           <ul class="list-unstyled">
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio" checked name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
-                              </li>
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio"  name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
-                              </li>
-                           </ul>
+						   
+						    <select class="form-control" id="uRoles">
+								<option selected>Active</option>
+								<option>Inactive</option>						
+							  </select>
+						   
+                           
                         </div>
-                     </div>
-                  </form>
+						</div>
+						</div>
+						
+                     
+                 
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
-               </div>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+               </div> </form>
             </div>
          </div>
       </div>
@@ -253,22 +260,38 @@
                   <div class="container-fluid">
                      <div class="xs-mt-20"></div>
                      <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-md-3 col-sm-12">
+							<h4 class="nText">Manage users</h4>
                         </div>
-                        <div class="col-sm-6 text-right">
+						<div class="col-md-4 col-sm-12 text-right pull-right">
                            <div class="form-inline">
                               <a class="btn btn-info btn-rounded xs-mr-10" data-toggle="modal" data-target="#modal_adduser" id="btn_ceate_user" title="Add User"><i class="fa fa-plus "></i> <i class="fa fa-user-o "></i></a> 
                               <div class="form-group pull-right"><input type="text" id="search" class="form-control btn-rounded" placeholder="Search user..."></div>
                            </div>
                         </div>
+						<div class="col-md-5 col-sm-12">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="javascript:;">All</a></li>
+								<li><a href="javascript:;">Superuser</a></li>
+								<li><a href="javascript:;">Reviewer L1</a></li>
+								<li><a href="javascript:;">Reviewer L2</a></li>
+							</ul>
+						</div>
+                        
                      </div>
                      <div class="xs-mt-20"></div>
                      <div class="row">
                         <div class="col-sm-12">
+						 <div class="table-responsive box-shadow">
                            <table class="table table-condensed table-hover cst_table ">
                               <thead>
                                  <tr>
-                                    <th></th>
+                                    <th class="text-center">
+											<div class="ma-checkbox">
+											<input type="checkbox" id="row1" value="row1">
+											<label for="row1" class="radioLabels"></label>
+											</div>
+									</th>
                                     <th>First Name</th>
                                     <th>
                                        Last Name
@@ -288,15 +311,16 @@
                                     <th>
                                        Status
                                     </th>
-                                    <th>
-                                       Actions
-                                    </th>
+                                   
                                  </tr>
                               </thead>
                               <tbody class="no-border-x">
                                  <tr>
                                     <td align="center">
-                                       1
+													<div class="ma-checkbox">
+													<input type="checkbox" id="row2" value="row2">
+													<label for="row2" class="radioLabels"></label>
+													</div>
                                     </td>
                                     <td>
                                        <a href="#" data-toggle="modal" data-target="#modal_edituser">Sejal</a>
@@ -319,14 +343,14 @@
                                     <td>
                                        <label class="label-success">Active</label>
                                     </td>
-                                    <td>
-                                       <button class="btn btn-default btn-xs" title="Edit" data-toggle="modal" data-target="#modal_edituser"><i class="fa fa-edit"></i></button>
-                                       <button class="btn btn-danger btn-xs" title="Delete"><i class="fa fa-trash-o"></i></button>
-                                    </td>
+                                     
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       2
+										<div class="ma-checkbox">
+										<input type="checkbox" id="row3" value="row3">
+										<label for="row3" class="radioLabels"></label>
+										</div>
                                     </td>
                                     <td>
                                        <a href="#">Akaash</a>
@@ -349,14 +373,14 @@
                                     <td>
                                        <label class="label-success">Active</label>
                                     </td>
-                                    <td>
-                                       <button class="btn btn-default btn-xs" title="Edit" data-toggle="modal" data-target="#modal_edituser"><i class="fa fa-edit"></i></button>
-                                       <button class="btn btn-danger btn-xs" title="Delete"><i class="fa fa-trash-o"></i></button>
-                                    </td>
+                                   
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       3
+											<div class="ma-checkbox">
+											<input type="checkbox" id="row4" value="row4">
+											<label for="row4" class="radioLabels"></label>
+											</div>
                                     </td>
                                     <td>
                                        <a href="#">Sandeep</a>
@@ -375,14 +399,14 @@
                                     <td>
                                        <label class="label-success">Active</label>
                                     </td>
-                                    <td>
-                                       <button class="btn btn-default btn-xs" title="Edit" data-toggle="modal" data-target="#modal_edituser"><i class="fa fa-edit"></i></button>
-                                       <button class="btn btn-danger btn-xs" title="Delete"><i class="fa fa-trash-o"></i></button>
-                                    </td>
+                                     
                                  </tr>
                                  <tr>
                                     <td align="center">
-                                       4
+										<div class="ma-checkbox">
+										<input type="checkbox" id="row5" value="row5">
+										<label for="row5" class="radioLabels"></label>
+										</div>
                                     </td>
                                     <td>
                                        <a href="ocr_userprofile.html">Kalyan</a>
@@ -401,15 +425,14 @@
                                     <td>
                                        <label class="label-danger">Inactive</label>
                                     </td>
-                                    <td>
-                                       <button class="btn btn-default btn-xs" title="Edit" data-toggle="modal" data-target="#modal_edituser"><i class="fa fa-edit"></i></button>
-                                       <button class="btn btn-danger btn-xs" title="Delete"><i class="fa fa-trash-o"></i></button>
-                                    </td>
+                                    
                                  </tr>
                               </tbody>
                            </table>
-                        </div>
+						 </div>
+						</div>
                      </div>
+					 <div class="xs-mb-20"></div>
                   </div>
                </section>
             </div>

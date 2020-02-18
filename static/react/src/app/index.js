@@ -333,7 +333,8 @@ class App extends React.Component {
             <Route exact path="/" component={Home}/>
             <Route exact path="/apps/lex" component={LexClass}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/" component={Ocr}/>
-            <Route exact path="/apps/ocr-mq44ewz7bp/document" component={OcrDocument}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/document/" component={OcrDocument}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/document/:imageSlug" component={OcrDocument}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
             <Route exact path="/signals/:slug" render={signals}/>
