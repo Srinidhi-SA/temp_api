@@ -4,9 +4,9 @@ import { Modal, Button, } from "react-bootstrap";
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { STATIC_URL } from "../../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import store from "../../store";
-import { open, close } from "../../actions/dataUploadActions";
-import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Loader, saveS3SelFiles, uploadS3Files, clearS3Data, uploadS3FileSuccess} from '../../actions/ocrActions'
+import store from "../../../store";
+import { open, close } from "../../../actions/dataUploadActions";
+import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Loader, saveS3SelFiles, uploadS3Files, clearS3Data, uploadS3FileSuccess} from '../../../actions/ocrActions'
 import {MultiSelect} from "primereact/multiselect";
 
 @connect((store) => {
