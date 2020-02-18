@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button, } from "react-bootstrap";
-import { getUserDetailsOrRestart } from "../../helpers/helper"
-import { STATIC_URL } from "../../helpers/env.js";
+import { getUserDetailsOrRestart } from "../../../helpers/helper"
+import { STATIC_URL } from "../../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import store from "../../store";
-import { open, close } from "../../actions/dataUploadActions";
-import { getOcrUploadedFiles } from '../../actions/ocrActions'
+import store from "../../../store";
+import { open, close } from "../../../actions/dataUploadActions";
+import { getOcrUploadedFiles } from '../../../actions/ocrActions';
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
