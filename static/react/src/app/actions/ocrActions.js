@@ -87,10 +87,11 @@ export function getS3BucketFileList(s3BucketDetails){
 		return fetchS3FileDetails(s3BucketDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.status != "FAILED"){
 				dispatch(fetchs3DetailsSuccess(json))
-			}else if(response.status === 200 && json.status != "FAILED"){
-				dispatch(fetchs3DetailsError())
+			}else if(response.status === 200 && json.status === "FAILED"){
+				dispatch(fetchs3DetailsError(true));
+				dispatch(s3FetchErrorMsg(json.message));
 			}else{
-				dispatch(fetchs3DetailsError())
+				dispatch(fetchs3DetailsError(true))
 			}
 		})
 	}
@@ -117,12 +118,16 @@ export function fetchs3DetailsSuccess(data){
 	}
 }
 
-export function fetchs3DetailsError(){
+export function fetchs3DetailsError(flag){
 	return {
-		type : "S3_FILE_ERROR_MSG"
+		type : "S3_FILE_ERROR_MSG",flag
 	}
 }
-
+export function s3FetchErrorMsg(msg) {
+	return{
+		type : "S3_FETCH_ERROR_MSG",msg
+	}
+}
 export function saveS3SelFiles(fileName){
 	return {
 		type : "SAVE_SEL_S3_FILES",fileName

@@ -21,7 +21,8 @@ import {MultiSelect} from "primereact/multiselect";
     s3FileFetchErrorFlag: store.ocr.s3FileFetchErrorFlag,
     s3FileFetchSuccessFlag : store.ocr.s3FileFetchSuccessFlag,
     s3SelFileList : store.ocr.s3SelFileList,
-    s3FileUploadErrorFlag : store.ocr.s3FileUploadErrorFlag
+    s3FileUploadErrorFlag : store.ocr.s3FileUploadErrorFlag,
+    s3FileFetchErrorMsg : store.ocr.s3FileFetchErrorMsg
   };
 })
 
@@ -42,10 +43,7 @@ export class OcrUpload extends React.Component {
   };
 
   componentDidUpdate(){
-    if(this.props.s3FileFetchErrorFlag){
-      $("#fetchS3FileBtn").show();
-      document.getElementById("resetMsg").innerText = "Failed to fetch files.";
-    }
+    this.props.s3FileFetchSuccessFlag?$("#fetchS3FileBtn").hide():$("#fetchS3FileBtn").show();
     if(this.props.s3Uploaded){
       document.getElementById("resetMsg").innerText = "";
     }
@@ -220,7 +218,7 @@ export class OcrUpload extends React.Component {
       <div>
         <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{ marginBottom: 20 }}><i class="fa fa-upload"></i> Upload</Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+          <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">
             <Modal.Header closeButton>
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>
@@ -271,34 +269,28 @@ export class OcrUpload extends React.Component {
 
                 <div id="ocrS3" className="tab-pane" style={{height:"260px",position:"relative"}}>
                   {!this.props.s3Uploaded &&
-                    <div>
-                      <div className="row s3Detail">
+                    <div className="s3Detail">
                         <label className="col-sm-4 mandate">Bucket Name</label>
-                        <div className="col-sm-8">
-                          <input type="text" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
+                        <div className="col-sm-8 s3DetailsInput">
+                          <input type="text" id="bucket_name" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
                         </div>
-                      </div>
-                      <div className="row s3Detail">
                         <label className="col-sm-4 mandate">Access key</label>
-                        <div className="col-sm-8">
+                        <div className="col-sm-8 s3DetailsInput">
                           <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
                         </div>
-                      </div>
-                      <div className="row s3Detail">
                         <label className="col-sm-4 mandate">Secret key</label>
-                        <div className="col-sm-8">
+                        <div className="col-sm-8 s3DetailsInput">
                           <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
                         </div>
-                      </div>
-                      {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
-                        <div className="row s3Detail">
-                          <label className="col-sm-4 mandate">Select Files</label>
-                          <div className="col-sm-8 s3Multiselect">
-                            <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>
-                          </div>
-                        </div>
-                      }
-                      <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
+                        {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
+                            <div>
+                              <label className="col-sm-4 mandate">Select Files</label>
+                              <div className="col-sm-8 s3DetailsInput s3Multiselect">
+                                <MultiSelect value={this.state.s3FileList1} options={optionsTemp} style={{minWidth:'12em'}} onChange={this.saveFileForUpload.bind(this)} placeholder="Choose" className="form-control single"/>
+                              </div>
+                            </div>
+                        }
+                        <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
                     </div>
                   }
                   {this.props.s3Loader && (this.props.s3Uploaded === false) &&
@@ -317,7 +309,9 @@ export class OcrUpload extends React.Component {
             </div>
             </Modal.Body>
             <Modal.Footer>
-              <div id="resetMsg"></div>
+              <div id="resetMsg">
+              {this.props.s3FileFetchErrorFlag ?this.props.s3FileFetchErrorMsg:""}
+              </div>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
               <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} >Proceed</Button>
             </Modal.Footer>

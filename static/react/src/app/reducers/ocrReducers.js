@@ -7,10 +7,11 @@ export default function reducer(state = {
   s3Uploaded: false,
   s3Loader: false,
   s3FileList:"",
-  s3FileFetchErrorFlag:false,
   s3SelFileList:[],
+  s3FileFetchErrorFlag:false,
   s3FileUploadErrorFlag:false,
   s3FileFetchSuccessFlag:false,
+  s3FileFetchErrorMsg:"",
 
 },action) {
   switch (action.type) {
@@ -70,7 +71,8 @@ export default function reducer(state = {
         s3FileList : "",
         s3SelFileList: [],
         s3Loader: false,
-        s3Uploaded: false
+        s3Uploaded: false,
+        s3FileFetchErrorFlag : false,
       }
     }
     break;
@@ -84,8 +86,15 @@ export default function reducer(state = {
     case "S3_FILE_ERROR_MSG": {
       return {
         ...state,
-        s3FileFetchErrorFlag : true,
+        s3FileFetchErrorFlag : action.flag,
         s3Loader : false,
+      }
+    }
+    break;
+    case "S3_FETCH_ERROR_MSG": {
+      return {
+        ...state,
+        s3FileFetchErrorMsg : action.msg
       }
     }
     break;
