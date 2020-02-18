@@ -22294,7 +22294,7 @@ canvas {
 	z-index: 99;
 }
 .ocrUploadHeight{
-	height: 310px !important;
+	height: 260px !important;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -22314,7 +22314,7 @@ canvas {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 310px;
+  height: 260px;
   align-items: center;
 }
 .ocrTable > tbody > tr > td{
@@ -22383,6 +22383,60 @@ font-size: 14px;
   display: block;
   font-size: 16px;
   height: 20px;
+}
+ul.ocrUploadTabs{
+  list-style: none;
+  padding: 0;
+  display: flex;
+  margin-bottom:0px;
+}
+.ocrUploadTabs a {
+  margin:2px 2px 0px 2px;
+  padding: 10px 15px; 
+  text-transform: uppercase; 
+  display: block; 
+  color: #34495e; 
+  background-color: #f7f7f7;
+}
+.ocrUploadTabs a:hover{ 
+  background-color: #dedede;
+}
+.ocrUploadTabs li.active a{ 
+  color: #505050;
+  background-color: #ffffff;
+}
+#fetchS3FileBtn {
+  margin-left: 462px;
+  margin-top: 15px;
+}
+.s3Detail {
+  margin: 0px 20px;
+  padding: 20px 0px;
+}
+.s3DetailsInput {
+  margin-bottom: 20px;
+}
+.s3Multiselect .p-multiselect-label-container{
+  margin: -4px;
+}
+.s3Multiselect .p-multiselect-header::after {
+  content: "Select All";
+}
+.s3Multiselect .p-multiselect-label{
+  white-space: nowrap;
+}
+.s3Multiselect .p-multiselect-item label{
+  width: 275px !important
+}
+.s3Multiselect .p-multiselect-close.p-link{
+  display: none;
+}
+.s3Multiselect .p-multiselect-item.p-highlight {
+  background-color: white !important;
+  color: black !important;
+}
+.ocrUploadModal .modal-content { 
+  overflow: inherit;
 }
 .ocrZoom{
   float: right;
