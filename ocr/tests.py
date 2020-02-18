@@ -66,7 +66,8 @@ class TestOCRImageUpload(TestCase):
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
-        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
 
         # self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.json()['imageset_message'], response.json()['message'])
@@ -86,7 +87,8 @@ class TestOCRImageUpload(TestCase):
             tmp_file.seek(0)
             img_list.append(tmp_file)
 
-        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': img_list, 'dataSourceType': 'fileUpload'}, format='multipart')
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': img_list, 'dataSourceType': 'fileUpload'}, format='multipart')
 
         # self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.json()['imageset_message'], response.json()['message'])
@@ -101,7 +103,8 @@ class TestOCRImageUpload(TestCase):
         tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
         tmp_file.write(b'test')
         tmp_file.seek(0)
-        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
         res = response.json()
         self.assertEqual('Unsupported file extension.' in res['serializer_error'], True)
 
@@ -134,7 +137,8 @@ class TestOCRImageUpload(TestCase):
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
-        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'},
+                         format='multipart')
         imagequery = OCRImage.objects.all().first()
         slug = imagequery.slug
         response = self.client.put('http://localhost:8000/ocr/ocrimage/{}/'.format(slug), {'name': 'unit-test'})
@@ -151,7 +155,8 @@ class TestOCRImageUpload(TestCase):
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
-        response = self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
 
         data = response.json()['serializer_data'][0]
         slug = data['slug']
@@ -164,4 +169,59 @@ class TestOCRImageSetView(TestCase):
     """
     class for unit test cases concerning OCRImage upload.
     """
-    pass
+
+    def setUp(self):
+        # Every test needs access to the request factory.
+        """
+        Setup User and Authentication
+        UserType: Superuser
+        """
+
+        self.credentials = {
+            'username': 'dladmin',
+            'password': 'thinkbig',
+            'email': 'test@mail.com'}
+        User.objects.create_superuser(**self.credentials)
+
+        self.client = APIClient()
+        response = self.client.post('http://localhost:8000/api-token-auth/',
+                                    {'username': 'dladmin', "password": "thinkbig"}, format='json')
+        self.token = response.json()['token']
+        self.client.credentials(HTTP_AUTHORIZATION=self.token)
+
+    def test_OCRImageSet_list(self):
+        """
+        Unit test cases concerning OCRImageSet list view.
+        """
+
+        img_list = list()
+        for _ in range(3):
+            image = Image.new('RGB', (100, 100), color='red')
+            tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+            image.save(tmp_file, format=image.format)
+            tmp_file.seek(0)
+            img_list.append(tmp_file)
+        self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                         {'imagefile': img_list, 'dataSourceType': 'fileUpload'}, format='multipart')
+        response = self.client.get('http://localhost:8000/ocr/ocrimageset/', format='json')
+
+        self.assertEqual(response.json()['current_item_count'], 1)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_OCRImageSet_retrieve(self):
+        """
+        Unit test cases concerning OCRImageSet retrieve view.
+        """
+
+        image = Image.new('RGB', (100, 100))
+
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image.save(tmp_file, format='jpeg')
+        tmp_file.seek(0)
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+        data = response.json()['imageset_serializer_data']
+        slug = data['slug']
+        response = self.client.get('http://localhost:8000/ocr/ocrimageset/{}/'.format(slug))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
