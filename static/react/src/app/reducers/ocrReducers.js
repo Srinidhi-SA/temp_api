@@ -73,6 +73,7 @@ export default function reducer(state = {
         s3Loader: false,
         s3Uploaded: false,
         s3FileFetchErrorFlag : false,
+        s3FileFetchSuccessFlag : false
       }
     }
     break;

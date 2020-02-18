@@ -43,7 +43,11 @@ export class OcrUpload extends React.Component {
   };
 
   componentDidUpdate(){
-    this.props.s3FileFetchSuccessFlag?$("#fetchS3FileBtn").hide():$("#fetchS3FileBtn").show();
+    if(this.props.s3FileFetchSuccessFlag && !this.props.s3FileFetchErrorFlag){
+      $("#fetchS3FileBtn").hide()
+    } else {
+      $("#fetchS3FileBtn").show()
+    }
     if(this.props.s3Uploaded){
       document.getElementById("resetMsg").innerText = "";
     }
@@ -93,32 +97,29 @@ export class OcrUpload extends React.Component {
     })
   }
 
-  getS3Details(e){
-    document.getElementById("resetMsg").innerText = "";
-    let name = e.target.name;
-    let value = e.target.value;
-    this.props.dispatch(saveS3BucketDetails(name,value));
+  saveS3Details(e){
+    $("#resetMsg")[0].innerText = "";
+    this.props.dispatch(saveS3BucketDetails(e.target.name,e.target.value));
   }
   saveFileForUpload(e){
-    let fileName = e.target.value;
-    this.setState({s3FileList1: fileName})
-    this.props.dispatch(saveS3SelFiles(fileName));
-    document.getElementById("resetMsg").innerText = "";
+    $("#resetMsg")[0].innerText = "";
+    this.setState({s3FileList1: e.target.value})
+    this.props.dispatch(saveS3SelFiles(e.target.value));
   }
 
   validateAndFetchS3Files(){
     if($(".bucket_name")[0].value === "" || $(".bucket_name")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please Enter Bucket Name";
+      $("#resetMsg")[0].innerText = "Please Enter Bucket Name";
       return false;
     }else if($(".access_key_id")[0].value === "" || $(".access_key_id")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please Enter Access Key";
+      $("#resetMsg")[0].innerText = "Please Enter Access Key";
       return false;
     }else if($(".secret_key")[0].value === "" || $(".secret_key")[0].value === undefined){
-      document.getElementById("resetMsg").innerText = "Please Enter Secret Key";
+      $("#resetMsg")[0].innerText = "Please Enter Secret Key";
       return false;
     }else{
       $("#fetchS3FileBtn").hide();
-      document.getElementById("resetMsg").innerText = "";
+      $("#resetMsg")[0].innerText = "";
       this.props.dispatch(setS3Loader(true));
       this.props.dispatch(getS3BucketFileList(this.props.ocrS3BucketDetails));
     }
@@ -152,10 +153,10 @@ export class OcrUpload extends React.Component {
     }
     else if(activeId === "ocrS3"){
       if($(".p-multiselect-label")[0].innerHTML === "Choose"){
-        document.getElementById("resetMsg").innerText = "Please select files to upload.";
+        $("#resetMsg")[0].innerText = "Please select files to upload.";
         return false
       }
-      document.getElementById("resetMsg").innerText = "";
+      $("#resetMsg")[0].innerText = "";
       $("#dataCloseBtn").hide()
       this.props.dispatch(setS3Loader(true));
       this.props.dispatch(uploadS3Files(this.props.s3SelFileList));
@@ -168,7 +169,7 @@ export class OcrUpload extends React.Component {
   }
 
   getTabContent(e){
-    document.getElementById("resetMsg").innerText = "";
+    $("#resetMsg")[0].innerText = "";
     if(e.target.id === "ocrImageTab"){
       if(!this.state.loader && this.state.uploaded){
         this.setState({uploaded:false,loader:false,selectedFiles:""})
@@ -272,15 +273,15 @@ export class OcrUpload extends React.Component {
                     <div className="s3Detail">
                         <label className="col-sm-4 mandate">Bucket Name</label>
                         <div className="col-sm-8 s3DetailsInput">
-                          <input type="text" id="bucket_name" name="bucket_name" onInput={this.getS3Details.bind(this)} className="form-control bucket_name"/>
+                          <input type="text" id="bucket_name" name="bucket_name" onInput={this.saveS3Details.bind(this)} className="form-control bucket_name" autoComplete="off"/>
                         </div>
                         <label className="col-sm-4 mandate">Access key</label>
                         <div className="col-sm-8 s3DetailsInput">
-                          <input type="text" name="access_key_id" onInput={this.getS3Details.bind(this)} className="form-control access_key_id"/>
+                          <input type="text" name="access_key_id" onInput={this.saveS3Details.bind(this)} className="form-control access_key_id" autoComplete="off"/>
                         </div>
                         <label className="col-sm-4 mandate">Secret key</label>
                         <div className="col-sm-8 s3DetailsInput">
-                          <input type="text" name="secret_key" onInput={this.getS3Details.bind(this)} className="form-control secret_key"/>
+                          <input type="text" name="secret_key" onInput={this.saveS3Details.bind(this)} className="form-control secret_key" autoComplete="off"/>
                         </div>
                         {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
                             <div>

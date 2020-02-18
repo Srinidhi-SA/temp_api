@@ -22402,10 +22402,6 @@ ul.ocrUploadTabs{
 .s3DetailsInput {
   margin-bottom: 20px;
 }
-.ocrS3 {
-  text-align: center;
-  position: relative;
-}
 .s3Multiselect .p-multiselect-label-container{
   margin: -4px;
 }
@@ -22425,4 +22421,6 @@ ul.ocrUploadTabs{
   background-color: white !important;
   color: black !important;
 }
-.ocrUploadModal .modal-content { overflow: inherit;}
+.ocrUploadModal .modal-content { 
+  overflow: inherit;
+}
