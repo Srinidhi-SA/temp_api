@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles,saveImagePageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../actions/ocrActions'
+import { getOcrUploadedFiles,saveImagePageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../store'
+import { store } from '../../../store';
 import { Pagination,Button } from "react-bootstrap";
-import { STATIC_URL } from '../../helpers/env';
+import { STATIC_URL } from '../../../helpers/env';
 import {Checkbox} from 'primereact/checkbox';
 
 @connect((store) => {
@@ -90,7 +90,7 @@ export class OcrTable extends React.Component {
           <td>
            <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
           </td>
-          <td><Link to={"/apps/ocr-mq44ewz7bp/document/" + item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
+          <td><Link to={"/apps/ocr-mq44ewz7bp/project/" + item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
           <td>{item.status}</td>
           <td>{item.confidence}</td>
           <td>{}</td>
