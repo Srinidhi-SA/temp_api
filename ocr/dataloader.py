@@ -4,6 +4,7 @@ import os
 import random
 import string
 import boto3
+from botocore.exceptions import ClientError
 
 
 class S3File:
@@ -82,8 +83,17 @@ class S3File:
                 'file_list': files
             }
 
-        except Exception as err:
+        except ClientError as e:
+            if e.response['Error']['Code'] == "InvalidAccessKeyId":
+                error_message = 'Invalid Access Key'
+            elif e.response['Error']['Code'] == "NoSuchBucket":
+                error_message = 'Invalid Bucket Name'
+            elif e.response['Error']['Code'] == "SignatureDoesNotMatch":
+                error_message = 'Invalid Secret key'
+            else:
+                error_message = 'Invalid Details'
             return {
                 'status': 'FAILED',
-                'Exception': str(err)
+                'Exception': str(e),
+                'message': error_message
             }

@@ -2722,7 +2722,7 @@ class StockDataset(models.Model):
 
     def create(self):
         from api.tasks import stock_sense_crawl
-        stock_sense_crawl.delay(object_slug=self.slug)
+        stock_sense_crawl(object_slug=self.slug)
 
     def crawl_news_data(self):
 
@@ -3009,10 +3009,20 @@ class StockDataset(models.Model):
         datasource_type = ""
         stockSymbolList = self.get_stock_symbol_names()
 
+        if settings.USE_HTTPS:
+            protocol = 'https'
+        else:
+            protocol = 'http'
+
         THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
-        data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                      THIS_SERVER_DETAILS.get('port'),
-                                                                      self.get_data_api())
+
+        data_api = "{3}://{0}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                        THIS_SERVER_DETAILS.get('port'),
+                                                                        self.get_data_api(), protocol)
+
+        # data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+        #                                                               THIS_SERVER_DETAILS.get('port'),
+        #                                                               self.get_data_api())
 
         hdfs_path = self.get_hdfs_relative_path()
 

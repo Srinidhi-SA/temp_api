@@ -3302,11 +3302,11 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
   color: #444;
 }
 .breadcrumb {
-  padding: 8px 15px;
-  margin-bottom: 18px;
-  list-style: none;
-  background-color: #f5f5f5;
-  border-radius: 0;
+	padding: 8px 15px;
+	margin-bottom: 18px;
+	list-style: none;
+	background-color: transparent /*f5f5f5 */;
+	border-radius: 0
 }
 .breadcrumb > li + li:before {
   content: "/\00a0";
@@ -3316,6 +3316,8 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
 .breadcrumb > .active {
   color: #777;
 }
+.breadcrumb-item ,.breadcrumb-item a { color:#62807d}
+.breadcrumb-item.active a { color:#00998c}
 .pagination {
   padding-left: 0;
   margin: 18px 0;
@@ -20742,9 +20744,22 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .cst_table .progress { margin-bottom:0; }
 .cst_ocr_tabs .nav-tabs>li.active>a, .cst_ocr_tabs li.active a { border-width:2 ; border-bottom-color:transparent ; }
  
-.ocr_section .cst_table { background: #FFFFFF; }
+.ocr_section .cst_table { background: #FFFFFF; border: 1px solid #d6d6d6; }
 .ocr_section .cst_table tr { border-bottom: 1px solid #efefef; }
 .ocr_section .cst_table thead th a span { width: inherit; }
+.ocr_section .cst_table thead th { text-transform: uppercase; font-weight: 500; }
+.cst_table td .label-success, .cst_table td .label-danger, .cst_table td .label-warning { padding: 1px 8px; color: #FFFFFF; border-radius: 10px; min-width: 70px; text-align: center;  }
+.cst_table td .label-warning { background:#FF9800 }
+/*.cst_table a { color:#232e42 }
+.cst_table a i { color:#1cb4e8 }
+.cst_table a:hover i { color:#00998c }*/
+.cst_table .ma-checkbox { margin:0; padding: 0; }
+h4.inline-block { background: white; padding: 8px 20px; }
+.tab-pane .cst_table { border:transparent; }
+.cst_table .fa-folder-open { color:#FFC107; }
+.cst_table .fa-file-text { color:#9E9E9E; }
+.cst_table .fa-briefcase { color:#607D8B; }
+.ocr_section .cst_table thead th.text-center { padding-right: 7px; }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
@@ -22279,7 +22294,7 @@ canvas {
 	z-index: 99;
 }
 .ocrUploadHeight{
-	height: 310px !important;
+	height: 260px !important;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -22299,7 +22314,7 @@ canvas {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 310px;
+  height: 260px;
   align-items: center;
 }
 .ocrTable > tbody > tr > td{
@@ -22368,4 +22383,72 @@ font-size: 14px;
   display: block;
   font-size: 16px;
   height: 20px;
+}
+ul.ocrUploadTabs{
+  list-style: none;
+  padding: 0;
+  display: flex;
+  margin-bottom:0px;
+}
+.ocrUploadTabs a {
+  margin:2px 2px 0px 2px;
+  padding: 10px 15px; 
+  text-transform: uppercase; 
+  display: block; 
+  color: #34495e; 
+  background-color: #f7f7f7;
+}
+.ocrUploadTabs a:hover{ 
+  background-color: #dedede;
+}
+.ocrUploadTabs li.active a{ 
+  color: #505050;
+  background-color: #ffffff;
+}
+#fetchS3FileBtn {
+  margin-left: 462px;
+  margin-top: 15px;
+}
+.s3Detail {
+  margin: 0px 20px;
+  padding: 20px 0px;
+}
+.s3DetailsInput {
+  margin-bottom: 20px;
+}
+.s3Multiselect .p-multiselect-label-container{
+  margin: -4px;
+}
+.s3Multiselect .p-multiselect-header::after {
+  content: "Select All";
+}
+.s3Multiselect .p-multiselect-label{
+  white-space: nowrap;
+}
+.s3Multiselect .p-multiselect-item label{
+  width: 275px !important
+}
+.s3Multiselect .p-multiselect-close.p-link{
+  display: none;
+}
+.s3Multiselect .p-multiselect-item.p-highlight {
+  background-color: white !important;
+  color: black !important;
+}
+.ocrUploadModal .modal-content { 
+  overflow: inherit;
+}
+.ocrZoom{
+  float: right;
+  border-radius: 50%;
+  border: 1px solid #41a99a;
+  height: 22px;
+  width: 22px;
+  text-align: center;
+  line-height: 22px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #41a999;
+  margin-left: 5px;
+  display: inline-block;
 }

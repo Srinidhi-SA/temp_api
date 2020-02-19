@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify
 from django.core.validators import FileExtensionValidator
 from api.models import User
 from ocr import validators
+from django.conf import settings
 
 
 # -------------------------------------------------------------------------------
@@ -55,6 +56,50 @@ class Project(models.Model):
     def create(self):
         """Create Project model"""
         self.save()
+
+
+class OCRUserProfile(models.Model):
+    OCR_USER_TYPE_CHOICES = [
+        ('1', 'Default'),
+        ('2', 'Reviewer'),
+    ]
+    OCR_REVIEWER_ROLE = [
+        ('0', 'NA'),
+        ('1', 'Admin'),
+        ('2', 'Reviewer L1'),
+        ('3', 'Reviewer L2'),
+        ('4', 'Reviewer L3'),
+    ]
+    ocr_user = models.OneToOneField(User, null=True, db_index=True, on_delete=models.CASCADE)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    is_active = models.BooleanField(default=False)
+    phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
+    user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
+    reviewer_type = models.CharField(max_length=20, null=True, choices=OCR_REVIEWER_ROLE, default='NA')
+
+    # def __str__(self):
+    #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
+    def generate_slug(self):
+        """generate slug"""
+
+        if not self.slug:
+            self.slug = slugify(str(self.ocr_user.username) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        """Save OCRUserProfile model"""
+        self.generate_slug()
+        super(OCRUserProfile, self).save(*args, **kwargs)
+
+from django.db.models.signals import post_save
+
+def send_welcome_email(sender, instance, created, **kwargs):
+    #user = kwargs["instance"]
+    #if kwargs["created"]:
+    print("Sending mail")
+    # your code goes here...
+
+post_save.connect(send_welcome_email, sender=OCRUserProfile)
 
 
 class OCRImageset(models.Model):
@@ -127,6 +172,7 @@ class OCRImage(models.Model):
     analysis = models.TextField(max_length=300000, default="", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="", null=True)
+    is_recognized = models.BooleanField(default=False)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])

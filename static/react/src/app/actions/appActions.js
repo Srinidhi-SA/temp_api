@@ -2675,7 +2675,7 @@ export function refreshStockAppsList(props) {
       if (store.getState().apps.currentAppDetails == null)
         stockAppLocation = "/apps-stock-advisor";
       else
-        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url;
+        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url+"/";
       if (window.location.pathname == stockAppLocation)
         dispatch(getAppsStockList(parseInt(pageNo)));
     }

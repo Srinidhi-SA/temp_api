@@ -1,11 +1,13 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag } from '../../actions/ocrActions';
+import { saveImagePageFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../store'
+import { Link } from 'react-router-dom';
+import { store } from '../../../store';
 
 @connect((store) => {
   return {
+    imagePath: store.ocr.imagePath,
   };
 })
 
@@ -18,7 +20,7 @@ export class OcrImage extends React.Component {
   componentDidMount() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    var imgPath = "https://madvisor-dev.marlabsai.com/media/ocrData/ocr.jpeg";
+    var imgPath = this.props.imagePath;
     var imgObj = new Image();
     imgObj.src = imgPath;
     imgObj.onload = () => {
@@ -56,6 +58,9 @@ export class OcrImage extends React.Component {
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
   }
+  zoomOut=()=>{
+
+  }
 
   render() {
     return (
@@ -75,7 +80,10 @@ export class OcrImage extends React.Component {
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div style={{ overflowX: 'auto' }} id="popDiv">
-                <div className="ocrImgTitle">OCR</div>
+                <div className="ocrImgTitle">OCR
+                <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
+                <span className="ocrZoom"><i class="fa fa-plus"></i></span>
+                </div>
                 <canvas
                   onClick={this.handleCoords}
                   id="myCanvas"
@@ -103,7 +111,7 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
-          <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
+          <Link to="/apps/ocr-mq44ewz7bp/project/"><Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button></Link>
         </div>
       </div>
     )
