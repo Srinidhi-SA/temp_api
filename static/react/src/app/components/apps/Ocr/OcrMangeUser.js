@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { OcrUserTable } from "./OcrUserTable";
 @connect((store) => {
   return { 
     };
@@ -33,6 +34,7 @@ export class OcrManageUser extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
+              <OcrUserTable/>
             </div>
           </section>
         </div>

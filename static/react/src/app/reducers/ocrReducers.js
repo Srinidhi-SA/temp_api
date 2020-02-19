@@ -19,7 +19,9 @@ export default function reducer(state = {
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
-  checked_list: ''
+  checked_list: '',
+  addUserPopupFlag : false,
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -177,6 +179,21 @@ export default function reducer(state = {
         return {
           ...state,
           checked_list: action.list
+        }
+      }
+      break;
+      //For Manage Users screen
+      case "OPEN_ADD_USER_POPUP": {
+        return {
+          ...state,
+          addUserPopupFlag : true
+        }
+      }
+      break;
+      case "CLOSE_ADD_USER_POPUP": {
+        return {
+          ...state,
+          addUserPopupFlag : false
         }
       }
       break;

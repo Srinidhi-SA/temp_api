@@ -208,3 +208,14 @@ export function updateCheckList(list){
 		list
 	}
 }
+//Actions for Manage User screen
+export function openAddUserPopup(){
+	return { 
+		type:"OPEN_ADD_USER_POPUP"
+	}
+}
+export function closeAddUserPopup(){
+	return { 
+		type:"CLOSE_ADD_USER_POPUP"
+	}
+}
