@@ -21,29 +21,41 @@
       <link rel="stylesheet" href="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css" type="text/css" />
    </head>
    <body>
-      <!-- Instructions Modal Popup -->
-      <div class="modal fade" id="create_newproject" tabindex="-1" role="dialog" aria-labelledby="CreateNewProject" aria-hidden="true">
+      <!-- Add User Modal Popup -->
+      <div class="modal fade" id="modal_adduser" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-			<div class="modal-header">
-				<h3>New Project</h3>
-			</div>
-               <div class="modal-body">			
-                  
-				   <form>
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Add User</h4>
+               </div>
+               <div class="modal-body xs-pt-20">
+                  <form>
                      <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                            <div class="form-group">
-                              <label for="pName" class="form-label">Project Name <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="pName" placeholder="Project Name">						 
+                              <label for="ufName" class="form-label">First Name <span class="text-danger">*</span></label>						 
+                              <input type="text" class="form-control" id="ufName" placeholder="First Name">						 
                            </div>
-                        </div> 
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="ulName" class="form-label">Last Name</label>					
+                              <input type="text" class="form-control" id="ulName" placeholder="Last Name">					
+                           </div>
+                        </div>
                      </div>
                      <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                            <div class="form-group">
                               <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com">						 
+                              <input type="text" class="form-control" id="uEmail" placeholder="Email">						 
+                           </div>
+                        </div>
+						<div class="col-md-6">
+                           <div class="form-group">
+                              <label for="uPassword" class="form-label">Password <span class="text-danger">*</span></label>						 
+                              <input type="text" class="form-control" id="uPassword" placeholder="Password">						 
                            </div>
                         </div>
                      </div>
@@ -53,16 +65,16 @@
                               <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
                               <ul class="list-unstyled">
                                  <li>
-                                    <div class="ma-radio inline"><input type="radio" checked name="roles_type" id="roles_type1"><label for="roles_type1">Admin</label></div>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad1"><label for="rad1">Admin</label></div>
                                  </li>
                                  <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type2"><label for="roles_type2">Reviewer L1</label></div>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad2"><label for="rad2">Reviewer L1</label></div>
                                  </li>
                                  <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Reviewer L2</label></div>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad3"><label for="rad3">Reviewer L2</label></div>
                                  </li>
                                  <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Superuser</label></div>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad4"><label for="rad4">Superuser</label></div>
                                  </li>
                               </ul>
                            </div>
@@ -71,44 +83,103 @@
                            <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
                            <ul class="list-unstyled">
                               <li>
-                                 <div class="ma-radio inline"><input type="radio" checked name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
+                                 <div class="ma-radio inline"><input type="radio" name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
                               </li>
                               <li>
-                                 <div class="ma-radio inline"><input type="radio"  name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
+                                 <div class="ma-radio inline"><input type="radio" name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
                               </li>
                            </ul>
                         </div>
                      </div>
+					 
+					<div class="row">
+                        <div class="col-md-12">
+						
+						<div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
+                           							
+                        </div>
+						
+						</div>
+						
                   </form>
-				  
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> 
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Add User</button>
                </div>
             </div>
          </div>
       </div>
-      <!-- End Instructions Modal Popup -->
-      <!-- Equal, Greater Than and Less Than Modal Popup -->
-      <div class="modal fade" id="modal_equal" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+      <!-- Edit User Modal Popup -->
+      <div class="modal fade" id="modal_edituser" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Equal</h4>
-               </div>
-               <div class="modal-body">
-                  <!-- Wrapper for slides -->
-                  <div class="form-group">
-                     <label for="txt_bscan">Enter the value:</label>
-                     <input type="text" class="form-control" id="txt_novalue" placeholder="Enter number">
-                  </div>
+                  <h4 class="modal-title">User Details</h4>
+				  
+				  
+               </div> <form>
+               <div class="modal-body xs-pt-20">
+					 
+					 
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="ufName" class="form-label">First Name <span class="text-danger">*</span></label>						 
+                              <input type="text" class="form-control" id="ufName" placeholder="First Name" value="Sejal" disabled>						 
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="ulName" class="form-label">Last Name</label>					
+                              <input type="text" class="form-control" id="ulName" placeholder="Last Name" value="Oroosh" disabled>					
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                           <div class="form-group">
+                              <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
+                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com" disabled>						 
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
+                              <select class="form-control" id="uRoles" disabled>
+								<option>Admin</option>
+								<option>Reviewer L1</option>
+								<option>Reviewer L2</option>
+								<option>Superuser</option>								
+							  </select>
+							  
+							  
+                           </div>
+                        </div>
+						 <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
+						   
+						    <select class="form-control" id="uRoles" disabled>
+								<option selected>Active</option>
+								<option>Inactive</option>						
+							  </select>
+						   
+                           
+                        </div>
+						</div>
+						</div>
+						
+                     
+                 
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
-               </div>
+			    <button class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+               </div> </form>
             </div>
          </div>
       </div>
@@ -189,65 +260,74 @@
                   <div class="tab-container">
                      <ul class="nav nav-tabs cst_ocr_tabs">
                         <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                        <li class="active"><a href="create_ocr_project.html"><i class="fa fa-book fa-lg"></i> Projects</a></li>
-                         <li class=""><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
+                        <li class=""><a href="create_ocr_project.html"><i class="fa fa-book fa-lg"></i> Projects</a></li>
+                        <li class="active"><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
                         <li class=""><a href="ocr_reviewers.html"><i class="fa fa-linode fa-lg"></i> Reviewers </a></li>
-                        <li class=""><a href="users.html"><i class="fa fa-user-o fa-lg"></i> Manage Users </a></li>
+                        <li class=""><a href="users.html"><i class="fa fa-user-o fa-lg"></i> Users </a></li>
                      </ul>
                   </div>
                   <div class="container-fluid">
-                     <div class="xs-mt-30"></div>
+                     
                      <div class="row">
-                        <div class="col-sm-6">
-                          <!-- <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">10 <br><small class="text-primary">PROJECTS</small></h4>
-                           <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">30 <br><small class="text-primary">DOCUMENETS</small></h4>
-                           <h4 class="xs-mt-0 inline-block box-shadow">15 <br><small class="text-primary">REVIEWERS</small></h4> -->
-                        
-			<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="create_ocr_project.html"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-			<li class="breadcrumb-item active"><a href="#">FormReturn OMR</a></li>
-			</ol>
+                        <div class="col-md-3 col-sm-12">
+							<h4 class="nText">Configure</h4>
+                        </div>
 						
-						</div>
-                        <div class="col-sm-6 text-right">
-                           
-                        </div>
+						 
+                        
                      </div>
-                     <!--  <div class="row">
-                        <div class="col-sm-6">
-                         
-                         
-                        </div>
-                             <div class="col-sm-6 text-right"> 
-                         <button class="btn btn-default disabled" id="btn_r1"><i class="fa fa-file-text"></i> Recognize</button> 
-                         
-                             </div> 
-                           </div> -->
                      <div class="xs-mt-20"></div>
-					 
-					
-					 
-			<div class="panel">
-			 
-			<div class="panel-body">
-				<div class="xs-mt-3 xs-mb-3 text-center">
-				 
-				<div class="icon-container">
-					<div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
-					<span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
-				</div>
-				 
-				 
-				</div>
-			</div>
-			</div>
-					 
-					 
-					
-                     
-					 
-                     
-				  </div>
+						<div class="row">
+							<div class="col-md-8">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="javascript:;">All</a></li>
+								<li><a href="javascript:;">Admin</a></li>
+								<li><a href="javascript:;">Superuser</a></li>
+								<li><a href="javascript:;">Reviewer L1</a></li>
+								<li><a href="javascript:;">Reviewer L2</a></li>
+							</ul>
+							</div>
+							 
+							<div class="col-md-4 col-sm-12 text-right">
+                           <div class="form-inline">
+                              <a class="btn btn-info btn-rounded xs-mr-10" data-toggle="modal" data-target="#modal_adduser" id="btn_ceate_user" title="Add User"><i class="fa fa-plus "></i> <i class="fa fa-user-o "></i></a> 
+                              <div class="form-group pull-right"><input type="text" id="search" class="form-control btn-rounded" placeholder="Search user..."></div>
+							
+							<div class="btn-group xs-mr-10">
+   <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span class="caret"></span></button>
+   <ul role="menu" class="dropdown-menu dropdown-menu-right">
+	  <li>
+         <a href="#">
+            <i class="fa fa-plus-circle text-primary"></i> Activate
+         </a>
+      </li>
+      <li>
+         <a href="#">
+            <i class="fa fa-minus-circle text-warning"></i> Deactivate
+         </a>
+      </li>
+      <li>
+         <a href="#">
+            <i class="fa fa-trash text-danger"></i> Delete
+         </a>
+      </li>
+   </ul>
+</div>
+
+						  </div>
+                        </div>
+							 
+						</div>
+                     <div class="row">
+                        <div class="col-sm-12">
+						 <div class="table-responsive">
+							
+                           Configure page
+						 </div>
+						</div>
+                     </div>
+					 <div class="xs-mb-20"></div>
+                  </div>
                </section>
             </div>
          </div>
@@ -262,57 +342,9 @@
       <script src="js/bootstrap-slider.js"></script>
       <script src="js/bootbox.min.js"></script>
       <script src="js/wow.min.js"></script>
+      <script type="text/javascript" src="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+      <script type="text/javascript" src="https://rawgit.com/wenzhixin/bootstrap-table/master/src/extensions/editable/bootstrap-table-editable.js"></script>
       <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
       <script src="js/uiScripts.js"></script>
-      <script>
-         wow = new WOW(
-         	{
-         		boxClass:     'wow',      // default
-         		animateClass: 'animated', // default
-         		offset:       0,          // default
-         		mobile:       true,       // default
-         		live:         true        // default
-         	}
-         )
-         wow.init();
-          
-         
-         setTimeout(function(){
-             $('#ocr_Instructions_modal').modal('hide')
-         }, 30000);
-         
-         function selectRow(row)
-         {
-             var firstInput = row.getElementsByTagName('input')[0];
-             firstInput.checked = !firstInput.checked;
-         	$("#btn_r1,#btn_r2").removeClass("disabled"); 
-         }
-         
-         $('table.cst_table .editCell').click(function () {
-             var cellId = [$(this).attr('class'), $(this).parent('tr').attr('id')];
-             
-             if ($(this).attr("contentEditable") == true) {
-                 console.debug('Cell', cellId, 'is now *not* editable');
-                 $(this).attr("contentEditable", "false");
-             } 
-             else {        
-                 console.debug('Cell', cellId, 'is now editable');
-                 $(this).attr("contentEditable", "true");
-                 $(this).select();
-             }
-         })
-         
-          
-               $(function(){
-                   $('#status1').editable({
-                       value: 2,    
-                       source: [
-                             {value: 1, text: 'Assignee 1'},
-                             {value: 2, text: 'Assignee 2'},
-                             {value: 3, text: 'Assignee 3'}
-                          ]
-                   });
-               }); 
-      </script>
    </body>
 </html>
