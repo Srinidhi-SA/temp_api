@@ -24,11 +24,11 @@ def ingestion_1(file_full_path, path):
 
     """
     try:
-        shutil.rmtree("./pdf_to_images_folder")
+        shutil.rmtree("./ocr/ITE/pdf_to_images_folder")
     except:
         pass
     try:
-        os.makedirs("./pdf_to_images_folder")
+        os.makedirs("./ocr/ITE/pdf_to_images_folder")
     except:
         pass
     filename, file_extension = os.path.splitext(file_full_path)
@@ -44,7 +44,7 @@ def ingestion_1(file_full_path, path):
                 index = index + 1
 
         elif file_extension == ".jpg" or file_extension == ".png" or file_extension == ".jpeg":
-            shutil.copy(file_full_path, "./pdf_to_images_folder/")
+            shutil.copy(file_full_path, "./ocr/ITE/pdf_to_images_folder/")
             # =============================================================================
             #             image_temp_to_save = Image.open(file_full_path)
             #             image_temp_to_save.save("/home/abishek/ocr/final_demo_file/image_1.png", 'PNG')
@@ -68,7 +68,7 @@ def ingestion_1(file_full_path, path):
                     index = index + 1
 
             elif file_extension == ".jpg" or file_extension == ".png" or file_extension == ".jpeg":
-                shutil.copy(file_full_path + "/" + i, "./pdf_to_images_folder/")
+                shutil.copy(file_full_path + "/" + i, "./ocr/ITE/pdf_to_images_folder/")
                 print(file_full_path + "/" + i)
                 # =============================================================================
                 #             image_temp_to_save = Image.open(file_full_path)

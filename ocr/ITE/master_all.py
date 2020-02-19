@@ -1,36 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# import intergrated_helper
-# import timesheet_templates_module
-# from timesheet_templates_module import *
-from ocr.ITE.master_helper import *
 from ocr.ITE.timesheet_templates2 import *
 from ocr.ITE.timesheet_templates1 import *
-from ocr.ITE.modularised_table_detection import *
-import os
-from ocr.ITE.rp import *
+from ocr.ITE.ocr_mods import *
 import json
 
 from ocr.ITE.transcript_module import intermediate_1, extract_metadata_transcript
 
+global analysis, google_response
 
-def main_for_all_modules(path):
-    # path= '/home/sainaththikkireddi/Documents/OCRP/All-OCR/OCR_Demo/Timesheet_09082019.jpg'
-    demo = True
 
-    print(os.getcwd())
-    image_name = path.split('/')[-1]
-    print(image_name)
+def analyse(path, image_slug):
+    image_name = path.split('/')[-1].split('.')[0]
 
     image = cv2.imread(path)
-    cv2.imwrite("ocr/ITE/demo_analysis/image_left.png", image)
+    original_image = "ocr/ITE/ir/{}_original_image.png".format(image_slug)
+    cv2.imwrite(original_image, image)
 
     wm = extract_whitepage_mask(image)
-    cv2.imwrite("ocr/ITE/demo_analysis/Page4_mask0.png", wm)
+    extracted_image = "ocr/ITE/ir/{}_mask.png".format(image_name)
+    cv2.imwrite(extracted_image, wm)
 
-    global analysis, google_response
-
+    demo = True
     if demo:
         print('*' * 50)
         print('Reading Analysis From Local')
@@ -44,9 +36,39 @@ def main_for_all_modules(path):
 
     google_response = detect_text(path)
     flag = process_template(analysis, image)
+    data, data2, data3, image_data, image_, mask = RPA(analysis, google_response, image_slug, image_name, extracted_image)
+    response = dict()
+    response['analysis'] = analysis
+    response['google_response'] = str(google_response.text_annotations)
+    response['flag'] = flag
+    response['original_image'] = original_image
+    response['extracted_image'] = extracted_image
+    response['data'] = data
+    response['data2'] = data2
+    response['data3'] = data3
+    return response
 
-    # analysis_new = RPA(analysis,google_response,image,"Page4_mask0.png")
-    # analysis = analysis_new
+
+def get_word_in_bounding_box(data2, x, y):
+
+    word = FindPoint1(x, y, data2)
+    print(word)
+    if word:
+        return word
+    else:
+        return None
+
+
+def finalize(path, analysis, analysis_list, flag):
+
+    analysis_new = updated_analysis(analysis, analysis_list)
+    with open('Updated_Analysis.json', 'w') as fp:
+        json.dump(analysis_new, fp, sort_keys=True, indent=4)
+    analysis = analysis_new
+
+    image_name = path.split('/')[-1].split('.')[0]
+
+    image = cv2.imread(path)
 
     d = {}
     d[image_name] = {}
@@ -72,7 +94,7 @@ def main_for_all_modules(path):
 
             imagepp = imagepp.astype('uint8')
             json_final = run_all(imagepp, analysis, path)
-            return flag, json_final, d
+            return flag, json_final, d, analysis
 
     elif flag[0] == 'Transcript':
 
@@ -84,31 +106,11 @@ def main_for_all_modules(path):
 
         x, y = intermediate_1(analysis, path)  # x WILL HAVE ALL SEMDETAILS IN DFS
 
-        return flag, x, d
+        return flag, x, d, analysis
 
     else:  # BASE MODULE
 
-        _, metadata = tp_run_all(path, analysis)
+        all_final_json, metadata = tp_run_all(path, analysis)
         d[image_name]['Metadata'] = metadata
-        # analysis_new = RPA(analysis,google_response,image,wm)          ## RPA MODULE WIP
-        # json,_ = tp_run_all(path,analysis)
-        # print('*'*50)
-        # print("all_json")
-        # print(_)
-        # print('*'*50)
-        new_json = {path: {}}
-        for n, x in enumerate(metadata[path]['order']):
-            if x[0] == 'p':
-                new_json[path][n] = {}
-                new_json[path][n]['data'] = _[path]["paragraphs"]['p_' + x[2]]
-                new_json[path][n]['type'] = 'para'
-            else:
-                new_json[path][n] = {}
-                new_json[path][n]['data'] = _[path]["tables"][int(x[2])]
-                new_json[path][n]['type'] = 'table'
-        with open('ocr/ITE/demo_analysis/ordered.json', 'w') as fp:
-            json.dump(new_json, fp)
 
-        return flag, _, metadata
-
-# domain_classification_flag,needed_json_final,meta_data_of_the_page=main_for_all_modules('/home/abishek/ocr/timesheet/aakarsha kasturi.png')
+        return flag, all_final_json, metadata, analysis

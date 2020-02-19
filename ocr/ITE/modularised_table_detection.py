@@ -600,14 +600,14 @@ def tp_main(image_with_path_for_cpy, blured_table, analysis):
     #     f = open('out.json', 'w')
     #     f.write(json.dumps(all_JSON, indent=4))
     #     f.close()
-    with open('ocr/ITE/demo_analysis/all_final_json.json', 'w+') as f:
+    with open('ocr/ITE/ir/all_final_json.json', 'w+') as f:
         try:
             data = json.load(f)
         except:
             data = {}
         for x in all_JSON:
             data[x] = all_JSON[x]
-    with open('ocr/ITE/demo_analysis/all_final_json.json', 'w') as fp:
+    with open('ocr/ITE/ir/all_final_json.json', 'w') as fp:
         json.dump(data, fp)
 
     print(all_JSON)
