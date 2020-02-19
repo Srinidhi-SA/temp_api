@@ -74,7 +74,7 @@ class OCRImageSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSerializer
         """
         model = OCRImage
-        fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by', 'project']
+        fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by', 'project', 'generated_image']
 
 
 class OCRImageListSerializer(serializers.ModelSerializer):
@@ -104,6 +104,35 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         """
         model = OCRImage
         fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile']
+
+
+class OCRImageExtractListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageListSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageExtractListSerializer, self).to_representation(instance)
+        # ret['brief_info'] = instance.get_brief_info()
+
+        # permission details
+        # permission_details = get_permissions(
+        #     user=self.context['request'].user,
+        #     model=self.Meta.model.__name__.lower(),
+        # )
+        # ret['permission_details'] = permission_details
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
+        model = OCRImage
+        fields = ['imagefile', 'generated_image']
 
 
 class OCRImageSetSerializer(serializers.ModelSerializer):

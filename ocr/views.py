@@ -40,7 +40,7 @@ from celery.result import AsyncResult
 from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
     OCRImageSetSerializer, \
-    OCRImageSetListSerializer, ProjectSerializer, ProjectListSerializer
+    OCRImageSetListSerializer, ProjectSerializer, ProjectListSerializer, OCRImageExtractListSerializer
 # ------------------------------------------------------------
 
 # ---------------------PAGINATION----------------------------
@@ -314,6 +314,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 OCRImage.objects.filter(slug=slug).update(flag=json.dumps(response['flag']))
                 OCRImage.objects.filter(slug=slug).update(analysis=json.dumps(response['analysis']))
                 OCRImage.objects.filter(slug=slug).update(status='Ready to verify.')
+                OCRImage.objects.filter(slug=slug).update(generated_image=File(name='{}_generated_image.png'.format(slug), file=open(response['extracted_image'])))
                 response.update({'message': 'SUCCESS'})
 
         response = {'extraction_info': response}
@@ -321,9 +322,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     @list_route(methods=['get'])
     def get_images(self, request, *args, **kwargs):
-        data = request.data
-        response = {'original_image': '{}_original_image.png'.format(data['imageslug']), 'generated_image': '{}_gen_image.png'.format(data['imageslug'])}
-        return JsonResponse(response)
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageExtractListSerializer
+        )
 
     @list_route(methods=['get'])
     def get_word(self, request, *args, **kwargs):

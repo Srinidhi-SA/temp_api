@@ -166,6 +166,7 @@ class OCRImage(models.Model):
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
+    generated_image = models.FileField(null=True, upload_to='ocrData')
     comparision_data = models.TextField(max_length=300000, default="", null=True)
     converted_Coordinates = models.TextField(max_length=300000, default="", null=True)
     analysis_list = models.TextField(max_length=300000, default="", null=True)

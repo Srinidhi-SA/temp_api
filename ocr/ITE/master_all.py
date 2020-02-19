@@ -42,7 +42,7 @@ def analyse(path, image_slug):
     response['google_response'] = str(google_response.text_annotations)
     response['flag'] = flag
     response['original_image'] = original_image
-    response['extracted_image'] = extracted_image
+    response['extracted_image'] = mask
     response['data'] = data
     response['data2'] = data2
     response['data3'] = data3

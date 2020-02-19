@@ -313,6 +313,7 @@ def plot(image, data3, image_slug):
             ax.axes.add_patch(patch)
     # print(os.getcwd())
     plt.savefig(os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_gen_image.png', bbox_inches='tight', pad_inches=0)
+    return os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_gen_image.png'
 
 
 #####################################################################################################################################
