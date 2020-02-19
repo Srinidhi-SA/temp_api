@@ -219,3 +219,26 @@ export function closeAddUserPopup(){
 		type:"CLOSE_ADD_USER_POPUP"
 	}
 }
+export function saveNewUserDetailsAction(name,value){
+	return {
+		type:"SAVE_NEW_USER_DETAILS",name,value
+	}
+}
+export function createNewUserAction(userDetails){
+	return (dispatch) => {
+		return createNewUserAPI(userDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				console.log("Success",json)
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function createNewUserAPI(data,token){
+	return fetch(API,{
+		method : "post",
+		headers : getHeaderForJson(token),
+		body:JSON.stringify(data)
+	}).then(response => Promise.all([response,response.json()]));
+}

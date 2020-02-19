@@ -20,7 +20,9 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   checked_list: '',
-  addUserPopupFlag : false,
+  addUserPopupFlag : true,
+  createUserFlag : false,
+  newUserDetails : {}
 
 }, action) {
   switch (action.type) {
@@ -194,6 +196,15 @@ export default function reducer(state = {
         return {
           ...state,
           addUserPopupFlag : false
+        }
+      }
+      break;
+      case "SAVE_NEW_USER_DETAILS": {
+        let curUserDetails = state.newUserDetails;
+        curUserDetails[action.name] = action.value
+        return {
+          ...state,
+          newUserDetails : curUserDetails
         }
       }
       break;

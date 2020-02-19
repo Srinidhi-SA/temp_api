@@ -22452,3 +22452,20 @@ ul.ocrUploadTabs{
   margin-left: 5px;
   display: inline-block;
 }
+#addUsers {
+  height: 300px;
+  padding:0px;
+}
+.createUser,.createUserProfile{
+  margin: 0px;
+  padding: 20px 20px 20px 10px;
+}
+.ocrUserFormGroup{
+  padding: 0px;
+  padding-bottom: 20px;
+}
+.ocrUserFormInput{
+  border: 1px solid #cdcdcd;
+  height: 32px;
+  font-size: 12px;
+}
