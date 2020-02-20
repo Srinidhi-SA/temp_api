@@ -571,6 +571,20 @@ export class PyTorch extends React.Component {
                                 </div>
                             );
                         break;
+                        case "weight":
+                            let inputFormat = /((\d*)?\.\d+)+(\s*,\s*((\d*)?\.\d+))+/ ;
+                                arr1.push(
+                                    <div className = "row mb-20">
+                                        <label className = "col-md-2 mandate">{item[i].displayName}Hereee</label>
+                                        <label className = "col-md-4">{item[i].description}</label>
+                                        <div className = "col-md-1">
+                                            <input type ="text" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
+                                        </div>
+                                    </div>
+                                );
+                            break;
+                        break;
                         default :
                             if(store.getState().apps.pyTorchSubParams[parameterData] === undefined){
                                 var defVal = ""
