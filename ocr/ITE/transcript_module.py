@@ -48,27 +48,10 @@ def gui_fname(dir=None):
     return fname[0]
 
 
-# In[27]:
-
-
-# image_name = 'mass__deskewed'
-
-# analysis = text_from_Azure_API(image_name)
-
-# x,y = intermediate_1(analysis,'mass__deskewed')
-
-# x
-
-
-# # FUNCTIONS
-
-# In[3]:
-
 
 def extract_metadata_transcript(analysis,image_name):
 
     polygons = []
-
 
     if ("recognitionResults" in analysis):
         polygons = [(line["boundingBox"], line["text"]) for line in analysis["recognitionResults"][0]["lines"]]
@@ -107,11 +90,6 @@ def extract_metadata_transcript(analysis,image_name):
         for i,page in enumerate(sem_info_list):
             page_sems = list(sem_info_list[i].keys())
             semesters = semesters + page_sems
-            # print('sem_info[page]')
-            # print(sem_info[page])
-            # print('*'*50)
-            # print('[list(sem_info[page].keys())')
-            # print([list(sem_info[page].keys())])
             headers_lines.append(sem_info_list[i][page_sems[0]]['sem_header_1'][1])
             header_cords.append([p1_p3_list[i][line][0] if line == headers_lines[i][0] else p1_p3_list[i][line][1] for line in headers_lines[i] if line in [headers_lines[i][0],headers_lines[i][-1]]])
 
@@ -131,18 +109,10 @@ def extract_metadata_transcript(analysis,image_name):
             wc[i+1] = [(word['boundingBox'],word['text']) for word in line['words']]
 
         sem_info,p1_p3 = extract_data(polygons,type = 1,wor_cor = None ,shape = image.shape,metadata = True)
-#         print(typ,'\n',sem_info)
-#         return sem_info
-        # print('*'*50,p1_p3,'*'*50)
-    ## METADATA
 
         semesters =  list(sem_info.keys())
         header_lines = sem_info[semesters[0]]['sem_header_1'][1]   ## FIRST SEMESTER FROM PAGE
         header_cord = [p1_p3[line][0] if line == header_lines[0] else p1_p3[line][1] for line in header_lines if line in [header_lines[0],header_lines[-1]]]
-        print('*'*50)
-        print('header_cord')
-        print(header_cord)
-        print('*'*50)
 
         d= {}
         d['TYPE'] = typ
@@ -184,7 +154,7 @@ def intermediate_1(analysis,image_name,return_sem_info = False):
         polygons = [(line["boundingBox"], line["text"]) for line in analysis["recognitionResults"][0]["lines"]]
 
     image = cv2.imread(image_name)
-
+    image_name_only = image_name.split('/')[-1].split('.')[0]
     h,w,z = image.shape
 
     if check_template(polygons,w):
@@ -203,7 +173,10 @@ def intermediate_1(analysis,image_name,return_sem_info = False):
 
         full_info,transcript_info = extract_data(pages,type = 2,wor_cor = [wc_1,wc_2],shape = image.shape)
         print(full_info,transcript_info)
-        f = open( 'file.txt', 'w' )
+        # print(os.getcwd())
+        # import sys
+        # sys.exit()
+        f = open(os.getcwd() +'/ocr/ITE/ir/' + image_name_only + '_transcript_data.txt', 'w')
         for l in  full_info:
             f.writelines(str(l))
 
@@ -214,7 +187,7 @@ def intermediate_1(analysis,image_name,return_sem_info = False):
             wc[i+1] = [(word['boundingBox'],word['text']) for word in line['words']]
 
         full_info,transcript_info = extract_data(polygons,type = 1,wor_cor  = wc,shape = image.shape)
-        f = open( 'file.txt', 'w' )
+        f = open(os.getcwd() +'/ocr/ITE/ir/' + image_name_only + '_transcript_data.txt', 'w')
         for l in  full_info:
             f.writelines(str(l))
         return full_info,transcript_info
@@ -225,13 +198,8 @@ def intermediate_1(analysis,image_name,return_sem_info = False):
 
 def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata = False):
 
-
     transcript_info = {}
     sem_info = {}
-    print('*'*50)
-    print(type)
-    print('*'*50)
-
     if type == 2:
 
 #         wc = wor_cor[page]
@@ -279,25 +247,10 @@ def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata =
                         cl = get_same_line_words(p1_p3,line_number,current_depth)
 
                     clubbed_lines = [line_number] + cl +clubbed_lines
-            #         print(clubbed_lines)
-            #         sys.exit()
-
-        #             line_widths['line_'+str(l)]  = width_poly[line_number]+sum([width_poly[line_number] for line_number in cl])
-        #             l = l+1
-
                     sl = [line_number] + cl
-
                     d = {k:starting_point[k] for k in sl}
-
                     sl = sorted(d, key=d.get)            ## LINE NUMBERS
-
-        #             same_line[line_number] = sl                         ## ADDED NEW
-
                     x =[lines_api[line_number] for line_number in sl]   ### LINE
-
-        #             loc = []
-        #             print(x)
-        #             header = set('Attempted','Scored','Points')
 
                     if ([re.match(r'.*([2][0][0-9]{2})',line) for line in x] +                          [re.match(r'.*([1][9][0-9]{2})',line) for line in x] != [None]*2*len(x))                     and ([re.match(r'.*(Fall|Spring|Summer|Term)',word) for word in x] != [None]*len(x))                     and ([re.match(r'.*(/)',word) for word in x] == [None]*len(x)):
 
@@ -311,10 +264,6 @@ def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata =
 
                         info = x[0].split(':')
                         transcript_info[info[0]] = info[1]
-
-        #                 else:
-        #                     transcript_info['Heading_'+str(h)] = x[0]
-
                         lines['Heading_'+str(h)] = x
                         h = h+1
 
@@ -370,11 +319,9 @@ def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata =
                 sem_info_list.append(sem_info)
                 p1_p3_list.append(p1_p3)
             full_info.append(clean_info(sem_info,lines_api,wc,p1_p3))
-#             print(sem_info)
+
         if metadata == True: return sem_info_list,p1_p3_list
-        # f = open( 'file.txt', 'w' )
-        # for l in  full_info:
-        #     f.writelines(str(l))
+
 
 
         return full_info,transcript_info
@@ -420,25 +367,10 @@ def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata =
                 cl = get_same_line_words(p1_p3,line_number,current_depth)
 
                 clubbed_lines = [line_number] + cl +clubbed_lines
-        #         print(clubbed_lines)
-        #         sys.exit()
-
-    #             line_widths['line_'+str(l)]  = width_poly[line_number]+sum([width_poly[line_number] for line_number in cl])
-    #             l = l+1
-
                 sl = [line_number] + cl
-
                 d = {k:starting_point[k] for k in sl}
-
                 sl = sorted(d, key=d.get)            ## LINE NUMBERS
-
-    #             same_line[line_number] = sl                         ## ADDED NEW
-
                 x =[lines_api[line_number] for line_number in sl]   ### LINE
-
-    #             loc = []
-    #             print(x)
-    #             header = set('Attempted','Scored','Points')
 
                 if ([re.match(r'.*([2][0][0-9]{2})',line) for line in x] +                      [re.match(r'.*([1][9][0-9]{2})',line) for line in x] != [None]*2*len(x))                 and ([re.match(r'.*(Fall|Spring|Summer|Term)',word) for word in x] != [None]*len(x))                 and ([re.match(r'.*(/)',word) for word in x] == [None]*len(x)):
 
@@ -452,11 +384,6 @@ def extract_data(pages_or_polygons,type = 1,wor_cor = None ,shape = 0,metadata =
 
                     info = x[0].split(':')
                     transcript_info[info[0]] = info[1]
-
-    #                 else:
-    #                     transcript_info['Heading_'+str(h)] = x[0]
-
-
                     lines['Heading_'+str(h)] = x
                     h = h+1
 

@@ -58,7 +58,6 @@ class OCRUserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
-
     def generate_slug(self):
         """generate slug"""
         if not self.slug:
@@ -90,6 +89,39 @@ def send_email(sender, instance, created, **kwargs):
 
 post_save.connect(send_email, sender=OCRUserProfile)
 
+class Project(models.Model):
+    """
+    Model :
+    Viewset :
+    Serializers :
+    Router :
+    Description :
+    """
+    name = models.CharField(max_length=100, null=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(User, null=True, db_index=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in ["Project", self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        """generate slug"""
+        if not self.slug:
+            self.slug = slugify(str(self.name) + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+            self.name = "ocrproject-" + self.slug
+
+    def save(self, *args, **kwargs):
+        """Save Project model"""
+        self.generate_slug()
+        super(Project, self).save(*args, **kwargs)
+
+    def create(self):
+        """Create Project model"""
+        self.save()
+
 class OCRImageset(models.Model):
     """
     Model :
@@ -117,7 +149,7 @@ class OCRImageset(models.Model):
             self.name = "imgset-" + self.slug
 
     def save(self, *args, **kwargs):
-        """Save OCRImage model"""
+        """Save OCRImageset model"""
         self.generate_slug()
         super(OCRImageset, self).save(*args, **kwargs)
 
@@ -145,6 +177,7 @@ class OCRImage(models.Model):
         FileExtensionValidator(allowed_extensions=validators.VALID_EXTENSIONS,
                                message=validators.VALIDATION_ERROR_MESSAGE)])
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
+    project = models.ForeignKey(Project, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)
     datasource_details = models.CharField(max_length=3000, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -153,6 +186,13 @@ class OCRImage(models.Model):
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
+    generated_image = models.FileField(null=True, upload_to='ocrData')
+    comparision_data = models.TextField(max_length=300000, default="", null=True)
+    converted_Coordinates = models.TextField(max_length=300000, default="", null=True)
+    analysis_list = models.TextField(max_length=300000, default="", null=True)
+    analysis = models.TextField(max_length=300000, default="", null=True)
+    flag = models.CharField(max_length=300, default="", null=True)
+    final_result = models.TextField(max_length=300000, default="", null=True)
     is_recognized = models.BooleanField(default=False)
 
     def __str__(self):

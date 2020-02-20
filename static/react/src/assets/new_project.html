@@ -27,10 +27,10 @@
             <div class="modal-content">
 			<div class="modal-header">
 				<h3>New Project</h3>
-			</div><form method="POST" action="new_project.html">
+			</div>
                <div class="modal-body">			
                   
-				   
+				   <form>
                      <div class="row">
                         <div class="col-md-12">
                            <div class="form-group">
@@ -42,33 +42,50 @@
                      <div class="row">
                         <div class="col-md-12">
                            <div class="form-group">
-                              <label for="uEmail" class="form-label">Project Type </label>						 
-                             	<select class="form-control">
-								<option>Select</option>
-									<option>Financial Services</option>
-									<option>Medical, Health</option>
-									<option>Web & Tech</option>
-									<option>Marketing and Customer Experience</option>
-								</select>				 
+                              <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
+                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com">						 
                            </div>
                         </div>
                      </div>
-                    <div class="row">
-                        <div class="col-md-12">
+                     <div class="row">
+                        <div class="col-md-6">
                            <div class="form-group">
-                              <label for="pLead" class="form-label">Project Lead</label>						 
-                              <input type="text" class="form-control" id="pLead" placeholder="Lead Name">						 
+                              <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
+                              <ul class="list-unstyled">
+                                 <li>
+                                    <div class="ma-radio inline"><input type="radio" checked name="roles_type" id="roles_type1"><label for="roles_type1">Admin</label></div>
+                                 </li>
+                                 <li>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type2"><label for="roles_type2">Reviewer L1</label></div>
+                                 </li>
+                                 <li>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Reviewer L2</label></div>
+                                 </li>
+                                 <li>
+                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="roles_type3"><label for="roles_type3">Superuser</label></div>
+                                 </li>
+                              </ul>
                            </div>
-                        </div> 
+                        </div>
+                        <div class="form-group">
+                           <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
+                           <ul class="list-unstyled">
+                              <li>
+                                 <div class="ma-radio inline"><input type="radio" checked name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
+                              </li>
+                              <li>
+                                 <div class="ma-radio inline"><input type="radio"  name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
+                              </li>
+                           </ul>
+                        </div>
                      </div>
-                 
+                  </form>
 				  
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> 
-                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
                </div>
-			   </form>
             </div>
          </div>
       </div>
@@ -173,7 +190,7 @@
                      <ul class="nav nav-tabs cst_ocr_tabs">
                         <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
                         <li class="active"><a href="create_ocr_project.html"><i class="fa fa-book fa-lg"></i> Projects</a></li>
-                        <li class=""><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
+                         <li class=""><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
                         <li class=""><a href="ocr_reviewers.html"><i class="fa fa-users fa-lg"></i> Reviewers </a></li>
                         <li class=""><a href="users.html"><i class="fa fa-user fa-lg"></i> Manage Users </a></li>
                      </ul>
@@ -182,43 +199,18 @@
                      <div class="xs-mt-30"></div>
                      <div class="row">
                         <div class="col-sm-6">
-                           <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">10 <br><small class="text-primary">PROJECTS</small></h4>
-                           <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">30 <br><small class="text-primary">DOCUMENTS</small></h4>
-                           <h4 class="xs-mt-0 inline-block box-shadow">15 <br><small class="text-primary">REVIEWERS</small></h4>
-                        </div>
+                          <!-- <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">10 <br><small class="text-primary">PROJECTS</small></h4>
+                           <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">30 <br><small class="text-primary">DOCUMENETS</small></h4>
+                           <h4 class="xs-mt-0 inline-block box-shadow">15 <br><small class="text-primary">REVIEWERS</small></h4> -->
+                        
+			<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="create_ocr_project.html"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+			<li class="breadcrumb-item active"><a href="#">FormReturn OMR</a></li>
+			</ol>
+						
+						</div>
                         <div class="col-sm-6 text-right">
-                           <div class="form-inline">
-                              <a class="btn btn-info btn-rounded xs-mr-5" data-toggle="modal" data-target="#create_newproject" id="btn_ceate_project" title="Create Project"><i class="fa fa-plus "></i></a>
-                              <div class="form-group xs-mr-5">
-                                 <input type="text" id="search" class="form-control btn-rounded" placeholder="Search project...">
-                              </div>
-                             <!-- 
-                              <div class="btn-group">
-                                 <button type="button" title="Sorting" class="btn btn-default btn-rounded dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
-                                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                       <a href="#">
-                                       <i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending
-                                       </a>
-                                    </li>
-                                    <li>
-                                       <a href="#">
-                                       <i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending 
-                                       </a>
-                                    </li>
-                                    <li>
-                                       <a href="#">
-                                       <i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending
-                                       </a>
-                                    </li>
-                                    <li>
-                                       <a href="#">
-                                       <i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending
-                                       </a>
-                                    </li>
-                                 </ul>
-                              </div> -->
-                           </div>
+                           
                         </div>
                      </div>
                      <!--  <div class="row">
@@ -233,112 +225,26 @@
                            </div> -->
                      <div class="xs-mt-20"></div>
 					 
+					
+					 
+			<div class="panel">
+			 
+			<div class="panel-body">
+				<div class="xs-mt-3 xs-mb-3 text-center">
+				 
+				<div class="icon-container">
+					<div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
+					<span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
+				</div>
+				 
+				 
+				</div>
+			</div>
+			</div>
 					 
 					 
-					  <div class="table-responsive">
-                        <table class="table table-condensed table-hover cst_table ">
-                           <thead>
-                              <tr>
-									<th></th>
-                                 <th>Poject Name</th>
-                                 <th>Created At</th>
-                                 <th>Workflows</th>                                 
-                                 <th>Last Update</th>
-								 <th>Complete %</th>
-                              </tr>
-                           </thead>
-                           <tbody class="no-border-x">
-                              <tr onclick="selectRow(this)">
-                                <td class="text-center"><i class="fa fa-briefcase"></i></td>
-                                 <td>
-                                    <a href="view_project.html"> FormReturn OMR</a>
-                                 </td>
-                                 <td>
-                                    10/02/2020				 
-                                 </td>
-                                 <td>
-                                    10
-                                 </td>
-                                 <td>
-                                    12/02/2020
-                                 </td>								 
-                                 <td>
-                                    10%
-                                 </td>
-                              </tr>
-                              <tr onclick="selectRow(this)">
-                                 <td class="text-center"><i class="fa fa-briefcase"></i></td> 
-                                 <td>
-                                    <a href="view_project.html"> PDF OCR X</a>
-                                 </td>
-                                 <td>
-                                    01/01/2020					 
-                                 </td>
-                                 <td>
-                                    10
-                                 </td>                                
-                                 <td>
-                                    04/01/2020
-                                 </td>
-								  <td>
-                                    40%
-                                 </td>
-                              </tr>
-                              <tr>
-                                  <td class="text-center"><i class="fa fa-briefcase"></i></td>
-                                 <td>
-                                    <a href="view_project.html"> FuzzyOcr</a>
-                                 </td>
-                                 <td>
-                                     				 
-                                 </td>
-                                 <td>
-                                    10
-                                 </td>
-                               
-                                 <td>
-                                     
-                                 </td>
-								   <td>
-                                    80%
-                                 </td>
-                              </tr>
-                              <tr >
-                                 <td class="text-center"><i class="fa fa-briefcase"></i></td>
-                                 <td>
-                                    <a href="view_project.html"> OCRKit</a>
-                                 </td>
-                                 <td>
-                                    			 
-                                 </td>
-                                 <td>
-                                    10
-                                 </td>                                 
-                                 <td>
-                                     
-                                 </td>
-								 <td>
-                                    100%
-                                 </td>
-                              </tr>
-                           </tbody>
-                        </table>
-                     </div>
-                     <div class="ma-datatable-footer" id="idSignalPagination">
-                        <div class="dataTables_paginate">
-                           <ul class="pagination pagination-md">
-                              <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="First">«</span></a></li>
-                              <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="Previous">‹</span></a></li>
-                              <li class="active"><a role="button" href="#">1</a></li>
-                              <li class=""><a role="button" href="#">2</a></li>
-                              <li class=""><a role="button" href="#">3</a></li>
-                              <li class=""><a role="button" href="#"><span aria-label="Next">›</span></a></li>
-                              <li class=""><a role="button" href="#"><span aria-label="Last">»</span></a></li>
-                           </ul>
-                        </div>
-                     </div>
-					 
-					 
+					
+                     
 					 
                      
 				  </div>

@@ -5,7 +5,8 @@
 from rest_framework import serializers
 
 from api.user_helper import UserSerializer
-from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType
+from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, \
+    Project
 from django.contrib.auth.models import User
 
 # -------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ class OCRImageSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSerializer
         """
         model = OCRImage
-        fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by',]
+        fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by', 'project', 'generated_image']
 
 
 class OCRImageListSerializer(serializers.ModelSerializer):
@@ -104,6 +105,35 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         """
         model = OCRImage
         fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile']
+
+
+class OCRImageExtractListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageListSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageExtractListSerializer, self).to_representation(instance)
+        # ret['brief_info'] = instance.get_brief_info()
+
+        # permission details
+        # permission_details = get_permissions(
+        #     user=self.context['request'].user,
+        #     model=self.Meta.model.__name__.lower(),
+        # )
+        # ret['permission_details'] = permission_details
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
+        model = OCRImage
+        fields = ['imagefile', 'generated_image']
 
 
 class OCRImageSetSerializer(serializers.ModelSerializer):
@@ -203,15 +233,34 @@ class OCRUserSerializer(serializers.ModelSerializer):
     """
     def to_representation(self, instance):
         serialized_data = super(OCRUserSerializer, self).to_representation(instance)
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data
+
+        return serialized_data
+    """
+    """
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+
+class ProjectSerializer(serializers.ModelSerializer):
+    """
+        *Serializers*
+    -------------------------------------------------
+    Model : OCRImageset
+    Viewset : OCRImagesetView
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(ProjectSerializer, self).to_representation(instance)
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data
 
         return serialized_data
 
     class Meta:
         """
-        Meta class definition for OCRUserProfileSerializer
         """
-        model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+        model = Project
+        fields = ['name', 'slug', 'deleted', 'created_at', 'created_by']
 
 
 class OCRUserListSerializer(serializers.ModelSerializer):
@@ -251,3 +300,23 @@ class ReviewerTypeSerializer(serializers.ModelSerializer):
         """
         model = ReviewerType
         fields = ("type",)
+
+class ProjectListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImageset
+    -------------------------------------------------
+    Model : OCRImageset
+    List Serializer : OCRImageSetListSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(ProjectListSerializer, self).to_representation(instance)
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageSetListSerializer
+        """
+        model = Project
+        fields = ['slug', 'name']

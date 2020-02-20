@@ -5,8 +5,7 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # from ocr import views
-from ocr.views import ocr_datasource_config_list
-#, register_ocr_user
+from ocr.views import ocr_datasource_config_list, ProjectView
 from ocr.views import OCRImageView, OCRImagesetView, OCRUserView, \
     OCRUserProfileView, ReviewerTypeListView
 
@@ -44,6 +43,11 @@ router.register(
     OCRUserProfileView,
     base_name='userprofile'
 )
+router.register(
+    'project',
+    ProjectView,
+    base_name='projects'
+)    
 
 urlpatterns = [
     url(r'^datasource/ocr_datasource_config_list$', ocr_datasource_config_list, name="ocr_datasource_config_list"),
