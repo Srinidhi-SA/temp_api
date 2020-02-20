@@ -297,10 +297,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        response = list()
+        results = list()
 
-        if 'imageslug' in data:
-            for slug in ast.literal_eval(str(data['imageslug'])):
+        if 'slug' in data:
+            for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
@@ -309,16 +309,23 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if res.status == 'SUCCESS':
                         response = res.result
                         break
-                OCRImage.objects.filter(slug=slug).update(converted_Coordinates=json.dumps(response['data2']))
-                OCRImage.objects.filter(slug=slug).update(comparision_data=json.dumps(response['data3']))
-                OCRImage.objects.filter(slug=slug).update(flag=json.dumps(response['flag']))
-                OCRImage.objects.filter(slug=slug).update(analysis=json.dumps(response['analysis']))
-                OCRImage.objects.filter(slug=slug).update(status='Ready to verify.')
-                OCRImage.objects.filter(slug=slug).update(generated_image=File(name='{}_generated_image.png'.format(slug), file=open(response['extracted_image'])))
-                response.update({'message': 'SUCCESS'})
 
-        response = {'extraction_info': response}
-        return JsonResponse(response)
+                del data['slug']
+                data['converted_Coordinates'] = json.dumps(response['data2'])
+                data['comparision_data'] = json.dumps(response['data3'])
+                data['flag'] = json.dumps(response['flag'])
+                data['analysis'] = json.dumps(response['analysis'])
+                data['status'] = 2
+                data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
+                                               file=open(response['extracted_image'], 'rb'))
+
+                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                 context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+                    results.append(serializer.data)
+                results.append(serializer.errors)
+        return Response(results)
 
     @list_route(methods=['get'])
     def get_images(self, request, *args, **kwargs):
@@ -335,7 +342,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
         response = get_word.delay(converted_Coordinates, x, y)
@@ -353,7 +360,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         index = data['index']
         word = data['word']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
 
         response = update_words.delay(index, word, comparision_data)
@@ -364,13 +371,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 response, analysis_list = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+
+        data['comparision_data'] = json.dumps(response)
+
         if 'analysis_list' in request.session:
-            request.session['analysis_list'].append(analysis_list)
+            request.session['analysis_list'].extend(analysis_list)
         else:
             request.session['analysis_list'] = analysis_list
-        OCRImage.objects.filter(slug=data['imageslug']).update(analysis_list=json.dumps(request.session['analysis_list']))
-        return JsonResponse({'message': 'done'})
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
     @list_route(methods=['get'])
     def not_clear(self, request, *args, **kwargs):
@@ -378,7 +392,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         index = data['index']
         word = data['word']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
 
         response = word_not_clear.delay(index, word, comparision_data)
@@ -389,21 +403,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 response, analysis_list = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+
+        data['comparision_data'] = json.dumps(response)
+
         if 'analysis_list' in request.session:
-            request.session['analysis_list'].append(analysis_list)
+            request.session['analysis_list'].extend(analysis_list)
         else:
             request.session['analysis_list'] = analysis_list
-        OCRImage.objects.filter(slug=data['imageslug']).update(
-            analysis_list=json.dumps(request.session['analysis_list']))
-
-        return JsonResponse({'message': 'done'})
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
     @list_route(methods=['get'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         analysis = json.loads(image_queryset.analysis)
 
         response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
@@ -416,13 +435,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 flag, json_final, metadata, analysis = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(analysis=json.dumps(analysis))
-        if flag == 'Transcript':
-            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=str(json_final))
-        else:
-            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=json.dumps(json_final))
 
-        return JsonResponse({'message': 'done'})
+        data['analysis'] = json.dumps(analysis)
+        if flag == 'Transcript':
+            data['final_result'] = str(json_final)
+        else:
+            data['final_result'] = json.dumps(json_final)
+
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -563,4 +588,3 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             response['project_serializer_message'] = 'FAILED'
 
         return JsonResponse(response)
-

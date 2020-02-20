@@ -74,7 +74,8 @@ class OCRImageSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSerializer
         """
         model = OCRImage
-        fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by', 'project', 'generated_image']
+        # fields = ['slug', 'name', 'imagefile', 'datasource_type', 'imageset', 'status', 'confidence', 'comment', 'created_at', 'created_by', 'project', 'generated_image', ]
+        exclude = ['id']
 
 
 class OCRImageListSerializer(serializers.ModelSerializer):

@@ -147,9 +147,9 @@ class OCRImage(models.Model):
     Description :
     """
     STATUS_CHOICES = [
-        ('1', 'Ready to recognize.'),
-        ('2', 'Ready to verify.'),
-        ('3', 'Ready to export.'),
+        ("1", "Ready to recognize."),
+        ("2", "Ready to verify."),
+        ("3", "Ready to export.")
     ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
