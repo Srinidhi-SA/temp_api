@@ -13,6 +13,10 @@ export function getHeaderForJson(token) {
 	return { Authorization: token, 'Content-Type': 'application/json' };
   }
 
+  export function getHeaderForUser(token) {
+	return { Authorization: token, 'Content-Type': 'form-data' };
+  }
+
 export function saveOcrFilesToStore(files) {
 	return {
 		type: "OCR_UPLOAD_FILE",
@@ -236,9 +240,13 @@ export function createNewUserAction(userDetails){
 	}
 }
 function createNewUserAPI(data,token){
-	return fetch(API,{
+	return fetch(API+"/ocr/user/",{
 		method : "post",
-		headers : getHeaderForJson(token),
+		headers : getHeaderForUser(token),
 		body:JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
+
+// getMethod->ocr/user/ ->no body
+//delete Method ->ocr/user/ -> body:{"userName":"abc"} ->response ->{message:"" deleted:""}
+//edit Later

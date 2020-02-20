@@ -20,7 +20,7 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   checked_list: '',
-  addUserPopupFlag : true,
+  addUserPopupFlag : false,
   createUserFlag : false,
   newUserDetails : {}
 

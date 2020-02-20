@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
+import {ToggleButton} from "primereact/togglebutton"
 import store from "../../../store";
 import { openAddUserPopup, closeAddUserPopup, saveNewUserDetailsAction } from "../../../actions/ocrActions";
 
@@ -15,6 +16,9 @@ import { openAddUserPopup, closeAddUserPopup, saveNewUserDetailsAction } from ".
 export class OcrUserTable extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+			checked1: false
+		};
     }
 
     openAddUserPopup(e){
@@ -49,77 +53,139 @@ export class OcrUserTable extends React.Component{
             $("#resetMsg")[0].innerText = "Password and Confirm Passwords doesnot match"
         }else{
             $("#resetMsg")[0].innerText = ""
-
+            this.props.dispatch()
         }
     }
     render(){
         return(
-            <div className="row">
-                <div className="col-md-3">
-                    Manage Users
-                </div>
-                <div className="col-md-6">
+            <div>
+                <div className="row">
+                    <div className="col-md-3">
+                        <h4>Manage Users</h4>
+                    </div>
+                    <div className="col-md-6">
                     
-                </div>
-                <div className="col-md-3">
-                    <a onClick={this.openAddUserPopup.bind(this)}><i className="fa fa-user-plus fa-lg" aria-hidden="true"/></a>
-                    <input type="text" id="searchUser" className="" placeholder="Search User"/>
-                </div>
-                <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
-                    <Modal.Header>
-                        <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
-                        <h4 className="modal-title">Add User</h4>
-                    </Modal.Header>
-                    <Modal.Body id="addUsers">
-                        {!this.props.createUserFlag &&
-                            <div className="createUser row">
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="userName">User Name</label>
-                                    <input type="text" id="userName" name="userName" placeholder="User Name" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                </div>
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="email">Email</label>
-                                    <input  type="email" id="email" name="email" placeholder="Email" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                </div>
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="password">Password</label>
-                                    <input type="password" id="password1" name="password1" placeholder="Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                </div>
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="confirmPassword">Confirm Password</label>
-                                    <input type="password" id="password2" name="password2" placeholder="Confirm Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                </div>
-                            </div>
-                        }
-                        {this.props.createUserFlag &&
-                            <div className="createUserProfile row">
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="firstName">First Name</label>
-                                    <input className="col-md-8 ocrUserFormInput" id="firstName" type="text"/>
-                                </div>
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <label className="col-md-4 mandate" for="lastName">Last Name</label>
-                                    <input className="col-md-8 ocrUserFormInput" id="lastName" type="text"/>
-                                </div>
-                                <div className="col-md-12 ocrUserFormGroup">
-                                    <div className="col-md-6">
-                                        <label className="mandate" for="role">Role</label>
-                                        <input className="" id="role" type="checkbox"/>
+                    </div>
+                    <div className="col-md-3">
+                        <a onClick={this.openAddUserPopup.bind(this)}><i className="fa fa-user-plus fa-lg" aria-hidden="true"/></a>
+                        <div className="pull-right">
+                            <input type="text" id="searchUser" className="form-control btn-rounded" placeholder="Search User..."/>
+                        </div>
+                    </div>
+                    {/* PopUp Content Starts Here*/}
+                    <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
+                        <Modal.Header>
+                            <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
+                            <h4 className="modal-title">Add User</h4>
+                        </Modal.Header>
+                        <Modal.Body id="addUsers">
+                            {!this.props.createUserFlag &&
+                                <div className="createUser row">
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4 mandate" for="userName">User Name</label>
+                                        <input type="text" id="userName" name="userName" placeholder="User Name" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
                                     </div>
-                                    <div className="col-md-6">
-                                        <label className="mandate" for="status">Status</label>
-                                        <input className="" id="status" type="checkbox"/>
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4 mandate" for="email">Email</label>
+                                        <input  type="email" id="email" name="email" placeholder="Email" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    </div>
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4 mandate" for="password">Password</label>
+                                        <input type="password" id="password1" name="password1" placeholder="Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    </div>
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4 mandate" for="confirmPassword">Confirm Password</label>
+                                        <input type="password" id="password2" name="password2" placeholder="Confirm Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <div id="resetMsg"></div>
-                        <Button bsStyle="primary" id="createUser" onClick={this.submitNewUserDetails.bind(this)}>Proceed</Button>
-                        <Button bsStyle="primary" id="addUser" disabled={!this.props.createUserFlag?true:false}>Add User</Button>
-                    </Modal.Footer>
-                </Modal>
+                            }
+                            {this.props.createUserFlag &&
+                                <div className="createUserProfile row">
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4 mandate" for="firstName">First Name</label>
+                                        <input type="text" id="firstName" name="firstName" placeholder="First Name" className="col-md-8 ocrUserFormInput"/>
+                                    </div>
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <label className="col-md-4" for="lastName">Last Name</label>
+                                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" className="col-md-8 ocrUserFormInput"/>
+                                    </div>
+                                    <div className="col-md-12 ocrUserFormGroup">
+                                        <div className="col-md-6">
+                                            <label for="userRoles" className="mandate">Roles</label>
+                                            <ul className = "list-unstyled">
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="admin"/><label for="admin">Admin</label></div>
+                                                </li>
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="reviewerL1"/><label for="reviewerL1">Reviewer L1</label></div>
+                                                </li>
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="reviewerL2"/><label for="reviewerL2">Reviewer L2</label></div>
+                                                </li>
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="superUser"/><label for="superUser">Superuser</label></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label for="userRoles" className="mandate">Status</label>
+                                            <ul className = "list-unstyled">
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="active"/><label for="active">Active</label></div>
+                                                </li>
+                                                <li><div className = "ma-radio inline">
+                                                    <input type="radio" name="roleType" id="inactive"/><label for="inactive">Inactive</label></div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div id="resetMsg"></div>
+                            <Button bsStyle="primary" id="createUser" onClick={this.submitNewUserDetails.bind(this)}>Add User</Button>
+                            <Button bsStyle="primary" id="addUser" style={{display:!this.props.createUserFlag?"none":""}} >Proceed</Button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>
+                <div className = "table-responsive box-shadow">
+                    <table className = "table manageUserTable">
+                        <thead>
+                        <tr>
+                            <th>FIRST NAME</th>
+                            <th>LAST NAME</th>
+                            <th>EMAIL</th>
+                            <th>ROLES</th>
+                            <th>DATE JOINED</th>
+                            <th>LAST LOGIN</th>
+                            <th>STATUS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ABC</td>
+                            <td>D</td>
+                            <td>abd@mail.com</td>
+                            <td>Admin</td>
+                            <td>10/11/2020</td>
+                            <td>8:30:00 PM</td>
+                            <td>
+                                <ToggleButton className="userStatusBtn" checked={this.state.checked1} onChange={(e) => this.setState({checked1: e.value})} onLabel="Active" offLabel="Inactive"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>EFG</td>
+                            <td>H</td>
+                            <td>efg@marlb.com</td>
+                            <td>Superuser</td>
+                            <td>10/11/2020</td>
+                            <td>01:05:80 AM</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
