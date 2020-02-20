@@ -10,6 +10,7 @@ import simplejson as json
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
@@ -24,9 +25,7 @@ from api.exceptions import creation_failed_exception, \
 from ocr.query_filtering import get_listed_data, get_image_list_data
 from ocr.tasks import extract_from_image
 # -----------------------MODELS-------------------------------
-from .models import OCRImage
-from .models import OCRImageset
-from .models import Project
+from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
@@ -40,7 +39,16 @@ from celery.result import AsyncResult
 from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
     OCRImageSetSerializer, \
-    OCRImageSetListSerializer, ProjectSerializer, ProjectListSerializer, OCRImageExtractListSerializer
+    OCRImageSetListSerializer, \
+    OCRUserProfileListSerializer, \
+    OCRUserProfileSerializer, \
+    OCRUserSerializer, \
+    OCRUserListSerializer, \
+    ReviewerTypeSerializer, \
+    ProjectSerializer, \
+    ProjectListSerializer, \
+    OCRImageExtractListSerializer
+
 # ------------------------------------------------------------
 
 # ---------------------PAGINATION----------------------------
@@ -48,8 +56,14 @@ from .pagination import CustomOCRPagination
 
 # ---------------------S3 Files-----------------------------
 from .dataloader import S3File
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.list import ListView
+#from django.contrib.admin.views.decorators import staff_member_required
+from .forms import CustomUserCreationForm, CustomUserEditForm
 
-
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import generics
+from django.db.models import Q
 # Create your views here.
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
@@ -95,6 +109,165 @@ def ocr_datasource_config_list(request):
 
 
 # -------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+class OCRUserView(viewsets.ModelViewSet):
+    """
+    Model: USER
+    Viewset : OCRUserView
+    Description :
+    """
+    serializer_class = OCRUserListSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+    pagination_class = CustomOCRPagination
+
+    def get_queryset(self):
+        queryset = User.objects.filter(
+            ~Q(is_active=False),
+        ).exclude(id='1').order_by('-date_joined') #Excluding "ANONYMOUS_USER_ID"
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+
+        if not request.user.is_staff and not request.user.is_superuser:
+            return JsonResponse({
+                "created": False,
+                "message": "Not Allowed to add User."
+            })
+        if request.method == 'POST':
+            form = CustomUserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({
+                    "created": True,
+                    "message": "User added successfully."
+                })
+            else:
+                return JsonResponse({
+                    "created": False,
+                    "message": form.errors
+                })
+        else:
+            return JsonResponse({
+                "created": False,
+                "message": "Invalid Method."
+            })
+
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRUserListSerializer
+        )
+
+    @list_route(methods=['post'])
+    def edit(self, request, *args, **kwargs):
+
+        username = request.POST.get('username')
+
+        user = User.objects.get(username=username)
+
+        if request.method == 'POST':
+            form = CustomUserEditForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({
+                    "updated": True,
+                    "message": "User profile Updated successfully."
+                })
+            else:
+                return JsonResponse({
+                    "updated": False,
+                    "message": form.errors
+                })
+        else:
+            return JsonResponse({
+                "updated": False,
+                "message": "Invalid Method."
+            })
+
+    def delete(self, request, *args, **kwargs):
+        """Delete OCR User"""
+        username = request.data['username']
+        try:
+            user_object = User.objects.get(username = username)
+            user_object.delete()
+            return JsonResponse({
+                "deleted": True,
+                "message": "User deleted."
+            })
+
+        except User.DoesNotExist:
+            return JsonResponse({
+                "deleted": False,
+                "message": "User DoesNotExist."
+            })
+        except Exception as e:
+            return JsonResponse({
+                "deleted": False,
+                "message":str(e)
+            })
+
+
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+class OCRUserProfileView(viewsets.ModelViewSet):
+    """
+    Model: OCRUserProfile
+    Viewset : OCRUserProfileView
+    Description :
+    """
+    serializer_class = OCRUserProfileSerializer
+    model = OCRUserProfile
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'slug'
+
+    def get_queryset(self):
+        queryset = OCRUserProfile.objects.filter(
+            ~Q(is_active=False)
+        ).order_by('-created_at')
+        return queryset
+
+    def get_object_from_all(self):
+        """
+        Returns the queryset of OCRUserProfile filtered by the slug.
+        """
+        return OCRUserProfile.objects.get(
+            slug=self.kwargs.get('slug')
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        """Returns specific object details"""
+        instance = self.get_object_from_all()
+
+        if instance is None:
+            return retrieve_failed_exception("Profile Doesn't exist.")
+
+        serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
+        profile_details = serializer.data
+
+        return Response(profile_details)
+
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+
+class ReviewerTypeListView(generics.ListCreateAPIView):
+
+    queryset = ReviewerType.objects.filter(deleted=False)
+    serializer_class = ReviewerTypeSerializer
+    permission_classes = [IsAdminUser]
+
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = ReviewerTypeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+#-------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 

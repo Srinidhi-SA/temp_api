@@ -5,8 +5,9 @@
 from rest_framework import serializers
 
 from api.user_helper import UserSerializer
-from .models import OCRImage, OCRImageset, Project
-
+from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, \
+    Project
+from django.contrib.auth.models import User
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
@@ -178,6 +179,69 @@ class OCRImageSetListSerializer(serializers.ModelSerializer):
         model = OCRImageset
         fields = ['slug', 'name']
 
+class OCRUserProfileSerializer(serializers.ModelSerializer):
+    """
+        *Serializers*
+    -------------------------------------------------
+    Model : OCRUserProfile
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRUserProfileSerializer, self).to_representation(instance)
+        serialized_data['user'] = OCRUserSerializer(instance.ocr_user).data
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for OCRUserProfileSerializer
+        """
+        model = OCRUserProfile
+        fields = ['user_type', 'is_active', 'slug', 'reviewer_type']
+
+    # def update(self, instance, validated_data):
+    #     instance.email = validated_data.get('email', instance.email)
+    #     instance.website = validated_data.get('website', instance.website)
+    #     instance.bio = validated_data.get('bio', instance.bio)
+    #     instance.phone = validated_data.get('phone', instance.phone)
+    #     instance.city = validated_data.get('city', instance.city)
+    #     instance.country = validated_data.get('country', instance.country)
+    #     instance.organization = validated_data.get('organization', instance.organization)
+    #     return instance
+
+class OCRUserProfileListSerializer(serializers.ModelSerializer):
+    """
+        *Serializers*
+    -------------------------------------------------
+    Model : OCRUserProfile
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRUserProfileListSerializer, self).to_representation(instance)
+        #serialized_data['created_by'] = UserSerializer(instance.created_by).data
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for OCRUserProfileSerializer
+        """
+        model = OCRUserProfile
+        fields = ['user_type', 'is_active', 'slug', 'reviewer_type']
+
+class OCRUserSerializer(serializers.ModelSerializer):
+    """
+    """
+    def to_representation(self, instance):
+        serialized_data = super(OCRUserSerializer, self).to_representation(instance)
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data
+
+        return serialized_data
+    """
+    """
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
 
 class ProjectSerializer(serializers.ModelSerializer):
     """
@@ -195,11 +259,48 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class definition for OCRImageSetSerializer
         """
         model = Project
         fields = ['name', 'slug', 'deleted', 'created_at', 'created_by']
 
+
+class OCRUserListSerializer(serializers.ModelSerializer):
+    """
+    """
+    def to_representation(self, instance):
+        serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
+        ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
+        try:
+            serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+            serialized_data['ocr_user'] = True
+        except:
+            serialized_data['ocr_user'] = False
+        #serialized_data['reviewer_type'] = ocr_profile_obj.reviewer_type.type if ocr_profile_obj is not None else None
+        #print(serialized_data)
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for OCRUserProfileSerializer
+        """
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+
+class ReviewerTypeSerializer(serializers.ModelSerializer):
+    """
+    """
+    def to_representation(self, instance):
+        serialized_data = super(ReviewerTypeSerializer, self).to_representation(instance)
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for ReviewerTypeSerializer
+        """
+        model = ReviewerType
+        fields = ("type",)
 
 class ProjectListSerializer(serializers.ModelSerializer):
     """
