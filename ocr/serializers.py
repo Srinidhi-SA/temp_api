@@ -9,6 +9,7 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, \
     Project
 from django.contrib.auth.models import User
 
+
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
 # pylint: disable=no-member
@@ -37,37 +38,6 @@ class OCRImageSerializer(serializers.ModelSerializer):
         # serialized_data = convert_time_to_human(serialized_data)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
 
-        '''
-        if instance.viewed == False and instance.status=='SUCCESS':
-            instance.viewed = True
-            instance.save()
-
-        if instance.datasource_type=='fileUpload':
-            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
-            try:
-                from api.helper import convert_to_humanize
-                ret['file_size']=convert_to_humanize(instance.input_file.size)
-                if(instance.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
-                    ret['proceed_for_loading']=True
-                else:
-                    ret['proceed_for_loading'] = False
-            except:
-                ret['file_size']=-1
-                ret['proceed_for_loading'] = True
-
-        try:
-            ret['job_status'] = instance.job.status
-        except:
-            ret['job_status'] = None
-
-        if 'request' in self.context:
-            # permission details
-            permission_details = get_permissions(
-                user=self.context['request'].user,
-                model=self.Meta.model.__name__.lower(),
-            )
-            serialized_data['permission_details'] = permission_details
-        '''
         return serialized_data
 
     class Meta:
@@ -90,14 +60,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
-        # ret['brief_info'] = instance.get_brief_info()
 
-        # permission details
-        # permission_details = get_permissions(
-        #     user=self.context['request'].user,
-        #     model=self.Meta.model.__name__.lower(),
-        # )
-        # ret['permission_details'] = permission_details
         return serialized_data
 
     class Meta(object):
@@ -113,25 +76,18 @@ class OCRImageExtractListSerializer(serializers.ModelSerializer):
         List Serializer definition for OCRImage
     -------------------------------------------------
     Model : OCRImage
-    List Serializer : OCRImageListSerializer
+    List Serializer : OCRImageExtractListSerializer
     -------------------------------------------------
     """
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageExtractListSerializer, self).to_representation(instance)
-        # ret['brief_info'] = instance.get_brief_info()
 
-        # permission details
-        # permission_details = get_permissions(
-        #     user=self.context['request'].user,
-        #     model=self.Meta.model.__name__.lower(),
-        # )
-        # ret['permission_details'] = permission_details
         return serialized_data
 
     class Meta(object):
         """
-        Meta class definition for OCRImageListSerializer
+        Meta class definition for OCRImageExtractListSerializer
         """
         model = OCRImage
         fields = ['imagefile', 'generated_image']
@@ -179,6 +135,7 @@ class OCRImageSetListSerializer(serializers.ModelSerializer):
         model = OCRImageset
         fields = ['slug', 'name']
 
+
 class OCRUserProfileSerializer(serializers.ModelSerializer):
     """
         *Serializers*
@@ -209,6 +166,7 @@ class OCRUserProfileSerializer(serializers.ModelSerializer):
     #     instance.organization = validated_data.get('organization', instance.organization)
     #     return instance
 
+
 class OCRUserProfileListSerializer(serializers.ModelSerializer):
     """
         *Serializers*
@@ -218,7 +176,7 @@ class OCRUserProfileListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRUserProfileListSerializer, self).to_representation(instance)
-        #serialized_data['created_by'] = UserSerializer(instance.created_by).data
+        # serialized_data['created_by'] = UserSerializer(instance.created_by).data
 
         return serialized_data
 
@@ -229,19 +187,24 @@ class OCRUserProfileListSerializer(serializers.ModelSerializer):
         model = OCRUserProfile
         fields = ['user_type', 'is_active', 'slug', 'reviewer_type']
 
+
 class OCRUserSerializer(serializers.ModelSerializer):
     """
     """
+
     def to_representation(self, instance):
         serialized_data = super(OCRUserSerializer, self).to_representation(instance)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data
 
         return serialized_data
+
     """
     """
+
     class Meta:
         model = User
         fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     """
@@ -267,6 +230,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 class OCRUserListSerializer(serializers.ModelSerializer):
     """
     """
+
     def to_representation(self, instance):
         serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
         ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
@@ -275,8 +239,8 @@ class OCRUserListSerializer(serializers.ModelSerializer):
             serialized_data['ocr_user'] = True
         except:
             serialized_data['ocr_user'] = False
-        #serialized_data['reviewer_type'] = ocr_profile_obj.reviewer_type.type if ocr_profile_obj is not None else None
-        #print(serialized_data)
+        # serialized_data['reviewer_type'] = ocr_profile_obj.reviewer_type.type if ocr_profile_obj is not None else None
+        # print(serialized_data)
 
         return serialized_data
 
@@ -287,9 +251,11 @@ class OCRUserListSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
 
+
 class ReviewerTypeSerializer(serializers.ModelSerializer):
     """
     """
+
     def to_representation(self, instance):
         serialized_data = super(ReviewerTypeSerializer, self).to_representation(instance)
 
@@ -301,6 +267,7 @@ class ReviewerTypeSerializer(serializers.ModelSerializer):
         """
         model = ReviewerType
         fields = ("type",)
+
 
 class ProjectListSerializer(serializers.ModelSerializer):
     """

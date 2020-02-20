@@ -2,20 +2,35 @@
 View Implementations for OCRImage and OCRImageset models.
 """
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+# pylint: disable=broad-except
+# pylint: disable=invalid-name
+# pylint: disable=wrong-import-order
+# pylint: disable=ungrouped-imports
+# -------------------------------------------------------------------------------
+
 import copy
 import os
 import random
 import ast
 import simplejson as json
+from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route, list_route
-from rest_framework.response import Response
 from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
 # ---------------------EXCEPTIONS-----------------------------
@@ -23,7 +38,6 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data
-from ocr.tasks import extract_from_image
 # -----------------------MODELS-------------------------------
 from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 
@@ -32,7 +46,11 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 from .permission import OCRImageRelatedPermission
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, get_word, update_words, word_not_clear, final_data_generation
+from ocr.tasks import extract_from_image, \
+    get_word, \
+    update_words, \
+    word_not_clear, \
+    final_data_generation
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -40,9 +58,7 @@ from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
     OCRImageSetSerializer, \
     OCRImageSetListSerializer, \
-    OCRUserProfileListSerializer, \
     OCRUserProfileSerializer, \
-    OCRUserSerializer, \
     OCRUserListSerializer, \
     ReviewerTypeSerializer, \
     ProjectSerializer, \
@@ -56,25 +72,15 @@ from .pagination import CustomOCRPagination
 
 # ---------------------S3 Files-----------------------------
 from .dataloader import S3File
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.list import ListView
-#from django.contrib.admin.views.decorators import staff_member_required
+
 from .forms import CustomUserCreationForm, CustomUserEditForm
 
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import generics
-from django.db.models import Q
+
+
 # Create your views here.
-# -------------------------------------------------------------------------------
-# pylint: disable=too-many-ancestors
-# pylint: disable=no-member
-# pylint: disable=too-many-return-statements
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-branches
-# pylint: disable=unused-argument
-# pylint: disable=line-too-long
-# pylint: disable=too-many-statements
-# -------------------------------------------------------------------------------
+
 
 def ocr_datasource_config_list(request):
     """
@@ -110,7 +116,7 @@ def ocr_datasource_config_list(request):
 
 # -------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 class OCRUserView(viewsets.ModelViewSet):
     """
     Model: USER
@@ -125,7 +131,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
-        ).exclude(id='1').order_by('-date_joined') #Excluding "ANONYMOUS_USER_ID"
+        ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -177,13 +183,11 @@ class OCRUserView(viewsets.ModelViewSet):
                     "updated": True,
                     "message": "User profile Updated successfully."
                 })
-            else:
-                return JsonResponse({
+            return JsonResponse({
                     "updated": False,
                     "message": form.errors
                 })
-        else:
-            return JsonResponse({
+        return JsonResponse({
                 "updated": False,
                 "message": "Invalid Method."
             })
@@ -192,7 +196,7 @@ class OCRUserView(viewsets.ModelViewSet):
         """Delete OCR User"""
         username = request.data['username']
         try:
-            user_object = User.objects.get(username = username)
+            user_object = User.objects.get(username=username)
             user_object.delete()
             return JsonResponse({
                 "deleted": True,
@@ -207,13 +211,13 @@ class OCRUserView(viewsets.ModelViewSet):
         except Exception as e:
             return JsonResponse({
                 "deleted": False,
-                "message":str(e)
+                "message": str(e)
             })
 
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 class OCRUserProfileView(viewsets.ModelViewSet):
     """
     Model: OCRUserProfile
@@ -251,12 +255,12 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
         return Response(profile_details)
 
-#-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 
 class ReviewerTypeListView(generics.ListCreateAPIView):
-
     queryset = ReviewerType.objects.filter(deleted=False)
     serializer_class = ReviewerTypeSerializer
     permission_classes = [IsAdminUser]
@@ -267,7 +271,8 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
         serializer = ReviewerTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
-#-------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 

@@ -5,6 +5,7 @@ OCR MODELS
 import random
 import string
 from django.db import models
+from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User
@@ -44,6 +45,7 @@ class ReviewerType(models.Model):
         self.generate_slug()
         super(ReviewerType, self).save(*args, **kwargs)
 
+
 class OCRUserProfile(models.Model):
     OCR_USER_TYPE_CHOICES = [
         ('1', 'Default'),
@@ -56,6 +58,7 @@ class OCRUserProfile(models.Model):
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
     reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
     def generate_slug(self):
@@ -70,7 +73,6 @@ class OCRUserProfile(models.Model):
         super(OCRUserProfile, self).save(*args, **kwargs)
 
     def json_serialized(self):
-
         ocr_user_profile = {
             "active": self.is_active,
             "phone": self.phone,
@@ -79,7 +81,6 @@ class OCRUserProfile(models.Model):
         }
         return ocr_user_profile
 
-from django.db.models.signals import post_save
 
 def send_email(sender, instance, created, **kwargs):
     if created:
@@ -87,7 +88,9 @@ def send_email(sender, instance, created, **kwargs):
         from ocr.tasks import send_welcome_email
         send_welcome_email.delay(username=instance.ocr_user.username)
 
+
 post_save.connect(send_email, sender=OCRUserProfile)
+
 
 class Project(models.Model):
     """
@@ -121,6 +124,7 @@ class Project(models.Model):
     def create(self):
         """Create Project model"""
         self.save()
+
 
 class OCRImageset(models.Model):
     """
