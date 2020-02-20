@@ -6,6 +6,7 @@ import copy
 import os
 import random
 import ast
+import simplejson as json
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse
@@ -25,17 +26,21 @@ from ocr.tasks import extract_from_image
 # -----------------------MODELS-------------------------------
 from .models import OCRImage
 from .models import OCRImageset
+from .models import Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission
 # ------------------------------------------------------------
 
+from ocr.tasks import extract_from_image, get_word, update_words, word_not_clear, final_data_generation
+from celery.result import AsyncResult
+
 # ---------------------SERIALIZERS----------------------------
 from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
     OCRImageSetSerializer, \
-    OCRImageSetListSerializer
+    OCRImageSetListSerializer, ProjectSerializer, ProjectListSerializer, OCRImageExtractListSerializer
 # ------------------------------------------------------------
 
 # ---------------------PAGINATION----------------------------
@@ -216,6 +221,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if img_data['name'] in imagename_list:
                 serializer_error.append(creation_failed_exception("Image name already exists!."))
 
+            img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
             img_data['created_by'] = request.user.id
             serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
             if serializer.is_valid():
@@ -291,10 +297,132 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def extract(self, request, *args, **kwargs):
         data = request.data
+        response = list()
+
         if 'imageslug' in data:
-            images_queryset = OCRImage.objects.get(slug=data['imageslug'])
-            extract_from_image.delay(images_queryset.imagefile.path)
-        return JsonResponse({'message': 'Done'})
+            for slug in ast.literal_eval(str(data['imageslug'])):
+                image_queryset = OCRImage.objects.get(slug=slug)
+                response = extract_from_image.delay(image_queryset.imagefile.path, slug)
+                result = response.task_id
+                res = AsyncResult(result)
+                while True:
+                    if res.status == 'SUCCESS':
+                        response = res.result
+                        break
+                OCRImage.objects.filter(slug=slug).update(converted_Coordinates=json.dumps(response['data2']))
+                OCRImage.objects.filter(slug=slug).update(comparision_data=json.dumps(response['data3']))
+                OCRImage.objects.filter(slug=slug).update(flag=json.dumps(response['flag']))
+                OCRImage.objects.filter(slug=slug).update(analysis=json.dumps(response['analysis']))
+                OCRImage.objects.filter(slug=slug).update(status='Ready to verify.')
+                OCRImage.objects.filter(slug=slug).update(generated_image=File(name='{}_generated_image.png'.format(slug), file=open(response['extracted_image'])))
+                response.update({'message': 'SUCCESS'})
+
+        response = {'extraction_info': response}
+        return JsonResponse(response)
+
+    @list_route(methods=['get'])
+    def get_images(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageExtractListSerializer
+        )
+
+    @list_route(methods=['get'])
+    def get_word(self, request, *args, **kwargs):
+        data = request.data
+        x = data['x']
+        y = data['y']
+
+        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
+
+        response = get_word.delay(converted_Coordinates, x, y)
+        result = response.task_id
+        res = AsyncResult(result)
+        while True:
+            if res.status == 'SUCCESS':
+                response, index = res.result
+                break
+        return JsonResponse({'word': response, 'index': index})
+
+    @list_route(methods=['get'])
+    def update_word(self, request, *args, **kwargs):
+        data = request.data
+        index = data['index']
+        word = data['word']
+
+        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+
+        response = update_words.delay(index, word, comparision_data)
+
+        result = response.task_id
+        res = AsyncResult(result)
+        while True:
+            if res.status == 'SUCCESS':
+                response, analysis_list = res.result
+                break
+        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+        if 'analysis_list' in request.session:
+            request.session['analysis_list'].append(analysis_list)
+        else:
+            request.session['analysis_list'] = analysis_list
+        OCRImage.objects.filter(slug=data['imageslug']).update(analysis_list=json.dumps(request.session['analysis_list']))
+        return JsonResponse({'message': 'done'})
+
+    @list_route(methods=['get'])
+    def not_clear(self, request, *args, **kwargs):
+        data = request.data
+        index = data['index']
+        word = data['word']
+
+        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+
+        response = word_not_clear.delay(index, word, comparision_data)
+
+        result = response.task_id
+        res = AsyncResult(result)
+        while True:
+            if res.status == 'SUCCESS':
+                response, analysis_list = res.result
+                break
+        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+        if 'analysis_list' in request.session:
+            request.session['analysis_list'].append(analysis_list)
+        else:
+            request.session['analysis_list'] = analysis_list
+        OCRImage.objects.filter(slug=data['imageslug']).update(
+            analysis_list=json.dumps(request.session['analysis_list']))
+
+        return JsonResponse({'message': 'done'})
+
+    @list_route(methods=['get'])
+    def final_analysis(self, request, *args, **kwargs):
+        data = request.data
+
+        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        analysis = json.loads(image_queryset.analysis)
+
+        response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
+                                               json.loads(image_queryset.analysis_list),
+                                               image_queryset.flag)
+
+        result = response.task_id
+        res = AsyncResult(result)
+        while True:
+            if res.status == 'SUCCESS':
+                flag, json_final, metadata, analysis = res.result
+                break
+        OCRImage.objects.filter(slug=data['imageslug']).update(analysis=json.dumps(analysis))
+        if flag == 'Transcript':
+            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=str(json_final))
+        else:
+            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=json.dumps(json_final))
+
+        return JsonResponse({'message': 'done'})
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -352,3 +480,87 @@ class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             request=request,
             list_serializer=OCRImageSetListSerializer
         )
+
+
+class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
+    """
+    Model: Project
+    Viewset : ProjectView
+    Description :
+    """
+    serializer_class = ProjectSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    pagination_class = CustomOCRPagination
+    permission_classes = (OCRImageRelatedPermission,)
+
+    def get_queryset(self):
+        """
+        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        """
+        queryset = Project.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+        ).order_by('-created_at')
+        return queryset
+
+    def get_object_from_all(self):
+        """
+        Returns the queryset of OCRImageset filtered by the slug.
+        """
+        return Project.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user,
+            deleted=False
+        )
+
+    # pylint: disable=unused-argument
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object_from_all()
+
+        if instance is None:
+            return retrieve_failed_exception("File Doesn't exist.")
+
+        serializer = ProjectSerializer(instance=instance, context={'request': request})
+        object_details = serializer.data
+
+        return Response(object_details)
+
+    def list(self, request, *args, **kwargs):
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=ProjectListSerializer
+        )
+
+    def create(self, request, *args, **kwargs):
+
+        response = dict()
+
+        if 'data' in kwargs:
+            data = kwargs.get('data')
+        else:
+            data = request.data
+        data = convert_to_string(data)
+        projectname_list = []
+        project_query = self.get_queryset()
+        for i in project_query:
+            projectname_list.append(i.name)
+        if data['name'] in projectname_list:
+            response['project_serializer_error'] = creation_failed_exception("project name already exists!.")
+
+        data['created_by'] = request.user.id
+
+        serializer = ProjectSerializer(data=data, context={"request": self.request})
+
+        if serializer.is_valid():
+            project_object = serializer.save()
+            project_object.create()
+            response['project_serializer_data'] = serializer.data
+            response['project_serializer_message'] = 'SUCCESS'
+        else:
+            response['project_serializer_error'] = serializer.errors
+            response['project_serializer_message'] = 'FAILED'
+
+        return JsonResponse(response)
+

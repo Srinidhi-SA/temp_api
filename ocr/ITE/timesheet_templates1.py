@@ -355,14 +355,14 @@ def run_all(imagepp, analysis, path):
 
     print('Final Json and Page_meta_data done for ', filename_, '\n')
 
-    with open('ocr/ITE/demo_analysis/all_final_json.json', 'w+') as f:
+    with open('ocr/ITE/ir/all_final_json.json', 'w+') as f:
         try:
             data = json.load(f)
         except:
             data = {}
         for x in all_JSON:
             data[x] = all_JSON[x]
-    with open('ocr/ITE/demo_analysis/all_final_json.json', 'w+') as fp:
+    with open('ocr/ITE/ir/all_final_json.json', 'w') as fp:
         json.dump(data, fp)
     # print(final_json)
     return final_json

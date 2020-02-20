@@ -5,7 +5,7 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # from ocr import views
-from ocr.views import ocr_datasource_config_list
+from ocr.views import ocr_datasource_config_list, ProjectView
 from ocr.views import OCRImageView, OCRImagesetView
 
 # -------------------------------------------------------------------------------
@@ -29,6 +29,12 @@ router.register(
     'ocrimageset',
     OCRImagesetView,
     base_name='ocrimagesets'
+)
+
+router.register(
+    'project',
+    ProjectView,
+    base_name='projects'
 )
 
 urlpatterns = [

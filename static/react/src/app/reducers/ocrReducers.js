@@ -41,6 +41,20 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
+      break;  
+    case "OCR_UPLOADS_LIST":
+    {
+      return {
+        ...state,
+        OcrDataList: action.data
+      }
+    }
+    break;
+    case "OCR_UPLOADS_LIST_FAIL":
+    {
+      throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
     case "OCR_UPLOADS_LIST":
     {
       return{
