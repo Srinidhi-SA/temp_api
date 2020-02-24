@@ -3,7 +3,7 @@ export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
   imageFlag: false,
-  imagePath: "",
+  imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,

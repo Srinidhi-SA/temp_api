@@ -22372,12 +22372,12 @@ font-size: 14px;
   -ms-transition: all 2s ease;
   transition: all 2s ease;
 }
-#originalOcrImg:hover{
+/* #originalOcrImg:hover{
   width: calc(100% + 100px);
 }
 .ocrImgDiv:hover{
   z-index:9999;
-}
+} */
 .ocrImgTitle{
   margin-bottom: 20px;
   display: block;
