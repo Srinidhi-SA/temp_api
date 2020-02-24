@@ -134,6 +134,11 @@ class OCRUserView(viewsets.ModelViewSet):
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
+    def get_user_profile_object(self, username=None):
+        user = User.objects.get(username=username)
+        object = OCRUserProfile.objects.get(ocr_user_id=user.id)
+        return object
+
     def create(self, request, *args, **kwargs):
 
         if not request.user.is_staff and not request.user.is_superuser:
@@ -145,9 +150,11 @@ class OCRUserView(viewsets.ModelViewSet):
             form = CustomUserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
+                OCR_profile = self.get_user_profile_object(username=request.POST.get('username'))
                 return JsonResponse({
                     "created": True,
-                    "message": "User added successfully."
+                    "message": "User added successfully.",
+                    "ocr_profile_slug": OCR_profile.get_slug() if OCR_profile is not None else None
                 })
             else:
                 return JsonResponse({
@@ -255,6 +262,20 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
         return Response(profile_details)
 
+    def update(self, request, *args, **kwargs):
+        print("updating profile")
+        instance = self.get_object_from_all()
+        instance.is_active = request.data.get("is_active")
+        instance.reviewer_type = ReviewerType.objects.get(id=request.data.get("reviewer_type"))
+        instance.save()
+        serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
+        return JsonResponse({
+            "message":"Profile updated successfully.",
+            "updated": True,
+            "ocr_profile": serializer.data
+        })
+
+#-------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 

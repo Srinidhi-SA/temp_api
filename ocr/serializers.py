@@ -157,13 +157,10 @@ class OCRUserProfileSerializer(serializers.ModelSerializer):
         fields = ['user_type', 'is_active', 'slug', 'reviewer_type']
 
     # def update(self, instance, validated_data):
-    #     instance.email = validated_data.get('email', instance.email)
-    #     instance.website = validated_data.get('website', instance.website)
-    #     instance.bio = validated_data.get('bio', instance.bio)
-    #     instance.phone = validated_data.get('phone', instance.phone)
-    #     instance.city = validated_data.get('city', instance.city)
-    #     instance.country = validated_data.get('country', instance.country)
-    #     instance.organization = validated_data.get('organization', instance.organization)
+    #     print("inside update")
+    #     instance.is_active = validated_data.get('is_active', instance.is_active)
+    #     instance.reviewer_type = validated_data.get('reviewer_type', instance.reviewer_type)
+    #     instance.save()
     #     return instance
 
 
@@ -176,7 +173,6 @@ class OCRUserProfileListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRUserProfileListSerializer, self).to_representation(instance)
-        # serialized_data['created_by'] = UserSerializer(instance.created_by).data
 
         return serialized_data
 
@@ -194,7 +190,6 @@ class OCRUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRUserSerializer, self).to_representation(instance)
-        serialized_data['created_by'] = UserSerializer(instance.created_by).data
 
         return serialized_data
 
@@ -266,7 +261,7 @@ class ReviewerTypeSerializer(serializers.ModelSerializer):
         Meta class definition for ReviewerTypeSerializer
         """
         model = ReviewerType
-        fields = ("type",)
+        fields = ("id","type")
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
