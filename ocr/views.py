@@ -2,20 +2,35 @@
 View Implementations for OCRImage and OCRImageset models.
 """
 
+# -------------------------------------------------------------------------------
+# pylint: disable=too-many-ancestors
+# pylint: disable=no-member
+# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+# pylint: disable=broad-except
+# pylint: disable=invalid-name
+# pylint: disable=wrong-import-order
+# pylint: disable=ungrouped-imports
+# -------------------------------------------------------------------------------
+
 import copy
 import os
 import random
 import ast
 import simplejson as json
+from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route, list_route
-from rest_framework.response import Response
 from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
 # ---------------------EXCEPTIONS-----------------------------
@@ -23,7 +38,6 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data
-from ocr.tasks import extract_from_image
 # -----------------------MODELS-------------------------------
 from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 
@@ -32,7 +46,11 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 from .permission import OCRImageRelatedPermission
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, get_word, update_words, word_not_clear, final_data_generation
+from ocr.tasks import extract_from_image, \
+    get_word, \
+    update_words, \
+    word_not_clear, \
+    final_data_generation
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -40,9 +58,7 @@ from .serializers import OCRImageSerializer, \
     OCRImageListSerializer, \
     OCRImageSetSerializer, \
     OCRImageSetListSerializer, \
-    OCRUserProfileListSerializer, \
     OCRUserProfileSerializer, \
-    OCRUserSerializer, \
     OCRUserListSerializer, \
     ReviewerTypeSerializer, \
     ProjectSerializer, \
@@ -56,25 +72,15 @@ from .pagination import CustomOCRPagination
 
 # ---------------------S3 Files-----------------------------
 from .dataloader import S3File
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.list import ListView
-#from django.contrib.admin.views.decorators import staff_member_required
+
 from .forms import CustomUserCreationForm, CustomUserEditForm
 
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import generics
-from django.db.models import Q
+
+
 # Create your views here.
-# -------------------------------------------------------------------------------
-# pylint: disable=too-many-ancestors
-# pylint: disable=no-member
-# pylint: disable=too-many-return-statements
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-branches
-# pylint: disable=unused-argument
-# pylint: disable=line-too-long
-# pylint: disable=too-many-statements
-# -------------------------------------------------------------------------------
+
 
 def ocr_datasource_config_list(request):
     """
@@ -110,7 +116,7 @@ def ocr_datasource_config_list(request):
 
 # -------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 class OCRUserView(viewsets.ModelViewSet):
     """
     Model: USER
@@ -125,7 +131,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
-        ).exclude(id='1').order_by('-date_joined') #Excluding "ANONYMOUS_USER_ID"
+        ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -184,13 +190,11 @@ class OCRUserView(viewsets.ModelViewSet):
                     "updated": True,
                     "message": "User profile Updated successfully."
                 })
-            else:
-                return JsonResponse({
+            return JsonResponse({
                     "updated": False,
                     "message": form.errors
                 })
-        else:
-            return JsonResponse({
+        return JsonResponse({
                 "updated": False,
                 "message": "Invalid Method."
             })
@@ -199,7 +203,7 @@ class OCRUserView(viewsets.ModelViewSet):
         """Delete OCR User"""
         username = request.data['username']
         try:
-            user_object = User.objects.get(username = username)
+            user_object = User.objects.get(username=username)
             user_object.delete()
             return JsonResponse({
                 "deleted": True,
@@ -214,13 +218,13 @@ class OCRUserView(viewsets.ModelViewSet):
         except Exception as e:
             return JsonResponse({
                 "deleted": False,
-                "message":str(e)
+                "message": str(e)
             })
 
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 class OCRUserProfileView(viewsets.ModelViewSet):
     """
     Model: OCRUserProfile
@@ -273,10 +277,11 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
 #-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 
 class ReviewerTypeListView(generics.ListCreateAPIView):
-
     queryset = ReviewerType.objects.filter(deleted=False)
     serializer_class = ReviewerTypeSerializer
     permission_classes = [IsAdminUser]
@@ -287,7 +292,8 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
         serializer = ReviewerTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
-#-------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 
@@ -490,10 +496,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        response = list()
+        results = list()
 
-        if 'imageslug' in data:
-            for slug in ast.literal_eval(str(data['imageslug'])):
+        if 'slug' in data:
+            for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
@@ -502,16 +508,23 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if res.status == 'SUCCESS':
                         response = res.result
                         break
-                OCRImage.objects.filter(slug=slug).update(converted_Coordinates=json.dumps(response['data2']))
-                OCRImage.objects.filter(slug=slug).update(comparision_data=json.dumps(response['data3']))
-                OCRImage.objects.filter(slug=slug).update(flag=json.dumps(response['flag']))
-                OCRImage.objects.filter(slug=slug).update(analysis=json.dumps(response['analysis']))
-                OCRImage.objects.filter(slug=slug).update(status='Ready to verify.')
-                OCRImage.objects.filter(slug=slug).update(generated_image=File(name='{}_generated_image.png'.format(slug), file=open(response['extracted_image'])))
-                response.update({'message': 'SUCCESS'})
 
-        response = {'extraction_info': response}
-        return JsonResponse(response)
+                del data['slug']
+                data['converted_Coordinates'] = json.dumps(response['data2'])
+                data['comparision_data'] = json.dumps(response['data3'])
+                data['flag'] = json.dumps(response['flag'])
+                data['analysis'] = json.dumps(response['analysis'])
+                data['status'] = 2
+                data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
+                                               file=open(response['extracted_image'], 'rb'))
+
+                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                 context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+                    results.append(serializer.data)
+                results.append(serializer.errors)
+        return Response(results)
 
     @list_route(methods=['get'])
     def get_images(self, request, *args, **kwargs):
@@ -528,7 +541,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
         response = get_word.delay(converted_Coordinates, x, y)
@@ -546,7 +559,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         index = data['index']
         word = data['word']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
 
         response = update_words.delay(index, word, comparision_data)
@@ -557,13 +570,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 response, analysis_list = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+
+        data['comparision_data'] = json.dumps(response)
+
         if 'analysis_list' in request.session:
-            request.session['analysis_list'].append(analysis_list)
+            request.session['analysis_list'].extend(analysis_list)
         else:
             request.session['analysis_list'] = analysis_list
-        OCRImage.objects.filter(slug=data['imageslug']).update(analysis_list=json.dumps(request.session['analysis_list']))
-        return JsonResponse({'message': 'done'})
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
     @list_route(methods=['get'])
     def not_clear(self, request, *args, **kwargs):
@@ -571,7 +591,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         index = data['index']
         word = data['word']
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
 
         response = word_not_clear.delay(index, word, comparision_data)
@@ -582,21 +602,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 response, analysis_list = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(comparision_data=json.dumps(response))
+
+        data['comparision_data'] = json.dumps(response)
+
         if 'analysis_list' in request.session:
-            request.session['analysis_list'].append(analysis_list)
+            request.session['analysis_list'].extend(analysis_list)
         else:
             request.session['analysis_list'] = analysis_list
-        OCRImage.objects.filter(slug=data['imageslug']).update(
-            analysis_list=json.dumps(request.session['analysis_list']))
-
-        return JsonResponse({'message': 'done'})
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
     @list_route(methods=['get'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
 
-        image_queryset = OCRImage.objects.get(slug=data['imageslug'])
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         analysis = json.loads(image_queryset.analysis)
 
         response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
@@ -609,13 +634,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if res.status == 'SUCCESS':
                 flag, json_final, metadata, analysis = res.result
                 break
-        OCRImage.objects.filter(slug=data['imageslug']).update(analysis=json.dumps(analysis))
-        if flag == 'Transcript':
-            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=str(json_final))
-        else:
-            OCRImage.objects.filter(slug=data['imageslug']).update(final_result=json.dumps(json_final))
 
-        return JsonResponse({'message': 'done'})
+        data['analysis'] = json.dumps(analysis)
+        if flag == 'Transcript':
+            data['final_result'] = str(json_final)
+        else:
+            data['final_result'] = json.dumps(json_final)
+
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):

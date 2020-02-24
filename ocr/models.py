@@ -5,6 +5,7 @@ OCR MODELS
 import random
 import string
 from django.db import models
+from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import User
@@ -70,7 +71,6 @@ class OCRUserProfile(models.Model):
         super(OCRUserProfile, self).save(*args, **kwargs)
 
     def json_serialized(self):
-
         ocr_user_profile = {
             "slug": self.slug,
             "active": self.is_active,
@@ -91,7 +91,9 @@ def send_email(sender, instance, created, **kwargs):
         from ocr.tasks import send_welcome_email
         send_welcome_email.delay(username=instance.ocr_user.username)
 
+
 post_save.connect(send_email, sender=OCRUserProfile)
+
 
 class Project(models.Model):
     """
@@ -125,6 +127,7 @@ class Project(models.Model):
     def create(self):
         """Create Project model"""
         self.save()
+
 
 class OCRImageset(models.Model):
     """
@@ -171,9 +174,9 @@ class OCRImage(models.Model):
     Description :
     """
     STATUS_CHOICES = [
-        ('1', 'Ready to recognize.'),
-        ('2', 'Ready to verify.'),
-        ('3', 'Ready to export.'),
+        ("1", "Ready to recognize."),
+        ("2", "Ready to verify."),
+        ("3", "Ready to export.")
     ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
