@@ -72,12 +72,16 @@ class OCRUserProfile(models.Model):
     def json_serialized(self):
 
         ocr_user_profile = {
+            "slug": self.slug,
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            "reviewer_type": self.reviewer_type.type
+            #"reviewer_type": self.reviewer_type.type
         }
         return ocr_user_profile
+
+    def get_slug(self):
+        return self.slug
 
 from django.db.models.signals import post_save
 
