@@ -5,8 +5,9 @@ from django.conf.urls import url
 from rest_framework import routers
 
 # from ocr import views
-from ocr.views import ocr_datasource_config_list
-from ocr.views import OCRImageView, OCRImagesetView
+from ocr.views import ocr_datasource_config_list, ProjectView
+from ocr.views import OCRImageView, OCRImagesetView, OCRUserView, \
+    OCRUserProfileView, ReviewerTypeListView
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
@@ -31,7 +32,25 @@ router.register(
     base_name='ocrimagesets'
 )
 
+router.register(
+    'user',
+    OCRUserView,
+    base_name='user'
+)
+
+router.register(
+    'userprofile',
+    OCRUserProfileView,
+    base_name='userprofile'
+)
+router.register(
+    'project',
+    ProjectView,
+    base_name='projects'
+)    
+
 urlpatterns = [
     url(r'^datasource/ocr_datasource_config_list$', ocr_datasource_config_list, name="ocr_datasource_config_list"),
+    url(r'^reviewer_type/', ReviewerTypeListView.as_view(), name="reviewer_type")
 ]
 urlpatterns += router.urls

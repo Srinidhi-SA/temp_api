@@ -118,12 +118,12 @@ def detect_text(path):
     image = vision.types.Image(content=content)
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    print('Texts:')
-    for text in texts:
-        print('\n"{}"'.format(text.description))
-        vertices = (['({},{})'.format(vertex.x, vertex.y)
-                     for vertex in text.bounding_poly.vertices])
-        print('bounds: {}'.format(','.join(vertices)))
+    # print('Texts:')
+    # for text in texts:
+    #     print('\n"{}"'.format(text.description))
+    #     vertices = (['({},{})'.format(vertex.x, vertex.y)
+    #                  for vertex in text.bounding_poly.vertices])
+    #     print('bounds: {}'.format(','.join(vertices)))
     return response
 
 
@@ -152,7 +152,7 @@ function to find the centroid of the points
 """
 
 
-def fun2(response_dict, d):
+def fun2(response_dict, d, image_name):
     def midpoint(point_1, point_2):
         mid_x = (point_1[0] + ((point_2[0] - point_1[0]) / 2))
         mid_y = (point_1[1] + ((point_2[1] - point_1[1]) / 2))
@@ -180,7 +180,7 @@ def fun2(response_dict, d):
         for j in range(len(d)):
             if (response_dict[list(response_dict.keys())[i]][1] == d[list(d.keys())[j]][1]) and (
                     euclidean_distance(response_dict[list(response_dict.keys())[i]][2], d[list(d.keys())[j]][2]) < 7):
-                print("word found")
+                # print("word found")
                 l = l + 1
                 plt.scatter([response_dict[list(response_dict.keys())[i]][2][0]],
                             [response_dict[list(response_dict.keys())[i]][2][1]], c='y', s=15)
@@ -190,8 +190,8 @@ def fun2(response_dict, d):
                 # microsoft_centroid_list[j]['match_flag']=True
                 break
 
-    with open('comparison.json', 'w') as fp:
-        json.dump(d, fp, sort_keys=True, indent=4)
+    # with open(os.getcwd() + '/ocr/ITE/ir/' + 'comparison.json', 'w+') as fp:
+    #    json.dump(d, fp, sort_keys=True, indent=4)
     return d
 
 
@@ -200,7 +200,7 @@ def fun2(response_dict, d):
 
 
 #########################################################################################################
-def write_to_Json(analysis):
+def write_to_Json(analysis, image_name):
     wc = {}
     for i, line in enumerate(analysis["recognitionResults"][0]["lines"]):
         wc[i + 1] = [(word['boundingBox'], word['text']) for word in line['words']]
@@ -209,9 +209,9 @@ def write_to_Json(analysis):
 
     d = {'b' + str(i): val for i, val in enumerate(bs)}
 
-    with open('AzureCoord.json', 'w') as fp:
+    with open(os.getcwd() + '/ocr/ITE/ir/' + image_name + '_AzureCoord.json', 'w') as fp:
         json.dump(d, fp, sort_keys=True, indent=4)
-    with open('AzureCoord.json', 'r') as fp:
+    with open(os.getcwd() + '/ocr/ITE/ir/' + image_name + '_AzureCoord.json', 'r') as fp:
         data = json.load(fp)
     return data
 
@@ -221,8 +221,8 @@ def write_to_Json(analysis):
 
 
 ##########################################################################################################
-def write_to_json2(data):
-    image_path1 = os.getcwd() + '/ocr/ITE/demo_analysis/image_left.png'
+def write_to_json2(data, image_name, image_slug):
+    image_path1 = os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_original_image.png'
 
     ImageforDisplay(filename=image_path1)
     im1 = Image.open(image_path1)
@@ -272,9 +272,9 @@ def write_to_json2(data):
 
     d11 = {'b' + str(i): val for i, val in enumerate(new)}
 
-    with open('ConvertedCoords.json', 'w') as fp:
+    with open(os.getcwd() + '/ocr/ITE/ir/' + image_name + '_ConvertedCoords.json', 'w') as fp:
         json.dump(d11, fp, sort_keys=True, indent=4)
-    with open('ConvertedCoords.json', 'r') as fp:
+    with open(os.getcwd() + '/ocr/ITE/ir/' + image_name + '_ConvertedCoords.json', 'r') as fp:
         data2 = json.load(fp)
     return data2
 
@@ -283,17 +283,17 @@ def write_to_json2(data):
 ''' Plot the text on an Image    '''
 ##########################################################################################################
 try:
-    with open('comparison.json', 'r') as fp:
+    with open(os.getcwd() + '/ocr/ITE/ir/' + 'comparison.json', 'r') as fp:
         data3 = json.load(fp)
 except:
     pass
 
 
-# image_data = open(image_name_t, "rb").read()
+# image_data = open(mask, "rb").read()
 # image_ = Image.open(BytesIO(image_data))
 
 
-def plot(image, data3):
+def plot(image, data3, image_slug):
     plt.figure(figsize=(15, 15))
 
     width, height = image.size
@@ -311,40 +311,9 @@ def plot(image, data3):
         if data3[i][3] == 'False':
             patch = Polygon(vertices, closed=True, fill=False, linewidth=2, color='r')
             ax.axes.add_patch(patch)
-    plt.savefig('foo1.png', bbox_inches='tight', pad_inches=0)
-
-
-# plt.savefig('extracted.png',bbox_inches='tight', pad_inches=0)
-'''
-with open('comparison (copy).json', 'r') as fp:
-        data4 = json.load(fp)
-image_data = open("Page4_mask0.png", "rb").read()
-image = Image.open(BytesIO(image_data))
-
-def plot1(image,data4):
-    plt.figure(figsize=(15,15))
-
-    width, height = image.size
-    print (width, height)
-    plt.axis('off')
-    ax = plt.imshow(image)
-    # ax.set_axis_off()
-    for i in data4:
-        text = data4[i][1]
-        #if(data3[i][3]=='False'):
-
-        vertices =[ (data4[i][0][0],data4[i][0][1]),(data4[i][0][2],data4[i][0][3]),((data4[i][0][4],data4[i][0][5])),(data4[i][0][6],data4[i][0][7])]
-        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top",color = 'white')
-        if(data4[i][3]=='False'):
-            patch = Polygon(vertices, closed=True, fill=False, linewidth=2, color='r')
-            ax.axes.add_patch(patch)
-        if(data4[i][3]=='Not_Sure'):
-            patch = Polygon(vertices, closed=True, fill=False, linewidth=2, color='y')
-            ax.axes.add_patch(patch)
-    plt.savefig('Final.png', bbox_inches='tight',pad_inches=0)
-
-
-    '''
+    # print(os.getcwd())
+    plt.savefig(os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_gen_image.png', bbox_inches='tight', pad_inches=0)
+    return os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_gen_image.png'
 
 
 #####################################################################################################################################
