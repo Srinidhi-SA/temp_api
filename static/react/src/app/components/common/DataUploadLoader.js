@@ -63,7 +63,7 @@ componentDidMount() {
         var x1 = document.getElementById("loadingMsgs1");
         var x2 = document.getElementById("loadingMsgs2");
         var myTimer;
-        for (var i = 0; i < array.length-3; i++) {
+        for (var i = 1; i < array.length-3; i++) {
             (function(i) {
                 myTimer = setTimeout(function() {
                     x.innerHTML = "Step " + i + ": " + array[i];
