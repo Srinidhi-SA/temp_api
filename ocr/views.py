@@ -488,7 +488,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = list()
@@ -530,7 +530,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             list_serializer=OCRImageExtractListSerializer
         )
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
         data = request.data
         x = data['x']
@@ -548,7 +548,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 break
         return JsonResponse({'word': response, 'index': index})
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
         data = request.data
         index = data['index']
@@ -580,7 +580,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def not_clear(self, request, *args, **kwargs):
         data = request.data
         index = data['index']
@@ -612,7 +612,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
 
