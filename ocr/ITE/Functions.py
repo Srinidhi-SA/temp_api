@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from ocr.ITE.master_helper import *
+import os
+import matplotlib as mpl
+
+if os.environ.get('DISPLAY', '') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
+import matplotlib.pyplot as plt
 
 
 def euclidean_distance(plot1, plot2):
