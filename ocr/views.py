@@ -77,6 +77,8 @@ from .forms import CustomUserCreationForm, CustomUserEditForm
 
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import generics
+from django.core.exceptions import PermissionDenied, \
+    SuspiciousOperation
 
 
 # Create your views here.
@@ -125,7 +127,7 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
@@ -140,12 +142,8 @@ class OCRUserView(viewsets.ModelViewSet):
         return object
 
     def create(self, request, *args, **kwargs):
+        """Add OCR User"""
 
-        if not request.user.is_staff and not request.user.is_superuser:
-            return JsonResponse({
-                "created": False,
-                "message": "Not Allowed to add User."
-            })
         if request.method == 'POST':
             form = CustomUserCreationForm(request.POST)
             if form.is_valid():
@@ -162,10 +160,7 @@ class OCRUserView(viewsets.ModelViewSet):
                     "message": form.errors
                 })
         else:
-            return JsonResponse({
-                "created": False,
-                "message": "Invalid Method."
-            })
+            raise SuspiciousOperation("Invalid Method.")
 
     def list(self, request, *args, **kwargs):
 
@@ -191,38 +186,40 @@ class OCRUserView(viewsets.ModelViewSet):
                     "message": "User profile Updated successfully."
                 })
             return JsonResponse({
+
                 "updated": False,
                 "message": form.errors
             })
-        return JsonResponse({
-            "updated": False,
-            "message": "Invalid Method."
-        })
+        else:
+            raise SuspiciousOperation("Invalid Method.")
 
     def delete(self, request, *args, **kwargs):
         """Delete OCR User"""
-        username = request.data['username']
-        try:
-            user_object = User.objects.get(username=username)
-            user_object.delete()
-            return JsonResponse({
-                "deleted": True,
-                "message": "User deleted."
-            })
+        if request.method == 'DELETE':
+            username = request.data['username']
+            try:
+                user_object = User.objects.get(username=username)
+                user_object.delete()
+                return JsonResponse({
+                    "deleted": True,
+                    "message": "User deleted."
+                })
 
-        except User.DoesNotExist:
-            return JsonResponse({
-                "deleted": False,
-                "message": "User DoesNotExist."
-            })
-        except Exception as e:
-            return JsonResponse({
-                "deleted": False,
-                "message": str(e)
-            })
+            except User.DoesNotExist:
+                return JsonResponse({
+                    "deleted": False,
+                    "message": "User DoesNotExist."
+                })
+            except Exception as e:
+                return JsonResponse({
+                    "deleted": False,
+                    "message": str(e)
+                })
+        else:
+            raise SuspiciousOperation("Invalid Method.")
 
+        # -------------------------------------------------------------------------------
 
-# -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 class OCRUserProfileView(viewsets.ModelViewSet):
