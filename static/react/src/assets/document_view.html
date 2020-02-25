@@ -185,10 +185,10 @@
 								<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-check"></i>
 								<span class="caret"></span></button>
 								<ul class="dropdown-menu">
-								<li><button href="#" class="btn btn-primary btn-block">Add Fields</button></li>
-								<li><button href="#" class="btn btn-primary btn-block">Not Clear</button></li>
-								<li><button href="#" class="btn btn-warning btn-block">Bad Scan</button></li>
-								<li><button href="#" class="btn btn-primary btn-block">Properties</button></li>
+								<li><a href="#" class="btn btn-block"><i class="fa fa-plus"></i> Add Fields</a></li>
+								<li><a href="#" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+								<li><a class="btn btn-warning btn-block" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-exclamation"></i> Bad Scan</a></li>
+								<li><a href="#" class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
 								</ul>
 								</div>
 						  </span>
@@ -275,14 +275,7 @@
 	  
       <script src="js/uiScripts.js"></script>
       <script>
-         $('.dropdown-menu a').on('click', function(){    
-             $(this).parent().parent().prev().html($(this).html() + '<span class="caret"></span>');    
-         })
-		 
-		  
-		  
-		  
-		  ko.bindingHandlers.panelSplitter = {
+	  ko.bindingHandlers.panelSplitter = {
     init: function(element, valueAccessor) {
         $(element).find(".drag-handle").on("mousedown", function (e) {
             element.initialWidth = parseInt($(element).find(".column-left").width(), 10);
