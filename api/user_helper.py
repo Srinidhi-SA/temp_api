@@ -131,7 +131,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser", "is_staff")
 
 
 def jwt_response_payload_handler(token, user=None, request=None):
