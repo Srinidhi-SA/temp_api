@@ -2,7 +2,9 @@
 export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
+  OcrProjectList:"",
   imageFlag: false,
+  documentFlag:false,
   imagePath: "",
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
@@ -10,7 +12,7 @@ export default function reducer(state = {
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
-  checked_list: ''
+  checked_list: '',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -29,6 +31,18 @@ export default function reducer(state = {
         }
       }
       break;
+      case "OCR_PROJECT_LIST":
+      {
+        return {
+          ...state,
+          OcrProjectList: action.data
+        }
+      }
+      break;
+      case "OCR_PROJECT_LIST_FAIL":
+      {
+      throw new Error("Unable to fetch uploaded images list!!");
+      }
       
       case "OCR_UPLOADS_LIST":
       {
@@ -41,6 +55,14 @@ export default function reducer(state = {
       case "OCR_UPLOADS_LIST_FAIL":
       {
       throw new Error("Unable to fetch uploaded images list!!");
+      }
+      break;
+      case "SAVE_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          documentFlag: action.flag
+        }
       }
       break;
     case "SAVE_IMAGE_FLAG":

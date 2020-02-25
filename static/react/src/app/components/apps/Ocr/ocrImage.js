@@ -17,6 +17,9 @@ export class OcrImage extends React.Component {
     super(props)
   }
 
+  componentWillUnmount(){
+    this.props.dispatch(saveImagePageFlag(false));
+  }
   componentDidMount() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
@@ -53,7 +56,7 @@ export class OcrImage extends React.Component {
 
   }
   handleImagePageFlag = () => {
-    this.props.dispatch(saveImagePageFlag(false));
+    window.history.go(-1)
   }
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
@@ -111,7 +114,7 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
-          <Link to="/apps/ocr-mq44ewz7bp/project/"><Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button></Link>
+          <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
         </div>
       </div>
     )

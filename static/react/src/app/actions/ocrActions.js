@@ -22,6 +22,12 @@ export function saveImagePageFlag(flag) {
 		flag
 	}
 }
+export function saveDocumentPageFlag(flag) {
+	return {
+		type: "SAVE_DOCUMENT_FLAG",
+		flag
+	}
+}
 
 export function saveImageDetails() {
 	return {
@@ -29,6 +35,40 @@ export function saveImageDetails() {
 	}
 }
 
+export function getOcrProjectsList(pageNo){
+	return (dispatch) => {
+		return fetchProjects(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchProjectsSuccess(json))
+			}
+			else{
+			 dispatch(fetchProjectsFail(json))
+			}
+		})
+	}
+}
+
+function fetchProjects(pageNo=1,token){
+	return fetch(API + '/ocr/project/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchProjectsSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_PROJECT_LIST",
+		data,
+	}
+}
+
+export function fetchProjectsFail(data){
+	return {
+		type: "OCR_PROJECT_LIST_FAIL",
+		data,
+	}
+}
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
