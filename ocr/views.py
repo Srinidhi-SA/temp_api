@@ -80,6 +80,7 @@ from rest_framework import generics
 from django.core.exceptions import PermissionDenied, \
     SuspiciousOperation
 
+
 # Create your views here.
 
 
@@ -126,7 +127,7 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated,IsAdminUser)
+    permission_classes = (IsAuthenticated, IsAdminUser)
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
@@ -185,9 +186,10 @@ class OCRUserView(viewsets.ModelViewSet):
                     "message": "User profile Updated successfully."
                 })
             return JsonResponse({
-                    "updated": False,
-                    "message": form.errors
-                })
+
+                "updated": False,
+                "message": form.errors
+            })
         else:
             raise SuspiciousOperation("Invalid Method.")
 
@@ -214,10 +216,10 @@ class OCRUserView(viewsets.ModelViewSet):
                     "message": str(e)
                 })
         else:
-            raise SuspiciousOperation("Invalid Method.")        
+            raise SuspiciousOperation("Invalid Method.")
 
+        # -------------------------------------------------------------------------------
 
-# -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 class OCRUserProfileView(viewsets.ModelViewSet):
@@ -265,12 +267,13 @@ class OCRUserProfileView(viewsets.ModelViewSet):
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
         return JsonResponse({
-            "message":"Profile updated successfully.",
+            "message": "Profile updated successfully.",
             "updated": True,
             "ocr_profile": serializer.data
         })
 
-#-------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
 
@@ -495,14 +498,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
+                print(slug)
                 image_queryset = OCRImage.objects.get(slug=slug)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
-                while True:
-                    if res.status == 'SUCCESS':
-                        response = res.result
-                        break
+                response = res.get()
 
                 del data['slug']
                 data['converted_Coordinates'] = json.dumps(response['data2'])
@@ -524,11 +525,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def get_images(self, request, *args, **kwargs):
 
-        return get_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRImageExtractListSerializer
-        )
+        data = request.data
+        instance = OCRImage.objects.get(slug=data['slug'])
+
+        if instance is None:
+            return retrieve_failed_exception("File Doesn't exist.")
+
+        serializer = OCRImageExtractListSerializer(instance=instance, context={'request': request})
+        object_details = serializer.data
+
+        return Response(object_details)
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -542,11 +548,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         response = get_word.delay(converted_Coordinates, x, y)
         result = response.task_id
         res = AsyncResult(result)
-        while True:
-            if res.status == 'SUCCESS':
-                response, index = res.result
-                break
-        return JsonResponse({'word': response, 'index': index})
+        response = res.get()
+        if response is not None:
+            return JsonResponse({'word': response[0], 'index': response[1]})
+        return JsonResponse({'word': None, 'index': None})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
@@ -561,10 +566,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         result = response.task_id
         res = AsyncResult(result)
-        while True:
-            if res.status == 'SUCCESS':
-                response, analysis_list = res.result
-                break
+        response, analysis_list = res.get()
 
         data['comparision_data'] = json.dumps(response)
 
@@ -593,10 +595,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         result = response.task_id
         res = AsyncResult(result)
-        while True:
-            if res.status == 'SUCCESS':
-                response, analysis_list = res.result
-                break
+        response, analysis_list = res.get()
 
         data['comparision_data'] = json.dumps(response)
 
@@ -625,10 +624,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         result = response.task_id
         res = AsyncResult(result)
-        while True:
-            if res.status == 'SUCCESS':
-                flag, json_final, metadata, analysis = res.result
-                break
+        flag, json_final, metadata, analysis = res.get()
 
         data['analysis'] = json.dumps(analysis)
         if flag == 'Transcript':
@@ -780,5 +776,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response['project_serializer_error'] = serializer.errors
             response['project_serializer_message'] = 'FAILED'
-
+        print(response)
         return JsonResponse(response)

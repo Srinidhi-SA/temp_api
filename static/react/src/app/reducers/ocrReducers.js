@@ -2,6 +2,7 @@
 export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
+  OcrProjectList:"",
   imageFlag: false,
   imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png",
   ocrS3BucketDetails: {},
@@ -15,11 +16,11 @@ export default function reducer(state = {
   s3FileFetchErrorMsg:"",
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
-  imageFlag: false,
+  documentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
-  checked_list: ''
+  checked_list: '',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -37,15 +38,28 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;  
-    case "OCR_UPLOADS_LIST":
-    {
-      return {
-        ...state,
-        OcrDataList: action.data
+      break;
+      case "OCR_PROJECT_LIST":
+      {
+        return {
+          ...state,
+          OcrProjectList: action.data
+        }
       }
-    }
-    break;
+      break;
+      case "OCR_PROJECT_LIST_FAIL":
+      {
+      throw new Error("Unable to fetch projects list!!");
+      }
+      
+      case "OCR_UPLOADS_LIST":
+      {
+        return {
+          ...state,
+          OcrDataList: action.data
+        }
+      }
+      break;
     case "OCR_UPLOADS_LIST_FAIL":
     {
       throw new Error("Unable to fetch uploaded images list!!");
@@ -58,7 +72,15 @@ export default function reducer(state = {
         OcrDataList:action.data
       }
     }
-    break;
+      break;
+      case "SAVE_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          documentFlag: action.flag
+        }
+      }
+      break;
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
