@@ -22,7 +22,10 @@ export default function reducer(state = {
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
-  newUserDetails : {}
+  newUserDetails : {},
+  newUserProfileDetails : {},
+  ocrUserProfileFlag : false,
+  allOcrUsers : {},
 
 }, action) {
   switch (action.type) {
@@ -53,14 +56,6 @@ export default function reducer(state = {
     case "OCR_UPLOADS_LIST_FAIL":
     {
       throw new Error("Unable to fetch uploaded images list!!");
-    }
-    break;
-    case "OCR_UPLOADS_LIST":
-    {
-      return{
-        ...state,
-        OcrDataList:action.data
-      }
     }
     break;
     case "SAVE_S3_BUCKET_DETAILS": {
@@ -198,7 +193,7 @@ export default function reducer(state = {
         }
       }
       break;
-      //For Manage Users screen
+//For Manage Users screen
       case "OPEN_ADD_USER_POPUP": {
         return {
           ...state,
@@ -219,6 +214,36 @@ export default function reducer(state = {
         return {
           ...state,
           newUserDetails : curUserDetails
+        }
+      }
+      break;
+      case "SAVE_NEW_USER_PROFILE":{
+        let curUserStatus = state.newUserProfileDetails;
+        curUserStatus[action.name] = action.value
+        return {
+          ...state,
+          newUserProfileDetails : curUserStatus
+        }
+      }
+      break;
+      case "CREATE_NEW_USER_SUCCESS":{
+        return {
+          ...state,
+          createUserFlag : action.flag
+        }
+      }
+      break;
+      case "USER_PROFILE_CREATED_SUCCESS":{
+        return {
+          ...state,
+          ocrUserProfileFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_ALL_OCR_USERS_LIST":{
+        return {
+          ...state,
+          allOcrUsers : action.json
         }
       }
       break;

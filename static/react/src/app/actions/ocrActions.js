@@ -2,6 +2,8 @@
 import {API} from "../helpers/env";
 import {getUserDetailsOrRestart} from "../helpers/helper";
 import store from "../store";
+import { func, string } from "prop-types";
+import { stringify } from "querystring";
 
 function getHeader(token){
 	return {
@@ -11,11 +13,11 @@ function getHeader(token){
 
 export function getHeaderForJson(token) {
 	return { Authorization: token, 'Content-Type': 'application/json' };
-  }
+}
 
-  export function getHeaderForUser(token) {
-	return { Authorization: token, 'Content-Type': 'form-data' };
-  }
+export function getHeaderForFormData(token) {
+	return { Authorization: token, 'Content-Type': 'multipart/form-data' };
+}
 
 export function saveOcrFilesToStore(files) {
 	return {
@@ -223,16 +225,50 @@ export function closeAddUserPopup(){
 		type:"CLOSE_ADD_USER_POPUP"
 	}
 }
-export function saveNewUserDetailsAction(name,value){
+//Fetch All OCR Users
+export function fetchAllOcrUsersAction(){
+	return (dispatch) => {
+		return fetchAllOcrUsersAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				saveAllOcrUsersList(json);
+			}else if(response.status === 200 && !json.deleted){
+				console.log(json.message)
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+export function fetchAllOcrUsersAPI(token){
+	return fetch(API+"/ocr/user/",{
+		method : "get",
+		headers : getHeaderForJson(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+function saveAllOcrUsersList(json){
+	return {
+		type : "SAVE_ALL_OCR_USERS_LIST",
+		json
+	}
+}
+//Saving and Creating New Users for OCR
+export function saveNewUserDetails(name,value){
 	return {
 		type:"SAVE_NEW_USER_DETAILS",name,value
 	}
 }
 export function createNewUserAction(userDetails){
+	var formdt = new FormData();
+	for(let key in userDetails){
+		formdt.append(key,userDetails[key]);
+	}
 	return (dispatch) => {
-		return createNewUserAPI(userDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200){
-				console.log("Success",json)
+		return createNewUserAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.created){
+				console.log("Success",json.message.username)
+				createNewUserSuccess(json.created);
+			}else if(response.status === 200 && !json.created){
+				console.log(json.message.username)
 			}else{
 				console.log("Failed")
 			}
@@ -242,8 +278,67 @@ export function createNewUserAction(userDetails){
 function createNewUserAPI(data,token){
 	return fetch(API+"/ocr/user/",{
 		method : "post",
-		headers : getHeaderForUser(token),
-		body:JSON.stringify(data)
+		headers : getHeaderForFormData(token),
+		body:data
+	}).then(response => Promise.all([response,response.json()]));
+}
+function createNewUserSuccess(flag){
+	return {
+		type : "CREATE_NEW_USER_SUCCESS",flag
+	}
+}
+//Saving and creating user roles and status
+export function saveNewUserProfileDetails(name,value){
+	return{
+		type : "SAVE_NEW_USER_PROFILE",name,value
+	}
+}
+export function submitNewUserProfileAction(userProfileDetails){
+	return (dispatch) => {
+		return submitNewUserProfileAPI(userProfileDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.created){
+				console.log("Success",json.message.username)
+				userProfileCreationSuccess(json.created);
+			}else if(response.status === 200 && !json.created){
+				console.log(json.message.username)
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function submitNewUserProfileAPI(data){
+	return fetch(API+"/ocr/user/",{
+		method : "post",
+		headers : getHeaderForFormData(token),
+		body:data
+	}).then(response => Promise.all([response,response.json()]));
+}
+function userProfileCreationSuccess(flag){
+	return {
+		type : "USER_PROFILE_CREATED_SUCCESS",flag
+	}
+}
+//Delete User
+export function deleteOcrUserAction(uName){
+	let data = {"username" : uName}
+	return (dispatch) => {
+		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.deleted){
+				console.log("Success",json.message)
+			}else if(response.status === 200 && !json.deleted){
+				console.log(json.message)
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function deleteOcrActionAPI(data,token){
+	return fetch(API+"/ocr/user/",{
+		method : "delete",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
 

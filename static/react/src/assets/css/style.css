@@ -22452,22 +22452,28 @@ ul.ocrUploadTabs{
   margin-left: 5px;
   display: inline-block;
 }
+.addUserBtn{margin-left: 50px;}
 #addUsers {
   height: 350px;
-  padding:0px;
+  padding:10px;
 }
-.createUser,.createUserProfile{
+.createUserBtn{
   margin: 0px;
   padding: 20px 20px 20px 10px;
 }
-.ocrUserFormGroup{
+/* .ocrUserFormGroup{
   padding: 0px;
   padding-bottom: 20px;
-}
+} */
 .ocrUserFormInput{
   border: 1px solid #cdcdcd;
   height: 32px;
   font-size: 12px;
+  border-radius: 2px;
+  padding-left: 5px;
+  margin-left: 10px;
+  width:45%;
+  margin-bottom: 5px;
 }
 .userStatusBtn{
   height: 25px;
@@ -22478,7 +22484,13 @@ ul.ocrUploadTabs{
   padding: 0px;
   padding-top: 3px;
 }
-.userStatusBtn .p-button.p-togglebutton.p-component.userStatusBtn.p-button-text-only{
-  background-color: #e02424;
-  color: #ffffff;
+.manageUserTable{
+  background-color: white;
+}
+.ocrUserFormInput1{
+  margin-left: 10px;
+  width:45%;
+}
+.ocrUserFormInput2{
+  margin-left: 30px;
 }

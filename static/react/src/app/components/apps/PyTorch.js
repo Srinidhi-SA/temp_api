@@ -321,6 +321,7 @@ export class PyTorch extends React.Component {
     }
 
     setChangeSubValues(data,parameterData,e){
+        let checkWeight = /((\d*)?\.\d+)+(\s*,\s*((\d*)?\.\d+))+/ ;
         let name = data.name;
         let val = e.target.value;
         let subParamArry = this.props.pyTorchSubParams;
@@ -339,9 +340,13 @@ export class PyTorch extends React.Component {
                 this.props.dispatch(setPyTorchSubParams(subParamArry));
             }
         }
-        else if(name === "weight" && (val<0 || val === "")){
+        else if(name === "weight" && val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.parentElement.lastElementChild.innerText = "Enter value"
+        }
+        else if(name === "weight" && !checkWeight.test(val) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Enter proper format"
         }
         else if(name === "ignore_index" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -407,7 +412,7 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
-        else if( (name === "weight" || name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && !Number.isInteger(parseFloat(val)) ){
+        else if( (name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && !Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
@@ -525,6 +530,17 @@ export class PyTorch extends React.Component {
             let selectedPar = subParamArry["loss"];
             if(data.name === "reduction" || data.name === "zero_infinity" || data.name === "log_input" || data.name === "full")
                 selectedPar[data.name] = val;
+            else if(data.name === "weight"){
+                let duplVal = val.split(",");
+                let tensorVal = [];
+                for(var i=0;i<duplVal.length;i++){
+                    duplVal[i]!= ""?tensorVal.push(parseFloat(duplVal[i])):""
+                }
+                tensorVal.reduce((a,b)=>a+b,0) > 2 ? 
+                e.target.parentElement.lastElementChild.innerText = "Sum of list should be less than 2"
+                 : selectedPar[data.name] = tensorVal;
+
+            }
             else selectedPar[data.name] = parseFloat(val);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else if(parameterData === "optimizer"){
@@ -577,8 +593,8 @@ export class PyTorch extends React.Component {
                                     <div className = "row mb-20">
                                         <label className = "col-md-2 mandate">{item[i].displayName}Hereee</label>
                                         <label className = "col-md-4">{item[i].description}</label>
-                                        <div className = "col-md-1">
-                                            <input type ="text" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                        <div className = "col-md-3">
+                                            <input type ="text" pattern="\d+((\.|,)\d+)?" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                             <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>

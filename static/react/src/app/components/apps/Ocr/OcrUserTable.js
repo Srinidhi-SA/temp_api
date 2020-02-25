@@ -3,13 +3,16 @@ import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
 import {ToggleButton} from "primereact/togglebutton"
 import store from "../../../store";
-import { openAddUserPopup, closeAddUserPopup, saveNewUserDetailsAction } from "../../../actions/ocrActions";
+import { openAddUserPopup, closeAddUserPopup, saveNewUserDetails, createNewUserAction, saveNewUserProfileDetails , submitNewUserProfileAction, deleteOcrUserAction, fetchAllOcrUsersAction} from "../../../actions/ocrActions";
 
 @connect((store) => {
   return {
     addUserPopupFlag : store.ocr.addUserPopupFlag,
     createUserFlag : store.ocr.createUserFlag,
     newUserDetails : store.ocr.newUserDetails,
+    allOcrUsers : store.ocr.allOcrUsers,
+    newUserProfileDetails : store.ocr.newUserProfileDetails,
+    ocrUserProfileFlag : store.ocr.ocrUserProfileFlag,
   };
 })
 
@@ -20,24 +23,32 @@ export class OcrUserTable extends React.Component{
 			checked1: false
 		};
     }
+    componentWillMount(){
+        this.props.dispatch(fetchAllOcrUsersAction())
+    }
 
     openAddUserPopup(e){
         this.props.dispatch(openAddUserPopup());
     }
     closeAddUserPopup(e){
+        this.props.dispatch(fetchAllOcrUsersAction());
         this.props.dispatch(closeAddUserPopup());
     }
     saveNewUserDetails(e){
         let name = e.target.name;
         let value = e.target.value;
-        this.props.dispatch(saveNewUserDetailsAction(name,value));
+        this.props.dispatch(saveNewUserDetails(name,value));
     }
     submitNewUserDetails(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         let paswdFormat=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
         if(Object.keys(this.props.newUserDetails).length === 0){
             $("#resetMsg")[0].innerText = "Please enter details"
-        }else if($("#userName")[0].value === ""){
+        }else if($("#first_name")[0].value === ""){
+            $("#resetMsg")[0].innerText = "Enter Firstname"
+        }else if($("#last_name")[0].value === ""){
+            $("#resetMsg")[0].innerText = "Enter Lastname"
+        }else if($("#username")[0].value === ""){
             $("#resetMsg")[0].innerText = "Enter Username"
         }else if($("#email")[0].value === ""){
             $("#resetMsg")[0].innerText = "Enter Email"
@@ -53,21 +64,61 @@ export class OcrUserTable extends React.Component{
             $("#resetMsg")[0].innerText = "Password and Confirm Passwords doesnot match"
         }else{
             $("#resetMsg")[0].innerText = ""
-            this.props.dispatch()
+            this.props.dispatch(createNewUserAction(this.props.newUserDetails));
         }
     }
+    saveUserStatus(e){
+        let name=e.target.name;
+        let value = e.target.id;
+        this.props.dispatch(saveNewUserProfileDetails(name,value));
+    }
+    submitNewUserStatus(e){
+        // Validation for roles and status 
+        this.props.dispatch(submitNewUserProfileAction(this.props.newUserStatus));
+    }
+    deleteOcrUser(username){
+        this.props.dispatch(deleteOcrUserAction(username))
+    }
     render(){
+        let manageUsersTable = "Loading..."
+        if(Object.keys(this.props.allOcrUsers).length === 0){
+            manageUsersTable = "No Users"
+        }else{
+            manageUsersTable = this.props.allOcrUsers.data.map((item, index) => {
+                if(item.ocr_user){
+                  return (
+                      <tr>
+                          <td>{item.first_name}</td>
+                          <td>{item.last_name}</td>
+                          <td>{item.username}</td>
+                          <td>{item.email}</td>
+                          <td>{item.ocr_profile.reviewer_type}</td>
+                          <td>{item.date_joined}</td>
+                          <td>{item.last_login}</td>
+                          <td>
+                              <ToggleButton className="userStatusBtn" checked={item.ocr_profile.active} /*onChange={(e) => this.setState({checked1: e.value})}*/ onLabel="Active" offLabel="Inactive"/>
+                          </td>
+                          <td>
+                              <a onClick={this.deleteOcrUser.bind(this,item.username)}>
+                                  <i className="fa fa-trash fa-lg"/>
+                              </a>
+                          </td>
+                      </tr>
+                  )}
+                else{ return "" }
+            });
+        }
         return(
             <div>
                 <div className="row">
                     <div className="col-md-3">
                         <h4>Manage Users</h4>
                     </div>
-                    <div className="col-md-6">
-                    
-                    </div>
+                    <div className="col-md-6"></div>
                     <div className="col-md-3">
-                        <a onClick={this.openAddUserPopup.bind(this)}><i className="fa fa-user-plus fa-lg" aria-hidden="true"/></a>
+                        <a className="btn btn-primary addUserBtn" onClick={this.openAddUserPopup.bind(this)}>
+                            <i class="fa fa-user-plus fa-lg"></i>
+                        </a>
                         <div className="pull-right">
                             <input type="text" id="searchUser" className="form-control btn-rounded" placeholder="Search User..."/>
                         </div>
@@ -80,72 +131,72 @@ export class OcrUserTable extends React.Component{
                         </Modal.Header>
                         <Modal.Body id="addUsers">
                             {!this.props.createUserFlag &&
-                                <div className="createUser row">
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4 mandate" for="userName">User Name</label>
-                                        <input type="text" id="userName" name="userName" placeholder="User Name" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                    </div>
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4 mandate" for="email">Email</label>
-                                        <input  type="email" id="email" name="email" placeholder="Email" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                    </div>
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4 mandate" for="password">Password</label>
-                                        <input type="password" id="password1" name="password1" placeholder="Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                    </div>
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4 mandate" for="confirmPassword">Confirm Password</label>
-                                        <input type="password" id="password2" name="password2" placeholder="Confirm Password" className="col-md-8 ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
-                                    </div>
-                                </div>
-                            }
-                            {this.props.createUserFlag &&
-                                <div className="createUserProfile row">
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4 mandate" for="firstName">First Name</label>
-                                        <input type="text" id="firstName" name="firstName" placeholder="First Name" className="col-md-8 ocrUserFormInput"/>
-                                    </div>
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <label className="col-md-4" for="lastName">Last Name</label>
-                                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" className="col-md-8 ocrUserFormInput"/>
-                                    </div>
-                                    <div className="col-md-12 ocrUserFormGroup">
-                                        <div className="col-md-6">
-                                            <label for="userRoles" className="mandate">Roles</label>
-                                            <ul className = "list-unstyled">
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="admin"/><label for="admin">Admin</label></div>
-                                                </li>
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="reviewerL1"/><label for="reviewerL1">Reviewer L1</label></div>
-                                                </li>
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="reviewerL2"/><label for="reviewerL2">Reviewer L2</label></div>
-                                                </li>
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="superUser"/><label for="superUser">Superuser</label></div>
-                                                </li>
-                                            </ul>
+                                <div>
+                                    <label className="col-md-6 mandate" for="first_name">First Name</label>
+                                    <label className="col-md-6 mandate" for="last_name">Last Name</label>
+                                    <input type="text" id="first_name" name="first_name" placeholder="First Name" className="ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    <input type="text" id="last_name" name="last_name" placeholder="Last Name" className="ocrUserFormInput ocrUserFormInput2" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    
+                                    <label className="col-md-6 mandate" for="username">User Name</label>
+                                    <label className="col-md-6 mandate" for="email">Email</label>
+                                    <input type="text" id="username" name="username" placeholder="User Name" className="ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    <input  type="email" id="email" name="email" placeholder="Email" className="ocrUserFormInput ocrUserFormInput2" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    
+                                    <label className="col-md-6 mandate" for="password">Password</label>
+                                    <label className="col-md-6 mandate" for="confirmPassword">Confirm Password</label>
+                                    <input type="password" id="password1" name="password1" placeholder="Password" className="ocrUserFormInput" onInput={this.saveNewUserDetails.bind(this)}/>
+                                    <input type="password" id="password2" name="password2" placeholder="Confirm Password" className="ocrUserFormInput ocrUserFormInput2" onInput={this.saveNewUserDetails.bind(this)}/>
+                                   
+                                   {this.props.createUserFlag &&
+                                        <div className="col-md-12">
+                                            <div className="col-md-3">
+                                                <label for="userRoles" className="mandate">Roles</label>
+                                                <ul className = "list-unstyled">
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="roleType" id="admin" onClick={this.saveUserStatus.bind(this)}/><label for="admin">Admin</label></div>
+                                                    </li>
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="roleType" id="reviewerL1" onClick={this.saveUserStatus.bind(this)}/><label for="reviewerL1">Reviewer L1</label></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <ul className = "list-unstyled">
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="roleType" id="reviewerL2" onClick={this.saveUserStatus.bind(this)}/><label for="reviewerL2">Reviewer L2</label></div>
+                                                    </li>
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="roleType" id="superUser" onClick={this.saveUserStatus.bind(this)}/><label for="superUser">Superuser</label></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <label for="userRoles" className="mandate">Status</label>
+                                                <ul className = "list-unstyled">
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="status" id="active" onClick={this.saveUserStatus.bind(this)}/><label for="active">Active</label></div>
+                                                    </li>
+                                                    <li><div className = "ma-radio inline">
+                                                        <input type="radio" name="status" id="inactive" onClick={this.saveUserStatus.bind(this)}/><label for="inactive">Inactive</label></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div className="col-md-6">
-                                            <label for="userRoles" className="mandate">Status</label>
-                                            <ul className = "list-unstyled">
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="active"/><label for="active">Active</label></div>
-                                                </li>
-                                                <li><div className = "ma-radio inline">
-                                                    <input type="radio" name="roleType" id="inactive"/><label for="inactive">Inactive</label></div>
-                                                </li>
-                                            </ul>
+                                    }
+                                    {this.props.ocrUserProfileFlag && 
+                                        <div>
+                                            {/* OCR created message and tick image */}
+                                            
                                         </div>
-                                    </div>
+                                    }
                                 </div>
                             }
                         </Modal.Body>
                         <Modal.Footer>
                             <div id="resetMsg"></div>
-                            <Button bsStyle="primary" id="createUser" onClick={this.submitNewUserDetails.bind(this)}>Add User</Button>
-                            <Button bsStyle="primary" id="addUser" style={{display:!this.props.createUserFlag?"none":""}} >Proceed</Button>
+                            <Button bsStyle="primary" id="createUserBtn" onClick={this.submitNewUserDetails.bind(this)}>Create User</Button>
+                            <Button bsStyle="primary" id="addUser" disabled={this.props.createUserFlag?false:true} onClick={this.submitNewUserStatus.bind(this)}>Save</Button>
+                            <Button bsStyle="primary" id="addUser" style={{display:this.props.ocrUserProfileFlag?"none":""}} onClick={this.closeAddUserPopup.bind(this)}>Close</Button>
                         </Modal.Footer>
                     </Modal>
                 </div>
@@ -155,34 +206,17 @@ export class OcrUserTable extends React.Component{
                         <tr>
                             <th>FIRST NAME</th>
                             <th>LAST NAME</th>
+                            <th>USER NAME</th>
                             <th>EMAIL</th>
                             <th>ROLES</th>
                             <th>DATE JOINED</th>
                             <th>LAST LOGIN</th>
                             <th>STATUS</th>
+                            <th>ACTION</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>ABC</td>
-                            <td>D</td>
-                            <td>abd@mail.com</td>
-                            <td>Admin</td>
-                            <td>10/11/2020</td>
-                            <td>8:30:00 PM</td>
-                            <td>
-                                <ToggleButton className="userStatusBtn" checked={this.state.checked1} onChange={(e) => this.setState({checked1: e.value})} onLabel="Active" offLabel="Inactive"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>EFG</td>
-                            <td>H</td>
-                            <td>efg@marlb.com</td>
-                            <td>Superuser</td>
-                            <td>10/11/2020</td>
-                            <td>01:05:80 AM</td>
-                            <td></td>
-                        </tr>
+                            {manageUsersTable}
                         </tbody>
                     </table>
                 </div>
