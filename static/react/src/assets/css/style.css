@@ -22337,7 +22337,7 @@ width: 270px;
 height: 90px;
 background: #fff;
 margin-left: -108px;
-margin-top: -43px;
+margin-top: -5px;
 }
 #popoverOcr .popover-title{
   background-color: #f2f2f2;
@@ -22357,14 +22357,7 @@ border: 1px solid #44b0a0;
 color: #fff;
 font-size: 14px;
 }
-.ocrbgDiv{
-  height: 500px;
-  width: 500px;
-  position: absolute;
-  left: 14px;
-  top: 0px;
-  /* background: rgba(0,0,0,0.4); */
-}
+
 #originalOcrImg {
   width: 100%;
   -webkit-transition: all 2s ease;
@@ -22372,12 +22365,6 @@ font-size: 14px;
   -ms-transition: all 2s ease;
   transition: all 2s ease;
 }
-/* #originalOcrImg:hover{
-  width: calc(100% + 100px);
-}
-.ocrImgDiv:hover{
-  z-index:9999;
-} */
 .ocrImgTitle{
   margin-bottom: 20px;
   display: block;
