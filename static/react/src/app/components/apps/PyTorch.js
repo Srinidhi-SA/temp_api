@@ -321,7 +321,8 @@ export class PyTorch extends React.Component {
     }
 
     setChangeSubValues(data,parameterData,e){
-        let checkWeight = /((\d*)?\.\d+)+(\s*,\s*((\d*)?\.\d+))+/ ;
+        let checkWeight = /((\d*)?\.?\d+)+(\s*,\s*((\d*)?\.?\d+))/ ;
+        var commaLetters= /^[0-9\,.\s]+$/;
         let name = data.name;
         let val = e.target.value;
         let subParamArry = this.props.pyTorchSubParams;
@@ -344,9 +345,16 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter value"
         }
-        else if(name === "weight" && !checkWeight.test(val) ){
+        else if(name === "weight" && !commaLetters.test(val)){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter proper format"
+            e.target.parentElement.lastElementChild.innerText = "Numbers only"
+        }
+        else if(name === "weight" && !checkWeight.test(val)){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "format should be 0.3,1.7"
+        }else if(name === "weight" && (val.split(",")).length > 2){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Please enter only two values"
         }
         else if(name === "ignore_index" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -532,13 +540,13 @@ export class PyTorch extends React.Component {
                 selectedPar[data.name] = val;
             else if(data.name === "weight"){
                 let duplVal = val.split(",");
-                let tensorVal = [];
-                for(var i=0;i<duplVal.length;i++){
-                    duplVal[i]!= ""?tensorVal.push(parseFloat(duplVal[i])):""
-                }
-                tensorVal.reduce((a,b)=>a+b,0) > 2 ? 
-                e.target.parentElement.lastElementChild.innerText = "Sum of list should be less than 2"
-                 : selectedPar[data.name] = tensorVal;
+                    let tensorVal = [];
+                    for(var i=0;i<duplVal.length;i++){
+                        duplVal[i]!= ""?tensorVal.push(parseFloat(duplVal[i])):""
+                    }
+                    tensorVal.reduce((a,b)=>a+b,0) > 2 ?
+                    e.target.parentElement.lastElementChild.innerText = "Sum of list should be less than 2"
+                    : selectedPar[data.name] = tensorVal;
 
             }
             else selectedPar[data.name] = parseFloat(val);
@@ -588,13 +596,12 @@ export class PyTorch extends React.Component {
                             );
                         break;
                         case "weight":
-                            let inputFormat = /((\d*)?\.\d+)+(\s*,\s*((\d*)?\.\d+))+/ ;
                                 arr1.push(
                                     <div className = "row mb-20">
-                                        <label className = "col-md-2 mandate">{item[i].displayName}Hereee</label>
+                                        <label className = "col-md-2">{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
-                                            <input type ="text" pattern="\d+((\.|,)\d+)?" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <input type ="text" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                             <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
