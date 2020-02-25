@@ -282,4 +282,4 @@ class ProjectListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSetListSerializer
         """
         model = Project
-        fields = ['slug', 'name']
+        fields = ['slug', 'name', 'created_at', 'created_by']

@@ -115,9 +115,8 @@ class Project(models.Model):
     def generate_slug(self):
         """generate slug"""
         if not self.slug:
-            self.slug = slugify(str(self.name) + ''.join(
+            self.slug = slugify(str(self.name) + '-' + ''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-            self.name = "ocrproject-" + self.slug
 
     def save(self, *args, **kwargs):
         """Save Project model"""

@@ -548,9 +548,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         response = get_word.delay(converted_Coordinates, x, y)
         result = response.task_id
         res = AsyncResult(result)
-        response, index = res.get()
-
-        return JsonResponse({'word': response, 'index': index})
+        response = res.get()
+        if response is not None:
+            return JsonResponse({'word': response[0], 'index': response[1]})
+        return JsonResponse({'word': None, 'index': None})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
@@ -775,5 +776,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response['project_serializer_error'] = serializer.errors
             response['project_serializer_message'] = 'FAILED'
-
+        print(response)
         return JsonResponse(response)
