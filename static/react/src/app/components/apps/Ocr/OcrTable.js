@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles,saveImagePageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../../actions/ocrActions';
+import { getOcrUploadedFiles,saveImagePageFlag,saveDocumentPageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
-import { Pagination,Button } from "react-bootstrap";
+import { Modal,Pagination,Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import {Checkbox} from 'primereact/checkbox';
+import { getUserDetailsOrRestart } from "../../../helpers/helper"
 
 @connect((store) => {
   return {
@@ -20,9 +21,19 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
     this.state={
       checkedList:[],
+      showRecognizePopup:false
     }
   }
 
+  componentWillUnmount(){
+    this.props.dispatch(saveDocumentPageFlag(false));
+  }
+  getHeader = token => {
+    return {
+      'Authorization': token, 
+      'Content-Type': 'application/json'
+    };
+  };
   handlePagination=(pageNo)=> {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
@@ -64,6 +75,19 @@ export class OcrTable extends React.Component {
       return false;
     }
     this.props.dispatch(updateCheckList(this.state.checkedList))
+      var postData={
+        'slug':this.state.checkedList
+      }
+    this.setState({showRecognizePopup:true})
+    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/extract/",{
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(postData)
+    })
+  }
+
+  closePopup(){
+    this.setState({showRecognizePopup:false})
   }
 
 
@@ -82,6 +106,35 @@ export class OcrTable extends React.Component {
         </div>
       )
     }
+  var  ShowModel=(<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
+    <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+      <Modal.Header closeButton>
+        <h3 className="modal-title">recognizing Data</h3>
+      </Modal.Header>
+      <Modal.Body style={{ padding: 0 }} >
+        <div className="row" style={{ margin: 0 }}>
+          {(this.state.loader && !this.state.recognized) &&
+            <div style={{ height: 310, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+              <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+            </div>
+          }
+          {this.state.recognized &&
+            <div className="col-md-12 ocrSuccess">
+              <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
+
+              <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
+                <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Recognized Successfully</span></div>
+            </div>
+          }
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <div id="resetMsg"></div>
+        <Button id="dataCloseBtn"  onHide={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
+        <Button id="loadDataBtn" bsStyle="primary">Proceed</Button>
+      </Modal.Footer>
+    </Modal>
+  </div>)
 
     var OcrTableHtml = (
       this.props.OcrDataList != ''? (this.props.OcrDataList.data.length!=0 ? this.props.OcrDataList.data.map((item, index) => {
@@ -90,7 +143,7 @@ export class OcrTable extends React.Component {
           <td>
            <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
           </td>
-          <td><Link to={"/apps/ocr-mq44ewz7bp/project/" + item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
+           <td><Link to={item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
           <td>{item.status}</td>
           <td>{item.confidence}</td>
           <td>{}</td>
@@ -157,6 +210,7 @@ export class OcrTable extends React.Component {
                   </tbody>
                 </table>
                   {paginationTag}
+                  {ShowModel}
               </div>
             </div>
           </div>

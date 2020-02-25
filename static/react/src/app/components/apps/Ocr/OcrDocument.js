@@ -16,20 +16,20 @@ export class OcrDocument extends React.Component {
   constructor(props) {
     super(props);
   }
-
+ 
   render() {
     return (
       <div>
-        {this.props.imageFlag ?
-          <OcrImage />
-          :
-          <div>
-            <OcrUpload />
-            <OcrTable />
-          </div>
-        }
+      {this.props.imageFlag ?
+        <OcrImage />
+        :
+        <div>
+          <OcrUpload />
+          <OcrTable />
+        </div>
+      }
 
-      </div>
+    </div>
     );
   }
 
