@@ -4,11 +4,19 @@ export default function reducer(state = {
   OcrDataList: "",
   OcrProjectList:"",
   imageFlag: false,
-  documentFlag:false,
-  imagePath: "",
+  imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png",
+  ocrS3BucketDetails: {},
+  s3Uploaded: false,
+  s3Loader: false,
+  s3FileList:"",
+  s3SelFileList:[],
+  s3FileFetchErrorFlag:false,
+  s3FileUploadErrorFlag:false,
+  s3FileFetchSuccessFlag:false,
+  s3FileFetchErrorMsg:"",
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
-  imageFlag: false,
+  documentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
@@ -19,17 +27,17 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          OcrfileUpload: action.files,
+          OcrfileUpload:action.files,
         }
       }
-      break;
+    break;
     case "CLEAR_OCR_UPLOAD_FILES":
-      {
-        return {
-          ...state,
-          OcrfileUpload: {},
-        }
+    {
+      return {
+        ...state,
+        OcrfileUpload:{},
       }
+    }
       break;
       case "OCR_PROJECT_LIST":
       {
@@ -41,7 +49,7 @@ export default function reducer(state = {
       break;
       case "OCR_PROJECT_LIST_FAIL":
       {
-      throw new Error("Unable to fetch uploaded images list!!");
+      throw new Error("Unable to fetch projects list!!");
       }
       
       case "OCR_UPLOADS_LIST":
@@ -52,10 +60,18 @@ export default function reducer(state = {
         }
       }
       break;
-      case "OCR_UPLOADS_LIST_FAIL":
-      {
+    case "OCR_UPLOADS_LIST_FAIL":
+    {
       throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_UPLOADS_LIST":
+    {
+      return{
+        ...state,
+        OcrDataList:action.data
       }
+    }
       break;
       case "SAVE_DOCUMENT_FLAG":
       {
@@ -65,6 +81,83 @@ export default function reducer(state = {
         }
       }
       break;
+    case "SAVE_S3_BUCKET_DETAILS": {
+      let curS3Bucket = state.ocrS3BucketDetails;
+      curS3Bucket[action.name]= action.val
+      return {
+        ...state,
+        ocrS3BucketDetails : curS3Bucket
+      }
+    }
+    break;
+    case "SAVE_S3_FILE_LIST": {
+      return {
+        ...state,
+        s3FileList : action.fileList,
+        s3FileFetchErrorFlag : false,
+        s3FileFetchSuccessFlag : true,
+        s3Loader : false
+      }
+    }
+    break;
+    case "CLEAR_S3_DATA": {
+      return {
+        ...state,
+        s3FileList : "",
+        s3SelFileList: [],
+        s3Loader: false,
+        s3Uploaded: false,
+        s3FileFetchErrorFlag : false,
+        s3FileFetchSuccessFlag : false
+      }
+    }
+    break;
+    case "SAVE_SEL_S3_FILES": {
+      return {
+        ...state,
+        s3SelFileList : action.fileName
+      }
+    }
+    break;
+    case "S3_FILE_ERROR_MSG": {
+      return {
+        ...state,
+        s3FileFetchErrorFlag : action.flag,
+        s3Loader : false,
+      }
+    }
+    break;
+    case "S3_FETCH_ERROR_MSG": {
+      return {
+        ...state,
+        s3FileFetchErrorMsg : action.msg
+      }
+    }
+    break;
+    case "S3_FILE_UPLOAD_ERROR_MSG": {
+      return {
+        ...state,
+        s3Loader : false,
+        s3FileUploadErrorFlag : true,
+      }
+    }
+    break;
+    case "SET_S3_UPLOADED": {
+      return {
+        ...state,
+        s3Uploaded : action.flag,
+        s3FileList: "",
+        s3SelFileList:[]
+      }
+    }
+    break;
+    case "SET_S3_LOADER": {
+      return {
+        ...state,
+        s3Loader : action.flag
+      }
+    }
+    break;
     case "SAVE_IMAGE_FLAG":
       {
         return {

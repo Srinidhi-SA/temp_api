@@ -12,7 +12,6 @@ from ocr.ITE.transcript_module import *
 from google.cloud import vision
 import io
 
-
 # In[2]:
 from ocr.ITE.utils import denoise
 
@@ -256,14 +255,16 @@ def text_from_Azure_API(image_path):
 
     analysis = {}
     poll = True
-    while (poll):
+    while poll:
         response_final = requests.get(response.headers["Operation-Location"],
                                       headers=headers)
         analysis = response_final.json()
         #         print(analysis)
         time.sleep(1)
-        if ("recognitionResults" in analysis):    poll = False
-        if ("status" in analysis and analysis['status'] == 'Failed'):    poll = False
+        if "recognitionResults" in analysis:
+            poll = False
+        if "status" in analysis and analysis['status'] == 'Failed':
+            poll = False
 
     return analysis
 
@@ -277,10 +278,4 @@ def detect_text(path):
     image = vision.types.Image(content=content)
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    #     print('Texts:')
-    #     for text in texts:
-    #         print('\n"{}"'.format(text.description))
-    #         vertices = (['({},{})'.format(vertex.x, vertex.y)
-    #                     for vertex in text.bounding_poly.vertices])
-    #         print('bounds: {}'.format(','.join(vertices)))
     return response

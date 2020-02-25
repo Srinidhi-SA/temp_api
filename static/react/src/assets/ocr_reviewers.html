@@ -52,7 +52,7 @@
                               <input type="text" class="form-control" id="uEmail" placeholder="Email">						 
                            </div>
                         </div>
-						<div class="col-md-6">
+                        <div class="col-md-6">
                            <div class="form-group">
                               <label for="uPassword" class="form-label">Password <span class="text-danger">*</span></label>						 
                               <input type="text" class="form-control" id="uPassword" placeholder="Password">						 
@@ -79,7 +79,6 @@
                               </ul>
                            </div>
                         </div>
-						<div class="col-md-6">
                         <div class="form-group">
                            <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
                            <ul class="list-unstyled">
@@ -92,16 +91,11 @@
                            </ul>
                         </div>
                      </div>
-					 </div>
-					<div class="row">
+                     <div class="row">
                         <div class="col-md-12">
-						
-						<div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
-                           							
+                           <div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
                         </div>
-						
-						</div>
-						
+                     </div>
                   </form>
                </div>
                <div class="modal-footer">
@@ -118,12 +112,9 @@
                <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">User Details</h4>
-				  
-				  
-               </div> <form>
-               <div class="modal-body xs-pt-20">
-					 
-					 
+               </div>
+               <form>
+                  <div class="modal-body xs-pt-20">
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
@@ -151,36 +142,29 @@
                            <div class="form-group">
                               <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
                               <select class="form-control" id="uRoles" disabled>
-								<option>Admin</option>
-								<option>Reviewer L1</option>
-								<option>Reviewer L2</option>
-								<option>Superuser</option>								
-							  </select>
-							  
-							  
+                                 <option>Admin</option>
+                                 <option>Reviewer L1</option>
+                                 <option>Reviewer L2</option>
+                                 <option>Superuser</option>
+                              </select>
                            </div>
                         </div>
-						 <div class="col-md-6">
-                        <div class="form-group">
-                           <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
-						   
-						    <select class="form-control" id="uRoles" disabled>
-								<option selected>Active</option>
-								<option>Inactive</option>						
-							  </select>
-						   
-                           
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
+                              <select class="form-control" id="uRoles" disabled>
+                                 <option selected>Active</option>
+                                 <option>Inactive</option>
+                              </select>
+                           </div>
                         </div>
-						</div>
-						</div>
-						
-                     
-                 
-               </div>
-               <div class="modal-footer">
-			    <button class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</button>
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
-               </div> </form>
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</button>
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+                  </div>
+               </form>
             </div>
          </div>
       </div>
@@ -263,213 +247,169 @@
                         <li class=""><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
                         <li class=""><a href="create_ocr_project.html"><i class="fa fa-book fa-lg"></i> Projects</a></li>
                         <li class=""><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
-                        <li class=""><a href="ocr_reviewers.html"><i class="fa fa fa-users fa-lg"></i> Reviewers </a></li>
-                        <li class="active"><a href="users.html"><i class="fa fa-user fa-lg"></i> Users </a></li>
+                        <li class="active"><a href="ocr_reviewers.html"><i class="fa fa-users fa-lg"></i> Reviewers </a></li>
+                        <li class=""><a href="users.html"><i class="fa fa-user fa-lg"></i> Users </a></li>
                      </ul>
                   </div>
                   <div class="container-fluid">
-                     
                      <div class="row">
                         <div class="col-md-3 col-sm-12">
-							<h4 class="nText">Manage users</h4>
+                           <h4 class="nText">Reviewers</h4>
                         </div>
-						
-						 
-                        
+                        <div class="col-md-9 col-sm-12 text-right xs-mb-5">
+                           
+                        </div>
                      </div>
                      <div class="xs-mt-20"></div>
-						<div class="row">
-							<div class="col-md-8">
-							<ul class="nav nav-tabs">
-								<li class="active"><a href="javascript:;">All</a></li>
-								<li><a href="javascript:;">Admin</a></li>
-								<li><a href="javascript:;">Superuser</a></li>
-								<li><a href="javascript:;">Reviewer L1</a></li>
-								<li><a href="javascript:;">Reviewer L2</a></li>
-								
-							</ul>
-							</div>
-							 
-							<div class="col-md-4 col-sm-12 text-right">
-                           <div class="form-inline">
-                              <a class="btn btn-info btn-rounded xs-mr-10" data-toggle="modal" data-target="#modal_adduser" id="btn_ceate_user" title="Add User"><i class="fa fa-plus "></i> <i class="fa fa-user-o "></i></a> 
-                              <div class="form-group pull-right"><input type="text" id="search" class="form-control btn-rounded" placeholder="Search user..."></div>
-							
-							<div class="btn-group xs-mr-10">
-   <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span class="caret"></span></button>
-   <ul role="menu" class="dropdown-menu dropdown-menu-right">
-	  <li>
-         <a href="#">
-            <i class="fa fa-plus-circle text-primary"></i> Activate
-         </a>
-      </li>
-      <li>
-         <a href="#">
-            <i class="fa fa-minus-circle text-warning"></i> Deactivate
-         </a>
-      </li>
-      <li>
-         <a href="#">
-            <i class="fa fa-trash text-danger"></i> Delete
-         </a>
-      </li>
-   </ul>
-</div>
-
-						  </div>
-                        </div>
-							 
-						</div>
                      <div class="row">
                         <div class="col-sm-12">
-						 <div class="table-responsive">
-							
-                           <table class="table table-condensed table-hover cst_table ">
-                              <thead>
-                                 <tr>
-                                    <th class="text-center">
-											<div class="ma-checkbox">
-											<input type="checkbox" id="row1" value="row1">
-											<label for="row1" class="radioLabels"></label>
-											</div>
-									</th>
-                                    <th>First Name</th>
-                                    <th>
-                                       Last Name
-                                    </th>
-                                    <th>
-                                       Email
-                                    </th>
-                                    <th>
-                                       Roles
-                                    </th>
-                                    <th>
-                                       Date Joined
-                                    </th>
-                                    <th>
-                                       Last Login
-                                    </th>
-                                    <th>
-                                       Status
-                                    </th>
-                                     
-                                 </tr>
-                              </thead>
-                              <tbody class="no-border-x">
-                                 <tr>
-                                    <td align="center">
-													<div class="ma-checkbox">
-													<input type="checkbox" id="row2" value="row2">
-													<label for="row2" class="radioLabels"></label>
-													</div>
-                                    </td>
-                                    <td>
-                                       <a href="#" data-toggle="modal" data-target="#modal_edituser">Sejal</a>
-                                    </td>
-                                    <td>
-                                       Oroosh
-                                    </td>
-                                    <td>
-                                       sejal.oroosh@marlabs.com
-                                    </td>
-                                    <td>
-                                       Admin
-                                    </td>
-                                    <td>
-                                       10/11/2020
-                                    </td>
-                                    <td>
-                                       20:10 PM
-                                    </td>
-                                    <td>
-                                       <label class="label-success">Active</label>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td align="center">
-										<div class="ma-checkbox">
-										<input type="checkbox" id="row3" value="row3">
-										<label for="row3" class="radioLabels"></label>
-										</div>
-                                    </td>
-                                    <td>
-                                       <a href="#">Akaash</a>
-                                    </td>
-                                    <td>
-                                       Pande
-                                    </td>
-                                    <td>
-                                       akaash.pande@marlabs.com
-                                    </td>
-                                    <td>
-                                       Superuser
-                                    </td>
-                                    <td>
-                                       01/06/2018
-                                    </td>
-                                    <td>
-                                       17:15 PM
-                                    </td>
-                                    <td>
-                                       <label class="label-warning">Inctive</label>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td align="center">
-											<div class="ma-checkbox">
-											<input type="checkbox" id="row4" value="row4">
-											<label for="row4" class="radioLabels"></label>
-											</div>
-                                    </td>
-                                    <td>
-                                       <a href="#">Sandeep</a>
-                                    </td>
-                                    <td>
-                                       Gupta
-                                    </td>
-                                    <td>sandeep.gupta@marlabs.com</td>
-                                    <td>Reviewer L1</td>
-                                    <td>
-                                       20/03/2019
-                                    </td>
-                                    <td>
-                                       18:32 PM
-                                    </td>
-                                    <td>
-                                       <label class="label-success">Active</label>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td align="center">
-										<div class="ma-checkbox">
-										<input type="checkbox" id="row5" value="row5">
-										<label for="row5" class="radioLabels"></label>
-										</div>
-                                    </td>
-                                    <td>
-                                       <a href="javascript:;">Kalyan</a>
-                                    </td>
-                                    <td>
-                                       Gupta
-                                    </td>
-                                    <td>kalyan.k@marlabs.com</td>
-                                    <td>Reviewer L2</td>
-                                    <td>
-                                       20/06/2014
-                                    </td>
-                                    <td>
-                                       17:32 PM
-                                    </td>
-                                    <td>
-                                       <label class="label-danger">Delete</label>
-                                    </td>
-                                 </tr>
-                              </tbody>
-                           </table>
-						 </div>
-						</div>
+                           <div class="table-responsive">
+                              <table class="table table-condensed table-hover cst_table ">
+                                 <thead>
+                                    <tr>
+                                       <th></th>
+                                       <th><i class="fa fa-user-o"></i></th>
+                                       <th>Reviewer Name</th>
+                                       <th class="text-center">Assignment</th>
+                                       <!-- <th class="dropdown" >
+                                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+                                          <span>Status</span> <b class="caret"></b>
+                                          </a>
+                                          <ul class="dropdown-menu scrollable-menu">
+                                          <li><a class="cursor" name="ready to verify">Ready to Verify</a></li>
+                                          <li><a class="cursor" name="ready to export">Ready to Export</a></li>
+                                           
+                                          </ul>
+                                          </th> -->
+                                       <th class="text-center">
+                                          Complete
+                                       </th>
+                                       <th class="dropdown" >
+                                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                                          <span>Avg Time/Word</span> <b class="caret"></b>
+                                          </a>
+                                          <ul class="dropdown-menu scrollable-menu">
+                                             <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                                             <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                                             <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                                          </ul>
+                                       </th>
+                                       <th class="dropdown" >
+                                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                                          <span>ACCURACY of Model</span> <b class="caret"></b>
+                                          </a>
+                                          <ul class="dropdown-menu scrollable-menu">
+                                             <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                                             <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                                             <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                                          </ul>
+                                       </th>
+                                       <th class="text-center">Last Login</th>
+                                       <th class="text-center">Status</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody class="no-border-x">
+                                    <tr onclick="selectRow(this)">
+                                       <td align="center">
+                                          <div class="ma-checkbox">
+                                             <input type="checkbox" id="row1" value="row1">
+                                             <label for="row1" class="radioLabels"></label>
+                                          </div>
+                                       </td>
+                                       <td>
+                                          <i class="fa fa-user-o"></i>
+                                       </td>
+                                       <td>
+                                          <a href="ocr_reviewer.html">Reviewer 1</a>
+                                       </td>
+                                       <td class="text-center">					
+                                          10
+                                       </td>
+                                       <td class="text-center">20%</td>
+                                       <td class="text-center">80%</td>
+                                       <td class="text-center">98%</td>
+                                       <td class="text-center">15/02/2020</td>
+                                       <td class="text-center"><label class="label-success">Active</label></td>
+                                    </tr>
+                                    <tr onclick="selectRow(this)">
+                                       <td align="center">
+                                          <div class="ma-checkbox">
+                                             <input type="checkbox" id="row2" value="row2">
+                                             <label for="row2" class="radioLabels"></label>
+                                          </div>
+                                       </td>
+                                       <td>
+                                          <i class="fa fa-user-o"></i>
+                                       </td>
+                                       <td>
+                                          <a href="ocr_reviewer.html">Reviewer 2</a>
+                                       </td>
+                                       <td class="text-center">15 </td>
+                                       <td class="text-center">50%</td>
+                                       <td class="text-center">96%</td>
+                                       <td class="text-center"> 60%  </td>
+                                       <td class="text-center">17/02/2020</td>
+                                       <td class="text-center"><label class="label-success">Active</label></td>
+                                    </tr>
+                                    <tr onclick="selectRow(this)">
+                                       <td align="center">
+                                          <div class="ma-checkbox">
+                                             <input type="checkbox" id="row3" value="row3">
+                                             <label for="row3" class="radioLabels"></label>
+                                          </div>
+                                       </td>
+                                       <td>
+                                          <i class="fa fa-user-o"></i>
+                                       </td>
+                                       <td>
+                                          <a href="ocr_reviewer.html">Reviewer 3</a>
+                                       </td>
+                                       <td class="text-center">12</td>
+                                       <td class="text-center">30%</td>
+                                       <td class="text-center">95%</td>
+                                       <td class="text-center">99%</td>
+                                       <td class="text-center">18/02/2020</td>
+                                       <td class="text-center"><label class="label-success">Active</label></td>
+                                    </tr>
+                                    <tr onclick="selectRow(this)">
+                                       <td align="center">
+                                          <div class="ma-checkbox">
+                                             <input type="checkbox" id="row4" value="row4">
+                                             <label for="row4" class="radioLabels"></label>
+                                          </div>
+                                       </td>
+                                       <td>
+                                          <i class="fa fa-user-o"></i>
+                                       </td>
+                                       <td>
+                                          <a href="ocr_reviewer.html">Reviewer 4</a>
+                                       </td>
+                                       <td class="text-center">04</td>
+                                       <td class="text-center">60%</td>
+                                       <td class="text-center">70%</td>
+                                       <td class="text-center">60%</td>
+                                       <td class="text-center">19/02/2020</td>
+                                       <td class="text-center"><label class="label-success">Active</label></td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </div>
+                           <div class="ma-datatable-footer" id="idSignalPagination">
+                              <div class="dataTables_paginate">
+                                 <ul class="pagination pagination-md">
+                                    <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="First">«</span></a></li>
+                                    <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events: none;"><span aria-label="Previous">‹</span></a></li>
+                                    <li class="active"><a role="button" href="#">1</a></li>
+                                    <li class=""><a role="button" href="#">2</a></li>
+                                    <li class=""><a role="button" href="#">3</a></li>
+                                    <li class=""><a role="button" href="#"><span aria-label="Next">›</span></a></li>
+                                    <li class=""><a role="button" href="#"><span aria-label="Last">»</span></a></li>
+                                 </ul>
+                              </div>
+                           </div>
+                        </div>
                      </div>
-					 <div class="xs-mb-20"></div>
+                     <div class="xs-mb-20"></div>
                   </div>
                </section>
             </div>

@@ -43,7 +43,6 @@ export class OcrProjectUpload extends React.Component {
     var projectLead=document.getElementById('projectLead').value
     var projectType=document.getElementById('projectType').value
 
-    console.log(projectName,projectLead);
     var projectDetails={
       "name":projectName
     }

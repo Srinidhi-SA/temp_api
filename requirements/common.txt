@@ -33,6 +33,8 @@ celery-once==2.0.0
 psycopg2
 django_celery_beat==1.4.0
 django-environ
+ls
 boto3
 ibm-cloud-sdk-core==1.5.1
 ibm_watson==4.2.1
+Pillow
