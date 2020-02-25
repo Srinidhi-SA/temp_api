@@ -52,7 +52,6 @@ def analyse(path, image_slug):
 def get_word_in_bounding_box(data2, x, y):
 
     word = FindPoint1(x, y, data2)
-    print(word)
     if word:
         return word
     else:
