@@ -161,43 +161,34 @@
                   </div>
                   <div class="container-fluid">
                      <div class="xs-mt-20"></div>
-                     <div class="row">
-                         
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label class="control-label col-md-6" for="Company"><b>Highlight text fields with confidence levele less than</b></label>
-							  <div class="col-sm-2">
-							  <input type="number" class="form-control" value="100" >
-							  </div>
-                             <!-- <select id="Company" class="form-control" name="Company">
-                                 <option>Confidence Level</option>
-                                 <option value="1">Highlight feilds with confidence less than : 40%</option>
-                                 <option value="2">Highlight feilds with confidence less than : 80%</option>
-                                 <option value="3">Highlight feilds with confidence less than : 20%</option>
-                              </select> -->
-                           </div>
-                        </div>
-                        <div class="col-md-2">
-						<div class="input-group">
-						  <input type="text" class="form-control" placeholder="Replace text...">
-						  <span class="input-group-btn">
-							<div class="dropdown">
-								<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-check"></i>
-								<span class="caret"></span></button>
-								<ul class="dropdown-menu">
-								<li><a href="#" class="btn btn-block"><i class="fa fa-plus"></i> Add Fields</a></li>
-								<li><a href="#" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
-								<li><a class="btn btn-warning btn-block" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-exclamation"></i> Bad Scan</a></li>
-								<li><a href="#" class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
-								</ul>
-								</div>
-						  </span>
-						</div><!-- /input-group -->
-						   
-                        </div>
-                     </div>
+					 <!-- OCR Screen Highlight and Bad Scan elements -->
+					<button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-info-circle"></i> Bad Scan</button>
+					
+					<div class="form-group pull-right ocr_highlightblock">
+					<label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
+					<select class="form-control inline-block 1-100" id="select_confidence">
+					 
+					</select>
+					</div>
+					<!-- End OCR Screen Highlight and Bad Scan elements -->		
                      <div class="xs-mt-20"></div>
-                     
+
+<div class="input-group">
+<input class="form-control" placeholder="Enter text..." aria-label="...">
+	<div class="input-group-btn">
+		<button type="button" class="btn btn-default"><i class="fa fa-check"></i></button>
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		</button>
+		<ul class="dropdown-menu dropdown-menu-right">
+				<li><a href="#"><i class="fa fa-minus-circle"></i> Not Clear</a></li>
+				<li><a href="#"><i class="fa fa-external-link"></i> Properties</a></li> 
+		</ul>
+	</div>
+</div>					 
+			
+
 					 
 					 <div class="row">
 						<div class="col-md-12">
@@ -275,6 +266,14 @@
 	  
       <script src="js/uiScripts.js"></script>
       <script>
+	  
+		 
+			var $select = $(".1-100");
+			for (i=1;i<=100;i++){
+				$select.append($('<option></option>').val(i).html(i))
+			}
+		 
+
 	  ko.bindingHandlers.panelSplitter = {
     init: function(element, valueAccessor) {
         $(element).find(".drag-handle").on("mousedown", function (e) {
