@@ -1,6 +1,7 @@
 from ocr.ITE.Functions import *
 from PIL import Image
-import json
+import simplejson as json
+from io import BytesIO
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 
