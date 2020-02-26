@@ -22333,10 +22333,10 @@ canvas {
   transition: all 250ms ease-in;
 }
 #popoverOcr{
-width: 270px;
+width: 250px;
 height: 90px;
 background: #fff;
-margin-left: -108px;
+margin-left: -99px;
 margin-top: -5px;
 }
 #popoverOcr .popover-title{
@@ -22355,7 +22355,7 @@ background-color: #44b0a0;
 border-radius: 2px;
 border: 1px solid #44b0a0;
 color: #fff;
-font-size: 14px;
+width: 24px;
 }
 
 #originalOcrImg {

@@ -2,6 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from ocr.ITE.master_helper import *
+import os
+import simplejson as json
+
+import matplotlib as mpl
+
+if os.environ.get('DISPLAY', '') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 
 
 def euclidean_distance(plot1, plot2):
@@ -42,7 +52,7 @@ def fun1(analysis, google_response):
     return response_dict, d
 
 
-########################################################################################################3
+########################################################################################################
 """
 function to find the centroid of the points
 """
@@ -120,7 +130,7 @@ def write_to_Json(analysis, image_name):
 def write_to_json2(data, image_name, image_slug):
     image_path1 = os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_original_image.png'
 
-    ImageforDisplay(filename=image_path1)
+    # ImageforDisplay(filename=image_path1)
     im1 = Image.open(image_path1)
     width, height = im1.size
     print(width, height)
