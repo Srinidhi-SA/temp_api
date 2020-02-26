@@ -13,7 +13,7 @@ def adjust_gamma(image, gamma):  # TODO: Give Abishek's Autogamma correction cod
 
 def denoise(image, denoise_strength):
     img = cv2.fastNlMeansDenoising(image, h=denoise_strength)
-    retur n (img)
+    return img
 
 
 def deskew_optimized(image_name):
