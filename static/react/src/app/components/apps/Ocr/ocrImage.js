@@ -18,7 +18,10 @@ export class OcrImage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { text: "test", }
+    this.state = {
+      text: "test",
+      imageDetail: "",
+    }
   }
 
   componentWillUnmount(){
@@ -33,7 +36,6 @@ export class OcrImage extends React.Component {
     // var imgPath = this.props.imagePath;
     // var imgObj = new Image();
     // imgObj.src = imgPath;
-    console.log(this.props.imagePath);
     OcrImg.src = this.props.imagePath;
     OcrImg.onload = () => {
       // canvas.height = '800';
@@ -106,7 +108,11 @@ export class OcrImage extends React.Component {
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify({ "slug": "img-uw2ii50xd9", "x": x, "y": y })
     }).then(response => response.json())
-      .then(data => this.setState({ updateText: data }));
+      .then(data => {
+        this.setState({ imageDetail: data })
+        this.setState({ text: data.word })
+        document.getElementById("ocrText").value = this.state.text;
+      });
     // .catch(function (error) {
     //   bootbox.alert("coordinates are not correct")
     // });
@@ -156,11 +162,27 @@ export class OcrImage extends React.Component {
                 </h3>
                 <div class="popover-content">
                   <div className="row">
-                    <div className="col-sm-10">
-                      <input type="text" value={this.state.text} />
+                    <div className="col-sm-9" style={{ paddingRight: 5 }}>
+                      <input type="text" id="ocrText" placeholder="Enter text.." />
                     </div>
-                    <div className="col-sm-2" style={{ paddingLeft: 0 }}>
+                    <div className="col-sm-3" style={{ paddingLeft: 0 }}>
+                      <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginRight: 2 }}>
+                        <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
+                      </button>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
+
+
+                      {/* <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-check"></i>
+								<span class="caret"></span></button> */}
+                      {/* <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                      <i class="fa fa-sort-down"></i>
+                      </span> */}
+                      <ul class="dropdown-menu">
+                        <li><a href="javascript::" class="btn btn-warning btn-block"><i class="fa fa-plus"></i> Add Fields</a></li>
+                        <li><a href="#" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a class="btn btn-block" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-exclamation"></i> Bad Scan</a></li>
+                        <li><a href="#" class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
+                      </ul>
                     </div>
                   </div>
                 </div>
