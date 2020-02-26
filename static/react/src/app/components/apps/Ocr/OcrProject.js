@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import {OcrDocument} from "./OcrDocument";
 import { OcrProjectScreen } from "./OcrProjectScreen";
 import { OcrImage } from "./ocrImage";
+import {BreadCrumb} from "../../common/BreadCrumb";
 
 @connect((store) => {
   return {
@@ -17,6 +18,23 @@ export class OcrProject extends React.Component {
   }
 
   render() {
+
+    var paths=[
+     { "name":"Projects","url":'#'},
+     {"name":"Documents","url":"#"},
+     {"name":"Image","url":"#"} 
+    ]
+   var  breadCrumbDetails=[paths[0]];
+     if(this.props.documentFlag){
+     breadCrumbDetails=[paths[0]].concat(paths[1])
+     }
+     else if(this.props.imageFlag)
+     breadCrumbDetails=[paths[0]].concat(paths[1]).concat(paths[2])
+     else
+     breadCrumbDetails=[paths[0]]
+  
+
+  
    var  renderComponents=null;
    renderComponents=((this.props.documentFlag||this.props.imageFlag)?
     <OcrDocument/>
@@ -44,6 +62,11 @@ export class OcrProject extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
+            {/* <div class="row">
+            <div class="col-md-12">
+            <BreadCrumb parameters={breadCrumbDetails}/>
+            </div>
+            </div> */}
             {renderComponents}
             </div>
           </section>

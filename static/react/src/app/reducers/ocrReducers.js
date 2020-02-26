@@ -21,6 +21,7 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   checked_list: '',
+  search_document:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -207,12 +208,19 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "UPDATE_CHECKLIST":
       {
         return {
           ...state,
           checked_list: action.list
+        }
+      }
+      break;
+      case "SEARCH_OCR_DOCUMENT":
+      {
+        return {
+          ...state,
+          search_document:action.elem
         }
       }
       break;
