@@ -92,11 +92,20 @@ function fetchUploadedFiles(pageNo=1,token){
 	let filter_status=store.getState().ocr.filter_status
 	let filter_confidence=store.getState().ocr.filter_confidence
 	let filter_assignee=store.getState().ocr.filter_assignee
-
-	return fetch(API + '/ocr/ocrimage/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+	let search_document=store.getState().ocr.search_document
+	
+	if(search_document==''){
+		return fetch(API + '/ocr/ocrimage/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
-  }).then(response => Promise.all([response, response.json()]));
+	}).then(response => Promise.all([response, response.json()]));
+}
+	else{
+	return fetch(API + '/ocr/ocrimage/?name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+		method: 'get',
+		headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]))
+};
 }
 
 export function fetchUploadsSuccess(doc){
@@ -246,5 +255,11 @@ export function updateCheckList(list){
 	return{
 		type:"UPDATE_CHECKLIST",
 		list
+	}
+}
+export function storeDocSearchElem(elem){
+	return{
+		type:"SEARCH_OCR_DOCUMENT",
+		elem
 	}
 }
