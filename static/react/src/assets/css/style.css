@@ -22452,28 +22452,42 @@ ul.ocrUploadTabs{
   margin-left: 5px;
   display: inline-block;
 }
-.addUserBtn{margin-left: 50px;}
 #addUsers {
   height: 350px;
   padding:10px;
+}
+#searchOcrUser{
+  margin-top: -35px;
+}
+.noOcrUsers{
+  height: 150px;
+  background: #ffffff;
+  padding: 50px;
+  text-align: center;
+  color: #29998c;
 }
 .createUserBtn{
   margin: 0px;
   padding: 20px 20px 20px 10px;
 }
-/* .ocrUserFormGroup{
-  padding: 0px;
-  padding-bottom: 20px;
-} */
-.ocrUserFormInput{
+.ocrUserFormLabel label{
+  width: 45%;
+  padding-left: 15px;
+  float:left;
+}
+.ocrUserFormLabel input,select{
   border: 1px solid #cdcdcd;
   height: 32px;
   font-size: 12px;
   border-radius: 2px;
   padding-left: 5px;
-  margin-left: 10px;
-  width:45%;
-  margin-bottom: 5px;
+  width:52%;
+  margin-bottom: 10px;
+  background-color: white;
+}
+.ocrUserAction{
+  width:20%;
+  margin-left: 73%;
 }
 .userStatusBtn{
   height: 25px;
@@ -22486,11 +22500,4 @@ ul.ocrUploadTabs{
 }
 .manageUserTable{
   background-color: white;
-}
-.ocrUserFormInput1{
-  margin-left: 10px;
-  width:45%;
-}
-.ocrUserFormInput2{
-  margin-left: 30px;
 }

@@ -16,7 +16,7 @@ export function getHeaderForJson(token) {
 }
 
 export function getHeaderForFormData(token) {
-	return { Authorization: token, 'Content-Type': 'multipart/form-data' };
+	return { Authorization: token, 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' };
 }
 
 export function saveOcrFilesToStore(files) {
@@ -230,9 +230,7 @@ export function fetchAllOcrUsersAction(){
 	return (dispatch) => {
 		return fetchAllOcrUsersAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
-				saveAllOcrUsersList(json);
-			}else if(response.status === 200 && !json.deleted){
-				console.log(json.message)
+				dispatch(saveAllOcrUsersList(json));
 			}else{
 				console.log("Failed")
 			}
@@ -258,10 +256,11 @@ export function saveNewUserDetails(name,value){
 	}
 }
 export function createNewUserAction(userDetails){
-	var formdt = new FormData();
-	for(let key in userDetails){
-		formdt.append(key,userDetails[key]);
-	}
+	// var formdt = new FormData();
+	// for(let key in userDetails){
+	// 	formdt.append(key,userDetails[key]);
+	// }
+	var formdt = JSON.stringify($("#ocrForm").serializeArray());
 	return (dispatch) => {
 		return createNewUserAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.created){
@@ -278,8 +277,9 @@ export function createNewUserAction(userDetails){
 function createNewUserAPI(data,token){
 	return fetch(API+"/ocr/user/",{
 		method : "post",
-		headers : getHeaderForFormData(token),
-		body:data
+		headers : getHeaderForJson(token),
+		body:data,
+		dataType: "json",
 	}).then(response => Promise.all([response,response.json()]));
 }
 function createNewUserSuccess(flag){
@@ -319,9 +319,16 @@ function userProfileCreationSuccess(flag){
 		type : "USER_PROFILE_CREATED_SUCCESS",flag
 	}
 }
+//Actions on OCR users
+//Save User List
+export function saveSelectedOcrUserList(val,flag){
+	return{
+		type:"SAVE_SELECTED_USERS_LIST",val,flag
+	}
+}
 //Delete User
-export function deleteOcrUserAction(uName){
-	let data = {"username" : uName}
+export function deleteOcrUserAction(userNames){
+	let data = Object.assign({}, userNames);
 	return (dispatch) => {
 		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.deleted){
@@ -341,7 +348,11 @@ function deleteOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-
+export function openEditUserModalAction(flag,userData){
+	return {
+		type:"OPEN_EDIT_USER_POPUP",flag,userData
+	}
+}
 // getMethod->ocr/user/ ->no body
 //delete Method ->ocr/user/ -> body:{"userName":"abc"} ->response ->{message:"" deleted:""}
 //edit Later

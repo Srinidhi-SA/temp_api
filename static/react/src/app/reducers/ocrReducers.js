@@ -26,6 +26,9 @@ export default function reducer(state = {
   newUserProfileDetails : {},
   ocrUserProfileFlag : false,
   allOcrUsers : {},
+  selectedOcrUsers : [],
+  editOcrUserFlag:false,
+  userSelForEdit:"",
 
 }, action) {
   switch (action.type) {
@@ -244,6 +247,27 @@ export default function reducer(state = {
         return {
           ...state,
           allOcrUsers : action.json
+        }
+      }
+      break;
+      case "SAVE_SELECTED_USERS_LIST":{
+        let curSelList = state.selectedOcrUsers
+        if(action.flag){
+          curSelList.push(action.val)
+        }else{
+          curSelList.pop(action.val)
+        }
+        return {
+          ...state,
+          selectedOcrUsers : curSelList
+        }
+      }
+      break;
+      case "OPEN_EDIT_USER_POPUP":{
+        return{
+          ...state,
+          editOcrUserFlag : action.flag,
+          userSelForEdit : action.userData
         }
       }
       break;
