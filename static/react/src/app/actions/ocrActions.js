@@ -15,10 +15,6 @@ export function getHeaderForJson(token) {
 	return { Authorization: token, 'Content-Type': 'application/json' };
 }
 
-export function getHeaderForFormData(token) {
-	return { Authorization: token, 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' };
-}
-
 export function saveOcrFilesToStore(files) {
 	return {
 		type: "OCR_UPLOAD_FILE",
@@ -32,6 +28,12 @@ export function saveImagePageFlag(flag) {
 		flag
 	}
 }
+export function saveDocumentPageFlag(flag) {
+	return {
+		type: "SAVE_DOCUMENT_FLAG",
+		flag
+	}
+}
 
 export function saveImageDetails() {
 	return {
@@ -39,6 +41,40 @@ export function saveImageDetails() {
 	}
 }
 
+export function getOcrProjectsList(pageNo){
+	return (dispatch) => {
+		return fetchProjects(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchProjectsSuccess(json))
+			}
+			else{
+			 dispatch(fetchProjectsFail(json))
+			}
+		})
+	}
+}
+
+function fetchProjects(pageNo=1,token){
+	return fetch(API + '/ocr/project/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchProjectsSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_PROJECT_LIST",
+		data,
+	}
+}
+
+export function fetchProjectsFail(data){
+	return {
+		type: "OCR_PROJECT_LIST_FAIL",
+		data,
+	}
+}
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
@@ -256,16 +292,16 @@ export function saveNewUserDetails(name,value){
 	}
 }
 export function createNewUserAction(userDetails){
-	// var formdt = new FormData();
-	// for(let key in userDetails){
-	// 	formdt.append(key,userDetails[key]);
-	// }
-	var formdt = JSON.stringify($("#ocrForm").serializeArray());
+	var formdt = new FormData();
+	for(let key in userDetails){
+		formdt.append(key,userDetails[key]);
+	}
 	return (dispatch) => {
 		return createNewUserAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.created){
 				console.log("Success",json.message.username)
-				createNewUserSuccess(json.created);
+				dispatch(createNewUserSuccess(json.created,json.ocr_profile_slug));
+				dispatch(getReviewersListApi());
 			}else if(response.status === 200 && !json.created){
 				console.log(json.message.username)
 			}else{
@@ -277,15 +313,32 @@ export function createNewUserAction(userDetails){
 function createNewUserAPI(data,token){
 	return fetch(API+"/ocr/user/",{
 		method : "post",
-		headers : getHeaderForJson(token),
+		headers : getHeader(token),
 		body:data,
-		dataType: "json",
 	}).then(response => Promise.all([response,response.json()]));
 }
-function createNewUserSuccess(flag){
+function createNewUserSuccess(flag,slug){
 	return {
-		type : "CREATE_NEW_USER_SUCCESS",flag
+		type : "CREATE_NEW_USER_SUCCESS",flag,slug
 	}
+}
+
+export function getReviewersListAction(){
+	return (dispatch) => {
+		return getReviewersListApi(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.created){
+				debugger;
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function getReviewersListApi(token){
+	return fetch(API+"/ocr/reviewer_type/",{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
 }
 //Saving and creating user roles and status
 export function saveNewUserProfileDetails(name,value){
@@ -293,12 +346,11 @@ export function saveNewUserProfileDetails(name,value){
 		type : "SAVE_NEW_USER_PROFILE",name,value
 	}
 }
-export function submitNewUserProfileAction(userProfileDetails){
+export function submitNewUserProfileAction(userProfileDetails,curUserSlug){
 	return (dispatch) => {
-		return submitNewUserProfileAPI(userProfileDetails,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+		return submitNewUserProfileAPI(userProfileDetails,curUserSlug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.created){
-				console.log("Success",json.message.username)
-				userProfileCreationSuccess(json.created);
+				dispatch(userProfileCreationSuccess(json.created));
 			}else if(response.status === 200 && !json.created){
 				console.log(json.message.username)
 			}else{
@@ -307,11 +359,11 @@ export function submitNewUserProfileAction(userProfileDetails){
 		})
 	}
 }
-function submitNewUserProfileAPI(data){
-	return fetch(API+"/ocr/user/",{
-		method : "post",
-		headers : getHeaderForFormData(token),
-		body:data
+function submitNewUserProfileAPI(data,slug,token){
+	return fetch(API+"/ocr/userprofile/"+slug+"/",{
+		method : "put",
+		headers : getHeaderForJson(token),
+		body:JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
 function userProfileCreationSuccess(flag){
@@ -321,14 +373,15 @@ function userProfileCreationSuccess(flag){
 }
 //Actions on OCR users
 //Save User List
-export function saveSelectedOcrUserList(val,flag){
+export function saveSelectedOcrUserList(curSelList){
 	return{
-		type:"SAVE_SELECTED_USERS_LIST",val,flag
+		type:"SAVE_SELECTED_USERS_LIST",curSelList
 	}
 }
 //Delete User
 export function deleteOcrUserAction(userNames){
-	let data = Object.assign({}, userNames);
+	// let data = Object.assign({}, userNames);
+	let data = {"username":userNames[0]}
 	return (dispatch) => {
 		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.deleted){
@@ -348,11 +401,16 @@ function deleteOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-export function openEditUserModalAction(flag,userData){
+export function openEditUserModalAction(flag,userSlug,userDt){
 	return {
-		type:"OPEN_EDIT_USER_POPUP",flag,userData
+		type:"OPEN_EDIT_USER_POPUP",flag,userSlug,userDt
 	}
 }
-// getMethod->ocr/user/ ->no body
-//delete Method ->ocr/user/ -> body:{"userName":"abc"} ->response ->{message:"" deleted:""}
+export function closeEditUserModalAction(flag){
+	return {
+		type:"CLOSE_EDIT_USER_POPUP",flag
+	}
+}
+
 //edit Later
+//getCall for reviewers -> ocr/reviewer_type

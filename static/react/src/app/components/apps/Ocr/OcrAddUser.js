@@ -9,6 +9,7 @@ import { openAddUserPopup, closeAddUserPopup, saveNewUserDetails, createNewUserA
   return {
     addUserPopupFlag : store.ocr.addUserPopupFlag,
     createUserFlag : store.ocr.createUserFlag,
+    curUserSlug : store.ocr.curUserSlug,
     newUserDetails : store.ocr.newUserDetails,
     allOcrUsers : store.ocr.allOcrUsers,
     newUserProfileDetails : store.ocr.newUserProfileDetails,
@@ -66,15 +67,16 @@ export class OcrAddUser extends React.Component{
     }
     saveUserStatus(e){
         let name=e.target.name;
-        let value = e.target.id;
+        let value = e.target.value;
         this.props.dispatch(saveNewUserProfileDetails(name,value));
     }
     submitNewUserStatus(e){
         // Validation for roles and status 
-        this.props.dispatch(submitNewUserProfileAction(this.props.newUserStatus));
+        this.props.dispatch(submitNewUserProfileAction(this.props.newUserStatus,this.props.curUserSlug));
     }
     
     render(){
+        let disabledValue = this.props.createUserFlag?true:false
             return(
             <div className="row">
                 <div className="col-md-8">
@@ -86,57 +88,57 @@ export class OcrAddUser extends React.Component{
                     </a>
                 </div>
                 {/* PopUp Content Starts Here*/}
-                <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
+                <Modal show={this.props.addUserPopupFlag} /*onHide={this.closeAddUserPopup.bind(this)}*/>
                     <Modal.Header>
                         <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
                         <h4 className="modal-title">Add User</h4>
                     </Modal.Header>
                     <Modal.Body id="addUsers">
-                        {!this.props.createUserFlag &&
-                            <form className="ocrUserFormLabel" name="ocrForm" id="ocrForm">
-                                <label className="mandate" for="first_name">First Name</label>
-                                <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)}/>
-                                <label for="last_name">Last Name</label>
-                                <input type="text" id="last_name" name="last_name" placeholder="Last Name" onInput={this.saveNewUserDetails.bind(this)}/>
-                                <label className="mandate" for="username">User Name</label>
-                                <input type="text" id="username" name="username" placeholder="User Name" onInput={this.saveNewUserDetails.bind(this)}/>
-                                <label className="mandate" for="email">Email</label>
-                                <input  type="email" id="email" name="email" placeholder="Email" onInput={this.saveNewUserDetails.bind(this)}/>
-                                <label className="mandate" for="password">Password</label>
-                                <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)}/>
-                                <label className="mandate" for="confirmPassword">Confirm Password</label>
-                                <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)}/>
+                        <div className="ocrUserFormLabel">
+                            <label className="mandate" for="first_name">First Name</label>
+                            <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                            <label for="last_name">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" placeholder="Last Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                            <label className="mandate" for="username">User Name</label>
+                            <input type="text" id="username" name="username" placeholder="User Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                            <label className="mandate" for="email">Email</label>
+                            <input  type="email" id="email" name="email" placeholder="Email" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                            <label className="mandate" for="password">Password</label>
+                            <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                            <label className="mandate" for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                             
-                                {this.props.createUserFlag &&
-                                    <div>
-                                        <label className="mandate" for="userRoles">Roles</label>
-                                        <select>
-                                            <option name="roleType" value="admin" id="admin">Admin</option>
-                                            <option name="roleType" value="reviewerL1" id="reviewerL1">ReviewerL1</option>
-                                            <option name="roleType" value="reviewerL2" id="reviewerL2">ReviewerL2</option>
-                                            <option name="roleType" value="superUser" id="superUser">SuperUser</option>
-                                        </select>
-                                        <label for="userRoles" className="mandate">Status</label>
-                                        <select>
-                                            <option name="status" value="active" id="active">Active</option>
-                                            <option name="status" value="inactive" id="inactive">Inactive</option>
-                                        </select>
-                                        </div>
-                                }
-                                {this.props.ocrUserProfileFlag && 
-                                    <div>
-                                        {/* OCR created message and tick image */}
-                                        
-                                    </div>
-                                }
-                            </form>
-                        }
+                            {this.props.createUserFlag &&
+                                <div>
+                                    <label className="mandate" for="userRoles">Roles</label>
+                                    <select name="reviewer_type" onChange={this.saveUserStatus.bind(this)}>
+                                        <option value="none" id="none">--Select--</option>
+                                        <option value="admin" id="admin">Admin</option>
+                                        <option value="reviewerL1" id="reviewerL1">ReviewerL1</option>
+                                        <option value="reviewerL2" id="reviewerL2">ReviewerL2</option>
+                                        <option value="superUser" id="superUser">SuperUser</option>
+                                    </select>
+                                    <label for="userRoles" className="mandate">Status</label>
+                                    <select name="is_active" onChange={this.saveUserStatus.bind(this)}>
+                                        <option value="none" id="none" selected>--select--</option>
+                                        <option value="True" id="active">Active</option>
+                                        <option value="False" id="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            }
+                            {this.props.ocrUserProfileFlag && 
+                                <div>
+                                    {/* OCR created message and tick image */}
+                                    
+                                </div>
+                            }
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div id="resetMsg"></div>
-                        <Button bsStyle="primary" id="createUserBtn" onClick={this.submitNewUserDetails.bind(this)}>Create User</Button>
+                        {!this.props.createUserFlag?<Button bsStyle="primary" id="createUserBtn" onClick={this.submitNewUserDetails.bind(this)}>Create User</Button>:""}
                         <Button bsStyle="primary" id="addUser" disabled={this.props.createUserFlag?false:true} onClick={this.submitNewUserStatus.bind(this)}>Save</Button>
-                        {/* <Button bsStyle="primary" id="addUser" style={{display:this.props.ocrUserProfileFlag?"none":""}} onClick={this.closeAddUserPopup.bind(this)}>Close</Button> */}
+                        {this.props.ocrUserProfileFlag?<Button bsStyle="primary" id="addUser" style={{display:this.props.ocrUserProfileFlag?"none":""}} onClick={this.closeAddUserPopup.bind(this)}>Close</Button>:""}
                     </Modal.Footer>
                 </Modal>
             </div>
