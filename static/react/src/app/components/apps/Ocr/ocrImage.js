@@ -26,7 +26,7 @@ export class OcrImage extends React.Component {
 
   componentDidMount() {
     var OriginalImg = document.getElementById("originalOcrImg");
-    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/ocr.jpeg";
+    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/Invoice_page_i0CBBXq.jpg";
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     var OcrImg = document.getElementById("ocrImg");
@@ -171,7 +171,6 @@ export class OcrImage extends React.Component {
                       </button>
                       <ul class="dropdown-menu" style={{left: -110}}>
                         <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
-                        <li><a class="btn btn-block" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-exclamation"></i> Bad Scan</a></li>
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
