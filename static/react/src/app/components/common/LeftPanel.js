@@ -66,34 +66,42 @@ class LeftPanel extends React.Component {
                 <li>
                   <NavLink id="signalTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
                     <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
-                    SIGNALS</NavLink>
+                    Signal</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink id="signalTab" className="sdb sdb_signal deactivate" to="/signals">
                     <span></span>
-                    SIGNALS</NavLink>
+                    Signal</NavLink>
                 </li>}
                 {(APPS_ALLOWED==true)?
                 <li>
                   <NavLink id="appsTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
                      <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br />
-                    APPS</NavLink>
+                    Apps</NavLink>
                 </li>:""}
                 {(view_data_permission=="true")?
                 <li>
                   <NavLink id="dataTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
                     <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />
-                    DATA</NavLink>
+                    Data</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink id="dataTab" className="sdb sdb_data deactivate" to="/data">
                     <span></span>
-                    DATA</NavLink>
+                    Data</NavLink>
                 </li>}
               
                   {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?<li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb" to="/datamgmt">
                       <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />
-                      DATA<br />MANAGE</NavLink>
+                      Data<br />manage</NavLink>
                   </li>:<div/>}
+
+                
+                 <li>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} target="_blank" activeClassName="active" className="sdb" to="/static/userManual/UserManual.html">
+                    <i className="fa fa-question-circle fa-2x" aria-hidden="true"></i><br />
+                    Help</NavLink>
+                </li>
+
 
               </ul>
             </div>

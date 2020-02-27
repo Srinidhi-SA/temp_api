@@ -1005,6 +1005,19 @@ export function updateScoreSlug(slug,sharedSlug) {
   return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
 
+export function changeLayerType(layerTyp){
+  return { type: "CHANGE_LAYER_TYPE",layerTyp}
+}
+
+export function addPanels(nextId){
+  let newPanel = store.getState().apps.panels.concat([nextId]);
+  return { type: "PANELS_TENSOR",newPanel}
+}
+
+export function saveEditTfInput(editTfInput){
+  return { type:"EDIT_TENSORFLOW_INPUT",editTfInput}
+}
+
 export function addTensorFlowArray(id,layerType,name,val) {
     if(layerType==="Dense"){
      var  tensorFlowArray={
@@ -2245,7 +2258,7 @@ export function showLevelCountsForTarget(event) {
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
   var levelCounts = "";
-  var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+  var colData = store.getState().datasets.dataPreview.meta_data.uiMetaData.columnDataUI;
   var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
   if (varType == "dimension") {
@@ -2662,7 +2675,7 @@ export function refreshStockAppsList(props) {
       if (store.getState().apps.currentAppDetails == null)
         stockAppLocation = "/apps-stock-advisor";
       else
-        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url;
+        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url+"/";
       if (window.location.pathname == stockAppLocation)
         dispatch(getAppsStockList(parseInt(pageNo)));
     }

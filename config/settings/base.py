@@ -19,7 +19,7 @@ import os
 import datetime
 from . import config_file_name_to_run
 from .mlsettings import *
-from .logger_config import *
+#from .logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1576,11 +1576,11 @@ PERMISSIONS_RELATED_TO_STOCK = (
     ('remove_stock', 'remove stock'),
 )
 
-PERMISSIONS_RELATED_TO_OCR = (
-    ('view_ocr', 'View OCR'),
-    ('create_ocr', 'Create OCR'),
-    ('rename_ocr', 'Rename OCR'),
-    ('remove_ocr', 'remove OCR'),
+PERMISSIONS_RELATED_TO_OCRIMAGE = (
+    ('view_ocrimage', 'View OCRImage'),
+    ('create_ocrimage', 'Create OCRImage'),
+    ('rename_ocrimage', 'Rename OCRImage'),
+    ('remove_ocrimage', 'remove OCRImage'),
     ('upload_from_file', 'Upload from file'),
     ('upload_from_sftp', 'Upload from sftp'),
     ('upload_from_s3', 'Upload from s3'),
@@ -1669,7 +1669,7 @@ MAX_LENGTH_OF_NAME = 100
 
 # admin page hiding-settings
 HIDE_FROM_CELERY_FROM_ADMIN = True
-KEEP_OTHERS_IN_ADMIN = False
+KEEP_OTHERS_IN_ADMIN = True
 HIDE_AUDIT_LOGS = True
 
 USE_HTTPS = True

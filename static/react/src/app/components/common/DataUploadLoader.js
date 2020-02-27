@@ -29,19 +29,20 @@ export class DataUploadLoader extends React.Component {
   constructor() {
     super();
   }
+componentDidMount() { 
 
-  componentWillUpdate(){
-		var getText = [];
-	  if(this.props.dULoaderValue >= 0 && this.props.dataLoadedText.length != 0){
-		$("#loadingMsgs").empty()
-		getText = Object.values(store.getState().datasets.dataLoadedText);
-	  }else{
-		$("#loadingMsgs").empty();
-		getText.push(store.getState().datasets.dataLoaderText);
-	  }
-		if(document.getElementById('loadingMsgs') != null)
-		document.getElementById('loadingMsgs').appendChild(this.makeULforData(getText));
-	}
+}
+    componentWillUpdate(){
+            var getText = [];
+            if((this.props.dULoaderValue < 0) && (Object.keys(this.props.dataLoadedText).length <= 0) ){
+                $("#loadingMsgs1").empty()
+                $("#loadingMsgs2").empty()
+            }
+            else if((this.props.dULoaderValue >= 0) && (Object.keys(this.props.dataLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
+                getText = Object.values(this.props.dataLoadedText)
+                this.makeULforData(getText);
+            } 
+    }
   
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
@@ -58,37 +59,24 @@ export class DataUploadLoader extends React.Component {
       clearDatasetPreview();
     }
     makeULforData(array) {
-      var list = document.createElement('ul');
-      var indexNum = Object.keys(this.props.dataLoadedText).find(key => this.props.dataLoadedText[key] === this.props.dataLoaderText);
-      for(var i = 0; i < array.length; i++) {
-        if(indexNum == i){
-          var item = document.createElement('li');
-          var att = document.createAttribute("class");
-          att.value = "democlass";
-          item.setAttributeNode(att);
-          item.appendChild(document.createTextNode(array[i]));
-          list.appendChild(item);
-        }else if(i < indexNum){
-          var item = document.createElement('li');
-          var att = document.createAttribute("class");
-          att.value = "democlass1";
-          item.setAttributeNode(att);
-          item.appendChild(document.createTextNode(array[i]));
-          list.appendChild(item);
-        }else if(array.length === 1){
-          var item = document.createElement('li');
-          item.appendChild(document.createTextNode(array[i]));
-          list.appendChild(item);
-        }else{
-          var item = document.createElement('li');
-          var att = document.createAttribute("class");
-          att.value = "democlass2";
-          item.setAttributeNode(att);
-          item.appendChild(document.createTextNode(array[i]));
-          list.appendChild(item);
+        var x = document.getElementById("loadingMsgs");
+        var x1 = document.getElementById("loadingMsgs1");
+        var x2 = document.getElementById("loadingMsgs2");
+        var myTimer;
+        for (var i = 1; i < array.length-3; i++) {
+            (function(i) {
+                myTimer = setTimeout(function() {
+                    x.innerHTML = "Step " + i + ": " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
+                }, 8000 * i);
+            })(i);
         }
-      }
-      return list;
+        for(var i=array.length-3;i<array.length;i++){
+            x.innerHTML = "Step " + i + ": " + array[i];
+            x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+            x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
+        }
     }
   render() {
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
@@ -264,9 +252,13 @@ export class DataUploadLoader extends React.Component {
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
 
-              <div class="modal-steps" id="loadingMsgs">
-								&nbsp;&nbsp;&nbsp;Please wait while preparing data...
-							</div>
+                                <div class="modal-steps" id="loadingMsgs">
+                                Please wait while preparing data...
+                                </div>
+                                <div class="modal-steps active" id="loadingMsgs1">
+                                </div>
+                                <div class="modal-steps" id="loadingMsgs2">
+                                </div>
 
 								{/* <ul class="modal-steps hidden">
 										<li>----</li>

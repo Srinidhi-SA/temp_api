@@ -4,9 +4,16 @@ from builtins import range
 import hashlib
 import string
 
-import watson_developer_cloud.natural_language_understanding.features.v1 \
-    as Features
-from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
+# import watson_developer_cloud.natural_language_understanding.features.v1 \
+#     as Features
+# from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
+
+from ibm_watson import NaturalLanguageUnderstandingV1
+
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions, ConceptsOptions, EmotionOptions, \
+    EntitiesOptions, KeywordsOptions, RelationsOptions, SemanticRolesOptions, SentimentOptions
 
 from api.StockAdvisor.crawling.cache import Cache
 from .settings import NUMBEROFTRIES, CACHESALT, TEMPDIR
@@ -52,26 +59,29 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
     :param use_cache:
     :return:
     """
+
+    apikey = 'sK2KMSxYIyeQiYJpb9ugbMI5cjZRW6e2MSYLrWTtoINy'
+
+    url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/9945cca0-ece4-45c8-903e-efbf3fcc61ff'
+
+    authenticator = IAMAuthenticator(apikey)
+
     def __get_nl_analyzer():
-        return NaturalLanguageUnderstandingV1(
-            username=nlu_settings.get("username"),
-            password=nlu_settings.get("password"),
-            version="2017-02-27")
+        natural_language_understanding = NaturalLanguageUnderstandingV1(version='2019-07-12',
+                                                                         authenticator=authenticator)
+        natural_language_understanding.set_service_url(url)
+        return natural_language_understanding
 
     def __get_default_features():
-        return [
-            Features.Entities(limit=100, emotion=True, sentiment=True),
-            Features.Keywords(limit=100, emotion=True, sentiment=True),
-            Features.Categories(),
-            Features.Concepts(),
-            Features.Sentiment(),
-            Features.Emotion(),
-            #     Features.Feature(),
-            #     Features.MetaData(),
-            Features.Relations(),
-            Features.SemanticRoles(),
-
-        ]
+        return Features(entities=EntitiesOptions(emotion=True, sentiment=True, limit=100),
+                        keywords=KeywordsOptions(emotion=True, sentiment=True, limit=100),
+                        categories=CategoriesOptions(),
+                        concepts=ConceptsOptions(),
+                        emotion=EmotionOptions(),
+                        relations=RelationsOptions(),
+                        semantic_roles=SemanticRolesOptions(),
+                        sentiment=SentimentOptions()
+                        )
 
     bluemix_cache = Cache("bluemix")
 
@@ -96,7 +106,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
                         text=content_of_the_url, features=features)
                 else:
                     nl_understanding = natural_language_analyzer.analyze(
-                        url=url,features=features )
+                        url=url, features=features)
             except Exception as err:
                 print("FAILED "*10, err)
 

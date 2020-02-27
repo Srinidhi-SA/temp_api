@@ -689,8 +689,7 @@ class TrainerView(viewsets.ModelViewSet):
                                 missing_value_treatment[index] = data_items
                                 index += 1
                 config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in list(x.keys())]
-                config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(
-                    config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
+                config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
                 tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
 
             except Exception as err:
@@ -5827,8 +5826,13 @@ def get_job_report(request, slug=None):
 def get_stockdatasetfiles(request, slug=None):
     # if slug is None:
     #     return JsonResponse({"message": "Failed"})
-    stockDataType = request.GET.get('stockDataType')
-    stockName = request.GET.get('stockName')
+
+    # stockDataType = request.GET.get('stockDataType')
+    # stockName = request.GET.get('stockName')
+    # stockDataType = 'historical'
+    # stockName = 'twtr'
+    stockDataType = ''
+    stockName = ''
 
     return return_crawled_json_data(stockDataType, stockName, slug)
 

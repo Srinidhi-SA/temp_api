@@ -20,7 +20,7 @@ def hadoop_put(from_path, to_dir):
 
 def hadoop_mkdir(path):
     print("Creating directory {}".format(path))
-    # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-mkdir", "-p", path])
+    # subprocess.call(["/home/hadoop/hadoop-2.8.5/bin/hadoop", "fs", "-mkdir", "-p", path])
     hadoop_hdfs().make_dir(path)
 
 def hadoop_exists(path):

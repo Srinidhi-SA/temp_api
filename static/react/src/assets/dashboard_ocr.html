@@ -8,6 +8,8 @@
 	<!-- Custom Fonts -->
 	<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	<!-- Latest compiled and minified CSS -->
+	
+	<link rel="stylesheet" href="css/animate.css">
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link href="css/bootstrap-slider.css" rel="stylesheet">
@@ -17,9 +19,168 @@
 	<link rel="icon" href="images/favicon.ico" />
 	<link rel="stylesheet" href="css/fancy_fileupload.css?v=6234992" type="text/css" media="all" />
 	<link href="css/theme.ice.css" rel="stylesheet">
-	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" /> 
+	<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css" />
+
 </head>
    <body>
+   
+   
+	<div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			<div id="ocrInstructions" class="carousel slide" data-ride="carousel">
+			<div class="modal-body">			
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner cst_carousel">
+					<div class="item active">						
+						<h2>Introduction</h2>
+						<div class="clearfix"></div>					 
+							<ul class="nav nav-tabs cst-tab-steps">
+								<li class="text-center wow slideInLeft" >
+								<div class="img_block">
+									<img src="images/step11.png">
+								</div>
+								<h5>STEP 1</h5>
+								<h3 class="text-primary">Capture</h3>
+								</li>
+								<li class="text-center wow slideInLeft">
+								<div class="img_block">
+									<img src="images/step22.png">
+								</div>
+								<h5>STEP 2</h5>
+								<h3 class="text-primary">Classify</h3>
+								
+								</li>
+								<li class="text-center wow bounceInDown">
+								<div class="img_block">
+									<img src="images/step33.png">
+								</div>
+								<h5>STEP 3</h5>
+								<h3 class="text-primary">Extract</h3>
+								
+								</li>
+								<li class="text-center wow slideInRight">
+								<div class="img_block">
+									<img src="images/step44.png">
+								</div>
+								<h5>STEP 4</h5>
+								<h3 class="text-primary">Validate</h3>
+								
+								</li>
+								<li class="text-center wow slideInRight">
+								<div class="img_block">
+									<img src="images/step55.png">
+								</div>
+								<h5>STEP 5</h5>
+								<h3 class="text-primary">Deliver</h3>							
+								</li>
+							</ul>					 
+					</div>
+					<div class="item i_steps">
+						<div class="container-fluid">
+						<div class="row">
+							 
+							<div class="col-md-3 text-center wow bounceInDown">
+							<div class="img_block ">
+							<img  src="images/step11.png" alt="STEP 1">
+							</div>
+							</div>
+							<div class="col-md-9 wow slideInRight">
+								<h5>STEP 1</h5>
+								<h2 class="text-primary">Capture</h2>
+								<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+							</div>
+						</div>
+						</div>
+					</div>
+					<div class="item i_steps">				
+						<div class="container-fluid">
+							<div class="row">
+								 
+								<div class="col-md-3 text-center wow bounceInDown">
+								<div class="img_block">
+								<img  src="images/step22.png" alt="STEP 1">
+								</div>
+								</div>
+								<div class="col-md-9 wow slideInRight">
+									<h5>STEP 2</h5>
+									<h2 class="text-primary">Classify</h2>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item i_steps">
+						<div class="container-fluid">
+							<div class="row">							 
+								<div class="col-md-3 text-center wow bounceInDown">
+								<div class="img_block">
+								<img  src="images/step33.png" alt="STEP 1">
+								</div>
+								</div>
+								<div class="col-md-9 wow slideInRight">
+									<h5>STEP 3</h5>
+									<h2 class="text-primary">Extract</h2>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's </p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item i_steps">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-3 text-center wow bounceInDown">
+								<div class="img_block">
+								<img  src="images/step44.png" alt="STEP 1">
+								</div>
+								</div>
+								<div class="col-md-9 wow slideInRight">
+									<h5>STEP 4</h5>
+									<h2 class="text-primary">Validate</h2>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's </p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item i_steps">
+						<div class="container-fluid">
+							<div class="row">
+								 
+								<div class="col-md-3 text-center wow bounceInDown">
+								<div class="img_block">
+								<img src="images/step55.png" alt="STEP 1">
+								</div>
+								</div>
+								<div class="col-md-9 wow slideInRight">
+									<h5>STEP 5</h5>
+									<h2 class="text-primary">Deliver</h2>
+									<p>Lorem Ipsum is simply dummy text of the printing </p>
+								</div>
+							</div>
+						</div>				
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<!-- Indicators -->
+				<ol class="carousel-indicators cst_indicators">
+				<li data-target="#ocrInstructions" data-slide-to="0" class="active"></li>
+				<li data-target="#ocrInstructions" data-slide-to="1"></li>
+				<li data-target="#ocrInstructions" data-slide-to="2"></li>
+				<li data-target="#ocrInstructions" data-slide-to="3"></li>
+				<li data-target="#ocrInstructions" data-slide-to="4"></li>
+				<li data-target="#ocrInstructions" data-slide-to="5"></li>  
+				</ol> 
+				<button type="button" class="btn btn-primary" data-dismiss="modal">SKIP</button>
+			</div>	 
+			</div>
+			</div>
+		</div>
+	</div>
+
+   
+   
+   
       <!-- Main Wrapper ** Mandatory -->
 <div class="main_wrapper">
          <!-- Header Menu -->
@@ -90,29 +251,135 @@
    <div class="page-head">
       <div class="row">
          <div class="col-md-7">
-            <h3 class="xs-mt-0 nText">OCR APP</h3>
+            <h3 class="xs-mt-0 nText">Intelligent Text Extractor</h3>
          </div>
           
       </div>
    </div>
    <div class="main-content">
-      
+   <section class="ocr_section">
+   <div class="tab-container">
+		<ul class="nav nav-tabs cst_ocr_tabs">
+                        <li class="active"><a href="dashboard_ocr.html" ><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
+                        <li class=""><a href="create_ocr_project.html"><i class="fa fa-book fa-lg"></i> Projects</a></li>
+                        <li class=""><a href="ocr_configure.html"><i class="fa fa-sliders fa-lg"></i> Configure </a></li>
+                        <li class=""><a href="ocr_reviewers.html"><i class="fa fa-users fa-lg"></i> Reviewers </a></li>
+                        <li class=""><a href="users.html"><i class="fa fa-user fa-lg"></i> Users </a></li>
+        </ul>
+	</div>
+	<div class="container-fluid">
+		
+	
+		<div class="xs-mt-20"></div>		  
 	  <div class="row">
-        <div class="col-sm-12">
-          <div class="tab-container">
-            <ul class="nav nav-tabs">
-              <li class=""><a href="ocr_intro.html"><i class="fa fa-home"></i> Introduction</a></li>
-              <li class="active"><a href="dashboard_ocr.html" ><i class="fa fa-home"></i> Dashboard</a></li>
-              <li class=""><a href="#">Other</a></li>
-            </ul>
-            
-          </div>
-        </div>
+	  <div class="col-sm-6">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ocr_Instructions_modal">
+			Introduction
+			</button>
+	  </div>
         
       </div>
+	  <div class="xs-mt-20"></div>
+	<div class="row">
+       <div class="col-md-5">
+		<div class="widget widget-pie">
+              <div class="widget-head"><span class="title">Overview</span></div>
+              <div class="row chart-container">
+                <div class="col-md-6">
+                  <div class="chart" id="widget-top-1" style="padding: 0px; position: relative;"><canvas class="flot-base" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas><canvas class="flot-overlay" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas></div>
+                </div>
+                <div class="col-md-6">
+                  <div class="legend">
+					<table style="font-size:smaller;color:#545454">
+						<tbody>
+							<tr>
+								<td class="legendColorBox">
+								<div style="border:1px solid #ccc;padding:1px">
+								<div style="width:4px;height:0;border:5px solid rgb(241,121,121);overflow:hidden">
+								</div>
+								</div>
+								</td>
+								<td class="legendLabel">Jeera</td>
+							</tr>
+							<tr>
+								<td class="legendColorBox">
+								<div style="border:1px solid #ccc;padding:1px">
+								<div style="width:4px;height:0;border:5px solid rgb(255,220,122);overflow:hidden"></div>
+								</div>
+							</td>
+							<td class="legendLabel">Slack</td>
+							</tr>
+							<tr>
+							<td class="legendColorBox">
+							<div style="border:1px solid #ccc;padding:1px">
+								<div style="width:4px;height:0;border:5px solid rgb(149,217,240);overflow:hidden">
+								</div>
+							</div>
+							</td>
+							<td class="legendLabel">Asana</td>
+							</tr></tbody>
+					</table>
+				  </div>
+                </div>
+              </div>
+              <div class="row chart-info">
+                <div class="col-md-4"><span class="title">Automation Test</span><span class="number" data-toggle="counter" data-end="180">180</span></div>
+                <div class="col-md-4"><span class="title">Realtime Test</span><span class="number" data-toggle="counter" data-end="500" data-prefix="$">$500</span></div>
+                <div class="col-md-4"><span class="title">Screenshot Test</span><span class="number" data-toggle="counter" data-end="90">90</span></div>
+              </div>
+            </div>
+	   </div>
+	   <div class="col-md-5">
+			<div class="widget widget-pie widget-pie-stats">
+              <div class="widget-head"><span class="title">Advertisement</span></div>
+              <div class="row chart-container">
+                <div class="col-md-6">
+                  <div class="chart" id="widget-top-3" style="padding: 0px; position: relative;"><canvas class="flot-base" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas><canvas class="flot-overlay" width="136" height="125" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 136.5px; height: 125px;"></canvas></div>
+                </div>
+                <div class="col-md-6">
+                  <div class="legend">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td class="legendColorBox">
+                            <div>
+                              <div class="clr-alt3" style="width:10px;height:10px;overflow:hidden;"></div>
+                            </div>
+                          </td>
+                          <td class="legendLabel">Google Ads</td>
+                          <td class="legendData">$752</td>
+                        </tr>
+                        <tr>
+                          <td class="legendColorBox">
+                            <div>
+                              <div class="clr-alt4" style="width:10px;height:10px;overflow:hidden;"></div>
+                            </div>
+                          </td>
+                          <td class="legendLabel">Facebook</td>
+                          <td class="legendData">$300</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="row chart-info">
+                <div class="col-md-6">
+                  <div class="sparkline" id="spk1"><canvas width="54" height="30" style="display: inline-block; width: 54px; height: 30px; vertical-align: top;"></canvas></div><span class="title">Profit</span><span class="number" data-toggle="counter" data-end="70" data-suffix="%">70%</span>
+                </div>
+                <div class="col-md-6">
+                  <div class="sparkline" id="spk2"><canvas width="54" height="30" style="display: inline-block; width: 54px; height: 30px; vertical-align: top;"></canvas></div><span class="title">Return</span><span class="number" data-toggle="counter" data-end="30" data-suffix="%">30%</span>
+                </div>
+              </div>
+            </div>
+	   </div>
+	    <div class="col-md-2">
+	   
+	   </div>
+	</div>
 	  
-	  
-       
+	  </div>
+       </section>
    </div>
 </div>
 		 
@@ -129,13 +396,35 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-slider.js"></script>
 <script src="js/bootbox.min.js"></script>
-
+<script src="js/wow.min.js"></script>
 <script type="text/javascript" src="s/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.widgets.js"></script>
 <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
 
 <script src="js/uiScripts.js"></script>
+<script>
+wow = new WOW(
+	{
+		boxClass:     'wow',      // default
+		animateClass: 'animated', // default
+		offset:       0,          // default
+		mobile:       true,       // default
+		live:         true        // default
+	}
+)
+wow.init();
+ 
 
+setTimeout(function(){
+    $('#ocr_Instructions_modal').modal('hide')
+}, 30000);
 
-   </body>
+function selectRow(row)
+{
+    var firstInput = row.getElementsByTagName('input')[0];
+    firstInput.checked = !firstInput.checked;
+	$("#btn_r1,#btn_r2").removeClass("disabled"); 
+}
+</script>
+</body>
 </html>

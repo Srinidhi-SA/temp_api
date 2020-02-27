@@ -19,6 +19,7 @@ import random
 import string
 from django.http import JsonResponse
 from api.helper import encrypt_for_kylo
+from ocr.models import OCRUserProfile
 
 
 class Profile(models.Model):
@@ -130,7 +131,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser", "is_staff")
 
 
 def jwt_response_payload_handler(token, user=None, request=None):
@@ -146,11 +147,16 @@ def jwt_response_payload_handler(token, user=None, request=None):
     if profile is None:
         profile = Profile(user=user)
         profile.save()
+    #Adding OCR Profile details
+    OCR_profile = OCRUserProfile.objects.filter(ocr_user=user).first()
+    if OCR_profile is None:
+        pass
 
     return {
         'token': "JWT " + token,
         'user': UserSerializer(user, context={'request': request}).data,
         'profile': profile.json_serialized() if profile is not None else None,
+        'ocr_profile': OCR_profile.json_serialized() if OCR_profile is not None else None,
         'view_permission': get_all_view_permission(user)
     }
 
@@ -172,6 +178,9 @@ def create_profile(sender, **kwargs):
     user = kwargs["instance"]
     if kwargs["created"]:
         user_profile = Profile(user=user)
+
+        ocr_user_profile = OCRUserProfile(ocr_user=user)
+        ocr_user_profile.save()
         #Loading all customapps for the user
         ########################################
         from api.views import all_apps_for_users
