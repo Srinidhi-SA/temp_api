@@ -22,9 +22,6 @@ import { STATIC_URL } from "../../../helpers/env.js";
 export class OcrAddUser extends React.Component{
     constructor(props){
         super(props);
-        this.state = {
-			checked1: false
-		};
     }
 
     openAddUserPopup(e){

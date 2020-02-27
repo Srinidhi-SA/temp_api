@@ -2,9 +2,6 @@
 import {API} from "../helpers/env";
 import {getUserDetailsOrRestart, statusMessages} from "../helpers/helper";
 import store from "../store";
-import { func, string } from "prop-types";
-import { stringify } from "querystring";
-
 function getHeader(token){
 	return {
 		Authorization: token
