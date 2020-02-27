@@ -22428,8 +22428,8 @@ width: 24px;
 }
 /* #originalOcrImg:hover + #myCanvas{
   width: calc(700px + 200px) !important;
-}
-#myCanvas:hover{
+} */
+/* #myCanvas:hover{
   width: calc(700px + 200px) !important;
 } */
 .ocrImgDiv:hover{

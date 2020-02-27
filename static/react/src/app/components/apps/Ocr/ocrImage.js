@@ -19,7 +19,7 @@ export class OcrImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: "test",
+      text: "",
       imageDetail: "",
     }
   }
@@ -101,7 +101,8 @@ export class OcrImage extends React.Component {
   }
 
   extractText = (x, y) => {
-    var slug= "img-uw2ii50xd9";
+    document.getElementById("ocrText").value = "";
+    var slug = "img-uw2ii50xd9";
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -122,6 +123,26 @@ export class OcrImage extends React.Component {
     return (
       <div>
         <div className="row">
+          <div className="col-sm-12">
+            <button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal_badscan">
+              <i class="fa fa-info-circle"></i> Bad Scan
+            </button>
+            <div class="form-group pull-right ocr_highlightblock">
+              <label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
+              <select class="form-control inline-block 1-100" id="select_confidence">
+                <option value="1">10</option>
+                <option value="2">20</option>
+                <option value="3">30</option>
+                <option value="4">40</option>
+                <option value="5">50</option>
+                <option value="6">60</option>
+                <option value="7">70</option>
+                <option value="8">80</option>
+                <option value="9">90</option>
+                <option value="10">100</option>
+              </select>
+            </div>
+          </div>
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
@@ -169,7 +190,7 @@ export class OcrImage extends React.Component {
                       <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
-                      <ul class="dropdown-menu" style={{left: -110}}>
+                      <ul class="dropdown-menu" style={{ left: -110 }}>
                         <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
@@ -184,6 +205,29 @@ export class OcrImage extends React.Component {
         <div className="row">
           <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
         </div>
+
+        <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Send feedback to the team</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="txt_bscan">Tell us how would we improve?</label>
+                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" />
+                  <p>For technical support, please contact info@madvisor-dev.marlabs.com</p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     )
   }
