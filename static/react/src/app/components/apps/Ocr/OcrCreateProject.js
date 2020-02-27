@@ -12,7 +12,7 @@ import { getOcrProjectsList,storeProjectSearchElem } from '../../../actions/ocrA
   };
 })
 
-export class OcrProjectUpload extends React.Component {
+export class OcrCreateProject extends React.Component {
   constructor(props) {
     super(props);
     this.props.dispatch(close());
@@ -141,7 +141,7 @@ export class OcrProjectUpload extends React.Component {
               <Modal.Footer>
                 <div id="resetMsg"></div>
                 <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
-                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Submit</Button>
+                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
               </Modal.Footer>
             </Modal>
           </div>
