@@ -53,10 +53,20 @@ export function getOcrProjectsList(pageNo){
 }
 
 function fetchProjects(pageNo=1,token){
-	return fetch(API + '/ocr/project/', {
+	let search_project=store.getState().ocr.search_project
+	if(search_project!=""){
+		return fetch(API +'/ocr/project/?name='+search_project+'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
-  }).then(response => Promise.all([response, response.json()]));
+	}).then(response => Promise.all([response, response.json()]));
+	}
+	else{
+	return fetch(API + '/ocr/project/?page_number=' + pageNo, {
+      method: 'get',
+      headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+}
+
 }
 
 export function fetchProjectsSuccess(doc){
@@ -260,6 +270,12 @@ export function updateCheckList(list){
 export function storeDocSearchElem(elem){
 	return{
 		type:"SEARCH_OCR_DOCUMENT",
+		elem
+	}
+}
+export function storeProjectSearchElem(elem){
+	return{
+		type:"SEARCH_OCR_PROJECT",
 		elem
 	}
 }
