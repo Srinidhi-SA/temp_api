@@ -72,6 +72,11 @@ export class OcrProjectUpload extends React.Component {
     this.props.dispatch(storeProjectSearchElem(searchElememt))
     this.props.dispatch(getOcrProjectsList())
   }
+  clearSearchElement(e){
+    document.getElementById('search').value=""
+    this.props.dispatch(storeProjectSearchElem(''));
+    this.props.dispatch(getOcrProjectsList())
+  }
 
   render() {
     return (
@@ -86,9 +91,12 @@ export class OcrProjectUpload extends React.Component {
           <div class="col-sm-6 text-right">
             <div class="form-inline">
               <button id="btn_ceate_project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
-              <div class="form-group xs-mr-5">
-                <input type="text" id="search" class="form-control btn-rounded"  onChange={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
-              </div>
+              <span className="search-wrapper">
+               <div class="form-group xs-mr-5">
+                <input type="text" id="search" class="form-control btn-rounded "  onChange={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
+                        <button className="close-icon"  style={{position:"absolute",left:'173px',top:'7px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
+                        </div>
+                </span>
             </div>
           </div>
           <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
