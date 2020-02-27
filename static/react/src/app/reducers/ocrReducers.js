@@ -22,6 +22,7 @@ export default function reducer(state = {
   filter_assignee: '',
   checked_list: '',
   search_document:'',
+  search_project:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -221,6 +222,14 @@ export default function reducer(state = {
         return {
           ...state,
           search_document:action.elem
+        }
+      }
+      break;
+      case "SEARCH_OCR_PROJECT":
+      {
+        return {
+          ...state,
+          search_project:action.elem
         }
       }
       break;

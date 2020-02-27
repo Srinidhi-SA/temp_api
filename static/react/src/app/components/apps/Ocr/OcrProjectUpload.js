@@ -4,7 +4,7 @@ import { Modal, Button, } from "react-bootstrap";
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
-import { getOcrUploadedFiles, getOcrProjectsList } from '../../../actions/ocrActions';
+import { getOcrProjectsList,storeProjectSearchElem } from '../../../actions/ocrActions';
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -39,6 +39,7 @@ export class OcrProjectUpload extends React.Component {
     var projectName = document.getElementById('projectName').value
     if (projectName.trim() == "") {
       document.getElementById("resetMsg").innerText = "Please enter project name.";
+      return false;
     }
     var projectLead = document.getElementById('projectLead').value
     var projectType = document.getElementById('projectType').value
@@ -66,6 +67,12 @@ export class OcrProjectUpload extends React.Component {
     this.closePopup()
   }
 
+  handleSearchBox(){
+    var searchElememt=document.getElementById('search').value.trim()
+    this.props.dispatch(storeProjectSearchElem(searchElememt))
+    this.props.dispatch(getOcrProjectsList())
+  }
+
   render() {
     return (
       <div>
@@ -80,7 +87,7 @@ export class OcrProjectUpload extends React.Component {
             <div class="form-inline">
               <button id="btn_ceate_project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
               <div class="form-group xs-mr-5">
-                <input type="text" id="search" class="form-control btn-rounded" placeholder="Search project..."></input>
+                <input type="text" id="search" class="form-control btn-rounded"  onChange={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
               </div>
             </div>
           </div>
