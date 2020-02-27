@@ -23,6 +23,7 @@ export default function reducer(state = {
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
+  createUserLoaderFlag : false,
   curUserSlug : "",
   newUserDetails : {},
   newUserProfileDetails : {},
@@ -31,7 +32,9 @@ export default function reducer(state = {
   selectedOcrUsers : [],
   editOcrUserFlag:false,
   selUserSlug:"",
-  selUserDetails:{}
+  selUserDetails:{},
+  enableEditingFlag:false,
+  editedUserDetails : {},
 
 }, action) {
   switch (action.type) {
@@ -235,6 +238,13 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SET_CREATE_USER_LOADER_FLAG": {
+        return {
+          ...state,
+          createUserLoaderFlag : action.flag
+        }
+      }
+      break;
       case "SAVE_NEW_USER_DETAILS": {
         let curUserDetails = state.newUserDetails;
         curUserDetails[action.name] = action.value
@@ -257,14 +267,15 @@ export default function reducer(state = {
         return {
           ...state,
           createUserFlag : action.flag,
-          curUserSlug : action.slug
+          curUserSlug : action.slug,
         }
       }
       break;
       case "USER_PROFILE_CREATED_SUCCESS":{
         return {
           ...state,
-          ocrUserProfileFlag : action.flag
+          ocrUserProfileFlag : action.flag,
+          createUserFlag : false
         }
       }
       break;
@@ -287,7 +298,8 @@ export default function reducer(state = {
           ...state,
           editOcrUserFlag : action.flag,
           selUserSlug : action.userSlug,
-          selUserDetails : action.userDt
+          selUserDetails : action.userDt,
+          editedUserDetails : action.edtDet
         }
       }
       break;
@@ -295,6 +307,22 @@ export default function reducer(state = {
         return{
           ...state,
           editOcrUserFlag : action.flag
+        }
+      }
+      break;
+      case "ENABLE_EDITING_USER": {
+        return{
+          ...state,
+          enableEditingFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_EDITED_USER_DETAILS": {
+        let curEditedUserStatus = state.editedUserDetails;
+        curEditedUserStatus[action.name] = action.val
+        return {
+          ...state,
+          editedUserDetails : curEditedUserStatus
         }
       }
   }

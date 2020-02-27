@@ -22443,8 +22443,19 @@ ul.ocrUploadTabs{
   height: 350px;
   padding:10px;
 }
+.tableActions{
+  margin: 0px;
+}
+.ocrAddUser{
+  padding-left: 70px;
+}
 #searchOcrUser{
-  margin-top: -35px;
+  margin-top: -36px;
+}
+.actionOcrUser{
+  margin-left: 76%;
+  margin-top: -36px;
+  padding-right: 0px;
 }
 .noOcrUsers{
   height: 150px;
@@ -22472,9 +22483,9 @@ ul.ocrUploadTabs{
   margin-bottom: 10px;
   background-color: white;
 }
-.ocrUserAction{
-  width:20%;
-  margin-left: 73%;
+.ocrUserFormLabel input[disabled],select[disabled]{
+  cursor: not-allowed;
+  background-color: #efefef;
 }
 .userStatusBtn{
   height: 25px;
