@@ -5,7 +5,7 @@ from ocr.ITE.timesheet_templates2 import *
 from ocr.ITE.timesheet_templates1 import *
 from ocr.ITE.ocr_mods import *
 import json
-
+import base64
 from ocr.ITE.transcript_module import intermediate_1, extract_metadata_transcript
 
 global analysis, google_response
@@ -37,6 +37,11 @@ def analyse(path, image_slug):
     google_response = detect_text(path)
     flag = process_template(analysis, image)
     data, data2, data3, image_data, image_, mask = RPA(analysis, google_response, image_slug, image_name, extracted_image)
+    with open(mask, mode='rb') as file:
+        img = file.read()
+
+    mask = base64.encodebytes(img)
+
     response = dict()
     response['analysis'] = analysis
     response['google_response'] = str(google_response.text_annotations)

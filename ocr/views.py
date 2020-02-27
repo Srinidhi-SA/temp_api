@@ -16,7 +16,7 @@ View Implementations for OCRImage and OCRImageset models.
 # pylint: disable=wrong-import-order
 # pylint: disable=ungrouped-imports
 # -------------------------------------------------------------------------------
-
+import base64
 import copy
 import os
 import random
@@ -498,12 +498,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
-                print(slug)
                 image_queryset = OCRImage.objects.get(slug=slug)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
                 response = res.get()
+
+                image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+
+                with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
+                    f.write(image)
 
                 del data['slug']
                 data['converted_Coordinates'] = json.dumps(response['data2'])
@@ -512,7 +516,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 data['analysis'] = json.dumps(response['analysis'])
                 data['status'] = 2
                 data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
-                                               file=open(response['extracted_image'], 'rb'))
+                                               file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
 
                 serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                                  context={"request": self.request})
