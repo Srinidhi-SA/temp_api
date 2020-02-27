@@ -856,11 +856,16 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         project = Project.objects.get(slug=self.kwargs['slug'])
         queryset = OCRImage.objects.filter(project=project)
 
-        serializer = OCRImageListSerializer(instance=queryset, many=True, context={'request': request})
-        object_details = serializer.data
-        for image_data in object_details:
+        object_details = get_image_list_data(
+            viewset=OCRImageView,
+            queryset=queryset,
+            request=request,
+            serializer=OCRImageListSerializer
+        )
+
+        for image_data in object_details.data['data']:
             image_data['fields'] = 'NA'
             image_data['assignee'] = 'NA'
             image_data['modified_by'] = 'NA'
             image_data['modified_at'] = 'NA'
-        return Response(object_details)
+        return object_details
