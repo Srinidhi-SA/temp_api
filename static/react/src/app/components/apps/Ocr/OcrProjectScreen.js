@@ -50,7 +50,7 @@ export class OcrProjectScreen extends React.Component {
                   <td>
                      <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag}>{item.name}</Link>
                   </td>
-                  <td>{item.slug}</td>
+                  <td>{new Date(item.created_at).toLocaleString().split(',')[0]}</td>
                   <td>{item.slug}</td>
                   <td>{item.slug}</td>
                   <td>{item.slug}</td>
