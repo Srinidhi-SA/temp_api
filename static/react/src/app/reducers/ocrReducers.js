@@ -36,6 +36,8 @@ export default function reducer(state = {
   enableEditingFlag:false,
   editedUserDetails : {},
 
+  search_document:'',
+  search_project:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -177,7 +179,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png"
+          imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
@@ -214,7 +216,6 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -325,6 +326,23 @@ export default function reducer(state = {
           editedUserDetails : curEditedUserStatus
         }
       }
+      break;
+      case "SEARCH_OCR_DOCUMENT":
+      {
+        return {
+          ...state,
+          search_document:action.elem
+        }
+      }
+      break;
+      case "SEARCH_OCR_PROJECT":
+      {
+        return {
+          ...state,
+          search_project:action.elem
+        }
+      }
+      break;
   }
   return state
 }

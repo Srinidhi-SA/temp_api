@@ -24,12 +24,9 @@ export class OcrImage extends React.Component {
     }
   }
 
-  componentWillUnmount(){
-    this.props.dispatch(saveImagePageFlag(false));
-  }
   componentDidMount() {
     var OriginalImg = document.getElementById("originalOcrImg");
-    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/ocr.jpeg";
+    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/Invoice_page_i0CBBXq.jpg";
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     var OcrImg = document.getElementById("ocrImg");
@@ -40,7 +37,6 @@ export class OcrImage extends React.Component {
     OcrImg.onload = () => {
       // canvas.height = '800';
       // canvas.width = '700';
-      // console.log(OcrImg.style.height);
       // canvas.height= OcrImg.style.height;
       // canvas.width= OcrImg.style.width;
       ctx.drawImage(OcrImg, 0, 0, 700, 800);
@@ -56,7 +52,7 @@ export class OcrImage extends React.Component {
     let canvasX = event.clientX - canvasrect.left;
     let canvasY = event.clientY - canvasrect.top;
     console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
-    this.updateText(canvasX, canvasY);
+    this.extractText(canvasX, canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
     // ctx.stroke();
@@ -91,8 +87,10 @@ export class OcrImage extends React.Component {
   //   } 
   // }
   imageScroll = (e) => {
-    $("#originalImgDiv div").attr("id", "scrollId");
-    document.getElementById("scrollId").scrollLeft = e.target.scrollLeft;
+    $("#originalImgDiv div").attr("id", "scrollOriginal");
+    $("#ocrScroll div").attr("id", "scrollOcr");
+    document.getElementById("scrollOriginal").scrollLeft = e.target.scrollLeft;
+    document.getElementById("scrollOcr").scrollLeft = e.target.scrollLeft;
   }
 
   getHeader = (token) => {
@@ -102,11 +100,12 @@ export class OcrImage extends React.Component {
     }
   }
 
-  updateText = (x, y) => {
+  extractText = (x, y) => {
+    var slug= "img-uw2ii50xd9";
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": "img-uw2ii50xd9", "x": x, "y": y })
+      body: JSON.stringify({ "slug": slug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
         this.setState({ imageDetail: data })
@@ -126,7 +125,7 @@ export class OcrImage extends React.Component {
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
-              <Scrollbars style={{ height: 850 }} id="originalImgDiv">
+              <Scrollbars style={{ height: 850 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
                   <img style={{ height: 800, width: 700 }}
                     id="originalOcrImg"
@@ -156,7 +155,7 @@ export class OcrImage extends React.Component {
                 </div>
               </Scrollbars>
               <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
-                <div class="arrow" style={{ left: '50%' }}></div>
+                <div class="arrow" style={{ left: '91%' }}></div>
                 <h3 class="popover-title">Replace Text
                 <span onClick={this.closePopOver} style={{ float: 'right', cursor: 'pointer' }}><i class="fa fa-close"></i></span>
                 </h3>
@@ -166,22 +165,13 @@ export class OcrImage extends React.Component {
                       <input type="text" id="ocrText" placeholder="Enter text.." />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
-                      <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginRight: 2 }}>
+                      <button onClick={this.extractText} ><i class="fa fa-check"></i></button>
+                      <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
-                      <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
-
-
-                      {/* <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-check"></i>
-								<span class="caret"></span></button> */}
-                      {/* <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                      <i class="fa fa-sort-down"></i>
-                      </span> */}
-                      <ul class="dropdown-menu">
-                        <li><a href="javascript::" class="btn btn-warning btn-block"><i class="fa fa-plus"></i> Add Fields</a></li>
-                        <li><a href="#" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
-                        <li><a class="btn btn-block" data-toggle="modal" data-target="#modal_badscan"><i class="fa fa-exclamation"></i> Bad Scan</a></li>
-                        <li><a href="#" class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
+                      <ul class="dropdown-menu" style={{left: -110}}>
+                        <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
                   </div>

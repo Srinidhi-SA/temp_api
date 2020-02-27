@@ -143,6 +143,7 @@ class OCRImageset(models.Model):
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=True, db_index=True)
+    project = models.ForeignKey(Project, null=False, db_index=True)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImageSet", self.name, self.created_at, self.slug]])

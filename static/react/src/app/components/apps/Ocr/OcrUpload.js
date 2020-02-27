@@ -216,8 +216,8 @@ export class OcrUpload extends React.Component {
       optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
     }
     return (
-      <div>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} style={{ marginBottom: 20 }}><i class="fa fa-upload"></i> Upload</Button>
+      <div style={{ display:"inline-block" ,marginRight:'10px'}}>
+        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} ><i class="fa fa-upload"></i></Button>
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">
             <Modal.Header closeButton>

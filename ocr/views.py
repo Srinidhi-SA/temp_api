@@ -16,7 +16,7 @@ View Implementations for OCRImage and OCRImageset models.
 # pylint: disable=wrong-import-order
 # pylint: disable=ungrouped-imports
 # -------------------------------------------------------------------------------
-
+import base64
 import copy
 import os
 import random
@@ -29,7 +29,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
@@ -39,6 +39,8 @@ from api.exceptions import creation_failed_exception, \
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data
 # -----------------------MODELS-------------------------------
+from .ITE.master_all import get_word_in_bounding_box, update_word
+from .ITE.ocr_mods import not_clear
 from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
 
 # ------------------------------------------------------------
@@ -373,6 +375,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         imageset_data = dict()
         imageset_data['imagepath'] = str(imagepath)
         imageset_data['created_by'] = request.user.id
+        imageset_data['project'] = Project.objects.filter(slug=data['projectslug'])
         serializer = OCRImageSetSerializer(data=imageset_data, context={"request": self.request})
 
         if serializer.is_valid():
@@ -498,12 +501,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
-                print(slug)
                 image_queryset = OCRImage.objects.get(slug=slug)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
                 response = res.get()
+
+                image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+
+                with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
+                    f.write(image)
 
                 del data['slug']
                 data['converted_Coordinates'] = json.dumps(response['data2'])
@@ -512,7 +519,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 data['analysis'] = json.dumps(response['analysis'])
                 data['status'] = 2
                 data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
-                                               file=open(response['extracted_image'], 'rb'))
+                                               file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
 
                 serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                                  context={"request": self.request})
@@ -522,7 +529,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 results.append(serializer.errors)
         return Response(results)
 
-    @list_route(methods=['get'])
+    @list_route(methods=['post'])
     def get_images(self, request, *args, **kwargs):
 
         data = request.data
@@ -537,7 +544,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(object_details)
 
     @list_route(methods=['post'])
-    def get_word(self, request, *args, **kwargs):
+    def get_word2(self, request, *args, **kwargs):
         data = request.data
         x = data['x']
         y = data['y']
@@ -554,7 +561,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return JsonResponse({'word': None, 'index': None})
 
     @list_route(methods=['post'])
-    def update_word(self, request, *args, **kwargs):
+    def update_word2(self, request, *args, **kwargs):
         data = request.data
         index = data['index']
         word = data['word']
@@ -583,7 +590,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
-    def not_clear(self, request, *args, **kwargs):
+    def not_clear2(self, request, *args, **kwargs):
         data = request.data
         index = data['index']
         word = data['word']
@@ -632,6 +639,71 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data['final_result'] = json.dumps(json_final)
 
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    @list_route(methods=['post'])
+    def get_word(self, request, *args, **kwargs):
+        data = request.data
+        x = data['x']
+        y = data['y']
+
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
+
+        response = get_word_in_bounding_box(converted_Coordinates, x, y)
+
+        if response is not None:
+            return JsonResponse({'word': response[0], 'index': response[1]})
+        return JsonResponse({'word': None, 'index': None})
+
+    @list_route(methods=['post'])
+    def update_word(self, request, *args, **kwargs):
+        data = request.data
+        index = data['index']
+        word = data['word']
+
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+
+        response, analysis_list = update_word(index, word, comparision_data)
+        print(response)
+        data['comparision_data'] = json.dumps(response)
+
+        if 'analysis_list' in request.session:
+            request.session['analysis_list'].extend(analysis_list)
+        else:
+            request.session['analysis_list'] = analysis_list
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    @list_route(methods=['post'])
+    def not_clear(self, request, *args, **kwargs):
+        data = request.data
+        index = data['index']
+        word = data['word']
+
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+
+        response, analysis_list = not_clear(index, word, comparision_data)
+
+        data['comparision_data'] = json.dumps(response)
+
+        if 'analysis_list' in request.session:
+            request.session['analysis_list'].extend(analysis_list)
+        else:
+            request.session['analysis_list'] = analysis_list
+        data['analysis_list'] = json.dumps(request.session['analysis_list'])
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
@@ -729,7 +801,6 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
-    # pylint: disable=unused-argument
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()
 
@@ -778,3 +849,23 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             response['project_serializer_message'] = 'FAILED'
         print(response)
         return JsonResponse(response)
+
+    @detail_route(methods=['get'])
+    def all(self, request, *args, **kwargs):
+
+        project = Project.objects.get(slug=self.kwargs['slug'])
+        queryset = OCRImage.objects.filter(project=project)
+
+        object_details = get_image_list_data(
+            viewset=OCRImageView,
+            queryset=queryset,
+            request=request,
+            serializer=OCRImageListSerializer
+        )
+
+        for image_data in object_details.data['data']:
+            image_data['fields'] = 'NA'
+            image_data['assignee'] = 'NA'
+            image_data['modified_by'] = 'NA'
+            image_data['modified_at'] = 'NA'
+        return object_details

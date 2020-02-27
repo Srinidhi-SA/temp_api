@@ -21,168 +21,10 @@
       <link rel="stylesheet" href="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css" type="text/css" />
    </head>
    <body>
-      <!-- Add User Modal Popup -->
-      <div class="modal fade" id="modal_adduser" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Add User</h4>
-               </div>
-               <div class="modal-body xs-pt-20">
-                  <form>
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="ufName" class="form-label">First Name <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="ufName" placeholder="First Name">						 
-                           </div>
-                        </div>
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="ulName" class="form-label">Last Name</label>					
-                              <input type="text" class="form-control" id="ulName" placeholder="Last Name">					
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="uEmail" placeholder="Email">						 
-                           </div>
-                        </div>
-						<div class="col-md-6">
-                           <div class="form-group">
-                              <label for="uPassword" class="form-label">Password <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="uPassword" placeholder="Password">						 
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
-                              <ul class="list-unstyled">
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad1"><label for="rad1">Admin</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad2"><label for="rad2">Reviewer L1</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad3"><label for="rad3">Reviewer L2</label></div>
-                                 </li>
-                                 <li>
-                                    <div class="ma-radio inline"><input type="radio" name="roles_type" id="rad4"><label for="rad4">Superuser</label></div>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                           <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
-                           <ul class="list-unstyled">
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio" name="status_type" id="uStatus_active"><label for="uStatus_active">Active</label></div>
-                              </li>
-                              <li>
-                                 <div class="ma-radio inline"><input type="radio" name="status_type" id="uStatus_inactive"><label for="uStatus_inactive">Inactive</label></div>
-                              </li>
-                           </ul>
-                        </div>
-                     </div>
-					 
-					<div class="row">
-                        <div class="col-md-12">
-						
-						<div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" checked class="needsclick"><label for="chk_dim1"> Notify user by email that they have been added</label></div>
-                           							
-                        </div>
-						
-						</div>
-						
-                  </form>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" data-dismiss="modal">Add User</button>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- Edit User Modal Popup -->
-      <div class="modal fade" id="modal_edituser" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">User Details</h4>
-				  
-				  
-               </div> <form>
-               <div class="modal-body xs-pt-20">
-					 
-					 
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="ufName" class="form-label">First Name <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="ufName" placeholder="First Name" value="Sejal" disabled>						 
-                           </div>
-                        </div>
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="ulName" class="form-label">Last Name</label>					
-                              <input type="text" class="form-control" id="ulName" placeholder="Last Name" value="Oroosh" disabled>					
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-12">
-                           <div class="form-group">
-                              <label for="uEmail" class="form-label">Email <span class="text-danger">*</span></label>						 
-                              <input type="text" class="form-control" id="uEmail" placeholder="Email" value="sejal.oroosh@marlabs.com" disabled>						 
-                           </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-6">
-                           <div class="form-group">
-                              <label for="uRoles" class="form-label">Roles <span class="text-danger">*</span></label>	
-                              <select class="form-control" id="uRoles" disabled>
-								<option>Admin</option>
-								<option>Reviewer L1</option>
-								<option>Reviewer L2</option>
-								<option>Superuser</option>								
-							  </select>
-							  
-							  
-                           </div>
-                        </div>
-						 <div class="col-md-6">
-                        <div class="form-group">
-                           <label for="ustatus" class="form-label">Status <span class="text-danger">*</span></label>
-						   
-						    <select class="form-control" id="uRoles" disabled>
-								<option selected>Active</option>
-								<option>Inactive</option>						
-							  </select>
-						   
-                           
-                        </div>
-						</div>
-						</div>
-						
-                     
-                 
-               </div>
-               <div class="modal-footer">
-			    <button class="btn btn-primary"><i class="fa fa-pencil"></i> Edit</button>
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
-               </div> </form>
-            </div>
-         </div>
-      </div>
+      
+	   
+	  
+	  
       <!-- Main Wrapper ** Mandatory -->
       <div class="main_wrapper">
          <!-- Header Menu -->
@@ -241,7 +83,7 @@
                         <i class="fa fa-database fa-2x" aria-hidden="true"></i><br><!-- react-text: 49 -->DATA<!-- /react-text -->
                      </a>
                   </li>
-                  <div></div>
+                   
                </ul>
             </div>
          </div>
@@ -279,14 +121,175 @@
                      <div class="xs-mt-20"></div>
 						
                      <div class="row">
-                        <div class="col-sm-12">
-						 <div class="table-responsive">
-							
-                           Configure page
+                         <label class="control-label col-md-2" for="sel_project">Select Project</label>
+						 <div class="col-md-3">
+							<select class="form-control" id="sel_project">
+								<option>Select Project...</option>
+								<option>Diagnostic</option>
+								<option>Project 2</option>
+								<option>Project 3</option>
+								
+							</select>
 						 </div>
+						 <div class="col-md-5 col-md-offset-1">
+						  <div class="form-group">
+						  
+                                <div class="checkbox checbox-switch switch-success">
+                                    <label>
+                                        <input type="checkbox" name="auto_review_assignment" checked="" />
+                                        <span></span>
+                                        Enable automatic reviewer assignment<br>
+										<small>when enabled, documents that enter this project will be assigned to reviewers according to your choices below</small>
+                                    </label>
+                                </div>
+                            </div>
+							
+							
+						 
+						 </div>
+						 
+                     </div><hr/>
+					  <div class="row">
+						<div class="col-md-12">
+							<h4>Select how to assign documents</h4>
+							<div class="row">
+							<div class="col-md-6">
+								<div class="ma-radio">
+									<input type="radio" name="assign_doc" id="rad1">
+									<label for="rad1">Distribute jobs randomnly and evenly to all reviewers</label>
+								</div>
+								<label class="label-control col-md-8 xs-ml-10" for="num_drev">Maximum number of documents per reviewer</label>
+								<div class="col-md-3"><input type="number" class="form-control inline" id="num_drev" placeholder="Enter Number..."></div>
+								<div class="clearfix xs-mb-10"></div>
+								<label class="label-control col-md-8 xs-ml-10" for="num_rdocs">Number of review required per documents</label>
+								<div class="col-md-3"><input type="number" class="form-control" id="num_rdocs" placeholder="Enter Number..."></div>
+							</div>
+							<div class="col-md-6">
+							
+								<div class="ma-radio">
+								<input type="radio" name="assign_doc" id="rad2" >
+								<label for="rad2">Distribute jobs randomnly and evenly over selected reviewers</label>
+								</div>
+							</div>
+							</div>
+							
+							
 						</div>
+						
+						
+					  </div>
+					 <hr/>
+					 <div class="row">
+						<div class="col-md-12">
+							<h4>Reviewers
+							
+									<div class="pull-right xs-mb-10">
+										<input type="text" class="form-control" placeholder="Search..." />
+									</div>
+									
+									</h4>
+								 
+									
+								 <div class="clearfix"></div>
+								 
+								<div class="table-responsive">
+								
+								<table class="table table-bordered table-hover cst_table " style="background:#FFF;">
+									<thead>
+									<tr>
+										<th class="text-center xs-pr-5" style="width:80px;">
+											<div class="ma-checkbox">
+											<input id="chk_user_all" type="checkbox" class="needsclick">
+											<label for="chk_user_all"> </label>
+											</div>
+										</th>
+										<th>NAME</th>
+										<th>EMAIL</th>
+									</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="text-center">
+											<div class="ma-checkbox inline">
+											<input id="chk_user1" type="checkbox" class="needsclick">
+											<label for="chk_user1"> </label>
+											</div>
+											</td>
+											<td>Ada Lovelace</td>
+											<td>adalove@marlabs.com</td>
+										</tr>
+										<tr>
+											<td class="text-center">
+											<div class="ma-checkbox inline">
+											<input id="chk_user2" type="checkbox" class="needsclick">
+											<label for="chk_user2"> </label>
+											</div>
+											</td>
+											<td>Grace Hopper</td>
+											<td>ghoper@marlabs.com</td>
+										</tr>
+										<tr>
+											<td class="text-center">
+											<div class="ma-checkbox inline">
+											<input id="chk_user3" type="checkbox" class="needsclick">
+											<label for="chk_user3"> </label>
+											</div>
+											</td>
+											<td>Margaret Hamilton</td>
+											<td>mhamilton@marlabs.com</td>
+										</tr>
+										<tr>
+											<td class="text-center">
+											<div class="ma-checkbox inline">
+											<input id="chk_user4" type="checkbox" class="needsclick">
+											<label for="chk_user4"> </label>
+											</div>
+											</td>
+											<td>Joan Clarke</td>
+											<td>jaonk@marlabs.com</td>
+										</tr>
+									</tbody>
+								</table>
+								</div>
+				  
+				  
+								
+							
+							 
+							 
+								
+							</div>
+						</div>
+						
+						
+					 
+					 <hr/>
+					  <div class="row">
+						<div class="col-md-12">
+							<h4>How would you like to assign any remaining documents?</h4>
+							<div class="ma-radio">
+								<input type="radio" name="assign_remaning_doc" id="asn1" >
+								<label for="asn1">Continue to distribute even if limits are met</label>
+							</div>
+							<div class="ma-radio">
+								<input type="radio" name="assign_remaning_doc" id="asn2" >
+								<label for="asn2">Leave unassigned and move to backlogs</label>
+							</div>
+							<div class="ma-radio">
+								<input type="radio" name="assign_remaning_doc" id="asn3" >
+								<label for="asn3">Select reviewers to assign</label>
+							</div>
+						</div>
+						
+						
+					  </div> <hr/>
+					 <div class="xs-mt-20"></div>
+                     <div class="row">
+                        <div class="col-md-6 col-md-offset-6 text-right">
+                           
+                           <button class="btn btn-default"> &nbsp; Cancel</button> <button class="btn btn-primary"><i class="fa fa-check-circle"></i> &nbsp; Save</button>
+                        </div>
                      </div>
-					 <div class="xs-mb-20"></div>
                   </div>
                </section>
             </div>
@@ -302,9 +305,8 @@
       <script src="js/bootstrap-slider.js"></script>
       <script src="js/bootbox.min.js"></script>
       <script src="js/wow.min.js"></script>
-      <script type="text/javascript" src="https://rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
-      <script type="text/javascript" src="https://rawgit.com/wenzhixin/bootstrap-table/master/src/extensions/editable/bootstrap-table-editable.js"></script>
-      <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+      
+      <script src="js/bootstrap-multiselect.js"></script>
       <script src="js/uiScripts.js"></script>
    </body>
 </html>
