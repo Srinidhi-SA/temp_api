@@ -4,7 +4,7 @@ import { saveDocumentPageFlag, getOcrProjectsList } from '../../../actions/ocrAc
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
-import { OcrProjectUpload } from './OcrProjectUpload';
+import { OcrCreateProject } from './OcrCreateProject';
 import { STATIC_URL } from '../../../helpers/env';
 
 @connect((store) => {
@@ -64,7 +64,7 @@ export class OcrProjectScreen extends React.Component {
       )
       return (
          <div>
-            <OcrProjectUpload />
+            <OcrCreateProject />
             <div class="table-responsive">
                <table class="table table-condensed table-hover cst_table ">
                   <thead>

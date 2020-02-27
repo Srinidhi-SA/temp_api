@@ -14,6 +14,7 @@ import {API} from "../../../helpers/env"
   return {
     login_response: store.login.login_response,
     OcrDataList: store.ocr.OcrDataList,
+    documentFlag: store.ocr.documentFlag,
   };
 })
 
@@ -23,7 +24,9 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
     this.state={
       checkedList:[],
-      showRecognizePopup:false
+      showRecognizePopup:false,
+      recognized:false,
+      loader:false,     
     }
   }
 
@@ -91,12 +94,16 @@ export class OcrTable extends React.Component {
       var postData={
         'slug':this.state.checkedList
       }
-    this.setState({showRecognizePopup:true})
+    this.setState({showRecognizePopup:true,loader:true})
     return fetch(API + '/ocr/ocrimage/extract/',{
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
+    }).then(response => response.json()).then(json => {
+      if (json.message === "SUCCESS")
+        this.setState({ loader: false,recognized:true })
     })
+
   }
 
   closePopup(){
@@ -109,6 +116,7 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
   render() {
+    
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
@@ -148,8 +156,8 @@ export class OcrTable extends React.Component {
             </Modal.Body>
             <Modal.Footer>
               <div id="resetMsg"></div>
-              <Button id="dataCloseBtn"  onHide={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-              <Button id="loadDataBtn" bsStyle="primary">Proceed</Button>
+              <Button id="dataCloseBtn"  onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
+              <Button id="loadDataBtn"  bsStyle="primary">Proceed</Button>
             </Modal.Footer>
           </Modal>
   </div>)
@@ -187,7 +195,7 @@ export class OcrTable extends React.Component {
                 <div class="form-inline">
                   <OcrUpload/>
                   <div class="form-group xs-mr-5">
-                    <input type="text" id="search" class="form-control btn-rounded" onChange={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>   
+                    <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>   
                   </div>
                   <Button onClick={this.handleRecognise}>Recognize</Button>
                   <button class="btn btn-default btn-rounded disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>             
@@ -195,7 +203,9 @@ export class OcrTable extends React.Component {
             </div>
           </div>
           <div className="table-responsive noSwipe xs-pb-10">
-            <table className="tablesorter table table-condensed table-hover cst_table ocrTable">
+
+               {/* Instead of documentFlag add new flag and use  to show either table or empty panel for */}
+            {this.props.documentFlag?(<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
               <thead>
                 <tr>
                   <th></th>
@@ -238,7 +248,21 @@ export class OcrTable extends React.Component {
               <tbody className="no-border-x">
                 {OcrTableHtml}
               </tbody>
-            </table>
+            </table>):<div class="panel">
+			 
+       <div class="panel-body">
+         <div class="xs-mt-3 xs-mb-3 text-center">
+          
+         <div class="icon-container">
+           <div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
+           <span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
+         </div>
+          
+          
+         </div>
+       </div>
+       </div>
+       }
               {paginationTag}
               {ShowModel}
           </div>

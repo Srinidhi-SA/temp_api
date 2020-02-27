@@ -12,7 +12,7 @@ import { getOcrProjectsList,storeProjectSearchElem } from '../../../actions/ocrA
   };
 })
 
-export class OcrProjectUpload extends React.Component {
+export class OcrCreateProject extends React.Component {
   constructor(props) {
     super(props);
     this.props.dispatch(close());
@@ -93,7 +93,7 @@ export class OcrProjectUpload extends React.Component {
               <button id="btn_ceate_project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
               <span className="search-wrapper">
                <div class="form-group xs-mr-5">
-                <input type="text" id="search" class="form-control btn-rounded "  onChange={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
+                <input type="text" id="search" class="form-control btn-rounded "  onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
                         <button className="close-icon"  style={{position:"absolute",left:'173px',top:'7px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
                         </div>
                 </span>
@@ -141,7 +141,7 @@ export class OcrProjectUpload extends React.Component {
               <Modal.Footer>
                 <div id="resetMsg"></div>
                 <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
-                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Submit</Button>
+                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
               </Modal.Footer>
             </Modal>
           </div>
