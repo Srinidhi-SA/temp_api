@@ -183,7 +183,7 @@ export class OcrTable extends React.Component {
                 <div class="form-inline">
                   <OcrUpload/>
                   <div class="form-group xs-mr-5">
-                    <input type="text" id="search" class="form-control btn-rounded" onChange={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>   
+                    <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>   
                   </div>
                   <Button onClick={this.handleRecognise}>Recognize</Button>
                   <button class="btn btn-default btn-rounded disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>             
