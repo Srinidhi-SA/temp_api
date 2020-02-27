@@ -166,13 +166,10 @@ export class OcrTable extends React.Component {
         <div>
           <div class="row">
             <div class="col-sm-6">
-                {/* <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">10 <br></br><small class="text-primary">PROJECTS</small></h4>
-                <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">30 <br></br><small class="text-primary">DOCUMENETS</small></h4>
-                <h4 class="xs-mt-0 inline-block box-shadow">15 <br></br><small class="text-primary">REVIEWERS</small></h4>        
                 <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="create_ocr_project.html"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+                <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
                 <li class="breadcrumb-item active"><a href="#">FormReturn OMR</a></li>
-                </ol> */}					
+                </ol> 					
 						</div>
             <div class="col-sm-6 text-right">
                 <div class="form-inline">

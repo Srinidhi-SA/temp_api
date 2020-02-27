@@ -62,11 +62,6 @@ export class OcrProject extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
-            {/* <div class="row">
-            <div class="col-md-12">
-            <BreadCrumb parameters={breadCrumbDetails}/>
-            </div>
-            </div> */}
             {renderComponents}
             </div>
           </section>
