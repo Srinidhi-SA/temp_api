@@ -38,25 +38,14 @@ export class OcrAddUser extends React.Component{
     }
     submitNewUserDetails(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        let paswdFormat=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
-        if(Object.keys(this.props.newUserDetails).length === 0){
-            $("#resetMsg")[0].innerText = "Please enter details"
-        }else if($("#first_name")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Firstname"
-        }else if($("#last_name")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Lastname"
-        }else if($("#username")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Username"
-        }else if($("#email")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Email"
-        }else if($("#email")[0].value != "" && !mailFormat.test($("#email")[0].value)){
-            $("#resetMsg")[0].innerText = "Invalid Email"
-        }else if($("#password1")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Password"
-        }else if($("#password1")[0].value != "" && !paswdFormat.test($("#password1")[0].value)){
+        let paswdFormat=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,15}$/;
+        
+        if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" || $("#password1")[0].value === "" || $("#password2")[0].value === ""){
+            $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+        }else if(!mailFormat.test($("#email")[0].value)){
+            $("#resetMsg")[0].innerText = "Invalid Email Format"
+        }else if(!paswdFormat.test($("#password1")[0].value)){
             $("#resetMsg")[0].innerText = "Password must contain atleast 1 number and a special character"
-        }else if($("#password2")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Please Confirm Password"
         }else if($("#password1")[0].value != $("#password2")[0].value){
             $("#resetMsg")[0].innerText = "Password and Confirm Passwords doesnot match"
         }else{
@@ -69,15 +58,13 @@ export class OcrAddUser extends React.Component{
         let name=e.target.name;
         let value = e.target.value;
         if(name==="reviewer_type")
-        this.props.dispatch(saveNewUserProfileDetails(name,parseFloat(value)));
+            this.props.dispatch(saveNewUserProfileDetails(name,parseFloat(value)));
         else
-        this.props.dispatch(saveNewUserProfileDetails(name,value));
+            this.props.dispatch(saveNewUserProfileDetails(name,value));
     }
     submitNewUserStatus(e){
-        if($("#reviewer_type")[0].value === "none"){
-            $("#resetMsg")[0].innerText = "Please select Role"
-        }else if($("#is_active")[0].value === "none"){
-            $("#resetMsg")[0].innerText = "Please select Status"
+        if($("#reviewer_type")[0].value === "none" || $("#is_active")[0].value === "none"){
+            $("#resetMsg")[0].innerText = "Please select mandatory fields"
         }else{
             $("#resetMsg")[0].innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true));
@@ -90,10 +77,10 @@ export class OcrAddUser extends React.Component{
             return(
             <div className="row">
                 <div className="col-md-8">
-                    <h4>Manage Users</h4>
+                    <h4>Manage users</h4>
                 </div>
                 <div className="col-md-1 ocrAddUser">
-                    <a className="btn btn-primary" onClick={this.openAddUserPopup.bind(this)}>
+                    <a className="btn btn-info" onClick={this.openAddUserPopup.bind(this)}>
                         <i class="fa fa-user-plus fa-lg"></i>
                     </a>
                 </div>

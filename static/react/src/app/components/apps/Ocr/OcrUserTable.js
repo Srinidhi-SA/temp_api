@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
-import {ToggleButton} from "primereact/togglebutton"
+import {ToggleButton} from "primereact/togglebutton";
 import store from "../../../store";
-import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, closeEditUserModalAction, getReviewersListAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction} from "../../../actions/ocrActions";
+import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, closeEditUserModalAction, getReviewersListAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, activateOcrUserAction, deActivateOcrUserAction} from "../../../actions/ocrActions";
 import { statusMessages } from "../../../helpers/helper";
 import { Checkbox } from "primereact/checkbox";
 
@@ -64,13 +64,15 @@ export class OcrUserTable extends React.Component{
         if(this.props.selectedOcrUsers.length <= 0){
             bootbox.alert(statusMessages("warning", "Please select users", "small_mascot"));
         }else{
-            switch(e.target.value){
+            switch(e.target.id){
                 case "delete":
-                        this.props.dispatch(deleteOcrUserAction(this.props.selectedOcrUsers))
+                        this.props.dispatch(deleteOcrUserAction(this.props.selectedOcrUsers));
                     break;
                 case "activate":
+                    this.props.dispatch(activateOcrUserAction(this.props.selectedOcrUsers));
                     break;
                 case "deactivate":
+                    this.props.dispatch(deActivateOcrUserAction(this.props.selectedOcrUsers));
                     break;
                 case "edit":
                         let selUserDetails = ""
@@ -100,15 +102,9 @@ export class OcrUserTable extends React.Component{
     }
     submitEditedUserDetails(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if($("#first_name")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Firstname"
-        }else if($("#last_name")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Lastname"
-        }else if($("#username")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Username"
-        }else if($("#email")[0].value === ""){
-            $("#resetMsg")[0].innerText = "Enter Email"
-        }else if($("#email")[0].value != "" && !mailFormat.test($("#email")[0].value)){
+        if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" || $("#reviewer_type")[0].value === "none" || $("#is_active")[0].value === "none"){
+            $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+        }else if(!mailFormat.test($("#email")[0].value)){
             $("#resetMsg")[0].innerText = "Invalid Email"
         }else{
             $("#resetMsg")[0].innerText = ""
@@ -137,13 +133,13 @@ export class OcrUserTable extends React.Component{
                                 return (
                                     <tr>
                                         <td><Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.saveSelectedUser.bind(this)} checked={this.props.selectedOcrUsers.includes(item.ocr_profile.slug)}></Checkbox></td>
-                                        <td onClick={this.openEditUserModal.bind(this,item)}>{item.first_name}</td>
+                                        <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c"}}>{item.first_name}</td>
                                         <td>{item.last_name}</td>
                                         <td>{item.email}</td>
                                         <td>{item.ocr_profile.reviewer_type}</td>
-                                        <td>{item.date_joined}</td>
+                                        <td>{item.date_joined.slice(0,10)}</td>
                                         <td>{item.last_login}</td>
-                                        <td><ToggleButton className="userStatusBtn" checked={item.ocr_profile.active} onLabel="Active" offLabel="Inactive"/></td>
+                                        <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
                                     </tr>
                                 )}
                                 else{ return "" }
@@ -153,23 +149,34 @@ export class OcrUserTable extends React.Component{
                 </table>
         }
         return(
-            <div className="ocrUserTable">
-                <div className="row tableActions">
-                    <div className="actionOcrUser col-md-1">
-                        <select name="actionType" className="form-control" onChange={this.selectActiontype.bind(this)}>
-                            <option value="none" id="none" >select</option>
-                            <option value="activate" id="activate">Activate</option>
-                            <option value="deactivate" id="deactivate">Deactivate</option>
-                            <option value="delete" id="delete">Delete</option>
-                            <option value="edit" id="edit">Edit</option>
-                        </select>
+            <div>
+                <div className="row">
+                    <div className="col-md-8">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="javascript:;">All</a></li>
+                            <li><a href="javascript:;">Admin</a></li>
+                            <li><a href="javascript:;">Superuser</a></li>
+                            <li><a href="javascript:;">Reviewer L1</a></li>
+                            <li><a href="javascript:;">Reviewer L2</a></li>
+                        </ul>
                     </div>
-                    <div className="pull-right">
-                        <input type="text" id="searchOcrUser" className="form-control btn-rounded" placeholder="Search User..."/>
+                    <div className="col-md-4">
+                        <div className="btn-group actionOcrUser">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span class="caret"></span></button>
+                            <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                                <li><a name="actionType" id="activate" onClick={this.selectActiontype.bind(this)}><i class="fa fa-plus-circle text-primary"></i> Activate</a></li>
+                                <li><a name="actionType" id="deactivate" onClick={this.selectActiontype.bind(this)}><i class="fa fa-minus-circle text-warning"></i> Deactivate</a></li>
+                                <li><a name="actionType" id="delete" onClick={this.selectActiontype.bind(this)}><i class="fa fa-trash text-danger"></i> Delete</a></li>
+                                <li><a name="actionType" id="edit" onClick={this.selectActiontype.bind(this)}><i class="fa fa-pencil-square-o text-secondary"></i> Edit</a></li>
+                            </ul>
+                        </div>
+                        <div className="pull-right searchOcrUser">
+                            <input type="text" className="form-control btn-rounded" placeholder="Search User..."/>
+                        </div>
                     </div>
                 </div>
                 <div className = "table-responsive box-shadow">
-                    {manageUsersTable}
+                        {manageUsersTable}
                 </div>
                 <Modal show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
                     <Modal.Header>

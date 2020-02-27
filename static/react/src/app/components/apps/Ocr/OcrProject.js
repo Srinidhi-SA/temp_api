@@ -40,7 +40,7 @@ export class OcrProject extends React.Component {
                 <li class="active"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-book fa-lg"></i> Projects</a></li>
                 <li class=""><a href="#"><i class="fa fa-sliders fa-lg"></i> Configure</a></li>
                 <li class=""><a href="#"><i class="fa fa-linode fa-lg"></i> Reviewers</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Manage Users</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Users</a></li>
               </ul>
             </div>
             <div class="container-fluid">

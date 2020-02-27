@@ -286,8 +286,8 @@ function saveAllOcrUsersList(json){
 export function getReviewersListAction(){
 	return (dispatch) => {
 		return getReviewersListApi(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200 && json.created){
-				debugger;
+			if(response.status === 200){
+				console.log(json)
 			}else{
 				console.log("Failed")
 			}
@@ -390,7 +390,7 @@ export function deleteOcrUserAction(userNames){
 			if(response.status === 200 && json.deleted){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
 			}else if(response.status === 200 && !json.deleted){
-				bootbox.alert(statusMessages("warning",json.message,"small_mascot"));
+				bootbox.alert(statusMessages("warning","Unable to delete","small_mascot"));
 			}else{
 				console.log("Failed")
 			}
@@ -404,6 +404,49 @@ function deleteOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
+// activate 
+export function activateOcrUserAction(userNames){
+	return (dispatch) => {
+		return activateOcrActionAPI(userNames,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.deleted){
+				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
+			}else if(response.status === 200 && !json.deleted){
+				bootbox.alert(statusMessages("warning","Unable activate users","small_mascot"));
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function activateOcrActionAPI(data,token){
+	return fetch(API+"/ocr/user/",{
+		method : "post",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data)
+	}).then(response => Promise.all([response,response.json()]));
+}
+//deactivate
+export function deActivateOcrUserAction(userNames){
+	return (dispatch) => {
+		return deActivateOcrActionAPI(userNames,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.deleted){
+				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
+			}else if(response.status === 200 && !json.deleted){
+				bootbox.alert(statusMessages("warning","Unable deactivate users","small_mascot"));
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function deActivateOcrActionAPI(data,token){
+	return fetch(API+"/ocr/user/",{
+		method : "post",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data)
+	}).then(response => Promise.all([response,response.json()]));
+}
+//edit user
 export function openEditUserModalAction(flag,userSlug,userDt){
 	let edtDet = store.getState().ocr.editedUserDetails;
 	edtDet.first_name = userDt.first_name;
@@ -422,7 +465,6 @@ export function closeEditUserModalAction(flag){
 		type:"CLOSE_EDIT_USER_POPUP",flag
 	}
 }
-//edit
 export function enableEditingUserAction(flag){
 	return {
 		type:"ENABLE_EDITING_USER",flag
