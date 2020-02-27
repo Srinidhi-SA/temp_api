@@ -20823,7 +20823,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
     border-color: rgb(153, 217, 168);
     box-shadow: rgb(153, 217, 168) 0px 0px 0px 8px inset;
 }
-
+.ocr_configure { background:#FFFFFF; border-radius:0 0 10px 10px }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
