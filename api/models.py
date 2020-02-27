@@ -2722,7 +2722,13 @@ class StockDataset(models.Model):
 
     def create(self):
         from api.tasks import stock_sense_crawl
-        stock_sense_crawl(object_slug=self.slug)
+        # stock_sense_crawl(object_slug=self.slug)
+        self.stock_sense_crawl()
+        self.add_to_job()
+
+    def stock_sense_crawl(self):
+        self.generate_meta_data()
+        self.save()
 
     def crawl_news_data(self):
 
