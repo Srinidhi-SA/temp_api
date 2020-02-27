@@ -13,27 +13,26 @@ export class BreadCrumb extends React.Component {
       let breadcrumb = data.map((page, i) => {
         if (page.url) {
           return (
-              <li key = {i}>
+            <ol key = {i} className="breadcrumb">
+              <li>
                 <NavLink to={page.url}>{page.name}</NavLink>
               </li>
+            </ol>
           );
         } else {
           return (
-              <li key = {i}>
+            <ol key = {i} className="breadcrumb">
+              <li>
                 {page.name}
               </li>
+            </ol>
           );
         }
 
       });
 
       return (
-        <div>
-         <ol className="breadcrumb">
-        {breadcrumb}
-        </ol>
-        </div>
-
+        <div>{breadcrumb}</div>
       );
     }
   }

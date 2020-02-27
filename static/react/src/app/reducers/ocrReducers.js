@@ -22,6 +22,7 @@ export default function reducer(state = {
   filter_assignee: '',
   checked_list: '',
   search_document:'',
+  search_project:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -171,7 +172,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png"
+          imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
@@ -221,6 +222,14 @@ export default function reducer(state = {
         return {
           ...state,
           search_document:action.elem
+        }
+      }
+      break;
+      case "SEARCH_OCR_PROJECT":
+      {
+        return {
+          ...state,
+          search_project:action.elem
         }
       }
       break;

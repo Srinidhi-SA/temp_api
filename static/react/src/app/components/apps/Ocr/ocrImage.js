@@ -1,31 +1,32 @@
-import React from "react";
+import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag } from "../../../actions/ocrActions";
+import { saveImagePageFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
-import { Scrollbars } from "react-custom-scrollbars";
-import { store } from "../../../store";
+import { Scrollbars } from 'react-custom-scrollbars';
+import { store } from '../../../store';
 
-@connect(store => {
+@connect((store) => {
   return {
-    imagePath: store.ocr.imagePath
+    imagePath: store.ocr.imagePath,
   };
 })
+
 export class OcrImage extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
       text: "test",
-      imageDetail: ""
-    };
+      imageDetail: "",
+    }
   }
 
   componentDidMount() {
     var OriginalImg = document.getElementById("originalOcrImg");
-    OriginalImg.src =
-      "https://madvisor-dev.marlabsai.com/media/ocrData/ocr.jpeg";
+    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/Invoice_page_i0CBBXq.jpg";
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     var OcrImg = document.getElementById("ocrImg");
@@ -41,17 +42,17 @@ export class OcrImage extends React.Component {
       ctx.drawImage(OcrImg, 0, 0, 700, 800);
     };
     $('[data-toggle="popover"]').popover({
-      placement: "top"
+      placement: 'top'
     });
   }
-  handleCoords = event => {
+  handleCoords = (event) => {
     let canvasElem = document.getElementById("myCanvas");
     var ctx = canvasElem.getContext("2d");
     let canvasrect = canvasElem.getBoundingClientRect();
     let canvasX = event.clientX - canvasrect.left;
     let canvasY = event.clientY - canvasrect.top;
     console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
-    this.updateText(canvasX, canvasY);
+    this.extractText(canvasX, canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
     // ctx.stroke();
@@ -60,24 +61,22 @@ export class OcrImage extends React.Component {
     let x = event.clientX - rect.left;
     let y = event.clientY - rect.top - 40;
     var popOver = document.getElementById("popoverOcr");
-    popOver.setAttribute(
-      "style",
-      `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`
-    );
-  };
+    popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
+
+  }
   handleImagePageFlag = () => {
-    window.history.go(-1);
-  };
+    window.history.go(-1)
+  }
   closePopOver = () => {
-    document.getElementById("popoverOcr").style.display = "none";
-  };
+    document.getElementById("popoverOcr").style.display = 'none';
+  }
   // zoomIn=()=>{
   //   var img = document.getElementById("myCanvas");
   //   var currWidth = img.clientWidth;
   //   if(currWidth >= 1500) return false;
   //    else{
   //       img.style.width = (currWidth + 100) + "px";
-  //   }
+  //   } 
   // }
   // zoomOut=()=>{
   //   var img = document.getElementById("originalOcrImg");
@@ -85,53 +84,50 @@ export class OcrImage extends React.Component {
   //   if(currWidth <= 700) return false;
   //    else{
   //       img.style.width = (currWidth - 100) + "px";
-  //   }
+  //   } 
   // }
-  imageScroll = e => {
+  imageScroll = (e) => {
     $("#originalImgDiv div").attr("id", "scrollOriginal");
     $("#ocrScroll div").attr("id", "scrollOcr");
     document.getElementById("scrollOriginal").scrollLeft = e.target.scrollLeft;
     document.getElementById("scrollOcr").scrollLeft = e.target.scrollLeft;
-  };
+  }
 
-  getHeader = token => {
+  getHeader = (token) => {
     return {
-      Authorization: token,
-      "Content-Type": "application/json"
-    };
-  };
+      'Authorization': token,
+      'Content-Type': 'application/json'
+    }
+  }
 
-  updateText = (x, y) => {
-    return fetch(API + "/ocr/ocrimage/get_word/", {
-      method: "post",
+  extractText = (x, y) => {
+    var slug= "img-uw2ii50xd9";
+    return fetch(API + '/ocr/ocrimage/get_word/', {
+      method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ slug: "img-uw2ii50xd9", x: x, y: y })
-    })
-      .then(response => response.json())
+      body: JSON.stringify({ "slug": slug, "x": x, "y": y })
+    }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data });
-        this.setState({ text: data.word });
+        this.setState({ imageDetail: data })
+        this.setState({ text: data.word })
         document.getElementById("ocrText").value = this.state.text;
       });
     // .catch(function (error) {
     //   bootbox.alert("coordinates are not correct")
     // });
-  };
+
+
+  }
   render() {
     return (
       <div>
         <div className="row">
           <div className="col-sm-6">
-            <div style={{ backgroundColor: "#fff", padding: 15 }}>
+            <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
-              <Scrollbars
-                style={{ height: 850 }}
-                id="originalImgDiv"
-                onScroll={this.imageScroll}
-              >
+              <Scrollbars style={{ height: 850 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
-                  <img
-                    style={{ height: 800, width: 700 }}
+                  <img style={{ height: 800, width: 700 }}
                     id="originalOcrImg"
                   />
                 </div>
@@ -139,13 +135,9 @@ export class OcrImage extends React.Component {
             </div>
           </div>
           <div className="col-sm-6">
-            <div style={{ backgroundColor: "#fff", padding: 15 }}>
+            <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">OCR</div>
-              <Scrollbars
-                id="ocrScroll"
-                style={{ height: 850 }}
-                onScroll={this.imageScroll}
-              >
+              <Scrollbars id="ocrScroll" style={{ height: 850 }} onScroll={this.imageScroll}>
                 <div id="popDiv">
                   {/* <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
                 <span className="ocrZoom" onClick={this.zoomIn}><i class="fa fa-plus"></i></span>
@@ -157,105 +149,47 @@ export class OcrImage extends React.Component {
                     height="800"
                     width="700"
                   ></canvas>
-                  <img
-                    style={{ height: 800, width: 700, display: "none" }}
+                  <img style={{ height: 800, width: 700, display: 'none' }}
                     id="ocrImg"
                   />
                 </div>
               </Scrollbars>
-              <div
-                class="popover fade top in"
-                role="tooltip"
-                id="popoverOcr"
-                style={{ display: "none" }}
-              >
-                <div class="arrow" style={{ left: "50%" }}></div>
-                <h3 class="popover-title">
-                  Replace Text
-                  <span
-                    onClick={this.closePopOver}
-                    style={{ float: "right", cursor: "pointer" }}
-                  >
-                    <i class="fa fa-close"></i>
-                  </span>
+              <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
+                <div class="arrow" style={{ left: '91%' }}></div>
+                <h3 class="popover-title">Replace Text
+                <span onClick={this.closePopOver} style={{ float: 'right', cursor: 'pointer' }}><i class="fa fa-close"></i></span>
                 </h3>
                 <div class="popover-content">
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input
-                        type="text"
-                        id="ocrText"
-                        placeholder="Enter text.."
-                      />
+                      <input type="text" id="ocrText" placeholder="Enter text.." />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
-                      <button
-                        className="dropdown-toggle"
-                        data-toggle="dropdown"
-                        aria-expanded="true"
-                        style={{ marginRight: 2 }}
-                      >
+                      <button onClick={this.extractText} ><i class="fa fa-check"></i></button>
+                      <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
-                      <button onClick={this.updateText}>
-                        <i class="fa fa-check"></i>
-                      </button>
-
-                      {/* <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-check"></i>
-								<span class="caret"></span></button> */}
-                      {/* <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                      <i class="fa fa-sort-down"></i>
-                      </span> */}
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a
-                            href="javascript::"
-                            class="btn btn-warning btn-block"
-                          >
-                            <i class="fa fa-plus"></i> Add Fields
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" class="btn btn-block">
-                            <i class="fa fa-ban"></i> Not Clear
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            class="btn btn-block"
-                            data-toggle="modal"
-                            data-target="#modal_badscan"
-                          >
-                            <i class="fa fa-exclamation"></i> Bad Scan
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" class="btn btn-block">
-                            <i class="fa fa-external-link"></i> Properties
-                          </a>
-                        </li>
+                      <ul class="dropdown-menu" style={{left: -110}}>
+                        <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
         <div className="row">
-          <Button
-            bsStyle="primary"
-            onClick={this.handleImagePageFlag}
-            style={{ margin: 20 }}
-          >
-            <i class="fa fa-close"></i> close
-          </Button>
+          <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
         </div>
       </div>
-    );
+    )
   }
 
   componentWillUnmount = () => {
     this.props.dispatch(saveImagePageFlag(false));
-  };
+  }
+
 }
