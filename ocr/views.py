@@ -199,9 +199,8 @@ class OCRUserView(viewsets.ModelViewSet):
         """Delete OCR User"""
         if request.method == 'DELETE':
             username_list = request.data['username']
-            print(username_list)
+            print("Deleting Users: ",username_list)
             for user in username_list:
-                print(user)
                 try:
                     user_object = User.objects.get(username=user)
                     user_object.delete()
@@ -278,6 +277,31 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             "ocr_profile": serializer.data
         })
 
+    @list_route(methods=['post'])
+    def edit_status(self, request, *args, **kwargs):
+        try:
+            username_list = request.data['username']
+            status = request.data.get("is_active")
+        except:
+            raise KeyError('Parameters missing.')
+
+        for user in username_list:
+            try:
+                user = User.objects.get(username=user)
+                ocr_profile = OCRUserProfile.objects.get(ocr_user=user)
+                ocr_profile.is_active = status
+                ocr_profile.save()
+            except Exception as err:
+                print(err)
+                return JsonResponse({
+                    "message": "Profile update unsuccessfull.",
+                    "updated": False,
+                    "error": str(err)
+                })
+        return JsonResponse({
+            "message": "Profile update successfully.",
+            "updated": True,
+        })
 
 # -------------------------------------------------------------------------------
 
