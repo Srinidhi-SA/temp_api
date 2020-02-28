@@ -1,106 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
-import random
-import tkinter as tk
-from tkinter import ttk
-from tkinter import *
-import numpy as np
-from tkinter import messagebox
-from PIL import ImageTk, Image
-import pandas as pd
-import json
-
-from scipy.spatial import distance
-import pandas as pd
-import numpy as np
-from matplotlib.patches import Polygon
-import matplotlib.pyplot as plt
-import networkx as nx
-from scipy import optimize as opt
-from sklearn.cluster import DBSCAN
-import cv2, os, sys, time, json, operator, requests
-from PIL import Image, ImageEnhance
-from PIL import Image as im
-# TODO: fix these duplicate imports
-from io import BytesIO
-from math import floor, ceil, sqrt
-from shutil import rmtree
-import pdf2image
-from IPython.display import Image as ImageforDisplay
-from scipy.ndimage import interpolation as inter
-from collections import OrderedDict
-from shutil import copy2, rmtree
-import re  # define upper frame
-
 from ocr.ITE.master_helper import *
+import os
+import simplejson as json
 
-# root = Tk()
-# frame = Frame(root)
+import matplotlib as mpl
 
-'''
-image = Image.open('foo.png')
-image = image.resize((700, 800), Image.ANTIALIAS)
-img2 = ImageTk.PhotoImage(image)
-
-window = tk.Toplevel()
-image = Image.open('img2.jpeg')
-image = image.resize((700, 800), Image.ANTIALIAS)
-img = ImageTk.PhotoImage(image)
-'''
-# path = os.getcwd()
-# print(path)
-
-
-# image_name_with_path = os.getcwd() +'/image_1.jpeg'
-##########################################################################################################
-
-
-# def text_from_Azure_API(image_name_with_path):
-#         # For Azure OCR API.
-#     subscription_key = "c0ce588e9b14463d9836d4335156c71f"
-#     vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/"
-#     text_recognition_url = vision_base_url + "read/core/asyncBatchAnalyze"
-#
-#     try:
-#
-#
-#         image_data = open(image_name_with_path, "rb").read()
-#
-#     except:
-#
-#
-#         image_data = open(image_name_with_path, "rb").read()
-#
-#
-#
-#     headers = {'Ocp-Apim-Subscription-Key': subscription_key,
-#                    'Content-Type': 'application/octet-stream'}
-#
-#     response = requests.post(text_recognition_url, headers=headers, data=image_data)
-#     response.raise_for_status()
-#
-#     analysis = {}
-#     poll = True
-#     while (poll):
-#         response_final = requests.get(response.headers["Operation-Location"],
-#                                           headers=headers)
-#         analysis = response_final.json()
-# #         print(analysis)
-#         time.sleep(1)
-#         if ("recognitionResults" in analysis):    poll = False
-#         if ("status" in analysis and analysis['status'] == 'Failed'):    poll = False
-#
-#     return analysis
-
-##########################################################################################################
-'''GOOGLE API'''
-
-
-##########################################################################################################
-# !export GOOGLE_APPLICATION_CREDENTIALS="/home/athira/Downloads/My_ProjectOCR_2427.json"
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/home/athira/Downloads/My_ProjectOCR_2427.json"
+if os.environ.get('DISPLAY', '') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 
 
 def euclidean_distance(plot1, plot2):
@@ -118,12 +29,7 @@ def detect_text(path):
     image = vision.types.Image(content=content)
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    # print('Texts:')
-    # for text in texts:
-    #     print('\n"{}"'.format(text.description))
-    #     vertices = (['({},{})'.format(vertex.x, vertex.y)
-    #                  for vertex in text.bounding_poly.vertices])
-    #     print('bounds: {}'.format(','.join(vertices)))
+
     return response
 
 
@@ -146,7 +52,7 @@ def fun1(analysis, google_response):
     return response_dict, d
 
 
-########################################################################################################3
+########################################################################################################
 """
 function to find the centroid of the points
 """
@@ -182,8 +88,8 @@ def fun2(response_dict, d, image_name):
                     euclidean_distance(response_dict[list(response_dict.keys())[i]][2], d[list(d.keys())[j]][2]) < 7):
                 # print("word found")
                 l = l + 1
-                plt.scatter([response_dict[list(response_dict.keys())[i]][2][0]],
-                            [response_dict[list(response_dict.keys())[i]][2][1]], c='y', s=15)
+                # plt.scatter([response_dict[list(response_dict.keys())[i]][2][0]],
+                #             [response_dict[list(response_dict.keys())[i]][2][1]], c='y', s=15)
                 temp = list(d[list(d.keys())[j]])
                 temp[3] = "True"
                 d[list(d.keys())[j]] = temp
@@ -224,7 +130,7 @@ def write_to_Json(analysis, image_name):
 def write_to_json2(data, image_name, image_slug):
     image_path1 = os.getcwd() + '/ocr/ITE/ir/' + image_slug + '_original_image.png'
 
-    ImageforDisplay(filename=image_path1)
+    # ImageforDisplay(filename=image_path1)
     im1 = Image.open(image_path1)
     width, height = im1.size
     print(width, height)

@@ -5,27 +5,9 @@
 
 
 import copy
-from scipy.spatial import distance
-import pandas as pd
-import numpy as np
-from matplotlib.patches import Polygon
-import matplotlib.pyplot as plt
-import networkx as nx
-from scipy import optimize as opt
-from sklearn.cluster import DBSCAN
-import cv2, os, sys, time, json, operator, requests
-from PIL import Image, ImageEnhance
-from PIL import Image as im                            # TODO: fix these duplicate imports. #
-from io import BytesIO
-from math import floor, ceil, sqrt
-from shutil import rmtree
-import pdf2image
-from IPython.display import Image as ImageforDisplay
-from scipy.ndimage import interpolation as inter
-from collections import OrderedDict
-from shutil import copy2, rmtree
-import PIL
 import re
+
+import pandas as pd
 
 
 # In[12]:

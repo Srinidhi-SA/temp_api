@@ -1,6 +1,7 @@
 from ocr.ITE.Functions import *
 from PIL import Image
-import json
+import simplejson as json
+from io import BytesIO
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 
@@ -40,9 +41,6 @@ def not_clear(act_point, word, data3):
 
     data3['b' + str(act_point)][1] = word  # word returned from UI
     data3['b' + str(act_point)][3] = 'Not_Sure'
-
-    with open('comparison (copy).json', 'w') as fp:
-        json.dump(data3, fp, sort_keys=True, indent=4)
 
     analysis_list.append(['b' + str(act_point), {'boundingBox': data3['b' + str(act_point)][0], 'text': word}])
 

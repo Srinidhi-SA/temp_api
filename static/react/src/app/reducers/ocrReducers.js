@@ -2,8 +2,9 @@
 export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
+  OcrProjectList:"",
   imageFlag: false,
-  imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png",
+  imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -15,11 +16,13 @@ export default function reducer(state = {
   s3FileFetchErrorMsg:"",
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
-  imageFlag: false,
+  documentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
-  checked_list: ''
+  checked_list: '',
+  search_document:'',
+  search_project:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -37,15 +40,28 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;  
-    case "OCR_UPLOADS_LIST":
-    {
-      return {
-        ...state,
-        OcrDataList: action.data
+      break;
+      case "OCR_PROJECT_LIST":
+      {
+        return {
+          ...state,
+          OcrProjectList: action.data
+        }
       }
-    }
-    break;
+      break;
+      case "OCR_PROJECT_LIST_FAIL":
+      {
+      throw new Error("Unable to fetch projects list!!");
+      }
+      
+      case "OCR_UPLOADS_LIST":
+      {
+        return {
+          ...state,
+          OcrDataList: action.data
+        }
+      }
+      break;
     case "OCR_UPLOADS_LIST_FAIL":
     {
       throw new Error("Unable to fetch uploaded images list!!");
@@ -58,7 +74,15 @@ export default function reducer(state = {
         OcrDataList:action.data
       }
     }
-    break;
+      break;
+      case "SAVE_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          documentFlag: action.flag
+        }
+      }
+      break;
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -148,7 +172,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png"
+          imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
@@ -185,12 +209,27 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "UPDATE_CHECKLIST":
       {
         return {
           ...state,
           checked_list: action.list
+        }
+      }
+      break;
+      case "SEARCH_OCR_DOCUMENT":
+      {
+        return {
+          ...state,
+          search_document:action.elem
+        }
+      }
+      break;
+      case "SEARCH_OCR_PROJECT":
+      {
+        return {
+          ...state,
+          search_project:action.elem
         }
       }
       break;

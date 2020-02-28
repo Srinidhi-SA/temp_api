@@ -54,7 +54,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         }
         getFailedMsg(status) {
             if(status==FAILED){
-                bootbox.alert(statusMessages("error","Unable to create Modal. Please check your connection and try again.","small_mascot"));            
+                bootbox.alert(statusMessages("error","Unable to create Model. Please check your connection and try again.","small_mascot"));            
             }
             else
                 return;
