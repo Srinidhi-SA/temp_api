@@ -22513,16 +22513,15 @@ ul.ocrUploadTabs{
   height: 350px;
   padding:10px;
 }
-.ocrAddUser{
-  position: absolute;
-  margin-top: 35.5px;
-  margin-left: 65%;
+.userActions{
+  margin-right: -12px;
+  margin-left: -12px;
 }
-.searchOcrUser{
-  padding-right: 2px;
+.ocrAddUser{
+  padding-left: 55px;
 }
 .actionOcrUser{
-  margin-left: 28%
+  margin-left: 10px;
 }
 .noOcrUsers{
   height: 150px;

@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
 import {ToggleButton} from "primereact/togglebutton";
 import store from "../../../store";
-import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, closeEditUserModalAction, getReviewersListAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, activateOcrUserAction, deActivateOcrUserAction} from "../../../actions/ocrActions";
+import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, closeEditUserModalAction, getReviewersListAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag} from "../../../actions/ocrActions";
 import { statusMessages } from "../../../helpers/helper";
 import { Checkbox } from "primereact/checkbox";
+import { OcrAddUser } from "./OcrAddUser";
+import { STATIC_URL } from "../../../helpers/env.js";
 
 @connect((store) => {
   return {
@@ -20,7 +22,8 @@ import { Checkbox } from "primereact/checkbox";
     selUserSlug : store.ocr.selUserSlug,
     selUserDetails : store.ocr.selUserDetails,
     enableEditingFlag : store.ocr.enableEditingFlag,
-    editedUserDetails : store.ocr.editedUserDetails
+    editedUserDetails : store.ocr.editedUserDetails,
+    userTableLoaderFlag : store.ocr.userTableLoaderFlag,
   };
 })
 
@@ -30,8 +33,9 @@ export class OcrUserTable extends React.Component{
     }
 
     componentWillMount(){
-        this.props.dispatch(fetchAllOcrUsersAction())
-        this.props.dispatch(getReviewersListAction())
+        this.props.dispatch(setUserTableLoaderFlag(true));
+        this.props.dispatch(fetchAllOcrUsersAction());
+        this.props.dispatch(getReviewersListAction());
     }
     
     componentDidUpdate(){
@@ -50,6 +54,9 @@ export class OcrUserTable extends React.Component{
             $("#rtype")[0].classList.add("mandate")
             $("#iactive")[0].classList.add("mandate")
         }
+    }
+    openAddUserPopup(e){
+        this.props.dispatch(openAddUserPopup());
     }
 
     saveSelectedUser(e){
@@ -104,7 +111,8 @@ export class OcrUserTable extends React.Component{
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" || $("#reviewer_type")[0].value === "none" || $("#is_active")[0].value === "none"){
             $("#resetMsg")[0].innerText = "Please enter mandatory fields"
-        }else if(!mailFormat.test($("#email")[0].value)){
+        }
+        else if(!mailFormat.test($("#email")[0].value)){
             $("#resetMsg")[0].innerText = "Invalid Email"
         }else{
             $("#resetMsg")[0].innerText = ""
@@ -113,7 +121,11 @@ export class OcrUserTable extends React.Component{
     }
     render(){
         let manageUsersTable = ""
-        if(Object.keys(this.props.allOcrUsers).length === 0){
+        if(this.props.userTableLoaderFlag){
+            manageUsersTable = <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
+                                    <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                                </div>
+        }else if(Object.keys(this.props.allOcrUsers).length === 0){
             manageUsersTable = <div className="noOcrUsers">
                 <span>No Users Found<br/>Please Click on add icon to add users</span>
             </div>
@@ -132,7 +144,7 @@ export class OcrUserTable extends React.Component{
                             if(item.ocr_user){
                                 return (
                                     <tr>
-                                        <td><Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.saveSelectedUser.bind(this)} checked={this.props.selectedOcrUsers.includes(item.ocr_profile.slug)}></Checkbox></td>
+                                        <td><Checkbox id={item.ocr_profile.slug} value={item.username} onChange={this.saveSelectedUser.bind(this)} checked={this.props.selectedOcrUsers.includes(item.username)}></Checkbox></td>
                                         <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c"}}>{item.first_name}</td>
                                         <td>{item.last_name}</td>
                                         <td>{item.email}</td>
@@ -150,7 +162,10 @@ export class OcrUserTable extends React.Component{
         }
         return(
             <div>
-                <div className="row">
+                <div className="col-md-12">
+                        <h4>Manage users</h4>
+                    </div>
+                <div className="row userActions">
                     <div className="col-md-8">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="javascript:;">All</a></li>
@@ -160,7 +175,16 @@ export class OcrUserTable extends React.Component{
                             <li><a href="javascript:;">Reviewer L2</a></li>
                         </ul>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-1">
+                        <div className="btn-group ocrAddUser">
+                            <a className="btn btn-info" onClick={this.openAddUserPopup.bind(this)}>
+                                <i class="fa fa-user-plus fa-lg">
+                                    <OcrAddUser/>
+                                </i>
+                            </a>
+                        </div>
+                    </div>
+                    <div className="col-md-3">
                         <div className="btn-group actionOcrUser">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span class="caret"></span></button>
                             <ul role="menu" class="dropdown-menu dropdown-menu-right">

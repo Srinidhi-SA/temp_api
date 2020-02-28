@@ -277,12 +277,19 @@ export function closeAddUserPopup(){
 		type:"CLOSE_ADD_USER_POPUP"
 	}
 }
+//Loader for table
+export function setUserTableLoaderFlag(flag){
+	return {
+		type:"SET_USER_TABLE_LOADER_FLAG",flag
+	}
+} 
 //Fetch All OCR Users
 export function fetchAllOcrUsersAction(){
 	return (dispatch) => {
 		return fetchAllOcrUsersAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveAllOcrUsersList(json));
+				dispatch(setUserTableLoaderFlag(false));
 			}else{
 				console.log("Failed")
 			}
@@ -402,12 +409,13 @@ export function saveSelectedOcrUserList(curSelList){
 }
 //Delete User
 export function deleteOcrUserAction(userNames){
-	// let data = Object.assign({}, userNames);
-	let data = {"username":userNames[0]}
+	let data = {"username":userNames}
 	return (dispatch) => {
 		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.deleted){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
+				dispatch(fetchAllOcrUsersAction());
+				dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.deleted){
 				bootbox.alert(statusMessages("warning","Unable to delete","small_mascot"));
 			}else{
@@ -425,11 +433,14 @@ function deleteOcrActionAPI(data,token){
 }
 // activate 
 export function activateOcrUserAction(userNames){
+	let data = {"username":userNames,"is_active":"True"}
 	return (dispatch) => {
-		return activateOcrActionAPI(userNames,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200 && json.deleted){
+		return activateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.updated){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
-			}else if(response.status === 200 && !json.deleted){
+				dispatch(fetchAllOcrUsersAction());
+				dispatch(clearUserFlagAction());
+			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable activate users","small_mascot"));
 			}else{
 				console.log("Failed")
@@ -438,7 +449,7 @@ export function activateOcrUserAction(userNames){
 	}
 }
 function activateOcrActionAPI(data,token){
-	return fetch(API+"/ocr/user/",{
+	return fetch(API+"/ocr/userprofile/edit_status/",{
 		method : "post",
 		headers : getHeaderForJson(token),
 		body : JSON.stringify(data)
@@ -446,11 +457,14 @@ function activateOcrActionAPI(data,token){
 }
 //deactivate
 export function deActivateOcrUserAction(userNames){
+	let data = {"username":userNames,"is_active":"False"}
 	return (dispatch) => {
-		return deActivateOcrActionAPI(userNames,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200 && json.deleted){
+		return deActivateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.updated){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
-			}else if(response.status === 200 && !json.deleted){
+				dispatch(fetchAllOcrUsersAction());
+				dispatch(clearUserFlagAction());
+			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable deactivate users","small_mascot"));
 			}else{
 				console.log("Failed")
@@ -459,7 +473,7 @@ export function deActivateOcrUserAction(userNames){
 	}
 }
 function deActivateOcrActionAPI(data,token){
-	return fetch(API+"/ocr/user/",{
+	return fetch(API+"/ocr/userprofile/edit_status/",{
 		method : "post",
 		headers : getHeaderForJson(token),
 		body : JSON.stringify(data)
@@ -472,8 +486,8 @@ export function openEditUserModalAction(flag,userSlug,userDt){
 	edtDet.last_name = userDt.last_name;
 	edtDet.username = userDt.username;
 	edtDet.email = userDt.email;
-	edtDet.reviewer_type = userDt.reviewer_type;
-	edtDet.is_active = userDt.ocr_profile.active?"True":"False";
+	// edtDet.reviewer_type = userDt.reviewer_type;
+	// edtDet.is_active = userDt.ocr_profile.active?"True":"False";
 
 	return {
 		type:"OPEN_EDIT_USER_POPUP",flag,userSlug,userDt,edtDet
@@ -503,6 +517,7 @@ export function submitEditUserDetailsAction(editedUserDt){
 		return submitEditUserDetailsAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.created){
 				console.log("Success",json.message.username)
+				dispatch(fetchAllOcrUsersAction());
 			}else{
 				console.log("Failed")
 			}
@@ -510,12 +525,30 @@ export function submitEditUserDetailsAction(editedUserDt){
 	}
 }
 function submitEditUserDetailsAPI(data,token){
-	return fetch(API+"/ocr/",{
+	return fetch(API+"/ocr/user/edit/",{
 		method : "post",
 		headers : getHeader(token),
 		body : data,
 	}).then(response => Promise.all([response,response.json()]));
 }
+// export function submitEditUserDetailsAction(editedUserDt){
+// 	return (dispatch) => {
+// 		return submitEditUserDetailsAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+// 			if(response.status === 200 && json.created){
+// 				console.log("Success",json.message.username)
+// 			}else{
+// 				console.log("Failed")
+// 			}
+// 		})
+// 	}
+// }
+// function submitEditUserDetailsAPI(data,token){
+// 	return fetch(API+"/ocr/userprofile/",{
+// 		method : "put",
+// 		headers : getHeaderForJson(token),
+// 		body : JSON.stringify(data),
+// 	}).then(response => Promise.all([response,response.json()]));
+// }
 export function storeDocSearchElem(elem){
 	return{
 		type:"SEARCH_OCR_DOCUMENT",
@@ -528,3 +561,9 @@ export function storeProjectSearchElem(elem){
 		elem
 	}
 }
+export function clearUserFlagAction(){
+	return {
+		type : "CLEAR_USER_FLAG"
+	}
+}
+//Filter API-> /ocr/user/reviewer_list/?reviewerType_id=1   //1 is reviwers number get

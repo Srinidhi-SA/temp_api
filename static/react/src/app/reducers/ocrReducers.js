@@ -35,9 +35,11 @@ export default function reducer(state = {
   selUserDetails:{},
   enableEditingFlag:false,
   editedUserDetails : {},
+  userTableLoaderFlag : false,
 
   search_document:'',
   search_project:'',
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -235,7 +237,13 @@ export default function reducer(state = {
       case "CLOSE_ADD_USER_POPUP": {
         return {
           ...state,
-          addUserPopupFlag : false
+          addUserPopupFlag : false,
+          newUserDetails : {},
+          newUserProfileDetails : {},
+          ocrUserProfileFlag : false,
+          createUserLoaderFlag : false,
+          createUserFlag : false,
+          curUserSlug : "",
         }
       }
       break;
@@ -343,6 +351,22 @@ export default function reducer(state = {
         }
       }
       break;
+      case "CLEAR_USER_FLAG":
+      {
+        return{
+          ...state,
+          selectedOcrUsers : [],
+
+
+        }
+      }
+      break;
+      case "SET_USER_TABLE_LOADER_FLAG":{
+        return {
+          ...state,
+          userTableLoaderFlag : action.flag
+        }
+      }
   }
   return state
 }

@@ -24,9 +24,6 @@ export class OcrAddUser extends React.Component{
         super(props);
     }
 
-    openAddUserPopup(e){
-        this.props.dispatch(openAddUserPopup());
-    }
     closeAddUserPopup(e){
         this.props.dispatch(fetchAllOcrUsersAction());
         this.props.dispatch(closeAddUserPopup());
@@ -75,16 +72,7 @@ export class OcrAddUser extends React.Component{
     render(){
         let disabledValue = this.props.createUserFlag?true:false
             return(
-            <div className="row">
-                <div className="col-md-8">
-                    <h4>Manage users</h4>
-                </div>
-                <div className="col-md-1 ocrAddUser">
-                    <a className="btn btn-info" onClick={this.openAddUserPopup.bind(this)}>
-                        <i class="fa fa-user-plus fa-lg"></i>
-                    </a>
-                </div>
-                <Modal show={this.props.addUserPopupFlag} /*onHide={this.closeAddUserPopup.bind(this)}*/>
+                <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
                     <Modal.Header>
                         <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
                         <h4 className="modal-title">Add User</h4>
@@ -146,7 +134,6 @@ export class OcrAddUser extends React.Component{
                         {this.props.ocrUserProfileFlag?<Button bsStyle="primary" id="addUser" onClick={this.closeAddUserPopup.bind(this)}>Close</Button>:""}
                     </Modal.Footer>
                 </Modal>
-            </div>
         );
     }
 }
