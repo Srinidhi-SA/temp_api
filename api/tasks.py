@@ -590,7 +590,7 @@ def stock_sense_crawl(object_slug):
                                          )
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
-    stock_dataset_object.call_mlscripts()
+    # stock_dataset_object.call_mlscripts()
 
 
 @task(name='print_this_every_minute', queue=CONFIG_FILE_NAME)

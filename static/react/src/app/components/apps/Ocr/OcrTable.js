@@ -8,6 +8,7 @@ import { STATIC_URL } from '../../../helpers/env';
 import {Checkbox} from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
+import {API} from "../../../helpers/env"
 
 @connect((store) => {
   return {
@@ -43,11 +44,22 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
-  handleImagePageFlag=()=>{
-    this.props.dispatch(saveImageDetails());
+  handleImagePageFlag=(slug)=>{
+    //this.props.dispatch(saveImageDetails());
+    this.getImage(slug)
     this.props.dispatch(saveImagePageFlag(true));
   }
-
+  
+  getImage=(slug)=>{
+    return fetch(API + '/ocr/ocrimage/get_images/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "imageslug": slug })
+    }).then(response => response.json())
+      .then(data => {
+        this.props.dispatch(saveImageDetails(data));
+      });
+  }
   sortOcrList(sortBy,sortOrder){
     this.props.dispatch(storeOcrSortElements(sortBy,sortOrder))
     this.props.dispatch(getOcrUploadedFiles())
@@ -84,7 +96,7 @@ export class OcrTable extends React.Component {
         'slug':this.state.checkedList
       }
     this.setState({showRecognizePopup:true,loader:true})
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/extract/",{
+    return fetch(API + '/ocr/ocrimage/extract/',{
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
@@ -157,7 +169,7 @@ export class OcrTable extends React.Component {
           <td>
            <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
           </td>
-           <td><Link to={item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
+           <td><Link to={item.name} onClick={()=>{this.handleImagePageFlag(item.slug)}}>{item.name}</Link></td>
           <td>{item.status}</td>
           <td>{item.confidence}</td>
           <td>{}</td>
