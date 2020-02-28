@@ -52,6 +52,7 @@ class CustomOCRPagination(PageNumberPagination):
             'current_page': pagination['current_page'],
             'current_page_size': pagination['current_page_size'],
             'current_item_count': len(pagination["current_data"]),
+            'total_data_count': pagination['total_data_count'],
             'permission_details': permission_details
         })
 
@@ -82,7 +83,8 @@ class CustomOCRPagination(PageNumberPagination):
             "count": total_number_of_pages,
             "current_page": page_number,
             "current_page_size": page_size,
-            "current_data": serialized_page_data.data
+            "current_data": serialized_page_data.data,
+            "total_data_count": total_data_count
         }
 
     def paginate_queryset(self, queryset, request, view=None, list_serializer=None):
