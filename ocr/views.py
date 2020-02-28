@@ -37,7 +37,8 @@ from api.utils import name_check
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
-from ocr.query_filtering import get_listed_data, get_image_list_data
+from ocr.query_filtering import get_listed_data, get_image_list_data, \
+    get_specific_listed_data
 # -----------------------MODELS-------------------------------
 from .ITE.master_all import get_word_in_bounding_box, update_word
 from .ITE.ocr_mods import not_clear
@@ -138,6 +139,15 @@ class OCRUserView(viewsets.ModelViewSet):
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
+    def get_specific_reviewer_qyeryset(self,reviewerType_id):
+        queryset = OCRUserProfile.objects.filter(reviewer_type=reviewerType_id)
+        users_list = []
+        for query in queryset:
+            users_list.append(query.ocr_user.username)
+
+        user_queryset = User.objects.filter(username__in=users_list)
+        return user_queryset
+
     def get_user_profile_object(self, username=None):
         user = User.objects.get(username=username)
         object = OCRUserProfile.objects.get(ocr_user_id=user.id)
@@ -199,9 +209,8 @@ class OCRUserView(viewsets.ModelViewSet):
         """Delete OCR User"""
         if request.method == 'DELETE':
             username_list = request.data['username']
-            print(username_list)
+            print("Deleting Users: ",username_list)
             for user in username_list:
-                print(user)
                 try:
                     user_object = User.objects.get(username=user)
                     user_object.delete()
@@ -224,7 +233,17 @@ class OCRUserView(viewsets.ModelViewSet):
         else:
             raise SuspiciousOperation("Invalid Method.")
 
-        # -------------------------------------------------------------------------------
+    @list_route(methods=['get'])
+    def reviewer_list(self, request, *args, **kwargs):
+        reviewerType_id = request.GET['reviewerType_id']
+        return get_specific_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRUserListSerializer,
+            reviewerType_id=reviewerType_id
+        )
+
+# -------------------------------------------------------------------------------
 
 
 # -------------------------------------------------------------------------------
@@ -278,6 +297,31 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             "ocr_profile": serializer.data
         })
 
+    @list_route(methods=['post'])
+    def edit_status(self, request, *args, **kwargs):
+        try:
+            username_list = request.data['username']
+            status = request.data.get("is_active")
+        except:
+            raise KeyError('Parameters missing.')
+
+        for user in username_list:
+            try:
+                user = User.objects.get(username=user)
+                ocr_profile = OCRUserProfile.objects.get(ocr_user=user)
+                ocr_profile.is_active = status
+                ocr_profile.save()
+            except Exception as err:
+                print(err)
+                return JsonResponse({
+                    "message": "Profile update unsuccessfull.",
+                    "updated": False,
+                    "error": str(err)
+                })
+        return JsonResponse({
+            "message": "Profile update successfully.",
+            "updated": True,
+        })
 
 # -------------------------------------------------------------------------------
 
@@ -673,10 +717,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
-        response, analysis_list = update_word(index, word, comparision_data)
-        print(response)
-        data['comparision_data'] = json.dumps(response)
+        # response, analysis_list = update_word(index, word, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = update_word(index, word, converted_Coordinates, comparision_data)
+        data['comparision_data'] = json.dumps(comparision_data)
+        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
         if 'analysis_list' in request.session:
             request.session['analysis_list'].extend(analysis_list)
@@ -687,7 +733,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -698,10 +744,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
-        response, analysis_list = not_clear(index, word, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates, comparision_data)
 
-        data['comparision_data'] = json.dumps(response)
+        data['comparision_data'] = json.dumps(comparision_data)
+        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
         if 'analysis_list' in request.session:
             request.session['analysis_list'].extend(analysis_list)
