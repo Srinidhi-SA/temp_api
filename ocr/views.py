@@ -717,10 +717,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
-        response, analysis_list = update_word(index, word, comparision_data)
-        print(response)
-        data['comparision_data'] = json.dumps(response)
+        # response, analysis_list = update_word(index, word, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = update_word(index, word, converted_Coordinates, comparision_data)
+        data['comparision_data'] = json.dumps(comparision_data)
+        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
         if 'analysis_list' in request.session:
             request.session['analysis_list'].extend(analysis_list)
@@ -742,10 +744,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
+        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
-        response, analysis_list = not_clear(index, word, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates, comparision_data)
 
-        data['comparision_data'] = json.dumps(response)
+        data['comparision_data'] = json.dumps(comparision_data)
+        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
         if 'analysis_list' in request.session:
             request.session['analysis_list'].extend(analysis_list)

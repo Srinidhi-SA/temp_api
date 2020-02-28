@@ -35,21 +35,25 @@ def FindPoint1(x, y, data2):
                 return data2['b' + str(i)][8], act_point
 
 
-def not_clear(act_point, word, data3):
+def not_clear(act_point, word, data2, data3):
 
     analysis_list = list()
+
+    data2['b' + str(act_point)][8] = word
 
     data3['b' + str(act_point)][1] = word  # word returned from UI
     data3['b' + str(act_point)][3] = 'Not_Sure'
 
     analysis_list.append(['b' + str(act_point), {'boundingBox': data3['b' + str(act_point)][0], 'text': word}])
 
-    return data3, analysis_list
+    return data2, data3, analysis_list
 
 
-def update_word(act_point, word, data3):  # Save the new words
+def update_word(act_point, word, data2, data3):  # Save the new words
 
     analysis_list = list()
+
+    data2['b' + str(act_point)][8] = word
 
     data3['b' + str(act_point)][1] = word
     data3['b' + str(act_point)][3] = 'True'
@@ -59,7 +63,7 @@ def update_word(act_point, word, data3):  # Save the new words
 
     analysis_list.append(['b' + str(act_point), {'boundingBox': data3['b' + str(act_point)][0], 'text': word}])
 
-    return data3, analysis_list
+    return data2, data3, analysis_list
 
 
 def updated_analysis(analysis, user_input):
