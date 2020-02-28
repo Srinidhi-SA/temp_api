@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles,saveImagePageFlag,saveDocumentPageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee,storeDocSearchElem} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../../store';
+import { store } from '../../../store'; 
 import { Modal,Pagination,Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import {Checkbox} from 'primereact/checkbox';
@@ -14,6 +14,7 @@ import { OcrUpload } from "./OcrUpload";
     login_response: store.login.login_response,
     OcrDataList: store.ocr.OcrDataList,
     documentFlag: store.ocr.documentFlag,
+    projectName:store.ocr.selected_project_name
   };
 })
 
@@ -104,7 +105,6 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
   render() {
-    
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
@@ -176,7 +176,7 @@ export class OcrTable extends React.Component {
             <div class="col-sm-6">
                 <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-                <li class="breadcrumb-item active"><a href="#">FormReturn OMR</a></li>
+                <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
                 </ol> 					
 						</div>
             <div class="col-sm-6 text-right">
