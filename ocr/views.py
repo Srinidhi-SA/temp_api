@@ -194,27 +194,31 @@ class OCRUserView(viewsets.ModelViewSet):
     def delete(self, request, *args, **kwargs):
         """Delete OCR User"""
         if request.method == 'DELETE':
-            username = request.data['username']
-            try:
-                user_object = User.objects.get(username=username)
-                user_object.delete()
-                return JsonResponse({
-                    "deleted": True,
-                    "message": "User deleted."
-                })
+            username_list = request.data['username']
+            print(username_list)
+            for user in username_list:
+                print(user)
+                try:
+                    user_object = User.objects.get(username=user)
+                    user_object.delete()
 
-            except User.DoesNotExist:
-                return JsonResponse({
-                    "deleted": False,
-                    "message": "User DoesNotExist."
-                })
-            except Exception as e:
-                return JsonResponse({
-                    "deleted": False,
-                    "message": str(e)
-                })
+                except User.DoesNotExist:
+                    return JsonResponse({
+                        "deleted": False,
+                        "message": "User "+user+" DoesNotExist."
+                    })
+                except Exception as e:
+                    return JsonResponse({
+                        "deleted": False,
+                        "message": str(e)
+                    })
+            return JsonResponse({
+                "deleted": True,
+                "message": "User deleted."
+            })
+
         else:
-            raise SuspiciousOperation("Invalid Method.")        
+            raise SuspiciousOperation("Invalid Method.")
 
 
 # -------------------------------------------------------------------------------
