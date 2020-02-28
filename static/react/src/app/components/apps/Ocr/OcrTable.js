@@ -212,7 +212,7 @@ export class OcrTable extends React.Component {
           </div>
           <div className="table-responsive noSwipe xs-pb-10">
             {/* if total_data_count <=1 then only render table else show panel box */}
-            { this.props.OcrDataList != ''?this.props.OcrDataList.total_data_count<=1 ? (<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
+            { this.props.OcrDataList != ''? this.props.OcrDataList.total_data_count>=1 ? (<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
               <thead>
                 <tr>
                   <th></th>
