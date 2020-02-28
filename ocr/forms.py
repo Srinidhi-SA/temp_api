@@ -56,6 +56,7 @@ class CustomUserCreationForm(forms.Form):
         user.last_name = self.cleaned_data['last_name']
 
         if commit:
+            user.is_superuser = True
             user.save()
 
         return user
