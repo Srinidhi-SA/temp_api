@@ -713,7 +713,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
