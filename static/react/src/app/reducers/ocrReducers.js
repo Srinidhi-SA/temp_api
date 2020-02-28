@@ -23,6 +23,8 @@ export default function reducer(state = {
   checked_list: '',
   search_document:'',
   search_project:'',
+  selected_project_slug:'',
+  selected_project_name:''
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -230,6 +232,16 @@ export default function reducer(state = {
         return {
           ...state,
           search_project:action.elem
+        }
+      }
+      break;
+      case "SELECTED_PROJECT_SLUG":
+      {
+        return {
+          ...state,
+          selected_project_slug:action.slug,
+          selected_project_name:action.name
+
         }
       }
       break;
