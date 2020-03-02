@@ -45,7 +45,6 @@ export class OcrTable extends React.Component {
   }
 
   handleImagePageFlag=(slug)=>{
-    //this.props.dispatch(saveImageDetails());
     this.getImage(slug)
     this.props.dispatch(saveImagePageFlag(true));
   }
@@ -54,7 +53,7 @@ export class OcrTable extends React.Component {
     return fetch(API + '/ocr/ocrimage/get_images/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "imageslug": slug })
+      body: JSON.stringify({ "slug": slug })
     }).then(response => response.json())
       .then(data => {
         this.props.dispatch(saveImageDetails(data));

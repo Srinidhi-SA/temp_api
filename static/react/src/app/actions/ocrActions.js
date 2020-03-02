@@ -33,9 +33,10 @@ export function saveDocumentPageFlag(flag) {
 	}
 }
 
-export function saveImageDetails() {
+export function saveImageDetails(data) {
 	return {
 		type: "SAVE_IMAGE_DETAILS",
+		data
 	}
 }
 
