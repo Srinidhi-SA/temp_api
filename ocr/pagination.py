@@ -68,6 +68,7 @@ class CustomOCRPagination(PageNumberPagination):
                 "count": 0,
                 "current_page": 0,
                 "current_page_size": 0,
+                "total_data_count": total_data_count,
                 "current_data": []
             }
         total_number_of_pages = (old_div((total_data_count - 1), page_size)) + 1
