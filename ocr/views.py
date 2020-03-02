@@ -423,7 +423,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         imageset_data = dict()
         imageset_data['imagepath'] = str(imagepath)
         imageset_data['created_by'] = request.user.id
-        imageset_data['project'] = Project.objects.filter(slug=data['projectslug'])
+        imageset_data['project'] = Project.objects.get(slug=data['projectslug']).id
         serializer = OCRImageSetSerializer(data=imageset_data, context={"request": self.request})
 
         if serializer.is_valid():

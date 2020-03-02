@@ -112,7 +112,7 @@ class OCRImageSetSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSetSerializer
         """
         model = OCRImageset
-        fields = ['name', 'slug', 'imagepath', 'deleted', 'status', 'created_at', 'created_by']
+        fields = ['name', 'slug', 'imagepath', 'deleted', 'status', 'created_at', 'created_by','project']
 
 
 class OCRImageSetListSerializer(serializers.ModelSerializer):
