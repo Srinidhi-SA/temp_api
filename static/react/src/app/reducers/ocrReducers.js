@@ -23,12 +23,13 @@ export default function reducer(state = {
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
-  createUserLoaderFlag : false,
+  loaderFlag : false,
   curUserSlug : "",
   newUserDetails : {},
   newUserProfileDetails : {},
   ocrUserProfileFlag : false,
   allOcrUsers : {},
+  ocrReviwersList : {},
   selectedOcrUsers : [],
   editOcrUserFlag:false,
   selUserSlug:"",
@@ -36,6 +37,9 @@ export default function reducer(state = {
   enableEditingFlag:false,
   editedUserDetails : {},
   userTableLoaderFlag : false,
+  editUserSuccessFlag : false,
+  roleFormSel : false,
+  detailsFormSel : false,
 
   search_document:'',
   search_project:'',
@@ -241,7 +245,7 @@ export default function reducer(state = {
           newUserDetails : {},
           newUserProfileDetails : {},
           ocrUserProfileFlag : false,
-          createUserLoaderFlag : false,
+          loaderFlag : false,
           createUserFlag : false,
           curUserSlug : "",
         }
@@ -250,7 +254,7 @@ export default function reducer(state = {
       case "SET_CREATE_USER_LOADER_FLAG": {
         return {
           ...state,
-          createUserLoaderFlag : action.flag
+          loaderFlag : action.flag
         }
       }
       break;
@@ -302,6 +306,12 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_REVIEWERS_LIST":{
+        return {
+          ...state,
+          ocrReviwersList : action.json
+        }
+      }
       case "OPEN_EDIT_USER_POPUP":{
         return{
           ...state,
@@ -315,7 +325,14 @@ export default function reducer(state = {
       case "CLOSE_EDIT_USER_POPUP":{
         return{
           ...state,
-          editOcrUserFlag : action.flag
+          editOcrUserFlag : action.flag,
+          selUserSlug : "",
+          selUserDetails : {},
+          editedUserDetails : {},
+          detailsFormSel : false,
+          roleFormSel : false,
+          editUserSuccessFlag : false,
+          loaderFlag : false,
         }
       }
       break;
@@ -335,6 +352,43 @@ export default function reducer(state = {
         }
       }
       break;
+      case "CLEAR_USER_FLAG":
+      {
+        return{
+          ...state,
+          selectedOcrUsers : [],
+        }
+      }
+      break;
+      case "SET_USER_TABLE_LOADER_FLAG":{
+        return {
+          ...state,
+          userTableLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "EDIT_USER_SUCCESS":{
+        return {
+          ...state,
+          editUserSuccessFlag : action.flag,
+        }
+      }
+      break;
+      case "FORM_DETAILS_SELECTED":{
+        return {
+          ...state,
+        detailsFormSel : action.flag
+        }
+      }
+      break;
+      case "FORM_ROLES_SELECTED":{
+        return {
+          ...state,
+        roleFormSel : action.flag
+        }
+      }
+      break;
+
       case "SEARCH_OCR_DOCUMENT":
       {
         return {
@@ -351,22 +405,6 @@ export default function reducer(state = {
         }
       }
       break;
-      case "CLEAR_USER_FLAG":
-      {
-        return{
-          ...state,
-          selectedOcrUsers : [],
-
-
-        }
-      }
-      break;
-      case "SET_USER_TABLE_LOADER_FLAG":{
-        return {
-          ...state,
-          userTableLoaderFlag : action.flag
-        }
-      }
   }
   return state
 }

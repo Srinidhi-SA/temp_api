@@ -22535,32 +22535,30 @@ ul.ocrUploadTabs{
   padding: 20px 20px 20px 10px;
 }
 .ocrUserFormLabel label{
-  width: 45%;
+  width: 31%;
   padding-left: 15px;
-  float:left;
+  float: left;
+  margin-bottom: 10px;
 }
 .ocrUserFormLabel input,select{
   border: 1px solid #cdcdcd;
+  background-color: white;
   height: 32px;
   font-size: 12px;
   border-radius: 2px;
-  padding-left: 5px;
-  width:52%;
-  margin-bottom: 10px;
-  background-color: white;
+  padding-left: 10px;
+  width:46%;
+  margin-left: 12px;
+  margin-bottom: 15px;
 }
 .ocrUserFormLabel input[disabled],select[disabled]{
+  color: grey;
   cursor: not-allowed;
   background-color: #efefef;
 }
-.userStatusBtn{
-  height: 25px;
-  width: 70px;
-  border-radius: 60px !important;
-}
-.userStatusBtn span.p-button-text.p-unselectable-text{
-  padding: 0px;
-  padding-top: 3px;
+#editUsers {
+  padding: 10px;
+  height: 275px;
 }
 .manageUserTable{
   background-color: white;

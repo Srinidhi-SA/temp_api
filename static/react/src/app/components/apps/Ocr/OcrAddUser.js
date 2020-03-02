@@ -15,7 +15,8 @@ import { STATIC_URL } from "../../../helpers/env.js";
     allOcrUsers : store.ocr.allOcrUsers,
     newUserProfileDetails : store.ocr.newUserProfileDetails,
     ocrUserProfileFlag : store.ocr.ocrUserProfileFlag,
-    createUserLoaderFlag : store.ocr.createUserLoaderFlag,
+    loaderFlag : store.ocr.loaderFlag,
+    ocrReviwersList : store.ocr.ocrReviwersList,
   };
 })
 
@@ -71,6 +72,13 @@ export class OcrAddUser extends React.Component{
     
     render(){
         let disabledValue = this.props.createUserFlag?true:false
+        let optionsTemp = [];
+        optionsTemp.push(<option id="none" value="none">--select--</option>);
+        for(var i=0; i<this.props.ocrReviwersList.length; i++){
+            optionsTemp.push(<option key={this.props.ocrReviwersList[i].type} value={this.props.ocrReviwersList[i].id}>
+                        {this.props.ocrReviwersList[i].type}
+                    </option>);
+        }
             return(
                 <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
                     <Modal.Header>
@@ -81,29 +89,27 @@ export class OcrAddUser extends React.Component{
                         {!this.props.ocrUserProfileFlag &&
                             <div className="ocrUserFormLabel" style={{position:"absolute"}}>
                                 <label className="mandate" for="first_name">First Name</label>
-                                <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
-                                <label for="last_name">Last Name</label>
-                                <input type="text" id="last_name" name="last_name" placeholder="Last Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
-                                <label className="mandate" for="username">User Name</label>
-                                <input type="text" id="username" name="username" placeholder="User Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
-                                <label className="mandate" for="email">Email</label>
-                                <input  type="email" id="email" name="email" placeholder="Email" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
-                                <label className="mandate" for="password">Password</label>
-                                <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
-                                <label className="mandate" for="confirmPassword">Confirm Password</label>
-                                <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                                <label className="mandate" for="last_name" style={{marginLeft:"100px"}}>Last Name</label>
+                                <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
+                                <input type="text" id="last_name" name="last_name" placeholder="Last Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 
-                                {this.props.createUserFlag &&
+                                <label className="mandate" for="username">User Name</label>
+                                <label className="mandate" for="email" style={{marginLeft:"100px"}}>Email</label>
+                                <input type="text" id="username" name="username" placeholder="User Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                                <input  type="email" id="email" name="email" placeholder="Email" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                                
+                                <label className="mandate" for="password">Password</label>
+                                <label className="mandate" for="confirmPassword" style={{marginLeft:"100px"}}>Confirm Password</label>
+                                <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                                <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
+                                
+                                {!this.props.createUserFlag &&
                                     <div>
                                         <label className="mandate" for="userRoles">Roles</label>
+                                        <label for="userRoles" className="mandate" style={{marginLeft:"100px"}}>Status</label>
                                         <select name="reviewer_type" id="reviewer_type" onChange={this.saveUserStatus.bind(this)}>
-                                            <option value="none" id="none">--Select--</option>
-                                            <option value="1" id="admin">Admin</option>
-                                            <option value="4" id="reviewerL1">ReviewerL1</option>
-                                            <option value="6" id="reviewerL2">ReviewerL2</option>
-                                            <option value="3" id="superUser">SuperUser</option>
+                                            {optionsTemp}
                                         </select>
-                                        <label for="userRoles" className="mandate">Status</label>
                                         <select name="is_active" id="is_active" onChange={this.saveUserStatus.bind(this)}>
                                             <option value="none" id="none" selected>--select--</option>
                                             <option value="True" id="active">Active</option>
@@ -113,7 +119,7 @@ export class OcrAddUser extends React.Component{
                                 }
                             </div>
                         }
-                        {this.props.createUserLoaderFlag && !this.props.ocrUserProfileFlag &&
+                        {this.props.loaderFlag && !this.props.ocrUserProfileFlag &&
                             <div style={{ height:"350px", background: 'rgba(0,0,0,0.1)', position: 'relative',margin:"-10px" }}>
                                 <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                             </div>

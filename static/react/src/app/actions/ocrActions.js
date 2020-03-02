@@ -313,6 +313,7 @@ export function getReviewersListAction(){
 	return (dispatch) => {
 		return getReviewersListApi(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
+				dispatch(saveReviewersList(json));
 				console.log(json)
 			}else{
 				console.log("Failed")
@@ -325,6 +326,11 @@ function getReviewersListApi(token){
 		method : "get",
 		headers : getHeader(token),
 	}).then(response => Promise.all([response,response.json()]));
+}
+export function saveReviewersList(json){
+	return{
+		type:"SAVE_REVIEWERS_LIST",json
+	}
 }
 //Saving and Creating New Users for OCR
 export function saveNewUserDetails(name,value){
@@ -486,8 +492,8 @@ export function openEditUserModalAction(flag,userSlug,userDt){
 	edtDet.last_name = userDt.last_name;
 	edtDet.username = userDt.username;
 	edtDet.email = userDt.email;
-	// edtDet.reviewer_type = userDt.reviewer_type;
-	// edtDet.is_active = userDt.ocr_profile.active?"True":"False";
+	edtDet.reviewer_type = userDt.reviewer_type;
+	edtDet.is_active = userDt.ocr_profile.active?"True":"False";
 
 	return {
 		type:"OPEN_EDIT_USER_POPUP",flag,userSlug,userDt,edtDet
@@ -508,6 +514,16 @@ export function SaveEditedUserDetailsAction(name,val){
 		type : "SAVE_EDITED_USER_DETAILS",name,val
 	}
 }
+export function editDetailsFormAction(flag){
+	return{
+		type: "FORM_DETAILS_SELECTED",flag
+	}
+}
+export function editRolesFormAction(flag){
+	return{
+		type: "FORM_ROLES_SELECTED",flag
+	}
+}
 export function submitEditUserDetailsAction(editedUserDt){
 	var formdt = new FormData();
 	for(let key in editedUserDt){
@@ -515,9 +531,9 @@ export function submitEditUserDetailsAction(editedUserDt){
 	}
 	return (dispatch) => {
 		return submitEditUserDetailsAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-			if(response.status === 200 && json.created){
-				console.log("Success",json.message.username)
-				dispatch(fetchAllOcrUsersAction());
+			if(response.status === 200 && json.updated){
+				dispatch(setCreateUserLoaderFlag(false));
+				dispatch(editUserSuccess(true));
 			}else{
 				console.log("Failed")
 			}
@@ -531,24 +547,31 @@ function submitEditUserDetailsAPI(data,token){
 		body : data,
 	}).then(response => Promise.all([response,response.json()]));
 }
-// export function submitEditUserDetailsAction(editedUserDt){
-// 	return (dispatch) => {
-// 		return submitEditUserDetailsAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
-// 			if(response.status === 200 && json.created){
-// 				console.log("Success",json.message.username)
-// 			}else{
-// 				console.log("Failed")
-// 			}
-// 		})
-// 	}
-// }
-// function submitEditUserDetailsAPI(data,token){
-// 	return fetch(API+"/ocr/userprofile/",{
-// 		method : "put",
-// 		headers : getHeaderForJson(token),
-// 		body : JSON.stringify(data),
-// 	}).then(response => Promise.all([response,response.json()]));
-// }
+export function submitEditedUserRolesAction(editedUserDt,slug){
+	let data = {"is_active": "True","reviewer_type": 1}
+	return (dispatch) => {
+		return submitEditedUserRolesAPI(data,slug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200 && json.updated){
+				dispatch(setCreateUserLoaderFlag(false));
+				dispatch(editUserSuccess(true));
+			}else{
+				console.log("Failed")
+			}
+		})
+	}
+}
+function submitEditedUserRolesAPI(data,slug,token){
+	return fetch(API+"/ocr/userprofile/"+ slug+"/",{
+		method : "put",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function editUserSuccess(flag){
+	return{
+		type: "EDIT_USER_SUCCESS",flag
+	}
+}
 export function storeDocSearchElem(elem){
 	return{
 		type:"SEARCH_OCR_DOCUMENT",
