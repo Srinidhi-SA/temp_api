@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import(
@@ -172,14 +173,22 @@ class ReviewRequest(SimpleFlow):
         ]
     )
 
-    def code(self):
-        return "OCRREQ-{}".format(self.id)
+    def slug(self):
+        return "ITEREQ-{}".format(self.id)
 
-    def submit_for_approval(self):
-        self.status = "submitted_for_review"
-        self.save()
+def submit_for_approval(sender, instance, created, **kwargs):
+    if created:
+        print("Starting simpleflow for review ...")
+        instance.status = "submitted_for_review"
+        instance.save()
+        instance.start_simpleflow()
 
-        # start simpleflow
-        # this will create task for initial state which
-        # you defined in your PROCESS config
-        self.start_simpleflow()
+post_save.connect(submit_for_approval, sender=ReviewRequest)
+# def submit_for_approval(self):
+#     self.status = "submitted_for_review"
+#     self.save()
+#
+#     # start simpleflow
+#     # this will create task for initial state which
+#     # you defined in your PROCESS config
+#     self.start_simpleflow()
