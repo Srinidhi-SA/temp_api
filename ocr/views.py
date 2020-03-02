@@ -21,7 +21,11 @@ import copy
 import os
 import random
 import ast
+from io import BytesIO
+
+import cv2
 import simplejson as json
+from PIL import Image
 from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
@@ -40,6 +44,7 @@ from api.exceptions import creation_failed_exception, \
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
     get_specific_listed_data
 # -----------------------MODELS-------------------------------
+from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
 from .ITE.ocr_mods import not_clear
 from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
@@ -139,7 +144,7 @@ class OCRUserView(viewsets.ModelViewSet):
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
-    def get_specific_reviewer_qyeryset(self,reviewerType_id):
+    def get_specific_reviewer_qyeryset(self, reviewerType_id):
         queryset = OCRUserProfile.objects.filter(reviewer_type=reviewerType_id)
         users_list = []
         for query in queryset:
@@ -209,7 +214,7 @@ class OCRUserView(viewsets.ModelViewSet):
         """Delete OCR User"""
         if request.method == 'DELETE':
             username_list = request.data['username']
-            print("Deleting Users: ",username_list)
+            print("Deleting Users: ", username_list)
             for user in username_list:
                 try:
                     user_object = User.objects.get(username=user)
@@ -218,7 +223,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 except User.DoesNotExist:
                     return JsonResponse({
                         "deleted": False,
-                        "message": "User "+user+" DoesNotExist."
+                        "message": "User " + user + " DoesNotExist."
                     })
                 except Exception as e:
                     return JsonResponse({
@@ -242,6 +247,7 @@ class OCRUserView(viewsets.ModelViewSet):
             list_serializer=OCRUserListSerializer,
             reviewerType_id=reviewerType_id
         )
+
 
 # -------------------------------------------------------------------------------
 
@@ -322,6 +328,7 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             "message": "Profile update successfully.",
             "updated": True,
         })
+
 
 # -------------------------------------------------------------------------------
 
@@ -719,8 +726,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         comparision_data = json.loads(image_queryset.comparision_data)
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
-        # response, analysis_list = update_word(index, word, comparision_data)
-        converted_Coordinates, comparision_data, analysis_list = update_word(index, word, converted_Coordinates, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = update_word(index, word, converted_Coordinates,
+                                                                             comparision_data)
         data['comparision_data'] = json.dumps(comparision_data)
         data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
@@ -733,34 +740,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
+            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.name), 'rb').read()))
+            response = plot(image, comparision_data, data['slug'])
             return JsonResponse({'message': 'SUCCESS'})
-        return Response(serializer.errors)
-
-    @list_route(methods=['post'])
-    def not_clear(self, request, *args, **kwargs):
-        data = request.data
-        index = data['index']
-        word = data['word']
-
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-
-        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates, comparision_data)
-
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
-
-        if 'analysis_list' in request.session:
-            request.session['analysis_list'].extend(analysis_list)
-        else:
-            request.session['analysis_list'] = analysis_list
-        data['analysis_list'] = json.dumps(request.session['analysis_list'])
-        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                         context={"request": self.request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
         return Response(serializer.errors)
 
 
