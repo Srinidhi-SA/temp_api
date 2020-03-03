@@ -118,9 +118,8 @@ export class OcrImage extends React.Component {
     // .catch(function (error) {
     //   bootbox.alert("coordinates are not correct")
     // });
-
-
   }
+  
   updateText = () => {
     document.getElementById("loader").classList.add("loader_ITE")
     let index = this.state.imageDetail.index;
