@@ -169,7 +169,7 @@ export class OcrTable extends React.Component {
            <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
           </td>
           <td>
-						<i class="fa fa-folder-open"></i>
+						<i class="fa fa-file-text"></i>
 					</td>
            <td><Link to={item.name} onClick={()=>{this.handleImagePageFlag(item.slug)}}>{item.name}</Link></td>
           <td>{item.status}</td>
