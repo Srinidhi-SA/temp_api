@@ -277,30 +277,41 @@ export function closeAddUserPopup(){
 		type:"CLOSE_ADD_USER_POPUP"
 	}
 }
-//Loader for table
 export function setUserTableLoaderFlag(flag){
 	return {
 		type:"SET_USER_TABLE_LOADER_FLAG",flag
 	}
 } 
-//Fetch All OCR Users
-export function fetchAllOcrUsersAction(){
+
+export function fetchAllOcrUsersAction(pageNo){
 	return (dispatch) => {
-		return fetchAllOcrUsersAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+		return fetchAllOcrUsersAPI(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveAllOcrUsersList(json));
 				dispatch(setUserTableLoaderFlag(false));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to fetch","small_mascot"));
 			}
 		})
 	}
 }
-export function fetchAllOcrUsersAPI(token){
-	return fetch(API+"/ocr/user/",{
-		method : "get",
-		headers : getHeaderForJson(token),
-	}).then(response => Promise.all([response,response.json()]));
+export function fetchAllOcrUsersAPI(pageNo,token){
+	if(pageNo === undefined){
+		pageNo = 1;
+	}
+	let searchElement = store.getState().ocr.ocrSearchElement
+	if(searchElement!=""){
+		return fetch(API +'/ocr/user/?first_name='+searchElement+'&page_number=' + pageNo, {
+		method: 'get',
+		headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]));
+	}
+	else{
+		return fetch(API+"/ocr/user/?page_number="+ pageNo,{
+			method : "get",
+			headers : getHeaderForJson(token),
+		}).then(response => Promise.all([response,response.json()]));
+	}
 }
 function saveAllOcrUsersList(json){
 	return {
@@ -308,15 +319,50 @@ function saveAllOcrUsersList(json){
 		json
 	}
 }
-//Reviwers
+
+export function storeSelectedTabId(id){
+	return {
+		type : "SELECTED_TAB_ID",id
+	}
+}
+export function fetchOcrListByReviewerType(id,pageNo){
+	return (dispatch) => {
+		return fetchOcrListByReviewerTypeAPI(id,pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(saveAllOcrUsersList(json));
+				dispatch(setUserTableLoaderFlag(false));
+			}else{
+				bootbox.alert(statusMessages("warning","Failed to fetch","small_mascot"));
+			}
+		})
+	}
+}
+function fetchOcrListByReviewerTypeAPI(id,pageNo,token){
+	if(pageNo === undefined){
+		pageNo = 1;
+	}
+	let searchElement = store.getState().ocr.ocrSearchElement
+	if(searchElement!=""){
+		return fetch(API+"/ocr/user/reviewer_list/?reviewerType_id="+id+"&name="+searchElement+"&page_number="+pageNo, {
+		method: 'get',
+		headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]));
+	}
+	else{
+		return fetch(API+"/ocr/user/reviewer_list/?reviewerType_id="+id+"&page_number="+ pageNo,{
+			method : "get",
+			headers : getHeaderForJson(token),
+		}).then(response => Promise.all([response,response.json()]));
+	}
+}
+
 export function getReviewersListAction(){
 	return (dispatch) => {
 		return getReviewersListApi(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveReviewersList(json));
-				console.log(json)
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","No roles found","small_mascot"));
 			}
 		})
 	}
@@ -332,7 +378,7 @@ export function saveReviewersList(json){
 		type:"SAVE_REVIEWERS_LIST",json
 	}
 }
-//Saving and Creating New Users for OCR
+
 export function saveNewUserDetails(name,value){
 	return {
 		type:"SAVE_NEW_USER_DETAILS",name,value
@@ -351,13 +397,13 @@ export function createNewUserAction(userDetails){
 	return (dispatch) => {
 		return createNewUserAPI(formdt,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.created){
-				console.log("Success",json.message.username)
 				dispatch(createNewUserSuccess(json.created,json.ocr_profile_slug));
 				dispatch(setCreateUserLoaderFlag(false));
 			}else if(response.status === 200 && !json.created){
-				bootbox.alert(statusMessages("warning",json.message.username,"small_mascot"));
+				dispatch(setCreateUserLoaderFlag(false));
+				bootbox.alert(statusMessages("warning","Please ensure proper details","small_mascot"));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}
 		})
 	}
@@ -374,7 +420,7 @@ function createNewUserSuccess(flag,slug){
 		type : "CREATE_NEW_USER_SUCCESS",flag,slug
 	}
 }
-//Saving and creating user roles and status
+
 export function saveNewUserProfileDetails(name,value){
 	return{
 		type : "SAVE_NEW_USER_PROFILE",name,value
@@ -387,9 +433,8 @@ export function submitNewUserProfileAction(userProfileDetails,curUserSlug){
 				dispatch(userProfileCreationSuccess(json.updated));
 			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning",json.message,"small_mascot"));
-				console.log(json.message.username)
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to update roles or status","small_mascot"));
 			}
 		})
 	}
@@ -406,26 +451,33 @@ function userProfileCreationSuccess(flag){
 		type : "USER_PROFILE_CREATED_SUCCESS",flag
 	}
 }
-//Actions on OCR users
-//Save User List
+
 export function saveSelectedOcrUserList(curSelList){
 	return{
 		type:"SAVE_SELECTED_USERS_LIST",curSelList
 	}
 }
-//Delete User
+
+export function selectAllOcrUsers(flag){
+	return {
+		type: "SELECT_ALL_USERS",flag
+	}
+}
+
 export function deleteOcrUserAction(userNames){
 	let data = {"username":userNames}
 	return (dispatch) => {
 		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.deleted){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
-				dispatch(fetchAllOcrUsersAction());
+				store.getState().ocr.selectedTabId === "none"?
+					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
+					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
 				dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.deleted){
 				bootbox.alert(statusMessages("warning","Unable to delete","small_mascot"));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to delete","small_mascot"));
 			}
 		})
 	}
@@ -437,19 +489,21 @@ function deleteOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-// activate 
+
 export function activateOcrUserAction(userNames){
 	let data = {"username":userNames,"is_active":"True"}
 	return (dispatch) => {
 		return activateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
-				dispatch(fetchAllOcrUsersAction());
+				store.getState().ocr.selectedTabId === "none"?
+					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
+					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
 				dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable activate users","small_mascot"));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to activate","small_mascot"));
 			}
 		})
 	}
@@ -461,19 +515,21 @@ function activateOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-//deactivate
+
 export function deActivateOcrUserAction(userNames){
 	let data = {"username":userNames,"is_active":"False"}
 	return (dispatch) => {
 		return deActivateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
 				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
-				dispatch(fetchAllOcrUsersAction());
+				store.getState().ocr.selectedTabId === "none"?
+					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
+					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
 				dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable deactivate users","small_mascot"));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to deactivate","small_mascot"));
 			}
 		})
 	}
@@ -485,14 +541,14 @@ function deActivateOcrActionAPI(data,token){
 		body : JSON.stringify(data)
 	}).then(response => Promise.all([response,response.json()]));
 }
-//edit user
+
 export function openEditUserModalAction(flag,userSlug,userDt){
 	let edtDet = store.getState().ocr.editedUserDetails;
 	edtDet.first_name = userDt.first_name;
 	edtDet.last_name = userDt.last_name;
 	edtDet.username = userDt.username;
 	edtDet.email = userDt.email;
-	edtDet.reviewer_type = userDt.reviewer_type;
+	edtDet.reviewer_type = userDt.ocr_profile.reviewer_type;
 	edtDet.is_active = userDt.ocr_profile.active?"True":"False";
 
 	return {
@@ -535,7 +591,7 @@ export function submitEditUserDetailsAction(editedUserDt){
 				dispatch(setCreateUserLoaderFlag(false));
 				dispatch(editUserSuccess(true));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to Edit user details","small_mascot"));
 			}
 		})
 	}
@@ -548,14 +604,13 @@ function submitEditUserDetailsAPI(data,token){
 	}).then(response => Promise.all([response,response.json()]));
 }
 export function submitEditedUserRolesAction(editedUserDt,slug){
-	let data = {"is_active": "True","reviewer_type": 1}
 	return (dispatch) => {
-		return submitEditedUserRolesAPI(data,slug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+		return submitEditedUserRolesAPI(editedUserDt,slug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
 				dispatch(setCreateUserLoaderFlag(false));
 				dispatch(editUserSuccess(true));
 			}else{
-				console.log("Failed")
+				bootbox.alert(statusMessages("warning","Failed to edit user roles","small_mascot"));
 			}
 		})
 	}
@@ -589,4 +644,19 @@ export function clearUserFlagAction(){
 		type : "CLEAR_USER_FLAG"
 	}
 }
-//Filter API-> /ocr/user/reviewer_list/?reviewerType_id=1   //1 is reviwers number get
+export function saveUserSearchElementAction(val){
+	return {
+		type : "OCR_USER_SEARCH_ELEMENT",val
+	}
+}
+export function saveOcrUserPageNumAction(val){
+	return {
+		type : "OCR_USER_PAGE_NUM",val
+	}
+}
+export function clearUserSearchElementAction(){
+	return {
+		type : "CLEAR_USER_SEARCH_ELEMENT",
+	}
+}
+
