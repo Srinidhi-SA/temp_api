@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
 import {ToggleButton} from "primereact/togglebutton"
 import store from "../../../store";
-import { openAddUserPopup, closeAddUserPopup, saveNewUserDetails, createNewUserAction, saveNewUserProfileDetails , submitNewUserProfileAction, fetchAllOcrUsersAction, setCreateUserLoaderFlag} from "../../../actions/ocrActions";
+import { closeAddUserPopup, saveNewUserDetails, createNewUserAction, saveNewUserProfileDetails , submitNewUserProfileAction, fetchAllOcrUsersAction, setCreateUserLoaderFlag, fetchOcrListByReviewerType} from "../../../actions/ocrActions";
 import { STATIC_URL } from "../../../helpers/env.js";
 
 @connect((store) => {
@@ -12,11 +12,11 @@ import { STATIC_URL } from "../../../helpers/env.js";
     createUserFlag : store.ocr.createUserFlag,
     curUserSlug : store.ocr.curUserSlug,
     newUserDetails : store.ocr.newUserDetails,
-    allOcrUsers : store.ocr.allOcrUsers,
     newUserProfileDetails : store.ocr.newUserProfileDetails,
     ocrUserProfileFlag : store.ocr.ocrUserProfileFlag,
     loaderFlag : store.ocr.loaderFlag,
     ocrReviwersList : store.ocr.ocrReviwersList,
+    selectedTabId : store.ocr.selectedTabId,
   };
 })
 
@@ -26,7 +26,7 @@ export class OcrAddUser extends React.Component{
     }
 
     closeAddUserPopup(e){
-        this.props.dispatch(fetchAllOcrUsersAction());
+        this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
         this.props.dispatch(closeAddUserPopup());
     }
     saveNewUserDetails(e){
@@ -103,7 +103,7 @@ export class OcrAddUser extends React.Component{
                                 <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                                 <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 
-                                {!this.props.createUserFlag &&
+                                {this.props.createUserFlag &&
                                     <div>
                                         <label className="mandate" for="userRoles">Roles</label>
                                         <label for="userRoles" className="mandate" style={{marginLeft:"100px"}}>Status</label>
