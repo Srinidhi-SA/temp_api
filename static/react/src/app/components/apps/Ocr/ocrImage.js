@@ -6,11 +6,13 @@ import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
+import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
 
 @connect((store) => {
   return {
-    imagePath: store.ocr.imagePath,
+    ocrImgPath: store.ocr.ocrImgPath,
+    originalImgPath: store.ocr.originalImgPath
   };
 })
 
@@ -25,15 +27,13 @@ export class OcrImage extends React.Component {
   }
 
   componentDidMount() {
-    var OriginalImg = document.getElementById("originalOcrImg");
-    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/Invoice_page_i0CBBXq.jpg";
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     var OcrImg = document.getElementById("ocrImg");
     // var imgPath = this.props.imagePath;
     // var imgObj = new Image();
     // imgObj.src = imgPath;
-    OcrImg.src = this.props.imagePath;
+    // OcrImg.src = this.props.ocrImgPath;
     OcrImg.onload = () => {
       // canvas.height = '800';
       // canvas.width = '700';
@@ -46,6 +46,7 @@ export class OcrImage extends React.Component {
     });
   }
   handleCoords = (event) => {
+    document.getElementById("successMsg").innerText = " ";
     let canvasElem = document.getElementById("myCanvas");
     var ctx = canvasElem.getContext("2d");
     let canvasrect = canvasElem.getBoundingClientRect();
@@ -101,7 +102,7 @@ export class OcrImage extends React.Component {
   }
 
   extractText = (x, y) => {
-    document.getElementById("ocrText").value = "";
+    document.getElementById("loader").classList.add("loader_ITE")
     var slug = "img-uw2ii50xd9";
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
@@ -109,14 +110,30 @@ export class OcrImage extends React.Component {
       body: JSON.stringify({ "slug": slug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data })
-        this.setState({ text: data.word })
+        this.setState({ imageDetail: data });
+        this.setState({ text: data.word });
+        document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
     // .catch(function (error) {
     //   bootbox.alert("coordinates are not correct")
     // });
-
+  }
+  
+  updateText = () => {
+    document.getElementById("loader").classList.add("loader_ITE")
+    let index = this.state.imageDetail.index;
+    return fetch(API + '/ocr/ocrimage/update_word/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": "img-uw2ii50xd9", "index": index, "word": this.state.text })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.message === "SUCCESS") {
+          document.getElementById("loader").classList.remove("loader_ITE");
+          document.getElementById("successMsg").innerText = "Updated successfully.";
+        }
+      });
 
   }
   render() {
@@ -148,9 +165,14 @@ export class OcrImage extends React.Component {
               <div className="ocrImgTitle">Original</div>
               <Scrollbars style={{ height: 850 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
-                  <img style={{ height: 800, width: 700 }}
-                    id="originalOcrImg"
-                  />
+                  {this.props.originalImgPath != "" ?
+                    <img style={{ height: 800, width: 700 }}
+                      src={this.props.originalImgPath}
+                      id="originalOcrImg"
+                    />
+                    :
+                    <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                  }
                 </div>
               </Scrollbars>
             </div>
@@ -163,6 +185,7 @@ export class OcrImage extends React.Component {
                   {/* <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
                 <span className="ocrZoom" onClick={this.zoomIn}><i class="fa fa-plus"></i></span>
                  */}
+
                   <canvas
                     onClick={this.handleCoords}
                     id="myCanvas"
@@ -170,9 +193,15 @@ export class OcrImage extends React.Component {
                     height="800"
                     width="700"
                   ></canvas>
+
                   <img style={{ height: 800, width: 700, display: 'none' }}
                     id="ocrImg"
+                    src={this.props.ocrImgPath}
                   />
+                  {this.props.ocrImgPath == "" &&
+                    <img id="loading" style={{ position: 'absolute', top: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                  }
+
                 </div>
               </Scrollbars>
               <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
@@ -181,12 +210,13 @@ export class OcrImage extends React.Component {
                 <span onClick={this.closePopOver} style={{ float: 'right', cursor: 'pointer' }}><i class="fa fa-close"></i></span>
                 </h3>
                 <div class="popover-content">
+                  <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." />
+                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={(e) => this.setState({ text: e.target.value })} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
-                      <button onClick={this.extractText} ><i class="fa fa-check"></i></button>
+                      <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
                       <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
@@ -195,6 +225,7 @@ export class OcrImage extends React.Component {
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
+                    <div className="col-sm-12" id="successMsg" style={{ paddingTop: 5, color: '#ff8c00' }}></div>
                   </div>
                 </div>
               </div>

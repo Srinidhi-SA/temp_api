@@ -5,6 +5,8 @@ export default function reducer(state = {
   OcrProjectList:"",
   imageFlag: false,
   imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png",
+  originalImgPath: "",
+  ocrImgPath:"",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -174,7 +176,9 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
+          originalImgPath: action.data.imagefile ,
+          ocrImgPath: action.data.generated_image,
+          // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
