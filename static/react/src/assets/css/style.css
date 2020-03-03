@@ -22526,3 +22526,6 @@ ul.ocrUploadTabs{
   background-position: center center;
   background-color: rgba(0,0,0,0.2);
 }
+#select_confidence:focus{
+  box-shadow: none !important;
+}
