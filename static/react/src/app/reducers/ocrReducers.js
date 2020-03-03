@@ -31,6 +31,7 @@ export default function reducer(state = {
   allOcrUsers : {},
   ocrReviwersList : {},
   selectedOcrUsers : [],
+  isAllCheckedFlag : false,
   editOcrUserFlag:false,
   selUserSlug:"",
   selUserDetails:{},
@@ -40,6 +41,9 @@ export default function reducer(state = {
   editUserSuccessFlag : false,
   roleFormSel : false,
   detailsFormSel : false,
+  selectedTabId : "none",
+  ocrSearchElement : "",
+  ocrUserPageNum : 1,
 
   search_document:'',
   search_project:'',
@@ -295,7 +299,9 @@ export default function reducer(state = {
       case "SAVE_ALL_OCR_USERS_LIST":{
         return {
           ...state,
-          allOcrUsers : action.json
+          allOcrUsers : action.json,
+          selectedOcrUsers : [],
+          isAllCheckedFlag : false
         }
       }
       break;
@@ -303,6 +309,13 @@ export default function reducer(state = {
         return {
           ...state,
           selectedOcrUsers : action.curSelList
+        }
+      }
+      break;
+      case "SELECT_ALL_USERS":{
+        return {
+          ...state,
+          isAllCheckedFlag : action.flag
         }
       }
       break;
@@ -388,7 +401,33 @@ export default function reducer(state = {
         }
       }
       break;
-
+      case "SELECTED_TAB_ID":{
+        return {
+          ...state,
+          selectedTabId : action.id
+        }
+      }
+      break;
+      case "OCR_USER_SEARCH_ELEMENT":{
+        return {
+          ...state,
+          ocrSearchElement : action.val
+        }
+      }
+      break;
+      case "OCR_USER_PAGE_NUM":{
+        return {
+          ...state,
+          ocrUserPageNum : action.val
+        }
+      }
+      case "CLEAR_USER_SEARCH_ELEMENT":{
+        return {
+          ...state,
+          ocrSearchElement : ""
+        }
+      }
+      break;
       case "SEARCH_OCR_DOCUMENT":
       {
         return {
