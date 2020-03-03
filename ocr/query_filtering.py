@@ -191,7 +191,7 @@ def get_specific_listed_data(
         viewset=None,
         request=None,
         list_serializer=None,
-        reviewerType_id=None
+        role=None
 ):
     """
 
@@ -200,7 +200,7 @@ def get_specific_listed_data(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_specific_reviewer_qyeryset(reviewerType_id)
+    query_set = viewset.get_specific_reviewer_qyeryset(role)
 
     # common filtering
     qcf = QueryCommonFiltering(

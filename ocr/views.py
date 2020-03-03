@@ -26,7 +26,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
@@ -66,7 +66,8 @@ from .serializers import OCRImageSerializer, \
     ReviewerTypeSerializer, \
     ProjectSerializer, \
     ProjectListSerializer, \
-    OCRImageExtractListSerializer
+    OCRImageExtractListSerializer, \
+    GroupSerializer
 
 # ------------------------------------------------------------
 
@@ -139,14 +140,9 @@ class OCRUserView(viewsets.ModelViewSet):
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
-    def get_specific_reviewer_qyeryset(self,reviewerType_id):
-        queryset = OCRUserProfile.objects.filter(reviewer_type=reviewerType_id)
-        users_list = []
-        for query in queryset:
-            users_list.append(query.ocr_user.username)
-
-        user_queryset = User.objects.filter(username__in=users_list)
-        return user_queryset
+    def get_specific_reviewer_qyeryset(self,role):
+        queryset = User.objects.filter(groups=role)
+        return queryset
 
     def get_user_profile_object(self, username=None):
         user = User.objects.get(username=username)
@@ -235,12 +231,12 @@ class OCRUserView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def reviewer_list(self, request, *args, **kwargs):
-        reviewerType_id = request.GET['reviewerType_id']
+        role = request.GET['role']
         return get_specific_listed_data(
             viewset=self,
             request=request,
             list_serializer=OCRUserListSerializer,
-            reviewerType_id=reviewerType_id
+            role=role
         )
 
 # -------------------------------------------------------------------------------
@@ -288,7 +284,11 @@ class OCRUserProfileView(viewsets.ModelViewSet):
         print("updating profile")
         instance = self.get_object_from_all()
         instance.is_active = request.data.get("is_active")
-        instance.reviewer_type = ReviewerType.objects.get(id=request.data.get("reviewer_type"))
+        group_object = Group.objects.get(id=request.data.get("role"))
+        user_group = User.groups.through.objects.get(user=instance.ocr_user)
+        #group.user_set.add(instance.ocr_user)
+        user_group.group = group_object
+        user_group.save()
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
         return JsonResponse({
@@ -340,6 +340,15 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
         serializer = ReviewerTypeSerializer(queryset, many=True)
         return Response(serializer.data)
 
+class GroupListView(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [IsAdminUser]
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = GroupSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 # -------------------------------------------------------------------------------
 

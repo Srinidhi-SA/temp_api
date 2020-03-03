@@ -1,6 +1,9 @@
 from django.db import models
 
 # Create your models here.
+import random
+import string
+from django.template.defaultfilters import slugify
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
@@ -27,9 +30,23 @@ class Task(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in ["Task", self.name, self.slug]])
+
     def code(self):
         """Unique identifier of task"""
         return "{}-{}".format(self.slug, self.id)
+
+    # def save(self, *args, **kwargs):
+    #     """Save Task model"""
+    #     self.generate_slug()
+    #     super(Task, self).save(*args, **kwargs)
+
+    # def generate_slug(self):
+    #     """generate slug"""
+    #     if not self.slug:
+    #         self.slug = slugify(str(self.name) + '-' + ''.join(
+    #             random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
     @property
     def process_config(self):
@@ -50,13 +67,14 @@ class Task(models.Model):
     def submit(self, form, user):
         status = form.cleaned_data['status']
         comments = form.cleaned_data['remarks']
-
+        #status = "approved"
+        #comments = "ReviewerL2 Approved"
         self.is_closed = True
         self.save()
 
         Approval.objects.create(
             task=self,
-            approval_by=user,
+            approval_by=self.request.user,
             status=status,
             comments=comments
         )
@@ -113,13 +131,14 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        Task.objects.create(
+        obj = Task.objects.create(
             name=state['name'],
             slug=initial,
             assigned_to=group,
             content_type=content_type,
             object_id=self.id
         )
+        obj.submit(state['form'],user=None)
 
 class ReviewRequest(SimpleFlow):
     # assign your process here
