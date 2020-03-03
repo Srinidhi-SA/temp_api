@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button} from "react-bootstrap";
 import store from "../../../store";
-import { fetchAllOcrUsersAction, closeEditUserModalAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, setCreateUserLoaderFlag, submitEditedUserRolesAction, editUserSuccess, editDetailsFormAction, editRolesFormAction} from "../../../actions/ocrActions";
+import { fetchAllOcrUsersAction, closeEditUserModalAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, setCreateUserLoaderFlag, submitEditedUserRolesAction, editDetailsFormAction, editRolesFormAction, fetchOcrListByReviewerType} from "../../../actions/ocrActions";
 import { STATIC_URL } from "../../../helpers/env.js";
 
 @connect((store) => {
@@ -16,6 +16,7 @@ import { STATIC_URL } from "../../../helpers/env.js";
     detailsFormSel : store.ocr.detailsFormSel,
     selUserSlug : store.ocr.selUserSlug,
     ocrReviwersList : store.ocr.ocrReviwersList,
+    selectedTabId : store.ocr.selectedTabId,
   };
 })
 
@@ -43,7 +44,7 @@ export class OcrEditUser extends React.Component{
     }
 
     closeEditUserModal(){
-        this.props.dispatch(fetchAllOcrUsersAction());
+        this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
         this.props.dispatch(enableEditingUserAction(false));
         this.props.dispatch(closeEditUserModalAction(false));
     }
@@ -51,10 +52,7 @@ export class OcrEditUser extends React.Component{
         this.props.dispatch(enableEditingUserAction(true));
     }
     saveuserEditedDetails(e){
-        let name = e.target.name;
-        let val = e.target.value;
-        console.log(name,val)
-        this.props.dispatch(SaveEditedUserDetailsAction(name,val));
+        this.props.dispatch(SaveEditedUserDetailsAction(e.target.name,e.target.value));
     }
     submitEditedForms(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -70,19 +68,30 @@ export class OcrEditUser extends React.Component{
         else if(this.props.roleFormSel && this.props.detailsFormSel){
             $("#resetMsg")[0].innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true))
-            this.props.dispatch(submitEditUserDetailsAction(this.props.editedUserDetails));
 
-            let allowedVariables = ["reviewer_type","is_active"];
-            let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
+            let allowedVariables1 = ["email","first_name","last_name","username"];
+            let filteredVariables1 = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables1.includes(key)).reduce((obj, key) => {
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
             }, {});
-            this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.selUserSlug));
+            this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
+
+            let allowedVariables2 = ["reviewer_type","is_active"];
+            let filteredVariables2 = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables2.includes(key)).reduce((obj, key) => {
+                obj[key] = this.props.editedUserDetails[key];
+                return obj;
+            }, {});
+            this.props.dispatch(submitEditedUserRolesAction(filteredVariables2,this.props.selUserSlug));
         }
         else if(this.props.detailsFormSel){
             $("#resetMsg")[0].innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true))
-            this.props.dispatch(submitEditUserDetailsAction(this.props.editedUserDetails));
+            let allowedVariables1 = ["email","first_name","last_name","username"];
+            let filteredVariables1 = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables1.includes(key)).reduce((obj, key) => {
+                obj[key] = this.props.editedUserDetails[key];
+                return obj;
+            }, {});
+            this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
         }
         else if(this.props.roleFormSel){
             $("#resetMsg")[0].innerText = ""
@@ -92,6 +101,7 @@ export class OcrEditUser extends React.Component{
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
             }, {});
+            this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.selUserSlug));
         }
     }
 
