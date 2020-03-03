@@ -6,11 +6,13 @@ import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
+import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
 
 @connect((store) => {
   return {
-    imagePath: store.ocr.imagePath,
+    ocrImgPath: store.ocr.ocrImgPath,
+    originalImgPath: store.ocr.originalImgPath
   };
 })
 
@@ -19,21 +21,19 @@ export class OcrImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: "test",
+      text: "",
       imageDetail: "",
     }
   }
 
   componentDidMount() {
-    var OriginalImg = document.getElementById("originalOcrImg");
-    OriginalImg.src = "https://madvisor-dev.marlabsai.com/media/ocrData/Invoice_page_i0CBBXq.jpg";
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     var OcrImg = document.getElementById("ocrImg");
     // var imgPath = this.props.imagePath;
     // var imgObj = new Image();
     // imgObj.src = imgPath;
-    OcrImg.src = this.props.imagePath;
+    // OcrImg.src = this.props.ocrImgPath;
     OcrImg.onload = () => {
       // canvas.height = '800';
       // canvas.width = '700';
@@ -46,6 +46,7 @@ export class OcrImage extends React.Component {
     });
   }
   handleCoords = (event) => {
+    document.getElementById("successMsg").innerText = " ";
     let canvasElem = document.getElementById("myCanvas");
     var ctx = canvasElem.getContext("2d");
     let canvasrect = canvasElem.getBoundingClientRect();
@@ -101,35 +102,77 @@ export class OcrImage extends React.Component {
   }
 
   extractText = (x, y) => {
-    var slug= "img-uw2ii50xd9";
+    document.getElementById("loader").classList.add("loader_ITE")
+    var slug = "img-uw2ii50xd9";
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify({ "slug": slug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data })
-        this.setState({ text: data.word })
+        this.setState({ imageDetail: data });
+        this.setState({ text: data.word });
+        document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
     // .catch(function (error) {
     //   bootbox.alert("coordinates are not correct")
     // });
-
+  }
+  
+  updateText = () => {
+    document.getElementById("loader").classList.add("loader_ITE")
+    let index = this.state.imageDetail.index;
+    return fetch(API + '/ocr/ocrimage/update_word/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": "img-uw2ii50xd9", "index": index, "word": this.state.text })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.message === "SUCCESS") {
+          document.getElementById("loader").classList.remove("loader_ITE");
+          document.getElementById("successMsg").innerText = "Updated successfully.";
+        }
+      });
 
   }
   render() {
     return (
       <div>
         <div className="row">
+          <div className="col-sm-12">
+            <button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal_badscan">
+              <i class="fa fa-info-circle"></i> Bad Scan
+            </button>
+            <div class="form-group pull-right ocr_highlightblock">
+              <label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
+              <select class="form-control inline-block 1-100" id="select_confidence">
+                <option value="1">10</option>
+                <option value="2">20</option>
+                <option value="3">30</option>
+                <option value="4">40</option>
+                <option value="5">50</option>
+                <option value="6">60</option>
+                <option value="7">70</option>
+                <option value="8">80</option>
+                <option value="9">90</option>
+                <option value="10">100</option>
+              </select>
+            </div>
+          </div>
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
               <Scrollbars style={{ height: 850 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
-                  <img style={{ height: 800, width: 700 }}
-                    id="originalOcrImg"
-                  />
+                  {this.props.originalImgPath != "" ?
+                    <img style={{ height: 800, width: 700 }}
+                      src={this.props.originalImgPath}
+                      id="originalOcrImg"
+                    />
+                    :
+                    <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                  }
                 </div>
               </Scrollbars>
             </div>
@@ -142,6 +185,7 @@ export class OcrImage extends React.Component {
                   {/* <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
                 <span className="ocrZoom" onClick={this.zoomIn}><i class="fa fa-plus"></i></span>
                  */}
+
                   <canvas
                     onClick={this.handleCoords}
                     id="myCanvas"
@@ -149,9 +193,15 @@ export class OcrImage extends React.Component {
                     height="800"
                     width="700"
                   ></canvas>
+
                   <img style={{ height: 800, width: 700, display: 'none' }}
                     id="ocrImg"
+                    src={this.props.ocrImgPath}
                   />
+                  {this.props.ocrImgPath == "" &&
+                    <img id="loading" style={{ position: 'absolute', top: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                  }
+
                 </div>
               </Scrollbars>
               <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
@@ -160,20 +210,22 @@ export class OcrImage extends React.Component {
                 <span onClick={this.closePopOver} style={{ float: 'right', cursor: 'pointer' }}><i class="fa fa-close"></i></span>
                 </h3>
                 <div class="popover-content">
+                  <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." />
+                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={(e) => this.setState({ text: e.target.value })} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
-                      <button onClick={this.extractText} ><i class="fa fa-check"></i></button>
+                      <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
                       <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
-                      <ul class="dropdown-menu" style={{left: -110}}>
+                      <ul class="dropdown-menu" style={{ left: -110 }}>
                         <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
+                    <div className="col-sm-12" id="successMsg" style={{ paddingTop: 5, color: '#ff8c00' }}></div>
                   </div>
                 </div>
               </div>
@@ -184,6 +236,29 @@ export class OcrImage extends React.Component {
         <div className="row">
           <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
         </div>
+
+        <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Send feedback to the team</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="txt_bscan">Tell us how would we improve?</label>
+                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" />
+                  <p>For technical support, please contact info@madvisor-dev.marlabs.com</p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     )
   }

@@ -4,7 +4,9 @@ export default function reducer(state = {
   OcrDataList: "",
   OcrProjectList:"",
   imageFlag: false,
-  imagePath: "https://madvisor-dev.marlabsai.com/media/ocrData/gen_image.png",
+  imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png",
+  originalImgPath: "",
+  ocrImgPath:"",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -47,7 +49,8 @@ export default function reducer(state = {
 
   search_document:'',
   search_project:'',
-
+  selected_project_slug:'',
+  selected_project_name:''
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -189,7 +192,9 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
+          originalImgPath: action.data.imagefile ,
+          ocrImgPath: action.data.generated_image,
+          // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
@@ -441,6 +446,16 @@ export default function reducer(state = {
         return {
           ...state,
           search_project:action.elem
+        }
+      }
+      break;
+      case "SELECTED_PROJECT_SLUG":
+      {
+        return {
+          ...state,
+          selected_project_slug:action.slug,
+          selected_project_name:action.name
+
         }
       }
       break;

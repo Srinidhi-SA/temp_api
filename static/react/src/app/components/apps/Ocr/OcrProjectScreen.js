@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, Redirect } from "react-router-dom";
-import { saveDocumentPageFlag, getOcrProjectsList } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag, getOcrProjectsList,selectedProjectSlug } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -16,8 +16,9 @@ import { STATIC_URL } from '../../../helpers/env';
 
 export class OcrProjectScreen extends React.Component {
 
-   handleDocumentPageFlag = () => {
+   handleDocumentPageFlag (slug,name){
       this.props.dispatch(saveDocumentPageFlag(true));
+      this.props.dispatch(selectedProjectSlug(slug,name))
    }
    componentWillMount = () => {
       this.props.dispatch(getOcrProjectsList())
@@ -48,7 +49,7 @@ export class OcrProjectScreen extends React.Component {
                <tr id={index}>
                   <td><i class="fa fa-briefcase"></i></td>
                   <td>
-                     <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag}>{item.name}</Link>
+                     <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link>
                   </td>
                   <td>{new Date(item.created_at).toLocaleString().split(',')[0]}</td>
                   <td>{item.slug}</td>

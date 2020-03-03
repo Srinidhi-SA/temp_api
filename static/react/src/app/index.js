@@ -48,6 +48,8 @@ import {LexClass} from "./components/apps/lex";
 import {OcrMain} from "./components/apps/Ocr/OcrMain";
 import {OcrProject} from "./components/apps/Ocr/OcrProject";
 import {OcrManageUser} from "./components/apps/Ocr/OcrMangeUser";
+import {OcrConfigure} from "./components/apps/Ocr/OcrConfigure";
+import {OcrReviewer} from "./components/apps/Ocr/OcrReviewer";
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -336,6 +338,8 @@ class App extends React.Component {
             <Route exact path="/apps/ocr-mq44ewz7bp/project/" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/project/:imageSlug" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/manageUser/" component={OcrManageUser}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/configure/" component={OcrConfigure}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/reviewer/" component={OcrReviewer}/>
             <Route exact path="/user-profile" component={Profile}/>
             <Route exact path="/signals" render={signals}/> 
             <Route exact path="/signals/:slug" render={signals}/>

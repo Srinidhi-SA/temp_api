@@ -20823,7 +20823,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
     border-color: rgb(153, 217, 168);
     box-shadow: rgb(153, 217, 168) 0px 0px 0px 8px inset;
 }
-
+.ocr_configure { background:#FFFFFF; border-radius:0 0 10px 10px }
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
@@ -22395,10 +22395,9 @@ canvas {
 
 #popoverOcr{
 width: 250px;
-height: 90px;
 background: #fff;
 margin-left: -199px;
-margin-top: -5px;
+margin-top: -25px;
 }
 #popoverOcr .popover-title{
   background-color: #f2f2f2;
@@ -22428,8 +22427,8 @@ width: 24px;
 }
 /* #originalOcrImg:hover + #myCanvas{
   width: calc(700px + 200px) !important;
-}
-#myCanvas:hover{
+} */
+/* #myCanvas:hover{
   width: calc(700px + 200px) !important;
 } */
 .ocrImgDiv:hover{
@@ -22570,4 +22569,21 @@ ul.ocrUploadTabs{
   border-radius: 10px;
   min-width: 70px;
   text-align: center;
+#popoverOcr .popover-content{
+  padding: 9px 14px;
+  height: 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.loader_ITE{
+  width: 100%;
+  background-image: url(../images/loader_ITE.gif);
+  background-repeat: no-repeat;
+  height: 75px;
+  position: absolute;
+  z-index: 99999;
+  left: 0px;
+  background-position: center center;
+  background-color: rgba(0,0,0,0.2);
 }

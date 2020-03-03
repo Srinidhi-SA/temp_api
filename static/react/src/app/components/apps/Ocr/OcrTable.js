@@ -2,18 +2,20 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles,saveImagePageFlag,saveDocumentPageFlag,saveImageDetails,storeOcrSortElements,updateCheckList,storeOcrFilterStatus,storeOcrFilterConfidence,storeOcrFilterAssignee,storeDocSearchElem} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../../store';
+import { store } from '../../../store'; 
 import { Modal,Pagination,Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import {Checkbox} from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
+import {API} from "../../../helpers/env"
 
 @connect((store) => {
   return {
     login_response: store.login.login_response,
     OcrDataList: store.ocr.OcrDataList,
     documentFlag: store.ocr.documentFlag,
+    projectName:store.ocr.selected_project_name
   };
 })
 
@@ -42,11 +44,21 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
-  handleImagePageFlag=()=>{
-    this.props.dispatch(saveImageDetails());
+  handleImagePageFlag=(slug)=>{
+    this.getImage(slug)
     this.props.dispatch(saveImagePageFlag(true));
   }
-
+  
+  getImage=(slug)=>{
+    return fetch(API + '/ocr/ocrimage/get_images/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": slug })
+    }).then(response => response.json())
+      .then(data => {
+        this.props.dispatch(saveImageDetails(data));
+      });
+  }
   sortOcrList(sortBy,sortOrder){
     this.props.dispatch(storeOcrSortElements(sortBy,sortOrder))
     this.props.dispatch(getOcrUploadedFiles())
@@ -83,7 +95,7 @@ export class OcrTable extends React.Component {
         'slug':this.state.checkedList
       }
     this.setState({showRecognizePopup:true,loader:true})
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/extract/",{
+    return fetch(API + '/ocr/ocrimage/extract/',{
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
@@ -104,7 +116,6 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
   render() {
-    
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
@@ -157,11 +168,19 @@ export class OcrTable extends React.Component {
           <td>
            <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
           </td>
-           <td><Link to={item.name} onClick={this.handleImagePageFlag}>{item.name}</Link></td>
+          <td>
+						<i class="fa fa-file-text"></i>
+					</td>
+           <td><Link to={item.name} onClick={()=>{this.handleImagePageFlag(item.slug)}}>{item.name}</Link></td>
           <td>{item.status}</td>
+          <td>{item.flag}</td>
+          <td>{item.fields}</td>
           <td>{item.confidence}</td>
-          <td>{}</td>
-          <td>{item.comment}</td>
+          <td>{item.assignee}</td>
+          <td>{item.created_by}</td>
+          <td>{item.modified_by}</td>
+
+          <td>{item.modified_at}</td>
         </tr>
         )}
       ) 
@@ -176,7 +195,7 @@ export class OcrTable extends React.Component {
             <div class="col-sm-6">
                 <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-                <li class="breadcrumb-item active"><a href="#">FormReturn OMR</a></li>
+                <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
                 </ol> 					
 						</div>
             <div class="col-sm-6 text-right">
@@ -191,17 +210,17 @@ export class OcrTable extends React.Component {
             </div>
           </div>
           <div className="table-responsive noSwipe xs-pb-10">
-
-               {/* Instead of documentFlag add new flag and use  to show either table or empty panel for */}
-            {this.props.documentFlag?(<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
+            {/* if total_data_count <=1 then only render table else show panel box */}
+            { this.props.OcrDataList != ''? this.props.OcrDataList.total_data_count>=1 ? (<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
               <thead>
                 <tr>
                   <th></th>
-                  <th>Name
+                  <th><i class="fa fa-file-text-o"></i></th>
+                  <th>NAME
                   </th>
                   <th class="dropdown" >
                     <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
-                      <span>Status</span> <b class="caret"></b>
+                      <span>STATUS</span> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu scrollable-menu">
                       <li><a class="cursor" onClick={this.filterOcrList.bind(this,'','status')} name='all'>All</a></li>
@@ -210,9 +229,23 @@ export class OcrTable extends React.Component {
                       <li><a class="cursor" onClick={this.filterOcrList.bind(this,3,'status')} name="ready to export">Ready to Export</a></li>
                     </ul>              
                   </th>
+                  <th>
+				       	Template
+				      	</th>
+                <th class="dropdown" >
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+					<span>Fields</span> <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu scrollable-menu"> 
+					 
+					<li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+					<li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+					<li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+					</ul>
+					</th>
                   <th class="dropdown" >
                     <a href="#" data-toggle="dropdown"  class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                      <span>Confidence Level</span> <b class="caret"></b>
+                      <span>ACCURACY</span> <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu scrollable-menu">
                       <li><a class="cursor"   onClick={this.filterOcrList.bind(this,'','confidence')}  name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
@@ -230,26 +263,27 @@ export class OcrTable extends React.Component {
                       <li><a class="cursor" name="ready to export">Assignee 2</a></li>
                     </ul>
                   </th>
-                  <th>Notes</th>
+                  <th>Created</th>
+					<th>Modified</th>
+					<th>Modified By</th>
                 </tr>
               </thead>
               <tbody className="no-border-x">
                 {OcrTableHtml}
               </tbody>
-            </table>):<div class="panel">
-			 
-       <div class="panel-body">
-         <div class="xs-mt-3 xs-mb-3 text-center">
-          
-         <div class="icon-container">
-           <div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
-           <span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
-         </div>
-          
-          
-         </div>
-       </div>
-       </div>
+            </table>)
+            :
+            (<div class="panel">
+              <div class="panel-body">
+                <div class="xs-mt-3 xs-mb-3 text-center">          
+                  <div class="icon-container">
+                  <div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
+                  <span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
+                  </div>         
+                </div>
+              </div>
+            </div>)
+           : (<img id="loading" style={{position:'relative',left:'500px'}} src={ STATIC_URL + "assets/images/Preloader_2.gif" } />)
        }
               {paginationTag}
               {ShowModel}

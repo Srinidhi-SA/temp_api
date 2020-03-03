@@ -5827,12 +5827,8 @@ def get_stockdatasetfiles(request, slug=None):
     # if slug is None:
     #     return JsonResponse({"message": "Failed"})
 
-    # stockDataType = request.GET.get('stockDataType')
-    # stockName = request.GET.get('stockName')
-    # stockDataType = 'historical'
-    # stockName = 'twtr'
-    stockDataType = ''
-    stockName = ''
+    stockDataType = request.GET.get('stockDataType')
+    stockName = request.GET.get('stockName')
 
     return return_crawled_json_data(stockDataType, stockName, slug)
 

@@ -32,9 +32,10 @@ export function saveDocumentPageFlag(flag) {
 	}
 }
 
-export function saveImageDetails() {
+export function saveImageDetails(data) {
 	return {
 		type: "SAVE_IMAGE_DETAILS",
+		data
 	}
 }
 
@@ -96,21 +97,20 @@ export function getOcrUploadedFiles(pageNo){
 }
 
 function fetchUploadedFiles(pageNo=1,token){
-	let sortBy = store.getState().ocr.ocrFilesSortOn;
-	let sortOrder = store.getState().ocr.ocrFilesSortType;
+	let filter_assignee=store.getState().ocr.filter_assignee
 	let filter_status=store.getState().ocr.filter_status
 	let filter_confidence=store.getState().ocr.filter_confidence
-	let filter_assignee=store.getState().ocr.filter_assignee
 	let search_document=store.getState().ocr.search_document
+	let selected_project_slug=store.getState().ocr.selected_project_slug
 	
 	if(search_document==''){
-		return fetch(API + '/ocr/ocrimage/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+		return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
 	else{
-	return fetch(API + '/ocr/ocrimage/?name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -660,3 +660,11 @@ export function clearUserSearchElementAction(){
 	}
 }
 
+
+
+export function selectedProjectSlug(slug,name){
+	return{
+		type:"SELECTED_PROJECT_SLUG",
+		slug,name
+	}
+}

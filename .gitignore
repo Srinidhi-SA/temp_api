@@ -38,5 +38,6 @@ scripts/data/
 .env
 api/migrations/
 ocr/migrations/
+ocrflow/migrations/
 *.egg
 ocr/ITE/ir/
