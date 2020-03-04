@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from ocrflow.models import Task, SimpleFlow, Approval, ReviewRequest
+from ocrflow.models import Task, SimpleFlow, Approval, ReviewRequest, \
+    Approval
 
 class TaskAdmin(admin.ModelAdmin):
     """
@@ -20,13 +21,23 @@ class TaskAdmin(admin.ModelAdmin):
 
 class ReviewRequestAdmin(admin.ModelAdmin):
     #form = BugForm
-    list_display = ('ocr_image','status')
+    list_display = ('ocr_image', 'status')
 
     def get_queryset(self, request):
         queryset = super(ReviewRequestAdmin, self).get_queryset(request)
         #queryset = queryset.order_by('-recorded_at')
         return queryset
 
+class ApprovalAdmin(admin.ModelAdmin):
+    #form = BugForm
+    list_display = ('task', 'status', 'comments')
+
+    def get_queryset(self, request):
+        queryset = super(ApprovalAdmin, self).get_queryset(request)
+        #queryset = queryset.order_by('-recorded_at')
+        return queryset
+
 
 admin.site.register(ReviewRequest,ReviewRequestAdmin)
+admin.site.register(Approval, ApprovalAdmin)
 admin.site.register(Task, TaskAdmin)
