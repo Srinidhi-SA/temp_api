@@ -22543,7 +22543,7 @@ ul.ocrUploadTabs{
   float: left;
   margin-bottom: 10px;
 }
-.ocrUserFormLabel input,select{
+.ocrUserFormLabel input,.ocrUserFormLabel select{
   border: 1px solid #cdcdcd;
   background-color: white;
   height: 32px;
@@ -22554,7 +22554,7 @@ ul.ocrUploadTabs{
   margin-left: 12px;
   margin-bottom: 15px;
 }
-.ocrUserFormLabel input[disabled],select[disabled]{
+.ocrUserFormLabel input[disabled],.ocrUserFormLabel select[disabled]{
   -webkit-appearance: none;
   color: grey;
   cursor: not-allowed;
