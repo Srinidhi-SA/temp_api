@@ -229,13 +229,12 @@ class OCRUserListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
         ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
-        try:
-            serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
-            serialized_data['ocr_user'] = True
-        except:
+        serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+        
+        if len(serialized_data['ocr_profile']["role"]) == 0:
             serialized_data['ocr_user'] = False
-        # serialized_data['reviewer_type'] = ocr_profile_obj.reviewer_type.type if ocr_profile_obj is not None else None
-        # print(serialized_data)
+        else:
+            serialized_data['ocr_user'] = True
 
         return serialized_data
 
