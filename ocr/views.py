@@ -291,10 +291,13 @@ class OCRUserProfileView(viewsets.ModelViewSet):
         instance = self.get_object_from_all()
         instance.is_active = request.data.get("is_active")
         group_object = Group.objects.get(id=request.data.get("role"))
-        user_group = User.groups.through.objects.get(user=instance.ocr_user)
-        #group.user_set.add(instance.ocr_user)
-        user_group.group = group_object
-        user_group.save()
+        try:
+            user_group = User.groups.through.objects.get(user=instance.ocr_user)
+            user_group.group = group_object
+            user_group.save()
+        except:
+            group_object.user_set.add(instance.ocr_user)
+
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
         return JsonResponse({
