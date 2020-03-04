@@ -40,10 +40,12 @@ export class OcrAddUser extends React.Component{
         
         if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" || $("#password1")[0].value === "" || $("#password2")[0].value === ""){
             $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+        }else if( $("#first_name")[0].value.length < 4 || $("#last_name")[0].value.length < 4 || $("#username")[0].value.length <4 ){
+            $("#resetMsg")[0].innerText = "Please ensure names has at least 4 characters"
         }else if(!mailFormat.test($("#email")[0].value)){
-            $("#resetMsg")[0].innerText = "Invalid Email Format"
+            $("#resetMsg")[0].innerText = "Invalid Email Id"
         }else if(!paswdFormat.test($("#password1")[0].value)){
-            $("#resetMsg")[0].innerText = "Password must contain atleast 1 number and a special character"
+            $("#resetMsg")[0].innerText = "Please enter a strong password"
         }else if($("#password1")[0].value != $("#password2")[0].value){
             $("#resetMsg")[0].innerText = "Password and Confirm Passwords doesnot match"
         }else{
@@ -55,13 +57,13 @@ export class OcrAddUser extends React.Component{
     saveUserStatus(e){
         let name=e.target.name;
         let value = e.target.value;
-        if(name==="reviewer_type")
+        if(name==="role")
             this.props.dispatch(saveNewUserProfileDetails(name,parseFloat(value)));
         else
             this.props.dispatch(saveNewUserProfileDetails(name,value));
     }
     submitNewUserStatus(e){
-        if($("#reviewer_type")[0].value === "none" || $("#is_active")[0].value === "none"){
+        if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"){
             $("#resetMsg")[0].innerText = "Please select mandatory fields"
         }else{
             $("#resetMsg")[0].innerText = ""
@@ -75,12 +77,12 @@ export class OcrAddUser extends React.Component{
         let optionsTemp = [];
         optionsTemp.push(<option id="none" value="none">--select--</option>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            optionsTemp.push(<option key={this.props.ocrReviwersList[i].type} value={this.props.ocrReviwersList[i].id}>
-                        {this.props.ocrReviwersList[i].type}
+            optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].id}>
+                        {this.props.ocrReviwersList[i].name}
                     </option>);
         }
             return(
-                <Modal show={this.props.addUserPopupFlag} onHide={this.closeAddUserPopup.bind(this)}>
+                <Modal show={this.props.addUserPopupFlag} onHide={this.props.createUserFlag?"":this.closeAddUserPopup.bind(this)}>
                     <Modal.Header>
                         <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
                         <h4 className="modal-title">Add User</h4>
@@ -88,18 +90,18 @@ export class OcrAddUser extends React.Component{
                     <Modal.Body id="addUsers">
                         {!this.props.ocrUserProfileFlag &&
                             <div className="ocrUserFormLabel" style={{position:"absolute"}}>
-                                <label className="mandate" for="first_name">First Name</label>
-                                <label className="mandate" for="last_name" style={{marginLeft:"100px"}}>Last Name</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="first_name">First Name</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="last_name" style={{marginLeft:"100px"}}>Last Name</label>
                                 <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 <input type="text" id="last_name" name="last_name" placeholder="Last Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 
-                                <label className="mandate" for="username">User Name</label>
-                                <label className="mandate" for="email" style={{marginLeft:"100px"}}>Email</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="username">User Name</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="email" style={{marginLeft:"100px"}}>Email</label>
                                 <input type="text" id="username" name="username" placeholder="User Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                                 <input  type="email" id="email" name="email" placeholder="Email" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                                 
-                                <label className="mandate" for="password">Password</label>
-                                <label className="mandate" for="confirmPassword" style={{marginLeft:"100px"}}>Confirm Password</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="password">Password</label>
+                                <label className={this.props.createUserFlag?"":"mandate"} for="confirmPassword" style={{marginLeft:"100px"}}>Confirm Password</label>
                                 <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                                 <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 
@@ -107,7 +109,7 @@ export class OcrAddUser extends React.Component{
                                     <div>
                                         <label className="mandate" for="userRoles">Roles</label>
                                         <label for="userRoles" className="mandate" style={{marginLeft:"100px"}}>Status</label>
-                                        <select name="reviewer_type" id="reviewer_type" onChange={this.saveUserStatus.bind(this)}>
+                                        <select name="role" id="role" onChange={this.saveUserStatus.bind(this)}>
                                             {optionsTemp}
                                         </select>
                                         <select name="is_active" id="is_active" onChange={this.saveUserStatus.bind(this)}>
@@ -116,6 +118,10 @@ export class OcrAddUser extends React.Component{
                                             <option value="False" id="inactive">Inactive</option>
                                         </select>
                                     </div>
+                                }
+                                {!this.props.ocrUserProfileFlag && !this.props.createUserFlag &&
+                                    <p style={{marginTop: "75px",marginLeft: "15px"}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
+                                    </p>
                                 }
                             </div>
                         }

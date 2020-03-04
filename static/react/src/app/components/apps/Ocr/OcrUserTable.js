@@ -28,9 +28,9 @@ export class OcrUserTable extends React.Component{
     }
 
     componentWillMount(){
+        this.props.dispatch(getReviewersListAction());
         this.props.dispatch(setUserTableLoaderFlag(true));
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction()):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId)));
-        this.props.dispatch(getReviewersListAction());
     }
 
     openAddUserPopup(e){
@@ -112,6 +112,7 @@ export class OcrUserTable extends React.Component{
     clearSearchVal(){
         document.getElementById("searchOcrUser").value=""
         this.props.dispatch(clearUserSearchElementAction());
+        this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
     }
     render(){
         let paginationTag = null;
@@ -137,24 +138,25 @@ export class OcrUserTable extends React.Component{
             manageUsersTable = 
                 <table className = "table manageUserTable">
                     <thead><tr>
-                        <th><Checkbox id="selectAll" value={this.props.allOcrUsers.data} onChange={this.selectAllUsers.bind(this)} checked={this.props.isAllCheckedFlag}/></th>
-                        <th>FIRST NAME</th><th>LAST NAME</th>
-                        <th>EMAIL</th><th>ROLES</th>
-                        <th>DATE JOINED</th><th>LAST LOGIN</th>
-                        <th>STATUS</th>
+                        <td><Checkbox id="selectAll" value={this.props.allOcrUsers.data} onChange={this.selectAllUsers.bind(this)} checked={this.props.isAllCheckedFlag}/></td>
+                        <td>FIRST NAME</td><td>LAST NAME</td>
+                        <td>EMAIL</td><td>ROLES</td>
+                        <td>DATE JOINED</td><td>LAST LOGIN</td>
+                        <td>STATUS</td>
                     </tr></thead>
                     <tbody>
                         {this.props.allOcrUsers.data.map((item, index) => {
+                            let rolesGp = this.props.ocrReviwersList;
                             if(item.ocr_user){
                                 return (
                                     <tr>
                                         <td><Checkbox id={item.ocr_profile.slug} value={item.username} onChange={this.saveSelectedUser.bind(this)} checked={this.props.selectedOcrUsers.includes(item.username)}></Checkbox></td>
-                                        <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c"}}>{item.first_name}</td>
+                                        <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c",cursor:"pointer"}}>{item.first_name}</td>
                                         <td>{item.last_name}</td>
                                         <td>{item.email}</td>
-                                        <td>{item.ocr_profile.reviewer_type}</td>
-                                        <td>{item.date_joined.slice(0,10)}</td>
-                                        <td>{item.last_login}</td>
+                                        <td>{(item.ocr_profile.role).length != 0?rolesGp.filter(i=> (i.id === item.ocr_profile.role[0]))[0].name:""} </td>
+                                        <td>{new Date(item.date_joined).toLocaleDateString()}</td>
+                                        <td>{item.last_login != null? new Date(item.last_login).toLocaleString():""}</td>
                                         <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
                                     </tr>
                                 )}
@@ -167,7 +169,7 @@ export class OcrUserTable extends React.Component{
         let tabOptions=[];
         tabOptions.push(<li className ="active"><a data-toggle="tab" id="none" name="none">All</a></li>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            tabOptions.push(<li><a data-toggle="tab" id={this.props.ocrReviwersList[i].id} name={this.props.ocrReviwersList[i].type}>{this.props.ocrReviwersList[i].type}</a></li>);
+            tabOptions.push(<li><a data-toggle="tab" id={this.props.ocrReviwersList[i].id} name={this.props.ocrReviwersList[i].name}>{this.props.ocrReviwersList[i].name}</a></li>);
         }
         return(
             <div>
@@ -201,12 +203,12 @@ export class OcrUserTable extends React.Component{
                         </div>
                         <div className="pull-right searchOcrUser">
                             <input type="text" id="searchOcrUser" className="form-control btn-rounded" placeholder="Search User..." onKeyUp={this.handleSearchElement.bind(this)} />
-                            <button className="close-icon"  style={{paddingLeft: "60%",paddingTop: "0px"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
+                            <button className="close-icon"  style={{paddingTop: "0px", marginLeft:"59%"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
                         </div>
                     </div>
                 </div>
                 <div className = "table-responsive box-shadow">
-                        {manageUsersTable}
+                    {manageUsersTable}
                 </div>
                 <div className="ma-datatable-footer"  id="idPagination">
                     <div className="dataTables_paginate">

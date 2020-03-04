@@ -343,13 +343,13 @@ function fetchOcrListByReviewerTypeAPI(id,pageNo,token){
 	}
 	let searchElement = store.getState().ocr.ocrSearchElement
 	if(searchElement!=""){
-		return fetch(API+"/ocr/user/reviewer_list/?reviewerType_id="+id+"&name="+searchElement+"&page_number="+pageNo, {
+		return fetch(API+"/ocr/user/reviewer_list/?role="+id+"&first_name="+searchElement+"&page_number="+pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 		}).then(response => Promise.all([response, response.json()]));
 	}
 	else{
-		return fetch(API+"/ocr/user/reviewer_list/?reviewerType_id="+id+"&page_number="+ pageNo,{
+		return fetch(API+"/ocr/user/reviewer_list/?role="+id+"&page_number="+ pageNo,{
 			method : "get",
 			headers : getHeaderForJson(token),
 		}).then(response => Promise.all([response,response.json()]));
@@ -368,7 +368,7 @@ export function getReviewersListAction(){
 	}
 }
 function getReviewersListApi(token){
-	return fetch(API+"/ocr/reviewer_type/",{
+	return fetch(API+"/ocr/groups/",{
 		method : "get",
 		headers : getHeader(token),
 	}).then(response => Promise.all([response,response.json()]));
@@ -469,11 +469,11 @@ export function deleteOcrUserAction(userNames){
 	return (dispatch) => {
 		return deleteOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.deleted){
-				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
 				store.getState().ocr.selectedTabId === "none"?
 					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
 					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
-				dispatch(clearUserFlagAction());
+					bootbox.alert(statusMessages("success",json.message,"small_mascot"));
+					dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.deleted){
 				bootbox.alert(statusMessages("warning","Unable to delete","small_mascot"));
 			}else{
@@ -495,11 +495,11 @@ export function activateOcrUserAction(userNames){
 	return (dispatch) => {
 		return activateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
-				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
 				store.getState().ocr.selectedTabId === "none"?
 					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
 					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
-				dispatch(clearUserFlagAction());
+					bootbox.alert(statusMessages("success",json.message,"small_mascot"));
+					dispatch(clearUserFlagAction());
 			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable activate users","small_mascot"));
 			}else{
@@ -521,11 +521,11 @@ export function deActivateOcrUserAction(userNames){
 	return (dispatch) => {
 		return deActivateOcrActionAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
-				bootbox.alert(statusMessages("success",json.message,"small_mascot"));
 				store.getState().ocr.selectedTabId === "none"?
 					dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
 					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId),store.getState().ocr.ocrUserPageNum));
-				dispatch(clearUserFlagAction());
+					dispatch(clearUserFlagAction());
+					bootbox.alert(statusMessages("success",json.message,"small_mascot"));
 			}else if(response.status === 200 && !json.updated){
 				bootbox.alert(statusMessages("warning","Unable deactivate users","small_mascot"));
 			}else{
@@ -548,7 +548,7 @@ export function openEditUserModalAction(flag,userSlug,userDt){
 	edtDet.last_name = userDt.last_name;
 	edtDet.username = userDt.username;
 	edtDet.email = userDt.email;
-	edtDet.reviewer_type = userDt.ocr_profile.reviewer_type;
+	edtDet.role = userDt.ocr_profile.role[0];
 	edtDet.is_active = userDt.ocr_profile.active?"True":"False";
 
 	return {
@@ -616,10 +616,11 @@ export function submitEditedUserRolesAction(editedUserDt,slug){
 	}
 }
 function submitEditedUserRolesAPI(data,slug,token){
+	let curDt ={"is_active":data.is_active,"role":parseFloat(data.role)}
 	return fetch(API+"/ocr/userprofile/"+ slug+"/",{
 		method : "put",
 		headers : getHeaderForJson(token),
-		body : JSON.stringify(data),
+		body : JSON.stringify(curDt),
 	}).then(response => Promise.all([response,response.json()]));
 }
 export function editUserSuccess(flag){
@@ -659,8 +660,6 @@ export function clearUserSearchElementAction(){
 		type : "CLEAR_USER_SEARCH_ELEMENT",
 	}
 }
-
-
 
 export function selectedProjectSlug(slug,name){
 	return{

@@ -31,7 +31,7 @@ export class OcrEditUser extends React.Component{
             $("#last_name")[0].disabled = false;
             $("#username")[0].disabled = false;
             $("#email")[0].disabled = false;
-            $("#reviewer_type")[0].disabled = false;
+            $("#role")[0].disabled = false;
             $("#is_active")[0].disabled = false;
 
             $("#fname")[0].classList.add("mandate")
@@ -75,8 +75,7 @@ export class OcrEditUser extends React.Component{
                 return obj;
             }, {});
             this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
-
-            let allowedVariables2 = ["reviewer_type","is_active"];
+            let allowedVariables2 = ["role","is_active"];
             let filteredVariables2 = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables2.includes(key)).reduce((obj, key) => {
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
@@ -96,7 +95,7 @@ export class OcrEditUser extends React.Component{
         else if(this.props.roleFormSel){
             $("#resetMsg")[0].innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true))
-            let allowedVariables = ["reviewer_type","is_active"];
+            let allowedVariables = ["role","is_active"];
             let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
@@ -118,8 +117,8 @@ export class OcrEditUser extends React.Component{
         let optionsTemp = [];
         optionsTemp.push(<option id="none" value="none">--select--</option>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            optionsTemp.push(<option key={this.props.ocrReviwersList[i].type} value={this.props.ocrReviwersList[i].id}>
-                        {this.props.ocrReviwersList[i].type}
+            optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].id}>
+                        {this.props.ocrReviwersList[i].name}
                     </option>);
         }
         return(
@@ -143,9 +142,9 @@ export class OcrEditUser extends React.Component{
                                     <input type="email" id="email" name="email" placeholder="Email" defaultValue={this.props.editedUserDetails.email} disabled onInput={this.saveuserEditedDetails.bind(this)} />
                                 </form>
                                 <form role="form" id="userProfileRoles" onChange={this.updateFormSelected.bind(this)}>
-                                    <label id="rtype" for="reviewer_type">Roles</label>
+                                    <label id="rtype" for="role">Roles</label>
                                     <label id="iactive" for="is_active" style={{marginLeft:"100px"}}>Status</label>
-                                    <select name="reviewer_type" id="reviewer_type" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.reviewer_type}>
+                                    <select name="role" id="role" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.role != undefined?this.props.editedUserDetails.role:"none"}>
                                         {optionsTemp}
                                     </select>
                                     <select name="is_active" id="is_active" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.is_active}>

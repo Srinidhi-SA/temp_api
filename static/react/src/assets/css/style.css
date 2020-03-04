@@ -22523,6 +22523,9 @@ ul.ocrUploadTabs{
 .actionOcrUser{
   margin-left: 10px;
 }
+.actionOcrUser a:hover{
+  cursor: pointer;
+}
 .noOcrUsers{
   height: 150px;
   background: #ffffff;
@@ -22552,6 +22555,7 @@ ul.ocrUploadTabs{
   margin-bottom: 15px;
 }
 .ocrUserFormLabel input[disabled],select[disabled]{
+  -webkit-appearance: none;
   color: grey;
   cursor: not-allowed;
   background-color: #efefef;
