@@ -146,7 +146,11 @@ export class OcrUserTable extends React.Component{
                     </tr></thead>
                     <tbody>
                         {this.props.allOcrUsers.data.map((item, index) => {
-                            let rolesGp = this.props.ocrReviwersList;
+                            let rolesGp = "";
+                            let rlist = this.props.ocrReviwersList
+                            if( item.ocr_profile.role.length != 0 && rlist.length !=0){
+                                rolesGp = rlist.filter(i=> (i.id === item.ocr_profile.role[0])).length!= 0 ?rlist.filter(i=> (i.id === item.ocr_profile.role[0]))[0].name : ""
+                            }
                             if(item.ocr_user){
                                 return (
                                     <tr>
@@ -154,7 +158,7 @@ export class OcrUserTable extends React.Component{
                                         <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c",cursor:"pointer"}}>{item.first_name}</td>
                                         <td>{item.last_name}</td>
                                         <td>{item.email}</td>
-                                        <td>{(item.ocr_profile.role).length != 0?rolesGp.filter(i=> (i.id === item.ocr_profile.role[0]))[0].name:""} </td>
+                                        <td>{rolesGp}</td>
                                         <td>{new Date(item.date_joined).toLocaleDateString()}</td>
                                         <td>{item.last_login != null? new Date(item.last_login).toLocaleString():""}</td>
                                         <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>

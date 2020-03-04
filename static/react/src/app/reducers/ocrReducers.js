@@ -31,7 +31,7 @@ export default function reducer(state = {
   newUserProfileDetails : {},
   ocrUserProfileFlag : false,
   allOcrUsers : {},
-  ocrReviwersList : {},
+  ocrReviwersList : [],
   selectedOcrUsers : [],
   isAllCheckedFlag : false,
   editOcrUserFlag:false,
