@@ -201,6 +201,11 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
                 return false;
             }
+            else if( (pyTorchLayerCount != 0) && $(".activation_pt")[pyTorchLayerCount-1].value != "Sigmoid" && ( $(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
+                this.props.dispatch(pytorchValidateFlag(false));
+                bootbox.alert(statusMessages("warning", "Activation should be Sigmoid as Loss selected is"+$(".loss_pt")[0].value+"", "small_mascot"));
+                return false;
+            }
             for(let i=0;i<pyTorchLayerCount;i++){
                 if(document.getElementsByClassName("input_unit_pt")[i].value === ""){
                     bootbox.alert(errormsg);
