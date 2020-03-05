@@ -705,6 +705,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    @list_route(methods=['post'])
+    def field_count_and_confidence(self, request):
+        data = request.data
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+        stats = {'Word Count': len(comparision_data)}
+        stats['Confidence'] = 100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
+        return stats
+
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
@@ -849,7 +859,6 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         project = Project.objects.get(slug=self.kwargs['slug'])
         queryset = OCRImage.objects.filter(project=project)
-
         object_details = get_image_list_data(
             viewset=OCRImageView,
             queryset=queryset,
@@ -862,4 +871,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             image_data['assignee'] = 'NA'
             image_data['modified_by'] = 'NA'
             image_data['modified_at'] = 'NA'
+        object_details.data['total_data_count_wf'] = len(queryset)
         return object_details
