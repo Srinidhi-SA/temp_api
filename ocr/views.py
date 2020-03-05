@@ -349,7 +349,9 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
 
 
 class GroupListView(generics.ListCreateAPIView):
-    queryset = Group.objects.all()
+    queryset = Group.objects.filter(
+        name__in = ['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
+    )
     serializer_class = GroupSerializer
     permission_classes = [IsAdminUser]
 
