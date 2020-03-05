@@ -601,7 +601,7 @@ export class PyTorch extends React.Component {
                                         <label className = "col-md-2">{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
-                                            <input type ="text" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={store.getState().apps.pyTorchSubParams.loss.weight.join()} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <input type ="text" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={store.getState().apps.pyTorchSubParams.loss.weight != undefined?store.getState().apps.pyTorchSubParams.loss.weight.join():""} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
                                             <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
