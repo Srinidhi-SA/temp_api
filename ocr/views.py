@@ -139,6 +139,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
+            groups__name__in = ['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
