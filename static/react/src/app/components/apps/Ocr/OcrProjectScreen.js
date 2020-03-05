@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, Redirect } from "react-router-dom";
-import { saveDocumentPageFlag, getOcrProjectsList,selectedProjectSlug } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag, getOcrProjectsList,selectedProjectDetails } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -18,7 +18,7 @@ export class OcrProjectScreen extends React.Component {
 
    handleDocumentPageFlag (slug,name){
       this.props.dispatch(saveDocumentPageFlag(true));
-      this.props.dispatch(selectedProjectSlug(slug,name))
+      this.props.dispatch(selectedProjectDetails(slug,name))
    }
    componentWillMount = () => {
       this.props.dispatch(getOcrProjectsList())
