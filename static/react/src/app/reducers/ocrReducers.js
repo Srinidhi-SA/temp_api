@@ -6,6 +6,7 @@ export default function reducer(state = {
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
+  imageSlug:"",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -193,6 +194,7 @@ export default function reducer(state = {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
+          imageSlug: action.data.slug,
           // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }

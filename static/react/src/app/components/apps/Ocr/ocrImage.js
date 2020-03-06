@@ -12,7 +12,8 @@ import { store } from '../../../store';
 @connect((store) => {
   return {
     ocrImgPath: store.ocr.ocrImgPath,
-    originalImgPath: store.ocr.originalImgPath
+    originalImgPath: store.ocr.originalImgPath,
+    imageSlug: store.ocr.imageSlug,
   };
 })
 
@@ -102,12 +103,11 @@ export class OcrImage extends React.Component {
   }
 
   extractText = (x, y) => {
-    document.getElementById("loader").classList.add("loader_ITE")
-    var slug = "img-uw2ii50xd9";
+    document.getElementById("loader").classList.add("loader_ITE");
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug, "x": x, "y": y })
+      body: JSON.stringify({ "slug": this.props.imageSlug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
         this.setState({ imageDetail: data });
@@ -126,7 +126,7 @@ export class OcrImage extends React.Component {
     return fetch(API + '/ocr/ocrimage/update_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": "img-uw2ii50xd9", "index": index, "word": this.state.text })
+      body: JSON.stringify({ "slug": this.props.imageSlug, "index": index, "word": this.state.text })
     }).then(response => response.json())
       .then(data => {
         if (data.message === "SUCCESS") {
@@ -136,6 +136,23 @@ export class OcrImage extends React.Component {
       });
 
   }
+  notClear = () => {
+    document.getElementById("loader").classList.add("loader_ITE")
+    let index = this.state.imageDetail.index;
+    return fetch(API + '/ocr/ocrimage/not_clear/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": this.props.imageSlug, "index": index, "word": this.state.text })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.marked === true) {
+          document.getElementById("loader").classList.remove("loader_ITE");
+          document.getElementById("successMsg").innerText = "Not clear marked.";
+        }
+      });
+
+  }
+
   render() {
     return (
       <div>
@@ -221,7 +238,7 @@ export class OcrImage extends React.Component {
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
                       <ul class="dropdown-menu" style={{ left: -110 }}>
-                        <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a href="javascript::" class="btn btn-block" onClick={this.notClear}><i class="fa fa-ban"></i> Not Clear</a></li>
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
