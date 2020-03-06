@@ -22,6 +22,30 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   checked_list: '',
+  addUserPopupFlag : false,
+  createUserFlag : false,
+  loaderFlag : false,
+  curUserSlug : "",
+  newUserDetails : {},
+  newUserProfileDetails : {},
+  ocrUserProfileFlag : false,
+  allOcrUsers : {},
+  ocrReviwersList : [],
+  selectedOcrUsers : [],
+  isAllCheckedFlag : false,
+  editOcrUserFlag:false,
+  selUserSlug:"",
+  selUserDetails:{},
+  enableEditingFlag:false,
+  editedUserDetails : {},
+  userTableLoaderFlag : false,
+  editUserSuccessFlag : false,
+  roleFormSel : false,
+  detailsFormSel : false,
+  selectedTabId : "none",
+  ocrSearchElement : "",
+  ocrUserPageNum : 1,
+
   search_document:'',
   search_project:'',
   selected_project_slug:'',
@@ -70,14 +94,6 @@ export default function reducer(state = {
       throw new Error("Unable to fetch uploaded images list!!");
     }
     break;
-    case "OCR_UPLOADS_LIST":
-    {
-      return{
-        ...state,
-        OcrDataList:action.data
-      }
-    }
-      break;
       case "SAVE_DOCUMENT_FLAG":
       {
         return {
@@ -219,6 +235,200 @@ export default function reducer(state = {
         return {
           ...state,
           checked_list: action.list
+        }
+      }
+      break;
+//For Manage Users screen
+      case "OPEN_ADD_USER_POPUP": {
+        return {
+          ...state,
+          addUserPopupFlag : true
+        }
+      }
+      break;
+      case "CLOSE_ADD_USER_POPUP": {
+        return {
+          ...state,
+          addUserPopupFlag : false,
+          newUserDetails : {},
+          newUserProfileDetails : {},
+          ocrUserProfileFlag : false,
+          loaderFlag : false,
+          createUserFlag : false,
+          curUserSlug : "",
+        }
+      }
+      break;
+      case "SET_CREATE_USER_LOADER_FLAG": {
+        return {
+          ...state,
+          loaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_NEW_USER_DETAILS": {
+        let curUserDetails = state.newUserDetails;
+        curUserDetails[action.name] = action.value
+        return {
+          ...state,
+          newUserDetails : curUserDetails
+        }
+      }
+      break;
+      case "SAVE_NEW_USER_PROFILE":{
+        let curUserStatus = state.newUserProfileDetails;
+        curUserStatus[action.name] = action.value
+        return {
+          ...state,
+          newUserProfileDetails : curUserStatus
+        }
+      }
+      break;
+      case "CREATE_NEW_USER_SUCCESS":{
+        return {
+          ...state,
+          createUserFlag : action.flag,
+          curUserSlug : action.slug,
+        }
+      }
+      break;
+      case "USER_PROFILE_CREATED_SUCCESS":{
+        return {
+          ...state,
+          ocrUserProfileFlag : action.flag,
+          createUserFlag : false
+        }
+      }
+      break;
+      case "SAVE_ALL_OCR_USERS_LIST":{
+        return {
+          ...state,
+          allOcrUsers : action.json,
+          selectedOcrUsers : [],
+          isAllCheckedFlag : false
+        }
+      }
+      break;
+      case "SAVE_SELECTED_USERS_LIST":{
+        return {
+          ...state,
+          selectedOcrUsers : action.curSelList
+        }
+      }
+      break;
+      case "SELECT_ALL_USERS":{
+        return {
+          ...state,
+          isAllCheckedFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_REVIEWERS_LIST":{
+        return {
+          ...state,
+          ocrReviwersList : action.json
+        }
+      }
+      case "OPEN_EDIT_USER_POPUP":{
+        return{
+          ...state,
+          editOcrUserFlag : action.flag,
+          selUserSlug : action.userSlug,
+          selUserDetails : action.userDt,
+          editedUserDetails : action.edtDet
+        }
+      }
+      break;
+      case "CLOSE_EDIT_USER_POPUP":{
+        return{
+          ...state,
+          editOcrUserFlag : action.flag,
+          selUserSlug : "",
+          selUserDetails : {},
+          editedUserDetails : {},
+          detailsFormSel : false,
+          roleFormSel : false,
+          editUserSuccessFlag : false,
+          loaderFlag : false,
+        }
+      }
+      break;
+      case "ENABLE_EDITING_USER": {
+        return{
+          ...state,
+          enableEditingFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_EDITED_USER_DETAILS": {
+        let curEditedUserStatus = state.editedUserDetails;
+        curEditedUserStatus[action.name] = action.val
+        return {
+          ...state,
+          editedUserDetails : curEditedUserStatus
+        }
+      }
+      break;
+      case "CLEAR_USER_FLAG":
+      {
+        return{
+          ...state,
+          selectedOcrUsers : [],
+        }
+      }
+      break;
+      case "SET_USER_TABLE_LOADER_FLAG":{
+        return {
+          ...state,
+          userTableLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "EDIT_USER_SUCCESS":{
+        return {
+          ...state,
+          editUserSuccessFlag : action.flag,
+        }
+      }
+      break;
+      case "FORM_DETAILS_SELECTED":{
+        return {
+          ...state,
+        detailsFormSel : action.flag
+        }
+      }
+      break;
+      case "FORM_ROLES_SELECTED":{
+        return {
+          ...state,
+        roleFormSel : action.flag
+        }
+      }
+      break;
+      case "SELECTED_TAB_ID":{
+        return {
+          ...state,
+          selectedTabId : action.id
+        }
+      }
+      break;
+      case "OCR_USER_SEARCH_ELEMENT":{
+        return {
+          ...state,
+          ocrSearchElement : action.val
+        }
+      }
+      break;
+      case "OCR_USER_PAGE_NUM":{
+        return {
+          ...state,
+          ocrUserPageNum : action.val
+        }
+      }
+      case "CLEAR_USER_SEARCH_ELEMENT":{
+        return {
+          ...state,
+          ocrSearchElement : ""
         }
       }
       break;

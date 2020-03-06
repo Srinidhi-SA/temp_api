@@ -4,7 +4,7 @@ import { Modal, Button, } from "react-bootstrap";
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
-import { getOcrProjectsList,storeProjectSearchElem } from '../../../actions/ocrActions';
+import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selectedProjectDetails } from '../../../actions/ocrActions';
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -55,7 +55,9 @@ export class OcrCreateProject extends React.Component {
     }).then(response => response.json()).then(json => {
       if (json.project_serializer_message === "SUCCESS") {
         this.closePopup()
-        this.props.dispatch(getOcrProjectsList())
+      // this.props.dispatch(getOcrProjectsList())
+      this.props.dispatch(selectedProjectDetails(json.project_serializer_data.slug,json.project_serializer_data.name))
+      this.props.dispatch(saveDocumentPageFlag(true));
       }
       else
         document.getElementById("resetMsg").innerText = "Project creation failed, Please try again.";

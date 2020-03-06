@@ -7,7 +7,7 @@ from rest_framework import serializers
 from api.user_helper import UserSerializer
 from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, \
     Project
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 
 # -------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ class OCRUserProfileSerializer(serializers.ModelSerializer):
         Meta class definition for OCRUserProfileSerializer
         """
         model = OCRUserProfile
-        fields = ['user_type', 'is_active', 'slug', 'reviewer_type']
+        fields = ['user_type', 'is_active', 'slug',]
 
     # def update(self, instance, validated_data):
     #     print("inside update")
@@ -198,7 +198,7 @@ class OCRUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser", "groups")
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -229,13 +229,12 @@ class OCRUserListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
         ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
-        try:
-            serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+        serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+
+        if len(serialized_data['ocr_profile']["role"]) == 1:
             serialized_data['ocr_user'] = True
-        except:
+        else:
             serialized_data['ocr_user'] = False
-        # serialized_data['reviewer_type'] = ocr_profile_obj.reviewer_type.type if ocr_profile_obj is not None else None
-        # print(serialized_data)
 
         return serialized_data
 
@@ -262,6 +261,22 @@ class ReviewerTypeSerializer(serializers.ModelSerializer):
         """
         model = ReviewerType
         fields = ("id","type")
+
+class GroupSerializer(serializers.ModelSerializer):
+    """
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(GroupSerializer, self).to_representation(instance)
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for ReviewerTypeSerializer
+        """
+        model = Group
+        fields = ('id','name')
 
 
 class ProjectListSerializer(serializers.ModelSerializer):

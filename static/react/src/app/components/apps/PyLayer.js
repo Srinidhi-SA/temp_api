@@ -29,60 +29,64 @@ export class PyLayer extends React.Component {
 
     selectHandleChange(parameterData,e){
         if(parameterData.name === "bias" && e.target.value === "None"){
+            this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please Select"
+        }else if(parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Please select Sigmoid as Loss is "+ $(".loss_pt")[0].value
         }else{
             e.target.parentElement.lastElementChild.innerText = ""
-        }
-        let layerArry = this.props.idNum;
-        if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
-            let layerDt = this.props.pyTorchLayer[layerArry];
-            if(layerDt[parameterData.name].name != e.target.value){
-                layerDt[parameterData.name] = {"name":"None"}
-            }
-            layerDt[parameterData.name].name = e.target.value;
-            let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
-            if(defValArr != undefined)
-                if(defValArr.parameters != null)
-                    defValArr.parameters.map(idx=>{
-                        if(idx.name === "add_bias_kv" || idx.name === "add_zero_attn" || idx.name === "bias" || idx.name === "head_bias" || idx.name === "affine" || idx.name === "track_running_stats"){
-                            let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
-                            let defVal = layerDt[parameterData.name];
-                            if(subDefaultVal === undefined){
-                                subDefaultVal = "None";
-                                defVal[idx.name] = subDefaultVal;
-                            }   
-                            else
-                                defVal[idx.name] = subDefaultVal.displayName;
-                        }else if(idx.name === "num_parameters"){
-                            let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
-                            let defVal = layerDt[parameterData.name];
-                            if(subDefaultVal === undefined){
-                                subDefaultVal = "None";
-                                defVal[idx.name] = subDefaultVal;
-                            }   
-                            else
-                                defVal[idx.name] = subDefaultVal.displayName;
-                        }else{
-                            let defVal = layerDt[parameterData.name];
-                            defVal[idx.name] = idx.defaultValue;
-                        }
-                    });
-            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),layerDt,parameterData.name))
-        }else{
-            let newLyrVal = this.props.pyTorchLayer[layerArry];
-            newLyrVal[parameterData.name] = e.target.value;
-            let defValArr = parameterData.defaultValue.filter(i=>(i.name===e.target.value))[0];
-            if(parameterData.name != "bias"){
-                defValArr.parameters.map(idx=>{
-                    let defVal = layerDt[parameterData.name];
-                    defVal[idx.name] = idx.defaultValue;
-                });
-            }
             this.props.dispatch(pytorchValidateFlag(true));
-            this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
+            let layerArry = this.props.idNum;
+            if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
+                let layerDt = this.props.pyTorchLayer[layerArry];
+                if(layerDt[parameterData.name].name != e.target.value){
+                    layerDt[parameterData.name] = {"name":"None"}
+                }
+                layerDt[parameterData.name].name = e.target.value;
+                let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
+                if(defValArr != undefined)
+                    if(defValArr.parameters != null)
+                        defValArr.parameters.map(idx=>{
+                            if(idx.name === "add_bias_kv" || idx.name === "add_zero_attn" || idx.name === "bias" || idx.name === "head_bias" || idx.name === "affine" || idx.name === "track_running_stats"){
+                                let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
+                                let defVal = layerDt[parameterData.name];
+                                if(subDefaultVal === undefined){
+                                    subDefaultVal = "None";
+                                    defVal[idx.name] = subDefaultVal;
+                                }
+                                else
+                                    defVal[idx.name] = subDefaultVal.displayName;
+                            }else if(idx.name === "num_parameters"){
+                                let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
+                                let defVal = layerDt[parameterData.name];
+                                if(subDefaultVal === undefined){
+                                    subDefaultVal = "None";
+                                    defVal[idx.name] = subDefaultVal;
+                                }
+                                else
+                                    defVal[idx.name] = subDefaultVal.displayName;
+                            }else{
+                                let defVal = layerDt[parameterData.name];
+                                defVal[idx.name] = idx.defaultValue;
+                            }
+                        });
+                this.props.dispatch(setPyTorchLayer(parseInt(layerArry),layerDt,parameterData.name))
+            }else{
+                let newLyrVal = this.props.pyTorchLayer[layerArry];
+                newLyrVal[parameterData.name] = e.target.value;
+                let defValArr = parameterData.defaultValue.filter(i=>(i.name===e.target.value))[0];
+                if(parameterData.name != "bias"){
+                    defValArr.parameters.map(idx=>{
+                        let defVal = layerDt[parameterData.name];
+                        defVal[idx.name] = idx.defaultValue;
+                    });
+                }
+                this.props.dispatch(pytorchValidateFlag(true));
+                this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
+            }
+            this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
         }
-        this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,e.target.value,this.props.type));
-
     }
 
     changeTextBoxValue(parameterData,e){

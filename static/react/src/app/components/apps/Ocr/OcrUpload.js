@@ -23,14 +23,14 @@ import {MultiSelect} from "primereact/multiselect";
     s3SelFileList : store.ocr.s3SelFileList,
     s3FileUploadErrorFlag : store.ocr.s3FileUploadErrorFlag,
     s3FileFetchErrorMsg : store.ocr.s3FileFetchErrorMsg,
-    projectslug: store.ocr. selected_project_slug,
+    projectslug: store.ocr.selected_project_slug,
   };
 })
 
 export class OcrUpload extends React.Component {
   constructor(props) {
     super(props);
-    this.props.dispatch(close());
+    // this.props.dispatch(close());
     this.state = {
       selectedFiles: "",
       uploaded: false,
@@ -74,7 +74,6 @@ export class OcrUpload extends React.Component {
 
   closePopup() {
     this.props.dispatch(close())
-    this.props.dispatch(getOcrUploadedFiles())
     this.props.dispatch(clearS3Data());
   }
 
@@ -129,7 +128,7 @@ export class OcrUpload extends React.Component {
   handleSubmit(acceptedFiles) {
     let activeTab = $(".tab-content").find(".active");
     let activeId = activeTab.attr('id');
-    let projectslug= this.props.projectslug;
+    let projectSlug= this.props.projectslug;
 
     if(activeId === "ocrImage"){
       if (acceptedFiles.length == 0) {
@@ -141,10 +140,9 @@ export class OcrUpload extends React.Component {
       var data = new FormData();
     for (var x = 0; x < acceptedFiles.length; x++) {
       data.append("imagefile", acceptedFiles[x]);
-      data.append("dataSourceType", "fileUpload");
-      data.append("projectslug", projectslug);
     }
-
+    data.append("dataSourceType", "fileUpload");
+    data.append("projectslug", projectSlug);
     return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -220,7 +218,9 @@ export class OcrUpload extends React.Component {
     }
     return (
       <div style={{ display:"inline-block" ,marginRight:'10px'}}>
-        <Button bsStyle="primary" onClick={this.openPopup.bind(this)} ><i class="fa fa-upload"></i></Button>
+      {this.props.uploadMode == 'topPanel'?
+      <Button bsStyle="primary" onClick={this.openPopup.bind(this)} ><i class="fa fa-upload"></i></Button>:
+      <div class="icon " onClick={this.openPopup.bind(this)}><i  class="fa fa-upload fa-2x xs-mt-10"></i></div>}
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">
             <Modal.Header closeButton>

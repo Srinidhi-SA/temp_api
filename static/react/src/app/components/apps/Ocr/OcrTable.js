@@ -185,7 +185,7 @@ export class OcrTable extends React.Component {
         )
       }
       )
-        : (<tr><td className='text-center' colSpan={6}>"No data found for your selection"</td></tr>)
+        : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
         : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
@@ -199,20 +199,21 @@ export class OcrTable extends React.Component {
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
             </ol>
           </div>
+          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?
           <div class="col-sm-6 text-right">
             <div class="form-inline">
-              <OcrUpload />
+              <OcrUpload uploadMode={'topPanel'} />
               <div class="form-group xs-mr-5">
                 <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
               </div>
               <Button onClick={this.handleRecognise}>Recognize</Button>
               <button class="btn btn-default btn-rounded disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>
             </div>
-          </div>
+          </div>:"":""}
         </div>
         <div className="table-responsive noSwipe xs-pb-10">
-          {/* if total_data_count <=1 then only render table else show panel box */}
-          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count >= 1 ? (<table className="tablesorter table table-condensed table-hover cst_table ocrTable">
+          {/* if total_data_count_wf <=1 then only render table else show panel box */}
+          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (<table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
             <thead>
               <tr>
                 <th></th>
@@ -278,8 +279,8 @@ export class OcrTable extends React.Component {
               <div class="panel-body">
                 <div class="xs-mt-3 xs-mb-3 text-center">
                   <div class="icon-container">
-                    <div class="icon "><i class="fa fa-upload fa-2x xs-mt-10"></i></div>
-                    <span class="class">Add a workflow by clicking on the <a href="#" class="inline-block"><i class="fa fa-plus"></i></a> to get started</span>
+                     <OcrUpload uploadMode={'mainPanel'}/>
+                    <span class="class">Add a workflow by clicking on the above icon</span>
                   </div>
                 </div>
               </div>
