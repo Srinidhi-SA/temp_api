@@ -211,10 +211,19 @@ export class OcrTable extends React.Component {
             </div>
           </div>:"":""}
         </div>
-        <div className="table-responsive noSwipe xs-pb-10">
+        {/* <div class="tab-container">
+          <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item active"><a class="nav-link" href="#pActive" data-toggle="tab" role="tab" aria-expanded="false">Active</a></li>
+                <li class="nav-item "><a class="nav-link" href="#pBacklog" data-toggle="tab" onClick={()=>alert('hello')} role="tab" aria-expanded="true">Backlog</a></li>  
+          </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane" id="pActive" role="tabpanel">  nav link*/ }
+            <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
-          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (<table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
-            <thead>
+            {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+            <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+             <thead>
               <tr>
                 <th></th>
                 <th><i class="fa fa-file-text-o"></i></th>
@@ -269,11 +278,11 @@ export class OcrTable extends React.Component {
                 <th>Modified</th>
                 <th>Modified By</th>
               </tr>
-            </thead>
-            <tbody className="no-border-x">
+             </thead>
+             <tbody className="no-border-x">
               {OcrTableHtml}
-            </tbody>
-          </table>)
+             </tbody>
+            </table>)
             :
             (<div class="panel">
               <div class="panel-body">
@@ -290,7 +299,10 @@ export class OcrTable extends React.Component {
           {paginationTag}
           {ShowModel}
         </div>
-      </div>
+        </div>
+      //   </div>
+      //   </div> nav link
+      // </div>
     )
   }
 }

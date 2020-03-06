@@ -3,6 +3,7 @@ export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
   OcrProjectList:"",
+  OcrReviewerList:"",
   imageFlag: false,
   imagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png",
   originalImgPath: "",
@@ -68,34 +69,49 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;
-      case "OCR_PROJECT_LIST":
-      {
-        return {
-          ...state,
-          OcrProjectList: action.data
-        }
-      }
-      break;
-      case "OCR_PROJECT_LIST_FAIL":
-      {
-      throw new Error("Unable to fetch projects list!!");
-      }
-      
-      case "OCR_UPLOADS_LIST":
-      {
-        return {
-          ...state,
-          OcrDataList: action.data
-        }
-      }
-      break;
-    case "OCR_UPLOADS_LIST_FAIL":
+    break;
+    //Projects,Documents,Reviewers Lists//
+    case "OCR_PROJECT_LIST":
     {
-      throw new Error("Unable to fetch uploaded images list!!");
+      return {
+        ...state,
+        OcrProjectList: action.data
+      }
     }
     break;
-      case "SAVE_DOCUMENT_FLAG":
+    case "OCR_PROJECT_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch projects list!!");
+    }
+    break;
+    case "OCR_UPLOADS_LIST":
+    {
+      return {
+        ...state,
+        OcrDataList: action.data
+      }
+    }
+    break;
+    case "OCR_UPLOADS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REVIEWERS_LIST":
+    {
+      return {
+        ...state,
+        OcrReviewerList: action.data
+      }
+    }
+    break;
+    case "OCR_REVIEWERS_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch Reviewers list!!");
+    }
+    break;
+     ////
+    case "SAVE_DOCUMENT_FLAG":
       {
         return {
           ...state,
@@ -187,7 +203,7 @@ export default function reducer(state = {
           imageFlag: action.flag
         }
       }
-      break;
+    break;
     case "SAVE_IMAGE_DETAILS":
       {
         return {
@@ -197,7 +213,7 @@ export default function reducer(state = {
           // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
-      break;
+    break;
     case "OCR_FILES_SORT":
       {
         return {
@@ -206,7 +222,7 @@ export default function reducer(state = {
           ocrFilesSortType: action.ocrFilesSortType
         }
       }
-      break;
+    break;
     case "FILTER_BY_STATUS":
       {
         return {
@@ -214,7 +230,7 @@ export default function reducer(state = {
           filter_status: action.status,
         }
       }
-      break;
+    break;
     case "FILTER_BY_CONFIDENCE":
       {
         return {
@@ -222,7 +238,7 @@ export default function reducer(state = {
           filter_confidence: action.confidence,
         }
       }
-      break;
+    break;
     case "FILTER_BY_ASSIGNEE":
       {
         return {
@@ -230,7 +246,7 @@ export default function reducer(state = {
           filter_assignee: action.assignee
         }
       }
-      break;
+    break;
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -426,6 +442,7 @@ export default function reducer(state = {
           ocrUserPageNum : action.val
         }
       }
+      break;
       case "CLEAR_USER_SEARCH_ELEMENT":{
         return {
           ...state,
@@ -459,6 +476,6 @@ export default function reducer(state = {
         }
       }
       break;
-  }
+}
   return state
 }

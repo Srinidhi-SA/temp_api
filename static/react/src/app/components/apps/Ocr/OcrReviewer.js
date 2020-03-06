@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import OcrReviewersTable from '../../apps/Ocr/OcrReviewersTable'
 
 @connect((store) => {
   return {
@@ -11,7 +12,7 @@ export class OcrReviewer extends React.Component {
     super(props);
   }
 
-  render() {
+  render() { 
     return (
       <div className="side-body">
         <div class="page-head">
@@ -33,6 +34,7 @@ export class OcrReviewer extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
+            <OcrReviewersTable/>
             </div>
           </section>
         </div>

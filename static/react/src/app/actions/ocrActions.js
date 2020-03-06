@@ -132,6 +132,43 @@ export function fetchUploadsFail(data){
 	}
 }
 
+//Reviewers list actions
+export function getOcrReviewersList(pageNo){
+	return (dispatch) => {
+		return fetchReviewersList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchReviewersSuccess(json))
+			}
+			else{
+			 dispatch(fetchReviewersFail(json))
+			}
+		})
+	}
+}
+
+function fetchReviewersList(pageNo=1,token){
+		return fetch(API + '/ocr/user/reviewer_list/?role=4', {  
+      method: 'get',
+      headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchReviewersSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_REVIEWERS_LIST",
+		data,
+	}
+}
+
+export function fetchReviewersFail(data){
+	return {
+		type: "OCR_REVIEWERS_LIST_FAIL",
+		data,
+	}
+}
+////
+
 export function setS3Loader(flag){
 	return {
 		type : "SET_S3_LOADER",flag
