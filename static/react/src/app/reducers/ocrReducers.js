@@ -50,7 +50,12 @@ export default function reducer(state = {
   search_document:'',
   search_project:'',
   selected_project_slug:'',
-  selected_project_name:''
+  selected_project_name:'',
+  configureTabSelected : "initialReview",
+  iRToggleFlag : true,
+  iRassignDocsTo : "",
+  iRDocsCount : "",
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -456,6 +461,40 @@ export default function reducer(state = {
           selected_project_slug:action.slug,
           selected_project_name:action.name
 
+        }
+      }
+      break;
+
+      //Configure Tab
+    case "SAVE_SEL_CONFIGURE_TAB":
+      {
+        return {
+          ...state,
+          configureTabSelected : action.tabName
+        }
+      }
+      break;
+      case "STORE_IR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          iRToggleFlag : action.val
+        }
+      }
+      break;
+      case "ASSIGN_DOCS_TO":
+      {
+        return{
+          ...state,
+          iRassignDocsTo : action.val
+        }
+      }
+      break;
+      case "DOCS_COUNT_TO_DISTRIBUTE":
+      {
+        return{
+          ...state,
+          iRDocsCount : action.val
         }
       }
       break;

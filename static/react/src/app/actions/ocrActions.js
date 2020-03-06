@@ -667,3 +667,26 @@ export function selectedProjectSlug(slug,name){
 		slug,name
 	}
 }
+//Configure Page Actions
+export function storeSelectedConfigureTabAction(selTab){
+	return {
+		type:"SAVE_SEL_CONFIGURE_TAB",selTab
+	}
+}
+export function saveIRToggleValAction(val){
+	return {
+		type:"STORE_IR_TOGGLE_FLAG",val
+	}
+}
+export function setAssignDocsToAction(val){
+	return{
+		type: "ASSIGN_DOCS_TO",val
+	}
+}
+export function setDocsCountAction(val){
+	return {
+		type : "DOCS_COUNT_TO_DISTRIBUTE",val
+	}
+}
+
+
