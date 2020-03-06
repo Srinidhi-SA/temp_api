@@ -187,7 +187,7 @@ export class OcrTable extends React.Component {
       )
         : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
-        : (<img id="loading" style={{ position: 'relative', left: '500px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+        : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
 
     return (

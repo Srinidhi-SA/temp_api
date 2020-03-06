@@ -22,7 +22,8 @@ import {MultiSelect} from "primereact/multiselect";
     s3FileFetchSuccessFlag : store.ocr.s3FileFetchSuccessFlag,
     s3SelFileList : store.ocr.s3SelFileList,
     s3FileUploadErrorFlag : store.ocr.s3FileUploadErrorFlag,
-    s3FileFetchErrorMsg : store.ocr.s3FileFetchErrorMsg
+    s3FileFetchErrorMsg : store.ocr.s3FileFetchErrorMsg,
+    projectslug: store.ocr.selected_project_slug,
   };
 })
 
@@ -127,7 +128,7 @@ export class OcrUpload extends React.Component {
   handleSubmit(acceptedFiles) {
     let activeTab = $(".tab-content").find(".active");
     let activeId = activeTab.attr('id');
-    let projectSlug=store.getState().ocr.selected_project_slug
+    let projectSlug= this.props.projectslug;
 
     if(activeId === "ocrImage"){
       if (acceptedFiles.length == 0) {
