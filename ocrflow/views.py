@@ -5,9 +5,10 @@ from ocrflow.models import Task
 from .serializers import TaskSerializer
 from ocr.pagination import CustomOCRPagination
 from ocr.query_filtering import get_listed_data
+from django.http import JsonResponse
 
 # Create your views here.
-class TaskListView(generics.ListCreateAPIView):
+class TaskView(viewsets.ModelViewSet):
     """
     Model: Task
     Description :
@@ -16,6 +17,8 @@ class TaskListView(generics.ListCreateAPIView):
     model = Task
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
+
+    print("~"*100)
 
     def get_queryset(self):
         queryset = Task.objects.all()
@@ -31,3 +34,31 @@ class TaskListView(generics.ListCreateAPIView):
             request=request,
             list_serializer=TaskSerializer
         )
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(
+    #         TaskView, self).get_context_data(**kwargs)
+    #     context['approval_form'] = self.task.get_approval_form
+    #     return context
+
+    @property
+    def task(self):
+        return self.get_object()
+
+    def post(self, request, *args, **kwargs):
+        form = self.task.get_approval_form(request.POST)
+
+        if form.is_valid():
+            self.task.submit(
+                form,
+                request.user
+            )
+            return JsonResponse({
+                "submitted": True,
+                "message": "Task Updated Successfully."
+            })
+        else:
+            return JsonResponse({
+                "submitted": False,
+                "message": form.errors
+            })
