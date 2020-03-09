@@ -709,4 +709,40 @@ export function setAssignRemainingIRDocsAction(val){
 	}
 }
 
+export function saveSRToggleValAction(val){
+	return {
+		type:"STORE_SR_TOGGLE_FLAG",val
+	}
+}
+export function setAssignSRDocsToAction(val){
+	return{
+		type: "ASSIGN_SR_DOCS_TO",val
+	}
+}
+export function setSRDocsCountAction(val){
+	return {
+		type : "SR_DOCS_COUNT_TO_DISTRIBUTE",val
+	}
+}
+export function saveSelectedSRListAction(selIRList){
+	return {
+		type : "SAVE_SEL_SR_LIST",selIRList
+	}
+}
+export function saveSRSearchElemAction(val){
+	return {
+		type : "STORE_SR_SEARCH_ELEMENT",val
+	}
+}
+export function clearSRSearchElemAction(){
+	return {
+		type : "CLEAR_SR_SEARCH_ELEMENT"
+	}
+}
+export function setAssignRemainingSRDocsAction(val){
+	return {
+		type : "ASSIGN_REAMINING_SR_DOCS_AS",val
+	}
+}
+
 
