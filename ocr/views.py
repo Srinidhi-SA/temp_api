@@ -42,7 +42,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data
+    get_specific_listed_data, get_reviewer_data
 # -----------------------MODELS-------------------------------
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
@@ -69,7 +69,8 @@ from .serializers import OCRImageSerializer, \
     ProjectSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
-    GroupSerializer
+    GroupSerializer, \
+    OCRReviewerSerializer
 
 # ------------------------------------------------------------
 
@@ -139,12 +140,16 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
-            groups__name__in = ['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
+            groups__name__in = ['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def get_specific_reviewer_qyeryset(self, role):
         queryset = User.objects.filter(groups=role)
+        return queryset
+
+    def get_specific_reviewer_detail_queryset(self):
+        queryset = User.objects.filter(groups__name__in=['ReviewerL1', 'ReviewerL2'])
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -240,6 +245,14 @@ class OCRUserView(viewsets.ModelViewSet):
             request=request,
             list_serializer=OCRUserListSerializer,
             role=role
+        )
+
+    @list_route(methods=['get'])
+    def reviewer_detail_list(self, request, *args, **kwargs):
+        return get_reviewer_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRReviewerSerializer,
         )
 
 
