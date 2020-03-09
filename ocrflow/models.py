@@ -201,7 +201,7 @@ class ReviewRequest(SimpleFlow):
 def submit_for_approval(sender, instance, created, **kwargs):
     if created:
         print("Starting simpleflow for review ...")
-        instance.status = "submitted_for_review"
+        instance.status = "created"
         instance.save()
         instance.start_simpleflow()
 

@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ocrflow.models import Task
-from .serializers import TaskSerializer
+from ocrflow.models import Task, SimpleFlow, ReviewRequest
+from .serializers import TaskSerializer, ReviewRequestSerializer
 from ocr.pagination import CustomOCRPagination
 from ocr.query_filtering import get_listed_data
 from django.http import JsonResponse
@@ -62,3 +62,25 @@ class TaskView(viewsets.ModelViewSet):
                 "submitted": False,
                 "message": form.errors
             })
+
+class SimpleFlowView(viewsets.ModelViewSet):
+    """
+    Model: SimpleFlow
+    Description :
+    """
+    serializer_class = ReviewRequestSerializer
+    model = ReviewRequest
+    permission_classes = (IsAuthenticated,)
+    pagination_class = CustomOCRPagination
+
+    def get_queryset(self):
+        queryset = ReviewRequest.objects.all()
+        return queryset
+
+    def list(self, request):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=ReviewRequestSerializer
+        )
