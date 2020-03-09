@@ -2,7 +2,9 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ocrflow.models import Task, SimpleFlow, ReviewRequest
-from .serializers import TaskSerializer, ReviewRequestSerializer
+from .serializers import TaskSerializer, \
+    ReviewRequestListSerializer, \
+    ReviewRequestSerializer
 from ocr.pagination import CustomOCRPagination
 from ocr.query_filtering import get_listed_data
 from django.http import JsonResponse
@@ -63,12 +65,12 @@ class TaskView(viewsets.ModelViewSet):
                 "message": form.errors
             })
 
-class SimpleFlowView(viewsets.ModelViewSet):
+class ReviewRequestView(viewsets.ModelViewSet):
     """
-    Model: SimpleFlow
+    Model: ReviewRequest
     Description :
     """
-    serializer_class = ReviewRequestSerializer
+    serializer_class = ReviewRequestListSerializer
     model = ReviewRequest
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
@@ -77,10 +79,27 @@ class SimpleFlowView(viewsets.ModelViewSet):
         queryset = ReviewRequest.objects.all()
         return queryset
 
+    def get_object_from_all(self):
+
+        return ReviewRequest.objects.get(
+            id=self.kwargs.get('id')
+        )
+
     def list(self, request):
 
         return get_listed_data(
             viewset=self,
             request=request,
-            list_serializer=ReviewRequestSerializer
+            list_serializer=ReviewRequestListSerializer
         )
+
+    def retrieve(self, request, *args, **kwargs):
+        """Returns specific object details"""
+        instance = self.get_object_from_all()
+
+        if instance is None:
+            return retrieve_failed_exception("ReviewRequest object Doesn't exist.")
+
+        serializer = ReviewRequestSerializer(instance=instance, context={'request': request})
+
+        return Response(serializer.data)
