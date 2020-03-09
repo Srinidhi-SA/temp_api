@@ -21,7 +21,8 @@ from ocrflow import process
 class Task(models.Model):
     name = models.CharField(max_length=100, blank=True)
     slug = models.SlugField(max_length=100)
-    assigned_to = models.ForeignKey(Group, related_name='tasks')
+    assigned_group = models.ForeignKey(Group, related_name='tasks')
+    assigned_user = models.ForeignKey(User,blank=True, null=True)
     is_closed = models.BooleanField(default=False)
     content_type = models.ForeignKey(
         ContentType,
@@ -74,7 +75,7 @@ class Task(models.Model):
 
         Approval.objects.create(
             task=self,
-            approval_by=self.request.user,
+            approval_by=self.assigned_user,
             status=status,
             comments=comments
         )
@@ -84,15 +85,23 @@ class Task(models.Model):
 
         if self.next_transition:
             new_state = self.process_config[self.next_transition]
+            new_user = self.assign_newuser(new_state)
             self.create_new_task(new_state)
 
-    def create_new_task(self, state):
-        group = Group.objects.get(name=state['group'])
+    def assign_newuser(self, state):
+        return User.objects.filter(
+            groups__name=state['group'],
+            is_active=True).order_by('?').first()
 
+    def create_new_task(self, state):
+        print(self.content_object)
+        group = Group.objects.get(name=state['group'])
+        newuser = self.assign_newuser(state)
         Task.objects.create(
             name=state['name'],
             slug=self.next_transition,
-            assigned_to=group,
+            assigned_group=group,
+            assigned_user=newuser,
             content_type=self.content_type,
             object_id=self.content_object.id
         )
@@ -101,6 +110,8 @@ class Task(models.Model):
         task_actions = self.state['on_completion']
         for action in task_actions:
             action(form, self.content_object)
+
+
 
 
 class Approval(models.Model):
@@ -125,6 +136,13 @@ class SimpleFlow(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def assigned_user(self):
+        state = self.PROCESS['initial']
+        return User.objects.filter(
+            groups__name=state['group'],
+            is_active=True).order_by('?').first()
+
     def start_simpleflow(self, initial_state=None):
         initial = initial_state or 'initial'
         state = self.PROCESS[initial]
@@ -134,15 +152,16 @@ class SimpleFlow(models.Model):
         obj = Task.objects.create(
             name=state['name'],
             slug=initial,
-            assigned_to=group,
+            assigned_group=group,
+            assigned_user=self.assigned_user,
             content_type=content_type,
             object_id=self.id
         )
-        obj.submit(state['form'],user=None)
+        #obj.submit(state['form'],user=None)
 
 class ReviewRequest(SimpleFlow):
     # assign your process here
-    PROCESS = process.PROCESS
+    PROCESS = process.AUTO_ASSIGNMENT
 
     ocr_image = models.ForeignKey(
         OCRImage,
@@ -150,22 +169,6 @@ class ReviewRequest(SimpleFlow):
         null=True,
         related_name='review_requests'
     )
-    # leave_type = models.CharField(
-    #     max_length=50,
-    #     choices=[
-    #         ('S', 'Sick'),
-    #         ('V', 'Vacation'),
-    #         ('W', 'Wedding / Marriage'),
-    #     ]
-    # )
-    # leave_from = models.DateTimeField()
-    # leave_to = models.DateTimeField()
-
-    # for HR role
-    # payment_settled = models.BooleanField(default=False)
-    # document_submitted = models.BooleanField(default=False)
-
-    # reason = models.TextField(blank=True, null=True)
 
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
@@ -198,16 +201,8 @@ class ReviewRequest(SimpleFlow):
 def submit_for_approval(sender, instance, created, **kwargs):
     if created:
         print("Starting simpleflow for review ...")
-        instance.status = "submitted_for_review"
+        instance.status = "created"
         instance.save()
         instance.start_simpleflow()
 
 post_save.connect(submit_for_approval, sender=ReviewRequest)
-# def submit_for_approval(self):
-#     self.status = "submitted_for_review"
-#     self.save()
-#
-#     # start simpleflow
-#     # this will create task for initial state which
-#     # you defined in your PROCESS config
-#     self.start_simpleflow()
