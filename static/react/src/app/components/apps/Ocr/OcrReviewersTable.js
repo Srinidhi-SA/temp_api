@@ -16,17 +16,32 @@ import { Checkbox } from 'primereact/checkbox';
 })
 
 export default class OcrReviewersTable extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      checkedList: [],
+    }
+  }
 
   componentWillMount = () => {
     this.props.dispatch(getOcrReviewersList())
  }
 
+ handleCheck = (e) => {
+  let updateList = [...this.state.checkedList];
+  e.checked ? updateList.push(e.value) : updateList.splice(updateList.indexOf(e.value), 1);
+  this.setState({ checkedList: updateList });
+}
+
+handlePagination = (pageNo) => {
+  this.props.dispatch(getOcrReviewersList(pageNo))
+}
 
   render() {
     const pages = this.props.OcrReviewerList.total_number_of_pages;
     const current_page = this.props.OcrReviewerList.current_page;
     let paginationTag = null
-    if (pages == 1) {
+    if (pages>1) {
       paginationTag = (
         <div class="col-md-12 text-center">
           <div className="footer" id="Pagination">
@@ -43,14 +58,14 @@ export default class OcrReviewersTable extends Component {
         return (
           <tr id={index}>
             <td>
-              {/* <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox> */}
+              <Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocr_profile.slug)}></Checkbox>
             </td>
             <td>
               <i class="fa fa-user-o"></i>
             </td>
             {/* <td><Link to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link></td> */}
             <td>{item.first_name}</td>
-            <td>{''}</td>
+            <td>{item.ocr_profile.slug}</td>
             <td>{''}</td>
             <td>{''}</td>
             <td>{''}</td>
