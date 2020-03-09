@@ -688,5 +688,25 @@ export function setDocsCountAction(val){
 		type : "DOCS_COUNT_TO_DISTRIBUTE",val
 	}
 }
+export function saveSelectedIRListAction(selIRList){
+	return {
+		type : "SAVE_SEL_IR_LIST",selIRList
+	}
+}
+export function saveIRSearchElemAction(val){
+	return {
+		type : "STORE_IR_SEARCH_ELEMENT",val
+	}
+}
+export function clearIRSearchElemAction(){
+	return {
+		type : "CLEAR_IR_SEARCH_ELEMENT"
+	}
+}
+export function setAssignRemainingIRDocsAction(val){
+	return {
+		type : "ASSIGN_REAMINING_DOCS_AS",val
+	}
+}
 
 

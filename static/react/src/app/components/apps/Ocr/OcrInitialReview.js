@@ -1,12 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { saveIRToggleValAction, setAssignDocsToAction, setDocsCountAction} from "../../../actions/ocrActions";
+import { Checkbox } from "primereact/checkbox";
+import { saveIRToggleValAction, setAssignDocsToAction, setDocsCountAction, saveSelectedIRListAction, saveIRSearchElemAction, clearIRSearchElemAction, setAssignRemainingIRDocsAction} from "../../../actions/ocrActions";
 
 @connect((store) => {
   return {
-    allOcrUsers : store.ocr.allOcrUsers,
+    iRList : store.ocr.iRList,
     iRToggleFlag : store.ocr.iRToggleFlag,
     iRassignDocsTo : store.ocr.iRassignDocsTo,
+    selectedIRList : store.ocr.selectedIRList,
+    iRSearchElement : store.ocr.iRSearchElement,
   };
 })
 
@@ -24,28 +27,56 @@ export class OcrInitialReview extends React.Component {
   saveIRDocsCount(e){
       this.props.dispatch(setDocsCountAction(e.target.value));
   }
+  saveSelectedIRList(e){
+    let curIRSelUsers = [...this.props.selectedIRList];
+    if(e.target.checked)
+        curIRSelUsers.push(e.target.value)
+    else
+        curIRSelUsers.splice(curIRSelUsers.indexOf(e.value), 1)
+        this.props.dispatch(saveSelectedIRListAction(curIRSelUsers))
+  }
+  handleSelectAllIR(e){
+      let nameList = [];
+    if(e.target.checked){
+      nameList = e.target.value.filter(i=>i.ocr_profile.role.includes(3)).map(function (el) { return el.username; });
+      this.props.dispatch(saveSelectedIRListAction(nameList));
+    }else{
+        this.props.dispatch(saveSelectedIRListAction(nameList));
+    }
+  }
+  saveIRSearchElem(e){
+    this.props.dispatch(saveIRSearchElemAction(e.target.value));
+  }
+  clearIRSearchElem(e){
+    $("#searchIR")[0].value = ""
+    this.props.dispatch(clearIRSearchElemAction());
+  }
+  setAssignRemainingIRDocs(e){
+    this.props.dispatch(setAssignRemainingIRDocsAction(e.target.value));
+  }
 
   render() {
     let iReviewerTable = ""
-    if(Object.keys(this.props.allOcrUsers).length === 0){
+    if(Object.keys(this.props.iRList).length === 0){
         iReviewerTable = <div className="noOcrUsers">
             <span>No Users Found<br/></span>
         </div>
     }else {
+        let iRListCount = (this.props.iRList.data.filter(i=>i.ocr_profile.role.includes(3)) ).length
         iReviewerTable = 
-            <table className = "table table-bordered table-hover" style="background:#FFF;">
+            <table className = "table table-bordered table-hover" style={{background:"#FFF"}}>
                 <thead><tr>
-                    <th><Checkbox id="selectAll" value="" checked/></th>
-                    <th>NAME</th>
+                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" value={this.props.iRList.data} onChange={this.handleSelectAllIR.bind(this)} checked={(iRListCount === this.props.selectedIRList.length)?true:false}/></th>
+                    <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
                 </tr></thead>
                 <tbody>
-                    {this.props.allOcrUsers.data.map((item, index) => {
-                        if(item.ocr_user){
+                    {this.props.iRList.data.map((item, index) => {
+                        if(item.ocr_profile.role.includes(3)){
                             return (
                                 <tr>
-                                    <td><Checkbox id={item.ocr_profile.slug} value={item.username} checked/></td>
-                                    <td>{item.first_name}</td>
+                                    <td className="text-center"><Checkbox id={item.ocr_profile.slug} value={item.username} onChange={this.saveSelectedIRList.bind(this)} checked={this.props.selectedIRList.includes(item.username)}/></td>
+                                    <td>{item.username}</td>
                                     <td>{item.email}</td>
                                 </tr>
                             )}
@@ -109,9 +140,10 @@ export class OcrInitialReview extends React.Component {
             <hr/>
             <div className="row">
                 <div className="col-md-12">
-                    <h4>Reviewers (2)
+                    <h4>Reviewers ({this.props.selectedIRList.length})
                         <div className="pull-right xs-mb-10">
-                            <input type="text" className="form-control" placeholder="Search..." />
+                            <input type="text" id="searchIR" className="form-control" placeholder="Search..." onKeyUp={this.saveIRSearchElem.bind(this)} />
+                            <button className="close-icon" style={{marginLeft:"13.5%",marginTop:"3px"}} onClick={this.clearIRSearchElem.bind(this)} type="reset"></button>
                         </div>
                     </h4>
                     <div className="clearfix"></div>
@@ -123,28 +155,21 @@ export class OcrInitialReview extends React.Component {
                         <div className="col-md-12">
                             <h4>How would you like to assign any remaining documents?</h4>
                             <div className="ma-radio">
-                                <input type="radio" name="assign_remaning_doc" id="asn1" />
+                                <input type="radio" name="assignRemaningDocs" value="asn1" id="asn1" onClick={this.setAssignRemainingIRDocs.bind(this)} />
                                 <label for="asn1">Continue to distribute even if limits are met</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="assign_remaning_doc" id="asn2" />
+                                <input type="radio" name="assignRemaningDocs" value="asn2" id="asn2" onClick={this.setAssignRemainingIRDocs.bind(this)} />
                                 <label for="asn2">Leave unassigned and move to backlogs</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="assign_remaning_doc" id="asn3" />
+                                <input type="radio" name="assignRemaningDocs" value="asn3" id="asn3" onClick={this.setAssignRemainingIRDocs.bind(this)} />
                                 <label for="asn3">Select reviewers to assign</label>
                             </div>
                         </div>
                     </div>
+                    <hr/>
                 </div>
-                <hr/>
-                    <div className="xs-mt-20"></div>
-                    <div className="row">
-                        <div className="col-md-6 col-md-offset-6 text-right">
-                            <button className="btn btn-default"> &nbsp; Cancel</button> 
-                            <button className="btn btn-primary"><i className="fa fa-check-circle"></i> &nbsp; Save</button>
-                        </div>
-                    </div>
             </div>
             </div>
             }

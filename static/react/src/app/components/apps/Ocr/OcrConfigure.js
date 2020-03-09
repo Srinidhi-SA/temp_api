@@ -16,7 +16,7 @@ export class OcrConfigure extends React.Component {
   }
 
   componentWillMount(){
-    
+    // this.props.dispatch(fetchAllOcrUsersAction());
   }
 
   saveSelectedConfigureTab(e){
@@ -60,6 +60,12 @@ export class OcrConfigure extends React.Component {
                   </div>
                   <div id="secondaryReview" className="tab-pane fade">
                     <OcrSecondaryReview/>
+                  </div>
+                  <div className="row">
+                      <div className="col-md-6 col-md-offset-6 text-right" style={{marginTop:"10px",marginBottom:"10px"}}>
+                          <button className="btn btn-default">Cancel</button> 
+                          <button className="btn btn-primary"><i className="fa fa-check-circle"></i> &nbsp; Save</button>
+                      </div>
                   </div>
                 </div>
             </div>
