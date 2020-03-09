@@ -7,6 +7,10 @@
 # import
 # import timesheet_templates_module
 # from timesheet_templates_module import *
+import time
+
+import requests
+
 from ocr.ITE.modularised_table_detection import *
 from ocr.ITE.transcript_module import *
 from google.cloud import vision
@@ -241,7 +245,7 @@ def get_same_line_words_hori_2(p1_p3, line_number, dep):
 def text_from_Azure_API(image_path):
     # For Azure OCR API.
 
-    subscription_key = "9853482493a64e0aa1d4459439dd2ab0"
+    subscription_key = "44ebbbdd45a94249bcc724ff8a8aea39"
     vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/"
     text_recognition_url = vision_base_url + "read/core/asyncBatchAnalyze"
 

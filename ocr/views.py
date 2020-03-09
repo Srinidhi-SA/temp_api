@@ -395,6 +395,25 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user
         )
 
+    def process_image(self, data, response, slug, image_queryset):
+        image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+
+        with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
+            f.write(image)
+
+        del data['slug']
+        data['converted_Coordinates'] = json.dumps(response['data2'])
+        data['comparision_data'] = json.dumps(response['data3'])
+        data['flag'] = json.dumps(response['flag'])
+        data['analysis'] = json.dumps(response['analysis'])
+        data['status'] = 2
+        data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
+                                       file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
+
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        return serializer
+
     @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
         """
@@ -572,28 +591,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
-                response = res.get()
+                res = res.get()
 
-                image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+                for response in res.values():
+                    serializer = self.process_image(data, response, slug, image_queryset)
+                    if serializer.is_valid():
+                        serializer.save()
+                        results.append(serializer.data)
+                    results.append(serializer.errors)
 
-                with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
-                    f.write(image)
-
-                del data['slug']
-                data['converted_Coordinates'] = json.dumps(response['data2'])
-                data['comparision_data'] = json.dumps(response['data3'])
-                data['flag'] = json.dumps(response['flag'])
-                data['analysis'] = json.dumps(response['analysis'])
-                data['status'] = 2
-                data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
-                                               file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
-
-                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                 context={"request": self.request})
-                if serializer.is_valid():
-                    serializer.save()
-                    results.append(serializer.data)
-                results.append(serializer.errors)
         return Response(results)
 
     @list_route(methods=['post'])
@@ -649,7 +655,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.name), 'rb').read()))
+            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.slug), 'rb').read()))
             response = plot(image, comparision_data, data['slug'])
             return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
@@ -677,7 +683,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'marked': True})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -716,7 +722,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         stats = {'Word Count': len(comparision_data)}
         stats['Confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
-        return stats
+        return JsonResponse(stats)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
