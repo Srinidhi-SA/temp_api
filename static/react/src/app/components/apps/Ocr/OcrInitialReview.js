@@ -140,12 +140,11 @@ export class OcrInitialReview extends React.Component {
             <hr/>
             <div className="row">
                 <div className="col-md-12">
-                    <h4>Reviewers ({this.props.selectedIRList.length})
-                        <div className="pull-right xs-mb-10">
-                            <input type="text" id="searchIR" className="form-control" placeholder="Search..." onKeyUp={this.saveIRSearchElem.bind(this)} />
-                            <button className="close-icon" style={{marginLeft:"13.5%",marginTop:"3px"}} onClick={this.clearIRSearchElem.bind(this)} type="reset"></button>
-                        </div>
-                    </h4>
+                    <h4>Reviewers ({this.props.selectedIRList.length})</h4>
+                    <div className="pull-right xs-mb-10">
+                        <input type="text" id="searchIR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search..." onKeyUp={this.saveIRSearchElem.bind(this)} />
+                        <button className="close-icon" style={{marginLeft:"15%"}} onClick={this.clearIRSearchElem.bind(this)} type="reset"></button>
+                    </div>
                     <div className="clearfix"></div>
                     <div className="table-responsive">
                         {iReviewerTable}
