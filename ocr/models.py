@@ -55,7 +55,7 @@ class OCRUserProfile(models.Model):
     is_active = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
-    reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
+    #reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
@@ -76,9 +76,33 @@ class OCRUserProfile(models.Model):
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            #"reviewer_type": self.reviewer_type.type
+            "role": self.ocr_user.groups.values_list('id', flat=True)
         }
         return ocr_user_profile
+
+    def reviewer_data(self):
+        from ocrflow.models import Task
+        total_assignments = len(Task.objects.filter(assigned_user=self.ocr_user))
+        total_reviewed = len(Task.objects.filter(
+            assigned_user=self.ocr_user,
+            is_closed=True))
+        data = {
+            'assignments': total_assignments,
+            'avgTimeperWord': None,
+            'accuracyModel': None,
+            'completionPercentage': self.get_review_completion(
+                                        total_reviewed,
+                                        total_assignments)
+        }
+        return data
+
+    def get_review_completion(self, total_reviewed, total_assignments):
+        if total_assignments == 0:
+            return 0
+        else:
+            percentage = (total_reviewed/total_assignments)*100
+            return percentage
+
 
     def get_slug(self):
         return self.slug

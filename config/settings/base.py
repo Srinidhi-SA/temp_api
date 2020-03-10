@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'auditlog',
     'guardian',
     'django_celery_beat',
-    'ocr'
+    'ocr',
+    'ocrflow'
 ]
 
 MIDDLEWARE = [

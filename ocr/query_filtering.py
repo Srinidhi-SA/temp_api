@@ -33,6 +33,7 @@ class QueryCommonFiltering:
     name = None
     status = None
     confidence = None
+    first_name = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -45,6 +46,13 @@ class QueryCommonFiltering:
                 self.name = self.name
             else:
                 self.name = temp_name
+
+        if 'first_name' in request.query_params:
+            temp_name = self.request.query_params.get('first_name')
+            if temp_name is None or temp_name is "":
+                self.first_name = self.first_name
+            else:
+                self.first_name = temp_name
 
         if 'status' in request.query_params:
             temp_name = self.request.query_params.get('status')
@@ -87,6 +95,8 @@ class QueryCommonFiltering:
         """
         Method that handles filtering, sorting and ordering.
         """
+        if self.first_name is not None:
+            self.query_set = self.query_set.filter(first_name__icontains=self.first_name)
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
         if self.confidence is not None:
@@ -181,7 +191,7 @@ def get_specific_listed_data(
         viewset=None,
         request=None,
         list_serializer=None,
-        reviewerType_id=None
+        role=None
 ):
     """
 
@@ -190,7 +200,46 @@ def get_specific_listed_data(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_specific_reviewer_qyeryset(reviewerType_id)
+    query_set = viewset.get_specific_reviewer_qyeryset(role)
+
+    # common filtering
+    qcf = QueryCommonFiltering(
+        query_set=query_set,
+        request=request
+    )
+
+    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    if 'page' in request.query_params:
+        if request.query_params.get('page') == 'all':
+            serializer = list_serializer(query_set, many=True)
+            return Response({
+                "data": serializer.data
+            })
+    page_class = viewset.pagination_class()
+    page = page_class.paginate_queryset(
+        queryset=query_set,
+        request=request,
+        list_serializer=list_serializer,
+        view=viewset
+    )
+
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
+
+def get_reviewer_data(
+        viewset=None,
+        request=None,
+        list_serializer=None,
+):
+    """
+
+    :param viewset: use to  get_queryset() / pagination_class
+    :param request: use to query_params
+    :param list_serializer: pass Listing Serializer
+    :return:
+    """
+    query_set = viewset.get_specific_reviewer_detail_queryset()
 
     # common filtering
     qcf = QueryCommonFiltering(

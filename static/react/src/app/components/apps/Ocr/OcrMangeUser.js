@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { OcrUserTable } from "./OcrUserTable";
 @connect((store) => {
   return { 
     };
@@ -8,7 +9,6 @@ import { connect } from "react-redux";
 export class OcrManageUser extends React.Component {
   constructor(props) {
     super(props);
-    
   }
   
   render() {
@@ -27,12 +27,13 @@ export class OcrManageUser extends React.Component {
               <ul class="nav nav-tabs cst_ocr_tabs">
                 <li class=""><a href="/apps/ocr-mq44ewz7bp/"><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
                 <li class=""><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-book fa-lg"></i> Projects</a></li>
-                <li class=""><a href="#"><i class="fa fa-sliders fa-lg"></i> Configure</a></li>
-                <li class=""><a href="#"><i class="fa fa-linode fa-lg"></i> Reviewers</a></li>
-                <li class="active"><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Manage Users</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/configure/"><i class="fa fa-sliders fa-lg"></i> Configure</a></li>
+                <li class=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-linode fa-lg"></i> Reviewers</a></li>
+                <li class="active"><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Users</a></li>
               </ul>
             </div>
             <div class="container-fluid">
+              <OcrUserTable/>
             </div>
           </section>
         </div>
