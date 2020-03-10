@@ -1,13 +1,17 @@
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ocrflow.models import Task, SimpleFlow, ReviewRequest
 from .serializers import TaskSerializer, \
     ReviewRequestListSerializer, \
     ReviewRequestSerializer
+from ocr.serializers import OCRImageSerializer
+from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
-from ocr.query_filtering import get_listed_data
+from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
+from rest_framework.decorators import list_route, detail_route
 
 # Create your views here.
 class TaskView(viewsets.ModelViewSet):
@@ -76,8 +80,13 @@ class ReviewRequestView(viewsets.ModelViewSet):
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
+        queryset = ReviewRequest.objects.all().order_by('-created_on')
+        return queryset
+
+    def get_specific_assigned_queryset(self, username):
+        user = User.objects.get(username=username)
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user=self.request.user
+            tasks__assigned_user=user
             ).order_by('-created_on')
         return queryset
 
@@ -93,6 +102,16 @@ class ReviewRequestView(viewsets.ModelViewSet):
             viewset=self,
             request=request,
             list_serializer=ReviewRequestListSerializer
+        )
+
+    @list_route(methods=['get'])
+    def assigned_requests(self, request, *args, **kwargs):
+        username = self.request.query_params.get('username')
+        return get_specific_assigned_requests(
+            viewset=self,
+            request=request,
+            list_serializer=ReviewRequestSerializer,
+            username=username
         )
 
     def retrieve(self, request, *args, **kwargs):
