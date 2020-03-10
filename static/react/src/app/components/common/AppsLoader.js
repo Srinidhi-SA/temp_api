@@ -112,13 +112,13 @@ componentWillUpdate(){
                     x.innerHTML = "Step " + i + ": " + array[i];
                     x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
                     x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 10000 * i);
+                }, 4000 * i);
             })(i);
         }
 		for(var i=array.length-5;i<array.length;i++){
-			x.innerHTML = "Step " + i + ": " + array[i];
-			x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-			x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
+			x.innerHTML = 'Please wait while analysing...'//"Step 1: " + array[1];
+			x1.innerHTML ='';
+			x2.innerHTML ='';
 		}
     }
 
