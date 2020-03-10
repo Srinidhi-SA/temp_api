@@ -97,8 +97,11 @@ class OCRUserProfile(models.Model):
         return data
 
     def get_review_completion(self, total_reviewed, total_assignments):
-        percentage = (total_reviewed/total_assignments)*100
-        return percentage
+        if total_assignments == 0:
+            return 0
+        else:
+            percentage = (total_reviewed/total_assignments)*100
+            return percentage
 
 
     def get_slug(self):
