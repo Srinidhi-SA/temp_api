@@ -62,14 +62,18 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
 
     apikey = 'sK2KMSxYIyeQiYJpb9ugbMI5cjZRW6e2MSYLrWTtoINy'
 
-    url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/9945cca0-ece4-45c8-903e-efbf3fcc61ff'
+    service_url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/9945cca0-ece4-45c8-903e-efbf3fcc61ff'
+
+    # apikey = "UXyQqWwT26Ruu_PgpAvehj_q0Lg3xFOCKMQ-IX2WTu1j" # Rahuls creds
+    # service_url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/259e5cd0-ac42-45e9-86e8-b9c772d3131f"
 
     authenticator = IAMAuthenticator(apikey)
 
     def __get_nl_analyzer():
         natural_language_understanding = NaturalLanguageUnderstandingV1(version='2019-07-12',
-                                                                         authenticator=authenticator)
-        natural_language_understanding.set_service_url(url)
+                                                                        authenticator=authenticator)
+        natural_language_understanding.set_disable_ssl_verification(True)
+        natural_language_understanding.set_service_url(service_url)
         return natural_language_understanding
 
     def __get_default_features():
@@ -87,11 +91,11 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
 
     nl_understanding = None
 
+    # use_cache = False
     if use_cache:
         picled_content = bluemix_cache.get(url)
         if picled_content:
             nl_understanding = pickle.loads(picled_content)
-
 
     if not nl_understanding:
         natural_language_analyzer = __get_nl_analyzer()
@@ -108,7 +112,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
                     nl_understanding = natural_language_analyzer.analyze(
                         url=url, features=features)
             except Exception as err:
-                print("FAILED "*10, err)
+                print("FAILED " * 10, err)
 
             if nl_understanding:
                 break
@@ -117,8 +121,8 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
         bluemix_cache.put(url, pickle.dumps(nl_understanding))
     return nl_understanding
 
-def get_cache_file_name(input_key):
 
+def get_cache_file_name(input_key):
     m = hashlib.md5(CACHESALT + input_key)
     return TEMPDIR + m.hexdigest()
 
@@ -126,13 +130,14 @@ def get_cache_file_name(input_key):
 import pickle
 import os
 
+
 def cache_get(key):
     cache_file_name = get_cache_file_name(key)
     if os.path.isfile(cache_file_name):
-        return pickle.load( open( cache_file_name, "rb" ) )
+        return pickle.load(open(cache_file_name, "rb"))
     else:
         return None
 
-def cache_put(key, obj):
 
+def cache_put(key, obj):
     pickle.dump(obj, open(get_cache_file_name(key), "wb"))

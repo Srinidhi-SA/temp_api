@@ -1196,7 +1196,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            stock_instance.call_mlscripts()
+            # stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
