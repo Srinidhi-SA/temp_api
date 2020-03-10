@@ -1,6 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
@@ -16,21 +17,23 @@ import string
 import api.StockAdvisor.utils as myutils
 from django.conf import settings
 
-def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
-    all_data=[]
-    crawl_obj=generic_crawler.GenericCrawler()
 
-    content=crawl_obj.get_data(url, crawl_options={'fresh': True})
-    json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
+def crawl_extract(url, regex_dict={}, remove_tags=[], slug=None):
+    all_data = []
+    crawl_obj = generic_crawler.GenericCrawler()
+
+    content = crawl_obj.get_data(url, crawl_options={'fresh': True})
+    json_list = process.process_data(url, content, regex_dict=regex_dict, remove_tags=remove_tags)
 
     for json_obj in json_list:
         if not json_obj.get("url"):
             continue
         if "date" in json_obj:
-            json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
+            json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
         all_data.append(json_obj)
 
     return all_data[4:]
+
 
 def fetch_news_sentiments_from_newsapi(stock):
     stock_news = process.fetch_stock_news_from_newsapi(stock)
@@ -116,7 +119,8 @@ def fetch_news_article_from_nasdaq(stock):
 def write_to_news_data_in_folder(stockName, data):
     import os
     import csv
-    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/" + self.slug + "/"
+    path = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/" + self.slug + "/"
     # file_path = path + stockName + "." + type
     file_path = path + stockName + "." + type
     with open(file_path, "wb") as file_to_write_on:
@@ -128,18 +132,22 @@ def write_to_news_data_in_folder(stockName, data):
 
 
 def generate_urls_for_historic_data(list_of_company_name):
-	return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
+    return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
+
 
 def generate_url_for_historic_data(name):
-	return "http://www.nasdaq.com/symbol/{0}/historical".format(name)
+    return "http://www.nasdaq.com/symbol/{0}/historical".format(name)
 
 
 def generate_urls_for_crawl_news(stock_symbols):
-	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]
+    return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol
+            in stock_symbols]
+
 
 def get_nasdaq_news_articles(stock_symbol):
     urls = ["https://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)]
-    urls.extend( ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)])
+    urls.extend(["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in
+                 range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)])
     return urls
 
 
@@ -147,7 +155,7 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
     if other_details is None:
         type = 'news_data'
     else:
-        type= other_details['type']
+        type = other_details['type']
 
     headers = find_headers(news_data=news_data, type=type, slug=slug)
     columnData = get_column_data_for_metadata(headers, slug=slug)
@@ -200,8 +208,8 @@ def transform_into_uiandscripts_metadata():
 
 def get_transformation_settings(slug=None):
     existingColumn = {
-            "existingColumns": []
-        }
+        "existingColumns": []
+    }
     return existingColumn
 
 
@@ -223,16 +231,16 @@ def find_headers(news_data, type='historical_data', slug=None):
 def get_column_data_for_metadata(headers, slug=None):
     import copy
     sample_column_data = {
-                "ignoreSuggestionFlag": False,
-                "name": None,
-                "chartData": None,
-                "dateSuggestionFlag": False,
-                "columnStats": None,
-                "columnType": None,
-                "ignoreSuggestionMsg": None,
-                "slug": None,
-                "consider": True
-            }
+        "ignoreSuggestionFlag": False,
+        "name": None,
+        "chartData": None,
+        "dateSuggestionFlag": False,
+        "columnStats": None,
+        "columnType": None,
+        "ignoreSuggestionMsg": None,
+        "slug": None,
+        "consider": True
+    }
 
     columnData = []
     for header in headers:
@@ -241,6 +249,7 @@ def get_column_data_for_metadata(headers, slug=None):
         temp['slug'] = header['slug']
         columnData.append(temp)
     return columnData
+
 
 def get_sample_data(news_data, type='historical_data', slug=None):
     required_fields = get_required_fields(type)
@@ -256,35 +265,33 @@ def get_sample_data(news_data, type='historical_data', slug=None):
 
 
 def get_metaData(news_data, slug=None):
-
     metaData = [
         {"displayName": "News source", "name": "newsSource", "value": "NASDAQ", "display": True},
         {"displayName": "Stock Prices", "name": "stockPrices", "value": "NASDAQ", "display": True},
-        {"displayName": "Number of Articles", "name": "numberOfArticles", "value": len(news_data) , "display": True},
+        {"displayName": "Number of Articles", "name": "numberOfArticles", "value": len(news_data), "display": True},
     ]
     return metaData
 
+
 def get_required_fields(type='historical_data'):
     matching = {
-        'historical_data': ['url',  'source', 'date', 'time'],
-        'news_data': ['url',  'source', 'date', 'title','short_desc'],
+        'historical_data': ['url', 'source', 'date', 'time'],
+        'news_data': ['url', 'source', 'date', 'title', 'short_desc'],
     }
 
     return matching[type]
 
-def generate_slug(name=None):
 
+def generate_slug(name=None):
     return slugify(str(name) + "-" + ''.join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
 
 def write_to_a_file(slug=None, data=None):
-
     with open('/tmp/temp_{0}'.format(slug), 'w') as temp:
         json.dump(data, temp)
 
 
 def read_from_a_file(slug=None):
-
     temp = open('/tmp/temp_{0}'.format(slug), 'r')
     return json.loads(temp.read())
