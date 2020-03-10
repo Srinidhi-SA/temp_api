@@ -19,6 +19,7 @@ export default function reducer(state = {
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
   documentFlag:false,
+  revDocumentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
@@ -50,7 +51,9 @@ export default function reducer(state = {
   search_document:'',
   search_project:'',
   selected_project_slug:'',
-  selected_project_name:''
+  selected_project_name:'',
+  selected_reviewer_slug:'',
+  selected_reviewer_name:'',
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -118,6 +121,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_REV_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          revDocumentFlag: action.flag
+        }
+      }
+      break;
+      
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -475,6 +487,16 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SELECTED_REVIEWER_DETAILS":
+      {
+        return {
+          ...state,
+          selected_reviewer_slug:action.slug,
+          selected_reviewer_name:action.name
+        }
+      }
+      break;
+      
 }
   return state
 }

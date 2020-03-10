@@ -31,6 +31,12 @@ export function saveDocumentPageFlag(flag) {
 		flag
 	}
 }
+export function saveRevDocumentPageFlag(flag) {
+	return {
+		type: "SAVE_REV_DOCUMENT_FLAG",
+		flag
+	}
+}
 
 export function saveImageDetails(data) {
 	return {
@@ -147,8 +153,8 @@ export function getOcrReviewersList(pageNo){
 }
 
 function fetchReviewersList(pageNo=1,token){
-		return fetch(API + '/ocr/user/reviewer_list/?role=4', {  
-      method: 'get',
+		return fetch(API + '/ocr/user/reviewer_detail_list/', {
+      method: 'get', 
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
@@ -701,6 +707,12 @@ export function clearUserSearchElementAction(){
 export function selectedProjectDetails(slug,name){
 	return{
 		type:"SELECTED_PROJECT_SLUG",
+		slug,name
+	}
+}
+export function selectedReviewerDetails(slug,name){
+	return{
+		type:"SELECTED_REVIEWER_DETAILS",
 		slug,name
 	}
 }

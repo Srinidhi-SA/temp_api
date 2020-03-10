@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import {getOcrReviewersList}from '../../../actions/ocrActions'
+import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails}from '../../../actions/ocrActions'
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
+import { Link, Redirect } from "react-router-dom";
+
 
 
 
@@ -37,6 +39,11 @@ handlePagination = (pageNo) => {
   this.props.dispatch(getOcrReviewersList(pageNo))
 }
 
+handleDocumentPageFlag (slug,name){
+  this.props.dispatch(saveRevDocumentPageFlag(true));
+  this.props.dispatch(selectedReviewerDetails(slug,name))
+}
+
   render() {
     const pages = this.props.OcrReviewerList.total_number_of_pages;
     const current_page = this.props.OcrReviewerList.current_page;
@@ -63,12 +70,14 @@ handlePagination = (pageNo) => {
             <td>
               <i class="fa fa-user-o"></i>
             </td>
-            {/* <td><Link to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link></td> */}
-            <td>{item.first_name}</td>
-            <td>{item.ocr_profile.slug}</td>
+            {/* <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link> */}
+
+            <td><Link to='/apps/ocr-mq44ewz7bp/reviewer/' onClick={() => { this.handleDocumentPageFlag(item.ocr_profile.slug,item.username) }}>{item.username}</Link></td>
             <td>{''}</td>
-            <td>{''}</td>
-            <td>{''}</td>
+            <td>{item.ocr_data.assignments}</td>
+            <td>{item.ocr_data.completionPercentage}</td>
+            <td>{item.ocr_data.avgTimeperWord}</td>
+            <td>{item.ocr_data.accuracyModel}</td>
             <td>{''}</td>
             <td>{''}</td>
             <td>{''}</td>

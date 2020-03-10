@@ -15,7 +15,9 @@ import { API } from "../../../helpers/env"
     login_response: store.login.login_response,
     OcrDataList: store.ocr.OcrDataList,
     documentFlag: store.ocr.documentFlag,
-    projectName: store.ocr.selected_project_name
+    projectName: store.ocr.selected_project_name,
+    revDocumentFlag:store.ocr.revDocumentFlag,
+    reviewerName: store.ocr.selected_reviewer_name
   };
 })
 
@@ -194,10 +196,15 @@ export class OcrTable extends React.Component {
       <div>
         <div class="row">
           <div class="col-sm-6">
-            <ol class="breadcrumb">
+          { this.props.revDocumentFlag?(<ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
+              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+            </ol>):(<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
-            </ol>
+            </ol>)
+          }
+           
           </div>
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?
           <div class="col-sm-6 text-right">

@@ -1,9 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import OcrReviewersTable from '../../apps/Ocr/OcrReviewersTable'
+import OcrReviewersTable from '../../apps/Ocr/OcrReviewersTable';
+import {OcrDocument} from "./OcrDocument";
+
 
 @connect((store) => {
   return {
+    revDocumentFlag: store.ocr.revDocumentFlag,
   };
 })
 
@@ -12,7 +15,14 @@ export class OcrReviewer extends React.Component {
     super(props);
   }
 
-  render() { 
+  render()
+   { 
+    var  renderComponents=null;
+    renderComponents=(this.props.revDocumentFlag?
+    <OcrDocument/>
+    :
+    <OcrReviewersTable/>
+   )
     return (
       <div className="side-body">
         <div class="page-head">
@@ -34,7 +44,7 @@ export class OcrReviewer extends React.Component {
               </ul>
             </div>
             <div class="container-fluid">
-            <OcrReviewersTable/>
+            {renderComponents}
             </div>
           </section>
         </div>
