@@ -177,6 +177,13 @@ class ReviewRequest(SimpleFlow):
         null=True,
         related_name='+'
     )
+    modified_at = models.DateTimeField(auto_now_add=True, null=True)
+    modified_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        related_name='+'
+    )
     status = models.CharField(
         max_length=40,
         blank=True,

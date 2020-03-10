@@ -5,19 +5,15 @@ class ContentObjectRelatedField(serializers.RelatedField):
     """
     A custom field to use for the `content_object` generic relationship.
     """
-    print("content serializer")
     def to_representation(self, instance):
         """
         Serialize tagged objects to a simple textual representation.
         """
-        print(instance)
         if isinstance(instance, ReviewRequest):
             serializer = ReviewRequestSerializer(instance)
-            print(serializer)
             return serializer.data
         elif isinstance(instance, Task):
             serializer = TaskSerializer(instance)
-            print(serializer)
             return serializer.data
 
         raise Exception('Unexpected type of tagged object')
@@ -40,7 +36,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class ReviewRequestListSerializer(serializers.ModelSerializer):
     """
     """
-
+    
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
 
     class Meta:

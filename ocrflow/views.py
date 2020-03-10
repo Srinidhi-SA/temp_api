@@ -76,13 +76,15 @@ class ReviewRequestView(viewsets.ModelViewSet):
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
-        queryset = ReviewRequest.objects.all()
+        queryset = ReviewRequest.objects.filter(
+            tasks__assigned_user=self.request.user
+            ).order_by('-created_on')
         return queryset
 
     def get_object_from_all(self):
 
         return ReviewRequest.objects.get(
-            id=self.kwargs.get('id')
+            slug=self.kwargs.get('pk')
         )
 
     def list(self, request):
