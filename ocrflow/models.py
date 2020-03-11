@@ -131,7 +131,7 @@ class Approval(models.Model):
 
 
 class SimpleFlow(models.Model):
-    tasks = GenericRelation(Task)
+    tasks = GenericRelation(Task, related_name='tasks')
 
     class Meta:
         abstract = True
@@ -162,7 +162,7 @@ class SimpleFlow(models.Model):
 class ReviewRequest(SimpleFlow):
     # assign your process here
     PROCESS = process.AUTO_ASSIGNMENT
-
+    slug = models.SlugField(null=False, blank=True, max_length=100)
     ocr_image = models.ForeignKey(
         OCRImage,
         blank=True,
@@ -172,6 +172,13 @@ class ReviewRequest(SimpleFlow):
 
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        related_name='+'
+    )
+    modified_at = models.DateTimeField(auto_now_add=True, null=True)
+    modified_by = models.ForeignKey(
         User,
         blank=True,
         null=True,
@@ -194,9 +201,16 @@ class ReviewRequest(SimpleFlow):
             ('admin_rejected', 'Admin Rejected')
         ]
     )
+    def save(self, *args, **kwargs):
+        """Save OCRUserProfile model"""
+        self.generate_slug()
+        super(ReviewRequest, self).save(*args, **kwargs)
 
-    def slug(self):
-        return "ITEREQ-{}".format(self.id)
+    def generate_slug(self):
+        """generate slug"""
+        if not self.slug:
+            self.slug = slugify("ITEREQ" + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
 def submit_for_approval(sender, instance, created, **kwargs):
     if created:

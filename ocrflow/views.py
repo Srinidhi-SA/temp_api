@@ -1,11 +1,17 @@
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ocrflow.models import Task, SimpleFlow, ReviewRequest
-from .serializers import TaskSerializer, ReviewRequestSerializer
+from .serializers import TaskSerializer, \
+    ReviewRequestListSerializer, \
+    ReviewRequestSerializer
+from ocr.serializers import OCRImageSerializer
+from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
-from ocr.query_filtering import get_listed_data
+from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
+from rest_framework.decorators import list_route, detail_route
 
 # Create your views here.
 class TaskView(viewsets.ModelViewSet):
@@ -63,24 +69,58 @@ class TaskView(viewsets.ModelViewSet):
                 "message": form.errors
             })
 
-class SimpleFlowView(viewsets.ModelViewSet):
+class ReviewRequestView(viewsets.ModelViewSet):
     """
-    Model: SimpleFlow
+    Model: ReviewRequest
     Description :
     """
-    serializer_class = ReviewRequestSerializer
+    serializer_class = ReviewRequestListSerializer
     model = ReviewRequest
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
-        queryset = ReviewRequest.objects.all()
+        queryset = ReviewRequest.objects.all().order_by('-created_on')
         return queryset
+
+    def get_specific_assigned_queryset(self, username):
+        user = User.objects.get(username=username)
+        queryset = ReviewRequest.objects.filter(
+            tasks__assigned_user=user
+            ).order_by('-created_on')
+        return queryset
+
+    def get_object_from_all(self):
+
+        return ReviewRequest.objects.get(
+            slug=self.kwargs.get('pk')
+        )
 
     def list(self, request):
 
         return get_listed_data(
             viewset=self,
             request=request,
-            list_serializer=ReviewRequestSerializer
+            list_serializer=ReviewRequestListSerializer
         )
+
+    @list_route(methods=['get'])
+    def assigned_requests(self, request, *args, **kwargs):
+        username = self.request.query_params.get('username')
+        return get_specific_assigned_requests(
+            viewset=self,
+            request=request,
+            list_serializer=ReviewRequestSerializer,
+            username=username
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        """Returns specific object details"""
+        instance = self.get_object_from_all()
+
+        if instance is None:
+            return retrieve_failed_exception("ReviewRequest object Doesn't exist.")
+
+        serializer = ReviewRequestSerializer(instance=instance, context={'request': request})
+
+        return Response(serializer.data)

@@ -84,6 +84,30 @@ class OCRUserProfile(models.Model):
         }
         return ocr_user_profile
 
+    def reviewer_data(self):
+        from ocrflow.models import Task
+        total_assignments = len(Task.objects.filter(assigned_user=self.ocr_user))
+        total_reviewed = len(Task.objects.filter(
+            assigned_user=self.ocr_user,
+            is_closed=True))
+        data = {
+            'assignments': total_assignments,
+            'avgTimeperWord': None,
+            'accuracyModel': None,
+            'completionPercentage': self.get_review_completion(
+                                        total_reviewed,
+                                        total_assignments)
+        }
+        return data
+
+    def get_review_completion(self, total_reviewed, total_assignments):
+        if total_assignments == 0:
+            return 0
+        else:
+            percentage = (total_reviewed/total_assignments)*100
+            return percentage
+
+
     def get_slug(self):
         return self.slug
 
