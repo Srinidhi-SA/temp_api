@@ -87,6 +87,7 @@ from rest_framework import generics
 from django.core.exceptions import PermissionDenied, \
     SuspiciousOperation
 
+from api.utils import UserListSerializer
 
 # Create your views here.
 
@@ -254,6 +255,23 @@ class OCRUserView(viewsets.ModelViewSet):
             request=request,
             list_serializer=OCRReviewerSerializer,
         )
+
+    @list_route(methods=['get'])
+    def get_ocr_users(self, request):
+        try:
+            role = request.GET['role']
+            queryset = self.get_specific_reviewer_qyeryset(role=role)
+            for query in queryset.iterator():
+                ocr_profile_object = self.get_user_profile_object(username=query)
+                if not ocr_profile_object.is_active:
+                    queryset = queryset.exclude(id=query.id)
+            serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
+            UsersList = dict()
+            for index, i in enumerate(serializer.data):
+                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id'), 'email': i.get('email')}})
+            return JsonResponse({'allUsersList': UsersList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
 
 
 # -------------------------------------------------------------------------------
