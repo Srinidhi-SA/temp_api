@@ -18,8 +18,15 @@ def send_welcome_email(username=None):
 
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug):
-    ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
-    return analyse(image, slug)
+    path = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    response = dict()
+    if os.path.isdir(path):
+        for index, image in enumerate(os.listdir(path)):
+            response[index] = analyse(os.path.abspath(image), slug)
+        return response
+    else:
+        response[0] = analyse(path, slug)
+        return response
 
 
 @task(name='final_data_generation', queue=CONFIG_FILE_NAME)

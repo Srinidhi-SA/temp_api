@@ -661,7 +661,7 @@ export function clearUserSearchElementAction(){
 	}
 }
 
-export function selectedProjectSlug(slug,name){
+export function selectedProjectDetails(slug,name){
 	return{
 		type:"SELECTED_PROJECT_SLUG",
 		slug,name

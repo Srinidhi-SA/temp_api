@@ -9,9 +9,9 @@ class TaskAdmin(admin.ModelAdmin):
     Model: Task
     """
     icon = '<i class="material-icons">cloud_done</i>'
-    #search_fields = ["slug"]
-    #list_display = ["type", "slug"]
-    #list_filter = []
+    search_fields = ["name"]
+    list_display = ["name", "assigned_group", "assigned_user", "is_closed"]
+    list_filter = ["assigned_group", "assigned_user", "is_closed"]
     #readonly_fields = ["slug"]
 
     def get_queryset(self, request):

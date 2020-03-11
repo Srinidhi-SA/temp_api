@@ -42,7 +42,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data
+    get_specific_listed_data, get_reviewer_data
 # -----------------------MODELS-------------------------------
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
@@ -69,7 +69,8 @@ from .serializers import OCRImageSerializer, \
     ProjectSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
-    GroupSerializer
+    GroupSerializer, \
+    OCRReviewerSerializer
 
 # ------------------------------------------------------------
 
@@ -86,6 +87,7 @@ from rest_framework import generics
 from django.core.exceptions import PermissionDenied, \
     SuspiciousOperation
 
+from api.utils import UserListSerializer
 
 # Create your views here.
 
@@ -139,11 +141,16 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
+            groups__name__in = ['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def get_specific_reviewer_qyeryset(self, role):
         queryset = User.objects.filter(groups=role)
+        return queryset
+
+    def get_specific_reviewer_detail_queryset(self):
+        queryset = User.objects.filter(groups__name__in=['ReviewerL1', 'ReviewerL2'])
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -240,6 +247,31 @@ class OCRUserView(viewsets.ModelViewSet):
             list_serializer=OCRUserListSerializer,
             role=role
         )
+
+    @list_route(methods=['get'])
+    def reviewer_detail_list(self, request, *args, **kwargs):
+        return get_reviewer_data(
+            viewset=self,
+            request=request,
+            list_serializer=OCRReviewerSerializer,
+        )
+
+    @list_route(methods=['get'])
+    def get_ocr_users(self, request):
+        try:
+            role = request.GET['role']
+            queryset = self.get_specific_reviewer_qyeryset(role=role)
+            for query in queryset.iterator():
+                ocr_profile_object = self.get_user_profile_object(username=query)
+                if not ocr_profile_object.is_active:
+                    queryset = queryset.exclude(id=query.id)
+            serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
+            UsersList = dict()
+            for index, i in enumerate(serializer.data):
+                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id'), 'email': i.get('email')}})
+            return JsonResponse({'allUsersList': UsersList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
 
 
 # -------------------------------------------------------------------------------
@@ -349,7 +381,9 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
 
 
 class GroupListView(generics.ListCreateAPIView):
-    queryset = Group.objects.all()
+    queryset = Group.objects.filter(
+        name__in = ['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
+    )
     serializer_class = GroupSerializer
     permission_classes = [IsAdminUser]
 
@@ -391,6 +425,25 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
             created_by=self.request.user
         )
+
+    def process_image(self, data, response, slug, image_queryset):
+        image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+
+        with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
+            f.write(image)
+
+        del data['slug']
+        data['converted_Coordinates'] = json.dumps(response['data2'])
+        data['comparision_data'] = json.dumps(response['data3'])
+        data['flag'] = json.dumps(response['flag'])
+        data['analysis'] = json.dumps(response['analysis'])
+        data['status'] = 2
+        data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
+                                       file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
+
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        return serializer
 
     @list_route(methods=['post'])
     def get_s3_files(self, request, **kwargs):
@@ -569,28 +622,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
-                response = res.get()
+                res = res.get()
 
-                image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
+                for response in res.values():
+                    serializer = self.process_image(data, response, slug, image_queryset)
+                    if serializer.is_valid():
+                        serializer.save()
+                        results.append(serializer.data)
+                    results.append(serializer.errors)
 
-                with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
-                    f.write(image)
-
-                del data['slug']
-                data['converted_Coordinates'] = json.dumps(response['data2'])
-                data['comparision_data'] = json.dumps(response['data3'])
-                data['flag'] = json.dumps(response['flag'])
-                data['analysis'] = json.dumps(response['analysis'])
-                data['status'] = 2
-                data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
-                                               file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
-
-                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                 context={"request": self.request})
-                if serializer.is_valid():
-                    serializer.save()
-                    results.append(serializer.data)
-                results.append(serializer.errors)
         return Response(results)
 
     @list_route(methods=['post'])
@@ -646,7 +686,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.name), 'rb').read()))
+            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.slug), 'rb').read()))
             response = plot(image, comparision_data, data['slug'])
             return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
@@ -674,7 +714,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'marked': True})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -704,6 +744,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    @list_route(methods=['post'])
+    def field_count_and_confidence(self, request):
+        data = request.data
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        comparision_data = json.loads(image_queryset.comparision_data)
+        stats = {'Word Count': len(comparision_data)}
+        stats['Confidence'] = 100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
+        return JsonResponse(stats)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -849,7 +899,6 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         project = Project.objects.get(slug=self.kwargs['slug'])
         queryset = OCRImage.objects.filter(project=project)
-
         object_details = get_image_list_data(
             viewset=OCRImageView,
             queryset=queryset,
@@ -862,4 +911,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             image_data['assignee'] = 'NA'
             image_data['modified_by'] = 'NA'
             image_data['modified_at'] = 'NA'
+        object_details.data['total_data_count_wf'] = len(queryset)
         return object_details
