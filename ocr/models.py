@@ -4,13 +4,15 @@ OCR MODELS
 
 import random
 import string
+
+from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
-from django.core.validators import FileExtensionValidator
-from django.contrib.auth.models import User
+
 from ocr import validators
-from django.conf import settings
+from ocr.tasks import send_welcome_email
 
 
 # -------------------------------------------------------------------------------
@@ -45,6 +47,7 @@ class ReviewerType(models.Model):
         self.generate_slug()
         super(ReviewerType, self).save(*args, **kwargs)
 
+
 class OCRUserProfile(models.Model):
     OCR_USER_TYPE_CHOICES = [
         ('1', 'Default'),
@@ -55,8 +58,9 @@ class OCRUserProfile(models.Model):
     is_active = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
-    #reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
+    # reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
     def generate_slug(self):
@@ -83,12 +87,10 @@ class OCRUserProfile(models.Model):
     def get_slug(self):
         return self.slug
 
-from django.db.models.signals import post_save
 
 def send_email(sender, instance, created, **kwargs):
     if created:
         print("Sending welcome mail ...")
-        from ocr.tasks import send_welcome_email
         send_welcome_email.delay(username=instance.ocr_user.username)
 
 
