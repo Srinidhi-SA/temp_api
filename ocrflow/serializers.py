@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Task, ReviewRequest
+from ocr.models import OCRImage
+from ocr.serializers import OCRImageSerializer
 
 class ContentObjectRelatedField(serializers.RelatedField):
     """
@@ -36,7 +38,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class ReviewRequestListSerializer(serializers.ModelSerializer):
     """
     """
-    
+
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
 
     class Meta:
@@ -51,6 +53,11 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
     """
 
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
+    def to_representation(self, instance):
+        serialized_data = super(ReviewRequestSerializer, self).to_representation(instance)
+        Image_instance = OCRImage.objects.get(id=instance.ocr_image.id)
+        serialized_data['ocrImageData'] = OCRImageSerializer(Image_instance).data
+        return serialized_data
 
     class Meta:
         """
