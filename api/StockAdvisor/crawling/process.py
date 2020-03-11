@@ -205,7 +205,7 @@ def fetch_stock_news_from_newsapi(cur_stock):
     i = 1
     while True:
         try:
-            all_news = newsapi.get_everything(qintitle=str(company_name),
+            all_news = newsapi.get_everything(q=str(company_name),
                                               language='en',
                                               page_size=100,
                                               page=i,
