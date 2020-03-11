@@ -673,24 +673,36 @@ export function storeSelectedConfigureTabAction(selTab){
 		type:"SAVE_SEL_CONFIGURE_TAB",selTab
 	}
 }
+export function fetchInitialReviewerList(roleNo){
+	return (dispatch) => {
+		return fetchInitialReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(saveInitialReviewerList(json));
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
+	}
+}
+function fetchInitialReviewerListAPI(roleNo,token){
+	return fetch(API+"/ocr/user/get_ocr_users/?role="+roleNo,{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function saveInitialReviewerList(data){
+	return {
+		type : "SAVE_IR_LIST",data
+	}
+}
 export function saveIRToggleValAction(val){
 	return {
 		type:"STORE_IR_TOGGLE_FLAG",val
 	}
 }
-export function setAssignDocsToAction(val){
-	return{
-		type: "ASSIGN_DOCS_TO",val
-	}
-}
-export function setDocsCountAction(val){
+export function saveIRConfigAction(name,value){
 	return {
-		type : "DOCS_COUNT_TO_DISTRIBUTE",val
-	}
-}
-export function saveSelectedIRListAction(selIRList){
-	return {
-		type : "SAVE_SEL_IR_LIST",selIRList
+		type : "SAVE_IR_DATA",name,value
 	}
 }
 export function saveIRSearchElemAction(val){
@@ -703,30 +715,37 @@ export function clearIRSearchElemAction(){
 		type : "CLEAR_IR_SEARCH_ELEMENT"
 	}
 }
-export function setAssignRemainingIRDocsAction(val){
-	return {
-		type : "ASSIGN_REAMINING_DOCS_AS",val
+
+export function fetchSeconadryReviewerList(roleNo){
+	return (dispatch) => {
+		return fetchSeconadryReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(saveSeconadryReviewerList(json));
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
 	}
 }
-
+function fetchSeconadryReviewerListAPI(roleNo,token){
+	return fetch(API+"/ocr/user/get_ocr_users/?role="+roleNo,{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function saveSeconadryReviewerList(data){
+	return {
+		type : "SAVE_SR_LIST",data
+	}
+}
 export function saveSRToggleValAction(val){
 	return {
 		type:"STORE_SR_TOGGLE_FLAG",val
 	}
 }
-export function setAssignSRDocsToAction(val){
-	return{
-		type: "ASSIGN_SR_DOCS_TO",val
-	}
-}
-export function setSRDocsCountAction(val){
+export function saveSRConfigAction(name,value){
 	return {
-		type : "SR_DOCS_COUNT_TO_DISTRIBUTE",val
-	}
-}
-export function saveSelectedSRListAction(selIRList){
-	return {
-		type : "SAVE_SEL_SR_LIST",selIRList
+		type : "SAVE_SR_DATA",name,value
 	}
 }
 export function saveSRSearchElemAction(val){
@@ -739,9 +758,75 @@ export function clearSRSearchElemAction(){
 		type : "CLEAR_SR_SEARCH_ELEMENT"
 	}
 }
-export function setAssignRemainingSRDocsAction(val){
+export function submitReviewerConfigAction(selTab,config){
+	let data = {}
+	let reviewerConfig = {
+		"auto" :{
+			"active" : "False",
+			"max_docs_per_reviewer" : "",
+			"test" : ""
+		},
+		"custom":{
+			"active" : "False",
+			"max_docs_per_reviewer" : "",
+			"selected_reviewers" : [],
+			"test" : ""
+		}
+	}
+	if(selTab === "initialReview"){
+		let reqValues1 = {
+			"active" : config.active,
+			"selected_reviewers" : config.selectedIRList,
+			"max_docs_per_reviewer" : config.max_docs_per_reviewer,
+			"test" : config.test,
+		}
+		if(reqValues1.active === "all"){
+			reqValues1.active = "True"
+			reviewerConfig.auto = reqValues1;
+			delete(reviewerConfig.auto.selected_reviewers)
+		}else if(reqValues1.active === "select"){
+			reqValues1.active = "True"
+			reviewerConfig.custom = reqValues1;
+		}
+		data = reviewerConfig
+	}
+	  else if(selTab === "secondaryReview"){
+		let reqValues2 = {
+			"active" : config.active,
+			"selected_reviewers" : config.selectedSRList,
+			"max_docs_per_reviewer" : config.max_docs_per_reviewer,
+			"test" : config.test,
+		}
+		if(reqValues2.active === "all"){
+			reqValues2.active = "True"
+			reviewerConfig.auto = reqValues2;
+			delete(reviewerConfig.auto.selected_reviewers)
+		}else if(reqValues2.active === "select"){
+			reqValues2.active = "True"
+			reviewerConfig.custom = reqValues2;
+		}
+		data = reviewerConfig
+	  }
+	return (dispatch) => {
+		return submitReviewerConfigAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				console.log(json);
+			}else{
+				bootbox.alert(statusMessages("warning","Failed to edit user roles","small_mascot"));
+			}
+		})
+	}
+}
+function submitReviewerConfigAPI(data,token){
+	return fetch(API,{
+		method : "post",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function clearReviewerConfigStatesAction(){
 	return {
-		type : "ASSIGN_REAMINING_SR_DOCS_AS",val
+		type : "CLEAR_REVIEWER_CONFIG"
 	}
 }
 

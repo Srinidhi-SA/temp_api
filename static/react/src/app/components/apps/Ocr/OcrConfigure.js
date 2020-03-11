@@ -1,12 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { storeSelectedConfigureTabAction } from "../../../actions/ocrActions";
+import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList } from "../../../actions/ocrActions";
 import { OcrInitialReview } from "./OcrInitialReview";
 import { OcrSecondaryReview } from "./OcrSecondaryReview";
+import store from "../../../store";
 
 @connect((store) => {
   return {
     configureTabSelected : store.ocr.configureTabSelected,
+    ocrReviwersList : store.ocr.ocrReviwersList,
+    selectedIRList : store.ocr.selectedIRList,
+    iRConfigureDetails : store.ocr.iRConfigureDetails,
+    sRConfigureDetails : store.ocr.sRConfigureDetails,
   };
 })
 
@@ -15,12 +20,52 @@ export class OcrConfigure extends React.Component {
     super(props);
   }
 
-  componentWillMount(){
-    // this.props.dispatch(fetchAllOcrUsersAction());
+  componentDidMount(){
+    this.props.dispatch(fetchInitialReviewerList(3))
   }
 
   saveSelectedConfigureTab(e){
+    this.props.dispatch(clearReviewerConfigStatesAction())
     this.props.dispatch(storeSelectedConfigureTabAction(e.target.name));
+    if(e.target.name === "initialReview"){
+      this.props.dispatch(fetchInitialReviewerList(3))
+    }else{
+      this.props.dispatch(fetchSeconadryReviewerList(4))
+    }
+  }
+
+  submitReviewerConfig(e){
+    if(this.props.configureTabSelected === "initialReview"){
+      // if(!$("#assignDocsToAll")[0].checked && !$("#assignDocsToSelect")[0].checked){
+      //   $("#resetMsg")[0].innerHTML = "Please Select"
+      // }
+      // else if($("#docsCountTo")[0].value === ""){
+      //   $("#resetMsg")[0].innerHTML = "Please enter value"
+      // }
+      // else if(Number.isInteger(parseFloat($("#docsCountTo")[0].value))){
+      //   $("#resetMsg")[0].innerHTML = "Decimals Not Allowed"
+      // }
+      // else if(parseFloat($("#docsCountTo")[0].value) < 1 || parseFloat($("#docsCountTo")[0].value > 25) ){
+      //   $("#resetMsg")[0].innerHTML = "Allowed range is 1-25"
+      // }
+      // else if(this.props.selectedIRList.length === 0){
+      //   $("#resetMsg")[0].innerHTML = "Please Select Reviwers"
+      // }
+      // else if( !$("#assignRemaningDocs")[0].checked && !$("#assignRemaningDocs1")[0].checked && !$("#assignRemaningDocs2")[0].checked ){
+      //   $("#resetMsg")[0].innerHTML = "Please Select Remaining docs Assign Type"
+      // }
+      // else{
+        $("#resetMsg")[0].innerHTML = ""
+        this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
+      // }
+    }
+    else if(this.props.configureTabSelected === "secondaryReview"){
+      this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
+    }
+  }
+
+  clearReviewerConfigStates(e){
+    this.props.dispatch(clearReviewerConfigStatesAction())
   }
 
   render() {
@@ -63,8 +108,8 @@ export class OcrConfigure extends React.Component {
                   </div>
                   <div className="row">
                       <div className="col-md-6 col-md-offset-6 text-right" style={{marginTop:"10px",marginBottom:"10px"}}>
-                          <button className="btn btn-default">Cancel</button> 
-                          <button className="btn btn-primary"><i className="fa fa-check-circle"></i> &nbsp; Save</button>
+                          <button className="btn btn-default" onClick={this.clearReviewerConfigStates.bind(this)}>Cancel</button> 
+                          <button className="btn btn-primary" onClick={this.submitReviewerConfig.bind(this)}><i className="fa fa-check-circle"></i> &nbsp; Save</button>
                       </div>
                   </div>
                 </div>

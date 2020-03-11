@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Checkbox } from "primereact/checkbox";
-import { saveIRToggleValAction, setAssignDocsToAction, setDocsCountAction, saveSelectedIRListAction, saveIRSearchElemAction, clearIRSearchElemAction, setAssignRemainingIRDocsAction} from "../../../actions/ocrActions";
+import { saveIRToggleValAction, saveIRSearchElemAction, clearIRSearchElemAction, saveIRConfigAction, fetchInitialReviewerList} from "../../../actions/ocrActions";
 
 @connect((store) => {
   return {
     iRList : store.ocr.iRList,
     iRToggleFlag : store.ocr.iRToggleFlag,
-    iRassignDocsTo : store.ocr.iRassignDocsTo,
-    selectedIRList : store.ocr.selectedIRList,
     iRSearchElement : store.ocr.iRSearchElement,
+    active : store.ocr.iRConfigureDetails.active,
+    selectedIRList : store.ocr.iRConfigureDetails.selectedIRList,
   };
 })
 
@@ -21,27 +21,19 @@ export class OcrInitialReview extends React.Component {
   saveInitialReviwerToggleVal(e){
     this.props.dispatch(saveIRToggleValAction(e.target.checked))
   }
-  setIRAssignDocsType(e){
-      this.props.dispatch(setAssignDocsToAction(e.target.value))
-  }
-  saveIRDocsCount(e){
-      this.props.dispatch(setDocsCountAction(e.target.value));
-  }
-  saveSelectedIRList(e){
-    let curIRSelUsers = [...this.props.selectedIRList];
-    if(e.target.checked)
-        curIRSelUsers.push(e.target.value)
-    else
-        curIRSelUsers.splice(curIRSelUsers.indexOf(e.value), 1)
-        this.props.dispatch(saveSelectedIRListAction(curIRSelUsers))
-  }
-  handleSelectAllIR(e){
-      let nameList = [];
-    if(e.target.checked){
-      nameList = e.target.value.filter(i=>i.ocr_profile.role.includes(3)).map(function (el) { return el.username; });
-      this.props.dispatch(saveSelectedIRListAction(nameList));
-    }else{
-        this.props.dispatch(saveSelectedIRListAction(nameList));
+  saveIRConfig(e){
+    if(e.target.name === "selectedIR"){
+        let curIRSelUsers= this.props.selectedIRList != undefined ? [...this.props.selectedIRList] :[]
+        e.target.checked? curIRSelUsers.push(e.target.value): curIRSelUsers.splice(curIRSelUsers.indexOf(e.value), 1);
+        this.props.dispatch(saveIRConfigAction("selectedIRList",curIRSelUsers));
+    } 
+    else if(e.target.name === "selectAllIR"){
+        let nameList = [];
+        nameList = e.target.checked?e.target.value.map(i=>i.name):""
+        this.props.dispatch(saveIRConfigAction("selectedIRList",nameList));
+    } 
+    else{
+        this.props.dispatch(saveIRConfigAction(e.target.name,e.target.value));
     }
   }
   saveIRSearchElem(e){
@@ -51,9 +43,6 @@ export class OcrInitialReview extends React.Component {
     $("#searchIR")[0].value = ""
     this.props.dispatch(clearIRSearchElemAction());
   }
-  setAssignRemainingIRDocs(e){
-    this.props.dispatch(setAssignRemainingIRDocsAction(e.target.value));
-  }
 
   render() {
     let iReviewerTable = ""
@@ -62,25 +51,29 @@ export class OcrInitialReview extends React.Component {
             <span>No Users Found<br/></span>
         </div>
     }else {
-        let iRListCount = (this.props.iRList.data.filter(i=>i.ocr_profile.role.includes(3)) ).length
+        let iRListCount = Object.keys(this.props.iRList).length;
+        let getValue = true
+        if( ($("#assigniRDocsToAll")[0] !=undefined && $("#assigniRDocsToSelect")[0] != undefined) && $("#assigniRDocsToAll")[0].checked === false && $("#assigniRDocsToSelect")[0].checked === true){
+            getValue = false
+        }
         iReviewerTable = 
             <table className = "table table-bordered table-hover" style={{background:"#FFF"}}>
                 <thead><tr>
-                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" value={this.props.iRList.data} onChange={this.handleSelectAllIR.bind(this)} checked={(iRListCount === this.props.selectedIRList.length)?true:false}/></th>
+                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" disabled={getValue} value={Object.values(this.props.iRList)} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
                     <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
                 </tr></thead>
                 <tbody>
-                    {this.props.iRList.data.map((item, index) => {
-                        if(item.ocr_profile.role.includes(3)){
+                    {Object.values(this.props.iRList).map((item) => {
                             return (
                                 <tr>
-                                    <td className="text-center"><Checkbox id={item.ocr_profile.slug} value={item.username} onChange={this.saveSelectedIRList.bind(this)} checked={this.props.selectedIRList.includes(item.username)}/></td>
-                                    <td>{item.username}</td>
+                                    <td className="text-center">
+                                        <Checkbox name="selectedIR" id={item.name} disabled={getValue} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)}/>
+                                    </td>
+                                    <td>{item.name}</td>
                                     <td>{item.email}</td>
                                 </tr>
-                            )}
-                            else{ return "" }
+                            )
                         })
                     }
                 </tbody>
@@ -110,26 +103,26 @@ export class OcrInitialReview extends React.Component {
                     <h4>Select how to assign documents</h4>
                     <div className="row col-md-8" style={{margin:"0px"}}>
                         <div className="ma-radio">
-                            <input type="radio" name="assignDocsTo" value="all" id="assignDocsToAll" onClick={this.setIRAssignDocsType.bind(this)}/>
-                            <label for="assignDocsToAll">Distribute documents randomnly and evenly to all reviewers</label>
+                            <input type="radio" name="active" value="all" id="assigniRDocsToAll" onClick={this.saveIRConfig.bind(this)} />
+                            <label for="assigniRDocsToAll">Distribute documents randomnly and evenly to all reviewers</label>
                         </div>
-                        {this.props.iRassignDocsTo === "all" &&
+                        {this.props.active === "all" &&
                             <div className="row">
-                                <label className="label-control col-md-5 xs-ml-50 mandate" for="docsCountToAll">Maximum number of documents per reviewer</label>
+                                <label className="label-control col-md-5 xs-ml-50 mandate" for="iRdocsCountToAll">Maximum number of documents per reviewer</label>
                                 <div className="col-md-3">
-                                    <input type="number" className="form-control inline" id="docsCountToAll" name="docsCount" placeholder="Enter Number..." onInput={this.saveIRDocsCount.bind(this)} />
+                                    <input type="number" className="form-control inline" id="iRdocsCountToAll" name="max_docs_per_reviewer" placeholder="Enter Number..."onInput={this.saveIRConfig.bind(this)} />
                                 </div>
                             </div>
                         }
                         <div className="ma-radio">
-                            <input type="radio" name="assignDocsTo" value="selected" id="assignDocsToSelect" onClick={this.setIRAssignDocsType.bind(this)}/>
-                            <label for="assignDocsToSelect">Distribute documents randomnly and evenly over selected reviewers</label>
+                            <input type="radio" name="active" value="select" id="assigniRDocsToSelect" onClick={this.saveIRConfig.bind(this)} />
+                            <label for="assigniRDocsToSelect">Distribute documents randomnly and evenly over selected reviewers</label>
                         </div>
-                        {this.props.iRassignDocsTo === "selected" &&
+                        {this.props.active === "select" &&
                             <div className="row">
-                                <label className="label-control col-md-5 xs-ml-50 mandate" for="docsCountToSelect">Maximum number of documents per reviewer</label>
+                                <label className="label-control col-md-5 xs-ml-50 mandate" for="iRdocsCountToSelect">Maximum number of documents per reviewer</label>
                                 <div className="col-md-3">
-                                    <input type="number" className="form-control inline" id="docsCountToSelect" name="docsCount" placeholder="Enter Number..." onInput={this.saveIRDocsCount.bind(this)} />
+                                    <input type="number" className="form-control inline" id="iRdocsCountToSelect" name="max_docs_per_reviewer" placeholder="Enter Number..." onInput={this.saveIRConfig.bind(this)} />
                                 </div>
                             </div>
                         }
@@ -140,7 +133,7 @@ export class OcrInitialReview extends React.Component {
             <hr/>
             <div className="row">
                 <div className="col-md-12">
-                    <h4>Reviewers ({this.props.selectedIRList.length})</h4>
+                    <h4>Reviewers ({this.props.selectedIRList !=undefined?this.props.selectedIRList.length:"0"})</h4>
                     <div className="pull-right xs-mb-10">
                         <input type="text" id="searchIR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search..." onKeyUp={this.saveIRSearchElem.bind(this)} />
                         <button className="close-icon" style={{marginLeft:"15%"}} onClick={this.clearIRSearchElem.bind(this)} type="reset"></button>
@@ -154,16 +147,16 @@ export class OcrInitialReview extends React.Component {
                         <div className="col-md-12">
                             <h4>How would you like to assign any remaining documents?</h4>
                             <div className="ma-radio">
-                                <input type="radio" name="assignRemaningDocs" value="asn1" id="asn1" onClick={this.setAssignRemainingIRDocs.bind(this)} />
-                                <label for="asn1">Continue to distribute even if limits are met</label>
+                                <input type="radio" name="test" value="1" id="assignRemaningIRDocs" onClick={this.saveIRConfig.bind(this)} />
+                                <label for="assignRemaningIRDocs">Continue to distribute even if limits are met</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="assignRemaningDocs" value="asn2" id="asn2" onClick={this.setAssignRemainingIRDocs.bind(this)} />
-                                <label for="asn2">Leave unassigned and move to backlogs</label>
+                                <input type="radio" name="test" value="2" id="assignRemaningIRDocs1" onClick={this.saveIRConfig.bind(this)} />
+                                <label for="assignRemaningIRDocs1">Leave unassigned and move to backlogs</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="assignRemaningDocs" value="asn3" id="asn3" onClick={this.setAssignRemainingIRDocs.bind(this)} />
-                                <label for="asn3">Select reviewers to assign</label>
+                                <input type="radio" name="test" value="3" id="assignRemaningIRDocs2" onClick={this.saveIRConfig.bind(this)} />
+                                <label for="assignRemaningIRDocs2">Select reviewers to assign</label>
                             </div>
                         </div>
                     </div>

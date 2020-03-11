@@ -46,358 +46,21 @@ export default function reducer(state = {
   selectedTabId : "none",
   ocrSearchElement : "",
   ocrUserPageNum : 1,
-
   search_document:'',
   search_project:'',
   selected_project_slug:'',
   selected_project_name:'',
+
   configureTabSelected : "initialReview",
   iRToggleFlag : true,
-  iRassignDocsTo : "",
-  iRDocsCount : "",
-  iRList : {
-    "data": [
-      {
-        "username": "srtestuser2",
-        "first_name": "srTest",
-        "last_name": "User2",
-        "email": "srtestuser2@gmail.com",
-        "date_joined": "2020-03-06T08:16:03.418949Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "srtestuser2-iidyjufsfr",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "srtestuser1",
-        "first_name": "srTest",
-        "last_name": "User1",
-        "email": "srtestuser1@gmail.com",
-        "date_joined": "2020-03-06T08:14:32.416920Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "srtestuser1-5vp4qfc2uo",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "irtestuser2",
-        "first_name": "irTest",
-        "last_name": "User2",
-        "email": "irtestuser2@gmail.com",
-        "date_joined": "2020-03-06T08:13:43.752105Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "irtestuser2-la2hr4wkaj",
-          "role": [
-            3
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "irtestuser1",
-        "first_name": "iRTest",
-        "last_name": "user1",
-        "email": "irtestuser1@gmail.com",
-        "date_joined": "2020-03-06T08:12:59.439691Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "irtestuser1-5c1k5fwj3l",
-          "role": [
-            3
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "test1",
-        "first_name": "test",
-        "last_name": "test1",
-        "email": "test1@mail.com",
-        "date_joined": "2020-03-06T08:00:16.509065Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "test1-j1tplbcgdq",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "Dechamma",
-        "first_name": "Dechamma",
-        "last_name": "T",
-        "email": "dechamma.thimmaiah@marlabs.com",
-        "date_joined": "2020-03-04T11:03:51.542492Z",
-        "last_login": null,
-        "is_superuser": false,
-        "ocr_profile": {
-          "active": true,
-          "slug": "dechamma-bbjrlyw4wf",
-          "role": [
-            3,
-            4,
-            5
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": false
-      },
-      {
-        "username": "sejal",
-        "first_name": "Sejal",
-        "last_name": "S",
-        "email": "sejal@gmail.com",
-        "date_joined": "2020-03-04T07:24:39.155191Z",
-        "last_login": null,
-        "is_superuser": false,
-        "ocr_profile": {
-          "active": false,
-          "slug": "sejal-sp7gu4qak8",
-          "role": [
-            3,
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": false
-      },
-      {
-        "username": "dladmin",
-        "first_name": "dl",
-        "last_name": "admin",
-        "email": "admin@mail.com",
-        "date_joined": "2020-02-20T10:54:44.044023Z",
-        "last_login": "2020-03-02T06:43:42.733517Z",
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "dladmin-nm34s740ml",
-          "role": [
-            1
-          ],
-          "user_type": "1",
-          "phone": ""
-        },
-        "ocr_user": true
-      }
-    ],
-    "current_item_count": 10,
-    "total_number_of_pages": 1,
-    "total_data_count": 10,
-    "permission_details": {
-      
-    },
-    "current_page": 1,
-    "current_page_size": 10
-  },
-  selectedIRList : [],
+  iRConfigureDetails : {"active":"","selectedIRList":[]},
+  iRList : {},
   iRSearchElement : "",
-  iRassignRemainingDocsAs : "",
+
   sRToggleFlag : true,
-  sRassignDocsTo : "",
-  sRDocsCount : "",
-  sRList : {
-    "data": [
-      {
-        "username": "srtestuser2",
-        "first_name": "srTest",
-        "last_name": "User2",
-        "email": "srtestuser2@gmail.com",
-        "date_joined": "2020-03-06T08:16:03.418949Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "srtestuser2-iidyjufsfr",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "srtestuser1",
-        "first_name": "srTest",
-        "last_name": "User1",
-        "email": "srtestuser1@gmail.com",
-        "date_joined": "2020-03-06T08:14:32.416920Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "srtestuser1-5vp4qfc2uo",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "irtestuser2",
-        "first_name": "irTest",
-        "last_name": "User2",
-        "email": "irtestuser2@gmail.com",
-        "date_joined": "2020-03-06T08:13:43.752105Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "irtestuser2-la2hr4wkaj",
-          "role": [
-            3
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "irtestuser1",
-        "first_name": "iRTest",
-        "last_name": "user1",
-        "email": "irtestuser1@gmail.com",
-        "date_joined": "2020-03-06T08:12:59.439691Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "irtestuser1-5c1k5fwj3l",
-          "role": [
-            3
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "test1",
-        "first_name": "test",
-        "last_name": "test1",
-        "email": "test1@mail.com",
-        "date_joined": "2020-03-06T08:00:16.509065Z",
-        "last_login": null,
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "test1-j1tplbcgdq",
-          "role": [
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": true
-      },
-      {
-        "username": "Dechamma",
-        "first_name": "Dechamma",
-        "last_name": "T",
-        "email": "dechamma.thimmaiah@marlabs.com",
-        "date_joined": "2020-03-04T11:03:51.542492Z",
-        "last_login": null,
-        "is_superuser": false,
-        "ocr_profile": {
-          "active": true,
-          "slug": "dechamma-bbjrlyw4wf",
-          "role": [
-            3,
-            4,
-            5
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": false
-      },
-      {
-        "username": "sejal",
-        "first_name": "Sejal",
-        "last_name": "S",
-        "email": "sejal@gmail.com",
-        "date_joined": "2020-03-04T07:24:39.155191Z",
-        "last_login": null,
-        "is_superuser": false,
-        "ocr_profile": {
-          "active": false,
-          "slug": "sejal-sp7gu4qak8",
-          "role": [
-            3,
-            4
-          ],
-          "user_type": "Default",
-          "phone": ""
-        },
-        "ocr_user": false
-      },
-      {
-        "username": "dladmin",
-        "first_name": "dl",
-        "last_name": "admin",
-        "email": "admin@mail.com",
-        "date_joined": "2020-02-20T10:54:44.044023Z",
-        "last_login": "2020-03-02T06:43:42.733517Z",
-        "is_superuser": true,
-        "ocr_profile": {
-          "active": true,
-          "slug": "dladmin-nm34s740ml",
-          "role": [
-            1
-          ],
-          "user_type": "1",
-          "phone": ""
-        },
-        "ocr_user": true
-      }
-    ],
-    "current_item_count": 10,
-    "total_number_of_pages": 1,
-    "total_data_count": 10,
-    "permission_details": {
-      
-    },
-    "current_page": 1,
-    "current_page_size": 10
-  },
-  selectedSRList : [],
+  sRConfigureDetails : {"active":"","selectedSRList":[]},
+  sRList : {},
   sRSearchElement : "",
-  sRassignRemainingDocsAs : "",
 
 }, action) {
   switch (action.type) {
@@ -808,7 +471,7 @@ export default function reducer(state = {
       }
       break;
 
-      //Configure Tab
+    //Configure Tab
     case "SAVE_SEL_CONFIGURE_TAB":
       {
         return {
@@ -817,35 +480,19 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_IR_LIST":
+      {
+        return {
+          ...state,
+          iRList : action.data.allUsersList
+        }
+      }
+      break;
       case "STORE_IR_TOGGLE_FLAG":
       {
         return{
           ...state,
           iRToggleFlag : action.val
-        }
-      }
-      break;
-      case "ASSIGN_DOCS_TO":
-      {
-        return{
-          ...state,
-          iRassignDocsTo : action.val
-        }
-      }
-      break;
-      case "DOCS_COUNT_TO_DISTRIBUTE":
-      {
-        return{
-          ...state,
-          iRDocsCount : action.val
-        }
-      }
-      break;
-      case "SAVE_SEL_IR_LIST":
-      {
-        return {
-          ...state,
-          selectedIRList : action.selIRList
         }
       }
       break;
@@ -865,11 +512,20 @@ export default function reducer(state = {
         }
       }
       break;
-      case "ASSIGN_REAMINING_DOCS_AS":
+      case "SAVE_IR_DATA":{
+        let curIRDetails = state.iRConfigureDetails
+        curIRDetails[action.name] = action.value
+        return{
+          ...state,
+          iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "SAVE_SR_LIST":
       {
         return {
           ...state,
-          iRassignRemainingDocsAs : action.val
+          sRList : action.data.allUsersList
         }
       }
       break;
@@ -878,30 +534,6 @@ export default function reducer(state = {
         return{
           ...state,
           sRToggleFlag : action.val
-        }
-      }
-      break;
-      case "ASSIGN_SR_DOCS_TO":
-      {
-        return{
-          ...state,
-          sRassignDocsTo : action.val
-        }
-      }
-      break;
-      case "SR_DOCS_COUNT_TO_DISTRIBUTE":
-      {
-        return{
-          ...state,
-          sRDocsCount : action.val
-        }
-      }
-      break;
-      case "SAVE_SEL_SR_LIST":
-      {
-        return {
-          ...state,
-          selectedSRList : action.selIRList
         }
       }
       break;
@@ -921,11 +553,23 @@ export default function reducer(state = {
         }
       }
       break;
-      case "ASSIGN_REAMINING_SR_DOCS_AS":
+      case "SAVE_SR_DATA":{
+        let curSRDetails = state.sRConfigureDetails
+        curSRDetails[action.name] = action.value
+        return{
+          ...state,
+          sRConfigureDetails : curSRDetails
+        }
+      }
+      break;
+      case "CLEAR_REVIEWER_CONFIG":
       {
         return {
           ...state,
-          sRassignRemainingDocsAs : action.val
+          iRToggleFlag : true,
+          iRSearchElement : "",
+          sRToggleFlag : true,
+          sRSearchElement : "",
         }
       }
       break;
