@@ -1,15 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Checkbox } from "primereact/checkbox";
-import { saveIRToggleValAction, saveIRSearchElemAction, clearIRSearchElemAction, saveIRConfigAction, fetchInitialReviewerList} from "../../../actions/ocrActions";
+import { saveIRToggleValAction, saveIRConfigAction} from "../../../actions/ocrActions";
+import { Scrollbars } from 'react-custom-scrollbars';
+import { STATIC_URL } from "../../../helpers/env";
 
 @connect((store) => {
   return {
     iRList : store.ocr.iRList,
     iRToggleFlag : store.ocr.iRToggleFlag,
-    iRSearchElement : store.ocr.iRSearchElement,
     active : store.ocr.iRConfigureDetails.active,
     selectedIRList : store.ocr.iRConfigureDetails.selectedIRList,
+    iRLoaderFlag : store.ocr.iRLoaderFlag,
   };
 })
 
@@ -22,6 +24,7 @@ export class OcrInitialReview extends React.Component {
     this.props.dispatch(saveIRToggleValAction(e.target.checked))
   }
   saveIRConfig(e){
+    $("#resetMsg")[0].innerHTML = ""
     if(e.target.name === "selectedIR"){
         let curIRSelUsers= this.props.selectedIRList != undefined ? [...this.props.selectedIRList] :[]
         e.target.checked? curIRSelUsers.push(e.target.value): curIRSelUsers.splice(curIRSelUsers.indexOf(e.value), 1);
@@ -36,35 +39,49 @@ export class OcrInitialReview extends React.Component {
         this.props.dispatch(saveIRConfigAction(e.target.name,e.target.value));
     }
   }
-  saveIRSearchElem(e){
-    this.props.dispatch(saveIRSearchElemAction(e.target.value));
-  }
-  clearIRSearchElem(e){
-    $("#searchIR")[0].value = ""
-    this.props.dispatch(clearIRSearchElemAction());
+  searchIRElement(e){
+    $('#searchIR').on('keyup', function () {
+        var value = $(this).val();
+        var patt = new RegExp(value, "i");
+        $('#iRtable').find('tr').each(function () {
+          if (!($(this).find('td').text().search(patt) >= 0)) {
+            $(this).not('#iRtHead').hide();
+          }
+          if (($(this).find('td').text().search(patt) >= 0)) {
+            $(this).show();
+          }
+        });
+      });
   }
 
   render() {
     let iReviewerTable = ""
-    if(Object.keys(this.props.iRList).length === 0){
+    if(this.props.iRLoaderFlag){
+        iReviewerTable = <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
+                            <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                        </div>
+    }
+    else if(Object.keys(this.props.iRList).length === 0){
         iReviewerTable = <div className="noOcrUsers">
             <span>No Users Found<br/></span>
         </div>
     }else {
-        let iRListCount = Object.keys(this.props.iRList).length;
+        let listForIRTable = Object.values(this.props.iRList);
+        let iRListCount = listForIRTable.length;
         let getValue = true
         if( ($("#assigniRDocsToAll")[0] !=undefined && $("#assigniRDocsToSelect")[0] != undefined) && $("#assigniRDocsToAll")[0].checked === false && $("#assigniRDocsToSelect")[0].checked === true){
             getValue = false
         }
         iReviewerTable = 
-            <table className = "table table-bordered table-hover" style={{background:"#FFF"}}>
-                <thead><tr>
-                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" disabled={getValue} value={Object.values(this.props.iRList)} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
+        <Scrollbars style={{height:250}} >
+            <table className = "table table-bordered table-hover" id="iRtable" style={{background:"#FFF"}}>
+                <thead><tr id="iRtHead">
+                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" disabled={getValue} value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
                     <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
                 </tr></thead>
                 <tbody>
-                    {Object.values(this.props.iRList).map((item) => {
+                    {listForIRTable.map((item) => {
                             return (
                                 <tr>
                                     <td className="text-center">
@@ -78,6 +95,7 @@ export class OcrInitialReview extends React.Component {
                     }
                 </tbody>
             </table>
+        </Scrollbars>
     }
     return (
         <div className="ocrInitialReview">
@@ -135,8 +153,7 @@ export class OcrInitialReview extends React.Component {
                 <div className="col-md-12">
                     <h4>Reviewers ({this.props.selectedIRList !=undefined?this.props.selectedIRList.length:"0"})</h4>
                     <div className="pull-right xs-mb-10">
-                        <input type="text" id="searchIR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search..." onKeyUp={this.saveIRSearchElem.bind(this)} />
-                        <button className="close-icon" style={{marginLeft:"15%"}} onClick={this.clearIRSearchElem.bind(this)} type="reset"></button>
+                        <input type="text" id="searchIR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchIRElement.bind(this)} />
                     </div>
                     <div className="clearfix"></div>
                     <div className="table-responsive">

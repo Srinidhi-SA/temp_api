@@ -1,15 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { saveSRToggleValAction, saveSRSearchElemAction, clearSRSearchElemAction, saveSRConfigAction, fetchSeconadryReviewerList } from "../../../actions/ocrActions";
+import { saveSRToggleValAction, saveSRConfigAction } from "../../../actions/ocrActions";
 import { Checkbox } from "primereact/checkbox";
+import { Scrollbars } from 'react-custom-scrollbars';
+import { STATIC_URL } from "../../../helpers/env";
 
 @connect((store) => {
     return{
         sRList : store.ocr.sRList,
         sRToggleFlag : store.ocr.sRToggleFlag,
-        sRSearchElement : store.ocr.sRSearchElement,
         active : store.ocr.sRConfigureDetails.active,
         selectedSRList : store.ocr.sRConfigureDetails.selectedSRList,
+        sRLoaderFlag : store.ocr.sRLoaderFlag,
     };
 })
 
@@ -22,6 +24,7 @@ export class OcrSecondaryReview extends React.Component{
         this.props.dispatch(saveSRToggleValAction(e.target.checked))
     }
     saveSRConfig(e){
+        $("#sRresetMsg")[0].innerHTML = ""
         if(e.target.name === "selectedSR"){
             let curSRSelUsers= this.props.selectedSRList != undefined ? [...this.props.selectedSRList] :[]
             e.target.checked? curSRSelUsers.push(e.target.value): curSRSelUsers.splice(curSRSelUsers.indexOf(e.value), 1);
@@ -36,35 +39,49 @@ export class OcrSecondaryReview extends React.Component{
             this.props.dispatch(saveSRConfigAction(e.target.name,e.target.value));
         }
       }
-    saveSRSearchElem(e){
-        this.props.dispatch(saveSRSearchElemAction(e.target.value));
-    }
-    clearSRSearchElem(e){
-        $("#searchSR")[0].value = ""
-        this.props.dispatch(clearSRSearchElemAction());
+    searchSRElement(e){
+        $('#searchSR').on('keyup', function () {
+            var value = $(this).val();
+            var patt = new RegExp(value, "i");
+            $('#sRTable').find('tr').each(function () {
+            if (!($(this).find('td').text().search(patt) >= 0)) {
+                $(this).not('#sRHead').hide();
+            }
+            if (($(this).find('td').text().search(patt) >= 0)) {
+                $(this).show();
+            }
+            });
+        });
     }
 
     render() {
         let sReviewerTable = ""
-        if(Object.keys(this.props.sRList).length === 0){
+        if(this.props.sRLoaderFlag){
+            sReviewerTable = <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
+                                <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                            </div>
+        }
+        else if(Object.keys(this.props.sRList).length === 0){
             sReviewerTable = <div className="noOcrUsers">
                 <span>No Users Found<br/></span>
             </div>
         }else {
-            let sRListCount = Object.values(this.props.sRList).length;
+            let listForSRTable = Object.values(this.props.sRList);
+            let sRListCount = listForSRTable.length;
             let getValue = true
             if( ($("#assignSRDocsToAll")[0] !=undefined && $("#assignSRDocsToSelect")[0] != undefined) && $("#assignSRDocsToAll")[0].checked === false && $("#assignSRDocsToSelect")[0].checked === true){
                 getValue = false
             }
             sReviewerTable = 
-                <table className = "table table-bordered table-hover" style={{background:"#FFF"}}>
-                    <thead><tr>
-                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" disabled={getValue} value={Object.values(this.props.sRList)} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
+            <Scrollbars style={{height:250}} >
+                <table className = "table table-bordered table-hover" id="sRTable" style={{background:"#FFF"}}>
+                    <thead><tr id="sRHead">
+                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" disabled={getValue} value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
                         <th style={{width:"40%"}}>NAME</th>
                         <th>EMAIL</th>
                     </tr></thead>
                     <tbody>
-                        {Object.values(this.props.sRList).map((item) => {
+                        {listForSRTable.map((item) => {
                                 return (
                                     <tr>
                                         <td className="text-center">
@@ -78,6 +95,7 @@ export class OcrSecondaryReview extends React.Component{
                         }
                     </tbody>
                 </table>
+            </Scrollbars>
         }
         return (
             <div className="ocrSecondaryReview">
@@ -127,7 +145,7 @@ export class OcrSecondaryReview extends React.Component{
                                 </div>
                             }
                         </div>
-                        <div id="resetMsg"></div>
+                        <div id="sRresetMsg"></div>
                     </div>
                 </div>
                 <hr/>
@@ -135,8 +153,7 @@ export class OcrSecondaryReview extends React.Component{
                     <div className="col-md-12">
                         <h4>Reviewers ({this.props.selectedSRList !=undefined?this.props.selectedSRList.length:"0"})</h4>
                         <div className="pull-right xs-mb-10">
-                            <input type="text" id="searchSR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search..." onKeyUp={this.saveSRSearchElem.bind(this)} />
-                            <button className="close-icon" style={{marginLeft:"15%"}} onClick={this.clearSRSearchElem.bind(this)} type="reset"></button>
+                            <input type="text" id="searchSR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchSRElement.bind(this)}/>
                         </div>
                         <div className="clearfix"></div>
                         <div className="table-responsive">

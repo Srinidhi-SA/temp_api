@@ -673,10 +673,16 @@ export function storeSelectedConfigureTabAction(selTab){
 		type:"SAVE_SEL_CONFIGURE_TAB",selTab
 	}
 }
+export function setIRLoaderFlagAction(flag){
+	return {
+		type : "SET_IR_LOADER_FLAG",flag
+	}
+}
 export function fetchInitialReviewerList(roleNo){
 	return (dispatch) => {
 		return fetchInitialReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
+				dispatch(setIRLoaderFlagAction(false))
 				dispatch(saveInitialReviewerList(json));
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
@@ -705,21 +711,16 @@ export function saveIRConfigAction(name,value){
 		type : "SAVE_IR_DATA",name,value
 	}
 }
-export function saveIRSearchElemAction(val){
+export function setSRLoaderFlagAction(flag){
 	return {
-		type : "STORE_IR_SEARCH_ELEMENT",val
+		type : "SET_SR_LOADER_FLAG",flag
 	}
 }
-export function clearIRSearchElemAction(){
-	return {
-		type : "CLEAR_IR_SEARCH_ELEMENT"
-	}
-}
-
 export function fetchSeconadryReviewerList(roleNo){
 	return (dispatch) => {
 		return fetchSeconadryReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
+				dispatch(setSRLoaderFlagAction(false));
 				dispatch(saveSeconadryReviewerList(json));
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
@@ -748,37 +749,16 @@ export function saveSRConfigAction(name,value){
 		type : "SAVE_SR_DATA",name,value
 	}
 }
-export function saveSRSearchElemAction(val){
-	return {
-		type : "STORE_SR_SEARCH_ELEMENT",val
-	}
-}
-export function clearSRSearchElemAction(){
-	return {
-		type : "CLEAR_SR_SEARCH_ELEMENT"
-	}
-}
 export function submitReviewerConfigAction(selTab,config){
 	let data = {}
 	let reviewerConfig = {
-		"auto" :{
-			"active" : "False",
-			"max_docs_per_reviewer" : "",
-			"test" : ""
-		},
-		"custom":{
-			"active" : "False",
-			"max_docs_per_reviewer" : "",
-			"selected_reviewers" : [],
-			"test" : ""
-		}
+		"auto" :{ "active" : "False", "max_docs_per_reviewer" : "", "test" : "" },
+		"custom":{ "active" : "False", "max_docs_per_reviewer" : "", "selected_reviewers" : [], "test" : "" }
 	}
 	if(selTab === "initialReview"){
 		let reqValues1 = {
-			"active" : config.active,
-			"selected_reviewers" : config.selectedIRList,
-			"max_docs_per_reviewer" : config.max_docs_per_reviewer,
-			"test" : config.test,
+			"active" : config.active, "selected_reviewers" : config.selectedIRList, 
+			"max_docs_per_reviewer" : config.max_docs_per_reviewer, "test" : config.test
 		}
 		if(reqValues1.active === "all"){
 			reqValues1.active = "True"
@@ -792,10 +772,8 @@ export function submitReviewerConfigAction(selTab,config){
 	}
 	  else if(selTab === "secondaryReview"){
 		let reqValues2 = {
-			"active" : config.active,
-			"selected_reviewers" : config.selectedSRList,
-			"max_docs_per_reviewer" : config.max_docs_per_reviewer,
-			"test" : config.test,
+			"active" : config.active, "selected_reviewers" : config.selectedSRList,
+			"max_docs_per_reviewer" : config.max_docs_per_reviewer, "test" : config.test,
 		}
 		if(reqValues2.active === "all"){
 			reqValues2.active = "True"

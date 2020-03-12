@@ -52,15 +52,14 @@ export default function reducer(state = {
   selected_project_name:'',
 
   configureTabSelected : "initialReview",
+  iRLoaderFlag : false,
   iRToggleFlag : true,
   iRConfigureDetails : {"active":"","selectedIRList":[]},
   iRList : {},
-  iRSearchElement : "",
-
+  sRLoaderFlag : false,
   sRToggleFlag : true,
   sRConfigureDetails : {"active":"","selectedSRList":[]},
   sRList : {},
-  sRSearchElement : "",
 
 }, action) {
   switch (action.type) {
@@ -481,6 +480,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SET_IR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          iRLoaderFlag : action.flag
+        }
+      }
+      break;
       case "SAVE_IR_LIST":
       {
         return {
@@ -497,28 +504,20 @@ export default function reducer(state = {
         }
       }
       break;
-      case "STORE_IR_SEARCH_ELEMENT":
-      {
-        return {
-          ...state,
-          iRSearchElement : action.val
-        }
-      }
-      break;
-      case "CLEAR_IR_SEARCH_ELEMENT":
-      {
-        return {
-          ...state,
-          iRSearchElement : ""
-        }
-      }
-      break;
       case "SAVE_IR_DATA":{
         let curIRDetails = state.iRConfigureDetails
         curIRDetails[action.name] = action.value
         return{
           ...state,
           iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "SET_SR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          sRLoaderFlag : action.flag
         }
       }
       break;
@@ -538,22 +537,6 @@ export default function reducer(state = {
         }
       }
       break;
-      case "STORE_SR_SEARCH_ELEMENT":
-      {
-        return {
-          ...state,
-          iRSearchElement : action.val
-        }
-      }
-      break;
-      case "CLEAR_SR_SEARCH_ELEMENT":
-      {
-        return {
-          ...state,
-          sRSearchElement : ""
-        }
-      }
-      break;
       case "SAVE_SR_DATA":{
         let curSRDetails = state.sRConfigureDetails
         curSRDetails[action.name] = action.value
@@ -568,9 +551,7 @@ export default function reducer(state = {
         return {
           ...state,
           iRToggleFlag : true,
-          iRSearchElement : "",
           sRToggleFlag : true,
-          sRSearchElement : "",
         }
       }
       break;
