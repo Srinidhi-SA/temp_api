@@ -139,9 +139,28 @@ class SimpleFlow(models.Model):
     @property
     def assigned_user(self):
         state = self.PROCESS['initial']
-        return User.objects.filter(
+        Reviewers_queryset = User.objects.filter(
             groups__name=state['group'],
-            is_active=True).order_by('?').first()
+            is_active=True,
+            ocruserprofile__is_active=True)
+
+        for reviewer in Reviewers_queryset:
+            isLimitReached = self.check_task_limit(state, reviewer)
+            if isLimitReached:
+                pass
+            elif not isLimitReached:
+                return reviewer
+            else:
+                return None
+
+    def check_task_limit(self, state, user):
+        totalPendingTasks = len(Task.objects.filter(
+            assigned_user=user,
+            is_closed=False))
+        if totalPendingTasks >= state['rules']['auto']['max_docs_per_reviewer']:
+            return True
+        else:
+            return False
 
     def start_simpleflow(self, initial_state=None):
         initial = initial_state or 'initial'
@@ -149,15 +168,22 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        obj = Task.objects.create(
-            name=state['name'],
-            slug=initial,
-            assigned_group=group,
-            assigned_user=self.assigned_user,
-            content_type=content_type,
-            object_id=self.id
-        )
-        #obj.submit(state['form'],user=None)
+        if state['rules']['auto']['active']:
+            reviewer = self.assigned_user
+            if reviewer is None:
+                print("No Reviewers available. Moving to backlog")
+                pass
+            else:
+                Task.objects.create(
+                    name=state['name'],
+                    slug=initial,
+                    assigned_group=group,
+                    assigned_user=reviewer,
+                    content_type=content_type,
+                    object_id=self.id
+                )
+                self.status='submitted_for_review'
+                self.save()
 
 class ReviewRequest(SimpleFlow):
     # assign your process here
