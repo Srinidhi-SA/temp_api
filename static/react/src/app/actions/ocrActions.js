@@ -758,7 +758,7 @@ export function submitReviewerConfigAction(selTab,config){
 	if(selTab === "initialReview"){
 		let reqValues1 = {
 			"active" : config.active, "selected_reviewers" : config.selectedIRList, 
-			"max_docs_per_reviewer" : config.max_docs_per_reviewer, "test" : config.test
+			"max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test)
 		}
 		if(reqValues1.active === "all"){
 			reqValues1.active = "True"
@@ -773,7 +773,7 @@ export function submitReviewerConfigAction(selTab,config){
 	  else if(selTab === "secondaryReview"){
 		let reqValues2 = {
 			"active" : config.active, "selected_reviewers" : config.selectedSRList,
-			"max_docs_per_reviewer" : config.max_docs_per_reviewer, "test" : config.test,
+			"max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test),
 		}
 		if(reqValues2.active === "all"){
 			reqValues2.active = "True"

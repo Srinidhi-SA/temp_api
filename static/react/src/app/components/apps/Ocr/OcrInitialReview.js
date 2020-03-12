@@ -25,6 +25,9 @@ export class OcrInitialReview extends React.Component {
   }
   saveIRConfig(e){
     $("#resetMsg")[0].innerHTML = ""
+    if(e.target.id === "assigniRDocsToAll"){
+        this.props.dispatch(saveIRConfigAction("selectedIRList",[]));
+    }
     if(e.target.name === "selectedIR"){
         let curIRSelUsers= this.props.selectedIRList != undefined ? [...this.props.selectedIRList] :[]
         e.target.checked? curIRSelUsers.push(e.target.value): curIRSelUsers.splice(curIRSelUsers.indexOf(e.value), 1);

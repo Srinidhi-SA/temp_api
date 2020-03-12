@@ -25,6 +25,9 @@ export class OcrSecondaryReview extends React.Component{
     }
     saveSRConfig(e){
         $("#sRresetMsg")[0].innerHTML = ""
+        if(e.target.id === "assignSRDocsToAll"){
+            this.props.dispatch(saveIRConfigAction("selectedSRList",[]));
+        }
         if(e.target.name === "selectedSR"){
             let curSRSelUsers= this.props.selectedSRList != undefined ? [...this.props.selectedSRList] :[]
             e.target.checked? curSRSelUsers.push(e.target.value): curSRSelUsers.splice(curSRSelUsers.indexOf(e.value), 1);
