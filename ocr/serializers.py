@@ -322,3 +322,24 @@ class OCRReviewerSerializer(serializers.ModelSerializer):
         """
         model = User
         fields = ("username", "last_login")
+
+class OCRImageReviewSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageReviewSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageReviewSerializer, self).to_representation(instance)
+
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
+        model = OCRImage
+        fields = ['name', 'slug', 'imagefile']

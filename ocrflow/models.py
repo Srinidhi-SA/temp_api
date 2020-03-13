@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 import random
 import string
+import datetime
 from django.template.defaultfilters import slugify
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
@@ -75,7 +76,11 @@ class Task(models.Model):
         status = form.cleaned_data['status']
         comments = form.cleaned_data['remarks']
         self.comments = comments
+        self.reviewed_on = datetime.datetime.now()
         self.is_closed = True
+        reviewObj = ReviewRequest.objects.get(id=self.object_id)
+        reviewObj.modified_by = self.assigned_user
+        reviewObj.save()
         self.save()
 
         # execute content object task action
