@@ -10,7 +10,6 @@ import { Link, Redirect } from "react-router-dom";
 
 
 
-
 @connect((store) => {
   return {
     OcrReviewerList: store.ocr.OcrReviewerList
@@ -90,9 +89,19 @@ handleDocumentPageFlag (slug,name){
         : (<img id="loading" style={{ position: 'relative', left: '500px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
     return (
-      <div>
-        <div class="table-responsive">
-               <table class="table table-condensed table-hover cst_table ">
+    <div>
+      <div class="row">
+        <div class="col-md-3 col-sm-12">
+           <h4 class="nText">Reviewers</h4>
+        </div>
+        <div class="col-md-9 col-sm-12 text-right xs-mb-5">   
+        </div>
+      </div>
+      <div class="xs-mt-20"></div>   
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="table-responsive">
+              <table class="table table-condensed table-hover cst_table ">
                <thead>
                   <tr>
                     <th></th>
@@ -126,14 +135,16 @@ handleDocumentPageFlag (slug,name){
                     <th class="text-center">Last Login</th>
                     <th class="text-center">Status</th>
                   </tr>
-                </thead>
-                  <tbody class="no-border-x">
-                     {reviewersTable}
-                  </tbody>
-               </table>
-              {paginationTag}
+               </thead>
+               <tbody class="no-border-x">
+                  {reviewersTable}
+               </tbody>
+            </table>
+            {paginationTag}
             </div>
-      </div>
+           </div>
+         </div>
+    </div>
     )
   }
 }

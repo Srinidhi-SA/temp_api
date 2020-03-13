@@ -4,6 +4,7 @@ export default function reducer(state = {
   OcrDataList: "",
   OcrProjectList:"",
   OcrReviewerList:"",
+  OcrRevwrDocsList:'',
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
@@ -95,6 +96,19 @@ export default function reducer(state = {
     }
     break;
     case "OCR_UPLOADS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REV_DOCS_LIST":
+    {
+      return {
+        ...state,
+        OcrRevwrDocsList: action.data
+      }
+    }
+    break;
+    case "OCR_REV_DOCS_LIST_FAIL":
     {  
     throw new Error("Unable to fetch uploaded images list!!");
     }
