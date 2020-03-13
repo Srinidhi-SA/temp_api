@@ -24,6 +24,12 @@ class Task(models.Model):
     assigned_group = models.ForeignKey(Group, related_name='tasks')
     assigned_user = models.ForeignKey(User,blank=True, null=True)
     is_closed = models.BooleanField(default=False)
+    reviewed_on = models.DateTimeField(
+        null=True,
+        blank=True,
+        auto_now_add=True
+    )
+    comments = models.TextField(blank=True, null=True)
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE
@@ -68,17 +74,9 @@ class Task(models.Model):
     def submit(self, form, user):
         status = form.cleaned_data['status']
         comments = form.cleaned_data['remarks']
-        #status = "approved"
-        #comments = "ReviewerL2 Approved"
+        self.comments = comments
         self.is_closed = True
         self.save()
-
-        Approval.objects.create(
-            task=self,
-            approval_by=self.assigned_user,
-            status=status,
-            comments=comments
-        )
 
         # execute content object task action
         self.execute_task_actions(form)
@@ -94,7 +92,6 @@ class Task(models.Model):
             is_active=True).order_by('?').first()
 
     def create_new_task(self, state):
-        print(self.content_object)
         group = Group.objects.get(name=state['group'])
         newuser = self.assign_newuser(state)
         Task.objects.create(
@@ -110,24 +107,6 @@ class Task(models.Model):
         task_actions = self.state['on_completion']
         for action in task_actions:
             action(form, self.content_object)
-
-
-
-
-class Approval(models.Model):
-    task = models.OneToOneField(Task, related_name='approval')
-    approval_by = models.ForeignKey(
-        User, blank=True, null=True, related_name='+')
-    approval_on = models.DateTimeField(
-        null=True,
-        blank=True,
-        auto_now_add=True
-    )
-    comments = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=100, choices=[
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected')
-    ])
 
 
 class SimpleFlow(models.Model):
@@ -217,14 +196,10 @@ class ReviewRequest(SimpleFlow):
         choices=[
             ('created', 'Created'),
             ('submitted_for_review', 'Submitted for review'),
-            ('reviewerL2_approved', 'ReviewerL2 Approved'),
+            ('reviewerL2_reviewed', 'ReviewerL2 Reviewed'),
             ('reviewerL2_rejected', 'ReviewerL2 Rejected'),
-            ('reviewerL1_approved', 'ReviewerL1 Approved'),
+            ('reviewerL1_reviewed', 'ReviewerL1 Reviewed'),
             ('reviewerL1_rejected', 'ReviewerL1 Rejected'),
-            ('superuser_approved', 'Superuser Approved'),
-            ('superuser_rejected', 'Superuser Rejected'),
-            ('admin_approved', 'Admin Approved'),
-            ('admin_rejected', 'Admin Rejected')
         ]
     )
     def save(self, *args, **kwargs):
