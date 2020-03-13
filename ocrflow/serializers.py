@@ -39,14 +39,15 @@ class ReviewRequestListSerializer(serializers.ModelSerializer):
     """
     """
 
-    tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
-
+    def to_representation(self, instance):
+        serialized_data = super(ReviewRequestListSerializer, self).to_representation(instance)
+        return serialized_data
     class Meta:
         """
         Meta class definition for ReviewRequestListSerializer
         """
         model = ReviewRequest
-        fields = '__all__'
+        fields = ('id', 'slug', 'status')
 
 class ReviewRequestSerializer(serializers.ModelSerializer):
     """
