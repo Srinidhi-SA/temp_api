@@ -12,6 +12,7 @@ from ocr.pagination import CustomOCRPagination
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
 from rest_framework.decorators import list_route, detail_route
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 class TaskView(viewsets.ModelViewSet):
@@ -52,22 +53,25 @@ class TaskView(viewsets.ModelViewSet):
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
-        form = self.task.get_approval_form(request.POST)
-
-        if form.is_valid():
-            self.task.submit(
-                form,
-                request.user
-            )
-            return JsonResponse({
-                "submitted": True,
-                "message": "Task Updated Successfully."
-            })
+        task_object = self.task
+        if request.user == task_object.assigned_user:
+            form = self.task.get_approval_form(request.POST)
+            if form.is_valid():
+                self.task.submit(
+                    form,
+                    request.user
+                )
+                return JsonResponse({
+                    "submitted": True,
+                    "message": "Task Updated Successfully."
+                })
+            else:
+                return JsonResponse({
+                    "submitted": False,
+                    "message": form.errors
+                })
         else:
-            return JsonResponse({
-                "submitted": False,
-                "message": form.errors
-            })
+            raise PermissionDenied("Not allowed to perform this POST action.")
 
 class ReviewRequestView(viewsets.ModelViewSet):
     """
