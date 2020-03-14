@@ -25,8 +25,6 @@ class TaskView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    print("~"*100)
-
     def get_queryset(self):
         queryset = Task.objects.all()
         return queryset

@@ -19,7 +19,5 @@ router.register(
 )
 
 urlpatterns = [
-    #url(r'^tasks/$', TaskListView.as_view(), name='simpleflow-task-list'),
-    #url(r'^tasks/(?P<pk>\d+)$', TaskDetailView.as_view(), name='simpleflow-task-detail'),
 ]
 urlpatterns += router.urls

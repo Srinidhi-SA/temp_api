@@ -126,7 +126,7 @@ class SimpleFlow(models.Model):
         Reviewers_queryset = User.objects.filter(
             groups__name=state['group'],
             is_active=True,
-            ocruserprofile__is_active=True)
+            ocruserprofile__is_active=True).order_by('?')
 
         for reviewer in Reviewers_queryset:
             isLimitReached = self.check_task_limit(state, reviewer)
@@ -166,6 +166,9 @@ class SimpleFlow(models.Model):
                     content_type=content_type,
                     object_id=self.id
                 )
+                imageObject=OCRImage.objects.get(id=self.ocr_image.id)
+                imageObject.is_L1assigned = True
+                imageObject.save()
                 self.status='submitted_for_review'
                 self.save()
 
@@ -220,7 +223,6 @@ class ReviewRequest(SimpleFlow):
 
 def submit_for_approval(sender, instance, created, **kwargs):
     if created:
-        print("Starting simpleflow for review ...")
         instance.status = "created"
         instance.save()
         instance.start_simpleflow()

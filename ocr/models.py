@@ -227,6 +227,7 @@ class OCRImage(models.Model):
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="", null=True)
     is_recognized = models.BooleanField(default=False)
+    is_L1assigned = models.BooleanField(default=False)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
