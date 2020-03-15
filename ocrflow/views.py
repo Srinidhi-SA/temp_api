@@ -30,21 +30,12 @@ class TaskView(viewsets.ModelViewSet):
         return queryset
 
     def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        # queryset = self.get_queryset()
-        # serializer = TaskSerializer(queryset, many=True)
-        # return Response(serializer.data)
+
         return get_listed_data(
             viewset=self,
             request=request,
             list_serializer=TaskSerializer
         )
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(
-    #         TaskView, self).get_context_data(**kwargs)
-    #     context['approval_form'] = self.task.get_approval_form
-    #     return context
 
     @property
     def task(self):
@@ -86,9 +77,8 @@ class ReviewRequestView(viewsets.ModelViewSet):
         return queryset
 
     def get_specific_assigned_queryset(self, username):
-        user = User.objects.get(username=username)
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user=user
+            tasks__assigned_user__username=username
             ).order_by('-created_on')
         return queryset
 

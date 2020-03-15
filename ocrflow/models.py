@@ -78,13 +78,10 @@ class Task(models.Model):
         self.comments = comments
         self.reviewed_on = datetime.datetime.now()
         self.is_closed = True
-        reviewObj = ReviewRequest.objects.get(id=self.object_id)
-        reviewObj.modified_by = self.assigned_user
-        reviewObj.save()
         self.save()
 
         # execute content object task action
-        self.execute_task_actions(form)
+        self.execute_task_actions(form, user)
 
         if self.next_transition:
             new_state = self.process_config[self.next_transition]
@@ -108,10 +105,10 @@ class Task(models.Model):
             object_id=self.content_object.id
         )
 
-    def execute_task_actions(self, form):
+    def execute_task_actions(self, form, user):
         task_actions = self.state['on_completion']
         for action in task_actions:
-            action(form, self.content_object)
+            action(form, self.content_object, user)
 
 
 class SimpleFlow(models.Model):
@@ -176,7 +173,7 @@ class ReviewRequest(SimpleFlow):
     # assign your process here
     PROCESS = process.AUTO_ASSIGNMENT
     slug = models.SlugField(null=False, blank=True, max_length=100)
-    ocr_image = models.ForeignKey(
+    ocr_image = models.OneToOneField(
         OCRImage,
         blank=True,
         null=True,
