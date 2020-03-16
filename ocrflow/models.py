@@ -165,6 +165,7 @@ class SimpleFlow(models.Model):
                 )
                 imageObject=OCRImage.objects.get(id=self.ocr_image.id)
                 imageObject.is_L1assigned = True
+                imageObject.status = "ready_to_verify"
                 imageObject.save()
                 self.status='submitted_for_review'
                 self.save()

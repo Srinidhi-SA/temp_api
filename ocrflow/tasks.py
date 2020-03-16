@@ -10,7 +10,7 @@ from ocr.models import OCRImage
 from ocrflow.models import *
 
 #@task(name='start_auto_assignment_L1', queue=CONFIG_FILE_NAME)
-@periodic_task(run_every=(crontab(minute='*/1')), name="start_auto_assignment_L1", ignore_result=False,
+@periodic_task(run_every=(crontab(minute='*/60')), name="start_auto_assignment_L1", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L1():
     if settings.AUTO_ASSIGNMENT:

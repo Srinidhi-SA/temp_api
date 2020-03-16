@@ -105,7 +105,7 @@ class OCRUserProfile(models.Model):
             return 0
         else:
             percentage = (total_reviewed/total_assignments)*100
-            return percentage
+            return round(percentage, 2)
 
 
     def get_slug(self):
@@ -200,9 +200,9 @@ class OCRImage(models.Model):
     Description :
     """
     STATUS_CHOICES = [
-        ("1", "Ready to recognize."),
-        ("2", "Ready to verify."),
-        ("3", "Ready to export.")
+        ("ready_to_recognize", "Ready to recognize"),
+        ("ready_to_verify", "Ready to verify"),
+        ("ready_to_export", "Ready to export")
     ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
@@ -216,7 +216,7 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
+    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='ready_to_recognize')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
     generated_image = models.FileField(null=True, upload_to='ocrData')
@@ -247,3 +247,7 @@ class OCRImage(models.Model):
         """Create OCRImage model"""
         if self.datasource_type in ['fileUpload']:
             self.save()
+
+    def update_status(self, status):
+        self.status = status
+        self.save()
