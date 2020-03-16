@@ -182,15 +182,7 @@ export class RevDocTable extends React.Component {
              </tbody>
             </table>)
             :
-            (<div class="panel">
-              <div class="panel-body">
-                <div class="xs-mt-3 xs-mb-3 text-center">
-                  <div class="icon-container">
-                    <span class="class">Add a workflow by clicking on the above icon</span>
-                  </div>
-                </div>
-              </div>
-            </div>)
+           (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}
