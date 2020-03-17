@@ -38,6 +38,12 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+export function updateOcrImage(data) {
+	return {
+		type: "UPDATE_OCR_IMAGE",
+		data
+	}
+}
 
 export function getOcrProjectsList(pageNo){
 	return (dispatch) => {

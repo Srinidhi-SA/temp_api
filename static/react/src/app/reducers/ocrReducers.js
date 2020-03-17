@@ -199,6 +199,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "UPDATE_OCR_IMAGE":
+        {
+          return {
+            ...state,
+            ocrImgPath: action.data,
+            originalImgPath: action.data,
+          }
+        }
+        break;
     case "OCR_FILES_SORT":
       {
         return {
