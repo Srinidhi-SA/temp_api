@@ -415,7 +415,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['Ready to recognize.', 'Ready to verify.', 'Ready to export.']
+            status__in=['ready_to_recognize', 'ready_to_verify', 'ready_to_export']
         ).order_by('-created_at').select_related('imageset')
         return queryset
 

@@ -6,7 +6,7 @@ class ApprovalForm(forms.Form):
     status = forms.ChoiceField(
         label=_('Approval Status'),
         choices=[
-            ('approved', 'Approved'),
+            ('reviewed', 'Reviewed'),
             ('rejected', 'Rejected')
         ])
 

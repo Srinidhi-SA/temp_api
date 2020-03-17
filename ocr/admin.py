@@ -54,8 +54,8 @@ class OCRUserProfileAdmin(admin.ModelAdmin):
     """
     icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["slug"]
-    list_display = ["slug"]
-    list_filter = []
+    list_display = ["slug", "is_active"]
+    list_filter = ["is_active"]
     readonly_fields = ["slug"]
 
     def get_queryset(self, request):

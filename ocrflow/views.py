@@ -12,6 +12,7 @@ from ocr.pagination import CustomOCRPagination
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
 from rest_framework.decorators import list_route, detail_route
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 class TaskView(viewsets.ModelViewSet):
@@ -24,50 +25,42 @@ class TaskView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    print("~"*100)
-
     def get_queryset(self):
         queryset = Task.objects.all()
         return queryset
 
     def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        # queryset = self.get_queryset()
-        # serializer = TaskSerializer(queryset, many=True)
-        # return Response(serializer.data)
+
         return get_listed_data(
             viewset=self,
             request=request,
             list_serializer=TaskSerializer
         )
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(
-    #         TaskView, self).get_context_data(**kwargs)
-    #     context['approval_form'] = self.task.get_approval_form
-    #     return context
-
     @property
     def task(self):
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
-        form = self.task.get_approval_form(request.POST)
-
-        if form.is_valid():
-            self.task.submit(
-                form,
-                request.user
-            )
-            return JsonResponse({
-                "submitted": True,
-                "message": "Task Updated Successfully."
-            })
+        task_object = self.task
+        if request.user == task_object.assigned_user:
+            form = self.task.get_approval_form(request.POST)
+            if form.is_valid():
+                self.task.submit(
+                    form,
+                    request.user
+                )
+                return JsonResponse({
+                    "submitted": True,
+                    "message": "Task Updated Successfully."
+                })
+            else:
+                return JsonResponse({
+                    "submitted": False,
+                    "message": form.errors
+                })
         else:
-            return JsonResponse({
-                "submitted": False,
-                "message": form.errors
-            })
+            raise PermissionDenied("Not allowed to perform this POST action.")
 
 class ReviewRequestView(viewsets.ModelViewSet):
     """
@@ -84,9 +77,8 @@ class ReviewRequestView(viewsets.ModelViewSet):
         return queryset
 
     def get_specific_assigned_queryset(self, username):
-        user = User.objects.get(username=username)
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user=user
+            tasks__assigned_user__username=username
             ).order_by('-created_on')
         return queryset
 

@@ -3,10 +3,15 @@ from __future__ import absolute_import
 from builtins import str
 import re
 import sys
+
+from newsapi.newsapi_exception import NewsAPIException
+
 from . import common_utils
 import requests
 from bs4 import BeautifulSoup
 from . import generic_crawler
+from ibm_watson import ApiException
+import datetime
 
 
 def sanitize(content, remove_tags=[]):
@@ -183,33 +188,55 @@ def fetch_stock_news_from_newsapi(cur_stock):
     # Init
     newsapi = NewsApiClient(api_key=API_KEY)
 
+    today = datetime.date.today()
+    date_diff = datetime.timedelta(days=10)
+    from_date = today - date_diff
+
     # /v2/everything
     company_name = company_list.get(cur_stock.upper())
-    all_news = newsapi.get_everything(q=str(company_name),
-                                      qintitle=str(company_name),
-                                      language='en',
-                                      page_size=100,
-                                      # domains='fool.com,bloomberg.com,nasdaq.com',
-                                      domains="cnbc.com , ft.com, wsj.com, marketwatch.com, in.reuters.com, "
-                                              "investopedia.com, nytimes.com, "
-                                              "economictimes.indiatimes.com, finance.yahoo.com, forbes.com, "
-                                              "financialexpress.com, bloomberg.com, wsj.com",
-                                      sort_by='publishedAt',
-                                      )
-
-    cur_key = 0
+    # q = company_name+" OR "+cur_stock
+    # q = "Microsoft OR Microsoft Corporation"
+    # q = "Microsoft"
+    articles = []
+    top_news = newsapi.get_top_headlines(q=str(company_name), qintitle=None, language="en",
+                                         country=None, category=None, page_size=None, page=None)
+    if top_news is not None:
+        articles.extend(top_news['articles'])
+    i = 1
+    while True:
+        try:
+            all_news = newsapi.get_everything(q=str(company_name),
+                                              language='en',
+                                              page_size=100,
+                                              page=i,
+                                              domains="cnbc.com , ft.com, wsj.com, marketwatch.com, in.reuters.com, "
+                                                      "investopedia.com, nytimes.com, "
+                                                      "economictimes.indiatimes.com, finance.yahoo.com, forbes.com, "
+                                                      "financialexpress.com, bloomberg.com, wsj.com, nasdaq.com, "
+                                                      "fool.com",
+                                              sort_by='publishedAt',
+                                              from_param=from_date,
+                                              to=today
+                                              )
+            if all_news is not None:
+                articles.extend(all_news['articles'])
+                i += 1
+            else:
+                break
+        except NewsAPIException as ex:
+            # print("Method failed with status code " + str(ex.code) + ": " + ex.message)
+            print("Method failed with message: "+ex.get_message())
+            break
     histogram = {}
-    for item in all_news['articles']:
-        # if ('Facebook'.lower() in item["title"].lower().split()):
+    for i, item in enumerate(articles):
         item['time'] = "".join(item['publishedAt'].split("T")[0].split("-"))
         item['date'] = item['time']
         item['source'] = item['source']['name']
         item['short_desc'] = item['description']
         item['google_url'] = item['url']
         item['final_url'] = item['url']
-        item['stock'] = cur_stock
-        histogram[cur_key] = item
-        cur_key += 1
+        item['stock'] = company_name
+        histogram[i] = item
 
     return [v for k, v in list(histogram.items())]
 
