@@ -439,7 +439,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['comparision_data'] = json.dumps(response['data3'])
         data['flag'] = json.dumps(response['flag'])
         data['analysis'] = json.dumps(response['analysis'])
-        data['status'] = 2
+        data['status'] = "ready_to_verify"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
                                        file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
         mask_image = base64.decodebytes(response['mask'].encode('utf-8'))
@@ -634,7 +634,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     serializer = self.process_image(data, response, slug, image_queryset)
                     if serializer.is_valid():
                         serializer.save()
-                        results.append(serializer.data)
+                        results.append({'slug': slug, 'message': 'SUCCESS'})
                     results.append(serializer.errors)
 
         return Response(results)
