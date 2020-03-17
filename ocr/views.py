@@ -620,7 +620,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        results = list()
+        results = []
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
@@ -629,14 +629,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 result = response.task_id
                 res = AsyncResult(result)
                 res = res.get()
-
                 for response in res.values():
                     serializer = self.process_image(data, response, slug, image_queryset)
                     if serializer.is_valid():
                         serializer.save()
-                        results.append({'slug': slug, 'message': 'SUCCESS'})
-                    results.append(serializer.errors)
-
+                        results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                    else:
+                        results.append(serializer.errors)
         return Response(results)
 
     @list_route(methods=['post'])
