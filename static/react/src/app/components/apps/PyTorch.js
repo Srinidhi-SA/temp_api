@@ -52,7 +52,7 @@ export class PyTorch extends React.Component {
             let lyrDt = {   
                 "layer":params.hidden_layer_info[i].layer,
                 "activation": params.hidden_layer_info[i].activation, 
-                "dropout": params.hidden_layer_info[i].dropout.name,"p":params.hidden_layer_info[1].dropout.p,
+                "dropout": params.hidden_layer_info[i].dropout,
                 "batchnormalization": params.hidden_layer_info[i].batchnormalization, 
                 "units_ip": params.hidden_layer_info[i].units_ip,
                 "units_op": params.hidden_layer_info[i].units_op,
