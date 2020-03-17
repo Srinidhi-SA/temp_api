@@ -11,6 +11,7 @@ import { STATIC_URL } from "../../../helpers/env";
         sRToggleFlag : store.ocr.sRToggleFlag,
         active : store.ocr.sRConfigureDetails.active,
         selectedSRList : store.ocr.sRConfigureDetails.selectedSRList,
+        remainDocs : store.ocr.sRConfigureDetails.test,
         sRLoaderFlag : store.ocr.sRLoaderFlag,
     };
 })
@@ -24,9 +25,8 @@ export class OcrSecondaryReview extends React.Component{
         this.props.dispatch(saveSRToggleValAction(e.target.checked))
     }
     saveSRConfig(e){
-        $("#sRresetMsg")[0].innerHTML = ""
         if(e.target.id === "assignSRDocsToAll"){
-            this.props.dispatch(saveIRConfigAction("selectedSRList",[]));
+            this.props.dispatch(saveSRConfigAction("selectedSRList",[]));
         }
         if(e.target.name === "selectedSR"){
             let curSRSelUsers= this.props.selectedSRList != undefined ? [...this.props.selectedSRList] :[]
@@ -43,6 +43,11 @@ export class OcrSecondaryReview extends React.Component{
         }
       }
     searchSRElement(e){
+        if(e.target.value != ""){
+            $("#sRCountVal")[0].innerHTML = ""
+        }else{
+            $("#sRCountVal")[0].innerHTML = (this.props.selectedSRList !=undefined)?" ("+this.props.selectedSRList.length+")":"(0)"
+        }
         $('#searchSR').on('keyup', function () {
             var value = $(this).val();
             var patt = new RegExp(value, "i");
@@ -71,15 +76,11 @@ export class OcrSecondaryReview extends React.Component{
         }else {
             let listForSRTable = Object.values(this.props.sRList);
             let sRListCount = listForSRTable.length;
-            let getValue = true
-            if( ($("#assignSRDocsToAll")[0] !=undefined && $("#assignSRDocsToSelect")[0] != undefined) && $("#assignSRDocsToAll")[0].checked === false && $("#assignSRDocsToSelect")[0].checked === true){
-                getValue = false
-            }
             sReviewerTable = 
             <Scrollbars style={{height:250}} >
                 <table className = "table table-bordered table-hover" id="sRTable" style={{background:"#FFF"}}>
                     <thead><tr id="sRHead">
-                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" disabled={getValue} value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
+                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
                         <th style={{width:"40%"}}>NAME</th>
                         <th>EMAIL</th>
                     </tr></thead>
@@ -88,7 +89,7 @@ export class OcrSecondaryReview extends React.Component{
                                 return (
                                     <tr>
                                         <td className="text-center">
-                                            <Checkbox name="selectedSR" id={item.name} disabled={getValue} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)}/>
+                                            <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)}/>
                                         </td>
                                         <td>{item.name}</td>
                                         <td>{item.email}</td>
@@ -124,7 +125,7 @@ export class OcrSecondaryReview extends React.Component{
                         <h4>Select sampling procedure for Audit</h4>
                         <div className="row col-md-8" style={{margin:"0px"}}>
                             <div className="ma-radio">
-                                <input type="radio" name="active" value="all" id="assignSRDocsToAll" onClick={this.saveSRConfig.bind(this)} />
+                                <input type="radio" name="active" value="all" id="assignSRDocsToAll" onClick={this.saveSRConfig.bind(this)} checked={this.props.active === "all"?true:false}/>
                                 <label for="assignSRDocsToAll">Distribute documents randomnly and evenly</label>
                             </div>
                             {this.props.active === "all" &&
@@ -136,7 +137,7 @@ export class OcrSecondaryReview extends React.Component{
                                 </div>
                             }
                             <div className="ma-radio">
-                                <input type="radio" name="active" value="select" id="assignSRDocsToSelect" onClick={this.saveSRConfig.bind(this)}/>
+                                <input type="radio" name="active" value="select" id="assignSRDocsToSelect" onClick={this.saveSRConfig.bind(this)} checked={this.props.active === "select"?true:false}/>
                                 <label for="assignSRDocsToSelect">Distribute documents randomnly and evenly from each of the reviewer</label>
                             </div>
                             {this.props.active === "select" &&
@@ -148,13 +149,16 @@ export class OcrSecondaryReview extends React.Component{
                                 </div>
                             }
                         </div>
-                        <div id="sRresetMsg"></div>
                     </div>
                 </div>
                 <hr/>
                 <div className="row">
                     <div className="col-md-12">
-                        <h4>Reviewers ({this.props.selectedSRList !=undefined?this.props.selectedSRList.length:"0"})</h4>
+                        <h4>Reviewers 
+                            <span id="sRCountVal">
+                                {this.props.selectedSRList !=undefined?" ("+this.props.selectedSRList.length+")":"(0)"}
+                            </span>
+                        </h4>
                         <div className="pull-right xs-mb-10">
                             <input type="text" id="searchSR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchSRElement.bind(this)}/>
                         </div>
@@ -167,15 +171,15 @@ export class OcrSecondaryReview extends React.Component{
                             <div className="col-md-12">
                                 <h4>How would you like to assign any remaining documents?</h4>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="1" id="assignRemaningSRDocs" onClick={this.saveSRConfig.bind(this)} />
+                                    <input type="radio" name="test" value="1" id="assignRemaningSRDocs" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "1"?true:false}/>
                                     <label for="assignRemaningSRDocs">Continue to distribute even if limits are met</label>
                                 </div>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="2" id="assignRemaningSRDocs1" onClick={this.saveSRConfig.bind(this)} />
+                                    <input type="radio" name="test" value="2" id="assignRemaningSRDocs1" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "2"?true:false}/>
                                     <label for="assignRemaningSRDocs1">Leave unassigned</label>
                                 </div>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="3" id="assignRemaningSRDocs2" onClick={this.saveSRConfig.bind(this)} />
+                                    <input type="radio" name="test" value="3" id="assignRemaningSRDocs2" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "3"?true:false}/>
                                     <label for="assignRemaningSRDocs2">Select auditors to assign</label>
                                 </div>
                             </div>

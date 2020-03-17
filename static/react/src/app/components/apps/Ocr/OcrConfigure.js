@@ -4,14 +4,16 @@ import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearRevie
 import { OcrInitialReview } from "./OcrInitialReview";
 import { OcrSecondaryReview } from "./OcrSecondaryReview";
 import store from "../../../store";
+import { statusMessages } from "../../../helpers/helper";
 
 @connect((store) => {
   return {
     configureTabSelected : store.ocr.configureTabSelected,
-    ocrReviwersList : store.ocr.ocrReviwersList,
     selectedIRList : store.ocr.selectedIRList,
     iRConfigureDetails : store.ocr.iRConfigureDetails,
     sRConfigureDetails : store.ocr.sRConfigureDetails,
+    iRToggleFlag : store.ocr.iRToggleFlag,
+    sRToggleFlag : store.ocr.sRToggleFlag,
   };
 })
 
@@ -26,12 +28,14 @@ export class OcrConfigure extends React.Component {
   }
 
   saveSelectedConfigureTab(e){
-    this.props.dispatch(clearReviewerConfigStatesAction())
+    this.props.dispatch(clearReviewerConfigStatesAction());
     this.props.dispatch(storeSelectedConfigureTabAction(e.target.name));
     if(e.target.name === "initialReview"){
+      $("#searchSR")[0].value = ""
       this.props.dispatch(setIRLoaderFlagAction(true));
       this.props.dispatch(fetchInitialReviewerList(3));
     }else{
+      $("#searchIR")[0].value = ""
       this.props.dispatch(setSRLoaderFlagAction(true));
       this.props.dispatch(fetchSeconadryReviewerList(4))
     }
@@ -39,70 +43,54 @@ export class OcrConfigure extends React.Component {
 
   submitReviewerConfig(e){
     if(this.props.configureTabSelected === "initialReview"){
-      if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
-        $("#resetMsg")[0].innerHTML = "Please Select"
-      }
-      else if($("#assigniRDocsToAll")[0].checked ){
-        if($("#iRdocsCountToAll")[0].value === ""){
-          $("#resetMsg")[0].innerHTML = "Please enter value"
-        }
-        else if(!Number.isInteger(parseFloat($("#iRdocsCountToAll")[0].value))){
-          $("#resetMsg")[0].innerHTML = "Decimals Not Allowed"
-        }
-        else if(parseFloat($("#iRdocsCountToAll")[0].value) < 1 || parseFloat($("#iRdocsCountToAll")[0].value) > 25 ){
-          $("#resetMsg")[0].innerHTML = "Allowed range is 1-25"
+      if(!this.props.iRToggleFlag){
+        let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign documents to reviewers according to your choices.","small_mascot");
+        bootbox.alert(msg);
+      }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
+        let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
+        bootbox.alert(msg);
+      }else if($("#assigniRDocsToAll")[0].checked ){
+        if($("#iRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToAll")[0].value)) || parseFloat($("#iRdocsCountToAll")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
         }
         else{
-          $("#resetMsg")[0].innerHTML = ""
           this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
         }
       }else if($("#assigniRDocsToSelect")[0].checked){
-        if( $("#iRdocsCountToSelect")[0].value === ""){
-          $("#resetMsg")[0].innerHTML = "Please enter value"
-        }
-        else if(!Number.isInteger(parseFloat($("#iRdocsCountToSelect")[0].value))){
-          $("#resetMsg")[0].innerHTML = "Decimals Not Allowed"
-        }
-        else if(parseFloat($("#iRdocsCountToSelect")[0].value) < 1 || parseFloat($("#iRdocsCountToSelect")[0].value > 25) ){
-          $("#resetMsg")[0].innerHTML = "Allowed range is 1-25"
+        if( $("#iRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToSelect")[0].value)) || parseFloat($("#iRdocsCountToSelect")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
         }
         else{
-          $("#resetMsg")[0].innerHTML = ""
           this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
         }
       }
     }
     else if(this.props.configureTabSelected === "secondaryReview"){
-      if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
-        $("#sRresetMsg")[0].innerHTML = "Please Select"
+      if(!this.props.sRToggleFlag){
+        let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign verified documents to auditors according to your choices.","small_mascot");
+        bootbox.alert(msg);
+      }
+      else if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
+        let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
+        bootbox.alert(msg);
       }
       else if($("#assignSRDocsToAll")[0].checked){
-        if($("#sRdocsCountToAll")[0].value === ""){
-          $("#sRresetMsg")[0].innerHTML = "Please enter value"
-        }
-        else if(!Number.isInteger(parseFloat($("#sRdocsCountToAll")[0].value))){
-          $("#sRresetMsg")[0].innerHTML = "Decimals Not Allowed"
-        }
-        else if(parseFloat($("#sRdocsCountToAll")[0].value) < 1 || parseFloat($("#sRdocsCountToAll")[0].value > 25) ){
-          $("#sRresetMsg")[0].innerHTML = "Allowed range is 1-25"
+        if($("#sRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToAll")[0].value)) || parseFloat($("#sRdocsCountToAll")[0].value) < 1){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
         }
         else{
-          $("#sRresetMsg")[0].innerHTML = ""
           this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
         }
       }
       else if($("#assignsRDocsToSelect")[0].checked){
-        if($("#sRdocsCountToSelect")[0].value === ""){
-          $("#sRresetMsg")[0].innerHTML = "Please enter value"
-        }
-        else if(!Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value))){
-          $("#sRresetMsg")[0].innerHTML = "Decimals Not Allowed"
-        }
-        else if(parseFloat($("#sRdocsCountToSelect")[0].value) < 1 || parseFloat($("#sRdocsCountToSelect")[0].value > 25) ){
-          $("#sRresetMsg")[0].innerHTML = "Allowed range is 1-25"
+        if($("#sRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value)) || parseFloat($("#sRdocsCountToSelect")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
         }
         else{
-          $("#sRresetMsg")[0].innerHTML = ""
           this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
         }
       }

@@ -54,11 +54,11 @@ export default function reducer(state = {
   configureTabSelected : "initialReview",
   iRLoaderFlag : false,
   iRToggleFlag : true,
-  iRConfigureDetails : {"active":"","selectedIRList":[]},
+  iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
   iRList : {},
   sRLoaderFlag : false,
   sRToggleFlag : true,
-  sRConfigureDetails : {"active":"","selectedSRList":[]},
+  sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
 
 }, action) {
@@ -500,7 +500,8 @@ export default function reducer(state = {
       {
         return{
           ...state,
-          iRToggleFlag : action.val
+          iRToggleFlag : action.val,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
         }
       }
       break;
@@ -533,7 +534,8 @@ export default function reducer(state = {
       {
         return{
           ...state,
-          sRToggleFlag : action.val
+          sRToggleFlag : action.val,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
         }
       }
       break;
@@ -551,7 +553,9 @@ export default function reducer(state = {
         return {
           ...state,
           iRToggleFlag : true,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
           sRToggleFlag : true,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
         }
       }
       break;

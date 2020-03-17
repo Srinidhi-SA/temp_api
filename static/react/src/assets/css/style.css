@@ -22595,10 +22595,3 @@ ul.ocrUploadTabs{
 #select_confidence:focus{
   box-shadow: none !important;
 }
-#sRresetMsg {
-  display: inline-block;
-  float: left;
-  color: #ff0000;
-  width: 70%;
-  text-align: left;
-}
