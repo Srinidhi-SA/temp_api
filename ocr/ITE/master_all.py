@@ -22,13 +22,13 @@ def analyse(path, image_slug):
     extracted_image = "ocr/ITE/ir/{}_mask.png".format(image_name)
     cv2.imwrite(extracted_image, wm)
 
-    demo = False
+    demo = True
     if demo:
         print('*' * 50)
         print('Reading Analysis From Local')
         print('*' * 50)
         cwd = os.getcwd()
-        json_path = cwd + '/ocr/ITE/demo_analysis/' + image_name.split('.')[0] + '.json'
+        json_path = cwd + '/ocr/ITE/demo_analysis/' + '_'.join(image_name.split('.')[0].split('_')[:-1]) + '.json'
         with open(json_path) as f:
             analysis = json.load(f)
     else:
@@ -42,6 +42,11 @@ def analyse(path, image_slug):
 
     mask = base64.encodebytes(img)
 
+    with open(extracted_image, mode='rb') as file:
+        img1 = file.read()
+
+    mask1 = base64.encodebytes(img1)
+
     response = dict()
     response['analysis'] = analysis
     response['google_response'] = str(google_response.text_annotations)
@@ -51,6 +56,7 @@ def analyse(path, image_slug):
     response['data'] = data
     response['data2'] = data2
     response['data3'] = data3
+    response['mask'] = mask1
     return response
 
 

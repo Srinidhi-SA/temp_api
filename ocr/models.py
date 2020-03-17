@@ -95,8 +95,8 @@ class OCRUserProfile(models.Model):
             'avgTimeperWord': None,
             'accuracyModel': None,
             'completionPercentage': self.get_review_completion(
-                                        total_reviewed,
-                                        total_assignments)
+                total_reviewed,
+                total_assignments)
         }
         return data
 
@@ -104,9 +104,8 @@ class OCRUserProfile(models.Model):
         if total_assignments == 0:
             return 0
         else:
-            percentage = (total_reviewed/total_assignments)*100
+            percentage = (total_reviewed / total_assignments) * 100
             return round(percentage, 2)
-
 
     def get_slug(self):
         return self.slug
@@ -227,6 +226,7 @@ class OCRImage(models.Model):
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="", null=True)
     is_recognized = models.BooleanField(default=False)
+    mask = models.FileField(null=True, upload_to='ocrData')
     is_L1assigned = models.BooleanField(default=False)
 
     def __str__(self):
