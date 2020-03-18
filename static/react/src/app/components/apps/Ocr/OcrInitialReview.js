@@ -44,11 +44,6 @@ export class OcrInitialReview extends React.Component {
     }
   }
   searchIRElement(e){
-    if(e.target.value != ""){
-        $("#countVal")[0].innerHTML = ""
-    }else{
-        $("#countVal")[0].innerHTML = this.props.selectedIRList !=undefined?" ("+this.props.selectedIRList.length+")":"(0)"
-    }
     this.props.dispatch(saveIRSearchElementAction(e.target.value));
   }
 

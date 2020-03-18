@@ -563,7 +563,6 @@ export default function reducer(state = {
         return{
           ...state,
           iRToggleFlag : action.val,
-          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
         }
       }
       break;
@@ -605,7 +604,6 @@ export default function reducer(state = {
         return{
           ...state,
           sRToggleFlag : action.val,
-          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
         }
       }
       break;
