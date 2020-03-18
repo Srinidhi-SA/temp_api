@@ -434,7 +434,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
             f.write(image)
 
-        del data['slug']
+        data['slug'] = slug
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
         data['flag'] = json.dumps(response['flag'])
