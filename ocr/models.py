@@ -152,6 +152,33 @@ class Project(models.Model):
         """Create Project model"""
         self.save()
 
+    def get_project_overview(self):
+        totalTasks, closedTasks = self.get_workflow_data()
+        overview = {
+            "workflows": totalTasks,
+            "completion": self.get_completion_percentage(totalTasks, closedTasks)
+        }
+        return overview
+
+    def get_workflow_data(self):
+        from ocrflow.models import Task, ReviewRequest
+        totalTasks = 0
+        closedTasks = 0
+        reviewObjQueryset = ReviewRequest.objects.filter(
+            ocr_image__project=self.id
+        )
+        for reviewObj in reviewObjQueryset:
+            TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
+            for task in TaskQueryset:
+                totalTasks+=1
+                if task.is_closed:
+                    closedTasks+=1
+
+        return totalTasks, closedTasks
+
+    def get_completion_percentage(self, totalTasks, closedTasks):
+        percentage = (closedTasks / totalTasks) * 100
+        return round(percentage, 2)
 
 class OCRImageset(models.Model):
     """
@@ -229,6 +256,7 @@ class OCRImage(models.Model):
     mask = models.FileField(null=True, upload_to='ocrData')
     is_L1assigned = models.BooleanField(default=False)
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
+    modified_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])

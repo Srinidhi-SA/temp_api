@@ -888,6 +888,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             deleted=False
         )
+    def total_projects(self):
+        return len(Project.objects.all())
+
+    def total_reviewers(self):
+        return len(OCRUserProfile.objects.filter(
+            ocr_user__groups__name__in=['ReviewerL1'],
+            is_active=True
+        ))
+
+    def total_documents(self):
+        return len(OCRImage.objects.all())
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()
@@ -901,11 +912,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(object_details)
 
     def list(self, request, *args, **kwargs):
-        return get_listed_data(
+        result = get_listed_data(
             viewset=self,
             request=request,
             list_serializer=ProjectListSerializer
         )
+        result.data['overall_info'] = {
+            "totalProjects": self.total_projects(),
+            "totalDocuments": self.total_documents(),
+            "totalReviewers": self.total_reviewers()
+        }
+        return result
 
     def create(self, request, *args, **kwargs):
 
