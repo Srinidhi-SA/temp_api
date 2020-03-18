@@ -31,6 +31,12 @@ export function saveDocumentPageFlag(flag) {
 		flag
 	}
 }
+export function saveRevDocumentPageFlag(flag) {
+	return {
+		type: "SAVE_REV_DOCUMENT_FLAG",
+		flag
+	}
+}
 
 export function saveImageDetails(data) {
 	return {
@@ -38,6 +44,7 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+//Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
 		type: "UPDATE_OCR_IMAGE",
@@ -89,6 +96,9 @@ export function fetchProjectsFail(data){
 		data,
 	}
 }
+////
+
+//Actions for fetching documentlist based on the 'Project' selected
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
@@ -137,6 +147,81 @@ export function fetchUploadsFail(data){
 		data,
 	}
 }
+////
+
+//Actions for Reviewers list 
+export function getOcrReviewersList(pageNo){
+	return (dispatch) => {
+		return fetchReviewersList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchReviewersSuccess(json))
+			}
+			else{
+			 dispatch(fetchReviewersFail(json))
+			}
+		})
+	}
+}
+
+function fetchReviewersList(pageNo=1,token){
+		return fetch(API + '/ocr/user/reviewer_detail_list/?page_number=' + pageNo, {
+      method: 'get', 
+      headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchReviewersSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_REVIEWERS_LIST",
+		data,
+	}
+}
+
+export function fetchReviewersFail(data){
+	return {
+		type: "OCR_REVIEWERS_LIST_FAIL",
+		data,
+	}
+}
+////
+
+//Actions for fetching documentlist based on the 'Reviewer' selected
+export function getRevrDocsList(pageNo){
+	return (dispatch) => {
+		return fetchRevrDocsList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchRevrDocsSuccess(json))
+			}
+			else{
+			 dispatch(fetchRevrDocsFail(json))
+			}
+		})
+	}
+}
+
+function fetchRevrDocsList(pageNo=1,token){
+	return fetch(API + '/ocrflow/review/assigned_requests/?username=frontend&page_number=' + pageNo, {
+		method: 'get',
+		headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]))
+}
+
+export function fetchRevrDocsSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_REV_DOCS_LIST",
+		data,
+	}
+}
+
+export function fetchRevrDocsFail(data){
+	return {
+		type: "OCR_REV_DOCS_LIST_FAIL",
+		data,
+	}
+}
+////
 
 export function setS3Loader(flag){
 	return {
@@ -670,6 +755,12 @@ export function clearUserSearchElementAction(){
 export function selectedProjectDetails(slug,name){
 	return{
 		type:"SELECTED_PROJECT_SLUG",
+		slug,name
+	}
+}
+export function selectedReviewerDetails(slug,name){
+	return{
+		type:"SELECTED_REVIEWER_DETAILS",
 		slug,name
 	}
 }

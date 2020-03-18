@@ -3,6 +3,8 @@ export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
   OcrProjectList:"",
+  OcrReviewerList:"",
+  OcrRevwrDocsList:'',
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
@@ -19,6 +21,7 @@ export default function reducer(state = {
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
   documentFlag:false,
+  revDocumentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
@@ -50,7 +53,8 @@ export default function reducer(state = {
   search_project:'',
   selected_project_slug:'',
   selected_project_name:'',
-
+  selected_reviewer_slug:'',
+  selected_reviewer_name:'',
   configureTabSelected : "initialReview",
   iRLoaderFlag : false,
   iRToggleFlag : true,
@@ -80,34 +84,62 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;
-      case "OCR_PROJECT_LIST":
-      {
-        return {
-          ...state,
-          OcrProjectList: action.data
-        }
-      }
-      break;
-      case "OCR_PROJECT_LIST_FAIL":
-      {
-      throw new Error("Unable to fetch projects list!!");
-      }
-      
-      case "OCR_UPLOADS_LIST":
-      {
-        return {
-          ...state,
-          OcrDataList: action.data
-        }
-      }
-      break;
-    case "OCR_UPLOADS_LIST_FAIL":
+    break;
+    //Projects,Documents,Reviewers Lists//
+    case "OCR_PROJECT_LIST":
     {
-      throw new Error("Unable to fetch uploaded images list!!");
+      return {
+        ...state,
+        OcrProjectList: action.data
+      }
     }
     break;
-      case "SAVE_DOCUMENT_FLAG":
+    case "OCR_PROJECT_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch projects list!!");
+    }
+    break;
+    case "OCR_UPLOADS_LIST":
+    {
+      return {
+        ...state,
+        OcrDataList: action.data
+      }
+    }
+    break;
+    case "OCR_UPLOADS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REV_DOCS_LIST":
+    {
+      return {
+        ...state,
+        OcrRevwrDocsList: action.data
+      }
+    }
+    break;
+    case "OCR_REV_DOCS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REVIEWERS_LIST":
+    {
+      return {
+        ...state,
+        OcrReviewerList: action.data
+      }
+    }
+    break;
+    case "OCR_REVIEWERS_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch Reviewers list!!");
+    }
+    break;
+     ////
+    case "SAVE_DOCUMENT_FLAG":
       {
         return {
           ...state,
@@ -115,6 +147,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_REV_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          revDocumentFlag: action.flag
+        }
+      }
+      break;
+      
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -199,7 +240,7 @@ export default function reducer(state = {
           imageFlag: action.flag
         }
       }
-      break;
+    break;
     case "SAVE_IMAGE_DETAILS":
       {
         return {
@@ -228,7 +269,7 @@ export default function reducer(state = {
           ocrFilesSortType: action.ocrFilesSortType
         }
       }
-      break;
+    break;
     case "FILTER_BY_STATUS":
       {
         return {
@@ -236,7 +277,7 @@ export default function reducer(state = {
           filter_status: action.status,
         }
       }
-      break;
+    break;
     case "FILTER_BY_CONFIDENCE":
       {
         return {
@@ -244,7 +285,7 @@ export default function reducer(state = {
           filter_confidence: action.confidence,
         }
       }
-      break;
+    break;
     case "FILTER_BY_ASSIGNEE":
       {
         return {
@@ -252,7 +293,7 @@ export default function reducer(state = {
           filter_assignee: action.assignee
         }
       }
-      break;
+    break;
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -448,6 +489,7 @@ export default function reducer(state = {
           ocrUserPageNum : action.val
         }
       }
+      break;
       case "CLEAR_USER_SEARCH_ELEMENT":{
         return {
           ...state,
@@ -478,6 +520,15 @@ export default function reducer(state = {
           selected_project_slug:action.slug,
           selected_project_name:action.name
 
+        }
+      }
+      break;
+      case "SELECTED_REVIEWER_DETAILS":
+      {
+        return {
+          ...state,
+          selected_reviewer_slug:action.slug,
+          selected_reviewer_name:action.name
         }
       }
       break;
@@ -588,6 +639,6 @@ export default function reducer(state = {
         }
       }
       break;
-  }
+}
   return state
 }
