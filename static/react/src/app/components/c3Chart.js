@@ -61,7 +61,7 @@ export class C3Chart extends React.Component {
 
     if (this.props.classId == '_side') {
       this.classId = "chart";
-    } else 
+    } else
     if (this.props.widthPercent) {
       this.classId = "chart" + this.props.classId;
     }
@@ -116,7 +116,7 @@ export class C3Chart extends React.Component {
       else if(data.data.type == "pie")
       {//removing logic for pie formatting >>this.props.yformat == '.4f' ? data.pie.label.format = d3.format('.4f'):data.pie.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s}
       }else
-      this.props.yformat == '.4f' ? data.axis.y.tick.format = d3.format('.4f'):data.axis.y.tick.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
+      this.props.yformat == '.4f' ? data.axis.y.tick.format = d3.format('.4f'):data.axis.y.tick.format = d3.format(this.props.yformat);//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
 
       if (data.tooltip && data.tooltip.format){
         if(data.data.columns[0][0] == "Count" || this.props.selectedL1 == "Prediction") // setting as Integer format for the charts coming under Overview and Prediction
@@ -124,7 +124,7 @@ export class C3Chart extends React.Component {
         else if(this.props.yformat == '.4f')//If .4f is coming from API then set tooltip format is also .4f
         data.tooltip.format.value = d3.format('.4f');
         else//set tooltip format as .2f for all the formats other than .4f
-        data.tooltip.format.value = d3.format('.2f');
+        data.tooltip.format.value = d3.format(this.props.yformat);
       }
     }
     else
@@ -208,7 +208,7 @@ export class C3Chart extends React.Component {
 
 
     if(this.props.selectedL1=="Trend"&&data.data.type=="line"&&this.props.selected_signal_type=="measure"){
-     
+
       let colors=data.color.pattern
       data.data.color= function (color, d) {
                return d.index === 0 ? colors[0] : color;
@@ -357,7 +357,7 @@ export class C3Chart extends React.Component {
          <div className={chartDownloadCls} style={{display:"none"}}></div>
           <div className="clearfix"></div>
 
-         
+
         {/* chart data Popup */}
         <div id="" className={this.modalCls} role="dialog">
           <div className="modal-colored-header uploadData modal-dialog ">

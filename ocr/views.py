@@ -21,6 +21,7 @@ import copy
 import os
 import random
 import ast
+import uuid
 from io import BytesIO
 
 import cv2
@@ -89,6 +90,7 @@ from django.core.exceptions import PermissionDenied, \
 
 from api.utils import UserListSerializer
 
+
 # Create your views here.
 
 
@@ -141,7 +143,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = User.objects.filter(
             ~Q(is_active=False),
-            groups__name__in = ['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+            groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
         ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
@@ -382,7 +384,7 @@ class ReviewerTypeListView(generics.ListCreateAPIView):
 
 class GroupListView(generics.ListCreateAPIView):
     queryset = Group.objects.filter(
-        name__in = ['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
+        name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
     permission_classes = [IsAdminUser]
@@ -413,7 +415,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['Ready to recognize.', 'Ready to verify.', 'Ready to export.']
+            status__in=['ready_to_recognize', 'ready_to_verify', 'ready_to_export']
         ).order_by('-created_at').select_related('imageset')
         return queryset
 
@@ -432,15 +434,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
             f.write(image)
 
-        del data['slug']
+        data['slug'] = slug
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
         data['flag'] = json.dumps(response['flag'])
         data['analysis'] = json.dumps(response['analysis'])
-        data['status'] = 2
+        data['status'] = "ready_to_verify"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
                                        file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
-
+        mask_image = base64.decodebytes(response['mask'].encode('utf-8'))
+        with open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'wb') as f:
+            f.write(mask_image)
+        data['mask'] = File(name='{}_mask_image.png'.format(slug),
+                            file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
@@ -614,7 +620,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        results = list()
+        results = []
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
@@ -623,14 +629,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 result = response.task_id
                 res = AsyncResult(result)
                 res = res.get()
-
                 for response in res.values():
                     serializer = self.process_image(data, response, slug, image_queryset)
                     if serializer.is_valid():
                         serializer.save()
-                        results.append(serializer.data)
-                    results.append(serializer.errors)
-
+                        results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                    else:
+                        results.append(serializer.errors)
         return Response(results)
 
     @list_route(methods=['post'])
@@ -682,13 +687,18 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             request.session['analysis_list'] = analysis_list
         data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
+        response = plot(image, comparision_data, data['slug'])
+        data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
+                                       file=open(response, 'rb'))
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask.png'.format(image_queryset.slug), 'rb').read()))
-            response = plot(image, comparision_data, data['slug'])
-            return JsonResponse({'message': 'SUCCESS'})
+            od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+            object_details = od.data
+            object_details['message'] = 'SUCCESS'
+            return Response(object_details)
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -700,7 +710,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         comparision_data = json.loads(image_queryset.comparision_data)
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates, comparision_data)
+        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates,
+                                                                           comparision_data)
 
         data['comparision_data'] = json.dumps(comparision_data)
         data['converted_Coordinates'] = json.dumps(converted_Coordinates)
