@@ -447,6 +447,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             f.write(mask_image)
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
+        data['is_recognized'] = True
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
