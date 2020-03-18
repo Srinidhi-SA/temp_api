@@ -38,3 +38,4 @@ boto3
 ibm-cloud-sdk-core==1.5.1
 ibm_watson==4.2.1
 Pillow
+tensorflow-hub==0.7.0
