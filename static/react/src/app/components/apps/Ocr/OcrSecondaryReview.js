@@ -44,11 +44,6 @@ export class OcrSecondaryReview extends React.Component{
         }
       }
     searchSRElement(e){
-        if(e.target.value != ""){
-            $("#sRCountVal")[0].innerHTML = ""
-        }else{
-            $("#sRCountVal")[0].innerHTML = (this.props.selectedSRList !=undefined)?" ("+this.props.selectedSRList.length+")":"(0)"
-        }
         this.props.dispatch(saveSRSearchElementAction(e.target.value))
     }
 
