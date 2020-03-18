@@ -808,6 +808,11 @@ export function saveIRConfigAction(name,value){
 		type : "SAVE_IR_DATA",name,value
 	}
 }
+export function saveIRSearchElementAction(val){
+	return {
+		type : "STORE_IR_SEARCH_ELEMENT",val
+	}
+}
 export function setSRLoaderFlagAction(flag){
 	return {
 		type : "SET_SR_LOADER_FLAG",flag
@@ -839,6 +844,11 @@ export function saveSeconadryReviewerList(data){
 export function saveSRToggleValAction(val){
 	return {
 		type:"STORE_SR_TOGGLE_FLAG",val
+	}
+}
+export function saveSRSearchElementAction(val){
+	return {
+		type : "STORE_SR_SEARCH_ELEMENT",val
 	}
 }
 export function saveSRConfigAction(name,value){
