@@ -228,6 +228,7 @@ class OCRImage(models.Model):
     is_recognized = models.BooleanField(default=False)
     mask = models.FileField(null=True, upload_to='ocrData')
     is_L1assigned = models.BooleanField(default=False)
+    assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
@@ -251,3 +252,10 @@ class OCRImage(models.Model):
     def update_status(self, status):
         self.status = status
         self.save()
+
+    def get_assignee(self):
+        """Return OCRImage Reviewer"""
+        try:
+            return self.assignee.username
+        except:
+            return None

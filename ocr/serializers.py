@@ -60,6 +60,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
+        serialized_data['assignee'] = instance.get_assignee()
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
 
         return serialized_data
 
