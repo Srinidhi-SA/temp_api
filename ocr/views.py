@@ -434,7 +434,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
             f.write(image)
 
-        del data['slug']
+        data['slug'] = slug
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
         data['flag'] = json.dumps(response['flag'])
@@ -447,6 +447,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             f.write(mask_image)
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
+        data['is_recognized'] = True
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
@@ -620,7 +621,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def extract(self, request, *args, **kwargs):
         data = request.data
-        results = list()
+        results = []
 
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
@@ -629,14 +630,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 result = response.task_id
                 res = AsyncResult(result)
                 res = res.get()
-
                 for response in res.values():
                     serializer = self.process_image(data, response, slug, image_queryset)
                     if serializer.is_valid():
                         serializer.save()
-                        results.append({'slug': slug, 'message': 'SUCCESS'})
-                    results.append(serializer.errors)
-
+                        results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                    else:
+                        results.append(serializer.errors)
         return Response(results)
 
     @list_route(methods=['post'])

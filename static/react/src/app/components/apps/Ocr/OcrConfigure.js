@@ -1,8 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
+import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList, setIRLoaderFlagAction, setSRLoaderFlagAction } from "../../../actions/ocrActions";
+import { OcrInitialReview } from "./OcrInitialReview";
+import { OcrSecondaryReview } from "./OcrSecondaryReview";
+import store from "../../../store";
+import { statusMessages } from "../../../helpers/helper";
 
 @connect((store) => {
   return {
+    configureTabSelected : store.ocr.configureTabSelected,
+    selectedIRList : store.ocr.selectedIRList,
+    iRConfigureDetails : store.ocr.iRConfigureDetails,
+    sRConfigureDetails : store.ocr.sRConfigureDetails,
+    iRToggleFlag : store.ocr.iRToggleFlag,
+    sRToggleFlag : store.ocr.sRToggleFlag,
   };
 })
 
@@ -11,30 +22,132 @@ export class OcrConfigure extends React.Component {
     super(props);
   }
 
+  componentDidMount(){
+    this.props.dispatch(setIRLoaderFlagAction(true));
+    this.props.dispatch(fetchInitialReviewerList(3))
+  }
+
+  saveSelectedConfigureTab(e){
+    this.props.dispatch(clearReviewerConfigStatesAction());
+    this.props.dispatch(storeSelectedConfigureTabAction(e.target.name));
+    if(e.target.name === "initialReview"){
+      $("#searchSR")[0].value = ""
+      this.props.dispatch(setIRLoaderFlagAction(true));
+      this.props.dispatch(fetchInitialReviewerList(3));
+    }else{
+      $("#searchIR")[0].value = ""
+      this.props.dispatch(setSRLoaderFlagAction(true));
+      this.props.dispatch(fetchSeconadryReviewerList(4))
+    }
+  }
+
+  submitReviewerConfig(e){
+    if(this.props.configureTabSelected === "initialReview"){
+      if(!this.props.iRToggleFlag){
+        let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign documents to reviewers according to your choices.","small_mascot");
+        bootbox.alert(msg);
+      }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
+        let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
+        bootbox.alert(msg);
+      }else if($("#assigniRDocsToAll")[0].checked ){
+        if($("#iRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToAll")[0].value)) || parseFloat($("#iRdocsCountToAll")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
+        }
+        else{
+          this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
+        }
+      }else if($("#assigniRDocsToSelect")[0].checked){
+        if( $("#iRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToSelect")[0].value)) || parseFloat($("#iRdocsCountToSelect")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
+        }
+        else{
+          this.props.dispatch(submitReviewerConfigAction("initialReview",this.props.iRConfigureDetails));
+        }
+      }
+    }
+    else if(this.props.configureTabSelected === "secondaryReview"){
+      if(!this.props.sRToggleFlag){
+        let msg= statusMessages("warning","Enable automatic reviewer assignment, to assign verified documents to auditors according to your choices.","small_mascot");
+        bootbox.alert(msg);
+      }
+      else if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
+        let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
+        bootbox.alert(msg);
+      }
+      else if($("#assignSRDocsToAll")[0].checked){
+        if($("#sRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToAll")[0].value)) || parseFloat($("#sRdocsCountToAll")[0].value) < 1){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
+        }
+        else{
+          this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
+        }
+      }
+      else if($("#assignsRDocsToSelect")[0].checked){
+        if($("#sRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value)) || parseFloat($("#sRdocsCountToSelect")[0].value) < 1 ){
+          let msg= statusMessages("warning","Please enter valid input.","small_mascot");
+          bootbox.alert(msg);
+        }
+        else{
+          this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
+        }
+      }
+    }
+  }
+
+  clearReviewerConfigStates(e){
+    this.props.dispatch(clearReviewerConfigStatesAction())
+  }
+
   render() {
     return (
       <div className="side-body">
-        <div class="page-head">
-          <div class="row">
-            <div class="col-md-7">
-              <h3 class="xs-mt-0 nText">OCR APP</h3>
+        <div className="page-head">
+          <div className="row">
+            <div className="col-md-7">
+              <h3 className="xs-mt-0 nText">OCR APP</h3>
             </div>
           </div>
         </div>
         <div className="main-content">
-          <section class="ocr_section">
-            <div class="tab-container">
-            <ul class="nav nav-tabs cst_ocr_tabs">
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/"><i class="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-book fa-lg"></i> Projects</a></li>
-                <li class="active"><a href="/apps/ocr-mq44ewz7bp/configure/"><i class="fa fa-sliders fa-lg"></i> Configure</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-linode fa-lg"></i> Reviewers</a></li>
-                <li class=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i class="fa fa-user-o fa-lg"></i> Users</a></li>
+          <section className="ocr_section">
+            <div className="tab-container">
+            <ul className="nav nav-tabs cst_ocr_tabs">
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/"><i className="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/project/"><i className="fa fa-book fa-lg"></i> Projects</a></li>
+                <li className="active"><a href="/apps/ocr-mq44ewz7bp/configure/"><i className="fa fa-sliders fa-lg"></i> Configure</a></li>
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i className="fa fa-users fa-lg"></i> Reviewers</a></li>
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i className="fa fa-user fa-lg"></i> Users</a></li>
               </ul>
             </div>
-            <div class="container-fluid">
+            <div className="container-fluid">
+                <h4 className="nText">Stages</h4>
+                <ul className="nav nav-tabs">
+                  <li className={this.props.configureTabSelected === "initialReview"?"active":""}>
+                    <a data-toggle="tab" href="#initialReview" name="initialReview" onClick={this.saveSelectedConfigureTab.bind(this)}>Initial Review</a>
+                  </li>
+                  <li>
+                    <a data-toggle="tab" href="#secondaryReview" name="secondaryReview" onClick={this.saveSelectedConfigureTab.bind(this)}>Secondary Review</a>
+                  </li>
+                </ul>
+                <div className="tab-content">
+                  <div id="initialReview" className={this.props.configureTabSelected === "initialReview"?"tab-pane fade in active":"tab-pane fade"}>
+                    <OcrInitialReview/>
+                  </div>
+                  <div id="secondaryReview" className="tab-pane fade">
+                    <OcrSecondaryReview/>
+                  </div>
+                  <div className="row">
+                      <div className="col-md-6 col-md-offset-6 text-right" style={{marginTop:"10px",marginBottom:"10px"}}>
+                          <button className="btn btn-default" onClick={this.clearReviewerConfigStates.bind(this)}>Cancel</button> 
+                          <button className="btn btn-primary" onClick={this.submitReviewerConfig.bind(this)}><i className="fa fa-check-circle"></i> &nbsp; Save</button>
+                      </div>
+                  </div>
+                </div>
             </div>
-          </section>
+            </section>
         </div>
       </div>
     );
