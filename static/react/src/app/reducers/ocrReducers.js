@@ -56,10 +56,12 @@ export default function reducer(state = {
   iRToggleFlag : true,
   iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
   iRList : {},
+  iRSearchElem : "",
   sRLoaderFlag : false,
   sRToggleFlag : true,
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
+  sRSearchElem : ""
 
 }, action) {
   switch (action.type) {
@@ -523,6 +525,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "STORE_IR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          iRSearchElem : action.val
+        }
+      }
+      break;
       case "SET_SR_LOADER_FLAG":
       {
         return {
@@ -548,6 +558,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "STORE_SR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          sRSearchElem : action.val
+        }
+      }
+      break;
       case "SAVE_SR_DATA":{
         let curSRDetails = state.sRConfigureDetails
         curSRDetails[action.name] = action.value
@@ -565,6 +583,8 @@ export default function reducer(state = {
           iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
           sRToggleFlag : true,
           sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+          iRSearchElem : "",
+          sRSearchElem : ""
         }
       }
       break;

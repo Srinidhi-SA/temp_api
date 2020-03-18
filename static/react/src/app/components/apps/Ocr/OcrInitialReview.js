@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Checkbox } from "primereact/checkbox";
-import { saveIRToggleValAction, saveIRConfigAction} from "../../../actions/ocrActions";
+import { saveIRToggleValAction, saveIRConfigAction, saveIRSearchElementAction} from "../../../actions/ocrActions";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from "../../../helpers/env";
 
@@ -13,6 +13,7 @@ import { STATIC_URL } from "../../../helpers/env";
     selectedIRList : store.ocr.iRConfigureDetails.selectedIRList,
     remainDocs : store.ocr.iRConfigureDetails.test,
     iRLoaderFlag : store.ocr.iRLoaderFlag,
+    iRSearchElem : store.ocr.iRSearchElem
   };
 })
 
@@ -48,18 +49,7 @@ export class OcrInitialReview extends React.Component {
     }else{
         $("#countVal")[0].innerHTML = this.props.selectedIRList !=undefined?" ("+this.props.selectedIRList.length+")":"(0)"
     }
-    $('#searchIR').on('keyup', function () {
-        var value = $(this).val();
-        var patt = new RegExp(value, "i");
-        $('#iRtable').find('tr').each(function () {
-          if (!($(this).find('td').text().search(patt) >= 0)) {
-            $(this).not('#iRtHead').hide();
-          }
-          if (($(this).find('td').text().search(patt) >= 0)) {
-            $(this).show();
-          }
-        });
-      });
+    this.props.dispatch(saveIRSearchElementAction(e.target.value));
   }
 
   render() {
@@ -75,27 +65,37 @@ export class OcrInitialReview extends React.Component {
         </div>
     }else {
         let listForIRTable = Object.values(this.props.iRList);
+        if(this.props.iRSearchElem != ""){
+            let iRSearchResults = listForIRTable.filter(s => s.name.includes(this.props.iRSearchElem));
+            listForIRTable = iRSearchResults.length === 0?[]:iRSearchResults
+        }
         let iRListCount = listForIRTable.length;
         iReviewerTable = 
         <Scrollbars style={{height:250}} >
             <table className = "table table-bordered table-hover" id="iRtable" style={{background:"#FFF"}}>
                 <thead><tr id="iRtHead">
-                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
+                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount!=0 && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
                     <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
                 </tr></thead>
                 <tbody>
-                    {listForIRTable.map((item) => {
-                            return (
-                                <tr>
-                                    <td className="text-center">
-                                        <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)}/>
-                                    </td>
-                                    <td>{item.name}</td>
-                                    <td>{item.email}</td>
-                                </tr>
-                            )
-                        })
+                        { 
+                        listForIRTable.length != 0?
+                            listForIRTable.map((item) => {
+                                return (
+                                    <tr>
+                                        <td className="text-center">
+                                            <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)}/>
+                                        </td>
+                                        <td>{item.name}</td>
+                                        <td>{item.email}</td>
+                                    </tr>
+                                )
+                            })
+                            :
+                            <tr>
+                                <td colSpan="3" style={{padding: "50px",textAlign: "center",color: "#29998c"}}>No Users Found</td>
+                            </tr>
                     }
                 </tbody>
             </table>
@@ -118,7 +118,6 @@ export class OcrInitialReview extends React.Component {
                 </div>
             </div>
             <hr/>
-            {this.props.iRToggleFlag && 
             <div>
                 <div className="row">
                 <div className="col-md-12">
@@ -186,7 +185,6 @@ export class OcrInitialReview extends React.Component {
                 </div>
             </div>
             </div>
-            }
         </div>
     );
   }
