@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -12,7 +12,8 @@ import { store } from '../../../store';
 @connect((store) => {
   return {
     ocrImgPath: store.ocr.ocrImgPath,
-    originalImgPath: store.ocr.originalImgPath
+    originalImgPath: store.ocr.originalImgPath,
+    imageSlug: store.ocr.imageSlug,
   };
 })
 
@@ -52,7 +53,7 @@ export class OcrImage extends React.Component {
     let canvasrect = canvasElem.getBoundingClientRect();
     let canvasX = event.clientX - canvasrect.left;
     let canvasY = event.clientY - canvasrect.top;
-    console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
+    //console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
     this.extractText(canvasX, canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
@@ -102,16 +103,14 @@ export class OcrImage extends React.Component {
   }
 
   extractText = (x, y) => {
-    document.getElementById("loader").classList.add("loader_ITE")
-    var slug = "img-uw2ii50xd9";
+    document.getElementById("loader").classList.add("loader_ITE");
     return fetch(API + '/ocr/ocrimage/get_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug, "x": x, "y": y })
+      body: JSON.stringify({ "slug": this.props.imageSlug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data });
-        this.setState({ text: data.word });
+        this.setState({ imageDetail: data, text: data.word });
         document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
@@ -119,23 +118,48 @@ export class OcrImage extends React.Component {
     //   bootbox.alert("coordinates are not correct")
     // });
   }
-  
+
   updateText = () => {
     document.getElementById("loader").classList.add("loader_ITE")
     let index = this.state.imageDetail.index;
     return fetch(API + '/ocr/ocrimage/update_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": "img-uw2ii50xd9", "index": index, "word": this.state.text })
+      body: JSON.stringify({ "slug": this.props.imageSlug, "index": index, "word": this.state.text })
     }).then(response => response.json())
       .then(data => {
         if (data.message === "SUCCESS") {
-          document.getElementById("loader").classList.remove("loader_ITE");
-          document.getElementById("successMsg").innerText = "Updated successfully.";
+          this.props.dispatch(updateOcrImage(data.generated_image));
+          setTimeout( () => {
+            document.getElementById("loader").classList.remove("loader_ITE");
+            document.getElementById("successMsg").innerText = "Updated successfully.";
+          },3000);
+          //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
 
   }
+  notClear = () => {
+    document.getElementById("loader").classList.add("loader_ITE")
+    let index = this.state.imageDetail.index;
+    return fetch(API + '/ocr/ocrimage/not_clear/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": this.props.imageSlug, "index": index, "word": this.state.text })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.marked === true) {
+          document.getElementById("loader").classList.remove("loader_ITE");
+          document.getElementById("successMsg").innerText = "Not clear marked.";
+        }
+      });
+
+  }
+  handleText = (e) => {
+    this.setState({ text: e.target.value });
+    document.getElementById("successMsg").innerText = " ";
+  }
+
   render() {
     return (
       <div>
@@ -213,7 +237,7 @@ export class OcrImage extends React.Component {
                   <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={(e) => this.setState({ text: e.target.value })} />
+                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={this.handleText} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
@@ -221,7 +245,7 @@ export class OcrImage extends React.Component {
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
                       <ul class="dropdown-menu" style={{ left: -110 }}>
-                        <li><a href="javascript::" class="btn btn-block"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a href="javascript::" class="btn btn-block" onClick={this.notClear}><i class="fa fa-ban"></i> Not Clear</a></li>
                         <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>

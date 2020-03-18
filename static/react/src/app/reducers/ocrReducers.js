@@ -8,6 +8,7 @@ export default function reducer(state = {
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
+  imageSlug:"",
   ocrS3BucketDetails: {},
   s3Uploaded: false,
   s3Loader: false,
@@ -48,13 +49,22 @@ export default function reducer(state = {
   selectedTabId : "none",
   ocrSearchElement : "",
   ocrUserPageNum : 1,
-
   search_document:'',
   search_project:'',
   selected_project_slug:'',
   selected_project_name:'',
   selected_reviewer_slug:'',
   selected_reviewer_name:'',
+  configureTabSelected : "initialReview",
+  iRLoaderFlag : false,
+  iRToggleFlag : true,
+  iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+  iRList : {},
+  sRLoaderFlag : false,
+  sRToggleFlag : true,
+  sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+  sRList : {},
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -235,10 +245,20 @@ export default function reducer(state = {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
+          imageSlug: action.data.slug,
           // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
-    break;
+      break;
+      case "UPDATE_OCR_IMAGE":
+        {
+          return {
+            ...state,
+            ocrImgPath: action.data,
+            originalImgPath: action.data,
+          }
+        }
+        break;
     case "OCR_FILES_SORT":
       {
         return {
@@ -510,7 +530,95 @@ export default function reducer(state = {
         }
       }
       break;
-      
+
+    //Configure Tab
+    case "SAVE_SEL_CONFIGURE_TAB":
+      {
+        return {
+          ...state,
+          configureTabSelected : action.selTab
+        }
+      }
+      break;
+      case "SET_IR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          iRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_IR_LIST":
+      {
+        return {
+          ...state,
+          iRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_IR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          iRToggleFlag : action.val,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+        }
+      }
+      break;
+      case "SAVE_IR_DATA":{
+        let curIRDetails = state.iRConfigureDetails
+        curIRDetails[action.name] = action.value
+        return{
+          ...state,
+          iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "SET_SR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          sRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_SR_LIST":
+      {
+        return {
+          ...state,
+          sRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_SR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          sRToggleFlag : action.val,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+        }
+      }
+      break;
+      case "SAVE_SR_DATA":{
+        let curSRDetails = state.sRConfigureDetails
+        curSRDetails[action.name] = action.value
+        return{
+          ...state,
+          sRConfigureDetails : curSRDetails
+        }
+      }
+      break;
+      case "CLEAR_REVIEWER_CONFIG":
+      {
+        return {
+          ...state,
+          iRToggleFlag : true,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+          sRToggleFlag : true,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+        }
+      }
+      break;
 }
   return state
 }

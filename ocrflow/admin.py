@@ -1,17 +1,16 @@
 from django.contrib import admin
 
 # Register your models here.
-from ocrflow.models import Task, SimpleFlow, Approval, ReviewRequest, \
-    Approval
+from ocrflow.models import Task, SimpleFlow, ReviewRequest
 
 class TaskAdmin(admin.ModelAdmin):
     """
     Model: Task
     """
     icon = '<i class="material-icons">cloud_done</i>'
-    #search_fields = ["slug"]
-    #list_display = ["type", "slug"]
-    #list_filter = []
+    search_fields = ["name"]
+    list_display = ["name", "assigned_group", "assigned_user", "is_closed"]
+    list_filter = ["assigned_group", "assigned_user", "is_closed"]
     #readonly_fields = ["slug"]
 
     def get_queryset(self, request):
@@ -21,23 +20,13 @@ class TaskAdmin(admin.ModelAdmin):
 
 class ReviewRequestAdmin(admin.ModelAdmin):
     #form = BugForm
-    list_display = ('ocr_image', 'status')
+    list_display = ('ocr_image', 'slug', 'status')
 
     def get_queryset(self, request):
         queryset = super(ReviewRequestAdmin, self).get_queryset(request)
         #queryset = queryset.order_by('-recorded_at')
         return queryset
 
-class ApprovalAdmin(admin.ModelAdmin):
-    #form = BugForm
-    list_display = ('task', 'status', 'comments')
-
-    def get_queryset(self, request):
-        queryset = super(ApprovalAdmin, self).get_queryset(request)
-        #queryset = queryset.order_by('-recorded_at')
-        return queryset
-
 
 admin.site.register(ReviewRequest,ReviewRequestAdmin)
-admin.site.register(Approval, ApprovalAdmin)
 admin.site.register(Task, TaskAdmin)

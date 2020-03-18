@@ -496,7 +496,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
         try:
             ret['job_status'] = instance.job.status
         except:
-            ret['job_status'] = None    
+            ret['job_status'] = None
         permission_details = get_permissions(
             user=self.context['request'].user,
             model=self.Meta.model.__name__.lower(),
@@ -1486,4 +1486,4 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = ("username", "id")
+        fields = ("username", "id", "email")

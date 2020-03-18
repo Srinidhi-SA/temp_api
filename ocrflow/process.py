@@ -1,20 +1,32 @@
-from ocrflow.handlers import update_reviewrequest_after_admin_approval, \
-    update_leaverequest_after_superuser_approval
+from ocrflow.forms import ApprovalForm
+from ocrflow.handlers import update_reviewrequest_after_RL1_approval, \
+    update_reviewrequest_after_RL2_approval
 
-PROCESS = {
+AUTO_ASSIGNMENT = {
     'initial': {
-        'form': None,
-        'name': 'Admin Review',
-        'on_completion': [update_reviewrequest_after_admin_approval],
-        'group': 'Admin',
-        'next_transition': 'superuser_approval'
-        # if 'form' is not defined, then busineesflow
-        # will use default ApprovalForm
+        'form': ApprovalForm,
+        'name': 'ReviewerL1 Review',
+        'on_completion': [update_reviewrequest_after_RL1_approval],
+        'group': 'ReviewerL1',
+        #'next_transition': 'RL2_approval',
+        'rules': {
+            'auto':{
+                'active': True,
+                'max_docs_per_reviewer': 5,
+                'remainaingDocsDistributionRule': 1
+            },
+            },
+            'custom':{
+                'active': False,
+                'max_docs_per_reviewer': 5,
+                'selected_reviewers': [],
+                'remainaingDocsDistributionRule': 1
+            },
     },
-    'superuser_approval': {
-        #'form': HrApprovalForm,
-        'name': 'Superuser Review',
-        'on_completion': [update_leaverequest_after_superuser_approval],
-        'group': 'Superuser'
+    'RL2_approval': {
+        'form': ApprovalForm,
+        'name': 'ReviewerL2 Review',
+        'on_completion': [update_reviewrequest_after_RL2_approval],
+        'group': 'ReviewerL2'
     }
 }

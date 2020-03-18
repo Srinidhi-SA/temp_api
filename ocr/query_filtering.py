@@ -103,7 +103,7 @@ class QueryCommonFiltering:
             confidence_mapping_dict = {'E': 'Equal', 'G': 'Greater than', 'L': 'Less than'}
             self.query_set = self.query_set.filter(confidence=confidence_mapping_dict[self.confidence])
         if self.status is not None:
-            status_mapping_dict = {'R': 'Ready to recognize.', 'V': 'Ready to verify.', 'E': 'Ready to export.'}
+            status_mapping_dict = {'R': 'Ready to recognize', 'V': 'Ready to verify', 'E': 'Ready to export'}
             self.query_set = self.query_set.filter(status=status_mapping_dict[str(self.status)])
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
@@ -201,6 +201,85 @@ def get_specific_listed_data(
     :return:
     """
     query_set = viewset.get_specific_reviewer_qyeryset(role)
+
+    # common filtering
+    qcf = QueryCommonFiltering(
+        query_set=query_set,
+        request=request
+    )
+
+    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    if 'page' in request.query_params:
+        if request.query_params.get('page') == 'all':
+            serializer = list_serializer(query_set, many=True)
+            return Response({
+                "data": serializer.data
+            })
+    page_class = viewset.pagination_class()
+    page = page_class.paginate_queryset(
+        queryset=query_set,
+        request=request,
+        list_serializer=list_serializer,
+        view=viewset
+    )
+
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
+
+def get_reviewer_data(
+        viewset=None,
+        request=None,
+        list_serializer=None,
+):
+    """
+
+    :param viewset: use to  get_queryset() / pagination_class
+    :param request: use to query_params
+    :param list_serializer: pass Listing Serializer
+    :return:
+    """
+    query_set = viewset.get_specific_reviewer_detail_queryset()
+
+    # common filtering
+    qcf = QueryCommonFiltering(
+        query_set=query_set,
+        request=request
+    )
+
+    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    if 'page' in request.query_params:
+        if request.query_params.get('page') == 'all':
+            serializer = list_serializer(query_set, many=True)
+            return Response({
+                "data": serializer.data
+            })
+    page_class = viewset.pagination_class()
+    page = page_class.paginate_queryset(
+        queryset=query_set,
+        request=request,
+        list_serializer=list_serializer,
+        view=viewset
+    )
+
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
+
+def get_specific_assigned_requests(
+        viewset=None,
+        request=None,
+        list_serializer=None,
+        username=None
+):
+    """
+
+    :param viewset: use to  get_queryset() / pagination_class
+    :param request: use to query_params
+    :param list_serializer: pass Listing Serializer
+    :return:
+    """
+    query_set = viewset.get_specific_assigned_queryset(username)
 
     # common filtering
     qcf = QueryCommonFiltering(

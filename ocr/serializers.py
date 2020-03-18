@@ -90,7 +90,7 @@ class OCRImageExtractListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageExtractListSerializer
         """
         model = OCRImage
-        fields = ['imagefile', 'generated_image']
+        fields = ['imagefile', 'generated_image', 'slug']
 
 
 class OCRImageSetSerializer(serializers.ModelSerializer):
@@ -298,3 +298,48 @@ class ProjectListSerializer(serializers.ModelSerializer):
         """
         model = Project
         fields = ['slug', 'name', 'created_at', 'created_by']
+
+class OCRReviewerSerializer(serializers.ModelSerializer):
+    """
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRReviewerSerializer, self).to_representation(instance)
+        ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
+        serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+        serialized_data['ocr_data'] = ocr_profile_obj.reviewer_data()
+
+        if len(serialized_data['ocr_profile']["role"]) == 1:
+            serialized_data['ocr_user'] = True
+        else:
+            serialized_data['ocr_user'] = False
+
+        return serialized_data
+
+    class Meta:
+        """
+        Meta class definition for OCRUserProfileSerializer
+        """
+        model = User
+        fields = ("username", "last_login")
+
+class OCRImageReviewSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageReviewSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageReviewSerializer, self).to_representation(instance)
+
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageListSerializer
+        """
+        model = OCRImage
+        fields = ['name', 'slug', 'imagefile']

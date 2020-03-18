@@ -4,13 +4,15 @@ OCR MODELS
 
 import random
 import string
+
+from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
-from django.core.validators import FileExtensionValidator
-from django.contrib.auth.models import User
+
 from ocr import validators
-from django.conf import settings
+from ocr.tasks import send_welcome_email
 
 
 # -------------------------------------------------------------------------------
@@ -45,6 +47,7 @@ class ReviewerType(models.Model):
         self.generate_slug()
         super(ReviewerType, self).save(*args, **kwargs)
 
+
 class OCRUserProfile(models.Model):
     OCR_USER_TYPE_CHOICES = [
         ('1', 'Default'),
@@ -55,8 +58,9 @@ class OCRUserProfile(models.Model):
     is_active = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
-    #reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
+    # reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
     def generate_slug(self):
@@ -80,15 +84,36 @@ class OCRUserProfile(models.Model):
         }
         return ocr_user_profile
 
+    def reviewer_data(self):
+        from ocrflow.models import Task
+        total_assignments = len(Task.objects.filter(assigned_user=self.ocr_user))
+        total_reviewed = len(Task.objects.filter(
+            assigned_user=self.ocr_user,
+            is_closed=True))
+        data = {
+            'assignments': total_assignments,
+            'avgTimeperWord': None,
+            'accuracyModel': None,
+            'completionPercentage': self.get_review_completion(
+                total_reviewed,
+                total_assignments)
+        }
+        return data
+
+    def get_review_completion(self, total_reviewed, total_assignments):
+        if total_assignments == 0:
+            return 0
+        else:
+            percentage = (total_reviewed / total_assignments) * 100
+            return round(percentage, 2)
+
     def get_slug(self):
         return self.slug
 
-from django.db.models.signals import post_save
 
 def send_email(sender, instance, created, **kwargs):
     if created:
         print("Sending welcome mail ...")
-        from ocr.tasks import send_welcome_email
         send_welcome_email.delay(username=instance.ocr_user.username)
 
 
@@ -174,9 +199,9 @@ class OCRImage(models.Model):
     Description :
     """
     STATUS_CHOICES = [
-        ("1", "Ready to recognize."),
-        ("2", "Ready to verify."),
-        ("3", "Ready to export.")
+        ("ready_to_recognize", "Ready to recognize"),
+        ("ready_to_verify", "Ready to verify"),
+        ("ready_to_export", "Ready to export")
     ]
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300)
@@ -190,7 +215,7 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='Ready to recognize.')
+    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='ready_to_recognize')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
     generated_image = models.FileField(null=True, upload_to='ocrData')
@@ -201,6 +226,8 @@ class OCRImage(models.Model):
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="", null=True)
     is_recognized = models.BooleanField(default=False)
+    mask = models.FileField(null=True, upload_to='ocrData')
+    is_L1assigned = models.BooleanField(default=False)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
@@ -220,3 +247,7 @@ class OCRImage(models.Model):
         """Create OCRImage model"""
         if self.datasource_type in ['fileUpload']:
             self.save()
+
+    def update_status(self, status):
+        self.status = status
+        self.save()

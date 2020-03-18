@@ -58,7 +58,7 @@ import {
     checkedAll: store.datasets.checkedAll,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig:store.datasets.modelEditconfig,
-    
+
 
   };
 })
@@ -126,7 +126,7 @@ export class DataCleansing extends React.Component {
   }
   setOutliersOnEdit(){
     var outliers=Object.values(this.props.modelEditconfig.outlier_config)
-    for(var i=0;i<outliers.length;i++){//colName,colType,colSlug, treatment 
+    for(var i=0;i<outliers.length;i++){//colName,colType,colSlug, treatment
     this.props.dispatch(outlierRemovalSelectedAction(outliers[i].name,outliers[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==outliers[i].name)[0].slug
     ,outliers[i].treatment))
    }
@@ -185,9 +185,9 @@ tableHead.addEventListener('click', function (e) {
     } else {
         sortOrder = "Descending order";
     }
-    
+
     /* end accessibility */
-    
+
     // call tinysort
     tinysort(
     tableBody.querySelectorAll('tr'), {
@@ -293,7 +293,7 @@ tableHead.addEventListener('click', function (e) {
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
    if(!this.props.editmodelFlag)
     var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-   else 
+   else
         colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
@@ -380,7 +380,7 @@ tableHead.addEventListener('click', function (e) {
     });
   }
 
-    
+
 
   render() {
     this.dcTableSorter();
@@ -456,14 +456,6 @@ tableHead.addEventListener('click', function (e) {
             <div class="col-md-12">
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
-                  <div class="form-group">
-                    <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
-                    <div class="col-sm-7">
-                      <div className="content-section implementation">
-                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" checked={store.getState().datasets.duplicateAttributes} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-                      </div>
-                    </div>
-                  </div>
                   <div class="clearfix xs-mb-5"></div>
                   <div class="form-group">
                     <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
