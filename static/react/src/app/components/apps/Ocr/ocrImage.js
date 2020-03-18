@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -53,7 +53,7 @@ export class OcrImage extends React.Component {
     let canvasrect = canvasElem.getBoundingClientRect();
     let canvasX = event.clientX - canvasrect.left;
     let canvasY = event.clientY - canvasrect.top;
-    console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
+    //console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
     this.extractText(canvasX, canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
@@ -110,8 +110,7 @@ export class OcrImage extends React.Component {
       body: JSON.stringify({ "slug": this.props.imageSlug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data });
-        this.setState({ text: data.word });
+        this.setState({ imageDetail: data, text: data.word });
         document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
@@ -119,7 +118,7 @@ export class OcrImage extends React.Component {
     //   bootbox.alert("coordinates are not correct")
     // });
   }
-  
+
   updateText = () => {
     document.getElementById("loader").classList.add("loader_ITE")
     let index = this.state.imageDetail.index;
@@ -130,8 +129,12 @@ export class OcrImage extends React.Component {
     }).then(response => response.json())
       .then(data => {
         if (data.message === "SUCCESS") {
-          document.getElementById("loader").classList.remove("loader_ITE");
-          document.getElementById("successMsg").innerText = "Updated successfully.";
+          this.props.dispatch(updateOcrImage(data.generated_image));
+          setTimeout( () => {
+            document.getElementById("loader").classList.remove("loader_ITE");
+            document.getElementById("successMsg").innerText = "Updated successfully.";
+          },3000);
+          //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
 
@@ -151,6 +154,10 @@ export class OcrImage extends React.Component {
         }
       });
 
+  }
+  handleText = (e) => {
+    this.setState({ text: e.target.value });
+    document.getElementById("successMsg").innerText = " ";
   }
 
   render() {
@@ -230,7 +237,7 @@ export class OcrImage extends React.Component {
                   <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={(e) => this.setState({ text: e.target.value })} />
+                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={this.handleText} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
