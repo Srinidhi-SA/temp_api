@@ -96,14 +96,14 @@ export class OcrTable extends React.Component {
     var postData = {
       'slug': this.state.checkedList
     }
-    this.setState({ showRecognizePopup: true, loader: true })
+    this.setState({ showRecognizePopup: true, loader: true,recognized:false })
     return fetch(API + '/ocr/ocrimage/extract/', {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
     }).then(response => response.json()).then(json => {
-      if (json.message === "SUCCESS")
-        this.setState({ loader: false, recognized: true })
+      if (json.map(i=>i.status).includes("ready_to_verify"))
+        this.setState({ loader: false, recognized: true})
     })
 
   }
@@ -112,6 +112,10 @@ export class OcrTable extends React.Component {
     this.setState({ showRecognizePopup: false })
   }
 
+  proceedClick() {
+    this.closePopup()
+    this.props.dispatch(getOcrUploadedFiles())
+  }
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()
     this.props.dispatch(storeDocSearchElem(searchElememt))
@@ -158,7 +162,8 @@ export class OcrTable extends React.Component {
         <Modal.Footer>
           <div id="resetMsg"></div>
           <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" bsStyle="primary">Proceed</Button>
+          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Prsssoceed</Button>
+          
         </Modal.Footer>
       </Modal>
     </div>)
