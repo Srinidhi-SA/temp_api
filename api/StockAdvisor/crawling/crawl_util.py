@@ -105,6 +105,10 @@ def fetch_news_sentiments_from_newsapi(stock):
     stock_news_with_sentiments = []
     universal_sentence_encoder = embed_useT()
     embed_matrix_for_concepts = sentence_encoder_for_concepts(universal_sentence_encoder)
+    from datetime import datetime
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("Before IBM-watson hit, Time =", current_time)
     for news in stock_news:
         short_desc = news["short_desc"]
         nl_understanding = myutils.get_nl_understanding_from_bluemix(
@@ -126,6 +130,9 @@ def fetch_news_sentiments_from_newsapi(stock):
                     news['sentiment'] = sentiment
                     stock_news_with_sentiments.append(news)
 
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("After IBM-watson hit, Time =", current_time)
     return stock_news_with_sentiments
 
 
