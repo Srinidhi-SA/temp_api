@@ -15,7 +15,9 @@ import { API } from "../../../helpers/env"
     login_response: store.login.login_response,
     OcrDataList: store.ocr.OcrDataList,
     documentFlag: store.ocr.documentFlag,
-    projectName: store.ocr.selected_project_name
+    projectName: store.ocr.selected_project_name,
+    revDocumentFlag:store.ocr.revDocumentFlag,
+    reviewerName: store.ocr.selected_reviewer_name
   };
 })
 
@@ -94,14 +96,14 @@ export class OcrTable extends React.Component {
     var postData = {
       'slug': this.state.checkedList
     }
-    this.setState({ showRecognizePopup: true, loader: true })
+    this.setState({ showRecognizePopup: true, loader: true,recognized:false })
     return fetch(API + '/ocr/ocrimage/extract/', {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
     }).then(response => response.json()).then(json => {
-      if (json.message === "SUCCESS")
-        this.setState({ loader: false, recognized: true })
+      if (json.map(i=>i.status).includes("ready_to_verify"))
+        this.setState({ loader: false, recognized: true})
     })
 
   }
@@ -110,6 +112,10 @@ export class OcrTable extends React.Component {
     this.setState({ showRecognizePopup: false })
   }
 
+  proceedClick() {
+    this.closePopup()
+    this.props.dispatch(getOcrUploadedFiles())
+  }
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()
     this.props.dispatch(storeDocSearchElem(searchElememt))
@@ -156,7 +162,8 @@ export class OcrTable extends React.Component {
         <Modal.Footer>
           <div id="resetMsg"></div>
           <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" bsStyle="primary">Proceed</Button>
+          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Prsssoceed</Button>
+          
         </Modal.Footer>
       </Modal>
     </div>)
@@ -196,10 +203,15 @@ export class OcrTable extends React.Component {
       <div>
         <div class="row">
           <div class="col-sm-6">
-            <ol class="breadcrumb">
+          { this.props.revDocumentFlag?(<ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
+              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+            </ol>):(<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
-            </ol>
+            </ol>)
+          }
+           
           </div>
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?
           <div class="col-sm-6 text-right">
@@ -213,10 +225,19 @@ export class OcrTable extends React.Component {
             </div>
           </div>:"":""}
         </div>
-        <div className="table-responsive noSwipe xs-pb-10">
+        {/* <div class="tab-container">
+          <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item active"><a class="nav-link" href="#pActive" data-toggle="tab" role="tab" aria-expanded="false">Active</a></li>
+                <li class="nav-item "><a class="nav-link" href="#pBacklog" data-toggle="tab" onClick={()=>alert('hello')} role="tab" aria-expanded="true">Backlog</a></li>  
+          </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane" id="pActive" role="tabpanel">  nav link*/ }
+            <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
-          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (<table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
-            <thead>
+            {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+            <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+             <thead>
               <tr>
                 <th></th>
                 <th><i class="fa fa-file-text-o"></i></th>
@@ -271,11 +292,11 @@ export class OcrTable extends React.Component {
                 <th>Modified</th>
                 <th>Modified By</th>
               </tr>
-            </thead>
-            <tbody className="no-border-x">
+             </thead>
+             <tbody className="no-border-x">
               {OcrTableHtml}
-            </tbody>
-          </table>)
+             </tbody>
+            </table>)
             :
             (<div class="panel">
               <div class="panel-body">
@@ -292,7 +313,10 @@ export class OcrTable extends React.Component {
           {paginationTag}
           {ShowModel}
         </div>
-      </div>
+        </div>
+      //   </div>
+      //   </div> nav link
+      // </div>
     )
   }
 }

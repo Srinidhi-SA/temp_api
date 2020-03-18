@@ -31,6 +31,12 @@ export function saveDocumentPageFlag(flag) {
 		flag
 	}
 }
+export function saveRevDocumentPageFlag(flag) {
+	return {
+		type: "SAVE_REV_DOCUMENT_FLAG",
+		flag
+	}
+}
 
 export function saveImageDetails(data) {
 	return {
@@ -38,6 +44,7 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+//Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
 		type: "UPDATE_OCR_IMAGE",
@@ -89,6 +96,9 @@ export function fetchProjectsFail(data){
 		data,
 	}
 }
+////
+
+//Actions for fetching documentlist based on the 'Project' selected
 export function getOcrUploadedFiles(pageNo){
 	return (dispatch) => {
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
@@ -137,6 +147,81 @@ export function fetchUploadsFail(data){
 		data,
 	}
 }
+////
+
+//Actions for Reviewers list 
+export function getOcrReviewersList(pageNo){
+	return (dispatch) => {
+		return fetchReviewersList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchReviewersSuccess(json))
+			}
+			else{
+			 dispatch(fetchReviewersFail(json))
+			}
+		})
+	}
+}
+
+function fetchReviewersList(pageNo=1,token){
+		return fetch(API + '/ocr/user/reviewer_detail_list/?page_number=' + pageNo, {
+      method: 'get', 
+      headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+}
+
+export function fetchReviewersSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_REVIEWERS_LIST",
+		data,
+	}
+}
+
+export function fetchReviewersFail(data){
+	return {
+		type: "OCR_REVIEWERS_LIST_FAIL",
+		data,
+	}
+}
+////
+
+//Actions for fetching documentlist based on the 'Reviewer' selected
+export function getRevrDocsList(pageNo){
+	return (dispatch) => {
+		return fetchRevrDocsList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+			 dispatch(fetchRevrDocsSuccess(json))
+			}
+			else{
+			 dispatch(fetchRevrDocsFail(json))
+			}
+		})
+	}
+}
+
+function fetchRevrDocsList(pageNo=1,token){
+	return fetch(API + '/ocrflow/review/assigned_requests/?username=frontend&page_number=' + pageNo, {
+		method: 'get',
+		headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]))
+}
+
+export function fetchRevrDocsSuccess(doc){
+	var data = doc;
+	return {
+		type: "OCR_REV_DOCS_LIST",
+		data,
+	}
+}
+
+export function fetchRevrDocsFail(data){
+	return {
+		type: "OCR_REV_DOCS_LIST_FAIL",
+		data,
+	}
+}
+////
 
 export function setS3Loader(flag){
 	return {
@@ -673,3 +758,149 @@ export function selectedProjectDetails(slug,name){
 		slug,name
 	}
 }
+export function selectedReviewerDetails(slug,name){
+	return{
+		type:"SELECTED_REVIEWER_DETAILS",
+		slug,name
+	}
+}
+//Configure Page Actions
+export function storeSelectedConfigureTabAction(selTab){
+	return {
+		type:"SAVE_SEL_CONFIGURE_TAB",selTab
+	}
+}
+export function setIRLoaderFlagAction(flag){
+	return {
+		type : "SET_IR_LOADER_FLAG",flag
+	}
+}
+export function fetchInitialReviewerList(roleNo){
+	return (dispatch) => {
+		return fetchInitialReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(setIRLoaderFlagAction(false))
+				dispatch(saveInitialReviewerList(json));
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
+	}
+}
+function fetchInitialReviewerListAPI(roleNo,token){
+	return fetch(API+"/ocr/user/get_ocr_users/?role="+roleNo,{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function saveInitialReviewerList(data){
+	return {
+		type : "SAVE_IR_LIST",data
+	}
+}
+export function saveIRToggleValAction(val){
+	return {
+		type:"STORE_IR_TOGGLE_FLAG",val
+	}
+}
+export function saveIRConfigAction(name,value){
+	return {
+		type : "SAVE_IR_DATA",name,value
+	}
+}
+export function setSRLoaderFlagAction(flag){
+	return {
+		type : "SET_SR_LOADER_FLAG",flag
+	}
+}
+export function fetchSeconadryReviewerList(roleNo){
+	return (dispatch) => {
+		return fetchSeconadryReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(setSRLoaderFlagAction(false));
+				dispatch(saveSeconadryReviewerList(json));
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
+	}
+}
+function fetchSeconadryReviewerListAPI(roleNo,token){
+	return fetch(API+"/ocr/user/get_ocr_users/?role="+roleNo,{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function saveSeconadryReviewerList(data){
+	return {
+		type : "SAVE_SR_LIST",data
+	}
+}
+export function saveSRToggleValAction(val){
+	return {
+		type:"STORE_SR_TOGGLE_FLAG",val
+	}
+}
+export function saveSRConfigAction(name,value){
+	return {
+		type : "SAVE_SR_DATA",name,value
+	}
+}
+export function submitReviewerConfigAction(selTab,config){
+	let data = {}
+	let reviewerConfig = {
+		"auto" :{ "active" : "False", "max_docs_per_reviewer" : "", "test" : "" },
+		"custom":{ "active" : "False", "max_docs_per_reviewer" : "", "selected_reviewers" : [], "test" : "" }
+	}
+	if(selTab === "initialReview"){
+		let reqValues1 = {
+			"active" : config.active, "selected_reviewers" : config.selectedIRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test)
+		}
+		if(reqValues1.active === "all"){
+			reqValues1.active = "True"
+			reviewerConfig.auto = reqValues1;
+			delete(reviewerConfig.auto.selected_reviewers)
+		}else if(reqValues1.active === "select"){
+			reqValues1.active = "True"
+			reviewerConfig.custom = reqValues1;
+		}
+		data = reviewerConfig
+	}
+	  else if(selTab === "secondaryReview"){
+		let reqValues2 = {
+			"active" : config.active, "selected_reviewers" : config.selectedSRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test),
+		}
+		if(reqValues2.active === "all"){
+			reqValues2.active = "True"
+			reviewerConfig.auto = reqValues2;
+			delete(reviewerConfig.auto.selected_reviewers)
+		}else if(reqValues2.active === "select"){
+			reqValues2.active = "True"
+			reviewerConfig.custom = reqValues2;
+		}
+		data = reviewerConfig
+	  }
+	return (dispatch) => {
+		return submitReviewerConfigAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				console.log(json);
+			}else{
+				bootbox.alert(statusMessages("warning","Failed to edit user roles","small_mascot"));
+			}
+		})
+	}
+}
+function submitReviewerConfigAPI(data,token){
+	return fetch(API,{
+		method : "post",
+		headers : getHeaderForJson(token),
+		body : JSON.stringify(data),
+	}).then(response => Promise.all([response,response.json()]));
+}
+export function clearReviewerConfigStatesAction(){
+	return {
+		type : "CLEAR_REVIEWER_CONFIG"
+	}
+}
+
+

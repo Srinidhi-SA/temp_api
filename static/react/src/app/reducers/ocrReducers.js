@@ -3,6 +3,8 @@ export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
   OcrProjectList:"",
+  OcrReviewerList:"",
+  OcrRevwrDocsList:'',
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
@@ -19,6 +21,7 @@ export default function reducer(state = {
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
   documentFlag:false,
+  revDocumentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
@@ -46,11 +49,22 @@ export default function reducer(state = {
   selectedTabId : "none",
   ocrSearchElement : "",
   ocrUserPageNum : 1,
-
   search_document:'',
   search_project:'',
   selected_project_slug:'',
-  selected_project_name:''
+  selected_project_name:'',
+  selected_reviewer_slug:'',
+  selected_reviewer_name:'',
+  configureTabSelected : "initialReview",
+  iRLoaderFlag : false,
+  iRToggleFlag : true,
+  iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+  iRList : {},
+  sRLoaderFlag : false,
+  sRToggleFlag : true,
+  sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+  sRList : {},
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -68,34 +82,62 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;
-      case "OCR_PROJECT_LIST":
-      {
-        return {
-          ...state,
-          OcrProjectList: action.data
-        }
-      }
-      break;
-      case "OCR_PROJECT_LIST_FAIL":
-      {
-      throw new Error("Unable to fetch projects list!!");
-      }
-      
-      case "OCR_UPLOADS_LIST":
-      {
-        return {
-          ...state,
-          OcrDataList: action.data
-        }
-      }
-      break;
-    case "OCR_UPLOADS_LIST_FAIL":
+    break;
+    //Projects,Documents,Reviewers Lists//
+    case "OCR_PROJECT_LIST":
     {
-      throw new Error("Unable to fetch uploaded images list!!");
+      return {
+        ...state,
+        OcrProjectList: action.data
+      }
     }
     break;
-      case "SAVE_DOCUMENT_FLAG":
+    case "OCR_PROJECT_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch projects list!!");
+    }
+    break;
+    case "OCR_UPLOADS_LIST":
+    {
+      return {
+        ...state,
+        OcrDataList: action.data
+      }
+    }
+    break;
+    case "OCR_UPLOADS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REV_DOCS_LIST":
+    {
+      return {
+        ...state,
+        OcrRevwrDocsList: action.data
+      }
+    }
+    break;
+    case "OCR_REV_DOCS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REVIEWERS_LIST":
+    {
+      return {
+        ...state,
+        OcrReviewerList: action.data
+      }
+    }
+    break;
+    case "OCR_REVIEWERS_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch Reviewers list!!");
+    }
+    break;
+     ////
+    case "SAVE_DOCUMENT_FLAG":
       {
         return {
           ...state,
@@ -103,6 +145,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_REV_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          revDocumentFlag: action.flag
+        }
+      }
+      break;
+      
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -187,7 +238,7 @@ export default function reducer(state = {
           imageFlag: action.flag
         }
       }
-      break;
+    break;
     case "SAVE_IMAGE_DETAILS":
       {
         return {
@@ -216,7 +267,7 @@ export default function reducer(state = {
           ocrFilesSortType: action.ocrFilesSortType
         }
       }
-      break;
+    break;
     case "FILTER_BY_STATUS":
       {
         return {
@@ -224,7 +275,7 @@ export default function reducer(state = {
           filter_status: action.status,
         }
       }
-      break;
+    break;
     case "FILTER_BY_CONFIDENCE":
       {
         return {
@@ -232,7 +283,7 @@ export default function reducer(state = {
           filter_confidence: action.confidence,
         }
       }
-      break;
+    break;
     case "FILTER_BY_ASSIGNEE":
       {
         return {
@@ -240,7 +291,7 @@ export default function reducer(state = {
           filter_assignee: action.assignee
         }
       }
-      break;
+    break;
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -436,6 +487,7 @@ export default function reducer(state = {
           ocrUserPageNum : action.val
         }
       }
+      break;
       case "CLEAR_USER_SEARCH_ELEMENT":{
         return {
           ...state,
@@ -469,6 +521,104 @@ export default function reducer(state = {
         }
       }
       break;
-  }
+      case "SELECTED_REVIEWER_DETAILS":
+      {
+        return {
+          ...state,
+          selected_reviewer_slug:action.slug,
+          selected_reviewer_name:action.name
+        }
+      }
+      break;
+
+    //Configure Tab
+    case "SAVE_SEL_CONFIGURE_TAB":
+      {
+        return {
+          ...state,
+          configureTabSelected : action.selTab
+        }
+      }
+      break;
+      case "SET_IR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          iRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_IR_LIST":
+      {
+        return {
+          ...state,
+          iRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_IR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          iRToggleFlag : action.val,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+        }
+      }
+      break;
+      case "SAVE_IR_DATA":{
+        let curIRDetails = state.iRConfigureDetails
+        curIRDetails[action.name] = action.value
+        return{
+          ...state,
+          iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "SET_SR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          sRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_SR_LIST":
+      {
+        return {
+          ...state,
+          sRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_SR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          sRToggleFlag : action.val,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+        }
+      }
+      break;
+      case "SAVE_SR_DATA":{
+        let curSRDetails = state.sRConfigureDetails
+        curSRDetails[action.name] = action.value
+        return{
+          ...state,
+          sRConfigureDetails : curSRDetails
+        }
+      }
+      break;
+      case "CLEAR_REVIEWER_CONFIG":
+      {
+        return {
+          ...state,
+          iRToggleFlag : true,
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+          sRToggleFlag : true,
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+        }
+      }
+      break;
+}
   return state
 }
