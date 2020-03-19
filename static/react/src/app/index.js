@@ -334,7 +334,7 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home}/>
             <Route exact path="/apps/lex" component={LexClass}/>
-            <Route exact path="/apps/ocr-mq44ewz7bp/" component={OcrMain}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/dashboard/" component={OcrMain}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/project/" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/project/:imageSlug" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/manageUser/" component={OcrManageUser}/>
