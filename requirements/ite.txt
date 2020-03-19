@@ -10,3 +10,4 @@ pdf2image
 scipy==1.4.1
 sklearn
 pyqt5==5.14.1
+json2xml==3.3.2
