@@ -90,7 +90,6 @@ from django.core.exceptions import PermissionDenied, \
 
 from api.utils import UserListSerializer
 
-
 # Create your views here.
 from .utils import json_2_xml, json_2_csv
 
@@ -435,10 +434,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def get_queryset_by_status(self, imageStatus):
-        if imageStatus=='active':
+        if imageStatus == 'active':
             queryset = self.get_active_queryset()
             return queryset
-        elif imageStatus=='backlog':
+        elif imageStatus == 'backlog':
             queryset = self.get_backlog_queryset()
             return queryset
 
@@ -909,6 +908,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             deleted=False
         )
+
     def total_projects(self):
         return len(Project.objects.all())
 
