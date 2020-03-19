@@ -60,6 +60,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
+        serialized_data['assignee'] = instance.get_assignee()
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
 
         return serialized_data
 
@@ -68,7 +70,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by']
+        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by', 'modified_at']
 
 
 class OCRImageExtractListSerializer(serializers.ModelSerializer):
@@ -290,6 +292,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(ProjectListSerializer, self).to_representation(instance)
+        serialized_data['project_overview'] = instance.get_project_overview()
         return serialized_data
 
     class Meta(object):

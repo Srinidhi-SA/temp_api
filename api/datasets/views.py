@@ -339,7 +339,9 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Dataset should not be shared to itself.')
+            sharedTo=list()
             for id in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
                 import random,string
                 if dataset_obj.shared is True:
                     dataset_details = {
@@ -385,7 +387,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         shared_dataset_object = dataset_serializer.save()
                     else:
                         print(dataset_serializer.errors)
-            return JsonResponse({'message': 'Dataset shared.','status': 'true'})
+            return JsonResponse({'message': 'Dataset shared.','status': 'true','sharedTo':sharedTo})
         except Exception as err:
             print (err)
             return sharing_failed_exception('Dataset sharing failed.')

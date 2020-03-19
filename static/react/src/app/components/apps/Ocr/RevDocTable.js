@@ -98,18 +98,18 @@ export class RevDocTable extends React.Component {
         return (
           <tr id={index}>
             <td>
-              <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
+              <Checkbox id={item.ocrImageData.slug} value={item.ocrImageData.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocrImageData.slug)}></Checkbox>
             </td>
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.status} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link></td>
-            {/* <td>{item.status}</td>
+            <td><Link to={item.ocrImageData.imagefile} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
+            <td>{item.status}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
-            <td>{item.created_by}</td>
-            <td>{item.modified_at}</td>
-            <td>{item.modified_by}</td> */}
+            <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
+            <td>{new Date(item.modified_at).toLocaleString().split(',')[0]}</td>
+            <td>{item.modified_by}</td>
           </tr>
         )
       }
