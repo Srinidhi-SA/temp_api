@@ -30,7 +30,7 @@ from PIL import Image
 from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -92,6 +92,7 @@ from api.utils import UserListSerializer
 
 
 # Create your views here.
+from .utils import json_2_xml, json_2_csv
 
 
 def ocr_datasource_config_list(request):
@@ -754,7 +755,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -766,6 +767,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         stats['Confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
         return JsonResponse(stats)
+
+    @list_route(methods=['post'])
+    def export_data(self, request):
+        data = request.data
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        result = image_queryset.final_result
+        if data['format'] == 'json':
+            response = HttpResponse(result, content_type="application/json")
+            response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
+        elif data['format'] == 'xml':
+            result = json_2_xml(result)
+            response = HttpResponse(result, content_type="application/xml")
+            response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
+        elif data['format'] == 'csv':
+            result = json_2_csv(json.loads(result))
+            response = HttpResponse(result, content_type="application/text")
+            response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+        else:
+            response = JsonResponse({'message': 'Invalid export format!'})
+        return response
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
