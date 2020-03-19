@@ -914,7 +914,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def total_reviewers(self):
         return len(OCRUserProfile.objects.filter(
-            ocr_user__groups__name__in=['ReviewerL1'],
+            ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
             is_active=True
         ))
 

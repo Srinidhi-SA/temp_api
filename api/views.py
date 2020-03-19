@@ -210,7 +210,7 @@ class SignalView(viewsets.ModelViewSet):
                 return sharing_failed_exception('Signals should not be shared to itself.')
             sharedTo=list()
             for i in shared_id:
-                sharedTo.append(User.objects.get(pk=id).username)
+                sharedTo.append(User.objects.get(pk=i).username)
                 import random, string
                 if signal_obj.shared is True:
                     signal_details = {
@@ -590,7 +590,7 @@ class TrainerView(viewsets.ModelViewSet):
                 return sharing_failed_exception('Models should not be shared to itself.')
             sharedTo=list()
             for i in shared_id:
-                sharedTo.append(User.objects.get(pk=id).username)
+                sharedTo.append(User.objects.get(pk=i).username)
                 import random, string
                 if trainer_obj.shared is True:
                     trainer_details = {
