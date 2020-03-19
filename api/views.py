@@ -208,8 +208,9 @@ class SignalView(viewsets.ModelViewSet):
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Signals should not be shared to itself.')
-
+            sharedTo=list()
             for i in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
                 import random, string
                 if signal_obj.shared is True:
                     signal_details = {
@@ -254,7 +255,7 @@ class SignalView(viewsets.ModelViewSet):
                     else:
                         print(signal_serializer.errors)
 
-            return JsonResponse({'message': 'Signals shared.','status': 'true'})
+            return JsonResponse({'message': 'Signals shared.','status': 'true','sharedTo':sharedTo})
 
         except Exception as err:
             print(err)
@@ -587,8 +588,9 @@ class TrainerView(viewsets.ModelViewSet):
 
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Models should not be shared to itself.')
-
+            sharedTo=list()
             for i in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
                 import random, string
                 if trainer_obj.shared is True:
                     trainer_details = {
@@ -640,7 +642,7 @@ class TrainerView(viewsets.ModelViewSet):
                     #    {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
                     #     'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
                 #shared_trainer_object.create()
-            return JsonResponse({'message': 'Models shared.','status': 'true'})
+            return JsonResponse({'message': 'Models shared.','status': 'true','sharedTo':sharedTo})
 
         except Exception as err:
             print(err)
@@ -908,7 +910,9 @@ class ScoreView(viewsets.ModelViewSet):
 
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Score should not be shared to itself.')
+            sharedTo=list()
             for id in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
                 import random, string
                 if score_obj.shared is True:
                     score_details = {
@@ -955,7 +959,7 @@ class ScoreView(viewsets.ModelViewSet):
                     else:
                         print(signal_serializer.errors)
 
-            return JsonResponse({'message': 'Score Shared.','status': 'true'})
+            return JsonResponse({'message': 'Score Shared.','status': 'true','sharedTo':sharedTo})
         except Exception as err:
             print(err)
             return sharing_failed_exception('Score sharing failed.')
