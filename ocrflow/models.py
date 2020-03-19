@@ -12,12 +12,26 @@ from django.contrib.contenttypes.fields import(
     GenericForeignKey,
     GenericRelation
 )
-
+import simplejson as json
 from ocr.models import OCRImage
 from ocrflow.forms import ApprovalForm
 from ocrflow import process
+from singleton_model import SingletonModel
 
+class OCRRules(SingletonModel):
+    #RULES = process.RULES
+    auto_assignment = models.BooleanField(default=True)
+    rulesL1 = models.TextField(max_length=3000, default="", null=True, blank=True)
+    rulesL2 = models.TextField(max_length=3000, default="", null=True, blank=True)
+    modified_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        auto_now_add=True
+    )
 
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super(OCRRules, self).save(*args, **kwargs)
 
 class Task(models.Model):
     name = models.CharField(max_length=100, blank=True)

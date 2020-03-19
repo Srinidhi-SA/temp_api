@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from ocrflow.models import Task, SimpleFlow, ReviewRequest
+from ocrflow.models import Task, SimpleFlow, ReviewRequest, OCRRules
 
 class TaskAdmin(admin.ModelAdmin):
     """
@@ -30,3 +30,4 @@ class ReviewRequestAdmin(admin.ModelAdmin):
 
 admin.site.register(ReviewRequest,ReviewRequestAdmin)
 admin.site.register(Task, TaskAdmin)
+admin.site.register(OCRRules)
