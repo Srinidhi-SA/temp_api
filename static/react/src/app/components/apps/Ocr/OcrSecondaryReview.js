@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { saveSRToggleValAction, saveSRConfigAction } from "../../../actions/ocrActions";
+import { saveSRToggleValAction, saveSRConfigAction, saveSRSearchElementAction } from "../../../actions/ocrActions";
 import { Checkbox } from "primereact/checkbox";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from "../../../helpers/env";
@@ -13,6 +13,7 @@ import { STATIC_URL } from "../../../helpers/env";
         selectedSRList : store.ocr.sRConfigureDetails.selectedSRList,
         remainDocs : store.ocr.sRConfigureDetails.test,
         sRLoaderFlag : store.ocr.sRLoaderFlag,
+        sRSearchElem : store.ocr.sRSearchElem,
     };
 })
 
@@ -43,23 +44,7 @@ export class OcrSecondaryReview extends React.Component{
         }
       }
     searchSRElement(e){
-        if(e.target.value != ""){
-            $("#sRCountVal")[0].innerHTML = ""
-        }else{
-            $("#sRCountVal")[0].innerHTML = (this.props.selectedSRList !=undefined)?" ("+this.props.selectedSRList.length+")":"(0)"
-        }
-        $('#searchSR').on('keyup', function () {
-            var value = $(this).val();
-            var patt = new RegExp(value, "i");
-            $('#sRTable').find('tr').each(function () {
-            if (!($(this).find('td').text().search(patt) >= 0)) {
-                $(this).not('#sRHead').hide();
-            }
-            if (($(this).find('td').text().search(patt) >= 0)) {
-                $(this).show();
-            }
-            });
-        });
+        this.props.dispatch(saveSRSearchElementAction(e.target.value))
     }
 
     render() {
@@ -75,28 +60,38 @@ export class OcrSecondaryReview extends React.Component{
             </div>
         }else {
             let listForSRTable = Object.values(this.props.sRList);
+            if(this.props.sRSearchElem != ""){
+                let sRSearchResults = listForSRTable.filter(s => s.name.includes(this.props.sRSearchElem));
+                listForSRTable = sRSearchResults.length === 0?[]:sRSearchResults
+            }
             let sRListCount = listForSRTable.length;
             sReviewerTable = 
             <Scrollbars style={{height:250}} >
                 <table className = "table table-bordered table-hover" id="sRTable" style={{background:"#FFF"}}>
                     <thead><tr id="sRHead">
-                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
+                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount!=0 && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
                         <th style={{width:"40%"}}>NAME</th>
                         <th>EMAIL</th>
                     </tr></thead>
                     <tbody>
-                        {listForSRTable.map((item) => {
-                                return (
-                                    <tr>
-                                        <td className="text-center">
-                                            <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)}/>
-                                        </td>
-                                        <td>{item.name}</td>
-                                        <td>{item.email}</td>
-                                    </tr>
-                                )
-                            })
-                        }
+                        {
+                        listForSRTable.length != 0?
+                            listForSRTable.map((item) => {
+                                    return (
+                                        <tr>
+                                            <td className="text-center">
+                                                <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)}/>
+                                            </td>
+                                            <td>{item.name}</td>
+                                            <td>{item.email}</td>
+                                        </tr>
+                                    )
+                                })
+                                :
+                            <tr>
+                                <td colSpan="3" style={{padding: "50px",textAlign: "center",color: "#29998c"}}>No Users Found</td>
+                            </tr>
+                        }  
                     </tbody>
                 </table>
             </Scrollbars>
@@ -118,7 +113,6 @@ export class OcrSecondaryReview extends React.Component{
                     </div>
                 </div>
                 <hr/>
-                {this.props.sRToggleFlag && 
                 <div>
                     <div className="row">
                     <div className="col-md-12">
@@ -188,7 +182,6 @@ export class OcrSecondaryReview extends React.Component{
                     </div>
                 </div>
                 </div>
-                }
             </div>
         );
     }

@@ -43,7 +43,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list
 # -----------------------MODELS-------------------------------
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
@@ -416,9 +416,31 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['ready_to_recognize', 'ready_to_verify', 'ready_to_export']
         ).order_by('-created_at').select_related('imageset')
         return queryset
+
+    def get_all_queryset(self):
+        return OCRImage.objects.all()
+
+    def get_active_queryset(self):
+        return OCRImage.objects.filter(
+            status__in=['ready_to_verify', 'ready_to_export'],
+            created_by=self.request.user
+        )
+
+    def get_backlog_queryset(self):
+        return OCRImage.objects.filter(
+            status__in=['ready_to_recognize'],
+            created_by=self.request.user
+        )
+
+    def get_queryset_by_status(self, imageStatus):
+        if imageStatus=='active':
+            queryset = self.get_active_queryset()
+            return queryset
+        elif imageStatus=='backlog':
+            queryset = self.get_backlog_queryset()
+            return queryset
 
     def get_object_from_all(self):
         """
@@ -569,6 +591,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             viewset=self,
             request=request,
             list_serializer=OCRImageListSerializer
+        )
+
+    @list_route(methods=['get'])
+    def get_ocrimages(self, request, *args, **kwargs):
+        imageStatus = self.request.query_params.get('imageStatus')
+        return get_filtered_ocrimage_list(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageListSerializer,
+            imageStatus=imageStatus
         )
 
     def retrieve(self, request, *args, **kwargs):
@@ -877,6 +909,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             deleted=False
         )
+    def total_projects(self):
+        return len(Project.objects.all())
+
+    def total_reviewers(self):
+        return len(OCRUserProfile.objects.filter(
+            ocr_user__groups__name__in=['ReviewerL1'],
+            is_active=True
+        ))
+
+    def total_documents(self):
+        return len(OCRImage.objects.all())
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()
@@ -890,11 +933,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(object_details)
 
     def list(self, request, *args, **kwargs):
-        return get_listed_data(
+        result = get_listed_data(
             viewset=self,
             request=request,
             list_serializer=ProjectListSerializer
         )
+        result.data['overall_info'] = {
+            "totalProjects": self.total_projects(),
+            "totalDocuments": self.total_documents(),
+            "totalReviewers": self.total_reviewers()
+        }
+        return result
 
     def create(self, request, *args, **kwargs):
 

@@ -86,7 +86,7 @@ handleDocumentPageFlag (slug,name){
       )
         : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
-        : (<img id="loading" style={{ position: 'relative', left: '500px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+        : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
     return (
     <div>
@@ -100,7 +100,7 @@ handleDocumentPageFlag (slug,name){
       <div class="xs-mt-20"></div>   
         <div class="row">
           <div class="col-sm-12">
-            <div class="table-responsive">
+            <div class="table-responsive" style={{overflowX:'inherit'}}>
               <table class="table table-condensed table-hover cst_table ">
                <thead>
                   <tr>
