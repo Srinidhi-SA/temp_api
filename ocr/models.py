@@ -177,8 +177,11 @@ class Project(models.Model):
         return totalTasks, closedTasks
 
     def get_completion_percentage(self, totalTasks, closedTasks):
-        percentage = (closedTasks / totalTasks) * 100
-        return round(percentage, 2)
+        if totalTasks == 0:
+            return 0
+        else:
+            percentage = (closedTasks / totalTasks) * 100
+            return round(percentage, 2)
 
 class OCRImageset(models.Model):
     """
