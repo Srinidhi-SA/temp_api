@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from future import standard_library
 import nltk
 nltk.download('punkt')
+nltk.download('wordnet')
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
@@ -109,7 +110,8 @@ def fetch_news_sentiments_from_newsapi(stock):
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("Before IBM-watson hit, Time =", current_time)
-    for news in stock_news:
+    for i, news in enumerate(stock_news):
+        print("INDEX ---------- "+str(i)+"  articles --- "+str(len(stock_news)))
         short_desc = news["short_desc"]
         nl_understanding = myutils.get_nl_understanding_from_bluemix(
             url=news['final_url'], content_of_the_url=short_desc)
