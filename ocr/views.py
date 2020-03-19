@@ -30,7 +30,7 @@ from PIL import Image
 from django.db.models import Q
 from django.conf import settings
 from django.core.files import File
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -43,7 +43,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list
 # -----------------------MODELS-------------------------------
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
@@ -90,8 +90,8 @@ from django.core.exceptions import PermissionDenied, \
 
 from api.utils import UserListSerializer
 
-
 # Create your views here.
+from .utils import json_2_xml, json_2_csv
 
 
 def ocr_datasource_config_list(request):
@@ -415,9 +415,31 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = OCRImage.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['ready_to_recognize', 'ready_to_verify', 'ready_to_export']
         ).order_by('-created_at').select_related('imageset')
         return queryset
+
+    def get_all_queryset(self):
+        return OCRImage.objects.all()
+
+    def get_active_queryset(self):
+        return OCRImage.objects.filter(
+            status__in=['ready_to_verify', 'ready_to_export'],
+            created_by=self.request.user
+        )
+
+    def get_backlog_queryset(self):
+        return OCRImage.objects.filter(
+            status__in=['ready_to_recognize'],
+            created_by=self.request.user
+        )
+
+    def get_queryset_by_status(self, imageStatus):
+        if imageStatus == 'active':
+            queryset = self.get_active_queryset()
+            return queryset
+        elif imageStatus == 'backlog':
+            queryset = self.get_backlog_queryset()
+            return queryset
 
     def get_object_from_all(self):
         """
@@ -447,6 +469,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             f.write(mask_image)
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
+        data['is_recognized'] = True
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
@@ -567,6 +590,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             viewset=self,
             request=request,
             list_serializer=OCRImageListSerializer
+        )
+
+    @list_route(methods=['get'])
+    def get_ocrimages(self, request, *args, **kwargs):
+        imageStatus = self.request.query_params.get('imageStatus')
+        return get_filtered_ocrimage_list(
+            viewset=self,
+            request=request,
+            list_serializer=OCRImageListSerializer,
+            imageStatus=imageStatus
         )
 
     def retrieve(self, request, *args, **kwargs):
@@ -753,7 +786,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -765,6 +798,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         stats['Confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
         return JsonResponse(stats)
+
+    @list_route(methods=['post'])
+    def export_data(self, request):
+        data = request.data
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        result = image_queryset.final_result
+        if data['format'] == 'json':
+            response = HttpResponse(result, content_type="application/json")
+            response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
+        elif data['format'] == 'xml':
+            result = json_2_xml(result)
+            response = HttpResponse(result, content_type="application/xml")
+            response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
+        elif data['format'] == 'csv':
+            result = json_2_csv(json.loads(result))
+            response = HttpResponse(result, content_type="application/text")
+            response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+        else:
+            response = JsonResponse({'message': 'Invalid export format!'})
+        return response
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -856,6 +909,18 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
+    def total_projects(self):
+        return len(Project.objects.all())
+
+    def total_reviewers(self):
+        return len(OCRUserProfile.objects.filter(
+            ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            is_active=True
+        ))
+
+    def total_documents(self):
+        return len(OCRImage.objects.all())
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()
 
@@ -868,11 +933,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response(object_details)
 
     def list(self, request, *args, **kwargs):
-        return get_listed_data(
+        result = get_listed_data(
             viewset=self,
             request=request,
             list_serializer=ProjectListSerializer
         )
+        result.data['overall_info'] = {
+            "totalProjects": self.total_projects(),
+            "totalDocuments": self.total_documents(),
+            "totalReviewers": self.total_reviewers()
+        }
+        return result
 
     def create(self, request, *args, **kwargs):
 

@@ -1,7 +1,8 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from future import standard_library
-
+import nltk
+nltk.download('punkt')
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
@@ -11,11 +12,24 @@ from . import common_utils
 import simplejson as json
 import urllib.request, urllib.parse, urllib.error
 import sys
+import os
 from django.template.defaultfilters import slugify
 import random
 import string
 import api.StockAdvisor.utils as myutils
 from django.conf import settings
+
+import json
+import re
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+import tensorflow.compat.v1 as tf
+
+tf.disable_v2_behavior()
+import tensorflow_hub as hub
+import numpy as np
+import operator
+from scipy.spatial.distance import cosine
 
 
 def crawl_extract(url, regex_dict={}, remove_tags=[], slug=None):
@@ -35,9 +49,66 @@ def crawl_extract(url, regex_dict={}, remove_tags=[], slug=None):
     return all_data[4:]
 
 
+def preprocess_keyword(text):
+    text = text.lower()  # convert text to lower-case
+    text = re.sub("(\\d)+", " ", text)  # remove digits
+    text = text.replace("‘", '').replace("’", '').replace("'", '')  # remove apostrophe
+    text = re.sub("(\\W)+", " ", text)  # remove special characters
+    text = re.sub(r'^[^a-zA-Z]', r' ', text)  ##non words
+    text = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+    result = []
+    for word in text:
+        result.append(lemmatizer.lemmatize(word))
+    text = " ".join(result)
+    return text
+
+
+def embed_useT():
+    '''Function so that one session can be called multiple times.
+    Useful while multiple calls need to be done for embedding.'''
+    with tf.Graph().as_default():
+        sentences = tf.placeholder(tf.string)
+        embed = hub.Module("https://tfhub.dev/google/universal-sentence-encoder-large/3")
+        embeddings = embed(sentences)
+        session = tf.train.MonitoredSession()
+    return lambda x: session.run(embeddings, {sentences: x})
+
+
+def sentence_encoder_for_concepts(universal_sentence_encoder):
+    # create embedding matrix for each of the concepts
+    embed_matrix_for_concepts = {}
+    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/concepts.json"
+    print(path)
+    with open(path) as f:
+        concepts = json.load(f)
+    for key in concepts.keys():
+        embed_matrix_for_concepts[key] = universal_sentence_encoder(concepts[key])
+    return embed_matrix_for_concepts
+
+
+def concept_mapping(test_text, embed_matrix_for_concepts, universal_sentence_encoder):
+    test_embed = universal_sentence_encoder([test_text])
+    similarity_score = {}
+    for key in embed_matrix_for_concepts.keys():
+        similarity_score[key] = max([1 - cosine(test_embed[0], i) for i in embed_matrix_for_concepts[key]])
+    # use similrity score greater than 0.7 only
+    similarity_score = {k: v for k, v in similarity_score.items() if v > 0.7}
+    try:
+        return max(similarity_score.items(), key=operator.itemgetter(1))[0]
+    except:
+        pass
+
+
 def fetch_news_sentiments_from_newsapi(stock):
     stock_news = process.fetch_stock_news_from_newsapi(stock)
     stock_news_with_sentiments = []
+    universal_sentence_encoder = embed_useT()
+    embed_matrix_for_concepts = sentence_encoder_for_concepts(universal_sentence_encoder)
+    from datetime import datetime
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("Before IBM-watson hit, Time =", current_time)
     for news in stock_news:
         short_desc = news["short_desc"]
         nl_understanding = myutils.get_nl_understanding_from_bluemix(
@@ -45,6 +116,10 @@ def fetch_news_sentiments_from_newsapi(stock):
         if nl_understanding:
             # nl_understanding = json.loads(nl_understanding.decode("utf-8"))
             keywords = nl_understanding.result.get('keywords', [])
+            for keyword in keywords:
+                keyword['text'] = preprocess_keyword(keyword['text'])
+                keyword['concept'] = concept_mapping(keyword['text'], embed_matrix_for_concepts,
+                                                     universal_sentence_encoder)
             sentiment = nl_understanding.result.get('sentiment', [])
 
             if len(keywords) > 0 and len(sentiment) > 0:
@@ -55,6 +130,9 @@ def fetch_news_sentiments_from_newsapi(stock):
                     news['sentiment'] = sentiment
                     stock_news_with_sentiments.append(news)
 
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("After IBM-watson hit, Time =", current_time)
     return stock_news_with_sentiments
 
 

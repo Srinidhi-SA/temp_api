@@ -60,10 +60,12 @@ export default function reducer(state = {
   iRToggleFlag : true,
   iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
   iRList : {},
+  iRSearchElem : "",
   sRLoaderFlag : false,
   sRToggleFlag : true,
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
+  sRSearchElem : ""
 
 }, action) {
   switch (action.type) {
@@ -561,7 +563,6 @@ export default function reducer(state = {
         return{
           ...state,
           iRToggleFlag : action.val,
-          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
         }
       }
       break;
@@ -571,6 +572,14 @@ export default function reducer(state = {
         return{
           ...state,
           iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "STORE_IR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          iRSearchElem : action.val
         }
       }
       break;
@@ -595,7 +604,14 @@ export default function reducer(state = {
         return{
           ...state,
           sRToggleFlag : action.val,
-          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+        }
+      }
+      break;
+      case "STORE_SR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          sRSearchElem : action.val
         }
       }
       break;
@@ -616,6 +632,8 @@ export default function reducer(state = {
           iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
           sRToggleFlag : true,
           sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+          iRSearchElem : "",
+          sRSearchElem : ""
         }
       }
       break;

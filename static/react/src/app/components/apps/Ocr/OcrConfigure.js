@@ -118,8 +118,8 @@ export class OcrConfigure extends React.Component {
                 <li className=""><a href="/apps/ocr-mq44ewz7bp/"><i className="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
                 <li className=""><a href="/apps/ocr-mq44ewz7bp/project/"><i className="fa fa-book fa-lg"></i> Projects</a></li>
                 <li className="active"><a href="/apps/ocr-mq44ewz7bp/configure/"><i className="fa fa-sliders fa-lg"></i> Configure</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i className="fa fa-linode fa-lg"></i> Reviewers</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i className="fa fa-user-o fa-lg"></i> Users</a></li>
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i className="fa fa-users fa-lg"></i> Reviewers</a></li>
+                <li className=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i className="fa fa-user fa-lg"></i> Users</a></li>
               </ul>
             </div>
             <div className="container-fluid">
