@@ -2,6 +2,13 @@
 # coding: utf-8
 
 # In[1]:
+import time
+from collections import OrderedDict
+from math import ceil
+import simplejson as json
+from scipy.spatial import distance
+from sklearn.cluster import DBSCAN
+
 from ocr.ITE.utils import *
 import numpy as np
 
@@ -487,6 +494,7 @@ def tp_main(image_with_path_for_cpy, blured_table, analysis):
 
     final_mapped_dict_table = {}
     tables = list(table_cell_dict.keys())
+    print('tables : {}', table_cell_dict)
     for table in tables:
         final_mapped_dict_cell = {}
         for cell in table_cell_dict[table].keys():

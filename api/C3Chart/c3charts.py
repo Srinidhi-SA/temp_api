@@ -702,8 +702,8 @@ class PieChart(C3Chart):
         }
         if self._pieChartFormat != None:
             self._pie["label"]["format"] = self._pieChartFormat
-        # if self._title != None:
-        #     self._pie["title"] = self._title["text"]
+        if self._title != None:
+            self._pie["title"] = self._title["text"]
 
     def get_json(self):
         return {
