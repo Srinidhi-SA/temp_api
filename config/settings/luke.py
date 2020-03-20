@@ -165,7 +165,6 @@ USE_YARN_DEFAULT_QUEUE=True
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
 
 USE_OCR = True
-AUTO_ASSIGNMENT = True
 
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {

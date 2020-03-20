@@ -610,7 +610,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         serializer = OCRImageSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
-
+        comparision_data = json.loads(instance.comparision_data)
+        object_details['fields'] = len(comparision_data)
+        object_details['modified_by'] = self.request.user.username
+        object_details['Confidence'] = 100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / object_details['fields']) * 100, 2)
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
