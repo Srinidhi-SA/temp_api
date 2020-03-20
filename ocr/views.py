@@ -48,7 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
 from .ITE.ocr_mods import not_clear
-from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
+from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
@@ -66,7 +66,6 @@ from .serializers import OCRImageSerializer, \
     OCRImageSetListSerializer, \
     OCRUserProfileSerializer, \
     OCRUserListSerializer, \
-    ReviewerTypeSerializer, \
     ProjectSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
@@ -369,18 +368,6 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 # -------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------
-
-class ReviewerTypeListView(generics.ListCreateAPIView):
-    queryset = ReviewerType.objects.filter(deleted=False)
-    serializer_class = ReviewerTypeSerializer
-    permission_classes = [IsAdminUser]
-
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = ReviewerTypeSerializer(queryset, many=True)
-        return Response(serializer.data)
-
 
 class GroupListView(generics.ListCreateAPIView):
     queryset = Group.objects.filter(

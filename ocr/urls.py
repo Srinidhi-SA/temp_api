@@ -7,7 +7,7 @@ from rest_framework import routers
 # from ocr import views
 from ocr.views import ocr_datasource_config_list, ProjectView
 from ocr.views import OCRImageView, OCRImagesetView, OCRUserView, \
-    OCRUserProfileView, ReviewerTypeListView, GroupListView
+    OCRUserProfileView, GroupListView
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
@@ -51,7 +51,6 @@ router.register(
 
 urlpatterns = [
     url(r'^datasource/ocr_datasource_config_list$', ocr_datasource_config_list, name="ocr_datasource_config_list"),
-    url(r'^reviewer_type/', ReviewerTypeListView.as_view(), name="reviewer_type"),
     url(r'^groups/',GroupListView.as_view(), name="groups"),
 
 ]
