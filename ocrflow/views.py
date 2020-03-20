@@ -37,12 +37,12 @@ class OCRRulesView(viewsets.ModelViewSet):
         print(data['autoAssignment'])
         if data['autoAssignment']== "True":
             print("Active")
-            ruleObj = OCRRules.objects.filter().first()
+            ruleObj = OCRRules.objects.get(id=1)
             ruleObj.auto_assignment = True
             ruleObj.save()
             return JsonResponse({"message":"Auto-Assignment Active.", "status": True})
         else:
-            ruleObj = OCRRules.objects.filter().first()
+            ruleObj = OCRRules.objects.get(id=1)
             ruleObj.auto_assignment = False
             ruleObj.save()
             return JsonResponse({"message":"Auto-Assignment De-active.", "status": True})
@@ -50,7 +50,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL1(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj = OCRRules.objects.filter().first()
+        ruleObj = OCRRules.objects.get(id=1)
         ruleObj.rulesL1 = json.dumps(modifiedrule)
         ruleObj.save()
         return JsonResponse({"message":"Rules L1 Updated.", "status": True})
@@ -58,14 +58,14 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL2(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj = OCRRules.objects.filter().first()
+        ruleObj = OCRRules.objects.get(id=1)
         ruleObj.rulesL2 = json.dumps(modifiedrule)
         ruleObj.save()
         return JsonResponse({"message":"Rules L2 Updated.", "status": True})
 
     @list_route(methods=['get'])
     def get_rules(self, request):
-        ruleObj = OCRRules.objects.filter().first()
+        ruleObj = OCRRules.objects.get(id=1)
         serializer = OCRRulesSerializer(instance=ruleObj, context={"request": self.request})
         return Response(serializer.data)
 

@@ -134,25 +134,29 @@ class SimpleFlow(models.Model):
     @property
     def assigned_user(self):
         state = self.PROCESS['initial']
+        rules = json.loads(self.rule.rulesL1)
         Reviewers_queryset = User.objects.filter(
             groups__name=state['group'],
             is_active=True,
             ocruserprofile__is_active=True).order_by('?')
 
         for reviewer in Reviewers_queryset:
-            isLimitReached = self.check_task_limit(state, reviewer)
+            isLimitReached = self.check_task_limit(rules, reviewer)
             if isLimitReached:
-                pass
+                if rules['auto']['remainaingDocsDistributionRule'] == 1:
+                    return reviewer
+                else:
+                    return None
             elif not isLimitReached:
                 return reviewer
             else:
                 return None
 
-    def check_task_limit(self, state, user):
+    def check_task_limit(self, rules, user):
         totalPendingTasks = len(Task.objects.filter(
             assigned_user=user,
             is_closed=False))
-        if totalPendingTasks >= state['rules']['auto']['max_docs_per_reviewer']:
+        if totalPendingTasks >= rules['auto']['max_docs_per_reviewer']:
             return True
         else:
             return False
@@ -163,7 +167,8 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        if state['rules']['auto']['active']:
+        rules = json.loads(self.rule.rulesL1)
+        if rules['auto']['active']:
             reviewer = self.assigned_user
             if reviewer is None:
                 print("No Reviewers available. Moving to backlog")
@@ -194,7 +199,7 @@ class ReviewRequest(SimpleFlow):
         null=True,
         related_name='review_requests'
     )
-
+    rule = models.ForeignKey(OCRRules, blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
         User,
