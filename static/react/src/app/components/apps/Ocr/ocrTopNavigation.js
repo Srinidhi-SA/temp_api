@@ -19,7 +19,7 @@ export class OcrTopNavigation extends React.Component {
         </div>
         <ul className="nav nav-tabs cst_ocr_tabs">
           <li>
-            <NavLink className="" to="/apps/ocr-mq44ewz7bp/dashboard/" activeClassName="active">
+            <NavLink exact={true} className="" to="/apps/ocr-mq44ewz7bp/" activeClassName="active">
               <i class="fa fa-tachometer fa-lg"></i> Dashboard
             </NavLink>
           </li>
