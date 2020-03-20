@@ -165,7 +165,8 @@ export class TensorFlow extends React.Component {
   }
 
   handleClick(){ 
-  var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
+  // var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName; //Don't erase, For feature reference.
+  var slectedLayer=document.getElementsByClassName('form-control layer_tf')[0].value //instead of picking slectedLayer from store config, using documentObject of selectBox.
   var tfArray= store.getState().apps.tensorFlowInputs;
   
     if (tfArray.length>0) {
