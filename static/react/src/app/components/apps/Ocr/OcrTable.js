@@ -188,8 +188,7 @@ export class OcrTable extends React.Component {
             <td>{item.assignee}</td>
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
-
-            <td>{item.modified_at}</td>
+            <td>{new Date(item.modified_at).toLocaleString()}</td>
           </tr>
         )
       }
@@ -288,9 +287,9 @@ export class OcrTable extends React.Component {
                     <li><a class="cursor" name="ready to export">Assignee 2</a></li>
                   </ul>
                 </th>
-                <th>Created</th>
-                <th>Modified</th>
+                <th>Created By</th>
                 <th>Modified By</th>
+                <th>Last Modified</th>
               </tr>
              </thead>
              <tbody className="no-border-x">
