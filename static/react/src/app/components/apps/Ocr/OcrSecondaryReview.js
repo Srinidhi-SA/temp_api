@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { saveSRToggleValAction, saveSRConfigAction, saveSRSearchElementAction } from "../../../actions/ocrActions";
+import { saveSRToggleValAction, saveSRConfigAction, saveSRSearchElementAction, autoAssignmentAction } from "../../../actions/ocrActions";
 import { Checkbox } from "primereact/checkbox";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from "../../../helpers/env";
+import store from "../../../store";
 
 @connect((store) => {
     return{
@@ -24,6 +25,7 @@ export class OcrSecondaryReview extends React.Component{
 
     saveSecondaryReviwerToggleVal(e){
         this.props.dispatch(saveSRToggleValAction(e.target.checked))
+        this.props.dispatch(autoAssignmentAction(store.getState().ocr.sRToggleFlag));
     }
     saveSRConfig(e){
         if(e.target.id === "assignSRDocsToAll"){
