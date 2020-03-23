@@ -70,7 +70,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by', 'modified_at']
+        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by', 'modified_at', 'modified_by', 'assignee', 'fields']
 
 
 class OCRImageExtractListSerializer(serializers.ModelSerializer):
