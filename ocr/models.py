@@ -261,7 +261,7 @@ class OCRImage(models.Model):
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)
-    modified_by = models.ForeignKey(User, null=False, db_index=True, related_name='modified_by')
+    modified_by = models.ForeignKey(User, null=True, db_index=True, related_name='modified_by')
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
