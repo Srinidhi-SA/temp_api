@@ -470,6 +470,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
         data['is_recognized'] = True
+        comparision_data = json.loads(image_queryset.comparision_data)
+        data['fields'] = len(comparision_data)
+        data['modified_by'] = self.request.user.username
+        data['confidence'] = 100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
+
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
@@ -610,7 +616,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         serializer = OCRImageSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
-
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
@@ -988,10 +993,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             serializer=OCRImageListSerializer
         )
 
-        for image_data in object_details.data['data']:
-            image_data['fields'] = 'NA'
-            image_data['assignee'] = 'NA'
-            image_data['modified_by'] = 'NA'
-            image_data['modified_at'] = 'NA'
         object_details.data['total_data_count_wf'] = len(queryset)
         return object_details
