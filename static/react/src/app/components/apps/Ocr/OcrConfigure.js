@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList, setIRLoaderFlagAction, setSRLoaderFlagAction } from "../../../actions/ocrActions";
+import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList, setIRLoaderFlagAction, setSRLoaderFlagAction, fetchReviewersRules } from "../../../actions/ocrActions";
 import { OcrInitialReview } from "./OcrInitialReview";
 import { OcrSecondaryReview } from "./OcrSecondaryReview";
 import store from "../../../store";
@@ -24,7 +24,8 @@ export class OcrConfigure extends React.Component {
 
   componentDidMount(){
     this.props.dispatch(setIRLoaderFlagAction(true));
-    this.props.dispatch(fetchInitialReviewerList(3))
+    this.props.dispatch(fetchReviewersRules());
+    this.props.dispatch(fetchInitialReviewerList(3));
   }
 
   saveSelectedConfigureTab(e){
@@ -85,7 +86,7 @@ export class OcrConfigure extends React.Component {
           this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
         }
       }
-      else if($("#assignsRDocsToSelect")[0].checked){
+      else if($("#assignSRDocsToSelect")[0].checked){
         if($("#sRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value)) || parseFloat($("#sRdocsCountToSelect")[0].value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
