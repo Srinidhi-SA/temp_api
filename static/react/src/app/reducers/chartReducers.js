@@ -1,5 +1,6 @@
 export default function reducer(state = {
 		chartObj:{},
+		date:""
 }, action) {
 
 	switch (action.type) {
@@ -11,6 +12,14 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "C3_DATE":
+		{
+			return {
+				...state,
+				date: action.date
+			}
+		}
+		break;
    }
 	return state
 }

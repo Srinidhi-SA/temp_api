@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Task, ReviewRequest
+from .models import Task, ReviewRequest, OCRRules
 from ocr.models import OCRImage
 from ocr.serializers import OCRImageReviewSerializer
+import simplejson as json
 
 class ContentObjectRelatedField(serializers.RelatedField):
     """
@@ -30,7 +31,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class definition for ReviewerTypeSerializer
+        Meta class definition for TaskSerializer
         """
         model = Task
         fields = ("id", "assigned_group", "assigned_user", "is_closed", 'comments', 'reviewed_on')
@@ -66,3 +67,20 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         """
         model = ReviewRequest
         exclude = ('id', 'slug', 'ocr_image', 'created_by')
+
+class OCRRulesSerializer(serializers.ModelSerializer):
+    """
+    Provides Serialized json data of OCR rules.
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRRulesSerializer, self).to_representation(instance)
+        serialized_data['rulesL1'] = json.loads(serialized_data['rulesL1'])
+        serialized_data['rulesL2'] = json.loads(serialized_data['rulesL2'])
+        return serialized_data
+    class Meta:
+        """
+        Meta class definition for OCRRulesSerializer
+        """
+        model = OCRRules
+        exclude = ('id',)

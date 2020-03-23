@@ -3,7 +3,8 @@ from rest_framework import routers
 
 from ocrflow.views import(
     TaskView,
-    ReviewRequestView
+    ReviewRequestView,
+    OCRRulesView
 )
 
 router = routers.DefaultRouter()
@@ -16,6 +17,11 @@ router.register(
     'review',
     ReviewRequestView,
     base_name='review'
+)
+router.register(
+    'rules',
+    OCRRulesView,
+    base_name='rules'
 )
 
 urlpatterns = [

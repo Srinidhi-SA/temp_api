@@ -13,7 +13,8 @@ from ocrflow.models import *
 @periodic_task(run_every=(crontab(minute='*/60')), name="start_auto_assignment_L1", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L1():
-    if settings.AUTO_ASSIGNMENT:
+    OCRRule = OCRRules.objects.get(id=1)
+    if OCRRule.auto_assignment:
         print("~" * 90)
         #TODO
         #1.Filter all Images with Recognised True, assigned = False
@@ -27,7 +28,8 @@ def start_auto_assignment_L1():
                 if len(ReviewRequest.objects.filter(ocr_image=image))==0:
                     object = ReviewRequest.objects.create(
                         ocr_image = image,
-                        created_by = image.created_by
+                        created_by = image.created_by,
+                        rule = OCRRule
                     )
                 else:
                     #TODO Try to assign the backlog task
@@ -46,6 +48,10 @@ def start_auto_assignment_L1():
         else:
             print("All images got assigned for review.")
             print("~" * 90)
+    else:
+        print("~" * 90)
+        print("Auto-Assignment is not Active.")
+        print("~" * 90)
 
 
 

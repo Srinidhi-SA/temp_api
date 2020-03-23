@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
+import {chartdate} from "../actions/chartActions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
@@ -98,7 +99,7 @@ export class C3Chart extends React.Component {
 
   }*/
 
-  updateChart() {
+  updateChart(){
     var that = this;
     let data = this.props.data;
     if (this.props.sideChart) {
@@ -201,7 +202,8 @@ export class C3Chart extends React.Component {
         }
       }
 
-      data.tooltip.format.title = function(d) {
+      data.tooltip.format.title = (d) =>{
+        this.props.dispatch(chartdate(xdata[d]));
         return xdata[d];
       }
 
@@ -282,7 +284,6 @@ export class C3Chart extends React.Component {
     }
 
   }
-
   render() {
     var that = this;
     if (this.props.classId != '_side' && !this.props.widthPercent) {

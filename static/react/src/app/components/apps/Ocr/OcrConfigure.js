@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList, setIRLoaderFlagAction, setSRLoaderFlagAction } from "../../../actions/ocrActions";
+import { storeSelectedConfigureTabAction, submitReviewerConfigAction, clearReviewerConfigStatesAction, fetchSeconadryReviewerList, fetchInitialReviewerList, setIRLoaderFlagAction, setSRLoaderFlagAction, fetchReviewersRules } from "../../../actions/ocrActions";
 import { OcrInitialReview } from "./OcrInitialReview";
 import { OcrSecondaryReview } from "./OcrSecondaryReview";
 import store from "../../../store";
 import { statusMessages } from "../../../helpers/helper";
+import { OcrTopNavigation } from "./ocrTopNavigation";
 
 @connect((store) => {
   return {
@@ -24,7 +25,8 @@ export class OcrConfigure extends React.Component {
 
   componentDidMount(){
     this.props.dispatch(setIRLoaderFlagAction(true));
-    this.props.dispatch(fetchInitialReviewerList(3))
+    this.props.dispatch(fetchReviewersRules());
+    this.props.dispatch(fetchInitialReviewerList(3));
   }
 
   saveSelectedConfigureTab(e){
@@ -85,7 +87,7 @@ export class OcrConfigure extends React.Component {
           this.props.dispatch(submitReviewerConfigAction("secondaryReview",this.props.sRConfigureDetails));
         }
       }
-      else if($("#assignsRDocsToSelect")[0].checked){
+      else if($("#assignSRDocsToSelect")[0].checked){
         if($("#sRdocsCountToSelect")[0].value === "" || !Number.isInteger(parseFloat($("#sRdocsCountToSelect")[0].value)) || parseFloat($("#sRdocsCountToSelect")[0].value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
           bootbox.alert(msg);
@@ -103,25 +105,9 @@ export class OcrConfigure extends React.Component {
 
   render() {
     return (
-      <div className="side-body">
-        <div className="page-head">
-          <div className="row">
-            <div className="col-md-7">
-              <h3 className="xs-mt-0 nText">OCR APP</h3>
-            </div>
-          </div>
-        </div>
-        <div className="main-content">
+      <div className="side-body main-content">
+          <OcrTopNavigation/>
           <section className="ocr_section">
-            <div className="tab-container">
-            <ul className="nav nav-tabs cst_ocr_tabs">
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/"><i className="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/project/"><i className="fa fa-book fa-lg"></i> Projects</a></li>
-                <li className="active"><a href="/apps/ocr-mq44ewz7bp/configure/"><i className="fa fa-sliders fa-lg"></i> Configure</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i className="fa fa-users fa-lg"></i> Reviewers</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i className="fa fa-user fa-lg"></i> Users</a></li>
-              </ul>
-            </div>
             <div className="container-fluid">
                 <h4 className="nText">Stages</h4>
                 <ul className="nav nav-tabs">
@@ -148,7 +134,6 @@ export class OcrConfigure extends React.Component {
                 </div>
             </div>
             </section>
-        </div>
       </div>
     );
   }

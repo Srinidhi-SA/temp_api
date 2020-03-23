@@ -5,3 +5,9 @@ export function chartObjStore(chartObj) {
 		chartObj
 	}
 }
+export function chartdate(chartdate) {
+	return {
+		type: "C3_DATE",
+		chartdate
+	}
+}
