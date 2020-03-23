@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Checkbox } from "primereact/checkbox";
-import { saveIRToggleValAction, saveIRConfigAction, saveIRSearchElementAction} from "../../../actions/ocrActions";
+import { saveIRToggleValAction, saveIRConfigAction, saveIRSearchElementAction, autoAssignmentAction} from "../../../actions/ocrActions";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from "../../../helpers/env";
+import store from "../../../store";
 
 @connect((store) => {
   return {
@@ -24,6 +25,7 @@ export class OcrInitialReview extends React.Component {
 
   saveInitialReviwerToggleVal(e){
     this.props.dispatch(saveIRToggleValAction(e.target.checked))
+    this.props.dispatch(autoAssignmentAction(store.getState().ocr.iRToggleFlag));
   }
   saveIRConfig(e){
     if(e.target.id === "assigniRDocsToAll"){

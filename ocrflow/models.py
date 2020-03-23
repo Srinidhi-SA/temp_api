@@ -19,7 +19,6 @@ from ocrflow import process
 from singleton_model import SingletonModel
 
 class OCRRules(SingletonModel):
-    #RULES = process.RULES
     auto_assignment = models.BooleanField(default=True)
     rulesL1 = models.TextField(max_length=3000, default="", null=True, blank=True)
     rulesL2 = models.TextField(max_length=3000, default="", null=True, blank=True)
@@ -131,14 +130,17 @@ class SimpleFlow(models.Model):
     class Meta:
         abstract = True
 
-    @property
-    def assigned_user(self):
+    def assigned_user(self, users=None):
         state = self.PROCESS['initial']
         rules = json.loads(self.rule.rulesL1)
-        Reviewers_queryset = User.objects.filter(
-            groups__name=state['group'],
-            is_active=True,
-            ocruserprofile__is_active=True).order_by('?')
+        if users is None:
+            Reviewers_queryset = User.objects.filter(
+                groups__name=state['group'],
+                is_active=True,
+                ocruserprofile__is_active=True).order_by('?')
+        else:
+            Reviewers_queryset = User.objects.filter(
+                username__in=users).order_by('?')
 
         for reviewer in Reviewers_queryset:
             isLimitReached = self.check_task_limit(rules, reviewer)
@@ -168,26 +170,29 @@ class SimpleFlow(models.Model):
         content_type = ContentType.objects.get_for_model(self)
 
         rules = json.loads(self.rule.rulesL1)
-        if rules['auto']['active']:
-            reviewer = self.assigned_user
-            if reviewer is None:
-                print("No Reviewers available. Moving to backlog")
-                pass
-            else:
-                Task.objects.create(
-                    name=state['name'],
-                    slug=initial,
-                    assigned_group=group,
-                    assigned_user=reviewer,
-                    content_type=content_type,
-                    object_id=self.id
-                )
-                imageObject=OCRImage.objects.get(id=self.ocr_image.id)
-                imageObject.is_L1assigned = True
-                imageObject.assignee=reviewer
-                imageObject.save()
-                self.status='submitted_for_review'
-                self.save()
+        if rules['auto']['active'] == True:
+            reviewer = self.assigned_user()
+        else:
+            usersList = rules['custom']['selected_reviewers']
+            reviewer = self.assigned_user(users=usersList)
+        if reviewer is None:
+            print("No Reviewers available. Moving to backlog")
+            pass
+        else:
+            Task.objects.create(
+                name=state['name'],
+                slug=initial,
+                assigned_group=group,
+                assigned_user=reviewer,
+                content_type=content_type,
+                object_id=self.id
+            )
+            imageObject=OCRImage.objects.get(id=self.ocr_image.id)
+            imageObject.is_L1assigned = True
+            imageObject.assignee=reviewer
+            imageObject.save()
+            self.status='submitted_for_review'
+            self.save()
 
 class ReviewRequest(SimpleFlow):
     # assign your process here

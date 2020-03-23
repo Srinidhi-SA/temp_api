@@ -30,7 +30,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class definition for ReviewerTypeSerializer
+        Meta class definition for TaskSerializer
         """
         model = Task
         fields = ("id", "assigned_group", "assigned_user", "is_closed", 'comments', 'reviewed_on')

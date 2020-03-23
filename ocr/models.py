@@ -27,27 +27,6 @@ from ocr.tasks import send_welcome_email
 # pylint: disable=too-few-public-methods
 # -------------------------------------------------------------------------------
 
-class ReviewerType(models.Model):
-    type = models.CharField(max_length=20, null=True, default="")
-    slug = models.SlugField(null=False, blank=True, max_length=300)
-    deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-
-    def __str__(self):
-        return " : ".join(["{}".format(x) for x in ["ReviewerType", self.type]])
-
-    def generate_slug(self):
-        """generate slug"""
-        if not self.slug:
-            self.slug = slugify(str(self.type) + "-" + ''.join(
-                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-
-    def save(self, *args, **kwargs):
-        """Save OCRUserProfile model"""
-        self.generate_slug()
-        super(ReviewerType, self).save(*args, **kwargs)
-
-
 class OCRUserProfile(models.Model):
     OCR_USER_TYPE_CHOICES = [
         ('1', 'Default'),
@@ -58,7 +37,6 @@ class OCRUserProfile(models.Model):
     is_active = models.BooleanField(default=False)
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
-    # reviewer_type = models.ForeignKey(ReviewerType, max_length=20, db_index=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     # def __str__(self):
@@ -80,20 +58,20 @@ class OCRUserProfile(models.Model):
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            "role": self.ocr_user.groups.values_list('id', flat=True)
+            "role": self.ocr_user.groups.values_list('name', flat=True)
         }
         return ocr_user_profile
 
     def reviewer_data(self):
         from ocrflow.models import Task
-        total_assignments = len(Task.objects.filter(assigned_user=self.ocr_user))
-        total_reviewed = len(Task.objects.filter(
+        total_assignments = Task.objects.filter(assigned_user=self.ocr_user).count()
+        total_reviewed = Task.objects.filter(
             assigned_user=self.ocr_user,
-            is_closed=True))
+            is_closed=True).count()
         data = {
             'assignments': total_assignments,
             'avgTimeperWord': None,
-            'accuracyModel': None,
+            'accuracyModel': self.get_avg_accuracyModel(),
             'completionPercentage': self.get_review_completion(
                 total_reviewed,
                 total_assignments)
@@ -106,6 +84,26 @@ class OCRUserProfile(models.Model):
         else:
             percentage = (total_reviewed / total_assignments) * 100
             return round(percentage, 2)
+
+    def get_avg_accuracyModel(self):
+        imageQueryset = OCRImage.objects.filter(
+            review_requests__tasks__assigned_user=self.ocr_user
+        )
+        TotalCount = 0
+        TotalConfidence = 0
+        for image in imageQueryset:
+            accuracyModel = image.get_accuracyModel()
+            if not accuracyModel == None:
+                TotalCount+=1
+                TotalConfidence+=float(accuracyModel)
+            else:
+                print("confidence missing.")
+
+        if TotalCount == 0:
+            return 0
+        else:
+            AvgPercentage = (TotalConfidence/TotalCount)
+            return round(AvgPercentage, 2)
 
     def get_slug(self):
         return self.slug
@@ -261,7 +259,7 @@ class OCRImage(models.Model):
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)
-    modified_by = models.ForeignKey(User, null=False, db_index=True, related_name='modified_by')
+    modified_by = models.ForeignKey(User, null=True, db_index=True, related_name='modified_by')
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
@@ -292,3 +290,7 @@ class OCRImage(models.Model):
             return self.assignee.username
         except:
             return None
+
+    def get_accuracyModel(self):
+        """Return image confidence percentage"""
+        return self.confidence
