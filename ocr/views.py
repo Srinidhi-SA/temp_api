@@ -472,7 +472,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['is_recognized'] = True
         comparision_data = json.loads(image_queryset.comparision_data)
         data['fields'] = len(comparision_data)
-        data['modified_by'] = self.request.user.username
+        data['modified_by'] = self.request.user.id
         data['confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
 
