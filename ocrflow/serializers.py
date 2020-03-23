@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Task, ReviewRequest, OCRRules
 from ocr.models import OCRImage
 from ocr.serializers import OCRImageReviewSerializer
+import simplejson as json
 
 class ContentObjectRelatedField(serializers.RelatedField):
     """
@@ -74,6 +75,8 @@ class OCRRulesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRRulesSerializer, self).to_representation(instance)
+        serialized_data['rulesL1'] = json.loads(serialized_data['rulesL1'])
+        serialized_data['rulesL2'] = json.loads(serialized_data['rulesL2'])
         return serialized_data
     class Meta:
         """
