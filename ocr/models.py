@@ -95,7 +95,7 @@ class OCRUserProfile(models.Model):
             accuracyModel = image.get_accuracyModel()
             if not accuracyModel == None:
                 TotalCount+=1
-                TotalConfidence+=int(accuracyModel)
+                TotalConfidence+=float(accuracyModel)
             else:
                 print("confidence missing.")
 
