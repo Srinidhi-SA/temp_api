@@ -66,7 +66,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
     # apikey = "UXyQqWwT26Ruu_PgpAvehj_q0Lg3xFOCKMQ-IX2WTu1j" # Rahuls creds
     # service_url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/259e5cd0-ac42-45e9-86e8-b9c772d3131f"
 
-    apikey = '7bhl_NWHuTmL-wrIICRpKr-wvu0alPwNyhO8UAfvYLWC' #Dechamma
+    apikey = '7bhl_NWHuTmL-wrIICRpKr-wvu0alPwNyhO8UAfvYLWC' #Dechamma's creds
     service_url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/6cf4a4bd-8b59-407c-ae31-14fbfc889c65'
 
     authenticator = IAMAuthenticator(apikey)

@@ -90,7 +90,6 @@ from django.core.exceptions import PermissionDenied, \
 
 from api.utils import UserListSerializer
 
-
 # Create your views here.
 from .utils import json_2_xml, json_2_csv
 
@@ -435,10 +434,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def get_queryset_by_status(self, imageStatus):
-        if imageStatus=='active':
+        if imageStatus == 'active':
             queryset = self.get_active_queryset()
             return queryset
-        elif imageStatus=='backlog':
+        elif imageStatus == 'backlog':
             queryset = self.get_backlog_queryset()
             return queryset
 
@@ -471,6 +470,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
         data['is_recognized'] = True
+        comparision_data = json.loads(image_queryset.comparision_data)
+        data['fields'] = len(comparision_data)
+        data['modified_by'] = self.request.user.username
+        data['confidence'] = 100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
+
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         return serializer
@@ -611,7 +616,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         serializer = OCRImageSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
-
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
@@ -909,12 +913,13 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             deleted=False
         )
+
     def total_projects(self):
         return len(Project.objects.all())
 
     def total_reviewers(self):
         return len(OCRUserProfile.objects.filter(
-            ocr_user__groups__name__in=['ReviewerL1'],
+            ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
             is_active=True
         ))
 
@@ -988,10 +993,5 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             serializer=OCRImageListSerializer
         )
 
-        for image_data in object_details.data['data']:
-            image_data['fields'] = 'NA'
-            image_data['assignee'] = 'NA'
-            image_data['modified_by'] = 'NA'
-            image_data['modified_at'] = 'NA'
         object_details.data['total_data_count_wf'] = len(queryset)
         return object_details

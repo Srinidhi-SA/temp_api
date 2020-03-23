@@ -5,6 +5,7 @@ import { OcrInitialReview } from "./OcrInitialReview";
 import { OcrSecondaryReview } from "./OcrSecondaryReview";
 import store from "../../../store";
 import { statusMessages } from "../../../helpers/helper";
+import { OcrTopNavigation } from "./ocrTopNavigation";
 
 @connect((store) => {
   return {
@@ -104,25 +105,9 @@ export class OcrConfigure extends React.Component {
 
   render() {
     return (
-      <div className="side-body">
-        <div className="page-head">
-          <div className="row">
-            <div className="col-md-7">
-              <h3 className="xs-mt-0 nText">OCR APP</h3>
-            </div>
-          </div>
-        </div>
-        <div className="main-content">
+      <div className="side-body main-content">
+          <OcrTopNavigation/>
           <section className="ocr_section">
-            <div className="tab-container">
-            <ul className="nav nav-tabs cst_ocr_tabs">
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/"><i className="fa fa-tachometer fa-lg"></i> Dashboard</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/project/"><i className="fa fa-book fa-lg"></i> Projects</a></li>
-                <li className="active"><a href="/apps/ocr-mq44ewz7bp/configure/"><i className="fa fa-sliders fa-lg"></i> Configure</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i className="fa fa-users fa-lg"></i> Reviewers</a></li>
-                <li className=""><a href="/apps/ocr-mq44ewz7bp/manageUser/"><i className="fa fa-user fa-lg"></i> Users</a></li>
-              </ul>
-            </div>
             <div className="container-fluid">
                 <h4 className="nText">Stages</h4>
                 <ul className="nav nav-tabs">
@@ -149,7 +134,6 @@ export class OcrConfigure extends React.Component {
                 </div>
             </div>
             </section>
-        </div>
       </div>
     );
   }
