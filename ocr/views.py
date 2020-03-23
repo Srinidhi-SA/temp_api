@@ -902,16 +902,18 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def total_projects(self):
-        return len(Project.objects.all())
+        return Project.objects.filter(created_by=self.request.user).count()
 
     def total_reviewers(self):
-        return len(OCRUserProfile.objects.filter(
+        return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
             is_active=True
-        ))
+        ).count()
 
     def total_documents(self):
-        return len(OCRImage.objects.all())
+        return OCRImage.objects.filter(
+            created_by=self.request.user
+        ).count()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()

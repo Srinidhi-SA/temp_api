@@ -58,20 +58,20 @@ class OCRUserProfile(models.Model):
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            "role": self.ocr_user.groups.values_list('id', flat=True)
+            "role": self.ocr_user.groups.values_list('name', flat=True)
         }
         return ocr_user_profile
 
     def reviewer_data(self):
         from ocrflow.models import Task
-        total_assignments = len(Task.objects.filter(assigned_user=self.ocr_user))
-        total_reviewed = len(Task.objects.filter(
+        total_assignments = Task.objects.filter(assigned_user=self.ocr_user).count()
+        total_reviewed = Task.objects.filter(
             assigned_user=self.ocr_user,
-            is_closed=True))
+            is_closed=True).count()
         data = {
             'assignments': total_assignments,
             'avgTimeperWord': None,
-            'accuracyModel': None,
+            'accuracyModel': self.get_avg_accuracyModel(),
             'completionPercentage': self.get_review_completion(
                 total_reviewed,
                 total_assignments)
@@ -84,6 +84,26 @@ class OCRUserProfile(models.Model):
         else:
             percentage = (total_reviewed / total_assignments) * 100
             return round(percentage, 2)
+
+    def get_avg_accuracyModel(self):
+        imageQueryset = OCRImage.objects.filter(
+            review_requests__tasks__assigned_user=self.ocr_user
+        )
+        TotalCount = 0
+        TotalConfidence = 0
+        for image in imageQueryset:
+            accuracyModel = image.get_accuracyModel()
+            if not accuracyModel == None:
+                TotalCount+=1
+                TotalConfidence+=int(accuracyModel)
+            else:
+                print("confidence missing.")
+
+        if TotalCount == 0:
+            return 0
+        else:
+            AvgPercentage = (TotalConfidence/TotalCount)
+            return round(AvgPercentage, 2)
 
     def get_slug(self):
         return self.slug
@@ -270,3 +290,7 @@ class OCRImage(models.Model):
             return self.assignee.username
         except:
             return None
+
+    def get_accuracyModel(self):
+        """Return image confidence percentage"""
+        return self.confidence
