@@ -1,10 +1,9 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
-
+import { getUserDetailsOrRestart } from "../../../helpers/helper";
 export class OcrTopNavigation extends React.Component {
   constructor(props) {
     super(props);
-
   }
 
   render() {
@@ -23,22 +22,28 @@ export class OcrTopNavigation extends React.Component {
               <i class="fa fa-tachometer fa-lg"></i> Dashboard
             </NavLink>
           </li>
-          <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" activeClassName="active">
-            <i class="fa fa-book fa-lg"></i> Projects
+          {getUserDetailsOrRestart.get().userRole == (1 || 2) &&
+            <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" activeClassName="active">
+              <i class="fa fa-book fa-lg"></i> Projects
+            </NavLink>
+            </li>
+          }
+          {getUserDetailsOrRestart.get().userRole == (1 || 2) &&
+            <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/configure/" activeClassName="active">
+              <i class="fa fa-sliders fa-lg"></i> Configure
               </NavLink>
-          </li>
-          <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/configure/" activeClassName="active">
-            <i class="fa fa-sliders fa-lg"></i> Configure
-              </NavLink>
-          </li>
+            </li>
+          }
           <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" activeClassName="active">
             <i class="fa fa-users fa-lg"></i> Reviewers
               </NavLink>
           </li>
-          <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/manageUser/" activeClassName="active">
-            <i class="fa fa-user fa-lg"></i> Users
+          {getUserDetailsOrRestart.get().userRole == (1 || 2) &&
+            <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/manageUser/" activeClassName="active">
+              <i class="fa fa-user fa-lg"></i> Users
               </NavLink>
-          </li>
+            </li>
+          }
         </ul>
 
       </div>

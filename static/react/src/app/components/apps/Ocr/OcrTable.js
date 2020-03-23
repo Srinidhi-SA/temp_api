@@ -162,7 +162,7 @@ export class OcrTable extends React.Component {
         <Modal.Footer>
           <div id="resetMsg"></div>
           <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Prsssoceed</Button>
+          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Proceed</Button>
           
         </Modal.Footer>
       </Modal>
