@@ -999,8 +999,8 @@ PYTORCH_LINEAR_PARAMETERS = [
     },
     {
         "name": "weight_init",
-        "displayName": "Output Units",
-        "description": "Output Units parameter for the hidden layer.",
+        "displayName": "weight_init",
+        "description": "Weight initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
         "paramType": "string",
         "uiElemType": "textBox",
@@ -1011,8 +1011,8 @@ PYTORCH_LINEAR_PARAMETERS = [
     },
     {
         "name": "bias_init",
-        "displayName": "Output Units",
-        "description": "Output Units parameter for the hidden layer.",
+        "displayName": "bias_init",
+        "description": "Bias initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
         "paramType": "string",
         "uiElemType": "textBox",
