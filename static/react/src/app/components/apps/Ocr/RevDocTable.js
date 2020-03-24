@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem } from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveRevDocumentPageFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -28,6 +28,9 @@ export class RevDocTable extends React.Component {
       checkedList: [],
     }
   }
+  componentWillUnmount() {
+  this.props.dispatch(saveRevDocumentPageFlag(false));
+  }
 
   getHeader = token => {
     return {
@@ -40,8 +43,8 @@ export class RevDocTable extends React.Component {
   }
 
   handleImagePageFlag = (slug) => {
-    // this.getImage(slug)
-    // this.props.dispatch(saveImagePageFlag(true));
+    this.getImage(slug)
+    this.props.dispatch(saveImagePageFlag(true));
   }
 
   getImage = (slug) => {
@@ -103,7 +106,7 @@ export class RevDocTable extends React.Component {
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.ocrImageData.imagefile} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
