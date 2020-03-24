@@ -322,7 +322,7 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageReviewSerializer, self).to_representation(instance)
-
+        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
         return serialized_data
 
     class Meta(object):

@@ -3,6 +3,7 @@ from .models import Task, ReviewRequest, OCRRules
 from ocr.models import OCRImage
 from ocr.serializers import OCRImageReviewSerializer
 import simplejson as json
+from api.user_helper import UserSerializer
 
 class ContentObjectRelatedField(serializers.RelatedField):
     """
@@ -26,6 +27,7 @@ class TaskSerializer(serializers.ModelSerializer):
     """
     def to_representation(self, instance):
         serialized_data = super(TaskSerializer, self).to_representation(instance)
+        serialized_data['assigned_user'] = UserSerializer(instance.assigned_user).data['username']
 
         return serialized_data
 
@@ -66,7 +68,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         Meta class definition for ReviewRequestSerializer
         """
         model = ReviewRequest
-        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule')
+        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule', 'modified_by')
 
 class OCRRulesSerializer(serializers.ModelSerializer):
     """
