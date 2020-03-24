@@ -71,10 +71,10 @@ def max_num_files(value):
 
 def validate_phone_number(phone):
     """ METHOD : To Validate mobile number for OCRUserProfile model."""
-    rule = re.compile(r'(^[+0-9]{1,3})*([0-9]{10,11}$)')
+    rule = re.compile(r'^\+?1?\d{9,15}$')
 
     if rule.search(phone):
-        msg = u"Invalid Phone number."
+        msg = u"Invalid Phone number. Format +91-<10 Digit Phone-No>"
         raise ValidationError(msg)
 
 # ---------------------------------------------------------------------------------

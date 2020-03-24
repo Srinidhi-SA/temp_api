@@ -48,7 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.Functions import plot
 from .ITE.master_all import get_word_in_bounding_box, update_word
 from .ITE.ocr_mods import not_clear
-from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, Project
+from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
@@ -66,7 +66,6 @@ from .serializers import OCRImageSerializer, \
     OCRImageSetListSerializer, \
     OCRUserProfileSerializer, \
     OCRUserListSerializer, \
-    ReviewerTypeSerializer, \
     ProjectSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
@@ -370,18 +369,6 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
 # -------------------------------------------------------------------------------
 
-class ReviewerTypeListView(generics.ListCreateAPIView):
-    queryset = ReviewerType.objects.filter(deleted=False)
-    serializer_class = ReviewerTypeSerializer
-    permission_classes = [IsAdminUser]
-
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = ReviewerTypeSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
 class GroupListView(generics.ListCreateAPIView):
     queryset = Group.objects.filter(
         name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
@@ -472,7 +459,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['is_recognized'] = True
         comparision_data = json.loads(image_queryset.comparision_data)
         data['fields'] = len(comparision_data)
-        data['modified_by'] = self.request.user.username
+        data['modified_by'] = self.request.user.id
         data['confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
 
@@ -915,16 +902,18 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def total_projects(self):
-        return len(Project.objects.all())
+        return Project.objects.filter(created_by=self.request.user).count()
 
     def total_reviewers(self):
-        return len(OCRUserProfile.objects.filter(
+        return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
             is_active=True
-        ))
+        ).count()
 
     def total_documents(self):
-        return len(OCRImage.objects.all())
+        return OCRImage.objects.filter(
+            created_by=self.request.user
+        ).count()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()
@@ -985,7 +974,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def all(self, request, *args, **kwargs):
 
         project = Project.objects.get(slug=self.kwargs['slug'])
-        queryset = OCRImage.objects.filter(project=project)
+        queryset = OCRImage.objects.filter(project=project).order_by('-created_at')
         object_details = get_image_list_data(
             viewset=OCRImageView,
             queryset=queryset,

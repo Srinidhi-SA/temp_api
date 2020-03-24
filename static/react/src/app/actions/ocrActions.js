@@ -201,7 +201,9 @@ export function getRevrDocsList(pageNo){
 }
 
 function fetchRevrDocsList(pageNo=1,token){
-	return fetch(API + '/ocrflow/review/assigned_requests/?username=frontend&page_number=' + pageNo, {
+	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
+
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))

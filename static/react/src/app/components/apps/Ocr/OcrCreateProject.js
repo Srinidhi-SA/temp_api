@@ -9,6 +9,7 @@ import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selected
   return {
     login_response: store.login.login_response,
     showModal: store.dataUpload.dataUploadShowModal,
+    OcrProjectList: store.ocr.OcrProjectList,
   };
 })
 
@@ -86,9 +87,13 @@ export class OcrCreateProject extends React.Component {
         <div class="xs-mt-30"></div>
         <div class="row" style={{ display: 'flex', marginBottom: '1%', alignItems: 'center' }}>
           <div class="col-sm-6">
-            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">10 <br></br><small class="text-primary">PROJECTS</small></h4>
-            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">30 <br></br><small class="text-primary">DOCUMENETS</small></h4>
-            <h4 class="xs-mt-0 inline-block box-shadow">15 <br></br><small class="text-primary">REVIEWERS</small></h4>
+          {this.props.OcrProjectList != '' &&
+          <div>
+            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalProjects} <br></br><small class="text-primary">PROJECTS</small></h4>
+            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <br></br><small class="text-primary">DOCUMENETS</small></h4>
+            <h4 class="xs-mt-0 inline-block box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalReviewers} <br></br><small class="text-primary">REVIEWERS</small></h4>
+          </div>
+          }
           </div>
           <div class="col-sm-6 text-right">
             <div class="form-inline">
