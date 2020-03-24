@@ -34,7 +34,7 @@ class TaskSerializer(serializers.ModelSerializer):
         Meta class definition for TaskSerializer
         """
         model = Task
-        fields = ("id", "assigned_group", "assigned_user", "is_closed", 'comments', 'reviewed_on')
+        fields = ("id", "assigned_user", "is_closed", 'reviewed_on')
 
 class ReviewRequestListSerializer(serializers.ModelSerializer):
     """
@@ -66,7 +66,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         Meta class definition for ReviewRequestSerializer
         """
         model = ReviewRequest
-        exclude = ('id', 'slug', 'ocr_image', 'created_by')
+        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule')
 
 class OCRRulesSerializer(serializers.ModelSerializer):
     """

@@ -330,4 +330,4 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'imagefile']
+        fields = ['name', 'slug', 'imagefile', 'fields', 'confidence', 'modified_by']
