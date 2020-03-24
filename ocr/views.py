@@ -974,7 +974,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def all(self, request, *args, **kwargs):
 
         project = Project.objects.get(slug=self.kwargs['slug'])
-        queryset = OCRImage.objects.filter(project=project)
+        queryset = OCRImage.objects.filter(project=project).order_by('-created_at')
         object_details = get_image_list_data(
             viewset=OCRImageView,
             queryset=queryset,
