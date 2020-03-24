@@ -4,7 +4,7 @@ OCR MODELS
 
 import random
 import string
-
+import datetime
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -131,6 +131,7 @@ class Project(models.Model):
     deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["Project", self.name, self.created_at, self.slug]])
@@ -273,6 +274,7 @@ class OCRImage(models.Model):
     def save(self, *args, **kwargs):
         """Save OCRImage model"""
         self.generate_slug()
+        self.project_last_update()
         super(OCRImage, self).save(*args, **kwargs)
 
     def create(self):
@@ -294,3 +296,8 @@ class OCRImage(models.Model):
     def get_accuracyModel(self):
         """Return image confidence percentage"""
         return self.confidence
+
+    def project_last_update(self):
+        projectObj = Project.objects.get(id=self.project.id)
+        projectObj.updated_at = datetime.datetime.now()
+        projectObj.save()
