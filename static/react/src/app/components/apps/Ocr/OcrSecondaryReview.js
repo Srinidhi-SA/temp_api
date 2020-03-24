@@ -13,6 +13,7 @@ import store from "../../../store";
         active : store.ocr.sRConfigureDetails.active,
         selectedSRList : store.ocr.sRConfigureDetails.selectedSRList,
         remainDocs : store.ocr.sRConfigureDetails.test,
+        max_docs_per_reviewer : store.ocr.sRConfigureDetails.max_docs_per_reviewer,
         sRLoaderFlag : store.ocr.sRLoaderFlag,
         sRSearchElem : store.ocr.sRSearchElem,
     };
@@ -105,7 +106,7 @@ export class OcrSecondaryReview extends React.Component{
                         <div className="form-group">
                             <div className="checkbox checbox-switch switch-success">
                                 <label>
-                                    <input type="checkbox" name="sRToggleFlag" checked={this.props.sRToggleFlag} onChange={this.saveSecondaryReviwerToggleVal.bind(this)} />
+                                    <input type="checkbox" name="sRToggleFlag" checked={this.props.sRToggleFlag} onChange={this.saveSecondaryReviwerToggleVal.bind(this)} disabled/>
                                     <span></span>
                                     Enable automatic reviewer assignment<br/>
                                     <small>when enabled, documents that are verified will be assigned to auditors according to your choices below</small>
@@ -128,7 +129,7 @@ export class OcrSecondaryReview extends React.Component{
                                 <div className="row">
                                     <label className="label-control col-md-5 xs-ml-50 mandate" for="sRdocsCountToAll">Maximum number of documents per Auditor</label>
                                     <div className="col-md-3">
-                                        <input type="number" className="form-control inline" id="sRdocsCountToAll" name="max_docs_per_reviewer" placeholder="Enter Number..." onInput={this.saveSRConfig.bind(this)} />
+                                        <input type="number" className="form-control inline" id="sRdocsCountToAll" name="max_docs_per_reviewer" defaultValue={this.props.max_docs_per_reviewer} placeholder="Enter Number..." onInput={this.saveSRConfig.bind(this)} />
                                     </div>
                                 </div>
                             }
@@ -140,7 +141,7 @@ export class OcrSecondaryReview extends React.Component{
                                 <div className="row">
                                     <label className="label-control col-md-5 xs-ml-50 mandate" for="sRdocsCountToSelect">Maximum number of documents per Auditor</label>
                                     <div className="col-md-3">
-                                        <input type="number" className="form-control inline" id="sRdocsCountToSelect" name="max_docs_per_reviewer" placeholder="Enter Number..." onInput={this.saveSRConfig.bind(this)} />
+                                        <input type="number" className="form-control inline" id="sRdocsCountToSelect" name="max_docs_per_reviewer" defaultValue={this.props.max_docs_per_reviewer} placeholder="Enter Number..." onInput={this.saveSRConfig.bind(this)} />
                                     </div>
                                 </div>
                             }
@@ -167,15 +168,15 @@ export class OcrSecondaryReview extends React.Component{
                             <div className="col-md-12">
                                 <h4>How would you like to assign any remaining documents?</h4>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="1" id="assignRemaningSRDocs" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "1"?true:false}/>
+                                    <input type="radio" name="test" value="1" id="assignRemaningSRDocs" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "1"||this.props.remainDocs === 1?true:false}/>
                                     <label for="assignRemaningSRDocs">Continue to distribute even if limits are met</label>
                                 </div>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="2" id="assignRemaningSRDocs1" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "2"?true:false}/>
+                                    <input type="radio" name="test" value="2" id="assignRemaningSRDocs1" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "2"||this.props.remainDocs === 2?true:false}/>
                                     <label for="assignRemaningSRDocs1">Leave unassigned</label>
                                 </div>
                                 <div className="ma-radio">
-                                    <input type="radio" name="test" value="3" id="assignRemaningSRDocs2" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "3"?true:false}/>
+                                    <input type="radio" name="test" value="3" id="assignRemaningSRDocs2" onClick={this.saveSRConfig.bind(this)} checked={this.props.remainDocs === "3"||this.props.remainDocs === 3?true:false}/>
                                     <label for="assignRemaningSRDocs2">Select auditors to assign</label>
                                 </div>
                             </div>

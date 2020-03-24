@@ -51,6 +51,9 @@ export class OcrConfigure extends React.Component {
       }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
         let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
         bootbox.alert(msg);
+      }else if(($("#assignRemaningIRDocs")[0].checked || $("#assignRemaningIRDocs1")[0].checked || $("#assignRemaningIRDocs2")[0].checked)===false){
+        let msg= statusMessages("warning","Please input how to assign remaining documents","small_mascot");
+        bootbox.alert(msg);
       }else if($("#assigniRDocsToAll")[0].checked ){
         if($("#iRdocsCountToAll")[0].value === "" || !Number.isInteger(parseFloat($("#iRdocsCountToAll")[0].value)) || parseFloat($("#iRdocsCountToAll")[0].value) < 1 ){
           let msg= statusMessages("warning","Please enter valid input.","small_mascot");
@@ -76,6 +79,10 @@ export class OcrConfigure extends React.Component {
       }
       else if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
         let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
+        bootbox.alert(msg);
+      }
+      else if(($("#assignRemaningSRDocs")[0].checked || $("#assignRemaningSRDocs1")[0].checked || $("#assignRemaningSRDocs2")[0].checked)===false){
+        let msg= statusMessages("warning","Please input how to assign remaining documents","small_mascot");
         bootbox.alert(msg);
       }
       else if($("#assignSRDocsToAll")[0].checked){
