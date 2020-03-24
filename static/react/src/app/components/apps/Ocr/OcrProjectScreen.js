@@ -52,9 +52,9 @@ export class OcrProjectScreen extends React.Component {
                      <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link>
                   </td>
                   <td>{new Date(item.created_at).toLocaleString().split(',')[0]}</td>
-                  <td>{item.slug}</td>
-                  <td>{item.slug}</td>
-                  <td>{item.slug}</td>
+                  <td>{item.project_overview.workflows}</td>
+                  <td>{new Date(item.updated_at).toLocaleString()}</td>
+                  <td>{item.project_overview.completion}</td>
                </tr>
             )
          }

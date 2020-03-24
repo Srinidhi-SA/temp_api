@@ -80,7 +80,7 @@ export class OcrEditUser extends React.Component{
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
             }, {});
-            this.props.dispatch(submitEditedUserRolesAction(filteredVariables2,this.props.selUserSlug));
+            this.props.dispatch(submitEditedUserRolesAction(filteredVariables2,this.props.ocrReviwersList,this.props.selUserSlug));
         }
         else if(this.props.detailsFormSel){
             $("#resetMsg")[0].innerText = ""
@@ -100,7 +100,7 @@ export class OcrEditUser extends React.Component{
                 obj[key] = this.props.editedUserDetails[key];
                 return obj;
             }, {});
-            this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.selUserSlug));
+            this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.ocrReviwersList,this.props.selUserSlug));
         }
     }
 
@@ -117,7 +117,7 @@ export class OcrEditUser extends React.Component{
         let optionsTemp = [];
         optionsTemp.push(<option id="none" value="none">--select--</option>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].id}>
+            optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].name}>
                         {this.props.ocrReviwersList[i].name}
                     </option>);
         }

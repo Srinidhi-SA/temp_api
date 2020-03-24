@@ -140,7 +140,7 @@ export class OcrTable extends React.Component {
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
       <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
         <Modal.Header closeButton>
-          <h3 className="modal-title">recognizing Data</h3>
+          <h3 className="modal-title">Recognize Data</h3>
         </Modal.Header>
         <Modal.Body style={{ padding: 0 }} >
           <div className="row" style={{ margin: 0 }}>
@@ -162,7 +162,7 @@ export class OcrTable extends React.Component {
         <Modal.Footer>
           <div id="resetMsg"></div>
           <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Prsssoceed</Button>
+          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Proceed</Button>
           
         </Modal.Footer>
       </Modal>
@@ -188,8 +188,7 @@ export class OcrTable extends React.Component {
             <td>{item.assignee}</td>
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
-
-            <td>{item.modified_at}</td>
+            <td>{new Date(item.modified_at).toLocaleString()}</td>
           </tr>
         )
       }
@@ -288,9 +287,9 @@ export class OcrTable extends React.Component {
                     <li><a class="cursor" name="ready to export">Assignee 2</a></li>
                   </ul>
                 </th>
-                <th>Created</th>
-                <th>Modified</th>
+                <th>Created By</th>
                 <th>Modified By</th>
+                <th>Last Modified</th>
               </tr>
              </thead>
              <tbody className="no-border-x">

@@ -201,7 +201,9 @@ export function getRevrDocsList(pageNo){
 }
 
 function fetchRevrDocsList(pageNo=1,token){
-	return fetch(API + '/ocrflow/review/assigned_requests/?username=frontend&page_number=' + pageNo, {
+	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
+
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -694,7 +696,8 @@ function submitEditUserDetailsAPI(data,token){
 		body : data,
 	}).then(response => Promise.all([response,response.json()]));
 }
-export function submitEditedUserRolesAction(editedUserDt,slug){
+export function submitEditedUserRolesAction(editedUserDt,reviewersList,slug){
+	editedUserDt.role = reviewersList.filter(i=>i.name===editedUserDt.role)[0].id
 	return (dispatch) => {
 		return submitEditedUserRolesAPI(editedUserDt,slug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
@@ -775,6 +778,29 @@ export function setIRLoaderFlagAction(flag){
 		type : "SET_IR_LOADER_FLAG",flag
 	}
 }
+export function fetchReviewersRules(){
+	return (dispatch) => {
+		return fetchReviewersRulesAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(saveRulesForConfigPage(json))
+				console.log(json)
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
+	}
+}
+function fetchReviewersRulesAPI(token){
+	return fetch(API+"/ocrflow/rules/get_rules/",{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
+function saveRulesForConfigPage(data){
+	return {
+		type : "SAVE_RULES_FOR_CONFIGURE",data
+	}
+}
 export function fetchInitialReviewerList(roleNo){
 	return (dispatch) => {
 		return fetchInitialReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
@@ -802,6 +828,27 @@ export function saveIRToggleValAction(val){
 	return {
 		type:"STORE_IR_TOGGLE_FLAG",val
 	}
+}
+export function autoAssignmentAction(val){
+	return (dispatch) => {
+		return autoAssignmentActionAPI(val,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				bootbox.alert(statusMessages("warning",json.message,"small_mascot"))
+			}else{
+				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
+			}
+		})
+	}
+}
+function autoAssignmentActionAPI(val,token){
+	let ConvertedVal = val===true?"True":"False"
+	var formdt = new FormData();
+	formdt.append("autoAssignment",ConvertedVal);
+	return fetch(API+"/ocrflow/rules/autoAssignment/",{
+		method : "post",
+		body : formdt,
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
 }
 export function saveIRConfigAction(name,value){
 	return {
@@ -859,13 +906,12 @@ export function saveSRConfigAction(name,value){
 export function submitReviewerConfigAction(selTab,config){
 	let data = {}
 	let reviewerConfig = {
-		"auto" :{ "active" : "False", "max_docs_per_reviewer" : "", "test" : "" },
-		"custom":{ "active" : "False", "max_docs_per_reviewer" : "", "selected_reviewers" : [], "test" : "" }
+		"auto" :{ "active" : "False", "max_docs_per_reviewer" : "", "remainaingDocsDistributionRule" : "" },
+		"custom":{ "active" : "False", "max_docs_per_reviewer" : "", "selected_reviewers" : [], "remainaingDocsDistributionRule" : "" }
 	}
+	let rule = "";
 	if(selTab === "initialReview"){
-		let reqValues1 = {
-			"active" : config.active, "selected_reviewers" : config.selectedIRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test)
-		}
+		let reqValues1 = { "active" : config.active, "selected_reviewers" : config.selectedIRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "remainaingDocsDistributionRule" : parseInt(config.test) }
 		if(reqValues1.active === "all"){
 			reqValues1.active = "True"
 			reviewerConfig.auto = reqValues1;
@@ -875,11 +921,10 @@ export function submitReviewerConfigAction(selTab,config){
 			reviewerConfig.custom = reqValues1;
 		}
 		data = reviewerConfig
+		rule = "modifyRulesL1"
 	}
 	  else if(selTab === "secondaryReview"){
-		let reqValues2 = {
-			"active" : config.active, "selected_reviewers" : config.selectedSRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "test" : parseInt(config.test),
-		}
+		let reqValues2 = { "active" : config.active, "selected_reviewers" : config.selectedSRList, "max_docs_per_reviewer" : parseInt(config.max_docs_per_reviewer), "remainaingDocsDistributionRule" : parseInt(config.test) }
 		if(reqValues2.active === "all"){
 			reqValues2.active = "True"
 			reviewerConfig.auto = reqValues2;
@@ -889,9 +934,10 @@ export function submitReviewerConfigAction(selTab,config){
 			reviewerConfig.custom = reqValues2;
 		}
 		data = reviewerConfig
+		rule = "modifyRulesL2"
 	  }
 	return (dispatch) => {
-		return submitReviewerConfigAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+		return submitReviewerConfigAPI(data,rule,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				console.log(json);
 			}else{
@@ -900,8 +946,8 @@ export function submitReviewerConfigAction(selTab,config){
 		})
 	}
 }
-function submitReviewerConfigAPI(data,token){
-	return fetch(API,{
+function submitReviewerConfigAPI(data,rule,token){
+	return fetch(API+"/ocrflow/rules/"+rule+"/",{
 		method : "post",
 		headers : getHeaderForJson(token),
 		body : JSON.stringify(data),

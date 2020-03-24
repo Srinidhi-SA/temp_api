@@ -22610,3 +22610,11 @@ ul.ocrUploadTabs{
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+.bgStockBox h3 small {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+}

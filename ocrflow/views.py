@@ -16,6 +16,7 @@ from rest_framework.decorators import list_route, detail_route
 from django.core.exceptions import PermissionDenied
 from rest_framework.decorators import list_route, detail_route
 import simplejson as json
+import datetime
 
 # Create your views here.
 class OCRRulesView(viewsets.ModelViewSet):
@@ -52,6 +53,7 @@ class OCRRulesView(viewsets.ModelViewSet):
         modifiedrule = request.data
         ruleObj = OCRRules.objects.get(id=1)
         ruleObj.rulesL1 = json.dumps(modifiedrule)
+        ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
         return JsonResponse({"message":"Rules L1 Updated.", "status": True})
 
@@ -60,6 +62,7 @@ class OCRRulesView(viewsets.ModelViewSet):
         modifiedrule = request.data
         ruleObj = OCRRules.objects.get(id=1)
         ruleObj.rulesL2 = json.dumps(modifiedrule)
+        ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
         return JsonResponse({"message":"Rules L2 Updated.", "status": True})
 
