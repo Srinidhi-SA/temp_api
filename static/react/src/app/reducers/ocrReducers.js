@@ -65,7 +65,8 @@ export default function reducer(state = {
   sRToggleFlag : true,
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
-  sRSearchElem : ""
+  sRSearchElem : "",
+  configRules : {}
 
 }, action) {
   switch (action.type) {
@@ -624,14 +625,53 @@ export default function reducer(state = {
       break;
       case "CLEAR_REVIEWER_CONFIG":
       {
+        let data1 = state.configRules.iRRule
+        let irRul = {}
+        if(data1.auto.active === "True"){
+          irRul = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          irRul = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
+        }
+        let data2 = state.configRules.sRRule
+        let srRul = {}
+        if(data2.auto.active === "True"){
+          srRul = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          srRul = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+        }
         return {
           ...state,
           iRToggleFlag : true,
-          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
-          sRToggleFlag : true,
-          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+          iRConfigureDetails : irRul,
+          // sRToggleFlag : true,
+          sRConfigureDetails : srRul,
           iRSearchElem : "",
           sRSearchElem : ""
+        }
+      }
+      break;
+      case "SAVE_RULES_FOR_CONFIGURE":
+      {
+        let data1 = action.data.rulesL1
+        let irRules = {}
+        if(data1.auto.active === "True"){
+          irRules = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          irRules = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
+        }
+        let data2 = action.data.rulesL2
+        let srRules = {}
+        if(data2.auto.active === "True"){
+          srRules = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          srRules = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+        }
+        return {
+          ...state,
+          iRToggleFlag : action.data.auto_assignment,
+          configRules : {"iRRule":action.data.rulesL1,"sRRule":action.data.rulesL2},
+          iRConfigureDetails : irRules,
+          sRConfigureDetails : srRules,
         }
       }
       break;

@@ -694,7 +694,8 @@ function submitEditUserDetailsAPI(data,token){
 		body : data,
 	}).then(response => Promise.all([response,response.json()]));
 }
-export function submitEditedUserRolesAction(editedUserDt,slug){
+export function submitEditedUserRolesAction(editedUserDt,reviewersList,slug){
+	editedUserDt.role = reviewersList.filter(i=>i.name===editedUserDt.role)[0].id
 	return (dispatch) => {
 		return submitEditedUserRolesAPI(editedUserDt,slug,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.updated){
@@ -779,6 +780,7 @@ export function fetchReviewersRules(){
 	return (dispatch) => {
 		return fetchReviewersRulesAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
+				dispatch(saveRulesForConfigPage(json))
 				console.log(json)
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
@@ -792,7 +794,11 @@ function fetchReviewersRulesAPI(token){
 		headers : getHeader(token),
 	}).then(response => Promise.all([response,response.json()]));
 }
-
+function saveRulesForConfigPage(data){
+	return {
+		type : "SAVE_RULES_FOR_CONFIGURE",data
+	}
+}
 export function fetchInitialReviewerList(roleNo){
 	return (dispatch) => {
 		return fetchInitialReviewerListAPI(roleNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
