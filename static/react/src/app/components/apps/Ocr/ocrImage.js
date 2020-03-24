@@ -130,10 +130,10 @@ export class OcrImage extends React.Component {
       .then(data => {
         if (data.message === "SUCCESS") {
           this.props.dispatch(updateOcrImage(data.generated_image));
-          setTimeout( () => {
+          setTimeout(() => {
             document.getElementById("loader").classList.remove("loader_ITE");
             document.getElementById("successMsg").innerText = "Updated successfully.";
-          },3000);
+          }, 3000);
           //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
@@ -165,9 +165,6 @@ export class OcrImage extends React.Component {
       <div>
         <div className="row">
           <div className="col-sm-12">
-            <button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal_badscan">
-              <i class="fa fa-info-circle"></i> Bad Scan
-            </button>
             <div class="form-group pull-right ocr_highlightblock">
               <label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
               <select class="form-control inline-block 1-100" id="select_confidence">
@@ -258,7 +255,12 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
-          <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
+          <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
+              <i class="fa fa-info-circle"></i> Bad Scan
+          </button>
+            <button class="btn btn-primary" onClick={this.handleImagePageFlag}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+          </div>
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
