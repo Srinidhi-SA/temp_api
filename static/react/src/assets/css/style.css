@@ -20490,8 +20490,9 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 130px;
+  width: 95%;
 }
+
 .for_multiselect .p-multiselect-header::after {
   content: "Select All";
 }
@@ -22609,4 +22610,7 @@ ul.ocrUploadTabs{
   overflow: hidden;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+}
+.p-multiselect-header .p-multiselect-close {
+  display: none;
 }
