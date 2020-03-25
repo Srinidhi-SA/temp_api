@@ -220,7 +220,7 @@ export class OcrTable extends React.Component {
                 <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
               </div>
               <Button onClick={this.handleRecognise}>Recognize</Button>
-              <button class="btn btn-default btn-rounded disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>
+              <button class="btn btn-default btn-rounded" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>
             </div>
           </div>:"":""}
         </div>
