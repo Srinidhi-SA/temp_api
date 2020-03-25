@@ -13,6 +13,7 @@ import store from "../../../store";
     active : store.ocr.iRConfigureDetails.active,
     selectedIRList : store.ocr.iRConfigureDetails.selectedIRList,
     remainDocs : store.ocr.iRConfigureDetails.test,
+    max_docs_per_reviewer : store.ocr.iRConfigureDetails.max_docs_per_reviewer,
     iRLoaderFlag : store.ocr.iRLoaderFlag,
     iRSearchElem : store.ocr.iRSearchElem
   };
@@ -128,7 +129,7 @@ export class OcrInitialReview extends React.Component {
                             <div className="row">
                                 <label className="label-control col-md-5 xs-ml-50 mandate" for="iRdocsCountToAll">Maximum number of documents per reviewer</label>
                                 <div className="col-md-3">
-                                    <input type="number" className="form-control inline" id="iRdocsCountToAll" name="max_docs_per_reviewer" placeholder="Enter Number..."onInput={this.saveIRConfig.bind(this)} />
+                                    <input type="number" className="form-control inline" id="iRdocsCountToAll" name="max_docs_per_reviewer" defaultValue={this.props.max_docs_per_reviewer} placeholder="Enter Number..."onInput={this.saveIRConfig.bind(this)} />
                                 </div>
                             </div>
                         }
@@ -140,7 +141,7 @@ export class OcrInitialReview extends React.Component {
                             <div className="row">
                                 <label className="label-control col-md-5 xs-ml-50 mandate" for="iRdocsCountToSelect">Maximum number of documents per reviewer</label>
                                 <div className="col-md-3">
-                                    <input type="number" className="form-control inline" id="iRdocsCountToSelect" name="max_docs_per_reviewer" placeholder="Enter Number..." onInput={this.saveIRConfig.bind(this)} />
+                                    <input type="number" className="form-control inline" id="iRdocsCountToSelect" name="max_docs_per_reviewer" defaultValue={this.props.max_docs_per_reviewer} placeholder="Enter Number..." onInput={this.saveIRConfig.bind(this)} />
                                 </div>
                             </div>
                         }
@@ -165,15 +166,15 @@ export class OcrInitialReview extends React.Component {
                         <div className="col-md-12">
                             <h4>How would you like to assign any remaining documents?</h4>
                             <div className="ma-radio">
-                                <input type="radio" name="test" value="1" id="assignRemaningIRDocs" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "1"?true:false} />
+                                <input type="radio" name="test" value="1" id="assignRemaningIRDocs" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "1"||this.props.remainDocs === 1?true:false} />
                                 <label for="assignRemaningIRDocs">Continue to distribute even if limits are met</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="test" value="2" id="assignRemaningIRDocs1" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "2"?true:false}/>
+                                <input type="radio" name="test" value="2" id="assignRemaningIRDocs1" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "2"||this.props.remainDocs === 2?true:false}/>
                                 <label for="assignRemaningIRDocs1">Leave unassigned and move to backlogs</label>
                             </div>
                             <div className="ma-radio">
-                                <input type="radio" name="test" value="3" id="assignRemaningIRDocs2" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "3"?true:false}/>
+                                <input type="radio" name="test" value="3" id="assignRemaningIRDocs2" onClick={this.saveIRConfig.bind(this)} checked={this.props.remainDocs === "3"||this.props.remainDocs === 3?true:false}/>
                                 <label for="assignRemaningIRDocs2">Select reviewers to assign</label>
                             </div>
                         </div>
