@@ -22614,3 +22614,11 @@ ul.ocrUploadTabs{
 .p-multiselect-header .p-multiselect-close {
   display: none;
 }
+.bgStockBox h3 small {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+}

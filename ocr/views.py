@@ -457,7 +457,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask_image.png'.format(slug),
                             file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
         data['is_recognized'] = True
-        comparision_data = json.loads(image_queryset.comparision_data)
+        comparision_data = json.loads(data['comparision_data'])
         data['fields'] = len(comparision_data)
         data['modified_by'] = self.request.user.id
         data['confidence'] = 100 - round(
@@ -562,6 +562,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
             img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
             img_data['created_by'] = request.user.id
+            img_data['modified_by'] = request.user.id
             serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
             if serializer.is_valid():
                 image_object = serializer.save()
