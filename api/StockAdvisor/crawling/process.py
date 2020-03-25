@@ -6,6 +6,7 @@ import sys
 
 from newsapi.newsapi_exception import NewsAPIException
 
+from django.conf import settings
 from . import common_utils
 import requests
 from bs4 import BeautifulSoup
@@ -177,13 +178,10 @@ company_list = {"XOM": "Exxon Mobil Corporation",
                 }
 
 
-def fetch_stock_news_from_newsapi(cur_stock):
+def fetch_news_articles(cur_stock, domains):
     from newsapi import NewsApiClient
 
-    API_KEY = "61b9fb7eac124c678dc2d6d8a0a9e9af"
-    # cur_stock = "goog"
-    # "https://newsapi.org/v2/everything?q=bitcoin&apiKey=API_KEY"
-    URL = "https://newsapi.org/v2/everything?q={}&apiKey={}".format(cur_stock, API_KEY)
+    API_KEY = settings.STOCK_SENSE_CREDS['newsapi']['api_key']
 
     # Init
     newsapi = NewsApiClient(api_key=API_KEY)
@@ -192,28 +190,19 @@ def fetch_stock_news_from_newsapi(cur_stock):
     date_diff = datetime.timedelta(days=10)
     from_date = today - date_diff
 
-    # /v2/everything
-    company_name = company_list.get(cur_stock.upper())
-    # q = company_name+" OR "+cur_stock
-    # q = "Microsoft OR Microsoft Corporation"
-    # q = "Microsoft"
     articles = []
-    top_news = newsapi.get_top_headlines(q=str(company_name), qintitle=None, language="en",
+    top_news = newsapi.get_top_headlines(q=str(cur_stock), qintitle=None, language="en",
                                          country=None, category=None, page_size=None, page=None)
     if top_news is not None:
         articles.extend(top_news['articles'])
     i = 1
     while True:
         try:
-            all_news = newsapi.get_everything(q=str(company_name),
+            all_news = newsapi.get_everything(q=str(cur_stock),
                                               language='en',
                                               page_size=100,
                                               page=i,
-                                              domains="cnbc.com , ft.com, wsj.com, marketwatch.com, in.reuters.com, "
-                                                      "investopedia.com, nytimes.com, "
-                                                      "economictimes.indiatimes.com, finance.yahoo.com, forbes.com, "
-                                                      "financialexpress.com, bloomberg.com, wsj.com, nasdaq.com, "
-                                                      "fool.com",
+                                              domains=domains,
                                               sort_by='publishedAt',
                                               from_param=from_date,
                                               to=today
@@ -224,9 +213,13 @@ def fetch_stock_news_from_newsapi(cur_stock):
             else:
                 break
         except NewsAPIException as ex:
-            # print("Method failed with status code " + str(ex.code) + ": " + ex.message)
             print("Method failed with message: "+ex.get_message())
             break
+    return articles
+
+
+def fetch_stock_news_from_newsapi(cur_stock, domains):
+    articles = fetch_news_articles(cur_stock, domains)
     histogram = {}
     for i, item in enumerate(articles):
         item['time'] = "".join(item['publishedAt'].split("T")[0].split("-"))
@@ -235,7 +228,7 @@ def fetch_stock_news_from_newsapi(cur_stock):
         item['short_desc'] = item['description']
         item['google_url'] = item['url']
         item['final_url'] = item['url']
-        item['stock'] = company_name
+        item['stock'] = cur_stock
         histogram[i] = item
 
     return [v for k, v in list(histogram.items())]
@@ -289,8 +282,10 @@ import json
 
 
 def fetch_historical_data_from_alphavintage(stock):
-    apikey = "NZ4C53A0LJJU6MKM"
-    function = "TIME_SERIES_DAILY"
+    # apikey = "NZ4C53A0LJJU6MKM"
+    # function = "TIME_SERIES_DAILY"
+    apikey = settings.STOCK_SENSE_CREDS['alphavantage']['api_key']
+    function = settings.STOCK_SENSE_CREDS['alphavantage']['function']
     symbol = stock
     url = "https://www.alphavantage.co/query?function={0}&symbol={1}&apikey={2}".format(
         function,

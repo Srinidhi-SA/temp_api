@@ -2671,6 +2671,7 @@ def get_slug_from_message_url(url):
 class StockDataset(models.Model):
     name = models.CharField(max_length=100, null=True)
     stock_symbols = models.CharField(max_length=500, null=True, blank=True)
+    domains = models.CharField(max_length=500, null=True, blank=True, default='')
     slug = models.SlugField(null=True, max_length=300)
     auto_update = models.BooleanField(default=False)
 
@@ -2723,6 +2724,7 @@ class StockDataset(models.Model):
     def create(self):
         from api.tasks import stock_sense_crawl
         # stock_sense_crawl(object_slug=self.slug)
+        self.stock_symbols = json.loads(self.stock_symbols)
         self.stock_sense_crawl()
         self.add_to_job()
 
@@ -2732,14 +2734,12 @@ class StockDataset(models.Model):
 
     def crawl_news_data(self):
 
-        stock_symbols = self.get_stock_symbol_names()
-
         extracted_data = []
-        for stock in stock_symbols:
-            stock_data = fetch_news_sentiments_from_newsapi(stock)
+        for key in self.stock_symbols:
+            stock_data = fetch_news_sentiments_from_newsapi(self.stock_symbols[key], self.domains)
             self.write_to_concepts_folder(
                 stockDataType="news",
-                stockName=stock,
+                stockName=key,
                 data=stock_data,
                 type='json'
             )
@@ -2980,8 +2980,14 @@ class StockDataset(models.Model):
         return self.crawl_stats()
 
     def get_stock_symbol_names(self):
-        list_of_stock = self.stock_symbols.split(', ')
-        return [stock_name.lower() for stock_name in list_of_stock]
+        # list_of_stock = self.stock_symbols.split(', ')
+        # return [stock_name.lower() for stock_name in list_of_stock]
+        return [key.lower() for key in self.stock_symbols.keys()]
+
+    def get_stock_company_names(self):
+        # list_of_stock = self.stock_symbols.split(', ')
+        # return [stock_name.lower() for stock_name in list_of_stock]
+        return [value for value in self.stock_symbols.values()]
 
     def get_brief_info(self):
         brief_info = dict()
