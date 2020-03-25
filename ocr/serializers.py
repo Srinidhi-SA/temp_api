@@ -5,8 +5,7 @@
 from rest_framework import serializers
 
 from api.user_helper import UserSerializer
-from .models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType, \
-    Project
+from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 from django.contrib.auth.models import User, Group
 
 
@@ -249,22 +248,6 @@ class OCRUserListSerializer(serializers.ModelSerializer):
         fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
 
 
-class ReviewerTypeSerializer(serializers.ModelSerializer):
-    """
-    """
-
-    def to_representation(self, instance):
-        serialized_data = super(ReviewerTypeSerializer, self).to_representation(instance)
-
-        return serialized_data
-
-    class Meta:
-        """
-        Meta class definition for ReviewerTypeSerializer
-        """
-        model = ReviewerType
-        fields = ("id","type")
-
 class GroupSerializer(serializers.ModelSerializer):
     """
     """
@@ -276,7 +259,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class definition for ReviewerTypeSerializer
+        Meta class definition for GroupSerializer
         """
         model = Group
         fields = ('id','name')
@@ -294,6 +277,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serialized_data = super(ProjectListSerializer, self).to_representation(instance)
         serialized_data['project_overview'] = instance.get_project_overview()
+        serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         return serialized_data
 
     class Meta(object):
@@ -301,7 +285,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSetListSerializer
         """
         model = Project
-        fields = ['slug', 'name', 'created_at', 'created_by']
+        fields = ['slug', 'name', 'created_at', 'created_by', 'updated_at']
 
 class OCRReviewerSerializer(serializers.ModelSerializer):
     """
@@ -338,7 +322,7 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageReviewSerializer, self).to_representation(instance)
-
+        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
         return serialized_data
 
     class Meta(object):
@@ -346,4 +330,4 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'imagefile']
+        fields = ['name', 'slug', 'imagefile', 'fields', 'confidence', 'modified_by']

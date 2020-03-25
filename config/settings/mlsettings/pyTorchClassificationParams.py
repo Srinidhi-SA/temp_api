@@ -999,8 +999,8 @@ PYTORCH_LINEAR_PARAMETERS = [
     },
     {
         "name": "weight_init",
-        "displayName": "Output Units",
-        "description": "Output Units parameter for the hidden layer.",
+        "displayName": "weight_init",
+        "description": "Weight initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
         "paramType": "string",
         "uiElemType": "textBox",
@@ -1011,8 +1011,8 @@ PYTORCH_LINEAR_PARAMETERS = [
     },
     {
         "name": "bias_init",
-        "displayName": "Output Units",
-        "description": "Output Units parameter for the hidden layer.",
+        "displayName": "bias_init",
+        "description": "Bias initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
         "paramType": "string",
         "uiElemType": "textBox",
@@ -2079,7 +2079,7 @@ SKLEARN_ML_SUPPORTED_PT_L1_REGULARIZER_PARAMETERS = [
         "name": "l1_decay",
         "selected": False,
         "displayName": "l1_decay",
-        "description": "learning rate.",
+        "description": "l1 decay.",
         "defaultValue": 0.0,
         "valueRange": [0, 1],
         "paramType": "number",
@@ -2097,7 +2097,7 @@ SKLEARN_ML_SUPPORTED_PT_L2_REGULARIZER_PARAMETERS = [
         "name": "l2_decay",
         "selected": False,
         "displayName": "l2_decay",
-        "description": "learning rate.",
+        "description": "l2 dacay.",
         "defaultValue": 0.0,
         "valueRange": [0, 1],
         "paramType": "number",
@@ -2107,6 +2107,13 @@ SKLEARN_ML_SUPPORTED_PT_L2_REGULARIZER_PARAMETERS = [
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     },
+]
+
+SKLEARN_ML_SUPPORTED_PT_REGULARIZER_PARAMETERS = [
+    {"name": "l1_regularizer", "selected": False, "displayName": "l1_regularizer",
+     "parameters": [obj for obj in SKLEARN_ML_SUPPORTED_PT_L1_REGULARIZER_PARAMETERS]},
+    {"name": "l2_regularizer", "selected": False, "displayName": "l2_regularizer",
+     "parameters": [obj for obj in SKLEARN_ML_SUPPORTED_PT_L2_REGULARIZER_PARAMETERS]},
 ]
 
 SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [
@@ -2153,24 +2160,10 @@ SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS = [
         "allowedDataType": ["string"]
     },
     {
-        "name": "l1_regularizer",
-        "displayName": "Optimizer",
-        "description": "Method used to minimize the loss function.",
-        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_PT_L1_REGULARIZER_PARAMETERS],
-        "acceptedValue": None,
-        "valueRange": None,
-        "paramType": "list",
-        "uiElemType": "checkbox",
-        "display": True,
-        "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["string"],
-        "allowedDataType": ["string"]
-    },
-    {
-        "name": "l2_regularizer",
-        "displayName": "Optimizer",
-        "description": "Method used to minimize the loss function.",
-        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_PT_L2_REGULARIZER_PARAMETERS],
+        "name": "regularizer",
+        "displayName": "regularizer",
+        "description": "Regularizer function.",
+        "defaultValue": [obj for obj in SKLEARN_ML_SUPPORTED_PT_REGULARIZER_PARAMETERS],
         "acceptedValue": None,
         "valueRange": None,
         "paramType": "list",

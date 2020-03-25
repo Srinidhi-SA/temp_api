@@ -337,6 +337,7 @@ class App extends React.Component {
             <Route exact path="/apps/ocr-mq44ewz7bp/" component={OcrMain}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/project/" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/project/:imageSlug" component={OcrProject}/>
+            <Route exact path="/apps/ocr-mq44ewz7bp/reviewer/:imageSlug" component={OcrProject}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/manageUser/" component={OcrManageUser}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/configure/" component={OcrConfigure}/>
             <Route exact path="/apps/ocr-mq44ewz7bp/reviewer/" component={OcrReviewer}/>

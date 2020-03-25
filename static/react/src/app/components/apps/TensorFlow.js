@@ -90,7 +90,7 @@ export class TensorFlow extends React.Component {
   getOptions(item) {
       var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
       var options = arr.map(k => {
-          return <option value={k.name} selected={k.selected}> {k.name}</option>
+          return <option value={k.name} selected={k.sel}> {k.name}</option>
       })
       return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
   }
@@ -210,7 +210,8 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
+                 <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.acceptedValue!=""? item.acceptedValue:(item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue)}/>
+                  {/* <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : (item.acceptedValue!=""? item.acceptedValue: item.defaultValue)}/> previous terinary condition */}
                    <div className="error"></div>
                 </div>
                 </div> 

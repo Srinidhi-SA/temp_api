@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Task, ReviewRequest, OCRRules
 from ocr.models import OCRImage
 from ocr.serializers import OCRImageReviewSerializer
+import simplejson as json
+from api.user_helper import UserSerializer
 
 class ContentObjectRelatedField(serializers.RelatedField):
     """
@@ -25,15 +27,16 @@ class TaskSerializer(serializers.ModelSerializer):
     """
     def to_representation(self, instance):
         serialized_data = super(TaskSerializer, self).to_representation(instance)
+        serialized_data['assigned_user'] = UserSerializer(instance.assigned_user).data['username']
 
         return serialized_data
 
     class Meta:
         """
-        Meta class definition for ReviewerTypeSerializer
+        Meta class definition for TaskSerializer
         """
         model = Task
-        fields = ("id", "assigned_group", "assigned_user", "is_closed", 'comments', 'reviewed_on')
+        fields = ("id", "assigned_user", "is_closed", 'reviewed_on')
 
 class ReviewRequestListSerializer(serializers.ModelSerializer):
     """
@@ -65,7 +68,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         Meta class definition for ReviewRequestSerializer
         """
         model = ReviewRequest
-        exclude = ('id', 'slug', 'ocr_image', 'created_by')
+        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule', 'modified_by')
 
 class OCRRulesSerializer(serializers.ModelSerializer):
     """
@@ -74,6 +77,8 @@ class OCRRulesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRRulesSerializer, self).to_representation(instance)
+        serialized_data['rulesL1'] = json.loads(serialized_data['rulesL1'])
+        serialized_data['rulesL2'] = json.loads(serialized_data['rulesL2'])
         return serialized_data
     class Meta:
         """
