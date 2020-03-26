@@ -1014,7 +1014,7 @@ PYTORCH_LINEAR_PARAMETERS = [
     },
     {
         "name": "bias",
-        "displayName": "Output Units",
+        "displayName": "bias",
         "description": "Bias parameter for the hidden layer.",
         "defaultValue": [
             {
