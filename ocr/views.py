@@ -757,8 +757,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
-
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        slug = ast.literal_eval(str(data['slug']))[0]
+        image_queryset = OCRImage.objects.get(slug=slug)
+        # image_queryset = OCRImage.objects.get(slug=data['slug'])
         analysis = json.loads(image_queryset.analysis)
 
         response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
@@ -795,7 +796,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def export_data(self, request):
         data = request.data
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        slug = ast.literal_eval(str(data['slug']))[0]
+        image_queryset = OCRImage.objects.get(slug=slug)
         result = image_queryset.final_result
         if data['format'] == 'json':
             response = HttpResponse(result, content_type="application/json")
@@ -811,6 +813,22 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response = JsonResponse({'message': 'Invalid export format!'})
         return response
+
+    @list_route(methods=['post'])
+    def confidence_filter(self, response, user_input):
+        loi = []
+        for page in response["fullTextAnnotation"]["pages"]:
+            for block in page["blocks"]:
+                for paragraph in block["paragraphs"]:
+                    for word in paragraph["words"]:
+                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
+                        #                        print(word["confidence"])
+                        if word["confidence"] < user_input:
+                            loi.append({word_text: [
+                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
+                                [word["boundingBox"]["vertices"][2]["x"],
+                                 word["boundingBox"]["vertices"][2]["y"]]]})
+        return loi
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
