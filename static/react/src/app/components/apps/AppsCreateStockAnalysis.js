@@ -46,21 +46,97 @@ export class AppsCreateStockAnalysis extends React.Component {
 	addMoreStockSymbols(event) {
 		this.props.dispatch(addMoreStockSymbols(event));
 	}
-	crawlDataForAnalysis() {
-		var url = $("#createStockUrl").val();
+	companyDetails(name, ticker) {
+		this.name = name;
+		this.ticker = ticker;
+	}
+
+	crawlDataForAnalysis(companyList) {
 		var analysisName = $("#createStockAnalysisName").val();
-		var urlForNews = $("#createStockUrlNews").val();
-		this.props.dispatch(crawlDataForAnalysis(url, analysisName, urlForNews));
+		var domains = this.state.domain;
+		var companies=this.state.company
+		var list=[];
+
+		for(var i=0;i<companies.length;i++){
+			window['value'+i] = new this.companyDetails(companyList.filter(j=>j.value==companies[i])[0].label, companies[i]);
+			list.push((window['value'+i]))
+		}
+
+		this.props.dispatch(crawlDataForAnalysis(domains, companies,analysisName,list));
 	}
 	render() {
 		let domainList=[
-			{ label: 'cnbc.com', value: 'cnbc.com' },
-			{ label: 'ft.com', value: 'ft.com' },
+			{label:"cnbc.com",value: "cnbc.com"} ,
+			{label:"ft.com",value: "ft.com"} ,
+			{label:"wsj.com",value: "wsj.com"},
+			{label:"marketwatch.com",value: "marketwatch.com"},
+			{label:"in.reuters.com",value: "in.reuters.com"},
+			{label:"investopedia.com",value: "investopedia.com"},
+			{label:"nytimes.com",value: "nytimes.com"} ,
+			{label:"economictimes.indiatimes.com",value: "economictimes.indiatimes.com"},
+			{label:"finance.yahoo.com",value: "finance.yahoo.com"},
+			{label:"forbes.com",value: "forbes.com"} ,
+			{label:"financialexpress.com",value: "financialexpress.com"} ,
+			{label:"bloomberg.com",value: "bloomberg.com"} ,
+			{label:"wsj.com",value: "wsj.com"} ,
+			{label:"nasdaq.com",value: "nasdaq.com"} ,
+			{label:"fool.com",value: "fool.com"}
 		]
-		let companyList=[
-			{ label: 'Exxon Mobil Corporation', value: 'XOM' },
-			{ label: 'General Electric Company', value: 'GE' },
-		]
+
+		let companyList=
+		[             
+			{value:"XOM"    ,label: "Exxon Mobil"},
+			{value:"GE"     ,label:	"General Electric"},
+			{value:"MSFT"	  ,label:	"Microsoft"},
+			{value:"WMT" 	  ,label:	"Wal-Mart"},
+			{value:"TM"  	  ,label:	"Toyota Motor"},
+			{value:"JNJ" 	  ,label:	"JOHNSON & JOHNSON"},
+			{value:"JPM" 	  ,label:	"J.P. Morgan Chase & Co."},
+			{value:"INTC"	  ,label: "Intel"},
+			{value:"IBM" 	  ,label:	"International Business Machines Corporation"},
+			{value:"CSCO"	  ,label: "Cisco Systems"},
+			{value:"HPQ" 	  ,label:	"Hewlett-Packard"},
+			{value:"GOOG"	  ,label: "Google"},
+			{value:"NOK" 	  ,label:	"Nokia"},
+			{value:"QCOM"	  ,label: "QUALCOMM"},
+			{value:"MRK" 	  ,label:	"Merck"},
+			{value:"DELL"	  ,label:	"Dell"},
+			{vlue:"AXP"  	  ,label:	"American Express"},
+			{value:"MS"  	  ,label:	"Morgan Stanley"},
+			{value:"ORCL"	  ,label: "Oracle"},
+			{value:"AAPL"	  ,label:	"Apple Computer"},
+			{value:"BA"  	  ,label:	"Boeing"},
+			{value:"MCD" 	  ,label:	"McDonald's"},
+			{value:"BP"  		,label:	"BP p.l.c."},
+			{value:"C"   	  ,label:	"Citigroup"},
+			{value:"PG"  	  ,label:	"Procter & Gamble"},
+			{value:"BAC"	  ,label:	"Bank of America"},
+			{value:"AIG" 	  ,label:	"American International Group"},
+			{value:"CVX" 	  ,label:	"ChevronTexaco"},
+			{value:"SNY" 	  ,label:	"Sanofi-Aventis SA"},
+			{value:"VOD" 	  ,label:	"Vodafone"},
+			{value:"E"   	  ,label:	"ENI S.p.A."},
+			{value:"KO"  	  ,label:	"Coca-Cola"},
+			{value:"CHL"    ,label:	"China Mobile"},
+			{value:"PEP"    ,label:	"Pepsico"},
+			{value:"VZ"     ,label:	"Verizon Communications"},
+			{value:"COP"    ,label:	"CONOCOPHILLIPS"},
+			{value:"HD"     ,label:	"Home Depot"},
+			{value:"WB"     ,label:	"Wachovia"},
+			{value:"SI"     ,label:	"Siemens AG"},
+			{value:"UNH"    ,label:	"UnitedHealth Group"},
+			{value:"AZN"    ,label:	"ASTRAZENECA PLC"},
+			{value:"MDT"    ,label:	"Medtronic"},
+			{value:"ABT"    ,label:	"Abbott Laboratories"},
+			{value:"DT"   	,label:	"Deutsche Telekom AG"},
+			{value:"TEF"    ,label:	"Telefonica SA"},
+			{value:"MBT"    ,label:	"Mobile TeleSystems"},
+			{value:"S" 		  ,label:	"Sprint Nextel"},
+			{value:"LLY"    ,label:	"Eli Lilly and Company"},
+			{value:"AMZN"   ,label:	"Amazon.com"},
+			{value:"FB" 		,label:	"Facebook"},
+			{value:"TWTR"   ,label:	"Twitte"}
+			]
 		let stockSymbolsList = this.props.appsStockSymbolsInputs;
 		const templateTextBoxes = stockSymbolsList.map((data, id) => {
 			return (<div className="row"><div className="form-group" id={data.id}>
@@ -122,7 +198,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 						</Modal.Body>
 						<Modal.Footer>
 							<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this, false)}>Close</Button>
-							<Button bsStyle="primary" onClick={this.crawlDataForAnalysis.bind(this, false)}>Extract Data</Button>
+							<Button bsStyle="primary" onClick={this.crawlDataForAnalysis.bind(this,companyList)}>Extract Data</Button>
 						</Modal.Footer>
 					</Modal>
 				</div>
@@ -133,3 +209,5 @@ export class AppsCreateStockAnalysis extends React.Component {
 	}
 
 }	  
+	
+	
