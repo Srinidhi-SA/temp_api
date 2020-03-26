@@ -310,7 +310,8 @@ def get_filtered_ocrimage_list(
         viewset=None,
         request=None,
         list_serializer=None,
-        imageStatus=None
+        imageStatus=None,
+        projectslug=None
 ):
     """
 
@@ -319,7 +320,7 @@ def get_filtered_ocrimage_list(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_queryset_by_status(imageStatus)
+    query_set = viewset.get_queryset_by_status(projectslug, imageStatus)
 
     # common filtering
     qcf = QueryCommonFiltering(

@@ -169,8 +169,11 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        rules = json.loads(self.rule.rulesL1)
-        if rules['auto']['active'] == True:
+        if initial == 'initial':
+            rules = json.loads(self.rule.rulesL1)
+        else:
+            rules = json.loads(self.rule.rulesL2)
+        if rules['auto']['active'] == "True":
             reviewer = self.assigned_user()
         else:
             usersList = rules['custom']['selected_reviewers']
@@ -188,7 +191,10 @@ class SimpleFlow(models.Model):
                 object_id=self.id
             )
             imageObject=OCRImage.objects.get(id=self.ocr_image.id)
-            imageObject.is_L1assigned = True
+            if initial == 'initial':
+                imageObject.is_L1assigned = True
+            else:
+                imageObject.is_L2assigned = True
             imageObject.assignee=reviewer
             imageObject.save()
             self.status='submitted_for_review'
