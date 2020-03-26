@@ -36,6 +36,17 @@ class OCRImageSerializer(serializers.ModelSerializer):
         # serialized_data = convert_to_json(serialized_data)
         # serialized_data = convert_time_to_human(serialized_data)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
+        try:
+            from ocrflow.models import Task, ReviewRequest
+            from ocrflow.serializers import TaskSerializer
+            reviewObj = ReviewRequest.objects.get(ocr_image=instance.id)
+            reviewObj = Task.objects.get(
+                object_id= reviewObj.id,
+                assigned_user=self.context['request'].user
+            )
+            serialized_data['tasks'] = TaskSerializer(reviewObj).data
+        except:
+            serialized_data['tasks'] = None
 
         return serialized_data
 
@@ -322,7 +333,7 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageReviewSerializer, self).to_representation(instance)
-
+        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
         return serialized_data
 
     class Meta(object):
@@ -330,4 +341,4 @@ class OCRImageReviewSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'imagefile']
+        fields = ['name', 'slug', 'imagefile', 'fields', 'confidence', 'modified_by']

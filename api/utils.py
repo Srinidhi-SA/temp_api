@@ -180,10 +180,12 @@ def convert_to_json(data):
 
     string_to_list_keys = ['stock_symbols']
 
-    for key in string_to_list_keys:
-        if key in data:
-            value = data[key]
-            data[key] = value.split(',')
+    # for key in string_to_list_keys:
+    #     if key in data:
+    #         value = data[key]
+    #         # data[key] = value.split(',')
+    #         value = json.loads(value)
+    #         data[key] = json.loads(value)
     return data
 
 
