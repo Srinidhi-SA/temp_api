@@ -936,6 +936,21 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": [obj for obj in PT_WEIGHT_INIT_Sparse_PARAMS]},
 ]
 
+PT_BIAS_PARAMS = [
+    {
+        "name": "bias_init",
+        "displayName": "bias_init",
+        "description": "Bias initialisation parameter for the hidden layer.",
+        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+]
+
 PYTORCH_LINEAR_PARAMETERS = [
     {
         "name": "activation",
@@ -998,23 +1013,35 @@ PYTORCH_LINEAR_PARAMETERS = [
         "allowedDataType": ["int"]
     },
     {
+        "name": "bias",
+        "displayName": "bias",
+        "description": "Bias parameter for the hidden layer.",
+        "defaultValue": [
+            {
+                "name": "false",
+                "selected": False,
+                "displayName": "False"
+            },
+            {
+                "name": "true",
+                "selected": True,
+                "displayName": "True",
+                "parameters": [obj for obj in PT_BIAS_PARAMS]
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+    {
         "name": "weight_init",
         "displayName": "weight_init",
         "description": "Weight initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
-        "paramType": "string",
-        "uiElemType": "textBox",
-        "display": True,
-        "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["int"],
-        "allowedDataType": ["int"]
-    },
-    {
-        "name": "bias_init",
-        "displayName": "bias_init",
-        "description": "Bias initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
-        "paramType": "string",
+        "paramType": "list",
         "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": True,

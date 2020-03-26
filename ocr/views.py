@@ -408,24 +408,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def get_all_queryset(self):
         return OCRImage.objects.all()
 
-    def get_active_queryset(self):
+    def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_verify', 'ready_to_export'],
-            created_by=self.request.user
+            created_by=self.request.user,
+            project__slug=projectslug
         )
 
-    def get_backlog_queryset(self):
+    def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_recognize'],
-            created_by=self.request.user
+            created_by=self.request.user,
+            project__slug=projectslug
         )
 
-    def get_queryset_by_status(self, imageStatus):
+    def get_queryset_by_status(self, projectslug, imageStatus):
         if imageStatus == 'active':
-            queryset = self.get_active_queryset()
+            queryset = self.get_active_queryset(projectslug)
             return queryset
         elif imageStatus == 'backlog':
-            queryset = self.get_backlog_queryset()
+            queryset = self.get_backlog_queryset(projectslug)
             return queryset
 
     def get_object_from_all(self):
@@ -589,12 +591,17 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def get_ocrimages(self, request, *args, **kwargs):
         imageStatus = self.request.query_params.get('imageStatus')
-        return get_filtered_ocrimage_list(
+        projectslug = self.request.query_params.get('projectslug')
+        response = get_filtered_ocrimage_list(
             viewset=self,
             request=request,
             list_serializer=OCRImageListSerializer,
-            imageStatus=imageStatus
+            imageStatus=imageStatus,
+            projectslug=projectslug
         )
+        project_id = Project.objects.get(slug=projectslug).id
+        response.data['total_data_count_wf'] = len(OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
+        return response
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()

@@ -14,6 +14,7 @@ import { store } from '../../../store';
     ocrImgPath: store.ocr.ocrImgPath,
     originalImgPath: store.ocr.originalImgPath,
     imageSlug: store.ocr.imageSlug,
+    ocrDocList: store.ocr.OcrRevwrDocsList,
   };
 })
 
@@ -66,8 +67,20 @@ export class OcrImage extends React.Component {
     popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
 
   }
-  handleImagePageFlag = () => {
-    window.history.go(-1)
+  handleMarkComplete = () => {
+     window.history.go(-1)
+    //  let val= this.props.ocrDocList.data.filter(i=>i.ocrImageData.slug == this.props.imageSlug);
+    //  console.log(val,"ppppppppp");
+    // let id = b;
+    // return fetch(API + '/ocrflow/tasks/' + id, {
+    //   method: 'post',
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify({ "status": "done", "remark": "good" })
+    // }).then(response => response.json())
+    //   .then(data => {
+    //     console.log(data);
+       
+    //   });
   }
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
@@ -259,8 +272,10 @@ export class OcrImage extends React.Component {
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-            <button class="btn btn-primary" onClick={this.handleImagePageFlag}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
-          </div>
+          {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
+            <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+           }
+            </div>
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">

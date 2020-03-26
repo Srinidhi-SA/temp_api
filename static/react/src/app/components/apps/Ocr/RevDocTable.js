@@ -108,11 +108,11 @@ export class RevDocTable extends React.Component {
             </td>
             <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
-            <td>{item.fields}</td>
-            <td>{item.confidence}</td>
+            <td>{item.ocrImageData.fields}</td>
+            <td>{item.ocrImageData.confidence}</td>
             <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
-            <td>{new Date(item.modified_at).toLocaleString().split(',')[0]}</td>
-            <td>{item.modified_by}</td>
+            <td>{new Date(item.modified_at).toLocaleString()}</td>
+            <td>{item.ocrImageData.modified_by}</td>
           </tr>
         )
       }

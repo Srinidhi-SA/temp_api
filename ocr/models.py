@@ -94,15 +94,15 @@ class OCRUserProfile(models.Model):
         for image in imageQueryset:
             accuracyModel = image.get_accuracyModel()
             if not accuracyModel == None:
-                TotalCount+=1
-                TotalConfidence+=float(accuracyModel)
+                TotalCount += 1
+                TotalConfidence += float(accuracyModel)
             else:
                 print("confidence missing.")
 
         if TotalCount == 0:
             return 0
         else:
-            AvgPercentage = (TotalConfidence/TotalCount)
+            AvgPercentage = (TotalConfidence / TotalCount)
             return round(AvgPercentage, 2)
 
     def get_slug(self):
@@ -169,9 +169,9 @@ class Project(models.Model):
         for reviewObj in reviewObjQueryset:
             TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
             for task in TaskQueryset:
-                totalTasks+=1
+                totalTasks += 1
                 if task.is_closed:
-                    closedTasks+=1
+                    closedTasks += 1
 
         return totalTasks, closedTasks
 
@@ -181,6 +181,7 @@ class Project(models.Model):
         else:
             percentage = (closedTasks / totalTasks) * 100
             return round(percentage, 2)
+
 
 class OCRImageset(models.Model):
     """
