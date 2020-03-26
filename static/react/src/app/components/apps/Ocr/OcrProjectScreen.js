@@ -54,7 +54,7 @@ export class OcrProjectScreen extends React.Component {
                   <td>{new Date(item.created_at).toLocaleString().split(',')[0]}</td>
                   <td>{item.project_overview.workflows}</td>
                   <td>{new Date(item.updated_at).toLocaleString()}</td>
-                  <td>{item.project_overview.completion}</td>
+                  <td>{item.project_overview.completion}%</td>
                </tr>
             )
          }
@@ -71,7 +71,7 @@ export class OcrProjectScreen extends React.Component {
                   <thead>
                      <tr>
                         <th></th>
-                        <th>Poject Name</th>
+                        <th>Project Name</th>
                         <th>Created At</th>
                         <th>Workflows</th>
                         <th>Last Update</th>

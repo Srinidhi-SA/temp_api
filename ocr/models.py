@@ -303,12 +303,3 @@ class OCRImage(models.Model):
         projectObj = Project.objects.get(id=self.project.id)
         projectObj.updated_at = datetime.datetime.now()
         projectObj.save()
-
-    def get_assigned_tasks(self):
-        from ocrflow.models import Task, ReviewRequest
-        reviewObj = ReviewRequest.objects.get(ocr_image=self.id)
-        taskObj = Task.objects.get(
-            object_id= reviewObj.id,
-            assigned_user = self.assignee
-        )
-        return taskObj.id
