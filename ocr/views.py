@@ -408,24 +408,26 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def get_all_queryset(self):
         return OCRImage.objects.all()
 
-    def get_active_queryset(self):
+    def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_verify', 'ready_to_export'],
-            created_by=self.request.user
+            created_by=self.request.user,
+            project__slug=projectslug
         )
 
-    def get_backlog_queryset(self):
+    def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_recognize'],
-            created_by=self.request.user
+            created_by=self.request.user,
+            project__slug=projectslug
         )
 
-    def get_queryset_by_status(self, imageStatus):
+    def get_queryset_by_status(self, projectslug, imageStatus):
         if imageStatus == 'active':
-            queryset = self.get_active_queryset()
+            queryset = self.get_active_queryset(projectslug)
             return queryset
         elif imageStatus == 'backlog':
-            queryset = self.get_backlog_queryset()
+            queryset = self.get_backlog_queryset(projectslug)
             return queryset
 
     def get_object_from_all(self):
@@ -589,11 +591,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['get'])
     def get_ocrimages(self, request, *args, **kwargs):
         imageStatus = self.request.query_params.get('imageStatus')
+        projectslug = self.request.query_params.get('projectslug')
         return get_filtered_ocrimage_list(
             viewset=self,
             request=request,
             list_serializer=OCRImageListSerializer,
-            imageStatus=imageStatus
+            imageStatus=imageStatus,
+            projectslug=projectslug
         )
 
     def retrieve(self, request, *args, **kwargs):
@@ -757,9 +761,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
-        slug = ast.literal_eval(str(data['slug']))[0]
-        image_queryset = OCRImage.objects.get(slug=slug)
-        # image_queryset = OCRImage.objects.get(slug=data['slug'])
+
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         analysis = json.loads(image_queryset.analysis)
 
         response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
@@ -796,8 +799,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def export_data(self, request):
         data = request.data
-        slug = ast.literal_eval(str(data['slug']))[0]
-        image_queryset = OCRImage.objects.get(slug=slug)
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
         result = image_queryset.final_result
         if data['format'] == 'json':
             response = HttpResponse(result, content_type="application/json")
@@ -813,22 +815,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response = JsonResponse({'message': 'Invalid export format!'})
         return response
-
-    @list_route(methods=['post'])
-    def confidence_filter(self, response, user_input):
-        loi = []
-        for page in response["fullTextAnnotation"]["pages"]:
-            for block in page["blocks"]:
-                for paragraph in block["paragraphs"]:
-                    for word in paragraph["words"]:
-                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
-                        #                        print(word["confidence"])
-                        if word["confidence"] < user_input:
-                            loi.append({word_text: [
-                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
-                                [word["boundingBox"]["vertices"][2]["x"],
-                                 word["boundingBox"]["vertices"][2]["y"]]]})
-        return loi
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
