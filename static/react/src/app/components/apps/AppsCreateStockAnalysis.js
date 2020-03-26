@@ -57,6 +57,15 @@ export class AppsCreateStockAnalysis extends React.Component {
 		var companies=this.state.company
 		var list=[];
 
+		if (analysisName == ""||(analysisName != "" && analysisName.trim() == "")) {
+			document.getElementById("resetMsg").innerText="Please enter stock analysis name."
+			return false;
+		} 
+		if(domains.length==0||companies.length==0){
+			document.getElementById("resetMsg").innerText="Please select all mandatory fields."
+			return false;
+		}
+
 		for(var i=0;i<companies.length;i++){
 			window['value'+i] = new this.companyDetails(companyList.filter(j=>j.value==companies[i])[0].label, companies[i]);
 			list.push((window['value'+i]))
@@ -169,14 +178,14 @@ export class AppsCreateStockAnalysis extends React.Component {
 						<Modal.Body>
 							<form role="form" className="form-horizontal">
 								<div className="form-group">
-									<label className="col-sm-4 control-label">Select News Source :</label>
+									<label className="col-sm-4 control-label mandate">Select News Source </label>
 									<div class="col-sm-8">
 									  <MultiSelect className="domainMultiselect" value={this.state.domain} options={domainList} onChange={e => this.setState({ domain: e.value })}
                      style={{"width": "100%"}}  filter={true} placeholder="Choose News Source" />
                   </div>
 								</div>
 								<div className="form-group">
-									<label className=" control-label col-md-4">Select Company :</label>
+									<label className=" control-label col-md-4 mandate">Select Company </label>
 									<div class="col-md-8">
 										{/* <Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i> Add</Button> */}
 										<MultiSelect className="comapanyMultiselect" value={this.state.company} options={companyList} onChange={e => this.setState({ company: e.value })}
@@ -186,7 +195,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 								</div>
 								<div className="xs-pb-25 clearfix"></div>
 								<div class="form-group">
-									<label className="col-md-4 control-label">Name your Analysis :</label>
+									<label className="col-md-4 control-label mandate">Name your Analysis </label>
 									<div class="col-md-8">
 										<input type="text" name="createStockAnalysisName" id="createStockAnalysisName" required={true} className="form-control input-sm" placeholder="Enter Analysis Name"/>
 									</div>
@@ -197,6 +206,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 							<div className="clearfix"></div>
 						</Modal.Body>
 						<Modal.Footer>
+						<div id="resetMsg"></div>
 							<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this, false)}>Close</Button>
 							<Button bsStyle="primary" onClick={this.crawlDataForAnalysis.bind(this,companyList)}>Extract Data</Button>
 						</Modal.Footer>
