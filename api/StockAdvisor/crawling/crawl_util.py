@@ -101,8 +101,8 @@ def concept_mapping(test_text, embed_matrix_for_concepts, universal_sentence_enc
         pass
 
 
-def fetch_news_sentiments_from_newsapi(stock):
-    stock_news = process.fetch_stock_news_from_newsapi(stock)
+def fetch_news_sentiments_from_newsapi(stock, domains):
+    stock_news = process.fetch_stock_news_from_newsapi(stock, domains)
     stock_news_with_sentiments = []
     universal_sentence_encoder = embed_useT()
     embed_matrix_for_concepts = sentence_encoder_for_concepts(universal_sentence_encoder)

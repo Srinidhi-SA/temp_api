@@ -258,6 +258,7 @@ class OCRImage(models.Model):
     is_recognized = models.BooleanField(default=False)
     mask = models.FileField(null=True, upload_to='ocrData')
     is_L1assigned = models.BooleanField(default=False)
+    is_L2assigned = models.BooleanField(default=False)
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)
