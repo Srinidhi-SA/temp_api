@@ -160,7 +160,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 				</div>
 
 				<div id="newCreateStock" role="dialog" className="modal fade modal-colored-header">
-					<Modal show={store.getState().apps.appsCreateStockModal} onHide={this.updateCreateStockPopup.bind(this, false)} dialogClassName="modal-colored-header">
+					<Modal class="stockExtractModel" show={store.getState().apps.appsCreateStockModal} onHide={this.updateCreateStockPopup.bind(this, false)} dialogClassName="modal-colored-header">
 						<Modal.Header closeButton>
 							<h3 className="modal-title">Input - Stocks and Data </h3>
 						</Modal.Header>

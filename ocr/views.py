@@ -591,13 +591,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def get_ocrimages(self, request, *args, **kwargs):
         imageStatus = self.request.query_params.get('imageStatus')
         projectslug = self.request.query_params.get('projectslug')
-        return get_filtered_ocrimage_list(
+        response = get_filtered_ocrimage_list(
             viewset=self,
             request=request,
             list_serializer=OCRImageListSerializer,
             imageStatus=imageStatus,
             projectslug=projectslug
         )
+        project_id = Project.objects.get(slug=projectslug).id
+        response.data['total_data_count_wf'] = len(OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
+        return response
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object_from_all()

@@ -22622,3 +22622,6 @@ ul.ocrUploadTabs{
   display: block;
   margin-top: 10px;
 }
+.stockExtractModel .modal-content{
+  overflow: inherit;
+}

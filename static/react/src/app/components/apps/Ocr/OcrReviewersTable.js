@@ -74,7 +74,7 @@ handleDocumentPageFlag (slug,name){
             <td><Link to='/apps/ocr-mq44ewz7bp/reviewer/' onClick={() => { this.handleDocumentPageFlag(item.ocr_profile.slug,item.username) }}>{item.username}</Link></td>
             <td>{item.ocr_profile.role[0]}</td>
             <td>{item.ocr_data.assignments}</td>
-            <td>{item.ocr_data.completionPercentage}</td>
+            <td>{item.ocr_data.completionPercentage}%</td>
             <td>{item.ocr_data.avgTimeperWord}</td>
             <td>{item.ocr_data.accuracyModel}</td>
             <td>{''}</td>
@@ -109,7 +109,7 @@ handleDocumentPageFlag (slug,name){
                     <th>Role</th>
                     <th class="text-center">Assignment</th>
                     <th class="text-center">
-                      Complete
+                      Complete %
                     </th>
                     <th class="dropdown">
                       <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Avg Time/Word" aria-expanded="true">
