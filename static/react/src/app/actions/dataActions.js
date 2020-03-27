@@ -393,8 +393,8 @@ export function fetchAllDataSuccess(doc){
 
 export function handleShareItem(userIds,slug,shareItemType,shareItemName,dispatch){
     return shareItemApi(userIds,slug,shareItemType).then(([response, json]) =>{
-        if(response.status === 200){
-            bootbox.alert(`${ shareItemType} "${shareItemName}" is shared successfully.`)
+        if(response.status === 200 && json.status=="true"){
+            bootbox.alert(`${ shareItemType} "${shareItemName}" is shared successfully with ${json.sharedTo}.`)
         }
         else{
             bootbox.alert(`${ shareItemType} "${shareItemName}" sharing failed. Please try again later.`)

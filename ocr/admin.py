@@ -4,7 +4,7 @@ OCR AdminSite Settings
 from django.contrib import admin
 
 # Register your models here.
-from ocr.models import OCRImage, OCRImageset, OCRUserProfile, ReviewerType
+from ocr.models import OCRImage, OCRImageset, OCRUserProfile
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods
@@ -24,8 +24,8 @@ class OCRImageAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "status", "created_by", "deleted"]
-    list_filter = ["status", "deleted", "created_by"]
-    readonly_fields = ["created_at", "deleted", "created_by", "slug", "imageset"]
+    list_filter = ["status", "deleted", "created_by", 'is_L1assigned', 'is_L2assigned', 'is_recognized']
+    readonly_fields = ["created_at", "deleted", "created_by", "slug", "imageset", 'modified_at']
 
     def get_queryset(self, request):
         queryset = super(OCRImageAdmin, self).get_queryset(request)
@@ -54,8 +54,8 @@ class OCRUserProfileAdmin(admin.ModelAdmin):
     """
     icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["slug"]
-    list_display = ["slug"]
-    list_filter = []
+    list_display = ["slug", "is_active"]
+    list_filter = ["is_active"]
     readonly_fields = ["slug"]
 
     def get_queryset(self, request):
@@ -63,22 +63,7 @@ class OCRUserProfileAdmin(admin.ModelAdmin):
         #queryset = queryset.order_by('-created_at')
         return queryset
 
-class ReviewerTypeAdmin(admin.ModelAdmin):
-    """
-    Model: ReviewerType
-    """
-    icon = '<i class="material-icons">cloud_done</i>'
-    search_fields = ["slug"]
-    list_display = ["type", "slug"]
-    list_filter = []
-    readonly_fields = ["slug"]
-
-    def get_queryset(self, request):
-        queryset = super(ReviewerTypeAdmin, self).get_queryset(request)
-        queryset = queryset.order_by('-created_at')
-        return queryset
 
 admin.site.register(OCRImage, OCRImageAdmin)
 admin.site.register(OCRImageset, OCRImagesetAdmin)
 admin.site.register(OCRUserProfile, OCRUserProfileAdmin)
-admin.site.register(ReviewerType, ReviewerTypeAdmin)

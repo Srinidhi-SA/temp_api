@@ -1941,15 +1941,20 @@ export function fetchStockListSuccess(doc) {
   return { type: "STOCK_LIST", data, current_page, latestStocks }
 }
 
-export function crawlDataForAnalysis(url, analysisName, urlForNews) {
-  var found = false;
-  var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
-  for (var i = 0; i < stockSymbolsArray.length; i++) {
-    if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
-      found = true;
-      break;
-    }
-  }
+function StockSenseCompenies(age, sex) {
+  this.name = name;
+  this.ticker = ticker;
+}
+
+export function crawlDataForAnalysis(domains, companies,analysisName,list) {
+  // var found = false;
+  // var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
+  // for (var i = 0; i < stockSymbolsArray.length; i++) {
+  //   if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
+  //     found = true;
+  //     break;
+  //   }
+  // }
   if (analysisName == "") {
     var body_msg = statusMessages("warning", "Please enter stock analysis name.", "small_mascot");
     bootbox.alert(body_msg);
@@ -1962,11 +1967,11 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
   /*else if(url == ""){
     bootbox.alert("Please enter stock analysis url.");
   }*/
-  if (found) {
+  // if (found) {
     return (dispatch) => {
       dispatch(updateCreateStockPopup(false))
       dispatch(openAppsLoader(APPSLOADERPERVALUE, "Extracting historic stock prices.... "));
-      return triggerCrawlingAPI(url, urlForNews, analysisName).then(([response, json]) => {
+      return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200) {
           dispatch(crawlSuccess(json, dispatch))
         } else {
@@ -1975,10 +1980,10 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
         }
       });
     }
-  } else {
-    var body_msg = statusMessages("warning", "Please enter text/symbols to analyze stocks.", "small_mascot");
-    bootbox.alert(body_msg);
-  }
+  // } else {
+  //   var body_msg = statusMessages("warning", "Please enter text/symbols to analyze stocks.", "small_mascot");
+  //   bootbox.alert(body_msg);
+  // }
 }
 export function updateAppsLoaderText(text) {
   return { type: "UPDATE_LOADER_TEXT", text }
@@ -1994,13 +1999,13 @@ export function crawlSuccess(json, dispatch) {
   }, APPSDEFAULTINTERVAL);
   return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
 }
-function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
+function triggerCrawlingAPI(domains, companies,analysisName,list) {
 
   var details = {
-    "url1": urlForPrices,
-    "url2": urlForNews,
-    "name": analysisName,
-    "stock_symbols": store.getState().apps.appsStockSymbolsInputs
+    "domains": domains,
+    "stock_symbols": list,
+    "analysis_name": analysisName,
+    // "stock_symbols": store.getState().apps.appsStockSymbolsInputs
 
   }
   return fetch(API + '/api/stockdataset/', {

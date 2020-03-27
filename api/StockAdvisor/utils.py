@@ -4,6 +4,8 @@ from builtins import range
 import hashlib
 import string
 
+from django.conf import settings
+
 # import watson_developer_cloud.natural_language_understanding.features.v1 \
 #     as Features
 # from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
@@ -61,11 +63,16 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
     """
 
     # apikey = 'sK2KMSxYIyeQiYJpb9ugbMI5cjZRW6e2MSYLrWTtoINy' #Sivavamsi creds
-    #
     # service_url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/9945cca0-ece4-45c8-903e-efbf3fcc61ff'
 
-    apikey = "UXyQqWwT26Ruu_PgpAvehj_q0Lg3xFOCKMQ-IX2WTu1j" # Rahuls creds
-    service_url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/259e5cd0-ac42-45e9-86e8-b9c772d3131f"
+    # apikey = "UXyQqWwT26Ruu_PgpAvehj_q0Lg3xFOCKMQ-IX2WTu1j" # Rahuls creds
+    # service_url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/259e5cd0-ac42-45e9-86e8-b9c772d3131f"
+
+    # apikey = '7bhl_NWHuTmL-wrIICRpKr-wvu0alPwNyhO8UAfvYLWC' #Dechamma's creds
+    # service_url = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/6cf4a4bd-8b59-407c-ae31-14fbfc889c65'
+
+    apikey = settings.STOCK_SENSE_CREDS['ibm-watson']['api_key']
+    service_url = settings.STOCK_SENSE_CREDS['ibm-watson']['service_url']
 
     authenticator = IAMAuthenticator(apikey)
 
@@ -91,7 +98,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
 
     nl_understanding = None
 
-    use_cache = False
+    # use_cache = False
     if use_cache:
         picled_content = bluemix_cache.get(url)
         if picled_content:

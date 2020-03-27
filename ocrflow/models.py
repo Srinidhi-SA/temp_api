@@ -12,12 +12,25 @@ from django.contrib.contenttypes.fields import(
     GenericForeignKey,
     GenericRelation
 )
-
+import simplejson as json
 from ocr.models import OCRImage
 from ocrflow.forms import ApprovalForm
 from ocrflow import process
+from singleton_model import SingletonModel
 
+class OCRRules(SingletonModel):
+    auto_assignment = models.BooleanField(default=True)
+    rulesL1 = models.TextField(max_length=3000, default={}, null=True, blank=True)
+    rulesL2 = models.TextField(max_length=3000, default={}, null=True, blank=True)
+    modified_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        auto_now_add=True
+    )
 
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super(OCRRules, self).save(*args, **kwargs)
 
 class Task(models.Model):
     name = models.CharField(max_length=100, blank=True)
@@ -78,13 +91,10 @@ class Task(models.Model):
         self.comments = comments
         self.reviewed_on = datetime.datetime.now()
         self.is_closed = True
-        reviewObj = ReviewRequest.objects.get(id=self.object_id)
-        reviewObj.modified_by = self.assigned_user
-        reviewObj.save()
         self.save()
 
         # execute content object task action
-        self.execute_task_actions(form)
+        self.execute_task_actions(form, user)
 
         if self.next_transition:
             new_state = self.process_config[self.next_transition]
@@ -108,10 +118,10 @@ class Task(models.Model):
             object_id=self.content_object.id
         )
 
-    def execute_task_actions(self, form):
+    def execute_task_actions(self, form, user):
         task_actions = self.state['on_completion']
         for action in task_actions:
-            action(form, self.content_object)
+            action(form, self.content_object, user)
 
 
 class SimpleFlow(models.Model):
@@ -120,28 +130,35 @@ class SimpleFlow(models.Model):
     class Meta:
         abstract = True
 
-    @property
-    def assigned_user(self):
+    def assigned_user(self, users=None):
         state = self.PROCESS['initial']
-        Reviewers_queryset = User.objects.filter(
-            groups__name=state['group'],
-            is_active=True,
-            ocruserprofile__is_active=True)
+        rules = json.loads(self.rule.rulesL1)
+        if users is None:
+            Reviewers_queryset = User.objects.filter(
+                groups__name=state['group'],
+                is_active=True,
+                ocruserprofile__is_active=True).order_by('?')
+        else:
+            Reviewers_queryset = User.objects.filter(
+                username__in=users).order_by('?')
 
         for reviewer in Reviewers_queryset:
-            isLimitReached = self.check_task_limit(state, reviewer)
+            isLimitReached = self.check_task_limit(rules, reviewer)
             if isLimitReached:
-                pass
+                if rules['auto']['remainaingDocsDistributionRule'] == 1:
+                    return reviewer
+                else:
+                    return None
             elif not isLimitReached:
                 return reviewer
             else:
                 return None
 
-    def check_task_limit(self, state, user):
+    def check_task_limit(self, rules, user):
         totalPendingTasks = len(Task.objects.filter(
             assigned_user=user,
             is_closed=False))
-        if totalPendingTasks >= state['rules']['auto']['max_docs_per_reviewer']:
+        if totalPendingTasks >= rules['auto']['max_docs_per_reviewer']:
             return True
         else:
             return False
@@ -152,34 +169,48 @@ class SimpleFlow(models.Model):
         group = Group.objects.get(name=state['group'])
         content_type = ContentType.objects.get_for_model(self)
 
-        if state['rules']['auto']['active']:
-            reviewer = self.assigned_user
-            if reviewer is None:
-                print("No Reviewers available. Moving to backlog")
-                pass
+        if initial == 'initial':
+            rules = json.loads(self.rule.rulesL1)
+        else:
+            rules = json.loads(self.rule.rulesL2)
+        if rules['auto']['active'] == "True":
+            reviewer = self.assigned_user()
+        else:
+            usersList = rules['custom']['selected_reviewers']
+            reviewer = self.assigned_user(users=usersList)
+        if reviewer is None:
+            print("No Reviewers available. Moving to backlog")
+            pass
+        else:
+            Task.objects.create(
+                name=state['name'],
+                slug=initial,
+                assigned_group=group,
+                assigned_user=reviewer,
+                content_type=content_type,
+                object_id=self.id
+            )
+            imageObject=OCRImage.objects.get(id=self.ocr_image.id)
+            if initial == 'initial':
+                imageObject.is_L1assigned = True
             else:
-                Task.objects.create(
-                    name=state['name'],
-                    slug=initial,
-                    assigned_group=group,
-                    assigned_user=reviewer,
-                    content_type=content_type,
-                    object_id=self.id
-                )
-                self.status='submitted_for_review'
-                self.save()
+                imageObject.is_L2assigned = True
+            imageObject.assignee=reviewer
+            imageObject.save()
+            self.status='submitted_for_review'
+            self.save()
 
 class ReviewRequest(SimpleFlow):
     # assign your process here
     PROCESS = process.AUTO_ASSIGNMENT
     slug = models.SlugField(null=False, blank=True, max_length=100)
-    ocr_image = models.ForeignKey(
+    ocr_image = models.OneToOneField(
         OCRImage,
         blank=True,
         null=True,
         related_name='review_requests'
     )
-
+    rule = models.ForeignKey(OCRRules, blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
         User,
@@ -220,7 +251,6 @@ class ReviewRequest(SimpleFlow):
 
 def submit_for_approval(sender, instance, created, **kwargs):
     if created:
-        print("Starting simpleflow for review ...")
         instance.status = "created"
         instance.save()
         instance.start_simpleflow()

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -14,6 +14,7 @@ import { store } from '../../../store';
     ocrImgPath: store.ocr.ocrImgPath,
     originalImgPath: store.ocr.originalImgPath,
     imageSlug: store.ocr.imageSlug,
+    ocrDocList: store.ocr.OcrRevwrDocsList,
   };
 })
 
@@ -53,7 +54,7 @@ export class OcrImage extends React.Component {
     let canvasrect = canvasElem.getBoundingClientRect();
     let canvasX = event.clientX - canvasrect.left;
     let canvasY = event.clientY - canvasrect.top;
-    console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
+    //console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
     this.extractText(canvasX, canvasY);
     // ctx.beginPath();
     // ctx.rect(x, y, 100, 50);
@@ -66,8 +67,20 @@ export class OcrImage extends React.Component {
     popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
 
   }
-  handleImagePageFlag = () => {
-    window.history.go(-1)
+  handleMarkComplete = () => {
+     window.history.go(-1)
+    //  let val= this.props.ocrDocList.data.filter(i=>i.ocrImageData.slug == this.props.imageSlug);
+    //  console.log(val,"ppppppppp");
+    // let id = b;
+    // return fetch(API + '/ocrflow/tasks/' + id, {
+    //   method: 'post',
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify({ "status": "done", "remark": "good" })
+    // }).then(response => response.json())
+    //   .then(data => {
+    //     console.log(data);
+       
+    //   });
   }
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
@@ -110,8 +123,7 @@ export class OcrImage extends React.Component {
       body: JSON.stringify({ "slug": this.props.imageSlug, "x": x, "y": y })
     }).then(response => response.json())
       .then(data => {
-        this.setState({ imageDetail: data });
-        this.setState({ text: data.word });
+        this.setState({ imageDetail: data, text: data.word });
         document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
@@ -119,7 +131,7 @@ export class OcrImage extends React.Component {
     //   bootbox.alert("coordinates are not correct")
     // });
   }
-  
+
   updateText = () => {
     document.getElementById("loader").classList.add("loader_ITE")
     let index = this.state.imageDetail.index;
@@ -130,8 +142,12 @@ export class OcrImage extends React.Component {
     }).then(response => response.json())
       .then(data => {
         if (data.message === "SUCCESS") {
-          document.getElementById("loader").classList.remove("loader_ITE");
-          document.getElementById("successMsg").innerText = "Updated successfully.";
+          this.props.dispatch(updateOcrImage(data.generated_image));
+          setTimeout(() => {
+            document.getElementById("loader").classList.remove("loader_ITE");
+            document.getElementById("successMsg").innerText = "Updated successfully.";
+          }, 3000);
+          //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
 
@@ -152,15 +168,16 @@ export class OcrImage extends React.Component {
       });
 
   }
+  handleText = (e) => {
+    this.setState({ text: e.target.value });
+    document.getElementById("successMsg").innerText = " ";
+  }
 
   render() {
     return (
       <div>
         <div className="row">
           <div className="col-sm-12">
-            <button class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal_badscan">
-              <i class="fa fa-info-circle"></i> Bad Scan
-            </button>
             <div class="form-group pull-right ocr_highlightblock">
               <label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
               <select class="form-control inline-block 1-100" id="select_confidence">
@@ -230,7 +247,7 @@ export class OcrImage extends React.Component {
                   <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={(e) => this.setState({ text: e.target.value })} />
+                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={this.handleText} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
@@ -251,7 +268,14 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
-          <Button bsStyle="primary" onClick={this.handleImagePageFlag} style={{ margin: 20 }}><i class="fa fa-close"></i> close</Button>
+          <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
+              <i class="fa fa-info-circle"></i> Bad Scan
+          </button>
+          {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
+            <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+           }
+            </div>
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">

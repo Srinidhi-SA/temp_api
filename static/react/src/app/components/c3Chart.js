@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
+import {chartdate} from "../actions/chartActions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
@@ -98,7 +99,7 @@ export class C3Chart extends React.Component {
 
   }*/
 
-  updateChart() {
+  updateChart(){
     var that = this;
     let data = this.props.data;
     if (this.props.sideChart) {
@@ -116,6 +117,7 @@ export class C3Chart extends React.Component {
       else if(data.data.type == "pie")
       {//removing logic for pie formatting >>this.props.yformat == '.4f' ? data.pie.label.format = d3.format('.4f'):data.pie.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s}
       }else
+      //below changed from 2s to 'this.props.yformat'.
       this.props.yformat == '.4f' ? data.axis.y.tick.format = d3.format('.4f'):data.axis.y.tick.format = d3.format(this.props.yformat);//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
 
       if (data.tooltip && data.tooltip.format){
@@ -124,7 +126,7 @@ export class C3Chart extends React.Component {
         else if(this.props.yformat == '.4f')//If .4f is coming from API then set tooltip format is also .4f
         data.tooltip.format.value = d3.format('.4f');
         else//set tooltip format as .2f for all the formats other than .4f
-        data.tooltip.format.value = d3.format(this.props.yformat);
+        data.tooltip.format.value = d3.format(this.props.yformat);// instead of '.2f', updated to pass yformat directly
       }
     }
     else
@@ -200,7 +202,8 @@ export class C3Chart extends React.Component {
         }
       }
 
-      data.tooltip.format.title = function(d) {
+      data.tooltip.format.title = (d) =>{
+        this.props.dispatch(chartdate(xdata[d]));
         return xdata[d];
       }
 
@@ -281,7 +284,6 @@ export class C3Chart extends React.Component {
     }
 
   }
-
   render() {
     var that = this;
     if (this.props.classId != '_side' && !this.props.widthPercent) {

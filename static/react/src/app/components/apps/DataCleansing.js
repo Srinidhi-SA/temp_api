@@ -456,14 +456,6 @@ tableHead.addEventListener('click', function (e) {
             <div class="col-md-12">
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
-                  <div class="form-group">
-                    <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
-                    <div class="col-sm-7">
-                      <div className="content-section implementation">
-                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" checked={store.getState().datasets.duplicateAttributes} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} disabled/>
-                      </div>
-                    </div>
-                  </div>
                   <div class="clearfix xs-mb-5"></div>
                   <div class="form-group">
                     <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>

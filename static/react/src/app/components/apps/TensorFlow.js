@@ -90,7 +90,7 @@ export class TensorFlow extends React.Component {
   getOptions(item) {
       var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
       var options = arr.map(k => {
-          return <option value={k.name} selected={k.selected}> {k.name}</option>
+          return <option value={k.name} selected={k.sel}> {k.name}</option>
       })
       return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
   }
@@ -165,7 +165,8 @@ export class TensorFlow extends React.Component {
   }
 
   handleClick(){ 
-  var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName;
+  // var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName; //Don't erase, For feature reference.
+  var slectedLayer=document.getElementsByClassName('form-control layer_tf')[0].value //instead of picking slectedLayer from store config, using documentObject of selectBox.
   var tfArray= store.getState().apps.tensorFlowInputs;
   
     if (tfArray.length>0) {
@@ -209,7 +210,8 @@ export class TensorFlow extends React.Component {
                 <div className="col-md-6">
                  <div className ="row">
                  <div className="col-md-2">
-                   <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue} />
+                 <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.acceptedValue!=""? item.acceptedValue:(item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue)}/>
+                  {/* <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : (item.acceptedValue!=""? item.acceptedValue: item.defaultValue)}/> previous terinary condition */}
                    <div className="error"></div>
                 </div>
                 </div> 

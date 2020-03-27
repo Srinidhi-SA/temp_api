@@ -164,8 +164,8 @@ CELERY_SCRIPTS_DIR=env('CELERY_SCRIPTS_DIR')
 USE_YARN_DEFAULT_QUEUE=True
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
 
-USE_OCR = True
-
+SEND_WELCOME_MAIL = False
+OCR_SECONDARY_TASK_PERCENTAGE = 100
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',
@@ -186,3 +186,19 @@ OUTLOOK_AUTH_CODE =  '''OAQABAAIAAACQN9QBRU3jT6bcBQLZNUj73VtUUkVft_y8E3LBiK5eHMg
 OUTLOOK_REFRESH_TOKEN='''OAQABAAAAAACQN9QBRU3jT6bcBQLZNUj74AdP-GpiUTsBoBG1m4y3NTkUymq4ac3KU_YPhtVb1PesVm9n2Mos3NvulsjtmvInD49GdFkw3g4MMibA4UpXyO5bzCF4bCx6k7HQd-eoa4EbbgmgP_UpMXX2iK4UlWTCxiAOvJoa7Gzh6f6uy5BNexo_db2-_pHuSyxgWvqU_oV5SoO2eDnGHP1KYoNiaLWhapxRSUT5yULNGHO2Se--D6k_qUA8Q-AvSwr5Rrcza5Qh7VsYA3trPN8GiaWI_3OntYZO45R8b8EANO1QL9SITJIA9jdjiJPO8igczouk0_QHtd-epIaM2bTdbNSwOqSPARpKus7uNod1fScsqa8dvS85zVvpHs1WRHl_Rhxc9mo7hFKEo_ansWmpUwySc2YWppwzRa1bwolBoCcrxbmrdXy58YgBIo-kIejobUFD1TzQdUxY4XByasg18Ozy0W0YbgFvD2fR6_-xV6olzvCEOJFb_QQ381xWuRiDiwEH1BP4WWxD_bMjGlWgg_EPXNCRhYL9w9LPIs8wGMv4hZvFc7IJWMzkf5cHqfELIWQy-fmXxF-_PmoOsAs_5ilXgbVWPngBmB8hZZd70KUjEgkNDjjhS9syJ_FyciBIeTFigEzuQUmSR6_K3w8io0WrVzuH9rYkk5ttKgLcLbkpYP__7TddhUg_pjB3kGLEcM9m7tckB7a5_7CvXAjvn5scI_0k8SoeSv1IAzTmWk4ORv9bSlqksNS2GbBsDZXRHG6IqUqqvCOZIFrXjIYd9eOMvbhKcHQdSmJqlt60hcfx8JqT0CAA'''
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
+
+AUTOML_EMAIL_SERVICE_FLAG = env('AUTOML_EMAIL_SERVICE_FLAG')
+
+STOCK_SENSE_CREDS = {
+    "alphavantage": {
+        "api_key": env("ALPHA_VANTAGE_API_KEY"),
+        "function": env("ALPHA_VANTAGE_FUNCTION")
+    },
+    "newsapi": {
+        "api_key": env("NEWSAPI_API_KEY")
+    },
+    "ibm-watson": {
+        "api_key": env("IBM_WATSON_API_KEY"),
+        "service_url": env("IBM_WATSON_SERVICE_URL")
+    }
+}

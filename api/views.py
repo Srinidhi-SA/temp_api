@@ -208,8 +208,9 @@ class SignalView(viewsets.ModelViewSet):
             shared_by = ast.literal_eval(json.dumps(shared_by.username))
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Signals should not be shared to itself.')
-
+            sharedTo=list()
             for i in shared_id:
+                sharedTo.append(User.objects.get(pk=i).username)
                 import random, string
                 if signal_obj.shared is True:
                     signal_details = {
@@ -254,7 +255,7 @@ class SignalView(viewsets.ModelViewSet):
                     else:
                         print(signal_serializer.errors)
 
-            return JsonResponse({'message': 'Signals shared.','status': 'true'})
+            return JsonResponse({'message': 'Signals shared.','status': 'true','sharedTo':sharedTo})
 
         except Exception as err:
             print(err)
@@ -587,8 +588,9 @@ class TrainerView(viewsets.ModelViewSet):
 
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Models should not be shared to itself.')
-
+            sharedTo=list()
             for i in shared_id:
+                sharedTo.append(User.objects.get(pk=i).username)
                 import random, string
                 if trainer_obj.shared is True:
                     trainer_details = {
@@ -640,7 +642,7 @@ class TrainerView(viewsets.ModelViewSet):
                     #    {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
                     #     'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
                 #shared_trainer_object.create()
-            return JsonResponse({'message': 'Models shared.','status': 'true'})
+            return JsonResponse({'message': 'Models shared.','status': 'true','sharedTo':sharedTo})
 
         except Exception as err:
             print(err)
@@ -908,7 +910,9 @@ class ScoreView(viewsets.ModelViewSet):
 
             if request.user.id in [int(i) for i in shared_id]:
                 return sharing_failed_exception('Score should not be shared to itself.')
+            sharedTo=list()
             for id in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
                 import random, string
                 if score_obj.shared is True:
                     score_details = {
@@ -955,7 +959,7 @@ class ScoreView(viewsets.ModelViewSet):
                     else:
                         print(signal_serializer.errors)
 
-            return JsonResponse({'message': 'Score Shared.','status': 'true'})
+            return JsonResponse({'message': 'Score Shared.','status': 'true','sharedTo':sharedTo})
         except Exception as err:
             print(err)
             return sharing_failed_exception('Score sharing failed.')
@@ -1109,15 +1113,44 @@ class StockDatasetView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = (StocksRelatedPermission,)
 
+    @staticmethod
+    def validate_inputs(stocks, data, user_id):
+        stock_query = StockDataset.objects.filter(deleted=False, created_by_id=user_id, name=data['name'])
+        if len(stock_query) > 0:
+            # return creation_failed_exception("Analysis name already exists")
+            return "Analysis name already exists"
+        from api.StockAdvisor.crawling.process import fetch_news_articles
+        companies = []
+        no_articles_flag = False
+        for key in stocks:
+            articles = fetch_news_articles(stocks[key], data['domains'])
+            if len(articles) <= 0:
+                no_articles_flag = True
+                companies.append(stocks[key])
+        if no_articles_flag:
+            if len(companies) > 1:
+                company_str = "{} and {}".format(", ".join(companies[:-1]), companies[-1])
+            else:
+                company_str = companies[0]
+            # return creation_failed_exception("No news articles found for "+company_str)
+            return "No news articles found for "+company_str
+
     def create(self, request, *args, **kwargs):
 
         data = request.data
         config = data.get('config')
-        stock_symbol = config.get('stock_symbols')
-        stock_values = [item.get('value').lower() for item in stock_symbol if item.get('value') != ""]
         new_data = {}
-        new_data['stock_symbols'] = (", ").join(list(set(stock_values)))
-        new_data['name'] = config.get('name')
+        new_data['name'] = config.get('analysis_name')
+        domains = config.get('domains')
+        new_data['domains'] = (", ").join(list(set(domains)))
+        stock_symbol = config.get('stock_symbols')
+
+        stocks = {item['ticker'].lower(): item['name'] for item in stock_symbol}
+        error_str = self.validate_inputs(stocks, new_data, request.user.id)
+        if error_str is not None:
+            return creation_failed_exception(error_str)
+
+        new_data['stock_symbols'] = json.dumps(stocks)
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
 

@@ -20490,8 +20490,9 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 130px;
+  width: 95%;
 }
+
 .for_multiselect .p-multiselect-header::after {
   content: "Select All";
 }
@@ -20713,7 +20714,8 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 
-.ocr_section { background: #f6f6f6; padding-top: 0; border-radius: 10px; overflow: hidden; padding-bottom: 20px; }
+.ocr_section { background: #f6f6f6; padding-top: 20px; border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 20px; }
 
 
 .modal_stepsBlock .col-sm-9 p b {
@@ -22594,4 +22596,32 @@ ul.ocrUploadTabs{
 }
 #select_confidence:focus{
   box-shadow: none !important;
+}
+.cst_ocr_tabs li a.active{
+  background: #232e42;
+  color: #fff;
+}
+.cst_ocr_tabs li a.active .fa{
+  color: #1cc5b8;
+}
+.cst_ocr_tabs {
+  background: #d9d9d9;
+  border-radius: 4px;
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.p-multiselect-header .p-multiselect-close {
+  display: none;
+}
+.bgStockBox h3 small {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+}
+.stockExtractModel .modal-content{
+  overflow: inherit;
 }

@@ -3,6 +3,8 @@ export default function reducer(state = {
   OcrfileUpload: "",
   OcrDataList: "",
   OcrProjectList:"",
+  OcrReviewerList:"",
+  OcrRevwrDocsList:'',
   imageFlag: false,
   originalImgPath: "",
   ocrImgPath:"",
@@ -19,6 +21,7 @@ export default function reducer(state = {
   ocrFilesSortType: null,
   ocrFilesSortOn: null,
   documentFlag:false,
+  revDocumentFlag:false,
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
@@ -46,11 +49,25 @@ export default function reducer(state = {
   selectedTabId : "none",
   ocrSearchElement : "",
   ocrUserPageNum : 1,
-
   search_document:'',
   search_project:'',
   selected_project_slug:'',
-  selected_project_name:''
+  selected_project_name:'',
+  selected_reviewer_slug:'',
+  selected_reviewer_name:'',
+  configureTabSelected : "initialReview",
+  iRLoaderFlag : false,
+  iRToggleFlag : true,
+  iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+  iRList : {},
+  iRSearchElem : "",
+  sRLoaderFlag : false,
+  sRToggleFlag : true,
+  sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
+  sRList : {},
+  sRSearchElem : "",
+  configRules : {}
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -68,34 +85,62 @@ export default function reducer(state = {
         OcrfileUpload:{},
       }
     }
-      break;
-      case "OCR_PROJECT_LIST":
-      {
-        return {
-          ...state,
-          OcrProjectList: action.data
-        }
-      }
-      break;
-      case "OCR_PROJECT_LIST_FAIL":
-      {
-      throw new Error("Unable to fetch projects list!!");
-      }
-      
-      case "OCR_UPLOADS_LIST":
-      {
-        return {
-          ...state,
-          OcrDataList: action.data
-        }
-      }
-      break;
-    case "OCR_UPLOADS_LIST_FAIL":
+    break;
+    //Projects,Documents,Reviewers Lists//
+    case "OCR_PROJECT_LIST":
     {
-      throw new Error("Unable to fetch uploaded images list!!");
+      return {
+        ...state,
+        OcrProjectList: action.data
+      }
     }
     break;
-      case "SAVE_DOCUMENT_FLAG":
+    case "OCR_PROJECT_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch projects list!!");
+    }
+    break;
+    case "OCR_UPLOADS_LIST":
+    {
+      return {
+        ...state,
+        OcrDataList: action.data
+      }
+    }
+    break;
+    case "OCR_UPLOADS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REV_DOCS_LIST":
+    {
+      return {
+        ...state,
+        OcrRevwrDocsList: action.data
+      }
+    }
+    break;
+    case "OCR_REV_DOCS_LIST_FAIL":
+    {  
+    throw new Error("Unable to fetch uploaded images list!!");
+    }
+    break;
+    case "OCR_REVIEWERS_LIST":
+    {
+      return {
+        ...state,
+        OcrReviewerList: action.data
+      }
+    }
+    break;
+    case "OCR_REVIEWERS_LIST_FAIL":
+    {
+    throw new Error("Unable to fetch Reviewers list!!");
+    }
+    break;
+     ////
+    case "SAVE_DOCUMENT_FLAG":
       {
         return {
           ...state,
@@ -103,6 +148,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SAVE_REV_DOCUMENT_FLAG":
+      {
+        return {
+          ...state,
+          revDocumentFlag: action.flag
+        }
+      }
+      break;
+      
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -187,7 +241,7 @@ export default function reducer(state = {
           imageFlag: action.flag
         }
       }
-      break;
+    break;
     case "SAVE_IMAGE_DETAILS":
       {
         return {
@@ -195,10 +249,17 @@ export default function reducer(state = {
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
-          // ocrImagePath: "http://madvisor-dev.marlabsai.com/media/ocrData/img-uw2ii50xd9_generated_image_fGw3pEk.png"
         }
       }
       break;
+      case "UPDATE_OCR_IMAGE":
+        {
+          return {
+            ...state,
+            ocrImgPath: action.data,
+          }
+        }
+        break;
     case "OCR_FILES_SORT":
       {
         return {
@@ -207,7 +268,7 @@ export default function reducer(state = {
           ocrFilesSortType: action.ocrFilesSortType
         }
       }
-      break;
+    break;
     case "FILTER_BY_STATUS":
       {
         return {
@@ -215,7 +276,7 @@ export default function reducer(state = {
           filter_status: action.status,
         }
       }
-      break;
+    break;
     case "FILTER_BY_CONFIDENCE":
       {
         return {
@@ -223,7 +284,7 @@ export default function reducer(state = {
           filter_confidence: action.confidence,
         }
       }
-      break;
+    break;
     case "FILTER_BY_ASSIGNEE":
       {
         return {
@@ -231,7 +292,7 @@ export default function reducer(state = {
           filter_assignee: action.assignee
         }
       }
-      break;
+    break;
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -427,6 +488,7 @@ export default function reducer(state = {
           ocrUserPageNum : action.val
         }
       }
+      break;
       case "CLEAR_USER_SEARCH_ELEMENT":{
         return {
           ...state,
@@ -460,6 +522,159 @@ export default function reducer(state = {
         }
       }
       break;
-  }
+      case "SELECTED_REVIEWER_DETAILS":
+      {
+        return {
+          ...state,
+          selected_reviewer_slug:action.slug,
+          selected_reviewer_name:action.name
+        }
+      }
+      break;
+
+    //Configure Tab
+    case "SAVE_SEL_CONFIGURE_TAB":
+      {
+        return {
+          ...state,
+          configureTabSelected : action.selTab
+        }
+      }
+      break;
+      case "SET_IR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          iRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_IR_LIST":
+      {
+        return {
+          ...state,
+          iRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_IR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          iRToggleFlag : action.val,
+        }
+      }
+      break;
+      case "SAVE_IR_DATA":{
+        let curIRDetails = state.iRConfigureDetails
+        curIRDetails[action.name] = action.value
+        return{
+          ...state,
+          iRConfigureDetails : curIRDetails
+        }
+      }
+      break;
+      case "STORE_IR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          iRSearchElem : action.val
+        }
+      }
+      break;
+      case "SET_SR_LOADER_FLAG":
+      {
+        return {
+          ...state,
+          sRLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SAVE_SR_LIST":
+      {
+        return {
+          ...state,
+          sRList : action.data.allUsersList
+        }
+      }
+      break;
+      case "STORE_SR_TOGGLE_FLAG":
+      {
+        return{
+          ...state,
+          sRToggleFlag : action.val,
+        }
+      }
+      break;
+      case "STORE_SR_SEARCH_ELEMENT" :
+      {
+        return {
+          ...state,
+          sRSearchElem : action.val
+        }
+      }
+      break;
+      case "SAVE_SR_DATA":{
+        let curSRDetails = state.sRConfigureDetails
+        curSRDetails[action.name] = action.value
+        return{
+          ...state,
+          sRConfigureDetails : curSRDetails
+        }
+      }
+      break;
+      case "CLEAR_REVIEWER_CONFIG":
+      {
+        let data1 = state.configRules.iRRule
+        let irRul = {}
+        if(data1.auto.active === "True"){
+          irRul = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          irRul = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
+        }
+        let data2 = state.configRules.sRRule
+        let srRul = {}
+        if(data2.auto.active === "True"){
+          srRul = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          srRul = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+        }
+        return {
+          ...state,
+          iRToggleFlag : true,
+          iRConfigureDetails : irRul,
+          // sRToggleFlag : true,
+          sRConfigureDetails : srRul,
+          iRSearchElem : "",
+          sRSearchElem : ""
+        }
+      }
+      break;
+      case "SAVE_RULES_FOR_CONFIGURE":
+      {
+        let data1 = action.data.rulesL1
+        let irRules = {}
+        if(data1.auto.active === "True"){
+          irRules = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          irRules = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
+        }
+        let data2 = action.data.rulesL2
+        let srRules = {}
+        if(data2.auto.active === "True"){
+          srRules = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        }else if(data1.custom.active === "True"){
+          srRules = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+        }
+        return {
+          ...state,
+          iRToggleFlag : action.data.auto_assignment,
+          configRules : {"iRRule":action.data.rulesL1,"sRRule":action.data.rulesL2},
+          iRConfigureDetails : irRules,
+          sRConfigureDetails : srRules,
+        }
+      }
+      break;
+}
   return state
 }

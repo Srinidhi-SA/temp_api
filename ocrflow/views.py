@@ -2,10 +2,11 @@ from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ocrflow.models import Task, SimpleFlow, ReviewRequest
+from ocrflow.models import Task, SimpleFlow, ReviewRequest, OCRRules
 from .serializers import TaskSerializer, \
     ReviewRequestListSerializer, \
-    ReviewRequestSerializer
+    ReviewRequestSerializer, \
+    OCRRulesSerializer
 from ocr.serializers import OCRImageSerializer
 from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
@@ -13,8 +14,64 @@ from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
 from rest_framework.decorators import list_route, detail_route
 from django.core.exceptions import PermissionDenied
+from rest_framework.decorators import list_route, detail_route
+import simplejson as json
+import datetime
 
 # Create your views here.
+class OCRRulesView(viewsets.ModelViewSet):
+    """
+    Model: OCRRules
+    Description : Defines OCR rules for reviewer task assignments
+    """
+    serializer_class = OCRRulesSerializer
+    model = OCRRules
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = Task.objects.all()
+        return queryset
+
+    @list_route(methods=['post'])
+    def autoAssignment(self,request):
+        data = request.data
+        print(data['autoAssignment'])
+        if data['autoAssignment']== "True":
+            print("Active")
+            ruleObj = OCRRules.objects.get(id=1)
+            ruleObj.auto_assignment = True
+            ruleObj.save()
+            return JsonResponse({"message":"Auto-Assignment Active.", "status": True})
+        else:
+            ruleObj = OCRRules.objects.get(id=1)
+            ruleObj.auto_assignment = False
+            ruleObj.save()
+            return JsonResponse({"message":"Auto-Assignment De-active.", "status": True})
+
+    @list_route(methods=['post'])
+    def modifyRulesL1(self, request, *args, **kwargs):
+        modifiedrule = request.data
+        ruleObj = OCRRules.objects.get(id=1)
+        ruleObj.rulesL1 = json.dumps(modifiedrule)
+        ruleObj.modified_at = datetime.datetime.now()
+        ruleObj.save()
+        return JsonResponse({"message":"Rules L1 Updated.", "status": True})
+
+    @list_route(methods=['post'])
+    def modifyRulesL2(self, request, *args, **kwargs):
+        modifiedrule = request.data
+        ruleObj = OCRRules.objects.get(id=1)
+        ruleObj.rulesL2 = json.dumps(modifiedrule)
+        ruleObj.modified_at = datetime.datetime.now()
+        ruleObj.save()
+        return JsonResponse({"message":"Rules L2 Updated.", "status": True})
+
+    @list_route(methods=['get'])
+    def get_rules(self, request):
+        ruleObj = OCRRules.objects.get(id=1)
+        serializer = OCRRulesSerializer(instance=ruleObj, context={"request": self.request})
+        return Response(serializer.data)
+
 class TaskView(viewsets.ModelViewSet):
     """
     Model: Task
@@ -25,28 +82,17 @@ class TaskView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    print("~"*100)
-
     def get_queryset(self):
         queryset = Task.objects.all()
         return queryset
 
     def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        # queryset = self.get_queryset()
-        # serializer = TaskSerializer(queryset, many=True)
-        # return Response(serializer.data)
+
         return get_listed_data(
             viewset=self,
             request=request,
             list_serializer=TaskSerializer
         )
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(
-    #         TaskView, self).get_context_data(**kwargs)
-    #     context['approval_form'] = self.task.get_approval_form
-    #     return context
 
     @property
     def task(self):
@@ -88,9 +134,8 @@ class ReviewRequestView(viewsets.ModelViewSet):
         return queryset
 
     def get_specific_assigned_queryset(self, username):
-        user = User.objects.get(username=username)
         queryset = ReviewRequest.objects.filter(
-            tasks__assigned_user=user
+            tasks__assigned_user__username=username
             ).order_by('-created_on')
         return queryset
 
