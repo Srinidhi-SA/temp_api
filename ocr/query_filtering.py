@@ -4,6 +4,8 @@ Commomly used queries implementations for increased re-usability.
 # from itertools import chain
 # from builtins import object
 import ast
+
+from django.contrib.auth.models import User
 from rest_framework.response import Response
 #from api.exceptions import creation_failed_exception, update_failed_exception
 #from django.db.models import Q
@@ -132,18 +134,25 @@ class QueryCommonFiltering:
             if operator == 'EQL':
                 self.query_set = self.query_set.filter(confidence=float(value))
         if self.status is not None:
-            status_mapping_dict = {'R': 'Ready to recognize', 'V': 'Ready to verify', 'E': 'Ready to export'}
-            self.query_set = self.query_set.filter(status=status_mapping_dict[str(self.status)])
+            status_mapping_dict = {'R': 'ready_to_recognize', 'V': 'ready_to_verify', 'E': 'ready_to_export'}
+            print(status_mapping_dict[self.status])
+            self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
+        if self.fields is not None:
+            operator, value = self.fields[:3], self.fields[3:]
+            if operator == 'GTE':
+                self.query_set = self.query_set.filter(fields__gte=float(value))
+            if operator == 'LTE':
+                self.query_set = self.query_set.filter(fields__lte=float(value))
+            if operator == 'EQL':
+                self.query_set = self.query_set.filter(fields=float(value))
+        if self.accuracy is not None:
+            self.query_set = self.query_set.filter(accuracy=self.accuracy)
+        if self.assignee is not None:
+            self.query_set = self.query_set.filter(assignee=User.objects.get(username=self.assignee))
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
             final_query_set = self.query_set.none()
-        if self.fields is not None:
-            self.query_set = self.query_set.filter(fields=self.fields)
-        if self.accuracy is not None:
-            self.query_set = self.query_set.filter(accuracy=self.accuracy)
-        if self.assignee is not None:
-            self.query_set = self.query_set.filter(assignee=self.assignee)
 
             for tag in self.filter_fields:
                 query_set_temp = self.query_set.filter(tags__icontains=tag).distinct()
