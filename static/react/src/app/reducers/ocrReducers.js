@@ -66,7 +66,8 @@ export default function reducer(state = {
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
   sRSearchElem : "",
-  configRules : {}
+  configRules : {},
+  imageTaskId: "",
 
 }, action) {
   switch (action.type) {
@@ -249,6 +250,7 @@ export default function reducer(state = {
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
+          imageTaskId: action.data.tasks.id,
         }
       }
       break;

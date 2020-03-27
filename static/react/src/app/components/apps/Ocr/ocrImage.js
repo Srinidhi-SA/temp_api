@@ -15,6 +15,7 @@ import { store } from '../../../store';
     originalImgPath: store.ocr.originalImgPath,
     imageSlug: store.ocr.imageSlug,
     ocrDocList: store.ocr.OcrRevwrDocsList,
+    imageTaskId: store.ocr.imageTaskId,
   };
 })
 
@@ -68,18 +69,16 @@ export class OcrImage extends React.Component {
 
   }
   handleMarkComplete = () => {
-     window.history.go(-1)
-    //  let val= this.props.ocrDocList.data.filter(i=>i.ocrImageData.slug == this.props.imageSlug);
-    //  console.log(val,"ppppppppp");
-    // let id = b;
-    // return fetch(API + '/ocrflow/tasks/' + id, {
+     //window.history.go(-1)
+    // let id = this.props.imageTaskId;
+    // return fetch(API + '/ocrflow/tasks/' + id +'/', {
     //   method: 'post',
     //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    //   body: JSON.stringify({ "status": "done", "remark": "good" })
+    //   body: JSON.stringify({ "status": "reviewed", "remark": "good" })
     // }).then(response => response.json())
     //   .then(data => {
     //     console.log(data);
-       
+    //     bootbox.alert(statusMessages("success","small_mascot"));
     //   });
   }
   closePopOver = () => {
