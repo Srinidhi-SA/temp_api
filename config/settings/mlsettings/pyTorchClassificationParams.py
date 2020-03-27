@@ -943,7 +943,7 @@ PT_BIAS_PARAMS = [
         "description": "Bias initialisation parameter for the hidden layer.",
         "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
         "paramType": "list",
-        "uiElemType": "textBox",
+        "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
