@@ -654,8 +654,8 @@ PT_BIAS_INIT_Normal_PARAMS = [
 
 PT_BIAS_INIT_Constant_PARAMS = [
     {
-        "name": "mean",
-        "displayName": "mean",
+        "name": "val",
+        "displayName": "val",
         "description": "Fills the input Tensor with the value {val}",
         "defaultValue": 1.0,
         "paramType": "number",
@@ -726,7 +726,7 @@ PYTORCH_BIAS_INIT_PARAMETERS = [
         "name": "Other",
         "displayName": "Other",
         "description": "Input Units parameter for the hidden layer.",
-        "selected": False,
+        "selected": True,
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
@@ -934,6 +934,8 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": [obj for obj in PT_WEIGHT_INIT_Orthogonal_PARAMS]},
     {"name": "Sparse", "selected": False, "displayName": "Sparse",
      "parameters": [obj for obj in PT_WEIGHT_INIT_Sparse_PARAMS]},
+    {"name": "Default", "selected": True, "displayName": "Default",
+     "parameters": None},
 ]
 
 
@@ -1002,7 +1004,7 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "bias_init",
         "displayName": "bias_init",
         "description": "Bias initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
+        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS], #other
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
@@ -1014,7 +1016,7 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "weight_init",
         "displayName": "weight_init",
         "description": "Weight initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
+        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS], #default
         "paramType": "list",
         "uiElemType": "textBox",
         "display": True,

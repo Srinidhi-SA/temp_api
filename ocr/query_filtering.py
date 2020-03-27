@@ -34,6 +34,9 @@ class QueryCommonFiltering:
     status = None
     confidence = None
     first_name = None
+    fields = None
+    accuracy = None
+    assignee = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -91,6 +94,27 @@ class QueryCommonFiltering:
             else:
                 self.filter_fields = temp_app_filter
 
+        if 'fields' in request.query_params:
+            temp_name = self.request.query_params.get('fields')
+            if temp_name is None or temp_name is "":
+                self.fields = self.fields
+            else:
+                self.fields = temp_name
+
+        if 'accuracy' in request.query_params:
+            temp_name = self.request.query_params.get('accuracy')
+            if temp_name is None or temp_name is "":
+                self.accuracy = self.accuracy
+            else:
+                self.accuracy = temp_name
+
+        if 'assignee' in request.query_params:
+            temp_name = self.request.query_params.get('assignee')
+            if temp_name is None or temp_name is "":
+                self.assignee = self.assignee
+            else:
+                self.assignee = temp_name
+
     def execute_common_filtering_and_sorting_and_ordering(self):
         """
         Method that handles filtering, sorting and ordering.
@@ -100,8 +124,13 @@ class QueryCommonFiltering:
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
         if self.confidence is not None:
-            confidence_mapping_dict = {'E': 'Equal', 'G': 'Greater than', 'L': 'Less than'}
-            self.query_set = self.query_set.filter(confidence=confidence_mapping_dict[self.confidence])
+            operator, value = self.confidence[:3], self.confidence[3:]
+            if operator == 'GTE':
+                self.query_set = self.query_set.filter(confidence__gte=float(value))
+            if operator == 'LTE':
+                self.query_set = self.query_set.filter(confidence__lte=float(value))
+            if operator == 'EQL':
+                self.query_set = self.query_set.filter(confidence=float(value))
         if self.status is not None:
             status_mapping_dict = {'R': 'Ready to recognize', 'V': 'Ready to verify', 'E': 'Ready to export'}
             self.query_set = self.query_set.filter(status=status_mapping_dict[str(self.status)])
@@ -109,6 +138,12 @@ class QueryCommonFiltering:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
             final_query_set = self.query_set.none()
+        if self.fields is not None:
+            self.query_set = self.query_set.filter(fields=self.fields)
+        if self.accuracy is not None:
+            self.query_set = self.query_set.filter(accuracy=self.accuracy)
+        if self.assignee is not None:
+            self.query_set = self.query_set.filter(assignee=self.assignee)
 
             for tag in self.filter_fields:
                 query_set_temp = self.query_set.filter(tags__icontains=tag).distinct()
