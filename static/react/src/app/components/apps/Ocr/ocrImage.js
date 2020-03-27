@@ -4,7 +4,7 @@ import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
-import { getUserDetailsOrRestart } from "../../../helpers/helper";
+import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
@@ -70,16 +70,20 @@ export class OcrImage extends React.Component {
   }
   handleMarkComplete = () => {
      //window.history.go(-1)
-    // let id = this.props.imageTaskId;
-    // return fetch(API + '/ocrflow/tasks/' + id +'/', {
-    //   method: 'post',
-    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    //   body: JSON.stringify({ "status": "reviewed", "remark": "good" })
-    // }).then(response => response.json())
-    //   .then(data => {
-    //     console.log(data);
-    //     bootbox.alert(statusMessages("success","small_mascot"));
-    //   });
+    let id = this.props.imageTaskId;
+    var data = new FormData();
+    data.append("status", "reviewed");
+    data.append("remark", "good");
+    return fetch(API + '/ocrflow/tasks/' + id +'/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json())
+      .then(data => {
+        if(data.submitted === true){
+        bootbox.alert(statusMessages("success","Document saved with reviewed changes.","small_mascot"));
+        }
+      });
   }
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
@@ -110,7 +114,6 @@ export class OcrImage extends React.Component {
   getHeader = (token) => {
     return {
       'Authorization': token,
-      'Content-Type': 'application/json'
     }
   }
 
