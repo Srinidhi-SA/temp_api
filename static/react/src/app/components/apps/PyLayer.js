@@ -195,7 +195,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
         }
-        else if(name === "eps" && (val>1 || val<0) || val === ""){
+        else if(name === "eps" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
@@ -215,17 +215,21 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
-        else if( (name === "lowerbound" || name === "upperbound") && $(".input_unit_pt")[0].value === ""){
+        else if( (name === "lower_bound" || name === "upper_bound") && $(".input_unit_pt")[0].value === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please enter Input units"
         }
-        else if( name === "lowerbound" && val< (-1/Math.sqrt($(".input_unit_pt")[0].value)) ){
+        else if( name === "lower_bound" && (val< (-1/Math.sqrt($(".input_unit_pt")[0].value)) || val==="") ){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Please should be greater than "+ (-1/Math.sqrt($(".units_ip")[0].value))
+            e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ (-1/Math.sqrt($(".input_unit_pt")[0].value))
         }
-        else if( name === "upperbound" && val> (1/Math.sqrt($(".input_unit_pt")[0].value)) ){
+        else if( name === "upper_bound" && (val> (1/Math.sqrt($(".input_unit_pt")[0].value)) || val === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Please should be greater than "+ 1/Math.sqrt($(".units_ip")[0].value)
+            e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ 1/Math.sqrt($(".input_unit_pt")[0].value)
+        }
+        else if( (name === "lower_bound" || name === "upper_bound")&& ( $(".lower_bound_pt")[0].value>$(".upper_bound_pt")[0].value )){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Lower bound must be less than Upper bound"
         }
         else if(defaultParamName === "weight_init" && name === "std" && (val<=0 || val>5)){
             this.props.dispatch(pytorchValidateFlag(false));
