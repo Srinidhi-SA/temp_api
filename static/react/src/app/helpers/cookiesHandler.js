@@ -8,7 +8,7 @@ export const cookieObj = {
     var exp = new Date(now.getTime() + COOKIEEXPIRETIMEINDAYS * 24 * 60 * 60 * 1000);
     var expires = exp.toUTCString();
     if (userDetail.token)
-      document.cookie = "userRole=" + userDetail.ocr_profile.role[0] + "; " + "expires=" + expires + "; path=/";
+      //document.cookie = "userRole=" + userDetail.ocr_profile.role[0] + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userToken=" + userDetail.token + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userName=" + userDetail.user.username + "; " + "expires=" + expires + "; path=/";
     document.cookie = "email=" + userDetail.user.email + "; " + "expires=" + expires + "; path=/";
@@ -32,7 +32,7 @@ export const cookieObj = {
     var now = new Date();
     var exp = new Date(now.getTime() - COOKIEEXPIRETIMEINDAYS * 24 * 60 * 60 * 1000);
     var expires = exp.toUTCString();
-    document.cookie = "userRole=;" + "; " + "expires=" + expires + "; path=/";
+   // document.cookie = "userRole=;" + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userToken=;" + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userName=;" + "; " + "expires=" + expires + "; path=/";
     document.cookie = "email=;" + "; " + "expires=" + expires + "; path=/";

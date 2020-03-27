@@ -22,28 +22,25 @@ export class OcrTopNavigation extends React.Component {
               <i class="fa fa-tachometer fa-lg"></i> Dashboard
             </NavLink>
           </li>
-          {getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser") &&
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" activeClassName="active">
               <i class="fa fa-book fa-lg"></i> Projects
             </NavLink>
             </li>
-          }
-          {getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser") &&
+          
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/configure/" activeClassName="active">
               <i class="fa fa-sliders fa-lg"></i> Configure
               </NavLink>
             </li>
-          }
+          
           <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" activeClassName="active">
             <i class="fa fa-users fa-lg"></i> Reviewers
               </NavLink>
           </li>
-          {getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser") &&
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/manageUser/" activeClassName="active">
               <i class="fa fa-user fa-lg"></i> Users
               </NavLink>
             </li>
-          }
+          
         </ul>
 
       </div>
