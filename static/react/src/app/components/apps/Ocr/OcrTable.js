@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem,tabActiveVal } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -30,6 +30,7 @@ export class OcrTable extends React.Component {
       showRecognizePopup: false,
       recognized: false,
       loader: false,
+      tab:'pActive'
     }
   }
 
@@ -121,6 +122,10 @@ export class OcrTable extends React.Component {
     this.props.dispatch(storeDocSearchElem(searchElememt))
     this.props.dispatch(getOcrUploadedFiles())
   }
+  filterByImageStatus(e){
+    this.props.dispatch( tabActiveVal(e.target.id))
+    this.props.dispatch(getOcrUploadedFiles())       
+}
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
@@ -202,16 +207,16 @@ export class OcrTable extends React.Component {
       <div>
         <div class="row">
           <div class="col-sm-6">
-          { this.props.revDocumentFlag?(<ol class="breadcrumb">
+            {this.props.revDocumentFlag?(<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
             </ol>):(<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
             </ol>)
-          }
-           
+            }
           </div>
+                    
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?
           <div class="col-sm-6 text-right">
             <div class="form-inline">
@@ -224,98 +229,100 @@ export class OcrTable extends React.Component {
             </div>
           </div>:"":""}
         </div>
-        {/* <div class="tab-container">
-          <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item active"><a class="nav-link" href="#pActive" data-toggle="tab" role="tab" aria-expanded="false">Active</a></li>
-                <li class="nav-item "><a class="nav-link" href="#pBacklog" data-toggle="tab" onClick={()=>alert('hello')} role="tab" aria-expanded="true">Backlog</a></li>  
-          </ul>
 
-        <div class="tab-content">
-          <div class="tab-pane" id="pActive" role="tabpanel">  nav link*/ }
-            <div className="table-responsive noSwipe xs-pb-10">
-          {/* if total_data_count_wf <=1 then only render table else show panel box */}
-            {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
-            <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
-             <thead>
-              <tr>
-                <th></th>
-                <th><i class="fa fa-file-text-o"></i></th>
-                <th>NAME
-                  </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+
+
+        <div class="tab-container">
+        {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?<ul className ="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{cursor: "default"}}>
+          <li className ="active"><a data-toggle="tab" id="active" name="Active">Active</a></li>
+          <li className =""><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
+          </ul>:"":""}
+
+          <div className="tab-content">
+            <div id="nav" className={this.state.tab === "pActive"?"tab-pane fade in active":"tab-pane fade"}>
+              <div className="table-responsive noSwipe xs-pb-10">
+               {/* if total_data_count_wf <=1 then only render table else show panel box */}
+               {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+               <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+                 <thead>
+                  <tr>
+                    <th></th>
+                    <th><i class="fa fa-file-text-o"></i></th>
+                    <th>NAME</th>
+                    <th class="dropdown" >
+                    <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                     <span>STATUS</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
-                  </ul>
-                </th>
-                <th>
-                  Template
-				      	</th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                    <span>Fields</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
+                    </a>
+                    <ul class="dropdown-menu scrollable-menu">
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
+                    </ul>
+                    </th>
+                    <th>
+                      Template
+                    </th>
+                    <th class="dropdown" >
+                      <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
+                        <span>Fields</span> <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu scrollable-menu">
 
-                    <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                    <span>ACCURACY</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
-                    <span>Assignee</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" name="ready to verify">Assignee 1</a></li>
-                    <li><a class="cursor" name="ready to export">Assignee 2</a></li>
-                  </ul>
-                </th>
-                <th>Created By</th>
-                <th>Modified By</th>
-                <th>Last Modified</th>
-              </tr>
-             </thead>
-             <tbody className="no-border-x">
-              {OcrTableHtml}
-             </tbody>
-            </table>)
-            :
-            (<div class="panel">
-              <div class="panel-body">
-                <div class="xs-mt-3 xs-mb-3 text-center">
-                  <div class="icon-container">
-                     <OcrUpload uploadMode={'mainPanel'}/>
-                    <span class="class">Add a workflow by clicking on the above icon</span>
+                        <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                        <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                        <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                      </ul>
+                    </th>
+                    <th class="dropdown" >
+                      <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                        <span>ACCURACY</span> <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu scrollable-menu">
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                      </ul>
+                    </th>
+                    <th class="dropdown" >
+                      <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
+                        <span>Assignee</span> <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu scrollable-menu">
+                        <li><a class="cursor" name="ready to verify">Assignee 1</a></li>
+                        <li><a class="cursor" name="ready to export">Assignee 2</a></li>
+                      </ul>
+                    </th>
+                    <th>Created By</th>
+                    <th>Modified By</th>
+                    <th>Last Modified</th>
+                   </tr>
+                  </thead>
+                  <tbody className="no-border-x">
+                     {OcrTableHtml}
+                  </tbody>
+               </table>)
+               :
+               (<div class="panel">
+                  <div class="panel-body">
+                    <div class="xs-mt-3 xs-mb-3 text-center">
+                      <div class="icon-container">
+                        <OcrUpload uploadMode={'mainPanel'}/>
+                        <span class="class">Add a workflow by clicking on the above icon</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>)
-            : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+                 </div>)
+               : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}
           {ShowModel}
         </div>
         </div>
-      //   </div>
-      //   </div> nav link
-      // </div>
+        </div>
+        </div>
+        </div>
     )
   }
 }

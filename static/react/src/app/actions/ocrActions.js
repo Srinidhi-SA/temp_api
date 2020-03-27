@@ -118,15 +118,15 @@ function fetchUploadedFiles(pageNo=1,token){
 	let filter_confidence=store.getState().ocr.filter_confidence
 	let search_document=store.getState().ocr.search_document
 	let selected_project_slug=store.getState().ocr.selected_project_slug
-	
+	let tabActive	= store.getState().ocr.tabActive
 	if(search_document==''){
-		return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
 	else{
-	return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+' &name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -731,6 +731,12 @@ export function storeDocSearchElem(elem){
 export function storeProjectSearchElem(elem){
 	return{
 		type:"SEARCH_OCR_PROJECT",
+		elem
+	}
+}
+export function tabActiveVal(elem){
+	return{
+		type:"TAB_ACTIVE_VALUE",
 		elem
 	}
 }

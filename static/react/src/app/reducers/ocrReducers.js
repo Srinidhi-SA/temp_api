@@ -66,7 +66,8 @@ export default function reducer(state = {
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
   sRSearchElem : "",
-  configRules : {}
+  configRules : {},
+  tabActive:'active'
 
 }, action) {
   switch (action.type) {
@@ -509,6 +510,14 @@ export default function reducer(state = {
         return {
           ...state,
           search_project:action.elem
+        }
+      }
+      break;
+       case "TAB_ACTIVE_VALUE":
+      {
+        return {
+          ...state,
+          tabActive:action.elem
         }
       }
       break;
