@@ -165,6 +165,7 @@ USE_YARN_DEFAULT_QUEUE=True
 USE_HTTPS=env.bool('USE_HTTPS',default=False)
 
 SEND_WELCOME_MAIL = False
+OCR_SECONDARY_TASK_PERCENTAGE = 100
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',

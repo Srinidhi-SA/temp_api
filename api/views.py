@@ -1145,7 +1145,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         new_data['domains'] = (", ").join(list(set(domains)))
         stock_symbol = config.get('stock_symbols')
 
-        stocks = {item['ticker']: item['name'] for item in stock_symbol}
+        stocks = {item['ticker'].lower(): item['name'] for item in stock_symbol}
         error_str = self.validate_inputs(stocks, new_data, request.user.id)
         if error_str is not None:
             return creation_failed_exception(error_str)
