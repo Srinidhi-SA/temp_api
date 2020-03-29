@@ -4,7 +4,7 @@ import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
-import { getUserDetailsOrRestart } from "../../../helpers/helper";
+import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
@@ -14,6 +14,8 @@ import { store } from '../../../store';
     ocrImgPath: store.ocr.ocrImgPath,
     originalImgPath: store.ocr.originalImgPath,
     imageSlug: store.ocr.imageSlug,
+    ocrDocList: store.ocr.OcrRevwrDocsList,
+    imageTaskId: store.ocr.imageTaskId,
   };
 })
 
@@ -66,8 +68,22 @@ export class OcrImage extends React.Component {
     popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
 
   }
-  handleImagePageFlag = () => {
-    window.history.go(-1)
+  handleMarkComplete = () => {
+     //window.history.go(-1)
+    let id = this.props.imageTaskId;
+    var data = new FormData();
+    data.append("status", "reviewed");
+    data.append("remark", "good");
+    return fetch(API + '/ocrflow/tasks/' + id +'/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json())
+      .then(data => {
+        if(data.submitted === true){
+        bootbox.alert(statusMessages("success","Document saved with reviewed changes.","small_mascot"));
+        }
+      });
   }
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
@@ -98,7 +114,6 @@ export class OcrImage extends React.Component {
   getHeader = (token) => {
     return {
       'Authorization': token,
-      'Content-Type': 'application/json'
     }
   }
 
@@ -259,8 +274,10 @@ export class OcrImage extends React.Component {
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-            <button class="btn btn-primary" onClick={this.handleImagePageFlag}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
-          </div>
+          {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
+            <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+           }
+            </div>
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">

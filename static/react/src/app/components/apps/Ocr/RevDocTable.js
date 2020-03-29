@@ -48,10 +48,17 @@ export class RevDocTable extends React.Component {
   }
 
   getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/get_images/', {
-      method: 'post',
+    // return fetch(API + '/ocr/ocrimage/get_images/', {
+    //   method: 'post',
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify({ "slug": slug })
+    // }).then(response => response.json())
+    //   .then(data => {
+    //     this.props.dispatch(saveImageDetails(data));
+    //   });
+    return fetch(API + '/ocr/ocrimage/'+ slug +'/', {
+      method: 'get',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug })
     }).then(response => response.json())
       .then(data => {
         this.props.dispatch(saveImageDetails(data));
@@ -108,11 +115,11 @@ export class RevDocTable extends React.Component {
             </td>
             <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
-            <td>{item.fields}</td>
-            <td>{item.confidence}</td>
+            <td>{item.ocrImageData.fields}</td>
+            <td>{item.ocrImageData.confidence}</td>
             <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
-            <td>{new Date(item.modified_at).toLocaleString().split(',')[0]}</td>
-            <td>{item.modified_by}</td>
+            <td>{new Date(item.modified_at).toLocaleString()}</td>
+            <td>{item.ocrImageData.modified_by}</td>
           </tr>
         )
       }

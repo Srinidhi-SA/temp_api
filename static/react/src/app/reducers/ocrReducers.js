@@ -68,7 +68,8 @@ export default function reducer(state = {
   sRList : {},
   sRSearchElem : "",
   configRules : {},
-  tabActive:'active'
+  tabActive:'active',
+  imageTaskId: "",
 
 }, action) {
   switch (action.type) {
@@ -251,6 +252,7 @@ export default function reducer(state = {
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
+          imageTaskId: action.data.tasks.id,
         }
       }
       break;

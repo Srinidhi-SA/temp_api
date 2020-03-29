@@ -93,7 +93,7 @@ export class OcrTable extends React.Component {
 
   handleRecognise = () => {
     if (this.state.checkedList.length == 0) {
-      bootbox.alert("Please select image files to recognize.")
+      bootbox.alert("Please select the image file to recognize.")
       return false;
     }
     this.props.dispatch(updateCheckList(this.state.checkedList))
@@ -129,6 +129,25 @@ export class OcrTable extends React.Component {
     this.props.dispatch( tabActiveVal(e.target.id))
     this.props.dispatch(getOcrUploadedFiles())       
 }
+  handleExport=()=>{
+    if (this.state.checkedList.length == 0) {
+      bootbox.alert("Please select the image file to export.")
+      return false;
+    }
+
+    // this.props.dispatch(updateCheckList(this.state.checkedList))
+    // var exportData = {
+    //   'slug': this.state.checkedList,
+    //   'format': 'json'
+    // }
+    // return fetch(API + '/ocr/ocrimage/export_data/', {
+    //   method: "post",
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify(exportData)
+    // }).then(response => response.json()).then(json => {
+    //   console.log(json,"ppppppppppppppppp");
+    // })
+  }
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
@@ -232,7 +251,7 @@ export class OcrTable extends React.Component {
                 <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
               </div>
               <Button onClick={this.handleRecognise}>Recognize</Button>
-              <button class="btn btn-default btn-rounded disabled" id="btn_r2"><i class="fa fa-paper-plane"></i> Export</button>
+              <button class="btn btn-default btn-rounded" id="btn_r2" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button>
             </div>
           </div>:"":""}
         </div>
