@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem,tabActiveVal } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem,tabActiveVal,storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -78,6 +78,9 @@ export class OcrTable extends React.Component {
       case 'assignee':
         this.props.dispatch(storeOcrFilterAssignee(filtertBy))
         break;
+      case 'fields':
+        this.props.dispatch(storeOcrFilterFields(filtertBy))
+        break;
     }
     this.props.dispatch(getOcrUploadedFiles())
   }
@@ -141,6 +144,10 @@ export class OcrTable extends React.Component {
         </div>
       )
     }
+
+    var getAssigneeOptions=(this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0?[...new Set(this.props.OcrDataList.data.map(i=>i.assignee).filter(j=>j!=null))].map(item => {
+      return <li><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'assignee')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>}
+     ):'':'')
 
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
       <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
@@ -255,9 +262,9 @@ export class OcrTable extends React.Component {
                     </a>
                     <ul class="dropdown-menu scrollable-menu">
                       <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
-                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
-                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
-                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V', 'status')} name="ready to verify">Ready to Verify</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                     </ul>
                     </th>
                     <th>
@@ -268,10 +275,11 @@ export class OcrTable extends React.Component {
                         <span>Fields</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-
-                        <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                        <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                        <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                      
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'fields')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'fields')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'fields')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                        <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'fields')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                       </ul>
                     </th>
                     <th class="dropdown" >
@@ -290,8 +298,8 @@ export class OcrTable extends React.Component {
                         <span>Assignee</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-                        <li><a class="cursor" name="ready to verify">Assignee 1</a></li>
-                        <li><a class="cursor" name="ready to export">Assignee 2</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>
+                       {getAssigneeOptions}
                       </ul>
                     </th>
                     <th>Created By</th>

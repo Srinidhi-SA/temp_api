@@ -25,6 +25,7 @@ export default function reducer(state = {
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
+  filter_fields:'',
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
@@ -291,6 +292,14 @@ export default function reducer(state = {
         return {
           ...state,
           filter_assignee: action.assignee
+        }
+      }
+    break;
+    case "FILTER_BY_FIELDS":
+      {
+        return {
+          ...state,
+          filter_fields: action.fields
         }
       }
     break;
