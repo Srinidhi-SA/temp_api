@@ -38,7 +38,7 @@ export class PyTorch extends React.Component {
 
     savePyTorchParams(){
         let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].nnptc_parameters[0];
-        let subParamDt = { "loss": params.loss, "optimizer": params.optimizer, "batch_size": params.batch_size, "number_of_epochs": params.number_of_epochs }
+        let subParamDt = { "loss": params.loss, "optimizer": params.optimizer, "regularizer":params.regularizer, "batch_size": params.batch_size, "number_of_epochs": params.number_of_epochs }
         this.props.dispatch(setPyTorchSubParams(subParamDt));
     }
 
@@ -56,7 +56,8 @@ export class PyTorch extends React.Component {
                 "batchnormalization": params.hidden_layer_info[i].batchnormalization, 
                 "units_ip": params.hidden_layer_info[i].units_ip,
                 "units_op": params.hidden_layer_info[i].units_op,
-                "bias_init": params.hidden_layer_info[i].bias_init
+                "bias_init": params.hidden_layer_info[i].bias_init,
+                "weight_init":params.hidden_layer_info[i].weight_init
             }
             this.props.dispatch(setPyTorchLayer(parseInt(i),lyrDt));
         }
@@ -646,9 +647,9 @@ export class PyTorch extends React.Component {
                             break;
                         break;
                         default :
-                            if(item[i].name === "weight_decay" && this.props.pyTorchSubParams["regularizer"].regularizer != "None"){
+                            if(item[i].name === "weight_decay" && store.getState().apps.pyTorchSubParams["regularizer"].regularizer != "None"){
                                 var defVal = store.getState().apps.pyTorchSubParams["regularizer"].l2_decay
-                                var disable = this.props.pyTorchSubParams["regularizer"].regularizer === "l2_regularizer"?true:false
+                                var disable = store.getState().apps.pyTorchSubParams["regularizer"].regularizer === "l2_regularizer"?true:false
                             }
                             else if(store.getState().apps.pyTorchSubParams[parameterData] === undefined){
                                 var defVal = ""
