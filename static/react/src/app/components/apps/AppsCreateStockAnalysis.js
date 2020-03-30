@@ -87,7 +87,6 @@ export class AppsCreateStockAnalysis extends React.Component {
 			{label:"forbes.com",value: "forbes.com"} ,
 			{label:"financialexpress.com",value: "financialexpress.com"} ,
 			{label:"bloomberg.com",value: "bloomberg.com"} ,
-			{label:"wsj.com",value: "wsj.com"} ,
 			{label:"nasdaq.com",value: "nasdaq.com"} ,
 			{label:"fool.com",value: "fool.com"}
 		]
