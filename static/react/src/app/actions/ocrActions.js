@@ -939,7 +939,7 @@ export function submitReviewerConfigAction(selTab,config){
 	return (dispatch) => {
 		return submitReviewerConfigAPI(data,rule,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
-				console.log(json);
+				bootbox.alert(statusMessages("success","All the given rules for the reviewer assignment is saved successfully.","small_mascot"))
 			}else{
 				bootbox.alert(statusMessages("warning","Failed to edit user roles","small_mascot"));
 			}
