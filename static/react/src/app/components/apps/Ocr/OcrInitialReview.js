@@ -39,9 +39,14 @@ export class OcrInitialReview extends React.Component {
     } 
     else if(e.target.name === "selectAllIR"){
         let nameList = [];
-        nameList = e.target.checked?e.target.value.map(i=>i.name):""
+        nameList = e.target.checked?e.target.value.map(i=>i.name):[]
         this.props.dispatch(saveIRConfigAction("selectedIRList",nameList));
-    } 
+    }else if(e.target.name === "active" && e.target.value === "all"){
+        this.props.dispatch(saveIRConfigAction(e.target.name,e.target.value));
+        let nameList = [];
+        nameList = e.target.checked?Object.values(this.props.iRList).map(i=>i.name):[]
+        this.props.dispatch(saveIRConfigAction("selectedIRList",nameList));
+    }
     else{
         this.props.dispatch(saveIRConfigAction(e.target.name,e.target.value));
     }
@@ -68,11 +73,18 @@ export class OcrInitialReview extends React.Component {
             listForIRTable = iRSearchResults.length === 0?[]:iRSearchResults
         }
         let iRListCount = listForIRTable.length;
+        let getDisabledVal = false
+        if($("#assigniRDocsToAll")[0].checked){
+            getDisabledVal = true
+            this.saveIRConfig.bind(this)
+        }
         iReviewerTable = 
         <Scrollbars style={{height:250}} >
             <table className = "table table-bordered table-hover" id="iRtable" style={{background:"#FFF"}}>
                 <thead><tr id="iRtHead">
-                    <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount!=0 && iRListCount === this.props.selectedIRList.length)?true:false}/></th>
+                    <th className="text-center xs-pr-5" style={{width:"80px"}}>
+                        <Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount!=0 && iRListCount === this.props.selectedIRList.length)?true:false} disabled={getDisabledVal}/>
+                    </th>
                     <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
                 </tr></thead>
@@ -83,7 +95,7 @@ export class OcrInitialReview extends React.Component {
                                 return (
                                     <tr>
                                         <td className="text-center">
-                                            <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)}/>
+                                            <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)} disabled={getDisabledVal}/>
                                         </td>
                                         <td>{item.name}</td>
                                         <td>{item.email}</td>

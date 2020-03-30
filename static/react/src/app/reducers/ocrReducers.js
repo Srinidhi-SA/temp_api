@@ -25,6 +25,7 @@ export default function reducer(state = {
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
+  filter_fields:'',
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
@@ -66,7 +67,9 @@ export default function reducer(state = {
   sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
   sRList : {},
   sRSearchElem : "",
-  configRules : {}
+  configRules : {},
+  tabActive:'active',
+  imageTaskId: "",
 
 }, action) {
   switch (action.type) {
@@ -244,11 +247,13 @@ export default function reducer(state = {
     break;
     case "SAVE_IMAGE_DETAILS":
       {
+        let taskId = action.data.tasks === null ? "" : action.data.tasks.id;
         return {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
+          imageTaskId: taskId,
         }
       }
       break;
@@ -290,6 +295,14 @@ export default function reducer(state = {
         return {
           ...state,
           filter_assignee: action.assignee
+        }
+      }
+    break;
+    case "FILTER_BY_FIELDS":
+      {
+        return {
+          ...state,
+          filter_fields: action.fields
         }
       }
     break;
@@ -512,6 +525,14 @@ export default function reducer(state = {
         }
       }
       break;
+       case "TAB_ACTIVE_VALUE":
+      {
+        return {
+          ...state,
+          tabActive:action.elem
+        }
+      }
+      break;
       case "SELECTED_PROJECT_SLUG":
       {
         return {
@@ -627,17 +648,21 @@ export default function reducer(state = {
       {
         let data1 = state.configRules.iRRule
         let irRul = {}
-        if(data1.auto.active === "True"){
+        if(Object.keys(data1).length === 0){
+          irRul = {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""}
+        }else if(data1.auto.active === "True"){
           irRul = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
         }else if(data1.custom.active === "True"){
           irRul = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
         }
         let data2 = state.configRules.sRRule
         let srRul = {}
-        if(data2.auto.active === "True"){
-          srRul = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        if(Object.keys(data2).length === 0){
+          srRul = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
+        }else if(data2.auto.active === "True"){
+          srRul = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedSRList":[],"test":data2.auto.remainaingDocsDistributionRule}
         }else if(data1.custom.active === "True"){
-          srRul = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+          srRul = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedSRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
         }
         return {
           ...state,
@@ -654,17 +679,21 @@ export default function reducer(state = {
       {
         let data1 = action.data.rulesL1
         let irRules = {}
-        if(data1.auto.active === "True"){
+        if(Object.keys(data1).length === 0){
+          irRules = {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""}
+        }else if(data1.auto.active === "True"){
           irRules = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
         }else if(data1.custom.active === "True"){
           irRules = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
         }
         let data2 = action.data.rulesL2
         let srRules = {}
-        if(data2.auto.active === "True"){
-          srRules = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data2.auto.remainaingDocsDistributionRule}
+        if(Object.keys(data2).length === 0){
+          srRules = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
+        }else if(data2.auto.active === "True"){
+          srRules = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedSRList":[],"test":data2.auto.remainaingDocsDistributionRule}
         }else if(data1.custom.active === "True"){
-          srRules = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedIRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
+          srRules = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedSRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
         }
         return {
           ...state,

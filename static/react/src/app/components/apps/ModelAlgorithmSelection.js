@@ -189,7 +189,7 @@ export class ModelAlgorithmSelection extends React.Component {
                 bootbox.alert(errormsg);
                 return false;
             }
-            else if( ($(".loss_pt")[0].value === "None") || ($(".optimizer_pt")[0].value === "None") ){
+            else if( ($(".loss_pt")[0].value === "None") || ($(".optimizer_pt")[0].value === "None") || ($(".regularizer_pt")[0].value === "None") ){
                 bootbox.alert(errormsg);
                 return false;
             }
@@ -215,7 +215,11 @@ export class ModelAlgorithmSelection extends React.Component {
                     bootbox.alert(errormsg);
                     return false;
                 }
-                else if($(".bias_pt option:selected")[i].value === "None"){
+                else if($(".bias_init_pt option:selected")[i].value === "None"){
+                    bootbox.alert(errormsg);
+                    return false;
+                }
+                else if($(".weight_init_pt option:selected")[i].value === "None"){
                     bootbox.alert(errormsg);
                     return false;
                 }

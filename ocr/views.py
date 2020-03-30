@@ -437,6 +437,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         """
         return OCRImage.objects.get(
             slug=self.kwargs.get('slug'),
+            created_by=self.request.user
         )
 
     def process_image(self, data, response, slug, image_queryset):

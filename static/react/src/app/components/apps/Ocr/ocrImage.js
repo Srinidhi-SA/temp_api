@@ -4,7 +4,7 @@ import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
-import { getUserDetailsOrRestart } from "../../../helpers/helper";
+import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
@@ -15,6 +15,7 @@ import { store } from '../../../store';
     originalImgPath: store.ocr.originalImgPath,
     imageSlug: store.ocr.imageSlug,
     ocrDocList: store.ocr.OcrRevwrDocsList,
+    imageTaskId: store.ocr.imageTaskId,
   };
 })
 
@@ -68,20 +69,31 @@ export class OcrImage extends React.Component {
 
   }
   handleMarkComplete = () => {
-     window.history.go(-1)
-    //  let val= this.props.ocrDocList.data.filter(i=>i.ocrImageData.slug == this.props.imageSlug);
-    //  console.log(val,"ppppppppp");
-    // let id = b;
-    // return fetch(API + '/ocrflow/tasks/' + id, {
-    //   method: 'post',
-    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    //   body: JSON.stringify({ "status": "done", "remark": "good" })
-    // }).then(response => response.json())
-    //   .then(data => {
-    //     console.log(data);
-       
-    //   });
+     //window.history.go(-1)
+    let id = this.props.imageTaskId;
+    var data = new FormData();
+    data.append("status", "reviewed");
+    data.append("remark", "good");
+    return fetch(API + '/ocrflow/tasks/' + id +'/', {
+      method: 'post',
+      headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json())
+      .then(data => {
+        if(data.submitted === true){
+        this.finalAnalysis();    
+        bootbox.alert(statusMessages("success","Document saved with reviewed changes.","small_mascot"));
+        }
+      });
   }
+  finalAnalysis=()=>{
+    return fetch(API + '/ocr/ocrimage/final_analysis/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({'slug': this.props.imageSlug})
+    }).then(response => response.json());
+  }
+  
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
   }
@@ -111,7 +123,13 @@ export class OcrImage extends React.Component {
   getHeader = (token) => {
     return {
       'Authorization': token,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+    }
+  }
+
+  getHeaderWithoutContent = (token) => {
+    return {
+      'Authorization': token,
     }
   }
 

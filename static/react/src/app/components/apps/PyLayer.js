@@ -28,36 +28,27 @@ export class PyLayer extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
-        if(parameterData.name === "bias" && e.target.value === "None"){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Please Select"
-        }else if(parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
+        if(parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please select Sigmoid as Loss is "+ $(".loss_pt")[0].value
+        }else if(parameterData.name === "weight_init" && e.target.value === "Dirac"){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Used only for Image Data"
         }else{
             e.target.parentElement.lastElementChild.innerText = ""
             this.props.dispatch(pytorchValidateFlag(true));
             let layerArry = this.props.idNum;
-            if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout"){
+            if(parameterData.name === "activation" || parameterData.name === "batchnormalization" || parameterData.name === "dropout" || parameterData.name === "bias_init" || parameterData.name === "weight_init"){
                 let layerDt = this.props.pyTorchLayer[layerArry];
                 if(layerDt[parameterData.name].name != e.target.value){
                     layerDt[parameterData.name] = {"name":"None"}
                 }
                 layerDt[parameterData.name].name = e.target.value;
-                let defValArr = parameterData.defaultValue.filter(i=>(i.displayName===e.target.value))[0];
+                let defValArr = parameterData.defaultValue.filter(i=>(i.name===e.target.value))[0];
                 if(defValArr != undefined)
                     if(defValArr.parameters != null)
                         defValArr.parameters.map(idx=>{
-                            if(idx.name === "add_bias_kv" || idx.name === "add_zero_attn" || idx.name === "bias" || idx.name === "head_bias" || idx.name === "affine" || idx.name === "track_running_stats"){
-                                let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
-                                let defVal = layerDt[parameterData.name];
-                                if(subDefaultVal === undefined){
-                                    subDefaultVal = "None";
-                                    defVal[idx.name] = subDefaultVal;
-                                }
-                                else
-                                    defVal[idx.name] = subDefaultVal.displayName;
-                            }else if(idx.name === "num_parameters"){
+                            if(idx.name === "add_bias_kv" || idx.name === "add_zero_attn" || idx.name === "bias" || idx.name === "head_bias" || idx.name === "affine" || idx.name === "track_running_stats" || idx.name === "num_parameters" || idx.name === "mode" || idx.name === "nonlinearity"){
                                 let subDefaultVal = idx.defaultValue.filter(sel=>sel.selected)[0];
                                 let defVal = layerDt[parameterData.name];
                                 if(subDefaultVal === undefined){
@@ -76,12 +67,10 @@ export class PyLayer extends React.Component {
                 let newLyrVal = this.props.pyTorchLayer[layerArry];
                 newLyrVal[parameterData.name] = e.target.value;
                 let defValArr = parameterData.defaultValue.filter(i=>(i.name===e.target.value))[0];
-                if(parameterData.name != "bias"){
-                    defValArr.parameters.map(idx=>{
-                        let defVal = layerDt[parameterData.name];
-                        defVal[idx.name] = idx.defaultValue;
-                    });
-                }
+                defValArr.parameters.map(idx=>{
+                    let defVal = layerDt[parameterData.name];
+                    defVal[idx.name] = idx.defaultValue;
+                });
                 this.props.dispatch(pytorchValidateFlag(true));
                 this.props.dispatch(setPyTorchLayer(parseInt(layerArry),newLyrVal))
             }
@@ -206,7 +195,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
         }
-        else if(name === "eps" && (val>1 || val<0) || val === ""){
+        else if(name === "eps" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
@@ -226,6 +215,46 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
         }
+        else if( (name === "lower_bound" || name === "upper_bound") && $(".input_unit_pt")[0].value === ""){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Please enter Input units"
+        }
+        else if( name === "lower_bound" && (val< (-1/Math.sqrt($(".input_unit_pt")[0].value)) || val==="") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ (-1/Math.sqrt($(".input_unit_pt")[0].value))
+        }
+        else if( name === "upper_bound" && (val> (1/Math.sqrt($(".input_unit_pt")[0].value)) || val === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ 1/Math.sqrt($(".input_unit_pt")[0].value)
+        }
+        else if( (name === "lower_bound" || name === "upper_bound")&& ( $(".lower_bound_pt")[0].value>$(".upper_bound_pt")[0].value )){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "Lower bound must be less than Upper bound"
+        }
+        else if(defaultParamName === "weight_init" && name === "std" && (val<=0 || val>5)){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is 1 to 5"
+        }
+        else if( ( name === "std" || name === "a" || name === "sparsity") && ( val<-1 || val>1 || val==="" ) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is -1 to 1"
+        }
+        else if( name === "mean"  && ( val<0 || val>1 || val==="" ) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+        }
+        else if( name === "gain"  && ( val<0 || val>2 || val==="" ) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 2"
+        }
+        else if( name === "val"  && ( val<-2 || val>2 || val==="" ) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is -2 to 2"
+        }
+        else if( name === "sparsity"  && ( val<-2 || val>2 || val==="" ) ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is -2 to 2"
+        }
         else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerText = ""
@@ -241,7 +270,7 @@ export class PyLayer extends React.Component {
         for(var i=0;i<item.length;i++){
             switch(item[i].uiElemType){
                 case "textBox":
-                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum"];
+                    var mandateField = ["alpha","lambd","min_val","max_val","negative_slope","dropout","kdim","vdim","init","lower","upper","beta","threshold","threshold","value","div_value","eps","momentum","lower bound","upper bound","mean","std","val","gain","a","sparsity"];
                     let itemName = item[i].name;
                     if(item[i].name === "num_features"){
                         var defVal = this.props.pyTorchLayer[this.props.idNum][defaultParamName][itemName];
@@ -266,7 +295,7 @@ export class PyLayer extends React.Component {
                     break;
                 case "checkbox":
                         var options = item[i].defaultValue.map(i=>{ return {name: i.displayName, sel: i.selected} })
-                        var mandateField = ["bias","add_bias_kv","add_zero_attn","head_bias","track_running_stats","affine","num_parameters"];
+                        var mandateField = ["bias","add_bias_kv","add_zero_attn","head_bias","track_running_stats","affine","num_parameters","mode","nonlinearity"];
                         var selectedValue = ""
                         var sel = ""
                         sel = this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name];
@@ -323,15 +352,13 @@ export class PyLayer extends React.Component {
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue
-                var mandateField= ["Bias"]
+                var mandateField= ["bias_init","weight_init"]
                 var selectedValue = ""
                 var optionsTemp =[];
                 var sel = ";"
                 optionsTemp.push(<option value="None">--Select--</option>)
                 for (var prop in options) {
-                    if(options[prop].selected){
-                        selectedValue = options[prop].name;
-                    }else if(parameterData.name === "activation"){
+                    if(parameterData.name === "activation"){
                         selectedValue = this.props.pyTorchLayer[lyr].activation.name
                         sel = (options[prop].name === selectedValue)?true:false
                     }else if(parameterData.name === "batchnormalization"){
@@ -340,11 +367,16 @@ export class PyLayer extends React.Component {
                     }else if(parameterData.name === "dropout"){
                         selectedValue = this.props.pyTorchLayer[lyr].dropout.name
                         sel = (options[prop].name === selectedValue)?true:false
-                    }else if(parameterData.name === "bias"){
-                        selectedValue = this.props.pyTorchLayer[lyr][parameterData.name]
+                    }else if(parameterData.name === "bias_init"){
+                        selectedValue = this.props.pyTorchLayer[lyr].bias_init.name
                         sel = (options[prop].displayName === selectedValue)?true:false
+                    }else if(parameterData.name === "weight_init"){
+                        selectedValue = this.props.pyTorchLayer[lyr].weight_init.name
+                        sel = (options[prop].name === selectedValue)?true:false
+                    }else if(options[prop].selected){
+                        selectedValue = options[prop].name;
                     }
-                    optionsTemp.push(<option key={prop} className={prop} value={(parameterData.name === "bias")?options[prop].displayName:options[prop].name} selected={sel}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={sel}>{options[prop].displayName}</option>);
                 }
                 
                 return(
@@ -359,7 +391,7 @@ export class PyLayer extends React.Component {
                                 <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
-                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && parameterData.name != "bias" )?
+                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && selectedValue != "Ones" && selectedValue != "Zeros" && selectedValue != "Eyes" && selectedValue != "Default" && selectedValue != "Other" && selectedValue !="Dirac")?
                                 (parameterData.name === "dropout"? 
                                 this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
                                 : options.filter(i=>i.name === selectedValue)[0].parameters === null? ""

@@ -10,7 +10,8 @@ import { OcrTopNavigation } from "./ocrTopNavigation";
 @connect((store) => {
   return {
     configureTabSelected : store.ocr.configureTabSelected,
-    selectedIRList : store.ocr.selectedIRList,
+    selectedIRList : store.ocr.iRConfigureDetails.selectedIRList,
+    selectedSRList : store.ocr.sRConfigureDetails.selectedSRList,
     iRConfigureDetails : store.ocr.iRConfigureDetails,
     sRConfigureDetails : store.ocr.sRConfigureDetails,
     iRToggleFlag : store.ocr.iRToggleFlag,
@@ -51,6 +52,9 @@ export class OcrConfigure extends React.Component {
       }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
         let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
         bootbox.alert(msg);
+      }else if(this.props.selectedIRList.length === 0){
+        let msg= statusMessages("warning","Please select reviewers","small_mascot");
+        bootbox.alert(msg);
       }else if(($("#assignRemaningIRDocs")[0].checked || $("#assignRemaningIRDocs1")[0].checked || $("#assignRemaningIRDocs2")[0].checked)===false){
         let msg= statusMessages("warning","Please input how to assign remaining documents","small_mascot");
         bootbox.alert(msg);
@@ -79,6 +83,10 @@ export class OcrConfigure extends React.Component {
       }
       else if(!$("#assignSRDocsToAll")[0].checked && !$("#assignSRDocsToSelect")[0].checked){
         let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
+        bootbox.alert(msg);
+      }
+      else if(this.props.selectedSRList.length === 0){
+        let msg= statusMessages("warning","Please select reviewers","small_mascot");
         bootbox.alert(msg);
       }
       else if(($("#assignRemaningSRDocs")[0].checked || $("#assignRemaningSRDocs1")[0].checked || $("#assignRemaningSRDocs2")[0].checked)===false){
