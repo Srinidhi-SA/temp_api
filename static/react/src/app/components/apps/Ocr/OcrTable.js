@@ -16,7 +16,7 @@ import { API } from "../../../helpers/env"
     OcrDataList: store.ocr.OcrDataList,
     documentFlag: store.ocr.documentFlag,
     projectName: store.ocr.selected_project_name,
-    revDocumentFlag:store.ocr.revDocumentFlag,
+    revDocumentFlag: store.ocr.revDocumentFlag,
     reviewerName: store.ocr.selected_reviewer_name
   };
 })
@@ -30,6 +30,7 @@ export class OcrTable extends React.Component {
       showRecognizePopup: false,
       recognized: false,
       loader: false,
+      exportName: "",
     }
   }
 
@@ -52,10 +53,9 @@ export class OcrTable extends React.Component {
   }
 
   getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/get_images/', {
-      method: 'post',
+    return fetch(API + '/ocr/ocrimage/' + slug + '/', {
+      method: 'get',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug })
     }).then(response => response.json())
       .then(data => {
         this.props.dispatch(saveImageDetails(data));
@@ -82,9 +82,11 @@ export class OcrTable extends React.Component {
   }
 
   handleCheck = (e) => {
+    let name = e.target.name;
     let updateList = [...this.state.checkedList];
     e.checked ? updateList.push(e.value) : updateList.splice(updateList.indexOf(e.value), 1);
     this.setState({ checkedList: updateList });
+    this.setState({ exportName: name });
   }
 
   handleRecognise = () => {
@@ -96,14 +98,14 @@ export class OcrTable extends React.Component {
     var postData = {
       'slug': this.state.checkedList
     }
-    this.setState({ showRecognizePopup: true, loader: true,recognized:false })
+    this.setState({ showRecognizePopup: true, loader: true, recognized: false })
     return fetch(API + '/ocr/ocrimage/extract/', {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
     }).then(response => response.json()).then(json => {
-      if (json.map(i=>i.status).includes("ready_to_verify"))
-        this.setState({ loader: false, recognized: true})
+      if (json.map(i => i.status).includes("ready_to_verify"))
+        this.setState({ loader: false, recognized: true })
     })
 
   }
@@ -121,24 +123,28 @@ export class OcrTable extends React.Component {
     this.props.dispatch(storeDocSearchElem(searchElememt))
     this.props.dispatch(getOcrUploadedFiles())
   }
-  handleExport=()=>{
+  handleExport = () => {
     if (this.state.checkedList.length == 0) {
       bootbox.alert("Please select the image file to export.")
       return false;
     }
 
-    // this.props.dispatch(updateCheckList(this.state.checkedList))
-    // var exportData = {
-    //   'slug': this.state.checkedList,
-    //   'format': 'json'
-    // }
-    // return fetch(API + '/ocr/ocrimage/export_data/', {
-    //   method: "post",
-    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-    //   body: JSON.stringify(exportData)
-    // }).then(response => response.json()).then(json => {
-    //   console.log(json,"ppppppppppppppppp");
-    // })
+    this.props.dispatch(updateCheckList(this.state.checkedList))
+    var exportData = {
+      'slug': this.state.checkedList,
+      'format': 'json'
+    }
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.json()).then(json => {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.json`);
+      dlAnchorElem.click();
+    })
   }
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
@@ -181,8 +187,8 @@ export class OcrTable extends React.Component {
         <Modal.Footer>
           <div id="resetMsg"></div>
           <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader}  bsStyle="primary">Proceed</Button>
-          
+          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
+
         </Modal.Footer>
       </Modal>
     </div>)
@@ -192,14 +198,14 @@ export class OcrTable extends React.Component {
         return (
           <tr id={index}>
             <td>
-              <Checkbox id={item.slug} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
+              <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
             </td>
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td style={item.status=="ready_to_recognize"?{cursor:'not-allowed'}: {cursor:'pointer'}}>
-              <Link style={item.status=="ready_to_recognize"?{pointerEvents:'none'}:{pointerEvents:'auto'}} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link>
-           </td>
+            <td style={item.status == "ready_to_recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
+              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link>
+            </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
             <td>{item.fields}</td>
@@ -221,27 +227,28 @@ export class OcrTable extends React.Component {
       <div>
         <div class="row">
           <div class="col-sm-6">
-          { this.props.revDocumentFlag?(<ol class="breadcrumb">
+            <a id="downloadAnchorElem" style={{ display: 'none' }}></a>
+            {this.props.revDocumentFlag ? (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
-            </ol>):(<ol class="breadcrumb">
+            </ol>) : (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
             </ol>)
-          }
-           
+            }
+
           </div>
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ?
-          <div class="col-sm-6 text-right">
-            <div class="form-inline">
-              <OcrUpload uploadMode={'topPanel'} />
-              <div class="form-group xs-mr-5">
-                <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
+            <div class="col-sm-6 text-right">
+              <div class="form-inline">
+                <OcrUpload uploadMode={'topPanel'} />
+                <div class="form-group xs-mr-5">
+                  <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
+                </div>
+                <Button onClick={this.handleRecognise}>Recognize</Button>
+                <button class="btn btn-default btn-rounded" id="btn_r2" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button>
               </div>
-              <Button onClick={this.handleRecognise}>Recognize</Button>
-              <button class="btn btn-default btn-rounded" id="btn_r2" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button>
-            </div>
-          </div>:"":""}
+            </div> : "" : ""}
         </div>
         {/* <div class="tab-container">
           <ul class="nav nav-tabs" role="tablist">
@@ -251,87 +258,87 @@ export class OcrTable extends React.Component {
 
         <div class="tab-content">
           <div class="tab-pane" id="pActive" role="tabpanel">  nav link*/ }
-            <div className="table-responsive noSwipe xs-pb-10">
+        <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
-            {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
             <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
-             <thead>
-              <tr>
-                <th></th>
-                <th><i class="fa fa-file-text-o"></i></th>
-                <th>NAME
+              <thead>
+                <tr>
+                  <th></th>
+                  <th><i class="fa fa-file-text-o"></i></th>
+                  <th>NAME
                   </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
-                    <span>STATUS</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
-                  </ul>
-                </th>
-                <th>
-                  Template
+                  <th class="dropdown" >
+                    <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+                      <span>STATUS</span> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu scrollable-menu">
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
+                    </ul>
+                  </th>
+                  <th>
+                    Template
 				      	</th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                    <span>Fields</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
+                  <th class="dropdown" >
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                      <span>Fields</span> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu scrollable-menu">
 
-                    <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                    <span>ACCURACY</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th>
-                <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
-                    <span>Assignee</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" name="ready to verify">Assignee 1</a></li>
-                    <li><a class="cursor" name="ready to export">Assignee 2</a></li>
-                  </ul>
-                </th>
-                <th>Created By</th>
-                <th>Modified By</th>
-                <th>Last Modified</th>
-              </tr>
-             </thead>
-             <tbody className="no-border-x">
-              {OcrTableHtml}
-             </tbody>
+                      <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                      <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                      <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                    </ul>
+                  </th>
+                  <th class="dropdown" >
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                      <span>ACCURACY</span> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu scrollable-menu">
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                      <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                    </ul>
+                  </th>
+                  <th class="dropdown" >
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
+                      <span>Assignee</span> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu scrollable-menu">
+                      <li><a class="cursor" name="ready to verify">Assignee 1</a></li>
+                      <li><a class="cursor" name="ready to export">Assignee 2</a></li>
+                    </ul>
+                  </th>
+                  <th>Created By</th>
+                  <th>Modified By</th>
+                  <th>Last Modified</th>
+                </tr>
+              </thead>
+              <tbody className="no-border-x">
+                {OcrTableHtml}
+              </tbody>
             </table>)
             :
             (<div class="panel">
               <div class="panel-body">
                 <div class="xs-mt-3 xs-mb-3 text-center">
                   <div class="icon-container">
-                     <OcrUpload uploadMode={'mainPanel'}/>
+                    <OcrUpload uploadMode={'mainPanel'} />
                     <span class="class">Add a workflow by clicking on the above icon</span>
                   </div>
                 </div>
               </div>
             </div>)
-            : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+            : (<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}
           {ShowModel}
         </div>
-        </div>
+      </div>
       //   </div>
       //   </div> nav link
       // </div>

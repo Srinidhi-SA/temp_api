@@ -245,12 +245,13 @@ export default function reducer(state = {
     break;
     case "SAVE_IMAGE_DETAILS":
       {
+        let taskId = action.data.tasks === null ? "" : action.data.tasks.id;
         return {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
-          imageTaskId: action.data.tasks.id,
+          imageTaskId: taskId,
         }
       }
       break;

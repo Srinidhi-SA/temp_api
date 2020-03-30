@@ -76,15 +76,24 @@ export class OcrImage extends React.Component {
     data.append("remark", "good");
     return fetch(API + '/ocrflow/tasks/' + id +'/', {
       method: 'post',
-      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
       body: data
     }).then(response => response.json())
       .then(data => {
         if(data.submitted === true){
+        this.finalAnalysis();    
         bootbox.alert(statusMessages("success","Document saved with reviewed changes.","small_mascot"));
         }
       });
   }
+  finalAnalysis=()=>{
+    return fetch(API + '/ocr/ocrimage/final_analysis/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({'slug': this.props.imageSlug})
+    }).then(response => response.json());
+  }
+  
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
   }
@@ -112,6 +121,13 @@ export class OcrImage extends React.Component {
   }
 
   getHeader = (token) => {
+    return {
+      'Authorization': token,
+      'Content-Type': 'application/json',
+    }
+  }
+
+  getHeaderWithoutContent = (token) => {
     return {
       'Authorization': token,
     }
