@@ -57,14 +57,14 @@ export class AppsCreateStockAnalysis extends React.Component {
 		var companies=this.state.company
 		var list=[];
 
-		if (analysisName == ""||(analysisName != "" && analysisName.trim() == "")) {
-			document.getElementById("resetMsg").innerText="Please enter stock analysis name."
-			return false;
-		} 
 		if(domains.length==0||companies.length==0){
 			document.getElementById("resetMsg").innerText="Please select all mandatory fields."
 			return false;
 		}
+		if (analysisName == ""||(analysisName != "" && analysisName.trim() == "")) {
+			document.getElementById("resetMsg").innerText="Please enter stock analysis name."
+			return false;
+		} 
 
 		for(var i=0;i<companies.length;i++){
 			window['value'+i] = new this.companyDetails(companyList.filter(j=>j.value==companies[i])[0].label, companies[i]);
