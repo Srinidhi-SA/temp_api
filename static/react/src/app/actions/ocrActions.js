@@ -127,7 +127,7 @@ function fetchUploadedFiles(pageNo=1,token){
 	}).then(response => Promise.all([response, response.json()]));
 }
 	else{
-	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+' &name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))

@@ -110,7 +110,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 			{value:"QCOM"	  ,label: "QUALCOMM"},
 			{value:"MRK" 	  ,label:	"Merck"},
 			{value:"DELL"	  ,label:	"Dell"},
-			{vlue:"AXP"  	  ,label:	"American Express"},
+			{value:"AXP"  	  ,label:	"American Express"},
 			{value:"MS"  	  ,label:	"Morgan Stanley"},
 			{value:"ORCL"	  ,label: "Oracle"},
 			{value:"AAPL"	  ,label:	"Apple Computer"},
@@ -180,7 +180,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 								<div className="form-group">
 									<label className="col-sm-4 control-label mandate">Select News Source </label>
 									<div class="col-sm-8">
-									  <MultiSelect className="domainMultiselect" value={this.state.domain} options={domainList} onChange={e => this.setState({ domain: e.value })}
+									  <MultiSelect className="domainMultiselect" value={this.state.domain} options={domainList.sort((a, b) => (a.label > b.label) ? 1 : -1)} onChange={e => this.setState({ domain: e.value })}
                      style={{"width": "100%"}}  filter={true} placeholder="Choose News Source" />
                   </div>
 								</div>
@@ -188,7 +188,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 									<label className=" control-label col-md-4 mandate">Select Company </label>
 									<div class="col-md-8">
 										{/* <Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i> Add</Button> */}
-										<MultiSelect className="comapanyMultiselect" value={this.state.company} options={companyList} onChange={e => this.setState({ company: e.value })}
+										<MultiSelect className="comapanyMultiselect" value={this.state.company} options={companyList.sort((a, b) => (a.label > b.label) ? 1 : -1)} onChange={e => this.setState({ company: e.value })}
                      style={{"width": "100%"}}  filter={true} placeholder="Choose Company" />
                   </div>
 
