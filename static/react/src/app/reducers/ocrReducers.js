@@ -25,6 +25,7 @@ export default function reducer(state = {
   filter_status: '',
   filter_confidence: '',
   filter_assignee: '',
+  filter_fields:'',
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
@@ -67,6 +68,7 @@ export default function reducer(state = {
   sRList : {},
   sRSearchElem : "",
   configRules : {},
+  tabActive:'active',
   imageTaskId: "",
 
 }, action) {
@@ -296,6 +298,14 @@ export default function reducer(state = {
         }
       }
     break;
+    case "FILTER_BY_FIELDS":
+      {
+        return {
+          ...state,
+          filter_fields: action.fields
+        }
+      }
+    break;
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -512,6 +522,14 @@ export default function reducer(state = {
         return {
           ...state,
           search_project:action.elem
+        }
+      }
+      break;
+       case "TAB_ACTIVE_VALUE":
+      {
+        return {
+          ...state,
+          tabActive:action.elem
         }
       }
       break;
