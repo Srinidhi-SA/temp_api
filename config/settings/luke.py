@@ -187,3 +187,17 @@ OUTLOOK_REFRESH_TOKEN='''OAQABAAAAAACQN9QBRU3jT6bcBQLZNUj74AdP-GpiUTsBoBG1m4y3NT
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
 
 AUTOML_EMAIL_SERVICE_FLAG = env('AUTOML_EMAIL_SERVICE_FLAG')
+
+STOCK_SENSE_CREDS = {
+    "alphavantage": {
+        "api_key": env("ALPHA_VANTAGE_API_KEY"),
+        "function": env("ALPHA_VANTAGE_FUNCTION")
+    },
+    "newsapi": {
+        "api_key": env("NEWSAPI_API_KEY")
+    },
+    "ibm-watson": {
+        "api_key": env("IBM_WATSON_API_KEY"),
+        "service_url": env("IBM_WATSON_SERVICE_URL")
+    }
+}

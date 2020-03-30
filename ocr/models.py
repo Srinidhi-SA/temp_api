@@ -94,15 +94,15 @@ class OCRUserProfile(models.Model):
         for image in imageQueryset:
             accuracyModel = image.get_accuracyModel()
             if not accuracyModel == None:
-                TotalCount+=1
-                TotalConfidence+=float(accuracyModel)
+                TotalCount += 1
+                TotalConfidence += float(accuracyModel)
             else:
                 print("confidence missing.")
 
         if TotalCount == 0:
             return 0
         else:
-            AvgPercentage = (TotalConfidence/TotalCount)
+            AvgPercentage = (TotalConfidence / TotalCount)
             return round(AvgPercentage, 2)
 
     def get_slug(self):
@@ -169,9 +169,9 @@ class Project(models.Model):
         for reviewObj in reviewObjQueryset:
             TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
             for task in TaskQueryset:
-                totalTasks+=1
+                totalTasks += 1
                 if task.is_closed:
-                    closedTasks+=1
+                    closedTasks += 1
 
         return totalTasks, closedTasks
 
@@ -181,6 +181,7 @@ class Project(models.Model):
         else:
             percentage = (closedTasks / totalTasks) * 100
             return round(percentage, 2)
+
 
 class OCRImageset(models.Model):
     """
@@ -248,15 +249,16 @@ class OCRImage(models.Model):
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
     generated_image = models.FileField(null=True, upload_to='ocrData')
-    comparision_data = models.TextField(max_length=300000, default="", null=True)
-    converted_Coordinates = models.TextField(max_length=300000, default="", null=True)
+    comparision_data = models.TextField(max_length=300000, default="{}", null=True)
+    converted_Coordinates = models.TextField(max_length=300000, default="{}", null=True)
     analysis_list = models.TextField(max_length=300000, default="", null=True)
-    analysis = models.TextField(max_length=300000, default="", null=True)
+    analysis = models.TextField(max_length=300000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
-    final_result = models.TextField(max_length=300000, default="", null=True)
+    final_result = models.TextField(max_length=300000, default="{}", null=True)
     is_recognized = models.BooleanField(default=False)
     mask = models.FileField(null=True, upload_to='ocrData')
     is_L1assigned = models.BooleanField(default=False)
+    is_L2assigned = models.BooleanField(default=False)
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem } from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveRevDocumentPageFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -28,6 +28,9 @@ export class RevDocTable extends React.Component {
       checkedList: [],
     }
   }
+  componentWillUnmount() {
+  this.props.dispatch(saveRevDocumentPageFlag(false));
+  }
 
   getHeader = token => {
     return {
@@ -40,15 +43,22 @@ export class RevDocTable extends React.Component {
   }
 
   handleImagePageFlag = (slug) => {
-    // this.getImage(slug)
-    // this.props.dispatch(saveImagePageFlag(true));
+    this.getImage(slug)
+    this.props.dispatch(saveImagePageFlag(true));
   }
 
   getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/get_images/', {
-      method: 'post',
+    // return fetch(API + '/ocr/ocrimage/get_images/', {
+    //   method: 'post',
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify({ "slug": slug })
+    // }).then(response => response.json())
+    //   .then(data => {
+    //     this.props.dispatch(saveImageDetails(data));
+    //   });
+    return fetch(API + '/ocr/ocrimage/'+ slug +'/', {
+      method: 'get',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug })
     }).then(response => response.json())
       .then(data => {
         this.props.dispatch(saveImageDetails(data));
@@ -103,13 +113,13 @@ export class RevDocTable extends React.Component {
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.ocrImageData.imagefile} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
-            <td>{item.fields}</td>
-            <td>{item.confidence}</td>
+            <td>{item.ocrImageData.fields}</td>
+            <td>{item.ocrImageData.confidence}</td>
             <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
-            <td>{new Date(item.modified_at).toLocaleString().split(',')[0]}</td>
-            <td>{item.modified_by}</td>
+            <td>{new Date(item.modified_at).toLocaleString()}</td>
+            <td>{item.ocrImageData.modified_by}</td>
           </tr>
         )
       }
