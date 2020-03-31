@@ -19,7 +19,8 @@ from ocrflow import process
 from singleton_model import SingletonModel
 
 class OCRRules(SingletonModel):
-    auto_assignment = models.BooleanField(default=True)
+    auto_assignmentL1 = models.BooleanField(default=False)
+    auto_assignmentL2 = models.BooleanField(default=False)
     rulesL1 = models.TextField(max_length=3000, default={}, null=True, blank=True)
     rulesL2 = models.TextField(max_length=3000, default={}, null=True, blank=True)
     modified_at = models.DateTimeField(
