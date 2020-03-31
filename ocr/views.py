@@ -52,7 +52,8 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
-from .permission import OCRImageRelatedPermission
+from .permission import OCRImageRelatedPermission, \
+    IsOCRAdminUser
 # ------------------------------------------------------------
 
 from ocr.tasks import extract_from_image, \
@@ -136,7 +137,7 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated, IsOCRAdminUser)
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
