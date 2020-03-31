@@ -212,6 +212,36 @@ class OCRUserView(viewsets.ModelViewSet):
         else:
             raise SuspiciousOperation("Invalid Method.")
 
+    def check_for_pending_tasks(self, user):
+        from ocrflow.models import Task, ReviewRequest
+        userGroup = user.groups.all()[0].name
+        if userGroup == "ReviewerL1":
+            tasks=Task.objects.filter(
+                    assigned_user=user,
+                    is_closed=False)
+            for task in tasks:
+                reviewObj=ReviewRequest.objects.get(tasks=task)
+                imageObj=OCRImage.objects.get(id=reviewObj.ocr_image.id)
+                imageObj.is_L1assigned = False
+                imageObj.status = "ready_to_verify"
+                imageObj.assignee = None
+                imageObj.save()
+                reviewObj.delete()
+        elif userGroup == "ReviewerL2":
+            tasks=Task.objects.filter(
+                    assigned_user=user,
+                    is_closed=False)
+            for task in tasks:
+                reviewObj=ReviewRequest.objects.get(tasks=task)
+                imageObj=OCRImage.objects.get(id=reviewObj.ocr_image.id)
+                imageObj.is_L2assigned = False
+                imageObj.assignee = None
+                imageObj.save()
+
+        print("~"*50)
+        print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
+        print("~"*50)
+
     def delete(self, request, *args, **kwargs):
         """Delete OCR User"""
         if request.method == 'DELETE':
@@ -220,6 +250,7 @@ class OCRUserView(viewsets.ModelViewSet):
             for user in username_list:
                 try:
                     user_object = User.objects.get(username=user)
+                    self.check_for_pending_tasks(user_object)
                     user_object.delete()
 
                 except User.DoesNotExist:
