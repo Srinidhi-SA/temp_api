@@ -31,14 +31,14 @@ export class PyTorch extends React.Component {
             this.savePyTorchLayerParams();
         }
         if(Object.keys(store.getState().apps.pyTorchSubParams).length === 0){
-            var subParamDt = { "loss": {"loss":"None"}, "optimizer": {"optimizer":"None"}, "batch_size": 100, "number_of_epochs": 10 }
+            var subParamDt = { "loss": {"loss":"None"}, "optimizer": {"optimizer":"None"}, "regularizer":{"regularizer":"None"}, "batch_size": 100, "number_of_epochs": 10 }
             this.props.dispatch(setPyTorchSubParams(subParamDt));
         }
     }
 
     savePyTorchParams(){
         let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].nnptc_parameters[0];
-        let subParamDt = { "loss": params.loss, "optimizer": params.optimizer, "batch_size": params.batch_size, "number_of_epochs": params.number_of_epochs }
+        let subParamDt = { "loss": params.loss, "optimizer": params.optimizer, "regularizer":params.regularizer, "batch_size": params.batch_size, "number_of_epochs": params.number_of_epochs }
         this.props.dispatch(setPyTorchSubParams(subParamDt));
     }
 
@@ -56,7 +56,8 @@ export class PyTorch extends React.Component {
                 "batchnormalization": params.hidden_layer_info[i].batchnormalization, 
                 "units_ip": params.hidden_layer_info[i].units_ip,
                 "units_op": params.hidden_layer_info[i].units_op,
-                "bias": params.hidden_layer_info[i].bias
+                "bias_init": params.hidden_layer_info[i].bias_init,
+                "weight_init":params.hidden_layer_info[i].weight_init
             }
             this.props.dispatch(setPyTorchLayer(parseInt(i),lyrDt));
         }
@@ -80,7 +81,8 @@ export class PyTorch extends React.Component {
                         "batchnormalization": {"name":"None"}, 
                         "units_ip": unitsIp,
                         "units_op": "None", 
-                        "bias": "None" 
+                        "bias_init": {"name":"None"},
+                        "weight_init": {"name":"None"}
                     }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
@@ -215,6 +217,18 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter step_sizes2 value", "small_mascot"));
         }
+        else if ($(".regularizer_pt option:selected").text().includes("--Select--")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please select Regularizer.", "small_mascot"));
+        }
+        else if( ($(".l1_decay_pt")[0] != undefined) && ($(".l1_decay_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter l1_decay value", "small_mascot"));
+        }
+        else if( ($(".l2_decay_pt")[0] != undefined) && ($(".l2_decay_pt")[0].value === "") ){
+            this.props.dispatch(pytorchValidateFlag(false));
+            bootbox.alert(statusMessages("warning", "Please enter l2_decay value", "small_mascot"));
+        }
         else if (Object.keys(this.props.pyTorchLayer).length != 0){
             for(let i=0;i<this.props.idLayer.length;i++){
                 if($(".input_unit_pt")[i].value === "" || $(".input_unit_pt")[i].value === undefined){
@@ -254,10 +268,14 @@ export class PyTorch extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
-        if(parameterData.name === "loss" || parameterData.name === "optimizer"){
+        if(parameterData.name === "loss" || parameterData.name === "optimizer" || parameterData.name === "regularizer"){
             let subParamDt = this.props.pyTorchSubParams;
             if(parameterData.name === "loss"){
                 subParamDt[parameterData.name] = {"loss":"None"}
+                this.props.dispatch(pytorchValidateFlag(false));
+            }
+            else if(parameterData.name === "regularizer"){
+                subParamDt[parameterData.name] = {"regularizer":"None"}
                 this.props.dispatch(pytorchValidateFlag(false));
             }
             else {
@@ -444,6 +462,14 @@ export class PyTorch extends React.Component {
         else if(data.name === "dampening" && parseFloat(val) != 0 && $(".nesterov_pt")[0].value === "True"){
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
         }
+        else if(name === "l1_decay" && (val>1 || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+        }
+        else if(name === "l2_decay" && (val>1 || val<0 || val === "")){
+            this.props.dispatch(pytorchValidateFlag(false));
+            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+        }
         else if(name === "betas"){
             let selectedPar = subParamArry["optimizer"];
             if(val === ""){
@@ -559,10 +585,22 @@ export class PyTorch extends React.Component {
                 selectedPar[data.name] = val;
             else selectedPar[data.name] = parseFloat(val);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }else if(parameterData === "regularizer"){
+            e.target.parentElement.lastElementChild.innerText = ""
+            this.props.dispatch(pytorchValidateFlag(true));
+            let selectedPar = subParamArry["regularizer"];
+            selectedPar[data.name] = parseFloat(val);
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else{
             e.target.parentElement.lastElementChild.innerText = ""
             this.props.dispatch(pytorchValidateFlag(true));
             subParamArry[data.name] = parseFloat(val);
+            this.props.dispatch(setPyTorchSubParams(subParamArry));
+        }
+        if(subParamArry["optimizer"].optimizer != "None" && data.name==="l2_decay"){
+            $(".weight_decay_pt")[0].value = e.target.value;
+            let selectedPar = subParamArry["optimizer"];
+            selectedPar.weight_decay = parseFloat(e.target.value)
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }
     }
@@ -609,19 +647,23 @@ export class PyTorch extends React.Component {
                             break;
                         break;
                         default :
-                            if(store.getState().apps.pyTorchSubParams[parameterData] === undefined){
+                            if(item[i].name === "weight_decay" && store.getState().apps.pyTorchSubParams["regularizer"].regularizer != "None"){
+                                var defVal = store.getState().apps.pyTorchSubParams["regularizer"].l2_decay
+                                var disable = store.getState().apps.pyTorchSubParams["regularizer"].regularizer === "l2_regularizer"?true:false
+                            }
+                            else if(store.getState().apps.pyTorchSubParams[parameterData] === undefined){
                                 var defVal = ""
                             }
                             else{
                                 var defVal = store.getState().apps.pyTorchSubParams[parameterData][item[i].name];
                             }
-                            var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0","max_iter","max_eval","tolerance_grad","tolerance_change","dampening"]
+                            var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0","max_iter","max_eval","tolerance_grad","tolerance_change","dampening","l1_decay","l2_decay"]
                                 arr1.push(
                                     <div className = "row mb-20">
                                         <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-1">
-                                            <input type ="number" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}/>
+                                            <input type ="number" key={`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } defaultValue={defVal} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)} disabled={disable}/>
                                             <div key={`form-control ${item[i].name}1_pt`} className = "error_pt"></div>
                                         </div>
                                     </div>
@@ -695,7 +737,7 @@ export class PyTorch extends React.Component {
         switch (parameterData.paramType) {
             case "list":
                 var options = parameterData.defaultValue
-                var mandateField= ["Loss","Optimizer"];
+                var mandateField= ["Loss","Optimizer","regularizer"];
                 var selectedValue = "";
                 var optionsTemp = []
                 parameterData.displayName != "Layer" && optionsTemp.push(<option value="None">--Select--</option>)

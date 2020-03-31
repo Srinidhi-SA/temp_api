@@ -321,6 +321,9 @@ class myJSONWebTokenSerializer(Serializer):
                     msg = _('User account is disabled.')
                     raise serializers.ValidationError(msg)
 
+                # Update last login time for the current user
+                user.last_login = timezone.now()
+                user.save()
                 payload = jwt_payload_handler(user)
 
                 return {

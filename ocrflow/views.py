@@ -7,6 +7,7 @@ from .serializers import TaskSerializer, \
     ReviewRequestListSerializer, \
     ReviewRequestSerializer, \
     OCRRulesSerializer
+from ocr.permission import IsOCRAdminUser
 from ocr.serializers import OCRImageSerializer
 from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
@@ -26,27 +27,33 @@ class OCRRulesView(viewsets.ModelViewSet):
     """
     serializer_class = OCRRulesSerializer
     model = OCRRules
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        queryset = Task.objects.all()
-        return queryset
+    permission_classes = (IsAuthenticated, IsOCRAdminUser)
 
     @list_route(methods=['post'])
     def autoAssignment(self,request):
         data = request.data
-        print(data['autoAssignment'])
         if data['autoAssignment']== "True":
-            print("Active")
-            ruleObj = OCRRules.objects.get(id=1)
-            ruleObj.auto_assignment = True
-            ruleObj.save()
-            return JsonResponse({"message":"Auto-Assignment Active.", "status": True})
+            if data['stage'] == "initial":
+                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj.auto_assignmentL1=True
+                ruleObj.save()
+                return JsonResponse({"message":"Initial Auto-Assignment Active.", "status": True})
+            elif data['stage'] == "secondary":
+                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj.auto_assignmentL2=True
+                ruleObj.save()
+                return JsonResponse({"message":"Secondary Auto-Assignment Active.", "status": True})
         else:
-            ruleObj = OCRRules.objects.get(id=1)
-            ruleObj.auto_assignment = False
-            ruleObj.save()
-            return JsonResponse({"message":"Auto-Assignment De-active.", "status": True})
+            if data['stage'] == "initial":
+                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj.auto_assignmentL1=False
+                ruleObj.save()
+                return JsonResponse({"message":"Initial Auto-Assignment De-active.", "status": True})
+            elif data['stage'] == "secondary":
+                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj.auto_assignmentL2=False
+                ruleObj.save()
+                return JsonResponse({"message":"Secondary Auto-Assignment De-active.", "status": True})
 
     @list_route(methods=['post'])
     def modifyRulesL1(self, request, *args, **kwargs):

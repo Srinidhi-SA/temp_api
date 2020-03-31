@@ -965,6 +965,7 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": None},
 ]
 
+<<<<<<< HEAD
 PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS = [
     {
         "name": "constraint",
@@ -996,6 +997,22 @@ PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS = [
     {"name": "constraint", "selected": True, "displayName": "Uniform",
      "parameters": [obj for obj in PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS]},
 ]
+
+PT_BIAS_PARAMS = [
+    {
+        "name": "bias_init",
+        "displayName": "bias_init",
+        "description": "Bias initialisation parameter for the hidden layer.",
+        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
+    },
+]
+
 
 PYTORCH_LINEAR_PARAMETERS = [
     {
@@ -1067,8 +1084,8 @@ PYTORCH_LINEAR_PARAMETERS = [
         "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["int"],
-        "allowedDataType": ["int"]
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
     },
     {
         "name": "weight_init",

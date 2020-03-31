@@ -55,7 +55,8 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
-from .permission import OCRImageRelatedPermission
+from .permission import OCRImageRelatedPermission, \
+    IsOCRAdminUser
 # ------------------------------------------------------------
 
 from ocr.tasks import extract_from_image, \
@@ -139,7 +140,7 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated, IsOCRAdminUser)
     pagination_class = CustomOCRPagination
 
     def get_queryset(self):
@@ -439,6 +440,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         """
         return OCRImage.objects.get(
             slug=self.kwargs.get('slug'),
+            created_by=self.request.user
         )
 
     def optimised_fetch_google_response(self, slug):

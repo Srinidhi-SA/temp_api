@@ -1941,50 +1941,22 @@ export function fetchStockListSuccess(doc) {
   return { type: "STOCK_LIST", data, current_page, latestStocks }
 }
 
-function StockSenseCompenies(age, sex) {
-  this.name = name;
-  this.ticker = ticker;
-}
-
 export function crawlDataForAnalysis(domains, companies,analysisName,list) {
-  // var found = false;
-  // var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
-  // for (var i = 0; i < stockSymbolsArray.length; i++) {
-  //   if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
-  //     found = true;
-  //     break;
-  //   }
-  // }
-  if (analysisName == "") {
-    var body_msg = statusMessages("warning", "Please enter stock analysis name.", "small_mascot");
-    bootbox.alert(body_msg);
-    return;
-  } else if (analysisName != "" && analysisName.trim() == "") {
-    var body_msg = statusMessages("warning", "Please enter valid stock analysis name.", "small_mascot");
-    bootbox.alert(body_msg);
-    return;
-  }
-  /*else if(url == ""){
-    bootbox.alert("Please enter stock analysis url.");
-  }*/
-  // if (found) {
     return (dispatch) => {
       dispatch(updateCreateStockPopup(false))
       dispatch(openAppsLoader(APPSLOADERPERVALUE, "Extracting historic stock prices.... "));
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
-        if (response.status === 200) {
+        if (response.status === 200 && json.status!=false) {
           dispatch(crawlSuccess(json, dispatch))
         } else {
-          dispatch(crawlError(json))
           dispatch(closeAppsLoaderValue());
+          var body_msg = statusMessages("warning", json.errors + ", " + json.exception+'.', "small_mascot");
+          bootbox.alert(body_msg);        
         }
       });
     }
-  // } else {
-  //   var body_msg = statusMessages("warning", "Please enter text/symbols to analyze stocks.", "small_mascot");
-  //   bootbox.alert(body_msg);
-  // }
 }
+
 export function updateAppsLoaderText(text) {
   return { type: "UPDATE_LOADER_TEXT", text }
 }

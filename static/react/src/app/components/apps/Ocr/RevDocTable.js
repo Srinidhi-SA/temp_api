@@ -48,10 +48,17 @@ export class RevDocTable extends React.Component {
   }
 
   getImage = (slug) => {
-    return fetch(API + '/ocr/ocrimage/get_images/', {
-      method: 'post',
+    // return fetch(API + '/ocr/ocrimage/get_images/', {
+    //   method: 'post',
+    //   headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+    //   body: JSON.stringify({ "slug": slug })
+    // }).then(response => response.json())
+    //   .then(data => {
+    //     this.props.dispatch(saveImageDetails(data));
+    //   });
+    return fetch(API + '/ocr/ocrimage/'+ slug +'/', {
+      method: 'get',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": slug })
     }).then(response => response.json())
       .then(data => {
         this.props.dispatch(saveImageDetails(data));

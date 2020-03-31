@@ -118,15 +118,16 @@ function fetchUploadedFiles(pageNo=1,token){
 	let filter_confidence=store.getState().ocr.filter_confidence
 	let search_document=store.getState().ocr.search_document
 	let selected_project_slug=store.getState().ocr.selected_project_slug
-	
+	let tabActive	= store.getState().ocr.tabActive
+	let filter_fields=store.getState().ocr.filter_fields
 	if(search_document==''){
-		return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
 	else{
-	return fetch(API + '/ocr/project/'+selected_project_slug+'/all/?name='+search_document +'&status='+ filter_status +'&confidence='+ filter_confidence +'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -171,10 +172,19 @@ function fetchReviewersList(pageNo=1,token){
 }
 
 export function fetchReviewersSuccess(doc){
+ 
+	if(	getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser")){
+   	var filter=false;
+  }else
+        filter=true;
+
 	var data = doc;
+  var userName=	getUserDetailsOrRestart.get().userName;
 	return {
 		type: "OCR_REVIEWERS_LIST",
 		data,
+		filter,
+		userName
 	}
 }
 
@@ -351,6 +361,12 @@ export function storeOcrFilterAssignee(assignee){
 	return{
 		type: "FILTER_BY_ASSIGNEE",
 		assignee
+	}
+}
+export function storeOcrFilterFields(fields){
+	return{
+		type: "FILTER_BY_FIELDS",
+		fields
 	}
 }
 export function updateCheckList(list){
@@ -734,6 +750,12 @@ export function storeProjectSearchElem(elem){
 		elem
 	}
 }
+export function tabActiveVal(elem){
+	return{
+		type:"TAB_ACTIVE_VALUE",
+		elem
+	}
+}
 export function clearUserFlagAction(){
 	return {
 		type : "CLEAR_USER_FLAG"
@@ -939,7 +961,7 @@ export function submitReviewerConfigAction(selTab,config){
 	return (dispatch) => {
 		return submitReviewerConfigAPI(data,rule,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
-				console.log(json);
+				bootbox.alert(statusMessages("success","All the given rules for the reviewer assignment is saved successfully.","small_mascot"))
 			}else{
 				bootbox.alert(statusMessages("warning","Failed to edit user roles","small_mascot"));
 			}
