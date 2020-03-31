@@ -869,6 +869,33 @@ PT_WEIGHT_INIT_Sparse_PARAMS = [
     },
 ]
 
+PT_WEIGHT_CONSTRAINT_TRUE_PARAMS = [
+    {
+        "name": "min",
+        "displayName": "min",
+        "description": "minimum value.",
+        "defaultValue": 0.3,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "max",
+        "displayName": "max",
+        "description": "maximum value.",
+        "defaultValue": 0.7,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+]
+
 PYTORCH_WEIGHT_INIT_PARAMETERS = [
     {"name": "Uniform", "selected": False, "displayName": "Uniform",
      "parameters": [obj for obj in PT_BIAS_INIT_Uniform_PARAMS]},
@@ -938,6 +965,37 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": None},
 ]
 
+PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS = [
+    {
+        "name": "constraint",
+        "displayName": "constraint",
+        "description": "constraint",
+        "defaultValue": [
+            {
+                "name": "True",
+                "selected": False,
+                "displayName": "True",
+                "parameters": [PT_WEIGHT_CONSTRAINT_TRUE_PARAMS]
+            },
+            {
+                "name": "False",
+                "selected": True,
+                "displayName": "False"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+]
+
+PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS = [
+    {"name": "constraint", "selected": True, "displayName": "Uniform",
+     "parameters": [obj for obj in PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS]},
+]
 
 PYTORCH_LINEAR_PARAMETERS = [
     {
@@ -1023,6 +1081,18 @@ PYTORCH_LINEAR_PARAMETERS = [
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
+    },
+    {
+        "name": "weight_constraint",
+        "displayName": "weight constraint",
+        "description": "clipping the Weights.",
+        "defaultValue": [obj for obj in PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
 ]
 

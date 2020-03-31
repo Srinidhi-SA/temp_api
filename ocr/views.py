@@ -36,8 +36,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
+from shapely.geometry import Point, Polygon
+
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
+from google.protobuf.json_format import MessageToJson
 # ---------------------EXCEPTIONS-----------------------------
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
@@ -438,6 +441,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
         )
 
+    def optimised_fetch_google_response(self, slug):
+        try:
+            google_response_as_string = OCRImage.objects.get(slug=slug).conf_google_response
+            return google_response_as_string
+        except:
+            google_response_as_string = OCRImage.objects.get(slug=slug).conf_google_response
+            serialized = json.loads(MessageToJson(google_response_as_string))
+            return serialized
+
     def process_image(self, data, response, slug, image_queryset):
         image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
 
@@ -447,6 +459,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['slug'] = slug
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
+        data['conf_google_response'] = json.dumps(response['conf_google_response'])
         data['flag'] = json.dumps(response['flag'])
         data['analysis'] = json.dumps(response['analysis'])
         data['status'] = "ready_to_verify"
@@ -599,7 +612,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             projectslug=projectslug
         )
         project_id = Project.objects.get(slug=projectslug).id
-        response.data['total_data_count_wf'] = len(OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
+        response.data['total_data_count_wf'] = len(
+            OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
         return response
 
     def retrieve(self, request, *args, **kwargs):
@@ -801,7 +815,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def export_data(self, request):
         data = request.data
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        slug = ast.literal_eval(str(data['slug']))[0]
+        image_queryset = OCRImage.objects.get(slug=slug)
         result = image_queryset.final_result
         if data['format'] == 'json':
             response = HttpResponse(result, content_type="application/json")
@@ -817,6 +832,58 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response = JsonResponse({'message': 'Invalid export format!'})
         return response
+
+    @list_route(methods=['post'])
+    def confidence_filter(self, request):
+        data = request.data
+        user_input = data['filter']
+        slug = ast.literal_eval(str(data['slug']))[0]
+        image_queryset = OCRImage.objects.get(slug=slug)
+        comparision_data = json.loads(image_queryset.comparision_data)
+        response = json.loads(image_queryset.conf_google_response)
+        loi = []
+        for page in response["fullTextAnnotation"]["pages"]:
+            for block in page["blocks"]:
+                for paragraph in block["paragraphs"]:
+                    for word in paragraph["words"]:
+                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
+                        #                        print(word["confidence"])
+                        if word["confidence"] < user_input:
+                            loi.append({word_text: [
+                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
+                                [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
+
+            for lis in loi:
+                bb = list(lis.values())[0]
+                centroid = ((bb[0][0] + bb[1][0]) * 0.5, (bb[0][1] + bb[1][1]) * 0.5)
+                point = Point(centroid)
+
+                for b in comparision_data:
+
+                    reference_bb = comparision_data[b][0]
+                    poly_bb = [reference_bb[:2], reference_bb[2:4], reference_bb[4:6], reference_bb[6:]]
+                    polygon = Polygon(poly_bb)
+
+                    if polygon.contains(point):
+                        comparision_data[b][3] = 'True'
+                    else:
+                        pass
+        data['comparision_data'] = json.dumps(comparision_data)
+        data['slug'] = slug
+        image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
+        response = plot(image, comparision_data, data['slug'])
+        data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
+                                       file=open(response, 'rb'))
+
+        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                         context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+            object_details = od.data
+            object_details['message'] = 'SUCCESS'
+            return Response(object_details)
+        return Response(serializer.errors)
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
