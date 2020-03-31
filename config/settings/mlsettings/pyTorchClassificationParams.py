@@ -965,7 +965,7 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": None},
 ]
 
-<<<<<<< HEAD
+
 PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS = [
     {
         "name": "constraint",
