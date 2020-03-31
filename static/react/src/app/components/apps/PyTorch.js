@@ -165,9 +165,9 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lambd value", "small_mascot"));
         }
-        else if( ($(".momentum_pt")[0] != undefined) && ($(".momentum_pt")[0].value === "") ){
+        else if( ($(".momentum_pt")[0] != undefined) && ( ($(".momentum_pt")[0].value === "") || ($(".momentum_pt")[0].value <=0) ) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter momentum value", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter momentum value greater than 0", "small_mascot"));
         }
         else if( ($(".alpha_pt")[0] != undefined) && ($(".alpha_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
