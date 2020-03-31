@@ -131,6 +131,10 @@ export default function reducer(state = {
     break;
     case "OCR_REVIEWERS_LIST":
     {
+      if(action.filter){
+        action.data.data=action.data.data.filter(i=>i.username==action.userName) //username: "irtestuser2"
+        action.data.total_number_of_pages=1;
+      }
       return {
         ...state,
         OcrReviewerList: action.data
