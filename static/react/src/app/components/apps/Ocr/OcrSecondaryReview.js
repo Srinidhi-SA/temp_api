@@ -39,9 +39,14 @@ export class OcrSecondaryReview extends React.Component{
         } 
         else if(e.target.name === "selectAllSR"){
             let nameList = [];
-            nameList = e.target.checked?e.target.value.map(i=>i.name):""
+            nameList = e.target.checked?e.target.value.map(i=>i.name):[]
             this.props.dispatch(saveSRConfigAction("selectedSRList",nameList));
-        } 
+        }else if(e.target.name === "active" && e.target.value === "all"){
+            this.props.dispatch(saveSRConfigAction(e.target.name,e.target.value));
+            let nameList = [];
+            nameList = e.target.checked?Object.values(this.props.sRList).map(i=>i.name):[]
+            this.props.dispatch(saveSRConfigAction("selectedSRList",nameList));
+        }
         else{
             this.props.dispatch(saveSRConfigAction(e.target.name,e.target.value));
         }
@@ -68,11 +73,17 @@ export class OcrSecondaryReview extends React.Component{
                 listForSRTable = sRSearchResults.length === 0?[]:sRSearchResults
             }
             let sRListCount = listForSRTable.length;
+            let getDisabledVal = false
+            if($("#assignSRDocsToAll")[0].checked){
+                getDisabledVal = true
+                this.saveSRConfig.bind(this)
+                debugger
+            }
             sReviewerTable = 
             <Scrollbars style={{height:250}} >
                 <table className = "table table-bordered table-hover" id="sRTable" style={{background:"#FFF"}}>
                     <thead><tr id="sRHead">
-                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount!=0 && sRListCount === this.props.selectedSRList.length)?true:false}/></th>
+                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount!=0 && sRListCount === this.props.selectedSRList.length)?true:false} disabled={getDisabledVal}/></th>
                         <th style={{width:"40%"}}>NAME</th>
                         <th>EMAIL</th>
                     </tr></thead>
@@ -83,7 +94,7 @@ export class OcrSecondaryReview extends React.Component{
                                     return (
                                         <tr>
                                             <td className="text-center">
-                                                <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)}/>
+                                                <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)} disabled={getDisabledVal}/>
                                             </td>
                                             <td>{item.name}</td>
                                             <td>{item.email}</td>
