@@ -26,7 +26,8 @@ export class OcrSecondaryReview extends React.Component{
 
     saveSecondaryReviwerToggleVal(e){
         this.props.dispatch(saveSRToggleValAction(e.target.checked))
-        this.props.dispatch(autoAssignmentAction(store.getState().ocr.sRToggleFlag));
+        var stgName = "secondary"
+        this.props.dispatch(autoAssignmentAction(stgName,store.getState().ocr.sRToggleFlag));
     }
     saveSRConfig(e){
         if(e.target.id === "assignSRDocsToAll"){
@@ -117,7 +118,7 @@ export class OcrSecondaryReview extends React.Component{
                         <div className="form-group">
                             <div className="checkbox checbox-switch switch-success">
                                 <label>
-                                    <input type="checkbox" name="sRToggleFlag" checked={this.props.sRToggleFlag} onChange={this.saveSecondaryReviwerToggleVal.bind(this)} disabled/>
+                                    <input type="checkbox" name="sRToggleFlag" checked={this.props.sRToggleFlag} onChange={this.saveSecondaryReviwerToggleVal.bind(this)}/>
                                     <span></span>
                                     Enable automatic reviewer assignment<br/>
                                     <small>when enabled, documents that are verified will be assigned to auditors according to your choices below</small>
