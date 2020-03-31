@@ -114,7 +114,6 @@ def send_email(sender, instance, created, **kwargs):
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
 
-
 post_save.connect(send_email, sender=OCRUserProfile)
 
 
