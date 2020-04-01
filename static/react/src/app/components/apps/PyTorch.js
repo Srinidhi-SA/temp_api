@@ -57,7 +57,8 @@ export class PyTorch extends React.Component {
                 "units_ip": params.hidden_layer_info[i].units_ip,
                 "units_op": params.hidden_layer_info[i].units_op,
                 "bias_init": params.hidden_layer_info[i].bias_init,
-                "weight_init":params.hidden_layer_info[i].weight_init
+                "weight_init":params.hidden_layer_info[i].weight_init,
+                "weight_constraint":params.hidden_layer_info[i].weight_constraint,
             }
             this.props.dispatch(setPyTorchLayer(parseInt(i),lyrDt));
         }
@@ -82,7 +83,8 @@ export class PyTorch extends React.Component {
                         "units_ip": unitsIp,
                         "units_op": "None", 
                         "bias_init": {"name":"None"},
-                        "weight_init": {"name":"None"}
+                        "weight_init": {"name":"None"},
+                        "weight_constraint":{"constraint":"None"}
                     }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
