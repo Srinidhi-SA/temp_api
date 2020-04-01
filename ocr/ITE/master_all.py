@@ -22,7 +22,7 @@ def analyse(path, image_slug):
     extracted_image = "ocr/ITE/ir/{}_mask.png".format(image_name)
     cv2.imwrite(extracted_image, wm)
 
-    demo = True
+    demo = False
     if demo:
         print('*' * 50)
         print('Reading Analysis From Local')
@@ -34,7 +34,7 @@ def analyse(path, image_slug):
     else:
         analysis = text_from_Azure_API(path)
 
-    google_response = detect_text(path)
+    google_response, conf_google_response = detect_text(path)
     flag = process_template(analysis, image)
     data, data2, data3, image_data, image_, mask = RPA(analysis, google_response, image_slug, image_name, extracted_image)
     with open(mask, mode='rb') as file:
@@ -50,6 +50,7 @@ def analyse(path, image_slug):
     response = dict()
     response['analysis'] = analysis
     response['google_response'] = str(google_response.text_annotations)
+    response['conf_google_response'] = conf_google_response
     response['flag'] = flag
     response['original_image'] = original_image
     response['extracted_image'] = mask
