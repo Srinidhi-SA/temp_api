@@ -994,7 +994,7 @@ PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS = [
 ]
 
 PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS = [
-    {"name": "constraint", "selected": True, "displayName": "Uniform",
+    {"name": "constraint", "selected": True, "displayName": "constraint",
      "parameters": [obj for obj in PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS]},
 ]
 
@@ -1079,7 +1079,7 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "bias_init",
         "displayName": "bias_init",
         "description": "Bias initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS], #other
+        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
@@ -1091,7 +1091,7 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "weight_init",
         "displayName": "weight_init",
         "description": "Weight initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS], #default
+        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
         "paramType": "list",
         "uiElemType": "textBox",
         "display": True,
@@ -1103,13 +1103,25 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "weight_constraint",
         "displayName": "weight constraint",
         "description": "clipping the Weights.",
-        "defaultValue": [obj for obj in PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS],
+        "defaultValue": [
+            {
+                "name": "True",
+                "selected": False,
+                "displayName": "True",
+                "parameters": [PT_WEIGHT_CONSTRAINT_TRUE_PARAMS]
+            },
+            {
+                "name": "False",
+                "selected": True,
+                "displayName": "False"
+            }
+        ],
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["string"],
-        "allowedDataType": ["string"]
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
     },
 ]
 
