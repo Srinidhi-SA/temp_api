@@ -172,19 +172,10 @@ function fetchReviewersList(pageNo=1,token){
 }
 
 export function fetchReviewersSuccess(doc){
- 
-	if(	getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser")){
-   	var filter=false;
-  }else
-        filter=true;
-
 	var data = doc;
-  var userName=	getUserDetailsOrRestart.get().userName;
 	return {
 		type: "OCR_REVIEWERS_LIST",
 		data,
-		filter,
-		userName
 	}
 }
 
