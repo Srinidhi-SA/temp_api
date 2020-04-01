@@ -251,7 +251,7 @@ class OCRImage(models.Model):
     comparision_data = models.TextField(max_length=300000, default="{}", null=True)
     converted_Coordinates = models.TextField(max_length=300000, default="{}", null=True)
     conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
-    analysis_list = models.TextField(max_length=300000, default="", null=True)
+    analysis_list = models.TextField(max_length=300000, default="{}", null=True)
     analysis = models.TextField(max_length=300000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="{}", null=True)

@@ -838,7 +838,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def confidence_filter(self, request):
         data = request.data
-        user_input = data['filter']
+        user_input = 0.75
+        if 'filter' in data:
+            user_input = data['filter']
         slug = ast.literal_eval(str(data['slug']))[0]
         image_queryset = OCRImage.objects.get(slug=slug)
         comparision_data = json.loads(image_queryset.comparision_data)
