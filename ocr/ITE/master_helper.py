@@ -245,7 +245,7 @@ def get_same_line_words_hori_2(p1_p3, line_number, dep):
 def text_from_Azure_API(image_path):
     # For Azure OCR API.
 
-    subscription_key = "44ebbbdd45a94249bcc724ff8a8aea39"
+    subscription_key = "57c2236a68344c6fa415e44d70e0542e"
     vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/"
     text_recognition_url = vision_base_url + "read/core/asyncBatchAnalyze"
 

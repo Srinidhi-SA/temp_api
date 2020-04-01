@@ -2,6 +2,12 @@ from ocr.ITE.Functions import *
 from PIL import Image
 import simplejson as json
 from io import BytesIO
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
+from google.cloud import vision
+import io
+from google.protobuf.json_format import MessageToJson
+
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 
@@ -105,3 +111,27 @@ def updated_analysis(analysis, user_input):
                         break
 
         return analysis
+
+
+def google_response(path):
+    client = vision.ImageAnnotatorClient()
+    with io.open(path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.types.Image(content=content)
+    response = client.document_text_detection(image=image)
+    return response
+
+
+def optimised_fetch_google_response(image_path, image_directory_name, database_path):
+    try:
+        with open(database_path + image_directory_name + "/" + image_directory_name + "_google_response.json") as f:
+            google_response_as_string = json.load(f)
+        return google_response_as_string
+    except:
+        google_response = google_response(image_path)
+        serialized = json.loads(MessageToJson(google_response))
+        with open(database_path + image_directory_name + "/" + image_directory_name + "_google_response.json",
+                  'w') as outfile:
+            json.dump(serialized, outfile)
+        return serialized

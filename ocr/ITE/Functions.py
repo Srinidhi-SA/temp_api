@@ -4,7 +4,7 @@
 from ocr.ITE.master_helper import *
 import os
 import simplejson as json
-
+from google.protobuf.json_format import MessageToJson
 import matplotlib as mpl
 
 if os.environ.get('DISPLAY', '') == '':
@@ -27,9 +27,11 @@ def detect_text(path):
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.text_detection(image=image)
+    conf_response = client.document_text_detection(image=image)
+    conf_response = json.loads(MessageToJson(conf_response))
     texts = response.text_annotations
-
-    return response
+    print('serialising')
+    return response, conf_response
 
 
 def fun1(analysis, google_response):
