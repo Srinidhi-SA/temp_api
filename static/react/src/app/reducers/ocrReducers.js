@@ -257,6 +257,17 @@ export default function reducer(state = {
         }
       }
       break;
+      case "CLEAR_IMAGE_DETAILS":
+        {
+          return {
+            ...state,
+            originalImgPath: "" ,
+            ocrImgPath: "",
+            imageSlug: "",
+            imageTaskId: "",
+          }
+        }
+        break;
       case "UPDATE_OCR_IMAGE":
         {
           return {

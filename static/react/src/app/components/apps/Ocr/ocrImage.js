@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage,clearImageDetails } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -324,6 +324,7 @@ export class OcrImage extends React.Component {
 
   componentWillUnmount = () => {
     this.props.dispatch(saveImagePageFlag(false));
+    this.props.dispatch(clearImageDetails());
   }
 
 }

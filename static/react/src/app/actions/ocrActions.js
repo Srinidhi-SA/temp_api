@@ -44,6 +44,12 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+
+export function clearImageDetails() {
+	return {
+		type: "CLEAR_IMAGE_DETAILS",
+	}
+}
 //Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
