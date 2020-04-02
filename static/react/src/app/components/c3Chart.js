@@ -381,6 +381,9 @@ export class C3Chart extends React.Component {
             <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
           </div>
         </div>
+        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
+        <div>* Hover on graph points to view Cloud Image of repective dates</div>
+        }
         {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && Object.keys(this.props.cloudImgResp).length !=0 && this.props.selectedDate.date === "2020-03-23" &&
               <img src={STATIC_URL+"assets/images/cloudImg1.png"}/>
           }
