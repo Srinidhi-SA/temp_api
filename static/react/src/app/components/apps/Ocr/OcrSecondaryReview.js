@@ -75,10 +75,9 @@ export class OcrSecondaryReview extends React.Component{
             }
             let sRListCount = listForSRTable.length;
             let getDisabledVal = false
-            if($("#assignSRDocsToAll")[0].checked){
+            if($("#assignSRDocsToAll")[0]!=undefined && $("#assignSRDocsToAll")[0].checked){
                 getDisabledVal = true
                 this.saveSRConfig.bind(this)
-                debugger
             }
             sReviewerTable = 
             <Scrollbars style={{height:250}} >
