@@ -471,7 +471,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         """
         return OCRImage.objects.get(
             slug=self.kwargs.get('slug'),
-            created_by=self.request.user
         )
 
     def optimised_fetch_google_response(self, slug):
