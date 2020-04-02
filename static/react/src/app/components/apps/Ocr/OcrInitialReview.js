@@ -26,7 +26,8 @@ export class OcrInitialReview extends React.Component {
 
   saveInitialReviwerToggleVal(e){
     this.props.dispatch(saveIRToggleValAction(e.target.checked))
-    this.props.dispatch(autoAssignmentAction(store.getState().ocr.iRToggleFlag));
+    var stgName = "initial"
+    this.props.dispatch(autoAssignmentAction(stgName,store.getState().ocr.iRToggleFlag));
   }
   saveIRConfig(e){
     if(e.target.id === "assigniRDocsToAll"){

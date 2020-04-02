@@ -57,7 +57,8 @@ export class PyTorch extends React.Component {
                 "units_ip": params.hidden_layer_info[i].units_ip,
                 "units_op": params.hidden_layer_info[i].units_op,
                 "bias_init": params.hidden_layer_info[i].bias_init,
-                "weight_init":params.hidden_layer_info[i].weight_init
+                "weight_init":params.hidden_layer_info[i].weight_init,
+                "weight_constraint":params.hidden_layer_info[i].weight_constraint,
             }
             this.props.dispatch(setPyTorchLayer(parseInt(i),lyrDt));
         }
@@ -82,7 +83,8 @@ export class PyTorch extends React.Component {
                         "units_ip": unitsIp,
                         "units_op": "None", 
                         "bias_init": {"name":"None"},
-                        "weight_init": {"name":"None"}
+                        "weight_init": {"name":"None"},
+                        "weight_constraint":{"constraint":"None"}
                     }
         this.props.dispatch(setPyTorchLayer(parseInt(layer),lyrDt));
         this.props.dispatch(setIdLayer(parseInt(layer)));
@@ -165,9 +167,9 @@ export class PyTorch extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter lambd value", "small_mascot"));
         }
-        else if( ($(".momentum_pt")[0] != undefined) && ($(".momentum_pt")[0].value === "") ){
+        else if( ($(".momentum_pt")[0] != undefined) && ( ($(".momentum_pt")[0].value === "") || ($(".momentum_pt")[0].value <=0) ) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter momentum value", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please enter momentum value greater than 0", "small_mascot"));
         }
         else if( ($(".alpha_pt")[0] != undefined) && ($(".alpha_pt")[0].value === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
