@@ -243,9 +243,14 @@ export class PyTorch extends React.Component {
                     this.props.dispatch(pytorchValidateFlag(false));
                     return false;
                 }
-                else if($(".bias_pt option:selected").text().includes("--Select--")){
+                else if($(".bias_init_pt option:selected").text().includes("--Select--")){
                     this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please select bias for layer.", "small_mascot"));
+                    bootbox.alert(statusMessages("warning", "Please select bias_init for layer.", "small_mascot"));
+                    return false;
+                }
+                else if($(".weight_init_pt option:selected").text().includes("--Select--")){
+                    this.props.dispatch(pytorchValidateFlag(false));
+                    bootbox.alert(statusMessages("warning", "Please select weight_init for layer.", "small_mascot"));
                     return false;
                 }
                 else if(!$(".dropout_pt option:selected").text().includes("--Select--")){
