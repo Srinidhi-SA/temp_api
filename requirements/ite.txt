@@ -12,3 +12,4 @@ sklearn
 pyqt5==5.14.1
 json2xml==3.3.2
 django-singleton-model
+Shapely==1.7.0

@@ -869,6 +869,33 @@ PT_WEIGHT_INIT_Sparse_PARAMS = [
     },
 ]
 
+PT_WEIGHT_CONSTRAINT_TRUE_PARAMS = [
+    {
+        "name": "min",
+        "displayName": "min",
+        "description": "minimum value.",
+        "defaultValue": 0.3,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+    {
+        "name": "max",
+        "displayName": "max",
+        "description": "maximum value.",
+        "defaultValue": 0.7,
+        "paramType": "number",
+        "uiElemType": "textBox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["float"],
+        "allowedDataType": ["float"]
+    },
+]
+
 PYTORCH_WEIGHT_INIT_PARAMETERS = [
     {"name": "Uniform", "selected": False, "displayName": "Uniform",
      "parameters": [obj for obj in PT_BIAS_INIT_Uniform_PARAMS]},
@@ -938,6 +965,39 @@ PYTORCH_WEIGHT_INIT_PARAMETERS = [
      "parameters": None},
 ]
 
+
+PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS = [
+    {
+        "name": "constraint",
+        "displayName": "constraint",
+        "description": "constraint",
+        "defaultValue": [
+            {
+                "name": "True",
+                "selected": False,
+                "displayName": "True",
+                "parameters": [PT_WEIGHT_CONSTRAINT_TRUE_PARAMS]
+            },
+            {
+                "name": "False",
+                "selected": True,
+                "displayName": "False"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
+    },
+]
+
+PYTORCH_WEIGHT_CONSTRAINT_PARAMETERS = [
+    {"name": "constraint", "selected": True, "displayName": "constraint",
+     "parameters": [obj for obj in PT_WEIGHT_CONSTRAINT_CONSTRAINT_PARAMS]},
+]
+
 PT_BIAS_PARAMS = [
     {
         "name": "bias_init",
@@ -952,6 +1012,7 @@ PT_BIAS_PARAMS = [
         "allowedDataType": ["int"]
     },
 ]
+
 
 PYTORCH_LINEAR_PARAMETERS = [
     {
@@ -1018,7 +1079,7 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "bias_init",
         "displayName": "bias_init",
         "description": "Bias initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS], #other
+        "defaultValue": [obj for obj in PYTORCH_BIAS_INIT_PARAMETERS],
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
@@ -1030,13 +1091,37 @@ PYTORCH_LINEAR_PARAMETERS = [
         "name": "weight_init",
         "displayName": "weight_init",
         "description": "Weight initialisation parameter for the hidden layer.",
-        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS], #default
+        "defaultValue": [obj for obj in PYTORCH_WEIGHT_INIT_PARAMETERS],
         "paramType": "list",
         "uiElemType": "textBox",
         "display": True,
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
+    },
+    {
+        "name": "weight_constraint",
+        "displayName": "weight constraint",
+        "description": "clipping the Weights.",
+        "defaultValue": [
+            {
+                "name": "True",
+                "selected": False,
+                "displayName": "True",
+                "parameters": [PT_WEIGHT_CONSTRAINT_TRUE_PARAMS]
+            },
+            {
+                "name": "False",
+                "selected": True,
+                "displayName": "False"
+            }
+        ],
+        "paramType": "list",
+        "uiElemType": "checkbox",
+        "display": True,
+        "hyperpatameterTuningCandidate": True,
+        "expectedDataType": ["bool"],
+        "allowedDataType": ["bool"]
     },
 ]
 

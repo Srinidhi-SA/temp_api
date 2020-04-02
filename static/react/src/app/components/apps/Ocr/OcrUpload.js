@@ -52,8 +52,7 @@ export class OcrUpload extends React.Component {
     if(this.props.s3Uploaded){
       document.getElementById("resetMsg").innerText = "";
     }
-    let activeTab = $(".tab-content").find(".active");
-    let activeId = activeTab.attr('id');
+    let activeId = $(".tab-content").find(".active")[1].id
     if(activeId === "ocrImage" && this.state.uploaded){
       $("#loadDataBtn")[0].disabled = false
     }else if(activeId === "ocrS3" && this.props.s3Uploaded){
@@ -126,8 +125,7 @@ export class OcrUpload extends React.Component {
   }
 
   handleSubmit(acceptedFiles) {
-    let activeTab = $(".tab-content").find(".active");
-    let activeId = activeTab.attr('id');
+    let activeId = $(".tab-content").find(".active")[1].id
     let projectSlug= this.props.projectslug;
 
     if(activeId === "ocrImage"){
