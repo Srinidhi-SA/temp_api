@@ -22,6 +22,7 @@ import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCS
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
+import { chartdate } from "../../actions/chartActions";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -218,7 +219,7 @@ export class OverViewPage extends React.Component {
         let card = null;
         let node = null
         let params = this.props.match.params;
-
+        this.props.dispatch(chartdate("slug",this.props.match.params.slug))
         tabList = [];
         if (this.props.signal.listOfNodes && this.props.signal.listOfNodes.length != 0) {
           tabList = this.props.signal.listOfNodes.map((tab, i) => {
