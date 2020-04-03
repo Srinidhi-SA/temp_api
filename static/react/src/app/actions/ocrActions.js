@@ -802,7 +802,6 @@ export function fetchReviewersRules(){
 		return fetchReviewersRulesAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveRulesForConfigPage(json))
-				console.log(json)
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}

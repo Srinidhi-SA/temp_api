@@ -200,7 +200,6 @@ export class OcrTable extends React.Component {
   }
 }
   render() {
-    console.log(this.state.exportType);
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
