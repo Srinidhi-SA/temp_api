@@ -221,6 +221,9 @@ export class C3Chart extends React.Component {
           this.props.selectedDate.symbol === undefined ?this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title)):""
           
           if($(".sb_navigation li>a.active")[0].title != this.props.selectedDate.symbol){
+            this.props.dispatch(chartdate("date",""))
+            this.props.dispatch(clearCloudImgResp());
+            this.props.dispatch(setCloudImageLoader(false));
             this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title))
           }
           if(Object.keys(this.props.cloudImgResp).length ===0 && !this.props.cloudImgFlag){
