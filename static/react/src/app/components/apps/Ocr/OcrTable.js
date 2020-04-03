@@ -184,7 +184,19 @@ export class OcrTable extends React.Component {
       dlAnchorElem.setAttribute("download", `${this.state.exportName}.xml`);
       dlAnchorElem.click();
     })
-
+  }
+  else if(this.state.exportType==="csv"){
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.text()).then(json => {
+      var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
+      dlAnchorElem.click();
+    })
   }
 }
   render() {
