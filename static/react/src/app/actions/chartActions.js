@@ -1,6 +1,7 @@
 import { getUserDetailsOrRestart } from "../helpers/helper";
 import { getHeader } from "./appActions";
 import { API } from "../helpers/env";
+import store from "../store";
 
 export function chartObjStore(chartObj) {
 	return {
@@ -14,15 +15,27 @@ export function chartdate(name,value) {
 	}
 }
 
+export function setCloudImageLoader(flag){
+	return {
+		type: "SET_CLOUD_IMG_LOADER",flag
+	}
+}
 export function fetchWordCloudImg(data){
 	return (dispatch) => {
 		return fetchWordCloudImgAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response]) => {
 			if(response.status === 200){
+				dispatch(setCloudImageLoader(false));
 				dispatch(wordCloudImgResponse());
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}
 		})
+	}
+}
+export function clearCloudImgResp(){
+	let jsn = {}
+	return {
+		type: "CLOUD_IMG_RESPONSE",jsn
 	}
 }
 function fetchWordCloudImgAPI(data,token){
@@ -32,12 +45,23 @@ function fetchWordCloudImgAPI(data,token){
 	}).then(response => Promise.all([response]));
 }
 export function wordCloudImgResponse() {
-	let jsn = {
-		"slug": "stock-analysis5-puhhjfk2kg",
-		"symbol": "jpm",
-		"date": "2020-03-23",
-		"image_url": "/media/wordcloud.png"
+	let jsn = {}
+	if(store.getState().chartObject.selected === "2020-03-23"){
+		jsn = {
+			"slug": "stock-analysis5-puhhjfk2kg",
+			"symbol": "jpm",
+			"date": "2020-03-23",
+			"image_url": "assets/images/cloudImg1.png"
+		}
+	}else{
+		jsn = {
+			"slug": "ms33-wd52434xea",
+			"symbol": "msft",
+			"date": "2020-03-30",
+			"image_url": "assets/images/cloudImg2.png"
+		}
 	}
+	
 	return {
 		type: "CLOUD_IMG_RESPONSE",jsn
 	}

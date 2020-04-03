@@ -1,7 +1,8 @@
 export default function reducer(state = {
 	chartObj:{},
 	date:{},
-	cloudImgResp:{}
+	cloudImgResp:{},
+	cloudImgFlag:false
 
 }, action) {
 
@@ -24,6 +25,12 @@ export default function reducer(state = {
 			}
 		}
 		break;
+		case "SET_CLOUD_IMG_LOADER":{
+			return {
+				...state,
+				cloudImgFlag : action.flag
+			}
+		}
 		case "CLOUD_IMG_RESPONSE":
 		{
 			return {
