@@ -178,7 +178,7 @@ company_list = {"XOM": "Exxon Mobil Corporation",
                 }
 
 
-def fetch_news_articles(cur_stock, domains):
+def fetch_news_articles1(cur_stock, domains):
     from newsapi import NewsApiClient
 
     API_KEY = settings.STOCK_SENSE_CREDS['newsapi']['api_key']
@@ -213,8 +213,44 @@ def fetch_news_articles(cur_stock, domains):
             else:
                 break
         except NewsAPIException as ex:
-            print("Method failed with message: "+ex.get_message())
+            print("Method failed with message: " + ex.get_message())
             break
+    return articles
+
+
+def fetch_news_articles(cur_stock, domains):
+    from newsapi import NewsApiClient
+
+    API_KEY = settings.STOCK_SENSE_CREDS['newsapi']['api_key']
+
+    # Init
+    newsapi = NewsApiClient(api_key=API_KEY)
+
+    today = datetime.date.today()
+    date_diff = datetime.timedelta(days=10)
+    from_date = today - date_diff
+
+    articles = []
+    try:
+        top_news = newsapi.get_top_headlines(q=str(cur_stock), qintitle=None, language="en",
+                                             country=None, category=None, page_size=None, page=None)
+        if top_news is not None and len(top_news) > 0:
+            articles.extend(top_news['articles'])
+
+        all_news = newsapi.get_everything(q=str(cur_stock),
+                                          language='en',
+                                          domains=domains,
+                                          # sort_by='publishedAt',
+                                          sort_by='relevancy',
+                                          from_param=from_date,
+                                          to=today,
+                                          page_size=25
+                                          )
+        if all_news is not None and len(all_news):
+            articles.extend(all_news['articles'])
+    except NewsAPIException as ex:
+        print("Method failed with message: " + ex.get_message())
+        return None
     return articles
 
 

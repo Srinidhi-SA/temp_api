@@ -1124,7 +1124,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         no_articles_flag = False
         for key in stocks:
             articles = fetch_news_articles(stocks[key], data['domains'])
-            if len(articles) <= 0:
+            if articles is None or len(articles) <= 0:
                 no_articles_flag = True
                 companies.append(stocks[key])
         if no_articles_flag:
@@ -1250,6 +1250,22 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def fetch_word_cloud(self, request, slug=None, *args, **kwargs):
+        stock_obj = StockDataset.objects.get(slug=slug)
+        crawled_data = json.loads(stock_obj.crawled_data)
+        symbol = request.GET.get('symbol')
+        articles = crawled_data[symbol.lower()][symbol.lower()]
+        date = request.GET.get('date')
+        from .helper import generate_word_cloud_image
+        image_path = generate_word_cloud_image(slug, articles, date)
+        if image_path is None:
+            path = None
+        else:
+            path = "/media/" + slug + "/wordcloud.png"
+        response = {"slug": slug, "symbol": symbol, "date": date, "image_url": path}
+        return Response(response)
 
     """
     historic data
