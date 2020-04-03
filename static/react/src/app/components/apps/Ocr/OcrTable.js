@@ -320,9 +320,9 @@ export class OcrTable extends React.Component {
                           <ul class="dropdown-menu scrollable-menu">
 
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'fields')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'fields')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'fields')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'fields')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'fields')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal to 50</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'fields')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than 50</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'fields')} name="less" data-toggle="modal" data-target="#modal_equal">Less than 50</a></li>
                           </ul>
                         </th>
                         <th class="dropdown" >
@@ -331,9 +331,9 @@ export class OcrTable extends React.Component {
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal to 50</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than 50</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than 50</a></li>
                           </ul>
                         </th>
                         <th class="dropdown" >
