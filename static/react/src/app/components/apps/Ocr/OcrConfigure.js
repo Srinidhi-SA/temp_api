@@ -52,7 +52,7 @@ export class OcrConfigure extends React.Component {
       }else if(!$("#assigniRDocsToAll")[0].checked && !$("#assigniRDocsToSelect")[0].checked){
         let msg= statusMessages("warning","Please select how to assign documents","small_mascot");
         bootbox.alert(msg);
-      }else if(this.props.selectedIRList.length === 0){
+      }else if($("#assigniRDocsToSelect")[0].checked && this.props.selectedIRList.length === 0){
         let msg= statusMessages("warning","Please select reviewers","small_mascot");
         bootbox.alert(msg);
       }else if(($("#assignRemaningIRDocs")[0].checked || $("#assignRemaningIRDocs1")[0].checked || $("#assignRemaningIRDocs2")[0].checked)===false){
@@ -85,7 +85,7 @@ export class OcrConfigure extends React.Component {
         let msg= statusMessages("warning","Please select sampling procedure for Audit","small_mascot");
         bootbox.alert(msg);
       }
-      else if(this.props.selectedSRList.length === 0){
+      else if($("#assignSRDocsToSelect")[0].checked && this.props.selectedSRList.length === 0){
         let msg= statusMessages("warning","Please select reviewers","small_mascot");
         bootbox.alert(msg);
       }

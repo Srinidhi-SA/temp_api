@@ -22625,3 +22625,12 @@ ul.ocrUploadTabs{
 .stockExtractModel .modal-content{
   overflow: inherit;
 }
+#select_export{
+  padding-left: 0;
+    color: #000;
+    padding-right: 0px;
+    height: 30px;
+}
+#select_export:focus{
+  box-shadow: none !important;
+}
