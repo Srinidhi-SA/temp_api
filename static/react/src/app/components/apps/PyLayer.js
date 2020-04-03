@@ -391,7 +391,7 @@ export class PyLayer extends React.Component {
                                 <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
-                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && selectedValue != "Ones" && selectedValue != "Zeros" && selectedValue != "Eyes" && selectedValue != "Default" && selectedValue != "Other" && selectedValue !="Dirac")?
+                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && selectedValue != "Ones" && selectedValue != "Zeros" && selectedValue != "Eyes" && selectedValue != "Default" && selectedValue != "Other" && selectedValue !="Dirac" && selectedValue !="False")?
                                 (parameterData.name === "dropout"? 
                                 this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
                                 : options.filter(i=>i.name === selectedValue)[0].parameters === null? ""
