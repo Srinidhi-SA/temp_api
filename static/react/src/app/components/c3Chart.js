@@ -215,6 +215,7 @@ export class C3Chart extends React.Component {
           if(xdata[d] != this.props.selectedDate.date){
             this.props.dispatch(chartdate("date",xdata[d]))
             this.props.dispatch(clearCloudImgResp());
+            this.props.dispatch(setCloudImageLoader(false));
           }
           
           this.props.selectedDate.symbol === undefined ?this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title)):""
@@ -396,7 +397,7 @@ export class C3Chart extends React.Component {
           <div>* Hover on graph points to view Cloud Image of repective dates</div>
         }
         { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 &&
-            <img src={STATIC_URL+this.props.cloudImgResp.image_url}/>
+            <img src={API+this.props.cloudImgResp.image_url}/>
         }
         {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
           <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>

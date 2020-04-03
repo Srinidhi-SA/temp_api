@@ -22,15 +22,21 @@ export function setCloudImageLoader(flag){
 }
 export function fetchWordCloudImg(data){
 	return (dispatch) => {
-		return fetchWordCloudImgAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response]) => {
+		return fetchWordCloudImgAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(setCloudImageLoader(false));
-				dispatch(wordCloudImgResponse());
+				dispatch(wordCloudImgResponse(json));
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}
 		})
 	}
+}
+function fetchWordCloudImgAPI(data,token){
+	return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&data="+data.date,{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
 }
 export function clearCloudImgResp(){
 	let jsn = {}
@@ -38,30 +44,7 @@ export function clearCloudImgResp(){
 		type: "CLOUD_IMG_RESPONSE",jsn
 	}
 }
-function fetchWordCloudImgAPI(data,token){
-	return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&data="+data.date,{
-		method : "get",
-		headers : getHeader(token),
-	}).then(response => Promise.all([response]));
-}
-export function wordCloudImgResponse() {
-	let jsn = {}
-	if(store.getState().chartObject.selected === "2020-03-23"){
-		jsn = {
-			"slug": "stock-analysis5-puhhjfk2kg",
-			"symbol": "jpm",
-			"date": "2020-03-23",
-			"image_url": "assets/images/cloudImg1.png"
-		}
-	}else{
-		jsn = {
-			"slug": "ms33-wd52434xea",
-			"symbol": "msft",
-			"date": "2020-03-30",
-			"image_url": "assets/images/cloudImg2.png"
-		}
-	}
-	
+export function wordCloudImgResponse(jsn) {
 	return {
 		type: "CLOUD_IMG_RESPONSE",jsn
 	}
