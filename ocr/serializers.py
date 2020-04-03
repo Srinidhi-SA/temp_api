@@ -21,7 +21,13 @@ from django.contrib.auth.models import User, Group
 # pylint: disable=too-few-public-methods
 # pylint: disable=pointless-string-statement
 # -------------------------------------------------------------------------------
-
+def get_object_or_none(model, instance):
+    if (model.__name__) == "OCRUserProfile":
+        try:
+            object = OCRUserProfile.objects.get(ocr_user=instance)
+            return object
+        except:
+            return None
 
 class OCRImageSerializer(serializers.ModelSerializer):
     """
@@ -241,13 +247,16 @@ class OCRUserListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
-        ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
-        serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
-
-        if len(serialized_data['ocr_profile']["role"]) == 1:
-            serialized_data['ocr_user'] = True
-        else:
+        ocr_profile_obj = get_object_or_none(OCRUserProfile, instance)
+        if ocr_profile_obj is None:
+            serialized_data['ocr_profile'] = None
             serialized_data['ocr_user'] = False
+        else:
+            serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+            if len(serialized_data['ocr_profile']["role"]) == 1:
+                serialized_data['ocr_user'] = True
+            else:
+                serialized_data['ocr_user'] = False
 
         return serialized_data
 

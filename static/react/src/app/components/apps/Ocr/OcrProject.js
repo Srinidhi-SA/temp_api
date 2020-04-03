@@ -3,18 +3,22 @@ import { connect } from "react-redux";
 import {OcrDocument} from "./OcrDocument";
 import { OcrProjectScreen } from "./OcrProjectScreen";
 import { OcrTopNavigation } from "./ocrTopNavigation";
+import store from '../../../store';
 
 @connect((store) => {
   return {
     documentFlag: store.ocr.documentFlag,
     imageFlag: store.ocr.imageFlag,
+    revDocumentFlag:store.ocr.revDocumentFlag,
   };
 })
 
 export class OcrProject extends React.Component {
   constructor(props) {
     super(props);
-  }
+    if(this.props.documentFlag==''&&this.props.revDocumentFlag==''&& window.location.pathname.includes('reviewer')){
+    window.history.go(-1)
+  }}
 
   render() {
 

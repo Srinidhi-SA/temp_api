@@ -114,7 +114,6 @@ def send_email(sender, instance, created, **kwargs):
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
 
-
 post_save.connect(send_email, sender=OCRUserProfile)
 
 
@@ -251,7 +250,8 @@ class OCRImage(models.Model):
     generated_image = models.FileField(null=True, upload_to='ocrData')
     comparision_data = models.TextField(max_length=300000, default="{}", null=True)
     converted_Coordinates = models.TextField(max_length=300000, default="{}", null=True)
-    analysis_list = models.TextField(max_length=300000, default="", null=True)
+    conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
+    analysis_list = models.TextField(max_length=300000, default="{}", null=True)
     analysis = models.TextField(max_length=300000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="{}", null=True)
