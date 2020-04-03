@@ -94,15 +94,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
                         sentiment=SentimentOptions()
                         )
 
-    bluemix_cache = Cache("bluemix")
-
     nl_understanding = None
-
-    # use_cache = False
-    if use_cache:
-        picled_content = bluemix_cache.get(url)
-        if picled_content:
-            nl_understanding = pickle.loads(picled_content)
 
     if not nl_understanding:
         natural_language_analyzer = __get_nl_analyzer()
@@ -125,6 +117,7 @@ def get_nl_understanding_from_bluemix(url="", content_of_the_url="", use_cache=T
                 break
 
     if nl_understanding:
+        bluemix_cache = Cache("bluemix")
         bluemix_cache.put(url, pickle.dumps(nl_understanding))
     return nl_understanding
 
