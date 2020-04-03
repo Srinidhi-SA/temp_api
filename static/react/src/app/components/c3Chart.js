@@ -1,9 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
-import {chartdate} from "../actions/chartActions";
+import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp} from "../actions/chartActions";
 import {Scrollbars} from 'react-custom-scrollbars';
-import {API} from "../helpers/env";
+import {API, STATIC_URL} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
@@ -12,9 +12,14 @@ import ReactTooltip from 'react-tooltip'
 import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
-  return {sideCardListFlag: store.signals.sideCardListFlag,
-  selectedL1:store.signals.selectedL1,
-  selected_signal_type:store.signals.selected_signal_type};
+  return {
+    sideCardListFlag: store.signals.sideCardListFlag,
+    selectedL1:store.signals.selectedL1,
+    selected_signal_type:store.signals.selected_signal_type,
+    selectedDate : store.chartObject.date,
+    cloudImgResp : store.chartObject.cloudImgResp,
+    cloudImgFlag : store.chartObject.cloudImgFlag
+  };
 })
 
 export class C3Chart extends React.Component {
@@ -203,7 +208,26 @@ export class C3Chart extends React.Component {
       }
 
       data.tooltip.format.title = (d) =>{
-        this.props.dispatch(chartdate(xdata[d]));
+
+        if(data.title.text === "Stock Performance Vs Sentiment Score" && Object.keys(this.props.selectedDate).length !=0){
+
+          this.props.selectedDate.date === undefined ? this.props.dispatch(chartdate("date",xdata[d])) : ""
+          if(xdata[d] != this.props.selectedDate.date){
+            this.props.dispatch(chartdate("date",xdata[d]))
+            this.props.dispatch(clearCloudImgResp());
+            this.props.dispatch(setCloudImageLoader(false));
+          }
+
+          this.props.selectedDate.symbol === undefined ?this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title)):""
+
+          if($(".sb_navigation li>a.active")[0].title != this.props.selectedDate.symbol){
+            this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title))
+          }
+          if(Object.keys(this.props.cloudImgResp).length ===0 && !this.props.cloudImgFlag){
+            this.props.dispatch(setCloudImageLoader(true));
+            this.props.dispatch(fetchWordCloudImg(this.props.selectedDate));
+          }
+        }
         return xdata[d];
       }
 
@@ -369,6 +393,17 @@ export class C3Chart extends React.Component {
             <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
           </div>
         </div>
+        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
+          <div>* Hover on graph points to view Cloud Image of repective dates</div>
+        }
+        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 &&
+            <img src={API+this.props.cloudImgResp.image_url}/>
+        }
+        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
+          <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
+              <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+          </div>
+        }
       </div>
 
     );

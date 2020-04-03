@@ -21,6 +21,8 @@ from django.contrib.auth.views import password_reset, password_reset_done, passw
 # from api.helper import obtain_jwt_token_custom
 from api.user_helper import myJSONWebTokenSerializer
 from rest_framework_jwt.views import ObtainJSONWebToken
+from django.conf.urls.static import static
+from django.conf import settings
 
 # rest_framework
 from rest_framework_jwt.views import \
@@ -43,5 +45,7 @@ urlpatterns = [
     url(r'^api-token-auth/', ObtainJSONWebToken.as_view(serializer_class=myJSONWebTokenSerializer)),
     url(r'^api-token-refresh/', refresh_jwt_token),
     url(r'^api-token-verify/', verify_jwt_token),
-    url(r'^', home_view)
+    # url(r'^', home_view)
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
