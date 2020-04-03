@@ -120,26 +120,26 @@ def fetch_news_sentiments_from_newsapi(stock, domains):
         picled_content = bluemix_cache.get(news['final_url'])
         if picled_content:
             nl_understanding = pickle.loads(picled_content)
-
-        if nl_understanding is None:
+        else:
             nl_understanding = myutils.get_nl_understanding_from_bluemix(
                 url=news['final_url'], content_of_the_url=short_desc)
-            if nl_understanding:
-                # nl_understanding = json.loads(nl_understanding.decode("utf-8"))
-                keywords = nl_understanding.result.get('keywords', [])
-                for keyword in keywords:
-                    keyword['text'] = preprocess_keyword(keyword['text'])
-                    keyword['concept'] = concept_mapping(keyword['text'], embed_matrix_for_concepts,
-                                                         universal_sentence_encoder)
-                sentiment = nl_understanding.result.get('sentiment', [])
 
-                if len(keywords) > 0 and len(sentiment) > 0:
-                    news['keywords'] = keywords
+        if nl_understanding:
+            # nl_understanding = json.loads(nl_understanding.decode("utf-8"))
+            keywords = nl_understanding.result.get('keywords', [])
+            for keyword in keywords:
+                keyword['text'] = preprocess_keyword(keyword['text'])
+                keyword['concept'] = concept_mapping(keyword['text'], embed_matrix_for_concepts,
+                                                     universal_sentence_encoder)
+            sentiment = nl_understanding.result.get('sentiment', [])
 
-                    if 'document' in sentiment:
-                        sentiment['document']['score'] = float(sentiment['document']['score'])
-                        news['sentiment'] = sentiment
-                        stock_news_with_sentiments.append(news)
+            if len(keywords) > 0 and len(sentiment) > 0:
+                news['keywords'] = keywords
+
+                if 'document' in sentiment:
+                    sentiment['document']['score'] = float(sentiment['document']['score'])
+                    news['sentiment'] = sentiment
+                    stock_news_with_sentiments.append(news)
 
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")

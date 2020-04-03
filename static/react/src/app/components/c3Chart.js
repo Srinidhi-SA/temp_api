@@ -210,16 +210,16 @@ export class C3Chart extends React.Component {
       data.tooltip.format.title = (d) =>{
 
         if(data.title.text === "Stock Performance Vs Sentiment Score" && Object.keys(this.props.selectedDate).length !=0){
-          
+
           this.props.selectedDate.date === undefined ? this.props.dispatch(chartdate("date",xdata[d])) : ""
           if(xdata[d] != this.props.selectedDate.date){
             this.props.dispatch(chartdate("date",xdata[d]))
             this.props.dispatch(clearCloudImgResp());
             this.props.dispatch(setCloudImageLoader(false));
           }
-          
+
           this.props.selectedDate.symbol === undefined ?this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title)):""
-          
+
           if($(".sb_navigation li>a.active")[0].title != this.props.selectedDate.symbol){
             this.props.dispatch(chartdate("date",""))
             this.props.dispatch(clearCloudImgResp());

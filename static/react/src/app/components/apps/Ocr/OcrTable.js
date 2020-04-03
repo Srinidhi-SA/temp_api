@@ -31,7 +31,8 @@ export class OcrTable extends React.Component {
       recognized: false,
       loader: false,
       exportName: "",
-      tab: 'pActive'
+      tab: 'pActive',
+      exportType: "json",
     }
   }
 
@@ -153,11 +154,12 @@ export class OcrTable extends React.Component {
     }
 
     this.props.dispatch(updateCheckList(this.state.checkedList));
-    this.setState({exportName:dataList.filter(i=>i.slug==checkList)[0].name})
+    this.setState({ exportName: dataList.filter(i => i.slug == checkList)[0].name })
     var exportData = {
       'slug': this.state.checkedList,
-      'format': 'json'
+      'format': this.state.exportType,
     }
+    if(this.state.exportType==="json"){
     return fetch(API + '/ocr/ocrimage/export_data/', {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -170,6 +172,33 @@ export class OcrTable extends React.Component {
       dlAnchorElem.click();
     })
   }
+  else if(this.state.exportType==="xml"){
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.text()).then(json => {
+      var dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(json);
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.xml`);
+      dlAnchorElem.click();
+    })
+  }
+  else if(this.state.exportType==="csv"){
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.text()).then(json => {
+      var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
+      dlAnchorElem.click();
+    })
+  }
+}
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
@@ -275,7 +304,17 @@ export class OcrTable extends React.Component {
                   <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
                 </div>
                 <Button onClick={this.handleRecognise}>Recognize</Button>
-                <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button>
+                {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
+
+                <div class="form-group pull-right ocr_highlightblock">
+                  <label class="control-label xs-mb-0" for="select_export" style={{ cursor: 'pointer' }} onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export to</label>
+                  <select class="form-control inline-block 1-100" id="select_export" onChange={(e) => this.setState({ exportType: e.target.value })}>
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                    <option value="csv">CSV</option>
+                  </select>
+                </div>
+
               </div>
             </div> : "" : ""}
         </div>
