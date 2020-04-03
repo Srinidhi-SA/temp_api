@@ -68,6 +68,8 @@ export default function reducer(state = {
   sRList : {},
   sRSearchElem : "",
   configRules : {},
+  iRFlag : true,
+  sRFlag : true,
   tabActive:'active',
   imageTaskId: "",
 
@@ -659,6 +661,7 @@ export default function reducer(state = {
       {
         let data1 = state.configRules.iRRule
         let irRul = {}
+        let iFlag = state.iRFlag
         if(Object.keys(data1).length === 0){
           irRul = {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""}
         }else if(data1.auto.active === "True"){
@@ -668,6 +671,7 @@ export default function reducer(state = {
         }
         let data2 = state.configRules.sRRule
         let srRul = {}
+        let sFlag = state.sRFlag
         if(Object.keys(data2).length === 0){
           srRul = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
         }else if(data2.auto.active === "True"){
@@ -677,9 +681,9 @@ export default function reducer(state = {
         }
         return {
           ...state,
-          iRToggleFlag : true,
+          iRToggleFlag : iFlag,
           iRConfigureDetails : irRul,
-          // sRToggleFlag : true,
+          sRToggleFlag : sFlag,
           sRConfigureDetails : srRul,
           iRSearchElem : "",
           sRSearchElem : ""
@@ -690,6 +694,7 @@ export default function reducer(state = {
       {
         let data1 = action.data.rulesL1
         let irRules = {}
+        let iFlag = action.data.auto_assignmentL1
         if(Object.keys(data1).length === 0){
           irRules = {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""}
         }else if(data1.auto.active === "True"){
@@ -699,6 +704,7 @@ export default function reducer(state = {
         }
         let data2 = action.data.rulesL2
         let srRules = {}
+        let sFlag = action.data.auto_assignmentL2
         if(Object.keys(data2).length === 0){
           srRules = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
         }else if(data2.auto.active === "True"){
@@ -708,10 +714,13 @@ export default function reducer(state = {
         }
         return {
           ...state,
-          iRToggleFlag : action.data.auto_assignment,
+          iRFlag : action.data.auto_assignmentL1,
+          sRFlag : action.data.auto_assignmentL2,
           configRules : {"iRRule":action.data.rulesL1,"sRRule":action.data.rulesL2},
           iRConfigureDetails : irRules,
           sRConfigureDetails : srRules,
+          iRToggleFlag : iFlag,
+          sRToggleFlag : sFlag,
         }
       }
       break;
