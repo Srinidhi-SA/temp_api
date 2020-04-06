@@ -209,8 +209,7 @@ export class C3Chart extends React.Component {
 
       data.tooltip.format.title = (d) =>{
 
-        if(data.title.text === "Stock Performance Vs Sentiment Score" && Object.keys(this.props.selectedDate).length !=0){
-
+        if(data.title.text === "Stock Performance Vs Sentiment Score" && Object.keys(this.props.selectedDate).length !=0 && d!=0 ){
           this.props.selectedDate.date === undefined ? this.props.dispatch(chartdate("date",xdata[d])) : ""
           if(xdata[d] != this.props.selectedDate.date){
             this.props.dispatch(chartdate("date",xdata[d]))
@@ -221,6 +220,9 @@ export class C3Chart extends React.Component {
           this.props.selectedDate.symbol === undefined ?this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title)):""
 
           if($(".sb_navigation li>a.active")[0].title != this.props.selectedDate.symbol){
+            this.props.dispatch(chartdate("date",""))
+            this.props.dispatch(clearCloudImgResp());
+            this.props.dispatch(setCloudImageLoader(false));
             this.props.dispatch(chartdate("symbol",$(".sb_navigation li>a.active")[0].title))
           }
           if(Object.keys(this.props.cloudImgResp).length ===0 && !this.props.cloudImgFlag){
@@ -394,10 +396,13 @@ export class C3Chart extends React.Component {
           </div>
         </div>
         {this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
-          <div>* Hover on graph points to view Cloud Image of repective dates</div>
+          <div>* Hover on the graph points to view Cloud Image of respective dates</div>
         }
-        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 &&
-            <img src={API+this.props.cloudImgResp.image_url}/>
+        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
+            <img src={API+"/"+this.props.cloudImgResp.image_url} style={{paddingLeft:"20%"}} />
+        }
+        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
+          <div className="error"> Cloud Image for date {this.props.cloudImgResp.date} is not available</div>
         }
         {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
           <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>

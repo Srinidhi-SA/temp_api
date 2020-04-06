@@ -1720,6 +1720,7 @@ def generate_word_cloud_image(slug, temp_articles_list, date):
     articles_df['date'] = articles_df.date.apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:8])
     temp_date_list = articles_df['date'].tolist()
     temp_date_list = list(dict.fromkeys(temp_date_list))
+    temp_date_list.sort(reverse=True)
 
     enddate = str(date)
     index_of_end_date = temp_date_list.index(enddate)

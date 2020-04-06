@@ -33,7 +33,7 @@ export function fetchWordCloudImg(data){
 	}
 }
 function fetchWordCloudImgAPI(data,token){
-	return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&data="+data.date,{
+	return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&date="+data.date,{
 		method : "get",
 		headers : getHeader(token),
 	}).then(response => Promise.all([response,response.json()]));
