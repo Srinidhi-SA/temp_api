@@ -165,6 +165,8 @@ export function getOcrReviewersList(pageNo){
 }
 
 function fetchReviewersList(pageNo=1,token){
+	let filter_rev_time =store.getState().ocr.filter_rev_time
+	let filter_rev_accuracy=store.getState().ocr.filter_rev_time
 		return fetch(API + '/ocr/user/reviewer_detail_list/?page_number=' + pageNo, {
       method: 'get', 
       headers: getHeader(token)
@@ -202,8 +204,11 @@ export function getRevrDocsList(pageNo){
 }
 
 function fetchRevrDocsList(pageNo=1,token){
+	let filter_rd_fields=store.getState().ocr.filter_rd_fields
+	let filter_rd_status=store.getState().ocr.filter_rd_status
+	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
-
+	
 	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
@@ -358,6 +363,39 @@ export function storeOcrFilterFields(fields){
 	return{
 		type: "FILTER_BY_FIELDS",
 		fields
+	}
+}
+export function ocrRdFilterStatus(status){
+	return{
+		type: "FILTER_RD_BY_STATUS",
+		status,
+	}
+}
+export function ocrRdFilterConfidence(confidence){
+	return{
+		type: "FILTER_RD_BY_CONFIDENCE",
+		confidence,
+	}
+}
+
+export function ocrRdFilterFields(fields){
+	return{
+		type: "FILTER_RD_BY_FIELDS",
+		fields
+	}
+}
+
+export function ocrRevFilterTime(time){
+	return{
+		type: "FILTER_REV_BY_TIME",
+		time,
+	}
+}
+
+export function ocrRevFilterAccuracy(accuracy){
+	return{
+		type: "FILTER_REV_BY_ACCURACY",
+		accuracy
 	}
 }
 export function updateCheckList(list){

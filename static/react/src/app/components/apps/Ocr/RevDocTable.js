@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveRevDocumentPageFlag } from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -66,19 +66,19 @@ export class RevDocTable extends React.Component {
   }
 
 
-  filterOcrList(filtertBy, filterOn) {
-    // switch (filterOn) {
-    //   case 'status':
-    //     this.props.dispatch(storeOcrFilterStatus(filtertBy))
-    //     break;
-    //   case 'confidence':
-    //     this.props.dispatch(storeOcrFilterConfidence(filtertBy))
-    //     break;
-    //   case 'assignee':
-    //     this.props.dispatch(storeOcrFilterAssignee(filtertBy))
-    //     break;
-    // }
-    // this.props.dispatch(getOcrUploadedFiles())
+  filterRevDocrList(filtertBy, filterOn) {
+    switch (filterOn) {
+      case 'status':
+      this.props.dispatch(ocrRdFilterStatus(filtertBy))
+      break;
+      case 'confidence':
+      this.props.dispatch(ocrRdFilterConfidence(filtertBy))
+      break;
+      case 'fields':
+      this.props.dispatch(ocrRdFilterFields(filtertBy))
+      break;
+    }
+    this.props.dispatch(getRevrDocsList())
   }
 
   handleCheck = (e) => {
@@ -154,21 +154,21 @@ export class RevDocTable extends React.Component {
                     <span>STATUS</span> <b class="caret"></b>
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,'', 'status')} name='all'>All</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
                   </ul>
                 </th>
                 <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                     <span>Fields</span> <b class="caret"></b>
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
-
-                    <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'fields')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                   </ul>
                 </th>
                 <th class="dropdown" >
@@ -176,10 +176,10 @@ export class RevDocTable extends React.Component {
                     <span>ACCURACY</span> <b class="caret"></b>
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                   </ul>
                 </th>
                 <th>Created</th>

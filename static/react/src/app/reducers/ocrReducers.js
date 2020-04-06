@@ -26,6 +26,11 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   filter_fields:'',
+  filter_rd_status:'',
+  filter_rd_confidence:'',
+  filter_rd_fields:'',
+  filter_rev_accuracy:'',
+  filter_rev_time:'',
   checked_list: '',
   addUserPopupFlag : false,
   createUserFlag : false,
@@ -306,6 +311,47 @@ export default function reducer(state = {
         }
       }
     break;
+    // filter for reviewers document table
+    case "FILTER_RD_BY_STATUS":
+      {
+        return {
+          ...state,
+          filter_rd_status: action.status,
+        }
+      }
+    break;
+    case "FILTER_RD_BY_CONFIDENCE":
+      {
+        return {
+          ...state,
+          filter_rd_confidence: action.confidence,
+        }
+      }
+    break;
+    case "FILTER_RD_BY_FIELDS":
+      {
+        return {
+          ...state,
+          filter_rd_fields: action.fields
+        }
+      }//end
+    break;
+    case "FILTER_REV_BY_ACCURACY":
+    {
+      return {
+        ...state,
+        filter_rev_accuracy: action.accuracy,
+      }
+    }
+  break;
+  case "FILTER_REV_BY_TIME":
+    {
+      return {
+        ...state,
+        filter_rev_time: action.time,
+      }
+    }
+  break; 
     case "UPDATE_CHECKLIST":
       {
         return {
