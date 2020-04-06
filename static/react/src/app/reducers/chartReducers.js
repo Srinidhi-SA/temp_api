@@ -39,6 +39,13 @@ export default function reducer(state = {
 			}
 		}
 		break;
+		case "CLEAR_C3_DATE":
+		{
+			return{
+				...state,
+				date : {},
+			}
+		}
 	}
 	return state
 }
