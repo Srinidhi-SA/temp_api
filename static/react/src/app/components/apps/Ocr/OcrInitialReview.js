@@ -75,7 +75,7 @@ export class OcrInitialReview extends React.Component {
         }
         let iRListCount = listForIRTable.length;
         let getDisabledVal = false
-        if($("#assigniRDocsToAll")[0].checked){
+        if( $("#assigniRDocsToAll")[0] !=undefined && $("#assigniRDocsToAll")[0].checked){
             getDisabledVal = true
             this.saveIRConfig.bind(this)
         }

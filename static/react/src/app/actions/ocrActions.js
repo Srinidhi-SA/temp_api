@@ -44,6 +44,12 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+
+export function clearImageDetails() {
+	return {
+		type: "CLEAR_IMAGE_DETAILS",
+	}
+}
 //Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
@@ -796,7 +802,6 @@ export function fetchReviewersRules(){
 		return fetchReviewersRulesAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveRulesForConfigPage(json))
-				console.log(json)
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}

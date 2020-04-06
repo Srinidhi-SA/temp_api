@@ -36,7 +36,7 @@ export class PyLayer extends React.Component {
         }else if(parameterData.name === "activation"){
             $("#suggest_pt")[0].innerHTML = ""
         }
-        if(parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
+        if(this.props.idNum === 1 && parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please select Sigmoid as Loss is "+ $(".loss_pt")[0].value
         }else if(parameterData.name === "weight_init" && e.target.value === "Dirac"){
@@ -436,7 +436,7 @@ export class PyLayer extends React.Component {
                         <div class="layerBody" style={{'paddingLeft':'15px'}}>
                             {renderPyTorchLayer}
                         </div>
-                        <div id="suggest_pt" className="error_pt"></div>
+                        <div id="suggest_pt" className="mb-20 error_pt"></div>
                     </div>
                 </div>
             </div>
