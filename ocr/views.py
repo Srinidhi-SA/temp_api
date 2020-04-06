@@ -34,7 +34,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.decorators import list_route, detail_route
+from rest_framework.decorators import list_route, detail_route, api_view
 from rest_framework.response import Response
 from shapely.geometry import Point, Polygon
 
@@ -130,6 +130,44 @@ def ocr_datasource_config_list(request):
 
 
 # -------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------
+@api_view(['GET'])
+def get_highlevel_metrics(request):
+    metricKeyList = ['project', 'ocrimage', 'ocruser']
+    OCRData = []
+    for key in metricKeyList:
+        OCRData.append(get_metricKey_data(key))
+
+    return JsonResponse({
+        'status': True,
+        'ocrdata': OCRData,
+    })
+
+def get_metricKey_data(key):
+    modelMappings = {
+        'project': Project,
+        'ocrimage': OCRImage,
+        'ocruser': OCRUserProfile
+    }
+    displayName = {
+        'project': 'Total Projects ',
+        'ocrimage': 'Total Images Uploaded',
+        'ocruser': 'Total Reviewers'
+    }
+    if not key == 'ocruser':
+        count = modelMappings[key].objects.all().count()
+    else:
+        count = modelMappings[key].objects.filter(
+            ocr_user__groups__name__in = ['ReviewerL1', 'ReviewerL2'],
+            is_active = True
+        ).count()
+    return {
+        'count': count,
+        'displayName': displayName[key]
+    }
+# -------------------------------------------------------------------------------
+
 
 # -------------------------------------------------------------------------------
 class OCRUserView(viewsets.ModelViewSet):
@@ -448,14 +486,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             status__in=['ready_to_verify', 'ready_to_export'],
             created_by=self.request.user,
             project__slug=projectslug
-        )
+        ).order_by('-created_at')
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_recognize'],
             created_by=self.request.user,
             project__slug=projectslug
-        )
+        ).order_by('-created_at')
 
     def get_queryset_by_status(self, projectslug, imageStatus):
         if imageStatus == 'active':
