@@ -841,7 +841,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         user_input = 0.75
         if 'filter' in data:
             user_input = data['filter']
-        slug = ast.literal_eval(str(data['slug']))[0]
+        slug = data['slug']
         image_queryset = OCRImage.objects.get(slug=slug)
         comparision_data = json.loads(image_queryset.comparision_data)
         response = json.loads(image_queryset.conf_google_response)
@@ -872,8 +872,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         comparision_data[b][3] = 'True'
                     else:
                         pass
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['slug'] = slug
+
         image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
         response = plot(image, comparision_data, data['slug'])
         data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
