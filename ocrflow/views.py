@@ -11,6 +11,7 @@ from ocr.permission import IsOCRAdminUser
 from ocr.serializers import OCRImageSerializer
 from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
+from ocrflow.forms import feedbackForm
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from django.http import JsonResponse
 from rest_framework.decorators import list_route, detail_route
@@ -117,6 +118,27 @@ class TaskView(viewsets.ModelViewSet):
                 return JsonResponse({
                     "submitted": True,
                     "message": "Task Updated Successfully."
+                })
+            else:
+                return JsonResponse({
+                    "submitted": False,
+                    "message": form.errors
+                })
+        else:
+            raise PermissionDenied("Not allowed to perform this POST action.")
+
+    @list_route(methods=['post'])
+    def feedback(self, request, *args, **kwargs):
+        instance = Task.objects.get(id=self.request.query_params.get('feedbackId'))
+        if request.user == instance.assigned_user:
+            form = feedbackForm(request.POST)
+            if form.is_valid():
+                bad_scan = form.cleaned_data['bad_scan']
+                instance.bad_scan = bad_scan
+                instance.save()
+                return JsonResponse({
+                    "submitted": True,
+                    "message": "Feedback submitted Successfully."
                 })
             else:
                 return JsonResponse({

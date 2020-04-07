@@ -45,6 +45,7 @@ class Task(models.Model):
         auto_now_add=True
     )
     comments = models.TextField(blank=True, null=True)
+    bad_scan = models.TextField(blank=True, null=True, max_length=100)
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE
