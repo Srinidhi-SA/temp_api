@@ -407,16 +407,16 @@ export class C3Chart extends React.Component {
             <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
           </div>
         </div>
-        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
           <div style={{padding:"10px"}} >Note: Hover on the graph points to view Cloud Image of respective dates</div>
         }
-        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
             <img id="cloudImage" style={{ display:"block", marginLeft:"auto", marginRight: "auto"}} src={API+"/"+this.props.cloudImgResp.image_url} />
         }
-        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
           <div className="error"> Cloud Image for date {this.props.cloudImgResp.date} is not available</div>
         }
-        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
           <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
               <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
           </div>
