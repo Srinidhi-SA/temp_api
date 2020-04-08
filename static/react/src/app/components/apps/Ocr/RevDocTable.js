@@ -91,6 +91,7 @@ export class RevDocTable extends React.Component {
     const pages = this.props.OcrRevwrDocsList.total_number_of_pages;
     const current_page = this.props.OcrRevwrDocsList.current_page;
     let paginationTag = null
+    let breadcrumb=null;
     if (pages > 1) {
       paginationTag = (
         <div class="col-md-12 text-center">
@@ -103,6 +104,17 @@ export class RevDocTable extends React.Component {
       )
     }
 
+   if(getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser")){
+   breadcrumb= (
+    <div class="row">
+    <div class="col-sm-6">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
+              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+            </ol>
+          </div>
+          </div>)
+   }
     var OcrRevDocTableHtml = (
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
@@ -131,14 +143,7 @@ export class RevDocTable extends React.Component {
 
     return (
       <div>
-        <div class="row">
-          <div class="col-sm-6">
-          <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
-            </ol>
-          </div>
-        </div>
+       {breadcrumb}
             <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
             {this.props.OcrRevwrDocsList != '' ? this.props.OcrRevwrDocsList.total_data_count>= 1 ? (
@@ -196,7 +201,7 @@ export class RevDocTable extends React.Component {
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}
-        </div>
+         </div>
         </div>
     )
   }
