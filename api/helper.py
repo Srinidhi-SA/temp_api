@@ -1707,3 +1707,85 @@ def make_api_call(method, url, token, payload=None, parameters=None):
         response = requests.post(url, headers=headers, data=json.dumps(payload), params=parameters)
 
     return response
+
+
+def generate_word_cloud_image(slug, temp_articles_list, date):
+    import pandas as pd
+    import collections
+    from wordcloud import WordCloud, STOPWORDS
+    import os
+    articles_df = pd.DataFrame(temp_articles_list)
+    articles_df = articles_df.sort_values(by='date', ascending=False)
+
+    articles_df['date'] = articles_df.date.apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:8])
+    temp_date_list = articles_df['date'].tolist()
+    temp_date_list = list(dict.fromkeys(temp_date_list))
+    temp_date_list.sort(reverse=True)
+
+    enddate = str(date)
+    index_of_end_date = temp_date_list.index(enddate)
+    start_date = temp_date_list[index_of_end_date + 1]
+    pandasDf1 = articles_df[(articles_df.date >= start_date) & (articles_df.date <= enddate)]
+    pandasDf1.reset_index(drop=True, inplace=True)
+
+    words_freq_positive = []
+    words_freq_negative = []
+    words_freq_neutral = []
+
+    if pandasDf1 is not None and len(pandasDf1) > 0:
+        for index, datarow in pandasDf1.iterrows():
+            for textrow in datarow["keywords"]:
+                if textrow["sentiment"]["label"] == 'positive':
+                    words_freq_positive.append(textrow['text'])
+                elif textrow["sentiment"]["label"] == 'negative':
+                    words_freq_negative.append(textrow['text'])
+                elif textrow["sentiment"]["label"] == 'neutral':
+                    words_freq_neutral.append(textrow['text'])
+                else:
+                    pass
+
+        words_freq_positive = collections.Counter(words_freq_positive)
+        words_freq_positive = sorted(words_freq_positive.items(), key=lambda x: x[1], reverse=True)
+        words_freq_positive = dict(words_freq_positive)
+
+        words_freq_negative = collections.Counter(words_freq_negative)
+        words_freq_negative = sorted(words_freq_negative.items(), key=lambda x: x[1], reverse=True)
+        words_freq_negative = dict(words_freq_negative)
+
+        words_freq_neutral = collections.Counter(words_freq_neutral)
+        words_freq_neutral = sorted(words_freq_neutral.items(), key=lambda x: x[1], reverse=True)
+        words_freq_neutral = dict(words_freq_neutral)
+
+        final_dict = words_freq_positive.copy()
+        final_dict.update(words_freq_negative.items())
+        words_freq = sorted(final_dict.items(), key=lambda x: x[1], reverse=True)
+        words_freq = dict(words_freq[:25])
+        word_to_color = dict()
+
+        pos_words = list(words_freq_positive.keys())
+        for word in pos_words:
+            word_to_color[word] = '#00ff00'  # green
+
+        neg_words = list(words_freq_negative.keys())
+        for word in neg_words:
+            word_to_color[word] = '#ff0000'  # red
+
+        def color_func(word, *args, **kwargs):
+            try:
+                color = word_to_color[word]
+            except KeyError:
+                color = '#000000'
+            return color
+
+        wc = WordCloud(width=500, height=500, background_color='white', min_font_size=10, color_func=color_func)
+        wc.generate_from_frequencies(words_freq)
+        # path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + slug + "/wordcloud.png"
+        try:
+            os.mkdir(settings.MEDIA_ROOT + "/" + slug)
+        except FileExistsError:
+            pass
+        path = settings.MEDIA_ROOT + "/" + slug + "/wordcloud.png"
+        wc.to_file(path)
+        return path
+    else:
+        return None

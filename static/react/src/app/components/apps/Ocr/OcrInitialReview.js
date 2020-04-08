@@ -26,7 +26,8 @@ export class OcrInitialReview extends React.Component {
 
   saveInitialReviwerToggleVal(e){
     this.props.dispatch(saveIRToggleValAction(e.target.checked))
-    this.props.dispatch(autoAssignmentAction(store.getState().ocr.iRToggleFlag));
+    var stgName = "initial"
+    this.props.dispatch(autoAssignmentAction(stgName,store.getState().ocr.iRToggleFlag));
   }
   saveIRConfig(e){
     if(e.target.id === "assigniRDocsToAll"){
@@ -74,7 +75,7 @@ export class OcrInitialReview extends React.Component {
         }
         let iRListCount = listForIRTable.length;
         let getDisabledVal = false
-        if($("#assigniRDocsToAll")[0].checked){
+        if( $("#assigniRDocsToAll")[0] !=undefined && $("#assigniRDocsToAll")[0].checked){
             getDisabledVal = true
             this.saveIRConfig.bind(this)
         }

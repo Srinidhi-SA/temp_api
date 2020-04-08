@@ -44,6 +44,12 @@ export function saveImageDetails(data) {
 		data
 	}
 }
+
+export function clearImageDetails() {
+	return {
+		type: "CLEAR_IMAGE_DETAILS",
+	}
+}
 //Actions for fetching Projects list 
 export function updateOcrImage(data) {
 	return {
@@ -834,7 +840,6 @@ export function fetchReviewersRules(){
 		return fetchReviewersRulesAPI(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				dispatch(saveRulesForConfigPage(json))
-				console.log(json)
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}
@@ -880,9 +885,9 @@ export function saveIRToggleValAction(val){
 		type:"STORE_IR_TOGGLE_FLAG",val
 	}
 }
-export function autoAssignmentAction(val){
+export function autoAssignmentAction(stage,val){
 	return (dispatch) => {
-		return autoAssignmentActionAPI(val,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+		return autoAssignmentActionAPI(stage,val,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
 				bootbox.alert(statusMessages("warning",json.message,"small_mascot"))
 			}else{
@@ -891,10 +896,11 @@ export function autoAssignmentAction(val){
 		})
 	}
 }
-function autoAssignmentActionAPI(val,token){
+function autoAssignmentActionAPI(stage,val,token){
 	let ConvertedVal = val===true?"True":"False"
 	var formdt = new FormData();
 	formdt.append("autoAssignment",ConvertedVal);
+	formdt.append("stage",stage);
 	return fetch(API+"/ocrflow/rules/autoAssignment/",{
 		method : "post",
 		body : formdt,

@@ -28,7 +28,15 @@ export class PyLayer extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
-        if(parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
+        if(parameterData.name === "activation" && (e.target.value === "ReLU" || e.target.value === "LeakyReLU") ){
+            $("#suggest_pt")[0].innerHTML = "Select Kaiming Normal or Kaiming Unifrom from  weight_init for best results";
+        }
+        else if(parameterData.name === "activation" && (e.target.value === "Tanh" || e.target.value === "Sigmoid") ){
+            $("#suggest_pt")[0].innerHTML = "Select Xavier Normal or Xavier Unifrom from  weight_init for best results";
+        }else if(parameterData.name === "activation"){
+            $("#suggest_pt")[0].innerHTML = ""
+        }
+        if(this.props.idNum === 1 && parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please select Sigmoid as Loss is "+ $(".loss_pt")[0].value
         }else if(parameterData.name === "weight_init" && e.target.value === "Dirac"){
@@ -63,6 +71,22 @@ export class PyLayer extends React.Component {
                             }
                         });
                 this.props.dispatch(setPyTorchLayer(parseInt(layerArry),layerDt,parameterData.name))
+            }else if(parameterData.name === "weight_constraint"){
+                let layerDt = this.props.pyTorchLayer[layerArry];
+                if(layerDt[parameterData.name].name != e.target.value){
+                    layerDt[parameterData.name] = {"constraint":"None"}
+                }
+                if(e.target.value){
+                    layerDt[parameterData.name].constraint = e.target.value
+                    let defValArr = parameterData.defaultValue.filter(i=>(i.name===e.target.value))[0];
+                    if(defValArr != undefined)
+                        if(defValArr.parameters != null)
+                            defValArr.parameters[0].map(idx=>{
+                                let defVal = layerDt[parameterData.name];
+                                defVal[idx.name] = idx.defaultValue;
+                            });
+                    this.props.dispatch(setPyTorchLayer(parseInt(layerArry),layerDt,parameterData.name))
+                }
             }else{
                 let newLyrVal = this.props.pyTorchLayer[layerArry];
                 newLyrVal[parameterData.name] = e.target.value;
@@ -119,21 +143,13 @@ export class PyLayer extends React.Component {
     setLayerSubParams(subparameterData,defaultParamName,e){
         let name = subparameterData.name;
         let val = e.target.value;
-        if(name === "alpha" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "lambd" && (val>1 || val<0 || val === "")){
+        if( (name === "alpha" || name === "lambd" || name === "max_val" || name === "negative_slope" || name === "init" || name === "num_parameters" || name === "lower" || name === "upper" || name === "momentum" || name === "eps" || name === "p") && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if(name === "min_val" && (val>1 || val<-1 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -1 to 1"
-        }
-        else if(name === "max_val" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
         else if( name === "min_val" && ($(".min_val_pt")[this.props.idNum-1].value > $(".max_val_pt")[this.props.idNum-1].value)){
             this.props.dispatch(pytorchValidateFlag(false));
@@ -143,71 +159,11 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "max_val should be greater than min_val"
         }
-        else if(name === "negative_slope" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "embed_dim" && (val<0 || val === "")){
+        else if( (name === "embed_dim" || name === "num_heads" || name === "kdim" || name === "vdim" || name === "beta" || name === "threshold" || name === "div_value") && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
-        else if(name === "num_heads" && ( val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-        }
-        else if(name === "n_classes" && val<0){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-        }
-        else if(name === "kdim" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-        }
-        else if(name === "dim" && (val<0)){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
-        }
-        else if(name === "vdim" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
-        }
-        else if(name === "init" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "num_parameters" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "lower" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "upper" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "beta" && ( val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
-        }
-        else if(name === "threshold" && (val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "Enter a positive value"
-        }
-        else if(name === "eps" && (val>1 || val<0 || val === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "momentum" && (val>1 || val<0) || val === ""){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "p" && (val<0 || val>1 || val === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
-        }
-        else if(name === "div_value" && (val<0 || val === "") ){
+        else if( (name === "n_classes" || name === "dim") && val<0){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
         }
@@ -239,7 +195,7 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -1 to 1"
         }
-        else if( name === "mean"  && ( val<0 || val>1 || val==="" ) ){
+        else if( (name === "mean" || name === "min" || name === "max")  && ( val<0 || val>1 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
         }
@@ -247,13 +203,13 @@ export class PyLayer extends React.Component {
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 2"
         }
-        else if( name === "val"  && ( val<-2 || val>2 || val==="" ) ){
+        else if( (name === "val" || name === "sparsity")  && ( val<-2 || val>2 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -2 to 2"
         }
-        else if( name === "sparsity"  && ( val<-2 || val>2 || val==="" ) ){
+        else if( ($("#min_pt")[0]!=undefined && $("#max_pt")[0]!=undefined) && ($("#min_pt")[0].value > $("#max_pt")[0].value) ){
             this.props.dispatch(pytorchValidateFlag(false));
-            e.target.parentElement.lastElementChild.innerText = "value range is -2 to 2"
+            e.target.parentElement.lastElementChild.innerText = "min should be less than max"
         }
         else{
             this.props.dispatch(pytorchValidateFlag(true));
@@ -266,6 +222,9 @@ export class PyLayer extends React.Component {
     }
 
     getsubParams(item,defaultParamName){
+        if(defaultParamName === "weight_constraint"){
+            item = item[0]
+        }
         let arr1 = []
         for(var i=0;i<item.length;i++){
             switch(item[i].uiElemType){
@@ -373,6 +332,9 @@ export class PyLayer extends React.Component {
                     }else if(parameterData.name === "weight_init"){
                         selectedValue = this.props.pyTorchLayer[lyr].weight_init.name
                         sel = (options[prop].name === selectedValue)?true:false
+                    }else if(parameterData.name === "weight_constraint"){
+                        selectedValue = this.props.pyTorchLayer[lyr].weight_constraint.constraint
+                        sel = (options[prop].name === selectedValue)?true:false
                     }else if(options[prop].selected){
                         selectedValue = options[prop].name;
                     }
@@ -391,7 +353,7 @@ export class PyLayer extends React.Component {
                                 <div key={`${parameterData.name}_pt`} className = "error_pt"></div>
                             </div>
                         </div>
-                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && selectedValue != "Ones" && selectedValue != "Zeros" && selectedValue != "Eyes" && selectedValue != "Default" && selectedValue != "Other" && selectedValue !="Dirac")?
+                        {(selectedValue != "None" && selectedValue != "" && selectedValue != undefined && selectedValue != "Ones" && selectedValue != "Zeros" && selectedValue != "Eyes" && selectedValue != "Default" && selectedValue != "Other" && selectedValue !="Dirac" && selectedValue !="False")?
                                 (parameterData.name === "dropout"? 
                                 this.getsubParams((options.filter(i=>i.name===selectedValue)[0].parameters),parameterData.name)
                                 : options.filter(i=>i.name === selectedValue)[0].parameters === null? ""
@@ -474,6 +436,7 @@ export class PyLayer extends React.Component {
                         <div class="layerBody" style={{'paddingLeft':'15px'}}>
                             {renderPyTorchLayer}
                         </div>
+                        <div id="suggest_pt" className="mb-20 error_pt"></div>
                     </div>
                 </div>
             </div>

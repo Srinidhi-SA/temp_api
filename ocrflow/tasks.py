@@ -15,7 +15,7 @@ import datetime
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L1():
     OCRRule = OCRRules.objects.get(id=1)
-    if OCRRule.auto_assignment:
+    if OCRRule.auto_assignmentL1:
         print("~" * 90)
         #TODO
         #1.Filter all Images with Recognised True, assigned = False
@@ -58,7 +58,7 @@ def start_auto_assignment_L1():
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L2():
     OCRRule = OCRRules.objects.get(id=1)
-    if OCRRule.auto_assignment:
+    if OCRRule.auto_assignmentL2:
         print("~" * 90)
         reviewRequestQueryset = ReviewRequest.objects.filter(
             tasks__is_closed = True,
