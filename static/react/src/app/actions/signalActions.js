@@ -464,8 +464,13 @@ export function hideTargetVariable(event,jobType){
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     count = getTotalVariablesSelected();
     dispatch(updateVariablesCount(count));
+    let variableSel = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
     if(jobType == "signals"){
+      if(variableSel.filter(i=>i.targetColumn).length === 0){
+        bootbox.alert(statusMessages("warning","Target column not set, Please select again","small_mascot"))
+      }else{
         dispatch(updateAdvanceSettings(event));
+      }
     }
 
     }
