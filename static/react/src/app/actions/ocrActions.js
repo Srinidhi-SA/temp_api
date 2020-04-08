@@ -118,7 +118,7 @@ function fetchUploadedFiles(pageNo=1,token){
 	let filter_confidence=store.getState().ocr.filter_confidence
 	let search_document=store.getState().ocr.search_document
 	let selected_project_slug=store.getState().ocr.selected_project_slug
-	let tabActive	= store.getState().ocr.tabActive
+	let tabActive	= store.getState().ocr.tabActive==''?'active':store.getState().ocr.tabActive;
 	let filter_fields=store.getState().ocr.filter_fields
 	if(search_document==''){
 		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
