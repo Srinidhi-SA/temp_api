@@ -44,6 +44,11 @@ export class C3Chart extends React.Component {
       this.props.dispatch(clearCloudImgResp())
   }
 
+  componentDidUpdate(){
+    let elem = document.getElementById("cloudImage")!=undefined?document.getElementById("cloudImage").parentElement:""
+    elem!=""?elem.scrollIntoView(true):""
+  }
+
   openZoomChart(flag) {
     this.props.dispatch(showZoomChart(flag, this.props.classId));
   }
@@ -406,7 +411,7 @@ export class C3Chart extends React.Component {
           <div style={{padding:"10px"}} >Note: Hover on the graph points to view Cloud Image of respective dates</div>
         }
         { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
-            <img style={{ display:"block", marginLeft:"auto", marginRight: "auto"}} src={API+"/"+this.props.cloudImgResp.image_url} />
+            <img id="cloudImage" style={{ display:"block", marginLeft:"auto", marginRight: "auto"}} src={API+"/"+this.props.cloudImgResp.image_url} />
         }
         { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
           <div className="error"> Cloud Image for date {this.props.cloudImgResp.date} is not available</div>
