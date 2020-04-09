@@ -119,6 +119,7 @@ def generate_job_config(class_name, job_config, job_name, message_slug, slug, ap
                                               )
     config = {}
     config['job_config'] = job_config
+    config['job_config'] = json.loads(config['job_config'])
     config['job_config'].update(temp_config)
 
     return config

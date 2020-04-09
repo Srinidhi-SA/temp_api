@@ -3171,9 +3171,15 @@ class StockDataset(models.Model):
             name = stockName + "_" + stockDataType
         else:
             name = stockName
-        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        path1 = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         # file_path = path + stockName + "." + type
-        file_path = path + name + "." + type
+        semi_path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
+        from os import path
+        if path.exists(semi_path) is False:
+            os.mkdir(semi_path)
+            os.chmod(semi_path, 0o777)
+        file_path = path1 + name + "." + type
+        # file_path = path + stockName + "." + type
         print("Writing {1} for {0}".format(stockName, stockDataType))
         print(file_path)
         with open(file_path, "w") as file_to_write_on:
