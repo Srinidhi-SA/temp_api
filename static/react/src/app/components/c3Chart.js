@@ -214,6 +214,8 @@ export class C3Chart extends React.Component {
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
           return xdata[x].substr(0, 9) + "..";
+        } else if(xdata[x] && data.title.text === "Stock Performance Analysis"){
+          return xdata[x].substr(0,3) + " \'" +xdata[x].substr(9)
         } else {
           return xdata[x];
         }
