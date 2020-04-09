@@ -2890,6 +2890,7 @@ class StockDataset(models.Model):
         self.meta_data = self.crawl_news_data()
         self.job.messages = update_stock_sense_message(self.job, "ml-work")
         self.job.save()
+        self.stock_sense_job_submission()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -3070,13 +3071,27 @@ class StockDataset(models.Model):
         return str(self.slug)
 
     def add_to_job(self, *args, **kwargs):
-        jobConfig = self.generate_config(*args, **kwargs)
+        # jobConfig = self.generate_config(*args, **kwargs)
 
-        job = job_submission(
-            instance=self,
-            jobConfig=jobConfig,
-            job_type='stockAdvisor'
-        )
+        # job = job_submission(
+        #     instance=self,
+        #     jobConfig=jobConfig,
+        #     job_type='stockAdvisor'
+        # )
+        job_type='stockAdvisor'
+
+        """Submit job to jobserver"""
+        # Job Book Keeping
+        job = Job()
+        job.name = "-".join([job_type, self.slug])
+        job.job_type = job_type
+        job.object_id = str(self.slug)
+        job.submitted_by = self.created_by
+
+        # job.config = json.dumps(jobConfig)
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(self.stock_symbols)
+        job.save()
 
         self.job = job
         if job is None:
@@ -3084,6 +3099,71 @@ class StockDataset(models.Model):
         else:
             self.status = "INPROGRESS"
         self.save()
+
+    def stock_sense_job_submission(self):
+        job = self.job
+        jobConfig = self.generate_config()
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        queue_name = None
+        try:
+            data_size = 3000
+
+            queue_name = get_queue_to_use(job_type='stockAdvisor', data_size=data_size)
+        except Exception as e:
+            print(e)
+
+        if not queue_name:
+            queue_name = "default"
+
+        from api.redis_access import AccessFeedbackMessage
+        ac = AccessFeedbackMessage()
+        message_slug = get_message_slug(job)
+        ac.delete_this_key(message_slug)
+        # app_id = None
+        # if 'score' == job_type:
+        #     app_id = instance.app_id
+        # elif 'model' == job_type:
+        #     app_id = instance.app_id
+        '''
+        job_type = {
+                "metadata": "metaData",
+                "master": "story",
+                "model":"training",
+                "score": "prediction",
+                "robo": "robo",
+                "subSetting": "subSetting",
+                "stockAdvisor": "stockAdvisor"
+            }
+        '''
+        # Submitting JobServer
+        from .utils import submit_job
+        try:
+            job_return_data = submit_job(
+                slug=job.slug,
+                class_name='stockAdvisor',
+                job_config=job.config,
+                job_name=self.name,
+                message_slug=message_slug,
+                queue_name=queue_name,
+                app_id=None
+            )
+
+            job.url = job_return_data.get('application_id')
+            job.command_array = json.dumps(job_return_data.get('command_array'))
+
+            readable_job_config = {
+                'job_config': job_return_data.get('config')['job_config']['job_config'],
+                'config': job_return_data.get('config')['job_config']['config']
+            }
+            job.config = json.dumps(readable_job_config)
+            job.save()
+        except Exception as exc:
+            # send_alert_through_email(exc)
+            return None
+
+        return job
 
     def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
         print(stockDataType)
