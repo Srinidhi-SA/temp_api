@@ -15,3 +15,10 @@ class ApprovalForm(forms.Form):
         required=False,
         widget=forms.Textarea,
     )
+
+class feedbackForm(forms.Form):
+    bad_scan = forms.CharField(
+        label=_('Bad Scan'),
+        required=True,
+        widget=forms.Textarea,
+    )

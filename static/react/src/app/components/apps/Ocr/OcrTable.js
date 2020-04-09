@@ -31,7 +31,9 @@ export class OcrTable extends React.Component {
       recognized: false,
       loader: false,
       exportName: "",
-      tab: 'pActive'
+      tab: 'pActive',
+      filterVal:'',
+      exportType: "json",
     }
   }
 
@@ -67,22 +69,47 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles())
   }
 
-  filterOcrList(filtertBy, filterOn) {
-    switch (filterOn) {
-      case 'status':
-        this.props.dispatch(storeOcrFilterStatus(filtertBy))
-        break;
-      case 'confidence':
-        this.props.dispatch(storeOcrFilterConfidence(filtertBy))
-        break;
-      case 'assignee':
-        this.props.dispatch(storeOcrFilterAssignee(filtertBy))
-        break;
-      case 'fields':
-        this.props.dispatch(storeOcrFilterFields(filtertBy))
-        break;
-    }
-    this.props.dispatch(getOcrUploadedFiles())
+  handleFil(mode){
+    this.disableInputs(mode,'')
+    this.setState({filterVal:mode})
+  }
+ 
+  disableInputs(mode,reset){
+     let  idList=''
+     mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
+     
+     let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
+ 
+     if(document.getElementById(mode).value.trim()!='')
+     disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+     else
+     disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+  }
+
+  filterOcrList(filtertBy, filterOn,reset) {
+     var filterByVal=''
+     if(reset!='reset'){
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+      }
+     switch (filterOn) {
+       case 'status':
+         this.props.dispatch(storeOcrFilterStatus(filterByVal))
+         break;
+       case 'confidence':
+         this.props.dispatch(storeOcrFilterConfidence(filterByVal))
+         break;
+       case 'assignee':
+         this.props.dispatch(storeOcrFilterAssignee(filterByVal))
+         break;
+       case 'fields':
+         this.props.dispatch(storeOcrFilterFields(filterByVal))
+         break;
+     }
+     this.props.dispatch(getOcrUploadedFiles())
+     if(reset=='reset'){
+       document.getElementById(this.state.filterVal).value=''
+       this.disableInputs(this.state.filterVal,'reset')
+     }
   }
 
   handleCheck = (e) => {
@@ -153,11 +180,12 @@ export class OcrTable extends React.Component {
     }
 
     this.props.dispatch(updateCheckList(this.state.checkedList));
-    this.setState({exportName:dataList.filter(i=>i.slug==checkList)[0].name})
+    this.setState({ exportName: dataList.filter(i => i.slug == checkList)[0].name })
     var exportData = {
       'slug': this.state.checkedList,
-      'format': 'json'
+      'format': this.state.exportType,
     }
+    if(this.state.exportType==="json"){
     return fetch(API + '/ocr/ocrimage/export_data/', {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
@@ -170,6 +198,33 @@ export class OcrTable extends React.Component {
       dlAnchorElem.click();
     })
   }
+  else if(this.state.exportType==="xml"){
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.text()).then(json => {
+      var dataStr = "data:text/plain;charset=utf-8," + encodeURIComponent(json);
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.xml`);
+      dlAnchorElem.click();
+    })
+  }
+  else if(this.state.exportType==="csv"){
+    return fetch(API + '/ocr/ocrimage/export_data/', {
+      method: "post",
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify(exportData)
+    }).then(response => response.text()).then(json => {
+      var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
+      dlAnchorElem.click();
+    })
+  }
+}
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
@@ -275,7 +330,17 @@ export class OcrTable extends React.Component {
                   <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
                 </div>
                 <Button onClick={this.handleRecognise}>Recognize</Button>
-                <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button>
+                {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
+
+                <div class="form-group pull-right ocr_highlightblock">
+                  <label class="control-label xs-mb-0" for="select_export" style={{ cursor: 'pointer' }} onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export to</label>
+                  <select class="form-control inline-block 1-100" id="select_export" onChange={(e) => this.setState({ exportType: e.target.value })}>
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                    <option value="csv">CSV</option>
+                  </select>
+                </div>
+
               </div>
             </div> : "" : ""}
         </div>
@@ -290,7 +355,7 @@ export class OcrTable extends React.Component {
 
           <div className="tab-content">
             <div id="nav" className={this.state.tab === "pActive" ? "tab-pane fade in active" : "tab-pane fade"}>
-              <div className="table-responsive noSwipe xs-pb-10">
+              <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
                 {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
@@ -319,21 +384,28 @@ export class OcrTable extends React.Component {
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
 
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'fields')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'fields')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'fields')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'fields')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                          </ul>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a  className="equal" >Equal to <input  id='FEQL' className='fields filter_input' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></a></li>
+                            <li><a  className="greater" >Greater than <input  id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></a></li>
+                            <li><a  className="less" >Less than <input  id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></a></li>
+                            <button className="btn btn-primary"  onClick={this.filterOcrList.bind(this, '', 'fields','')}>Apply</button>
+                            {/* <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'fields','reset')}>Reset</button> */}
+                         </ul>
                         </th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
                             <span>ACCURACY</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'EQL50', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'GTE50', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'LTE50', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a  className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                            <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                            <li><a  className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                            <input  className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                            <li><a  ClassName="less" style={{display:'inline-block',width:101}}>Less than</a>
+                            <input  className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
+                            {/* <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')}>Reset</button> */}
                           </ul>
                         </th>
                         <th class="dropdown" >

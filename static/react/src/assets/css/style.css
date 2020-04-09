@@ -20763,7 +20763,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
 .cst_table .fa-briefcase { color:#607D8B; }
 .ocr_section .cst_table thead th.text-center { padding-right: 7px; }
 .ocr_highlightblock	{background:white; border:1px solid #e0e0e0; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
-.ocr_highlightblock select { width:80px; border:0;}
+.ocr_highlightblock select { width:70px; border:0;}
 
 .checkbox.checbox-switch {
     padding-left: 0;
@@ -22624,4 +22624,50 @@ ul.ocrUploadTabs{
 }
 .stockExtractModel .modal-content{
   overflow: inherit;
+}
+.filter_input{
+ width: 38px;
+ position: relative;
+ left: 5px;
+ background-color: #fff;
+ border: 1px solid #e0e0e0;
+}
+button[disabled], html .filter_input[disabled] {
+  cursor: not-allowed;
+}
+.filter_input:focus {
+  box-shadow: 0 0 5px rgba(2, 152, 140, 0.6);
+  border-color: rgba(2, 152, 140, 0.8);
+}
+#select_export{
+  padding-left: 0;
+    color: #000;
+    padding-right: 0px;
+    height: 30px;
+}
+#select_export:focus{
+  box-shadow: none !important;
+}
+.loader_ITE_confidence{
+  width: calc(100% - 48px);
+  background-image: url(../images/Preloader_2.gif);
+  background-repeat: no-repeat;
+  height: 830px;
+  position: absolute;
+  z-index: 9;
+  left: 0px;
+  background-position: center center;
+  background-color: rgba(0,0,0,0.2);
+  display: block;
+  margin-left: 24px;
+}
+.loader_ITE_confidence #myCanvas{
+  pointer-events: none;
+}
+.filterCheckBtn{
+  float: right;
+  padding: 2px;
+  margin-right: 4px;
+  margin-top: 4px;
+  width: 37px;
 }

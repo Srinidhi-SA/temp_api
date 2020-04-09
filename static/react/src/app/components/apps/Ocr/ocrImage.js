@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -16,6 +16,7 @@ import { store } from '../../../store';
     imageSlug: store.ocr.imageSlug,
     ocrDocList: store.ocr.OcrRevwrDocsList,
     imageTaskId: store.ocr.imageTaskId,
+    feedback: "",
   };
 })
 
@@ -26,6 +27,7 @@ export class OcrImage extends React.Component {
     this.state = {
       text: "",
       imageDetail: "",
+      heightLightVal: "100",
     }
   }
 
@@ -69,31 +71,47 @@ export class OcrImage extends React.Component {
 
   }
   handleMarkComplete = () => {
-     //window.history.go(-1)
+    //window.history.go(-1)
     let id = this.props.imageTaskId;
     var data = new FormData();
     data.append("status", "reviewed");
     data.append("remark", "good");
-    return fetch(API + '/ocrflow/tasks/' + id +'/', {
+    return fetch(API + '/ocrflow/tasks/' + id + '/', {
       method: 'post',
       headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
       body: data
     }).then(response => response.json())
       .then(data => {
-        if(data.submitted === true){
-        this.finalAnalysis();    
-        bootbox.alert(statusMessages("success","Document saved with reviewed changes.","small_mascot"));
+        if (data.submitted === true) {
+          this.finalAnalysis();
+          bootbox.alert(statusMessages("success", "Document saved with reviewed changes.", "small_mascot"));
         }
       });
   }
-  finalAnalysis=()=>{
+  handleBadScan = () => {
+    //window.history.go(-1)
+    let feedbackID = this.props.imageTaskId;
+    var data = new FormData();
+    data.append("bad_scan", this.state.feedback);
+    return fetch(API + '/ocrflow/tasks/feedback/?feedbackId=' + feedbackID , {
+      method: 'post',
+      headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json())
+      .then(data => {
+        if (data.submitted === true) {
+          bootbox.alert(statusMessages("success", "Feedback submitted.", "small_mascot"));
+        }
+      });
+  }
+  finalAnalysis = () => {
     return fetch(API + '/ocr/ocrimage/final_analysis/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({'slug': this.props.imageSlug})
+      body: JSON.stringify({ 'slug': this.props.imageSlug })
     }).then(response => response.json());
   }
-  
+
   closePopOver = () => {
     document.getElementById("popoverOcr").style.display = 'none';
   }
@@ -186,6 +204,23 @@ export class OcrImage extends React.Component {
       });
 
   }
+  hightlightField = () => {
+    document.getElementById("confidence_loader").classList.add("loader_ITE_confidence")
+    return fetch(API + '/ocr/ocrimage/confidence_filter/', {
+      method: 'post',
+      headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      body: JSON.stringify({ "slug": this.props.imageSlug, "filter": Number(this.state.heightLightVal) / 100, })
+    }).then(response => response.json())
+      .then(data => {
+        if (data.message === "SUCCESS") {
+          this.props.dispatch(updateOcrImage(data.generated_image));
+          setTimeout(() => {
+            document.getElementById("confidence_loader").classList.remove("loader_ITE_confidence")
+          }, 2000);
+        }
+      });
+  }
+
   handleText = (e) => {
     this.setState({ text: e.target.value });
     document.getElementById("successMsg").innerText = " ";
@@ -197,25 +232,25 @@ export class OcrImage extends React.Component {
         <div className="row">
           <div className="col-sm-12">
             <div class="form-group pull-right ocr_highlightblock">
-              <label class="control-label xs-mb-0" for="select_confidence">Highlight fields with confidence less than &nbsp;&nbsp;</label>
-              <select class="form-control inline-block 1-100" id="select_confidence">
-                <option value="1">10</option>
-                <option value="2">20</option>
-                <option value="3">30</option>
-                <option value="4">40</option>
-                <option value="5">50</option>
-                <option value="6">60</option>
-                <option value="7">70</option>
-                <option value="8">80</option>
-                <option value="9">90</option>
-                <option value="10">100</option>
+              <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField} style={{ cursor: 'pointer' }}>Highlight fields with confidence less than</label>
+              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value })}>
+                <option value="100">100</option>
+                <option value="90">90</option>
+                <option value="80">80</option>
+                <option value="70">70</option>
+                <option value="60">60</option>
+                <option value="50">50</option>
+                <option value="40">40</option>
+                <option value="30">30</option>
+                <option value="20">20</option>
+                <option value="10">10</option>
               </select>
             </div>
           </div>
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
-              <Scrollbars style={{ height: 850 }} id="originalImgDiv" onScroll={this.imageScroll}>
+              <Scrollbars style={{ height: 820 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
                   {this.props.originalImgPath != "" ?
                     <img style={{ height: 800, width: 700 }}
@@ -232,7 +267,8 @@ export class OcrImage extends React.Component {
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">OCR</div>
-              <Scrollbars id="ocrScroll" style={{ height: 850 }} onScroll={this.imageScroll}>
+              <div id="confidence_loader"></div>
+              <Scrollbars id="ocrScroll" style={{ height: 820 }} onScroll={this.imageScroll}>
                 <div id="popDiv">
                   {/* <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
                 <span className="ocrZoom" onClick={this.zoomIn}><i class="fa fa-plus"></i></span>
@@ -286,14 +322,14 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
+            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-          {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
-            <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
-           }
-            </div>
+              <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+          </div>
+            }
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
@@ -306,13 +342,13 @@ export class OcrImage extends React.Component {
               <div class="modal-body">
                 <div class="form-group">
                   <label for="txt_bscan">Tell us how would we improve?</label>
-                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" />
+                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" onChange={(e)=>this.setState({feedback: e.target.value})}/>
                   <p>For technical support, please contact info@madvisor-dev.marlabs.com</p>
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" onClick={this.handleBadScan} data-dismiss="modal">Submit</button>
               </div>
             </div>
           </div>
@@ -324,6 +360,7 @@ export class OcrImage extends React.Component {
 
   componentWillUnmount = () => {
     this.props.dispatch(saveImagePageFlag(false));
+    this.props.dispatch(clearImageDetails());
   }
 
 }
