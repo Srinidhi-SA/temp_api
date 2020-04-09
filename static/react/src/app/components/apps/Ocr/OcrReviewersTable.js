@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails}from '../../../actions/ocrActions'
+import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails,ocrRevFilterTime,ocrRevFilterAccuracy}from '../../../actions/ocrActions'
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Pagination } from "react-bootstrap";
@@ -43,6 +43,17 @@ handleDocumentPageFlag (slug,name){
   this.props.dispatch(selectedReviewerDetails(slug,name))
 }
 
+filterRevList(filtertBy, filterOn) {
+  switch (filterOn) {
+    case 'time':
+    this.props.dispatch(ocrRevFilterTime(filtertBy))
+    break;
+    case 'accuracy':
+    this.props.dispatch(ocrRevFilterAccuracy(filtertBy))
+    break;
+  }
+  this.props.dispatch(getOcrReviewersList())
+}
   render() {
     const pages = this.props.OcrReviewerList.total_number_of_pages;
     const current_page = this.props.OcrReviewerList.current_page;
@@ -116,9 +127,10 @@ handleDocumentPageFlag (slug,name){
                       <span>Avg Time/Word</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                          <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                          <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                          <li><a class="cursor" name="all"    onClick={this.filterRevList.bind(this, '', 'time')}  data-toggle="modal" data-target="#modal_equal">All</a></li>
+                          <li><a class="cursor" name="delete" onClick={this.filterRevList.bind(this, 'E', 'time')} data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                          <li><a class="cursor" name="rename" onClick={this.filterRevList.bind(this, 'G', 'time')} data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                          <li><a class="cursor" name="replace"onClick={this.filterRevList.bind(this, 'L', 'time')}data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                       </ul>
                     </th>
                     <th class="dropdown">
@@ -126,9 +138,10 @@ handleDocumentPageFlag (slug,name){
                       <span>ACCURACY of Model</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                          <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                          <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                          <li><a class="cursor" name="all"      onClick={this.filterRevList.bind(this, '', 'accuracy')}  data-toggle="modal" data-target="#modal_equal">All</a></li>
+                          <li><a class="cursor" name="delete"   onClick={this.filterRevList.bind(this, 'E', 'accuracy')}data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                          <li><a class="cursor" name="rename"   onClick={this.filterRevList.bind(this, 'G', 'accuracy')}data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                          <li><a class="cursor" name="replace"  onClick={this.filterRevList.bind(this, 'L', 'accuracy')} data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                       </ul>
                     </th>
                     <th class="text-center">Last Login</th>

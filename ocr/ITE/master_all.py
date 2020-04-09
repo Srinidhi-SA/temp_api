@@ -22,7 +22,7 @@ def analyse(path, image_slug):
     extracted_image = "ocr/ITE/ir/{}_mask.png".format(image_name)
     cv2.imwrite(extracted_image, wm)
 
-    demo = False
+    demo = True
     if demo:
         print('*' * 50)
         print('Reading Analysis From Local')
