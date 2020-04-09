@@ -355,7 +355,7 @@ export class OcrTable extends React.Component {
 
           <div className="tab-content">
             <div id="nav" className={this.state.tab === "pActive" ? "tab-pane fade in active" : "tab-pane fade"}>
-              <div className="table-responsive noSwipe xs-pb-10">
+              <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
                 {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
@@ -398,10 +398,13 @@ export class OcrTable extends React.Component {
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a  className="equal" >Equal to<input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></a></li>
-                            <li><a  className="greater" >Greater than<input  className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></a></li>
-                            <li><a  ClassName="less" >Less than<input  className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></a></li>
-                            <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'confidence','')}>Apply</button>
+                            <li><a  className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                            <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                            <li><a  className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                            <input  className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                            <li><a  ClassName="less" style={{display:'inline-block',width:101}}>Less than</a>
+                            <input  className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
                             {/* <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')}>Reset</button> */}
                           </ul>
                         </th>
