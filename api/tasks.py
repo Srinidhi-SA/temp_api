@@ -578,8 +578,8 @@ def kill_application_using_fabric(app_id=None):
 #     stock_dataset_object.save()
 
 
-# @task(name='stock_sense_crawling')
-@task(name='stock_sense_crawling', queue='luke')
+#@task(name='stock_sense_crawling')
+@task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
     from api import helper
     # import json
