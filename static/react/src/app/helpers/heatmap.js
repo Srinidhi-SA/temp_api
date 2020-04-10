@@ -46,12 +46,24 @@ export default function(divId){
          val = parseFloat(val);
       }
 
-        var pos = parseFloat((Math.round((val/max)*100)).toFixed(0));
-        red = parseFloat((xr + (( pos * (yr - xr)) / (n-1))).toFixed(0));
-        green = parseFloat((xg + (( pos * (yg - xg)) / (n-1))).toFixed(0));
-        blue = parseFloat((xb + (( pos * (yb - xb)) / (n-1))).toFixed(0));
-        clr = 'rgb('+red+','+green+','+blue+')';
-        $(this).css({backgroundColor:clr});
+        // var pos = parseFloat((Math.round((val/max)*100)).toFixed(0));
+        // red = parseFloat((xr + (( pos * (yr - xr)) / (n-1))).toFixed(0));
+        // green = parseFloat((xg + (( pos * (yg - xg)) / (n-1))).toFixed(0));
+        // blue = parseFloat((xb + (( pos * (yb - xb)) / (n-1))).toFixed(0));
+        // clr = 'rgb('+red+','+green+','+blue+')';
+        // $(this).css({backgroundColor:clr});
+
+        if(val === 0){
+          $(this).css({backgroundColor:"rgb(75,196,188,0.04)"});
+        }else if(val>0 && val<0.1){
+          $(this).css({backgroundColor:"rgba(75,196,188,0.09)"});
+        }else if(val >= 0.1){
+          clr = "rgba(0,152,139,"+(val.toFixed(1))+")"
+          $(this).css({backgroundColor:clr});
+        }else if(val < 0){
+          clr = "rgba(230,63,82,"+-(val.toFixed(1))+")"
+          $(this).css({backgroundColor:clr});
+        }
     });
 
 }
