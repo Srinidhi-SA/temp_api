@@ -10,6 +10,7 @@ import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
 import { API } from "../../../helpers/env"
 
+
 @connect((store) => {
   return {
     login_response: store.login.login_response,
