@@ -202,7 +202,7 @@ export class RevDocTable extends React.Component {
                              <input id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
                             <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
                              <input id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
-                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterRevDocrList.bind(this, '', 'fields','')}>Apply</button>
+                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterRevDocrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
                          </ul>
                         </th>
                 {/* <th class="dropdown" >
