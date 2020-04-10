@@ -171,7 +171,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data', 'crawled_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data', 'crawled_data', 'stock_symbols1']
 
     for key in keys:
         if key in data:
@@ -714,6 +714,19 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         #     ret['message'] = message_list
         # except:
         #     ret['message'] = None
+
+        try:
+            ret['message'] = json.loads(instance.job.messages)
+            # ret['message'] = get_message(instance.job)
+        except:
+            ret['message'] = None
+        try:
+            # initial_messages = instance.job.messages
+            initial_messages = instance.job.message_log
+            ret['initial_messages'] = json.loads(initial_messages)
+            # ret['message_log'] = initial_messages
+        except:
+            ret['initial_messages'] = None
 
         if ret['meta_data'] == dict():
             ret['meta_data_status'] = "INPROGRESS"
