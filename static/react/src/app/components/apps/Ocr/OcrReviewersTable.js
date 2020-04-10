@@ -114,7 +114,7 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
             <td>{item.ocr_data.completionPercentage}%</td>
             <td>{item.ocr_data.avgTimeperWord}</td>
             <td>{item.ocr_data.accuracyModel}</td>
-            <td>{''}</td>
+            <td>{item.last_login}</td>
             <td>{(item.ocr_profile.active === true) ? "Active" : "Inactive"}</td>
           </tr>
         )
