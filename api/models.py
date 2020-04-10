@@ -3143,7 +3143,7 @@ class StockDataset(models.Model):
             job_return_data = submit_job(
                 slug=job.slug,
                 class_name='stockAdvisor',
-                job_config=job.config,
+                job_config=jobConfig,
                 job_name=self.name,
                 message_slug=message_slug,
                 queue_name=queue_name,
