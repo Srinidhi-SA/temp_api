@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../../store';
+import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
@@ -294,7 +294,7 @@ export class OcrTable extends React.Component {
             <td>{item.flag}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
-            <td>{item.assignee}</td>
+            {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
             <td>{new Date(item.modified_at).toLocaleString()}</td>
@@ -408,7 +408,7 @@ export class OcrTable extends React.Component {
                             <button className="btn btn-primary filterCheckBtn" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
                           </ul>
                         </th>
-                        <th class="dropdown" >
+                        {store.getState().ocr.tabActive=='active'?<th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
                             <span>Assignee</span> <b class="caret"></b>
                           </a>
@@ -416,7 +416,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>
                             {getAssigneeOptions}
                           </ul>
-                        </th>
+                        </th>:''}
                         <th>Created By</th>
                         <th>Modified By</th>
                         <th>Last Modified</th>
