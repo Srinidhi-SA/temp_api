@@ -40,6 +40,7 @@ class QueryCommonFiltering:
     time = None
     assignee = None
 
+
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
         self.request = request

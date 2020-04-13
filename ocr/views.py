@@ -18,6 +18,7 @@ View Implementations for OCRImage and OCRImageset models.
 # -------------------------------------------------------------------------------
 import base64
 import copy
+import datetime
 import os
 import random
 import ast
@@ -775,6 +776,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         y = data['y']
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
+        review_start_time = image_queryset.review_start
+        if not review_start_time:
+            data['review_start'] = datetime.datetime.now()
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
         response = get_word_in_bounding_box(converted_Coordinates, x, y)
@@ -865,6 +873,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data['final_result'] = json.dumps(json_final)
 
+        review_end_time = image_queryset.review_end
+        if not review_end_time:
+            data['review_end'] = datetime.datetime.now()
+
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
@@ -876,10 +888,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def field_count_and_confidence(self, request):
         data = request.data
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        stats = {'Word Count': len(comparision_data)}
-        stats['Confidence'] = 100 - round(
-            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
+        review_start_time = image_queryset.review_start
+        review_end_time = image_queryset.review_end
+        total_words = image_queryset.fields
+        total_time = review_end_time - review_start_time
+        stats = {'time': round(total_time.total_seconds(), 2), 'seconds/word': round(total_time.total_seconds() / total_words, 2)}
         return JsonResponse(stats)
 
     @list_route(methods=['post'])
