@@ -26,6 +26,7 @@ export class RevDocTable extends React.Component {
     this.props.dispatch(getRevrDocsList())
     this.state = {
       checkedList: [],
+      filterVal:'',
     }
   }
   componentWillUnmount() {
@@ -65,20 +66,44 @@ export class RevDocTable extends React.Component {
       });
   }
 
+  handleFil(mode){//                Don't delete this method
+    // this.disableInputs(mode,'')
+    // this.setState({filterVal:mode})
+  }
+ 
+  disableInputs(mode,reset){//      Don't delete this method
+    //  let  idList=''
+    //  mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
+     
+    //  let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
+ 
+    //  if(document.getElementById(mode).value.trim()!='')
+    //  disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+    //  else
+    //  disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+  }
 
-  filterRevDocrList(filtertBy, filterOn) {
-    switch (filterOn) {
-      case 'status':
-      this.props.dispatch(ocrRdFilterStatus(filtertBy))
-      break;
-      case 'confidence':
-      this.props.dispatch(ocrRdFilterConfidence(filtertBy))
-      break;
-      case 'fields':
-      this.props.dispatch(ocrRdFilterFields(filtertBy))
-      break;
-    }
-    this.props.dispatch(getRevrDocsList())
+  filterRevDocrList(filtertBy, filterOn,reset ) {//  Don't delete this method
+    // var filterByVal=''
+    // if(reset!='reset'){
+    //  filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+    //  }
+    // switch (filterOn) {
+    //   case 'status':
+    //   this.props.dispatch(ocrRdFilterStatus(filterByVal))
+    //   break;
+    //   case 'confidence':
+    //   this.props.dispatch(ocrRdFilterConfidence(filterByVal))
+    //   break;
+    //   case 'fields':
+    //   this.props.dispatch(ocrRdFilterFields(filterByVal))
+    //   break;
+    // }
+    // this.props.dispatch(getRevrDocsList())
+    // if(reset=='reset'){
+    //   document.getElementById(this.state.filterVal).value=''
+    //   this.disableInputs(this.state.filterVal,'reset')
+    // }
   }
 
   handleCheck = (e) => {
@@ -166,6 +191,21 @@ export class RevDocTable extends React.Component {
                   </ul>
                 </th>
                 <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
+                            <span>Fields</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu">
+                            <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}} >Equal to</a> 
+                             <input id='FEQL' className='fields filter_input' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}} >Greater than</a>
+                             <input id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterRevDocrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
+                         </ul>
+                        </th>
+                {/* <th class="dropdown" >
                   <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                     <span>Fields</span> <b class="caret"></b>
                   </a>
@@ -175,8 +215,23 @@ export class RevDocTable extends React.Component {
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                   </ul>
-                </th>
-                <th class="dropdown" >
+                </th> */}
+                       <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                            <span>ACCURACY</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu">
+                            <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                             <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                             <input className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevDocrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
+                          </ul>
+                        </th>
+                {/* <th class="dropdown" >
                   <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
                     <span>ACCURACY</span> <b class="caret"></b>
                   </a>
@@ -186,7 +241,7 @@ export class RevDocTable extends React.Component {
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                   </ul>
-                </th>
+                </th> */}
                 <th>Created</th>
                 <th>Modified</th>
                 <th>Modified By</th>

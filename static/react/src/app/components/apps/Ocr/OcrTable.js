@@ -2,13 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
-import { store } from '../../../store';
+import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
 import { API } from "../../../helpers/env"
+
 
 @connect((store) => {
   return {
@@ -294,7 +295,7 @@ export class OcrTable extends React.Component {
             <td>{item.flag}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
-            <td>{item.assignee}</td>
+            {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
             <td>{new Date(item.modified_at).toLocaleString()}</td>
@@ -383,13 +384,14 @@ export class OcrTable extends React.Component {
                             <span>Fields</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
-
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a  className="equal" >Equal to <input  id='FEQL' className='fields filter_input' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></a></li>
-                            <li><a  className="greater" >Greater than <input  id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></a></li>
-                            <li><a  className="less" >Less than <input  id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></a></li>
-                            <button className="btn btn-primary"  onClick={this.filterOcrList.bind(this, '', 'fields','')}>Apply</button>
-                            {/* <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'fields','reset')}>Reset</button> */}
+                            <li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}} >Equal to</a> 
+                             <input id='FEQL' className='fields filter_input' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}} >Greater than</a>
+                             <input id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterOcrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
                          </ul>
                         </th>
                         <th class="dropdown" >
@@ -397,18 +399,17 @@ export class OcrTable extends React.Component {
                             <span>ACCURACY</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a  className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
-                            <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
-                            <li><a  className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
-                            <input  className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
-                            <li><a  ClassName="less" style={{display:'inline-block',width:101}}>Less than</a>
-                            <input  className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+                            <li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                             <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                             <input className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
                             <button className="btn btn-primary filterCheckBtn" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
-                            {/* <button className="btn btn-primary" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')}>Reset</button> */}
                           </ul>
                         </th>
-                        <th class="dropdown" >
+                        {store.getState().ocr.tabActive=='active'?<th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
                             <span>Assignee</span> <b class="caret"></b>
                           </a>
@@ -416,7 +417,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>
                             {getAssigneeOptions}
                           </ul>
-                        </th>
+                        </th>:''}
                         <th>Created By</th>
                         <th>Modified By</th>
                         <th>Last Modified</th>

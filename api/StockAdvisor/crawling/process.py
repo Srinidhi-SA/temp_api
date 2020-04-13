@@ -227,7 +227,7 @@ def fetch_news_articles(cur_stock, domains):
     newsapi = NewsApiClient(api_key=API_KEY)
 
     today = datetime.date.today()
-    date_diff = datetime.timedelta(days=10)
+    date_diff = datetime.timedelta(days=7)
     from_date = today - date_diff
 
     articles = []

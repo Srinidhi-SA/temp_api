@@ -1240,6 +1240,57 @@ def round_sig(x, sig=3):
     return x
 
 
+def update_stock_sense_message(job_instance, stock):
+
+    message = json.loads(job_instance.messages)
+    info = None
+    if stock == "ml-work":
+        info = "Performing analysis"
+    else :
+        info = "Fetching news articles and NLU for {0}".format(stock)
+    latest_message = {
+        "analysisName": "stockAdvisor",
+        "display": True,
+        "stageName": "custom",
+        "shortExplanation": info,
+        # "messageIndex": "1",
+        "messageType": "info",
+        # "globalCompletionPercentage": 35,
+        # "gmtDateTime": "2020-04-07 11:55:15",
+        # "stageCompletionPercentage": 35
+    }
+    message.append(latest_message)
+    return json.dumps(message)
+
+
+def create_message_log_and_message_for_stocksense(stock_symbols):
+    message_log = dict()
+    message_log[0] = "Fetching stock data"
+    stock_symbols = json.loads(stock_symbols)
+    for index, (key, value) in enumerate(stock_symbols.items()):
+        print(index, key, value)
+        message_log[index+1] = "Fetching news articles and NLU for "+value
+
+    message_log[len(stock_symbols) + 1] = "Performing analysis"
+
+    message = [
+        {
+            "analysisName": "stockAdvisor",
+            "display": True,
+            "stageName": "custom",
+            "shortExplanation": message_log[0],
+            # "messageIndex": "1",
+            "messageType": "info",
+            # "globalCompletionPercentage": 25,
+            # "gmtDateTime": "2020-04-07 11:55:15",
+            # "stageCompletionPercentage": 25
+        },
+    ]
+    message_log = json.dumps(message_log)
+    message = json.dumps(message)
+    return message_log, message
+
+
 def get_message(instance):
     if instance is None:
         return None

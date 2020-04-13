@@ -1715,7 +1715,7 @@ def set_result(request, slug=None):
 
     if not job:
         return JsonResponse({'result': 'Failed'})
-    results = request.body
+    results = request.body.decode('utf-8')
     tasks.save_results_to_job.delay(
         slug,
         results
@@ -1742,13 +1742,13 @@ def set_result(request, slug=None):
             results = tasks.write_into_databases.delay(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results.decode('utf-8'))
+                results=json.loads(results)
             )
         else:
             results = tasks.write_into_databases1(
                 job_type=job.job_type,
                 object_slug=job.object_id,
-                results=json.loads(results.decode('utf-8'))
+                results=json.loads(results)
             )
         job.status = 'SUCCESS'
         job.save()
