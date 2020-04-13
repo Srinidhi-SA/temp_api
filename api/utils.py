@@ -715,6 +715,19 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
+        try:
+            ret['message'] = json.loads(instance.job.messages)
+            # ret['message'] = get_message(instance.job)
+        except:
+            ret['message'] = None
+        try:
+            # initial_messages = instance.job.messages
+            initial_messages = instance.job.message_log
+            ret['message_log'] = json.loads(initial_messages)
+            # ret['message_log'] = initial_messages
+        except:
+            ret['initial_messages'] = None
+
         if ret['meta_data'] == dict():
             ret['meta_data_status'] = "INPROGRESS"
         else:

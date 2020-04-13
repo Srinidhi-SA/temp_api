@@ -17,6 +17,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from api.helper import update_stock_sense_message
 # from api.helper import CustomImageField
 
 from .StockAdvisor.crawling.common_utils import get_regex
@@ -2555,6 +2556,9 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if jobConfig is None:
         jobConfig = json.loads(instance.config)
     job.config = json.dumps(jobConfig)
+    if 'stockAdvisor' == job_type:
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(instance.stock_symbols)
     job.save()
     queue_name = None
     try:
@@ -2710,23 +2714,21 @@ class StockDataset(models.Model):
         self.generate_slug()
         super(StockDataset, self).save(*args, **kwargs)
 
-    # def create(self):
-    #     from api.tasks import stock_sense_crawl
-    #     self.status = "INPROGRESS"
-    #     self.generate_meta_data()
-    #     self.save()
-    #     self.call_mlscripts()
-    #     # stock_sense_crawl.delay(object_slug=self.slug)
-    #     # self.meta_data = self.generate_meta_data()
-    #     # self.fake_call_mlscripts()
-    #     # self.save()
-
     def create(self):
         from api.tasks import stock_sense_crawl
         # stock_sense_crawl(object_slug=self.slug)
-        self.stock_symbols = json.loads(self.stock_symbols)
-        self.stock_sense_crawl()
+        # self.stock_symbols = json.loads(self.stock_symbols)
+        self.create_folder_in_scripts_data()
+        # self.paste_essential_files_in_scripts_folder()
+        self.crawl_for_historic_data()
+        # self.get_bluemix_natural_language_understanding()
+
+        # self.stock_sense_crawl()
+        # from api import tasks
+        # res = tasks.add.delay(10, 20)
+        # print(res)
         self.add_to_job()
+        stock_sense_crawl.delay(self.slug)
 
     def stock_sense_crawl(self):
         self.generate_meta_data()
@@ -2735,8 +2737,12 @@ class StockDataset(models.Model):
     def crawl_news_data(self):
 
         extracted_data = []
-        for key in self.stock_symbols:
-            stock_data = fetch_news_sentiments_from_newsapi(self.stock_symbols[key], self.domains)
+        stock_symbols = json.loads(self.stock_symbols)
+        for key in stock_symbols:
+            company_name = stock_symbols[key]
+            self.job.messages = update_stock_sense_message(self.job, company_name)
+            self.job.save()
+            stock_data = fetch_news_sentiments_from_newsapi(company_name, self.domains)
             self.write_to_concepts_folder(
                 stockDataType="news",
                 stockName=key,
@@ -2880,12 +2886,10 @@ class StockDataset(models.Model):
         return hadoop_path
 
     def generate_meta_data(self):
-        self.create_folder_in_scripts_data()
-        # self.paste_essential_files_in_scripts_folder()
-        self.crawl_for_historic_data()
-        # self.get_bluemix_natural_language_understanding()
         print("generate_meta_data " * 3)
         self.meta_data = self.crawl_news_data()
+        self.job.messages = update_stock_sense_message(self.job, "ml-work")
+        self.job.save()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -2982,7 +2986,8 @@ class StockDataset(models.Model):
     def get_stock_symbol_names(self):
         # list_of_stock = self.stock_symbols.split(', ')
         # return [stock_name.lower() for stock_name in list_of_stock]
-        return [key.lower() for key in self.stock_symbols.keys()]
+        stock_symbols = json.loads(self.stock_symbols)
+        return [key.lower() for key in stock_symbols.keys()]
 
     def get_stock_company_names(self):
         # list_of_stock = self.stock_symbols.split(', ')
