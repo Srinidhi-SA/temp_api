@@ -49,3 +49,8 @@ export function wordCloudImgResponse(jsn) {
 		type: "CLOUD_IMG_RESPONSE",jsn
 	}
 }
+export function clearC3Date(){
+	return {
+		type: "CLEAR_C3_DATE"
+	}
+}
