@@ -37,7 +37,7 @@ class QueryCommonFiltering:
     confidence = None
     first_name = None
     fields = None
-    accuracy = None
+    time = None
     assignee = None
 
     def __init__(self, query_set=None, request=None):
@@ -103,12 +103,12 @@ class QueryCommonFiltering:
             else:
                 self.fields = temp_name
 
-        if 'accuracy' in request.query_params:
-            temp_name = self.request.query_params.get('accuracy')
+        if 'time/word' in request.query_params:
+            temp_name = self.request.query_params.get('time/word')
             if temp_name is None or temp_name is "":
-                self.accuracy = self.accuracy
+                self.time = self.time
             else:
-                self.accuracy = temp_name
+                self.time = temp_name
 
         if 'assignee' in request.query_params:
             temp_name = self.request.query_params.get('assignee')
@@ -145,10 +145,10 @@ class QueryCommonFiltering:
                 self.query_set = self.query_set.filter(fields__lte=float(value))
             if operator == 'EQL':
                 self.query_set = self.query_set.filter(fields=float(value))
-        if self.accuracy is not None:
-            self.query_set = self.query_set.filter(accuracy=self.accuracy)
         if self.assignee is not None:
             self.query_set = self.query_set.filter(assignee=User.objects.get(username=self.assignee))
+        if self.time is not None:
+            self.query_set = self.query_set.filter(time=self.time)
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
