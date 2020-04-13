@@ -9992,7 +9992,7 @@ li.L9 {
   }
 }
 .widget-pie .chart-container .chart {
-  min-height: 125px;
+  min-height: 88px;
 }
 .widget-pie .chart-container .legend > div {
   background-color: transparent !important;
@@ -10018,12 +10018,12 @@ li.L9 {
   text-align: right;
 }
 .widget-pie .chart-info {
-  border-top: 1px solid #e0e0e0;
-  margin: 30px 0 0;
+ /* border-top: 1px solid #e0e0e0; */
+  margin: 0 0 0;
   text-align: center;
 }
 .widget-pie .chart-info span {
-  display: block;
+  display: inline-block;
 }
 .widget-pie .chart-info span.title {
   margin-bottom: 3px;
@@ -10036,7 +10036,7 @@ li.L9 {
   font-weight: 300;
 }
 .widget-pie .chart-info > div {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 .widget-pie .chart-info > div:first-child {
   text-align: left;
@@ -20826,6 +20826,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
     box-shadow: rgb(153, 217, 168) 0px 0px 0px 8px inset;
 }
 .ocr_configure { background:#FFFFFF; border-radius:0 0 10px 10px }
+.text-center { text-align:center !important}
 /**************** Css realated to developers, keep the source down ***/
 .binsLevelsHeight {
   display: block;
