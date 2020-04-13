@@ -149,7 +149,7 @@ class QueryCommonFiltering:
         if self.assignee is not None:
             self.query_set = self.query_set.filter(assignee=User.objects.get(username=self.assignee))
         if self.time is not None:
-            self.query_set = self.query_set.filter(time=self.time)
+            self.query_set = self.query_set.filter(time_taken=float(self.time))
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
