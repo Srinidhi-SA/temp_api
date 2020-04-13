@@ -17,6 +17,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from api.helper import update_stock_sense_message
 # from api.helper import CustomImageField
 
 from .StockAdvisor.crawling.common_utils import get_regex
@@ -2555,6 +2556,9 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if jobConfig is None:
         jobConfig = json.loads(instance.config)
     job.config = json.dumps(jobConfig)
+    if 'stockAdvisor' == job_type:
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(instance.stock_symbols)
     job.save()
     queue_name = None
     try:
@@ -2710,23 +2714,21 @@ class StockDataset(models.Model):
         self.generate_slug()
         super(StockDataset, self).save(*args, **kwargs)
 
-    # def create(self):
-    #     from api.tasks import stock_sense_crawl
-    #     self.status = "INPROGRESS"
-    #     self.generate_meta_data()
-    #     self.save()
-    #     self.call_mlscripts()
-    #     # stock_sense_crawl.delay(object_slug=self.slug)
-    #     # self.meta_data = self.generate_meta_data()
-    #     # self.fake_call_mlscripts()
-    #     # self.save()
-
     def create(self):
         from api.tasks import stock_sense_crawl
         # stock_sense_crawl(object_slug=self.slug)
-        self.stock_symbols = json.loads(self.stock_symbols)
-        self.stock_sense_crawl()
+        # self.stock_symbols = json.loads(self.stock_symbols)
+        self.create_folder_in_scripts_data()
+        # self.paste_essential_files_in_scripts_folder()
+        self.crawl_for_historic_data()
+        # self.get_bluemix_natural_language_understanding()
+
+        # self.stock_sense_crawl()
+        # from api import tasks
+        # res = tasks.add.delay(10, 20)
+        # print(res)
         self.add_to_job()
+        stock_sense_crawl.delay(self.slug)
 
     def stock_sense_crawl(self):
         self.generate_meta_data()
@@ -2735,8 +2737,12 @@ class StockDataset(models.Model):
     def crawl_news_data(self):
 
         extracted_data = []
-        for key in self.stock_symbols:
-            stock_data = fetch_news_sentiments_from_newsapi(self.stock_symbols[key], self.domains)
+        stock_symbols = json.loads(self.stock_symbols)
+        for key in stock_symbols:
+            company_name = stock_symbols[key]
+            self.job.messages = update_stock_sense_message(self.job, company_name)
+            self.job.save()
+            stock_data = fetch_news_sentiments_from_newsapi(company_name, self.domains)
             self.write_to_concepts_folder(
                 stockDataType="news",
                 stockName=key,
@@ -2880,12 +2886,11 @@ class StockDataset(models.Model):
         return hadoop_path
 
     def generate_meta_data(self):
-        self.create_folder_in_scripts_data()
-        # self.paste_essential_files_in_scripts_folder()
-        self.crawl_for_historic_data()
-        # self.get_bluemix_natural_language_understanding()
         print("generate_meta_data " * 3)
         self.meta_data = self.crawl_news_data()
+        self.job.messages = update_stock_sense_message(self.job, "ml-work")
+        self.job.save()
+        self.stock_sense_job_submission()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -2982,7 +2987,8 @@ class StockDataset(models.Model):
     def get_stock_symbol_names(self):
         # list_of_stock = self.stock_symbols.split(', ')
         # return [stock_name.lower() for stock_name in list_of_stock]
-        return [key.lower() for key in self.stock_symbols.keys()]
+        stock_symbols = json.loads(self.stock_symbols)
+        return [key.lower() for key in stock_symbols.keys()]
 
     def get_stock_company_names(self):
         # list_of_stock = self.stock_symbols.split(', ')
@@ -3065,13 +3071,27 @@ class StockDataset(models.Model):
         return str(self.slug)
 
     def add_to_job(self, *args, **kwargs):
-        jobConfig = self.generate_config(*args, **kwargs)
+        # jobConfig = self.generate_config(*args, **kwargs)
 
-        job = job_submission(
-            instance=self,
-            jobConfig=jobConfig,
-            job_type='stockAdvisor'
-        )
+        # job = job_submission(
+        #     instance=self,
+        #     jobConfig=jobConfig,
+        #     job_type='stockAdvisor'
+        # )
+        job_type='stockAdvisor'
+
+        """Submit job to jobserver"""
+        # Job Book Keeping
+        job = Job()
+        job.name = "-".join([job_type, self.slug])
+        job.job_type = job_type
+        job.object_id = str(self.slug)
+        job.submitted_by = self.created_by
+
+        # job.config = json.dumps(jobConfig)
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(self.stock_symbols)
+        job.save()
 
         self.job = job
         if job is None:
@@ -3080,15 +3100,86 @@ class StockDataset(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
+    def stock_sense_job_submission(self):
+        job = self.job
+        jobConfig = self.generate_config()
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        queue_name = None
+        try:
+            data_size = 3000
+
+            queue_name = get_queue_to_use(job_type='stockAdvisor', data_size=data_size)
+        except Exception as e:
+            print(e)
+
+        if not queue_name:
+            queue_name = "default"
+
+        from api.redis_access import AccessFeedbackMessage
+        ac = AccessFeedbackMessage()
+        message_slug = get_message_slug(job)
+        ac.delete_this_key(message_slug)
+        # app_id = None
+        # if 'score' == job_type:
+        #     app_id = instance.app_id
+        # elif 'model' == job_type:
+        #     app_id = instance.app_id
+        '''
+        job_type = {
+                "metadata": "metaData",
+                "master": "story",
+                "model":"training",
+                "score": "prediction",
+                "robo": "robo",
+                "subSetting": "subSetting",
+                "stockAdvisor": "stockAdvisor"
+            }
+        '''
+        # Submitting JobServer
+        from .utils import submit_job
+        try:
+            job_return_data = submit_job(
+                slug=job.slug,
+                class_name='stockAdvisor',
+                job_config=jobConfig,
+                job_name=self.name,
+                message_slug=message_slug,
+                queue_name=queue_name,
+                app_id=None
+            )
+
+            job.url = job_return_data.get('application_id')
+            job.command_array = json.dumps(job_return_data.get('command_array'))
+
+            readable_job_config = {
+                'job_config': job_return_data.get('config')['job_config']['job_config'],
+                'config': job_return_data.get('config')['job_config']['config']
+            }
+            job.config = json.dumps(readable_job_config)
+            job.save()
+        except Exception as exc:
+            # send_alert_through_email(exc)
+            return None
+
+        return job
+
     def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
         print(stockDataType)
         if stockDataType == "historic":
             name = stockName + "_" + stockDataType
         else:
             name = stockName
-        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        path1 = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         # file_path = path + stockName + "." + type
-        file_path = path + name + "." + type
+        semi_path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
+        from os import path
+        if path.exists(semi_path) is False:
+            os.mkdir(semi_path)
+            os.chmod(semi_path, 0o777)
+        file_path = path1 + name + "." + type
+        # file_path = path + stockName + "." + type
         print("Writing {1} for {0}".format(stockName, stockDataType))
         print(file_path)
         with open(file_path, "w") as file_to_write_on:
