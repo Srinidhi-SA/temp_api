@@ -545,7 +545,7 @@ export function createNewUserAction(userDetails){
 				dispatch(setCreateUserLoaderFlag(false));
 			}else if(response.status === 200 && !json.created){
 				dispatch(setCreateUserLoaderFlag(false));
-				bootbox.alert(statusMessages("warning","Please ensure proper details","small_mascot"));
+				$("#resetMsg")[0].innerText = Object.values(json.message[Object.keys(json.message)[0]])[0]
 			}else{
 				bootbox.alert(statusMessages("warning","Failed","small_mascot"));
 			}
