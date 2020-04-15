@@ -22683,17 +22683,14 @@ button[disabled], html .filter_input[disabled] {
 
 .semi-donut {
   --percentage: 0;
-  --fill: #ff0;
-  width: 300px;
-  height: 150px;
+  --fill: #f15488 !important;
+  width: 150px;
+  height: 86px;
   position: relative;
   color: #fff;
-  font-size: 22px;
-  font-weight: 600;
   overflow: hidden;
   color: var(--fill);
   display: -webkit-box;
-  display: flex;
   -webkit-box-align: end;
           align-items: flex-end;
   -webkit-box-pack: center;
@@ -22702,9 +22699,9 @@ button[disabled], html .filter_input[disabled] {
 }
 .semi-donut:after {
   content: "";
-  width: 300px;
-  height: 300px;
-  border: 50px solid;
+  width: 150px;
+  height: 150px;
+  border: 7px solid;
   border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) var(--fill) var(--fill);
   position: absolute;
   border-radius: 50%;
@@ -22717,7 +22714,7 @@ button[disabled], html .filter_input[disabled] {
           animation: fillAnimation 1s ease-in;
 }
 
-.semi-donut-model-2 {
+/* .semi-donut-model-2 {
   width: 300px;
   height: 150px;
   position: relative;
@@ -22765,7 +22762,7 @@ button[disabled], html .filter_input[disabled] {
 .semi-donut-model-2:hover:after {
   opacity: 0.8;
   cursor: pointer;
-}
+} */
 
 @-webkit-keyframes fillAnimation {
   0% {
@@ -22809,3 +22806,7 @@ button[disabled], html .filter_input[disabled] {
   }
 }
 
+#widget-top-1{
+  display: flex;
+  justify-content: center;
+}
