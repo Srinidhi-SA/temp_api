@@ -176,7 +176,6 @@ def write_into_databases(job_type, object_slug, results):
         ####   Check if model job needs to be triggered for email AutoML   ###
         check_if_autoML_model_job_needs_to_be_triggered(dataset_object.id)
         return "Done Succesfully."
-        return results
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
                                        model_slug=object_slug
@@ -193,7 +192,6 @@ def write_into_databases(job_type, object_slug, results):
         insight_object.status = 'SUCCESS'
         insight_object.save()
         return "Done Succesfully."
-        return results
     elif job_type == "model":
         trainer_object = get_db_object(model_name=Trainer.__name__,
                                        model_slug=object_slug
@@ -242,7 +240,6 @@ def write_into_databases(job_type, object_slug, results):
 
         outlook_autoML_success_mail(trainer_object.id)
         return "Done Succesfully."
-        return results
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
                                      model_slug=object_slug
@@ -259,7 +256,6 @@ def write_into_databases(job_type, object_slug, results):
         score_object.status = 'SUCCESS'
         score_object.save()
         return "Done Succesfully."
-        return results
     elif job_type == 'robo':
         robo_object = get_db_object(model_name=Robo.__name__,
                                     model_slug=object_slug
