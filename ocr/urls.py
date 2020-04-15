@@ -6,7 +6,7 @@ from rest_framework import routers
 
 # from ocr import views
 from ocr.views import ocr_datasource_config_list, ProjectView, \
-    get_highlevel_metrics
+    get_dashboard_metrics
 from ocr.views import OCRImageView, OCRImagesetView, OCRUserView, \
     OCRUserProfileView, GroupListView
 
@@ -53,7 +53,7 @@ router.register(
 urlpatterns = [
     url(r'^datasource/ocr_datasource_config_list$', ocr_datasource_config_list, name="ocr_datasource_config_list"),
     url(r'^groups/',GroupListView.as_view(), name="groups"),
-    url(r'^get_highlevel_metrics', get_highlevel_metrics, name="get_highlevel_metrics"),
+    url(r'^get_dashboard_metrics', get_dashboard_metrics, name="get_dashboard_metrics"),
 
 ]
 urlpatterns += router.urls
