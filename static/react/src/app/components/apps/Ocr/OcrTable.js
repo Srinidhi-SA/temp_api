@@ -350,8 +350,8 @@ export class OcrTable extends React.Component {
 
         <div class="tab-container">
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{ cursor: "default" }}>
-            <li className="active"><a data-toggle="tab" id="active" name="Active">Active</a></li>
-            <li className=""><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
+            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
+            <li className=""><a data-toggle="tab" id="active" name="Active">Active</a></li>
           </ul> : "" : ""}
 
           <div className="tab-content">

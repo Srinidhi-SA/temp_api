@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
-import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp} from "../actions/chartActions";
+import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp, clearC3Date} from "../actions/chartActions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API, STATIC_URL} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
@@ -35,6 +35,18 @@ export class C3Chart extends React.Component {
     this.chartData = "";
 
     this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
+  }
+  
+  componentWillUnmount(){
+    if(Object.keys(this.props.data).length != 0)
+      this.props.dispatch(clearC3Date())
+    if(Object.keys(this.props.cloudImgResp).length !=0)
+      this.props.dispatch(clearCloudImgResp())
+  }
+
+  componentDidUpdate(){
+    let elem = document.getElementById("cloudImage")!=undefined?document.getElementById("cloudImage").parentElement:""
+    elem!=""?elem.scrollIntoView(true):""
   }
 
   openZoomChart(flag) {
@@ -202,6 +214,8 @@ export class C3Chart extends React.Component {
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
           return xdata[x].substr(0, 9) + "..";
+        // } else if(xdata[x] && data.title.text === "Stock Performance Analysis"){
+        //   return xdata[x].substr(0,3) + " \'" +xdata[x].substr(9)
         } else {
           return xdata[x];
         }
