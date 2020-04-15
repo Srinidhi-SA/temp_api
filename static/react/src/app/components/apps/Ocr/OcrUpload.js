@@ -52,10 +52,10 @@ export class OcrUpload extends React.Component {
     if(this.props.s3Uploaded){
       document.getElementById("resetMsg").innerText = "";
     }
-    let activeId = $(".tab-content").find(".active")[1].id
-    if(activeId === "ocrImage" && this.state.uploaded){
+    let activeId = $(".ocrFileTab").find(".active")[0].innerText;
+    if(activeId === "IMAGE FILES" && this.state.uploaded){
       $("#loadDataBtn")[0].disabled = false
-    }else if(activeId === "ocrS3" && this.props.s3Uploaded){
+    }else if(activeId === "S3 FILES" && this.props.s3Uploaded){
       $("#loadDataBtn")[0].disabled = false
     }else{
       $("#loadDataBtn")[0].disabled = true
@@ -125,10 +125,10 @@ export class OcrUpload extends React.Component {
   }
 
   handleSubmit(acceptedFiles) {
-    let activeId = $(".tab-content").find(".active")[1].id
+    let activeId = $(".ocrFileTab").find(".active")[0].innerText;
     let projectSlug= this.props.projectslug;
 
-    if(activeId === "ocrImage"){
+    if(activeId === "IMAGE FILES"){
       if (acceptedFiles.length == 0) {
         document.getElementById("resetMsg").innerText = "Please select files to upload.";
         return false
@@ -150,7 +150,7 @@ export class OcrUpload extends React.Component {
         this.setState({ uploaded: true })
     })
     }
-    else if(activeId === "ocrS3"){
+    else if(activeId === "S3 FILES"){
       if($(".p-multiselect-label")[0].innerHTML === "Choose"){
         $("#resetMsg")[0].innerText = "Please select files to upload.";
         return false
@@ -226,7 +226,7 @@ export class OcrUpload extends React.Component {
             </Modal.Header>
 
             <Modal.Body style={{ padding:"0px"}} >
-              <div className="tab-container">
+              <div className="tab-container ocrFileTab">
                   <ul className="ocrUploadTabs nav-tab" onClick={this.getTabContent.bind(this)}>
                     <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Image Files</a></li>
                     <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">s3 Files</a></li>
