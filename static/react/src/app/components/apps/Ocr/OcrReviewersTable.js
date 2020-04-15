@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails}from '../../../actions/ocrActions'
+import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails,ocrRevFilterTime,ocrRevFilterAccuracy}from '../../../actions/ocrActions'
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Pagination } from "react-bootstrap";
@@ -21,6 +21,7 @@ export default class OcrReviewersTable extends Component {
     super(props)
     this.state = {
       checkedList: [],
+      filterVal:'',
     }
   }
 
@@ -43,6 +44,42 @@ handleDocumentPageFlag (slug,name){
   this.props.dispatch(selectedReviewerDetails(slug,name))
 }
 
+handleFil(mode){//                   Don't delete this method
+  // this.disableInputs(mode,'')
+  // this.setState({filterVal:mode})
+}
+
+disableInputs(mode,reset){//         Don't delete this method
+  // let  idList=''
+  // mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['TEQL','TGTE','TLTE']
+  
+  // let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
+
+  // if(document.getElementById(mode).value.trim()!='')
+  // disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+  // else
+  // disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+}
+
+filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
+  // var filterByVal=''
+  // if(reset!='reset'){
+  //   filterByVal = (filterOn==('time')||(filterOn=='accuracy'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+  //   }
+  // switch (filterOn) {
+  //   case 'time':
+  //   this.props.dispatch(ocrRevFilterTime(filterByVal))
+  //   break;
+  //   case 'accuracy':
+  //   this.props.dispatch(ocrRevFilterAccuracy(filterByVal))
+  //   break;
+  // }
+  // this.props.dispatch(getOcrReviewersList())
+  // if(reset=='reset'){
+  //   document.getElementById(this.state.filterVal).value=''
+  //   this.disableInputs(this.state.filterVal,'reset')
+  // }
+}
   render() {
     const pages = this.props.OcrReviewerList.total_number_of_pages;
     const current_page = this.props.OcrReviewerList.current_page;
@@ -77,7 +114,7 @@ handleDocumentPageFlag (slug,name){
             <td>{item.ocr_data.completionPercentage}%</td>
             <td>{item.ocr_data.avgTimeperWord}</td>
             <td>{item.ocr_data.accuracyModel}</td>
-            <td>{''}</td>
+            <td>{item.last_login}</td>
             <td>{(item.ocr_profile.active === true) ? "Active" : "Inactive"}</td>
           </tr>
         )
@@ -111,26 +148,58 @@ handleDocumentPageFlag (slug,name){
                     <th class="text-center">
                       Complete %
                     </th>
-                    <th class="dropdown">
+                     {/* <th class="dropdown">
                       <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Avg Time/Word" aria-expanded="true">
                       <span>Avg Time/Word</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                          <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                          <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                          <li><a class="cursor" name="all"    onClick={this.filterRevList.bind(this, '', 'time')}  data-toggle="modal" data-target="#modal_equal">All</a></li>
+                          <li><a class="cursor" name="delete" onClick={this.filterRevList.bind(this, 'E', 'time')} data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                          <li><a class="cursor" name="rename" onClick={this.filterRevList.bind(this, 'G', 'time')} data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                          <li><a class="cursor" name="replace"onClick={this.filterRevList.bind(this, 'L', 'time')}data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                       </ul>
-                    </th>
-                    <th class="dropdown">
+                    </th> */}
+                    <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Avg Time/Word" aria-expanded="true">
+                            <span>Avg Time/Word</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu">
+                            <li><a className="cursor" onClick={this.filterRevList.bind(this, '', 'time','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                             <input className='confidence filter_input'  id='TEQL' onChange={this.handleFil.bind(this,'TEQL')} type='number' ></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                             <input className='confidence filter_input' id='TGTE' onChange={this.handleFil.bind(this,'TGTE')} type='number' ></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input className='confidence filter_input' id='TLTE' onChange={this.handleFil.bind(this,'TLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevList.bind(this, '', 'time','')}><i class="fa fa-check"></i></button>
+                          </ul>
+                        </th>
+                    {/* <th class="dropdown">
                       <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Accuracy of model" aria-expanded="true">
                       <span>ACCURACY of Model</span> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                          <li><a class="cursor" name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                          <li><a class="cursor" name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
+                          <li><a class="cursor" name="all"      onClick={this.filterRevList.bind(this, '', 'accuracy')}  data-toggle="modal" data-target="#modal_equal">All</a></li>
+                          <li><a class="cursor" name="delete"   onClick={this.filterRevList.bind(this, 'E', 'accuracy')}data-toggle="modal" data-target="#modal_equal">Equal</a></li>
+                          <li><a class="cursor" name="rename"   onClick={this.filterRevList.bind(this, 'G', 'accuracy')}data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
+                          <li><a class="cursor" name="replace"  onClick={this.filterRevList.bind(this, 'L', 'accuracy')} data-toggle="modal" data-target="#modal_equal">Less than</a></li>
                       </ul>
-                    </th>
+                    </th> */}
+                    <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
+                            <span>ACCURACY of Model</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu">
+                            <li><a className="cursor" onClick={this.filterRevList.bind(this, '', 'accuracy','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+                            <li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+                             <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+                            <li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+                             <input className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+                             <input className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevList.bind(this, '', 'accuracy','')}><i class="fa fa-check"></i></button>
+                          </ul>
+                        </th>
                     <th class="text-center">Last Login</th>
                     <th class="text-center">Status</th>
                   </tr>

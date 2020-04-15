@@ -16,6 +16,7 @@ import { store } from '../../../store';
     imageSlug: store.ocr.imageSlug,
     ocrDocList: store.ocr.OcrRevwrDocsList,
     imageTaskId: store.ocr.imageTaskId,
+    feedback: "",
   };
 })
 
@@ -84,6 +85,22 @@ export class OcrImage extends React.Component {
         if (data.submitted === true) {
           this.finalAnalysis();
           bootbox.alert(statusMessages("success", "Document saved with reviewed changes.", "small_mascot"));
+        }
+      });
+  }
+  handleBadScan = () => {
+    //window.history.go(-1)
+    let feedbackID = this.props.imageTaskId;
+    var data = new FormData();
+    data.append("bad_scan", this.state.feedback);
+    return fetch(API + '/ocrflow/tasks/feedback/?feedbackId=' + feedbackID , {
+      method: 'post',
+      headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
+      body: data
+    }).then(response => response.json())
+      .then(data => {
+        if (data.submitted === true) {
+          bootbox.alert(statusMessages("success", "Feedback submitted.", "small_mascot"));
         }
       });
   }
@@ -305,14 +322,14 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
+            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
               <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
-            }
           </div>
+            }
         </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
@@ -325,13 +342,13 @@ export class OcrImage extends React.Component {
               <div class="modal-body">
                 <div class="form-group">
                   <label for="txt_bscan">Tell us how would we improve?</label>
-                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" />
+                  <input type="text" class="form-control" id="txt_bscan" placeholder="Enter text" onChange={(e)=>this.setState({feedback: e.target.value})}/>
                   <p>For technical support, please contact info@madvisor-dev.marlabs.com</p>
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" onClick={this.handleBadScan} data-dismiss="modal">Submit</button>
               </div>
             </div>
           </div>
