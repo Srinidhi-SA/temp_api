@@ -90,7 +90,8 @@ export class OcrTable extends React.Component {
   filterOcrList(filtertBy, filterOn,reset) {
      var filterByVal=''
      if(reset!='reset'){
-      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+       let numericVal=$(`#${this.state.filterVal}`).val().trim();
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
       }
      switch (filterOn) {
        case 'status':
