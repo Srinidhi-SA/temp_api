@@ -5,6 +5,7 @@ import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selectedProjectDetails } from '../../../actions/ocrActions';
+import { API } from "../../../helpers/env";
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -49,7 +50,7 @@ export class OcrCreateProject extends React.Component {
       "name": projectName
     }
 
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/project/", {
+    return fetch(API + '/ocr/project/', {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(projectDetails)

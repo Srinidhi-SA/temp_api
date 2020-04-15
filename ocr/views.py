@@ -133,39 +133,62 @@ def ocr_datasource_config_list(request):
 
 # -------------------------------------------------------------------------------
 @api_view(['GET'])
-def get_highlevel_metrics(request):
-    metricKeyList = ['project', 'ocrimage', 'ocruser']
-    OCRData = []
-    for key in metricKeyList:
-        OCRData.append(get_metricKey_data(key))
+def get_dashboard_metrics(request):
 
     return JsonResponse({
         'status': True,
-        'ocrdata': OCRData,
+        'projectMetrics': get_ocr_data(),
+        'reviewerL1data': get_reviewer_metrics()
     })
 
-def get_metricKey_data(key):
-    modelMappings = {
-        'project': Project,
-        'ocrimage': OCRImage,
-        'ocruser': OCRUserProfile
-    }
-    displayName = {
-        'project': 'Total Projects ',
-        'ocrimage': 'Total Images Uploaded',
-        'ocruser': 'Total Reviewers'
-    }
-    if not key == 'ocruser':
-        count = modelMappings[key].objects.all().count()
-    else:
-        count = modelMappings[key].objects.filter(
-            ocr_user__groups__name__in = ['ReviewerL1', 'ReviewerL2'],
-            is_active = True
-        ).count()
+def get_ocr_data():
+    totProjects=Project.objects.all().count()
+    totOCRImages=OCRImage.objects.all().count()
     return {
-        'count': count,
-        'displayName': displayName[key]
+        'totalProject': totProjects,
+        'TotalImages': totOCRImages
     }
+
+def get_reviewer_metrics():
+    totalReviewers = OCRUserProfile.objects.filter(
+        ocr_user__groups__name__in = ['ReviewerL1'],
+        is_active = True
+    ).count()
+    totL1AssignedDocs = OCRImage.objects.filter(is_L1assigned = True)
+    count = totL1AssignedDocs.count()
+
+    if not count == 0:
+        # for doc in totL1AssignedDocs:
+        from ocrflow.models import ReviewRequest
+        reviewedL1Docs=ReviewRequest.objects.filter(
+            ocr_image__in = totL1AssignedDocs,
+            status = 'reviewerL1_reviewed'
+        ).count()
+        totalPendingDocs=ReviewRequest.objects.filter(
+            ocr_image__in = totL1AssignedDocs,
+            status = 'submitted_for_review'
+        ).count()
+        return {
+            'totalReviewers': totalReviewers,
+            'totalReviewedDocs': reviewedL1Docs,
+            'totalPendingDocs': totalPendingDocs,
+            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers,count)
+        }
+    else:
+        return {
+            'totalReviewers': totalReviewers,
+            'totalReviewedDocs': None,
+            'totalPendingDocs': None,
+            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers,count)
+        }
+
+def avg_reviews_per_reviewer(totalReviewers,count):
+    from math import floor
+    try:
+        return (floor(count/totalReviewers))
+    except:
+        return 0
+
 # -------------------------------------------------------------------------------
 
 

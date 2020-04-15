@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
-import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp} from "../actions/chartActions";
+import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp, clearC3Date} from "../actions/chartActions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API, STATIC_URL} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
@@ -35,6 +35,18 @@ export class C3Chart extends React.Component {
     this.chartData = "";
 
     this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
+  }
+  
+  componentWillUnmount(){
+    if(Object.keys(this.props.data).length != 0)
+      this.props.dispatch(clearC3Date())
+    if(Object.keys(this.props.cloudImgResp).length !=0)
+      this.props.dispatch(clearCloudImgResp())
+  }
+
+  componentDidUpdate(){
+    let elem = document.getElementById("cloudImage")!=undefined?document.getElementById("cloudImage").parentElement:""
+    elem!=""?elem.scrollIntoView(true):""
   }
 
   openZoomChart(flag) {
@@ -202,6 +214,8 @@ export class C3Chart extends React.Component {
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
           return xdata[x].substr(0, 9) + "..";
+        // } else if(xdata[x] && data.title.text === "Stock Performance Analysis"){
+        //   return xdata[x].substr(0,3) + " \'" +xdata[x].substr(9)
         } else {
           return xdata[x];
         }
@@ -395,16 +409,16 @@ export class C3Chart extends React.Component {
             <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
           </div>
         </div>
-        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
-          <div>* Hover on the graph points to view Cloud Image of respective dates</div>
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
+          <div style={{padding:"10px"}} >Note: Hover on the graph points to view Cloud Image of respective dates</div>
         }
-        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
-            <img src={API+"/"+this.props.cloudImgResp.image_url} style={{paddingLeft:"20%"}} />
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
+            <img id="cloudImage" style={{ display:"block", marginLeft:"auto", marginRight: "auto"}} src={API+"/"+this.props.cloudImgResp.image_url} />
         }
-        { this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url === null &&
           <div className="error"> Cloud Image for date {this.props.cloudImgResp.date} is not available</div>
         }
-        {this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
+        {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && this.props.cloudImgFlag &&
           <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
               <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
           </div>

@@ -8,7 +8,6 @@ export const cookieObj = {
     var exp = new Date(now.getTime() + COOKIEEXPIRETIMEINDAYS * 24 * 60 * 60 * 1000);
     var expires = exp.toUTCString();
     if (userDetail.token)
-      document.cookie = "userRole=" + userDetail.ocr_profile.role[0] + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userToken=" + userDetail.token + "; " + "expires=" + expires + "; path=/";
     document.cookie = "userName=" + userDetail.user.username + "; " + "expires=" + expires + "; path=/";
     document.cookie = "email=" + userDetail.user.email + "; " + "expires=" + expires + "; path=/";
@@ -24,7 +23,9 @@ export const cookieObj = {
       document.cookie = "view_trainer_permission=" + userDetail.view_permission.view_trainer + "; " + "expires=" + expires + "; path=/";
     }
     document.cookie = "dm_token=" + userDetail.profile.kylo_password + "; " + "expires=" + expires + "; path=/";
-
+    if(userDetail.ocr_profile != null){
+    document.cookie = "userRole=" + userDetail.ocr_profile.role[0] + "; " + "expires=" + expires + "; path=/";
+    }
 
   },
 

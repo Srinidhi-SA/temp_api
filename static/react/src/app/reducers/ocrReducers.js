@@ -75,7 +75,7 @@ export default function reducer(state = {
   configRules : {},
   iRFlag : true,
   sRFlag : true,
-  tabActive:'active',
+  tabActive:'backlog',
   imageTaskId: "",
 
 }, action) {

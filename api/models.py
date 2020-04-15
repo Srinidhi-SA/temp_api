@@ -321,6 +321,7 @@ class Dataset(models.Model):
         datasource_details = ""
         if self.datasource_type in ['file', 'fileUpload']:
             inputFile = self.get_input_file()
+
         else:
             datasource_details = json.loads(self.datasource_details)
 
@@ -391,6 +392,7 @@ class Dataset(models.Model):
                 pass
 
     def copy_file_to_hdfs(self):
+
         try:
             hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
         except:
