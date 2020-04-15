@@ -8,7 +8,7 @@ import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Loader, saveS3SelFiles, uploadS3Files, clearS3Data, uploadS3FileSuccess} from '../../../actions/ocrActions'
 import {MultiSelect} from "primereact/multiselect";
-
+import { API } from "../../../helpers/env"
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -141,7 +141,7 @@ export class OcrUpload extends React.Component {
     }
     data.append("dataSourceType", "fileUpload");
     data.append("projectslug", projectSlug);
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/ocrimage/", {
+    return fetch(API + '/ocr/ocrimage/', {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: data
