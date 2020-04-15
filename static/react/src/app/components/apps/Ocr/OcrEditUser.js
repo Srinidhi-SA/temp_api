@@ -93,14 +93,18 @@ export class OcrEditUser extends React.Component{
             this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
         }
         else if(this.props.roleFormSel){
-            $("#resetMsg")[0].innerText = ""
-            this.props.dispatch(setCreateUserLoaderFlag(true))
-            let allowedVariables = ["role","is_active"];
-            let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
-                obj[key] = this.props.editedUserDetails[key];
-                return obj;
-            }, {});
-            this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.ocrReviwersList,this.props.selUserSlug));
+            if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"){
+                $("#resetMsg")[0].innerText = "Please enter mandatory fields"
+            }else{
+                $("#resetMsg")[0].innerText = ""
+                this.props.dispatch(setCreateUserLoaderFlag(true))
+                let allowedVariables = ["role","is_active"];
+                let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
+                    obj[key] = this.props.editedUserDetails[key];
+                    return obj;
+                }, {});
+                this.props.dispatch(submitEditedUserRolesAction(filteredVariables,this.props.ocrReviwersList,this.props.selUserSlug));    
+            }
         }
     }
 
