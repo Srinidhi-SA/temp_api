@@ -321,14 +321,14 @@ class Dataset(models.Model):
         datasource_details = ""
         if self.datasource_type in ['file', 'fileUpload']:
             inputFile = self.get_input_file()
-            inputFile_size = os.stat(self.input_file.path).st_size
+
         else:
             datasource_details = json.loads(self.datasource_details)
+
         return {
             "config": {
                 "FILE_SETTINGS": {
                     "inputfile": [inputFile],
-                    "inputfile_size": inputFile_size
                 },
                 "COLUMN_SETTINGS": {
                     "analysis_type": ["metaData"],
@@ -392,10 +392,9 @@ class Dataset(models.Model):
                 pass
 
     def copy_file_to_hdfs(self):
-        file_size = os.stat(self.input_file.path).st_size
+
         try:
-            if file_size > 128000000:
-                hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+            hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
         except:
             raise Exception("Failed to copy file to HDFS.")
 
@@ -411,9 +410,7 @@ class Dataset(models.Model):
         return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
     def get_hdfs_relative_file_path(self):
-        file_size = os.stat(self.input_file.path).st_size
-        if file_size < 128000000:
-            return os.path.join('/media/', str(self.input_file))
+
         if self.shared is True:
             return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
@@ -431,14 +428,10 @@ class Dataset(models.Model):
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
             elif type == 'hdfs':
-                file_size = os.stat(self.input_file.path).st_size
-                if file_size < 128000000:
-                    dir_path = "https://{}".format(THIS_SERVER_DETAILS.get('host'))
-                else:
-                    dir_path = "hdfs://{}:{}".format(
-                        settings.HDFS.get("host"),
-                        settings.HDFS.get("hdfs_port")
-                    )
+                dir_path = "hdfs://{}:{}".format(
+                    settings.HDFS.get("host"),
+                    settings.HDFS.get("hdfs_port")
+                )
                 file_name = self.get_hdfs_relative_file_path()
 
                 return dir_path + file_name
