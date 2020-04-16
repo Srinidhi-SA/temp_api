@@ -90,7 +90,8 @@ export class OcrTable extends React.Component {
   filterOcrList(filtertBy, filterOn,reset) {
      var filterByVal=''
      if(reset!='reset'){
-      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+       let numericVal=$(`#${this.state.filterVal}`).val().trim();
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
       }
      switch (filterOn) {
        case 'status':
@@ -271,8 +272,8 @@ export class OcrTable extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <div id="resetMsg"></div>
-          <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
+          <Button id="Rd_dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
+          <Button id="Rd_loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
 
         </Modal.Footer>
       </Modal>
