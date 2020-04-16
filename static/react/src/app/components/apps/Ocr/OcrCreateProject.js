@@ -5,6 +5,7 @@ import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selectedProjectDetails } from '../../../actions/ocrActions';
+import { API } from "../../../helpers/env";
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -49,7 +50,7 @@ export class OcrCreateProject extends React.Component {
       "name": projectName
     }
 
-    return fetch("https://madvisor-dev.marlabsai.com/ocr/project/", {
+    return fetch(API + '/ocr/project/', {
       method: "POST",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(projectDetails)
@@ -147,8 +148,8 @@ export class OcrCreateProject extends React.Component {
               </Modal.Body>
               <Modal.Footer>
                 <div id="resetMsg"></div>
-                <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
-                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
+                <Button id="Cp_dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
+                <Button id="Cp_loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
               </Modal.Footer>
             </Modal>
           </div>

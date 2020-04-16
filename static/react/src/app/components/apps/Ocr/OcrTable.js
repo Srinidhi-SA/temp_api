@@ -90,7 +90,8 @@ export class OcrTable extends React.Component {
   filterOcrList(filtertBy, filterOn,reset) {
      var filterByVal=''
      if(reset!='reset'){
-      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+       let numericVal=$(`#${this.state.filterVal}`).val().trim();
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
       }
      switch (filterOn) {
        case 'status':
@@ -271,8 +272,8 @@ export class OcrTable extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <div id="resetMsg"></div>
-          <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
-          <Button id="loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
+          <Button id="Rd_dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
+          <Button id="Rd_loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
 
         </Modal.Footer>
       </Modal>
@@ -350,8 +351,8 @@ export class OcrTable extends React.Component {
 
         <div class="tab-container">
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{ cursor: "default" }}>
-            <li className="active"><a data-toggle="tab" id="active" name="Active">Active</a></li>
-            <li className=""><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
+            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
+            <li className=""><a data-toggle="tab" id="active" name="Active">Active</a></li>
           </ul> : "" : ""}
 
           <div className="tab-content">
