@@ -148,8 +148,8 @@ export class OcrCreateProject extends React.Component {
               </Modal.Body>
               <Modal.Footer>
                 <div id="resetMsg"></div>
-                <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
-                <Button id="loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
+                <Button id="Cp_dataCloseBtn" onClick={this.closePopup.bind(this)}> Close</Button>
+                <Button id="Cp_loadDataBtn" onClick={this.handleSubmit.bind(this)} bsStyle="primary">Save</Button>
               </Modal.Footer>
             </Modal>
           </div>

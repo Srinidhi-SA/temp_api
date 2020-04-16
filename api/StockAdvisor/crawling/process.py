@@ -318,8 +318,6 @@ import json
 
 
 def fetch_historical_data_from_alphavintage(stock):
-    # apikey = "NZ4C53A0LJJU6MKM"
-    # function = "TIME_SERIES_DAILY"
     apikey = settings.STOCK_SENSE_CREDS['alphavantage']['api_key']
     function = settings.STOCK_SENSE_CREDS['alphavantage']['function']
     symbol = stock

@@ -40,4 +40,9 @@ api/migrations/
 ocr/migrations/
 ocrflow/migrations/
 *.egg
+
 ocr/ITE/ir/
+Updated_Analysis.json
+ocr/ITE/demo_analysis/
+ocr/ITE/pdf_to_images_folder/
+

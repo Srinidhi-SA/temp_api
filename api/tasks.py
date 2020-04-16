@@ -577,17 +577,13 @@ def kill_application_using_fabric(app_id=None):
 # @task(name='stock_sense_crawling')
 @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
 def stock_sense_crawl(object_slug):
-    from api import helper
-    # import json
     from api.helper import get_db_object
-    from api.views import chart_changes_in_metadata_chart, add_slugs
     print("stock_sense_crawl" * 2)
     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
                                          model_slug=object_slug
                                          )
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
-    # stock_dataset_object.call_mlscripts()
 
 
 @task(name='print_this_every_minute', queue=CONFIG_FILE_NAME)

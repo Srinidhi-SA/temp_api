@@ -319,16 +319,18 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
         datasource_details = ""
+        inputFileSize = os.stat(self.input_file.path).st_size
         if self.datasource_type in ['file', 'fileUpload']:
             inputFile = self.get_input_file()
-            inputFile_size = os.stat(self.input_file.path).st_size
+
         else:
             datasource_details = json.loads(self.datasource_details)
+
         return {
             "config": {
                 "FILE_SETTINGS": {
                     "inputfile": [inputFile],
-                    "inputfile_size": inputFile_size
+                    "inputfilesize": inputFileSize,
                 },
                 "COLUMN_SETTINGS": {
                     "analysis_type": ["metaData"],
@@ -411,9 +413,7 @@ class Dataset(models.Model):
         return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
     def get_hdfs_relative_file_path(self):
-        file_size = os.stat(self.input_file.path).st_size
-        if file_size < 128000000:
-            return os.path.join('/media/', str(self.input_file))
+
         if self.shared is True:
             return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
@@ -433,14 +433,18 @@ class Dataset(models.Model):
             elif type == 'hdfs':
                 file_size = os.stat(self.input_file.path).st_size
                 if file_size < 128000000:
-                    dir_path = "https://{}".format(THIS_SERVER_DETAILS.get('host'))
+                    if settings.USE_HTTPS:
+                        protocol = 'https'
+                    else:
+                        protocol = 'http'
+                    dir_path = "{0}://{1}".format(protocol, THIS_SERVER_DETAILS.get('host'))
+                    file_name = os.path.join('/media/', str(self.input_file))
                 else:
                     dir_path = "hdfs://{}:{}".format(
                         settings.HDFS.get("host"),
                         settings.HDFS.get("hdfs_port")
                     )
-                file_name = self.get_hdfs_relative_file_path()
-
+                    file_name = self.get_hdfs_relative_file_path()
                 return dir_path + file_name
 
             elif type == 'fake':
