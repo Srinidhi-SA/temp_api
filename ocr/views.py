@@ -348,11 +348,58 @@ class OCRUserView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
-        return get_reviewer_data(
+        response = get_reviewer_data(
             viewset=self,
             request=request,
             list_serializer=OCRReviewerSerializer,
         )
+
+        accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
+        time_operator, time = request.GET['time'][:3], request.GET['time'][3:]
+        add_key = response.data['data']
+
+        if accuracy:
+            if accuracy_operator == 'GTE':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['accuracyModel'] >= float(accuracy):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+            if accuracy_operator == 'LTE':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['accuracyModel'] <= float(accuracy):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+            if accuracy_operator == 'EQL':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['accuracyModel'] == float(accuracy):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+
+        if time:
+            if time_operator == 'GTE':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['avgTimeperWord'] >= float(time):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+            if time_operator == 'LTE':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['avgTimeperWord'] <= float(time):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+            if time_operator == 'EQL':
+                buffer = list()
+                for user in add_key:
+                    if not user['ocr_data']['avgTimeperWord'] == float(time):
+                        buffer.append(user)
+                add_key = [ele for ele in add_key if ele not in buffer]
+
+        response.data['data'] = add_key
+        return response
 
     @list_route(methods=['get'])
     def get_ocr_users(self, request):

@@ -7,8 +7,10 @@ import ast
 
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-#from api.exceptions import creation_failed_exception, update_failed_exception
-#from django.db.models import Q
+
+
+# from api.exceptions import creation_failed_exception, update_failed_exception
+# from django.db.models import Q
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-many-ancestors
@@ -39,7 +41,7 @@ class QueryCommonFiltering:
     fields = None
     time = None
     assignee = None
-
+    reviewStatus = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -66,6 +68,13 @@ class QueryCommonFiltering:
                 self.status = self.status
             else:
                 self.status = temp_name
+
+        if 'reviewStatus' in request.query_params:
+            temp_name = self.request.query_params.get('reviewStatus')
+            if temp_name is None or temp_name is "":
+                self.reviewStatus = self.reviewStatus
+            else:
+                self.reviewStatus = temp_name
 
         if 'confidence' in request.query_params:
             temp_name = self.request.query_params.get('confidence')
@@ -138,6 +147,9 @@ class QueryCommonFiltering:
             status_mapping_dict = {'R': 'ready_to_recognize', 'V': 'ready_to_verify', 'E': 'ready_to_export'}
             print(status_mapping_dict[self.status])
             self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
+        if self.reviewStatus is not None:
+            status_mapping_dict = {'created': 'created', 'review': 'submitted_for_review', 'l2reviewed': 'reviewerL2_reviewed', 'l2rejected': 'reviewerL2_rejected', 'l1reviewed': 'reviewerL1_reviewed', 'l1rejected': 'reviewerL1_rejected'}
+            self.query_set = self.query_set.filter(status=status_mapping_dict[self.reviewStatus])
         if self.fields is not None:
             operator, value = self.fields[:3], self.fields[3:]
             if operator == 'GTE':
@@ -232,6 +244,7 @@ def get_image_list_data(viewset, queryset, request, serializer):
     resp = page_class.modified_get_paginate_response(page)
     return resp
 
+
 def get_specific_listed_data(
         viewset=None,
         request=None,
@@ -272,6 +285,7 @@ def get_specific_listed_data(
     resp = page_class.modified_get_paginate_response(page)
     return resp
 
+
 def get_reviewer_data(
         viewset=None,
         request=None,
@@ -310,6 +324,7 @@ def get_reviewer_data(
 
     resp = page_class.modified_get_paginate_response(page)
     return resp
+
 
 def get_specific_assigned_requests(
         viewset=None,
@@ -350,6 +365,7 @@ def get_specific_assigned_requests(
 
     resp = page_class.modified_get_paginate_response(page)
     return resp
+
 
 def get_filtered_ocrimage_list(
         viewset=None,
