@@ -75,8 +75,8 @@ export class DataUpload extends React.Component {
               <DataSourceList/>
             </Modal.Body>
             <Modal.Footer>
-              <Button id="dataCloseBtn" onClick={this.closePopup.bind(this)}>Close</Button>
-              <Button id="loadDataBtn" bsStyle="primary" onClick={this.uploadData.bind(this)}>Load Data</Button>
+              <Button id="Du_dataCloseBtn" onClick={this.closePopup.bind(this)}>Close</Button>
+              <Button id="Du_loadDataBtn" bsStyle="primary" onClick={this.uploadData.bind(this)}>Load Data</Button>
             </Modal.Footer>
           </Modal>
         </div>
