@@ -145,10 +145,47 @@ def get_dashboard_metrics(request):
 def get_ocr_data():
     totProjects=Project.objects.all().count()
     totOCRImages=OCRImage.objects.all().count()
+
+    totalaccuracy=OCRImage.objects.filter(
+        is_recognized=True
+        ).aggregate(Sum('confidence'))['confidence__sum'] or 0.00
+    try:
+        accuracy = round((totalaccuracy/totOCRImages),2)
+    except:
+        accuracy = 0
+
     return {
-        'totalProject': totProjects,
-        'TotalImages': totOCRImages
+        'Project': {
+            'totalProject':totProjects,
+            'accuracy':accuracy
+        },
+        'Pages': {
+            'TotalImages': totOCRImages,
+            'accuracy':accuracy
+        },
+        'TotalTexts':{
+            'totalTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'TypedTexts':{
+            'typedTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'HandPrintedTexts':{
+            'handPrintedTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'HandWrittenTexts':{
+            'handWrittenTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        }
     }
+
+def get_total_texts_extracted():
+
+    return OCRImage.objects.filter(
+        is_recognized=True
+        ).aggregate(Sum('fields'))['fields__sum'] or 0
 
 def get_reviewer_metrics():
     totalReviewers = OCRUserProfile.objects.filter(
