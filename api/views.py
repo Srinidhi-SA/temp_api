@@ -1139,8 +1139,7 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         data = request.data
         config = data.get('config')
-        new_data = {}
-        new_data['name'] = config.get('analysis_name')
+        new_data = {'name': config.get('analysis_name')}
         domains = config.get('domains')
         new_data['domains'] = (", ").join(list(set(domains)))
         stock_symbol = config.get('stock_symbols')
