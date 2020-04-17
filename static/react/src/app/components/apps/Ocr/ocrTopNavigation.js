@@ -7,7 +7,7 @@ export class OcrTopNavigation extends React.Component {
     super(props);
   }
 
-  handleRoute(){ //Making docFlag false on click of navLink,to load projects table,Without this proDoc table is getting loaded
+  handleRoute(){ //Making docFlag false on click of navLink,to load project & reviewer table,Without this proDoc table is getting loaded
   this.props.dispatch(saveDocumentPageFlag(false)) 
   }
   render() {
@@ -27,7 +27,7 @@ export class OcrTopNavigation extends React.Component {
             </NavLink>
           </li>
           {getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser") &&
-            <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" onClick={this.handleRoute.bind(this)}activeClassName="active">
+            <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" onClick={this.handleRoute.bind(this)} activeClassName="active">
               <i class="fa fa-book fa-lg"></i> Projects
             </NavLink>
             </li>
@@ -38,7 +38,7 @@ export class OcrTopNavigation extends React.Component {
               </NavLink>
             </li>
           }
-          <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" activeClassName="active">
+          <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" onClick={this.handleRoute.bind(this)} activeClassName="active">
             <i class="fa fa-users fa-lg"></i> Reviewers
               </NavLink>
           </li>
