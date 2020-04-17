@@ -147,10 +147,16 @@ class SimpleFlow(models.Model):
         for reviewer in Reviewers_queryset:
             isLimitReached = self.check_task_limit(rules, reviewer)
             if isLimitReached:
-                if rules['auto']['remainaingDocsDistributionRule'] == 1:
-                    return reviewer
+                if rules['auto']['active'] == "True":
+                    if rules['auto']['remainaingDocsDistributionRule'] == 1:
+                        return reviewer
+                    else:
+                        return None
                 else:
-                    return None
+                    if rules['custom']['remainaingDocsDistributionRule'] == 1:
+                        return reviewer
+                    else:
+                        return None
             elif not isLimitReached:
                 return reviewer
             else:
@@ -160,10 +166,16 @@ class SimpleFlow(models.Model):
         totalPendingTasks = len(Task.objects.filter(
             assigned_user=user,
             is_closed=False))
-        if totalPendingTasks >= rules['auto']['max_docs_per_reviewer']:
-            return True
+        if rules['auto']['active'] == "True":
+            if totalPendingTasks >= rules['auto']['max_docs_per_reviewer']:
+                return True
+            else:
+                return False
         else:
-            return False
+            if totalPendingTasks >= rules['custom']['max_docs_per_reviewer']:
+                return True
+            else:
+                return False
 
     def start_simpleflow(self, initial_state=None):
         initial = initial_state or 'initial'

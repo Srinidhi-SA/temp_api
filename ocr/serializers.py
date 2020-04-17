@@ -74,10 +74,14 @@ class OCRImageListSerializer(serializers.ModelSerializer):
     List Serializer : OCRImageListSerializer
     -------------------------------------------------
     """
+    status_mapping = {"ready_to_recognize": "Ready to recognize",
+                      "ready_to_verify": "Ready to verify",
+                      "ready_to_export": "Ready to export"}
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
         serialized_data['assignee'] = instance.get_assignee()
+        serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         serialized_data['modified_by'] = UserSerializer(instance.created_by).data['username']
 
