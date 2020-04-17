@@ -322,12 +322,19 @@ export class OcrImage extends React.Component {
           </div>
         </div>
         <div className="row">
-            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") &&
+            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") ?
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
               <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+          </div>
+          :
+          <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
+          <button class="btn btn-warning" disabled>
+            <i class="fa fa-info-circle"></i> Bad Scan
+          </button>
+            <button class="btn btn-primary" disabled><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
           </div>
             }
         </div>
