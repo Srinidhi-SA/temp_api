@@ -128,6 +128,7 @@ def send_email(sender, instance, created, **kwargs):
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
 
+
 post_save.connect(send_email, sender=OCRUserProfile)
 
 
@@ -325,7 +326,9 @@ class OCRImage(models.Model):
         review_start_time = self.review_start
         review_end_time = self.review_end
         total_words = self.fields
-        total_time = review_end_time - review_start_time
-        stats = round(total_time.total_seconds() / total_words, 2)
-        return stats
-
+        try:
+            total_time = review_end_time - review_start_time
+            stats = round(total_time.total_seconds() / total_words, 2)
+            return stats
+        except Exception:
+            return 0
