@@ -84,7 +84,7 @@ export class OcrImage extends React.Component {
       .then(data => {
         if (data.submitted === true) {
           this.finalAnalysis();
-          bootbox.alert(statusMessages("success", "Document saved with reviewed changes.", "small_mascot"));
+          bootbox.alert(statusMessages("success", "Changes have been successfully saved. Thank you for reviewing the document.", "small_mascot"));
         }
       });
   }
@@ -204,10 +204,7 @@ export class OcrImage extends React.Component {
       });
 
   }
-  handleChangeVal=(e)=>{
-    this.setState({ heightLightVal: e.target.value }, this.hightlightField);
-  
-  }
+
   hightlightField = () => {
     document.getElementById("confidence_loader").classList.add("loader_ITE_confidence")
     return fetch(API + '/ocr/ocrimage/confidence_filter/', {
@@ -237,7 +234,7 @@ export class OcrImage extends React.Component {
           <div className="col-sm-12">
             <div class="form-group pull-right ocr_highlightblock"  style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
-              <select class="form-control inline-block 1-100" id="select_confidence" onClick={this.hightlightField} onChange={(e) => this.handleChangeVal(e)}>
+              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>

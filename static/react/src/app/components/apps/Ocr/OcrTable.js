@@ -176,7 +176,7 @@ export class OcrTable extends React.Component {
       bootbox.alert("Please select only one file to export.")
       return false;
     }
-    else if (statusList != "ready_to_export") {
+    else if (statusList != "Ready to export") {
       bootbox.alert("Please select the file with status ready to export.")
       return false;
     }
@@ -347,8 +347,8 @@ export class OcrTable extends React.Component {
                 {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
 
                 <div class="form-group pull-right ocr_highlightblock">
-                  <label class="control-label xs-mb-0" for="select_export" style={{ cursor: 'pointer' }} onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export to</label>
-                  <select class="form-control inline-block 1-100" id="select_export" onChange={(e) => this.setState({ exportType: e.target.value })}>
+                  <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
+                  <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                     <option value="csv">CSV</option>
