@@ -824,6 +824,12 @@ export function selectedReviewerDetails(slug,name){
 		slug,name
 	}
 }
+export function saveSelectedImageName(name){
+	return{
+		type:"SELECTED_IMAGE_NAME",
+		name
+	}
+}
 //Configure Page Actions
 export function storeSelectedConfigureTabAction(selTab){
 	return {

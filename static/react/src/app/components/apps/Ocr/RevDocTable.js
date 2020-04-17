@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus } from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -43,8 +43,9 @@ export class RevDocTable extends React.Component {
     this.props.dispatch(getRevrDocsList())
   }
 
-  handleImagePageFlag = (slug) => {
+  handleImagePageFlag = (slug,name) => {
     this.getImage(slug)
+    this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
@@ -150,7 +151,7 @@ export class RevDocTable extends React.Component {
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug) }}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>
