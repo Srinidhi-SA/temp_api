@@ -639,7 +639,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
         data['conf_google_response'] = json.dumps(response['conf_google_response'])
-        data['flag'] = json.dumps(response['flag'])
+        data['flag'] = json.dumps(response['flag']).replace('"', '').replace('[', '').replace(']', '')
         data['analysis'] = json.dumps(response['analysis'])
         data['status'] = "ready_to_verify"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
