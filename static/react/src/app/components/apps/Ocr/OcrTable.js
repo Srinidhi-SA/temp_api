@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -51,8 +51,9 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
-  handleImagePageFlag = (slug) => {
+  handleImagePageFlag = (slug,name) => {
     this.getImage(slug)
+    this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
@@ -302,7 +303,7 @@ export class OcrTable extends React.Component {
               <i class="fa fa-file-text"></i>
             </td>
             <td style={item.status == "ready_to_recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link>
+              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>

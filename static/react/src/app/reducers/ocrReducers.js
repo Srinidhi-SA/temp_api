@@ -61,6 +61,7 @@ export default function reducer(state = {
   selected_project_name:'',
   selected_reviewer_slug:'',
   selected_reviewer_name:'',
+  selected_image_name:'',
   configureTabSelected : "initialReview",
   iRLoaderFlag : false,
   iRToggleFlag : true,
@@ -77,7 +78,7 @@ export default function reducer(state = {
   sRFlag : true,
   tabActive:'backlog',
   imageTaskId: "",
-
+  
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -611,7 +612,15 @@ export default function reducer(state = {
         }
       }
       break;
-
+      
+      case "SELECTED_IMAGE_NAME":
+      {
+        return {
+          ...state,
+          selected_image_name:action.name
+        }
+      }
+      break;
     //Configure Tab
     case "SAVE_SEL_CONFIGURE_TAB":
       {
