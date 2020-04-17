@@ -251,24 +251,36 @@ export class OcrTable extends React.Component {
 
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
       <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
-        <Modal.Header closeButton>
-          <h3 className="modal-title">Recognize Data</h3>
-        </Modal.Header>
         <Modal.Body style={{ padding: 0 }} >
           <div className="row" style={{ margin: 0 }}>
+            <h4 className="text-center">Recognizing Document</h4>
             {(this.state.loader && !this.state.recognized) &&
-              <div style={{ height: 310, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
-                <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-              </div>
+              <img src={STATIC_URL+"assets/images/Processing_mAdvisor.gif"} className="img-responsive" style={{margin:"auto"}}/>
             }
             {this.state.recognized &&
-              <div className="col-md-12 ocrSuccess">
-                <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
-
-                <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                  <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Recognized Successfully</span></div>
-              </div>
+              <img src={STATIC_URL+"assets/images/alert_success.png"} className="img-responsive" style={{margin:"auto"}}/>
             }
+            <div className="recognizeImgSteps">
+              <div className="row">
+                <div className="col-sm-9">
+                  <ul>
+                    <li>Fetching image</li>
+                    <li>Text extraction</li>
+                    <li>Template Classification</li>
+                    <li>Pre processing and mapping</li>
+                    <li>Output file created</li>
+                  </ul>
+                </div>
+                <div className="col-sm-3 text-center">
+                {(this.state.loader && !this.state.recognized) &&
+                  <h5 className="loaderValue">In Progress</h5>
+                }
+                {this.state.recognized &&
+                  <h5 className="loaderValue">Completed</h5>
+                }
+                </div>
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>

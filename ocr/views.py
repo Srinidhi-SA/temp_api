@@ -18,6 +18,7 @@ View Implementations for OCRImage and OCRImageset models.
 # -------------------------------------------------------------------------------
 import base64
 import copy
+import datetime
 import os
 import random
 import ast
@@ -144,10 +145,47 @@ def get_dashboard_metrics(request):
 def get_ocr_data():
     totProjects=Project.objects.all().count()
     totOCRImages=OCRImage.objects.all().count()
+
+    totalaccuracy=OCRImage.objects.filter(
+        is_recognized=True
+        ).aggregate(Sum('confidence'))['confidence__sum'] or 0.00
+    try:
+        accuracy = round((totalaccuracy/totOCRImages),2)
+    except:
+        accuracy = 0
+
     return {
-        'totalProject': totProjects,
-        'TotalImages': totOCRImages
+        'Project': {
+            'totalProject':totProjects,
+            'accuracy':accuracy
+        },
+        'Pages': {
+            'TotalImages': totOCRImages,
+            'accuracy':accuracy
+        },
+        'TotalTexts':{
+            'totalTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'TypedTexts':{
+            'typedTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'HandPrintedTexts':{
+            'handPrintedTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        },
+        'HandWrittenTexts':{
+            'handWrittenTexts': get_total_texts_extracted(),
+            'accuracy': accuracy
+        }
     }
+
+def get_total_texts_extracted():
+
+    return OCRImage.objects.filter(
+        is_recognized=True
+        ).aggregate(Sum('fields'))['fields__sum'] or 0
 
 def get_reviewer_metrics():
     totalReviewers = OCRUserProfile.objects.filter(
@@ -347,11 +385,59 @@ class OCRUserView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
-        return get_reviewer_data(
+        response = get_reviewer_data(
             viewset=self,
             request=request,
             list_serializer=OCRReviewerSerializer,
         )
+
+        if 'accuracy' in request.GET or 'time' in request.GET:
+            accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
+            time_operator, time = request.GET['time'][:3], request.GET['time'][3:]
+            add_key = response.data['data']
+
+            if accuracy:
+                if accuracy_operator == 'GTE':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['accuracyModel'] >= float(accuracy):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+                if accuracy_operator == 'LTE':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['accuracyModel'] <= float(accuracy):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+                if accuracy_operator == 'EQL':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['accuracyModel'] == float(accuracy):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+
+            if time:
+                if time_operator == 'GTE':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['avgTimeperWord'] >= float(time):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+                if time_operator == 'LTE':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['avgTimeperWord'] <= float(time):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+                if time_operator == 'EQL':
+                    buffer = list()
+                    for user in add_key:
+                        if not user['ocr_data']['avgTimeperWord'] == float(time):
+                            buffer.append(user)
+                    add_key = [ele for ele in add_key if ele not in buffer]
+
+            response.data['data'] = add_key
+        return response
 
     @list_route(methods=['get'])
     def get_ocr_users(self, request):
@@ -553,7 +639,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['converted_Coordinates'] = json.dumps(response['data2'])
         data['comparision_data'] = json.dumps(response['data3'])
         data['conf_google_response'] = json.dumps(response['conf_google_response'])
-        data['flag'] = json.dumps(response['flag'])
+        data['flag'] = json.dumps(response['flag']).replace('"', '').replace('[', '').replace(']', '')
         data['analysis'] = json.dumps(response['analysis'])
         data['status'] = "ready_to_verify"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
@@ -798,6 +884,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         y = data['y']
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
+        review_start_time = image_queryset.review_start
+        if not review_start_time:
+            data['review_start'] = datetime.datetime.now()
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
         converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
 
         response = get_word_in_bounding_box(converted_Coordinates, x, y)
@@ -888,6 +981,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data['final_result'] = json.dumps(json_final)
 
+        review_end_time = image_queryset.review_end
+        if not review_end_time:
+            data['review_end'] = datetime.datetime.now()
+
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
@@ -899,10 +996,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def field_count_and_confidence(self, request):
         data = request.data
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        stats = {'Word Count': len(comparision_data)}
-        stats['Confidence'] = 100 - round(
-            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / stats['Word Count']) * 100, 2)
+        review_start_time = image_queryset.review_start
+        review_end_time = image_queryset.review_end
+        total_words = image_queryset.fields
+        total_time = review_end_time - review_start_time
+        stats = {'time': round(total_time.total_seconds(), 2), 'seconds/word': round(total_time.total_seconds() / total_words, 2)}
         return JsonResponse(stats)
 
     @list_route(methods=['post'])

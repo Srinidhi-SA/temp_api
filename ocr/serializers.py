@@ -29,6 +29,7 @@ def get_object_or_none(model, instance):
         except:
             return None
 
+
 class OCRImageSerializer(serializers.ModelSerializer):
     """
         *Serializers*
@@ -47,7 +48,7 @@ class OCRImageSerializer(serializers.ModelSerializer):
             from ocrflow.serializers import TaskSerializer
             reviewObj = ReviewRequest.objects.get(ocr_image=instance.id)
             reviewObj = Task.objects.get(
-                object_id= reviewObj.id,
+                object_id=reviewObj.id,
                 assigned_user=self.context['request'].user
             )
             serialized_data['tasks'] = TaskSerializer(reviewObj).data
@@ -73,10 +74,14 @@ class OCRImageListSerializer(serializers.ModelSerializer):
     List Serializer : OCRImageListSerializer
     -------------------------------------------------
     """
+    status_mapping = {"ready_to_recognize": "Ready to recognize",
+                      "ready_to_verify": "Ready to verify",
+                      "ready_to_export": "Ready to export"}
 
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
         serialized_data['assignee'] = instance.get_assignee()
+        serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         serialized_data['modified_by'] = UserSerializer(instance.created_by).data['username']
 
@@ -87,7 +92,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageListSerializer
         """
         model = OCRImage
-        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by', 'modified_at', 'modified_by', 'assignee', 'fields']
+        fields = ['name', 'slug', 'status', 'confidence', 'comment', 'imagefile', 'flag', 'created_at', 'created_by',
+                  'modified_at', 'modified_by', 'assignee', 'fields']
 
 
 class OCRImageExtractListSerializer(serializers.ModelSerializer):
@@ -131,7 +137,7 @@ class OCRImageSetSerializer(serializers.ModelSerializer):
         Meta class definition for OCRImageSetSerializer
         """
         model = OCRImageset
-        fields = ['name', 'slug', 'imagepath', 'deleted', 'status', 'created_at', 'created_by','project']
+        fields = ['name', 'slug', 'imagepath', 'deleted', 'status', 'created_at', 'created_by', 'project']
 
 
 class OCRImageSetListSerializer(serializers.ModelSerializer):
@@ -173,7 +179,7 @@ class OCRUserProfileSerializer(serializers.ModelSerializer):
         Meta class definition for OCRUserProfileSerializer
         """
         model = OCRUserProfile
-        fields = ['user_type', 'is_active', 'slug',]
+        fields = ['user_type', 'is_active', 'slug', ]
 
     # def update(self, instance, validated_data):
     #     print("inside update")
@@ -282,7 +288,7 @@ class GroupSerializer(serializers.ModelSerializer):
         Meta class definition for GroupSerializer
         """
         model = Group
-        fields = ('id','name')
+        fields = ('id', 'name')
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -307,6 +313,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['slug', 'name', 'created_at', 'created_by', 'updated_at']
 
+
 class OCRReviewerSerializer(serializers.ModelSerializer):
     """
     """
@@ -330,6 +337,7 @@ class OCRReviewerSerializer(serializers.ModelSerializer):
         """
         model = User
         fields = ("username", "last_login")
+
 
 class OCRImageReviewSerializer(serializers.ModelSerializer):
     """

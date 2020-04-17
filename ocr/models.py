@@ -5,6 +5,8 @@ OCR MODELS
 import random
 import string
 import datetime
+from statistics import mean
+
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -70,7 +72,7 @@ class OCRUserProfile(models.Model):
             is_closed=True).count()
         data = {
             'assignments': total_assignments,
-            'avgTimeperWord': None,
+            'avgTimeperWord': self.get_avg_time(),
             'accuracyModel': self.get_avg_accuracyModel(),
             'completionPercentage': self.get_review_completion(
                 total_reviewed,
@@ -108,11 +110,24 @@ class OCRUserProfile(models.Model):
     def get_slug(self):
         return self.slug
 
+    def get_avg_time(self):
+        imageQueryset = OCRImage.objects.filter(
+            review_requests__tasks__assigned_user=self.ocr_user
+        )
+        time_taken = list()
+        for image in imageQueryset:
+            time_taken.append(image.get_time())
+        if time_taken:
+            return mean(time_taken)
+        else:
+            return 0
+
 
 def send_email(sender, instance, created, **kwargs):
     if created:
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
+
 
 post_save.connect(send_email, sender=OCRUserProfile)
 
@@ -263,6 +278,8 @@ class OCRImage(models.Model):
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)
     modified_by = models.ForeignKey(User, null=True, db_index=True, related_name='modified_by')
+    review_start = models.DateTimeField(auto_now_add=False, null=True)
+    review_end = models.DateTimeField(auto_now_add=False, null=True)
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in ["OCRImage", self.name, self.created_at, self.slug]])
@@ -303,3 +320,15 @@ class OCRImage(models.Model):
         projectObj = Project.objects.get(id=self.project.id)
         projectObj.updated_at = datetime.datetime.now()
         projectObj.save()
+
+    def get_time(self):
+        """Return image confidence percentage"""
+        review_start_time = self.review_start
+        review_end_time = self.review_end
+        total_words = self.fields
+        try:
+            total_time = review_end_time - review_start_time
+            stats = round(total_time.total_seconds() / total_words, 2)
+            return stats
+        except Exception:
+            return 0

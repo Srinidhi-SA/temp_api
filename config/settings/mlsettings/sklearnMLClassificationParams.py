@@ -11,7 +11,7 @@ SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
     {"name": "newton-cg", "selected": True, "displayName": "newton-cg", "penalty": "l2"},
     {"name": "lbfgs", "selected": False, "displayName": "lbfgs", "penalty": "l2"},
     {"name": "sag", "selected": False, "displayName": "sag", "penalty": "l2"},
-    # {"name":"liblinear","selected":False,"displayName":"liblinear","penalty":"l1"},
+    {"name": "liblinear", "selected": False, "displayName": "liblinear", "penalty": "l1"},
     {"name": "saga", "selected": False, "displayName": "saga", "penalty": "l1"},
 
 ]

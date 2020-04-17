@@ -10028,7 +10028,7 @@ li.L9 {
 .widget-pie .chart-info span.title {
   margin-bottom: 3px;
   text-transform: uppercase;
-  color: #b2b2b2;
+  color: #555;
   font-size: 12px;
 }
 .widget-pie .chart-info span.number {
@@ -22683,7 +22683,7 @@ button[disabled], html .filter_input[disabled] {
 
 .semi-donut {
   --percentage: 0;
-  --fill: #f15488 !important;
+  --fill: #f15488;
   width: 150px;
   height: 86px;
   position: relative;
@@ -22713,56 +22713,6 @@ button[disabled], html .filter_input[disabled] {
   -webkit-animation: fillAnimation 1s ease-in;
           animation: fillAnimation 1s ease-in;
 }
-
-/* .semi-donut-model-2 {
-  width: 300px;
-  height: 150px;
-  position: relative;
-  text-align: center;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 600;
-  border-radius: 150px 150px 0 0;
-  overflow: hidden;
-  color: var(--fill);
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-align: end;
-          align-items: flex-end;
-  -webkit-box-pack: center;
-          justify-content: center;
-  box-sizing: border-box;
-}
-.semi-donut-model-2:before, .semi-donut-model-2:after {
-  content: "";
-  width: 300px;
-  height: 150px;
-  border: 50px solid var(--fill);
-  border-top: none;
-  position: absolute;
-  -webkit-transform-origin: 50% 0% 0;
-          transform-origin: 50% 0% 0;
-  border-radius: 0 0 300px 300px;
-  box-sizing: border-box;
-  left: 0;
-  top: 100%;
-}
-.semi-donut-model-2:before {
-  border-color: rgba(0, 0, 0, 0.15);
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
-}
-.semi-donut-model-2:after {
-  z-index: 3;
-  -webkit-animation: 1s fillGraphAnimation ease-in;
-          animation: 1s fillGraphAnimation ease-in;
-  -webkit-transform: rotate(calc(1deg * (var(--percentage) * 1.8)));
-          transform: rotate(calc(1deg * (var(--percentage) * 1.8)));
-}
-.semi-donut-model-2:hover:after {
-  opacity: 0.8;
-  cursor: pointer;
-} */
 
 @-webkit-keyframes fillAnimation {
   0% {
@@ -22809,4 +22759,22 @@ button[disabled], html .filter_input[disabled] {
 #widget-top-1{
   display: flex;
   justify-content: center;
+}
+.__react_component_tooltip.type-light {
+  color: #000;
+  background-color: #fff;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #4dc8b9;
+}
+.__react_component_tooltip.type-light.place-top:after {
+  border-top-color: #4dc8b9;
+}
+.recognizeImgSteps { 
+  background-color: #226666;
+  margin: -33px 10px 10px 10px;
+  padding: 5px 10px 0px 0px;
+  position: relative;
+  color: #f3f3f3;
+  border-radius: 5px 5px 5px 5px;
 }
