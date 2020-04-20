@@ -88,7 +88,7 @@ def extract_from_image(image, slug):
     response = dict()
     if os.path.isdir(path):
         for index, image in enumerate(os.listdir(path)):
-            response[index] = analyse(os.path.abspath(image), slug)
+            response[index] = analyse(os.path.join(path, image), slug)
         return response
     else:
         response[0] = analyse(path, slug)

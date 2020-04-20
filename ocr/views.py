@@ -914,11 +914,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['comparision_data'] = json.dumps(comparision_data)
         data['converted_Coordinates'] = json.dumps(converted_Coordinates)
 
-        if 'analysis_list' in request.session:
-            request.session['analysis_list'].extend(analysis_list)
+        existing = json.loads(image_queryset.analysis_list)
+        if existing:
+            analysis_list.extend(existing)
         else:
-            request.session['analysis_list'] = analysis_list
-        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+            analysis_list = analysis_list
+
+        data['analysis_list'] = json.dumps(analysis_list)
         image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
         response = plot(image, comparision_data, data['slug'])
         data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
