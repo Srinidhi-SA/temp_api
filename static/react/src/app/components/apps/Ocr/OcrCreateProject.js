@@ -6,7 +6,7 @@ import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selectedProjectDetails } from '../../../actions/ocrActions';
 import { API } from "../../../helpers/env";
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 @connect((store) => {
   return {
     login_response: store.login.login_response,

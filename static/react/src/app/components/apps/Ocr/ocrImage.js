@@ -8,7 +8,7 @@ import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
-
+import ReactTooltip from 'react-tooltip';
 @connect((store) => {
   return {
     ocrImgPath: store.ocr.ocrImgPath,
@@ -87,7 +87,7 @@ export class OcrImage extends React.Component {
       .then(data => {
         if (data.submitted === true) {
           this.finalAnalysis();
-          bootbox.alert(statusMessages("success", "Document saved with reviewed changes.", "small_mascot"));
+          bootbox.alert(statusMessages("success", "Changes have been successfully saved. Thank you for reviewing the document.", "small_mascot"));
         }
       });
   }
@@ -207,10 +207,7 @@ export class OcrImage extends React.Component {
       });
 
   }
-  handleChangeVal=(e)=>{
-    this.setState({ heightLightVal: e.target.value }, this.hightlightField);
-  
-  }
+
   hightlightField = () => {
     document.getElementById("confidence_loader").classList.add("loader_ITE_confidence")
     return fetch(API + '/ocr/ocrimage/confidence_filter/', {
@@ -252,7 +249,7 @@ export class OcrImage extends React.Component {
           <div className="col-sm-6">
           <div class="form-group pull-right ocr_highlightblock"  style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
-              <select class="form-control inline-block 1-100" id="select_confidence" onClick={this.hightlightField} onChange={(e) => this.handleChangeVal(e)}>
+              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>
@@ -343,7 +340,8 @@ export class OcrImage extends React.Component {
         <div className="row">
             {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") ?
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
-            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
+            <ReactTooltip place="top" type="light"/>   
+            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
               <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>

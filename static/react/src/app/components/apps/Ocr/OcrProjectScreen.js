@@ -6,6 +6,7 @@ import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
 import { OcrCreateProject } from './OcrCreateProject';
 import { STATIC_URL } from '../../../helpers/env';
+import ReactTooltip from 'react-tooltip';
 
 @connect((store) => {
    return {
@@ -47,7 +48,6 @@ export class OcrProjectScreen extends React.Component {
          this.props.OcrProjectList != '' ? (this.props.OcrProjectList.data.length != 0 ? this.props.OcrProjectList.data.map((item, index) => {
             return (
                <tr id={index}>
-                  <td><i class="fa fa-briefcase"></i></td>
                   <td>
                      <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link>
                   </td>
@@ -66,12 +66,12 @@ export class OcrProjectScreen extends React.Component {
       return (
          <div>
             <OcrCreateProject />
+            <ReactTooltip place="top" type="light"/>    
             <div class="table-responsive">
                <table class="table table-condensed table-hover cst_table ">
                   <thead>
                      <tr>
-                        <th></th>
-                        <th>Project Name</th>
+                        <th data-tip="Click here to see workflows under the respective project" >Project Name</th>
                         <th>Created At</th>
                         <th>Workflows</th>
                         <th>Last Update</th>

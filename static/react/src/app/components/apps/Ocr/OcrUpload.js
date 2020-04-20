@@ -8,7 +8,8 @@ import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import {getOcrUploadedFiles, saveS3BucketDetails, getS3BucketFileList, setS3Loader, saveS3SelFiles, uploadS3Files, clearS3Data, uploadS3FileSuccess} from '../../../actions/ocrActions'
 import {MultiSelect} from "primereact/multiselect";
-import { API } from "../../../helpers/env"
+import { API } from "../../../helpers/env";
+import ReactTooltip from 'react-tooltip';
 @connect((store) => {
   return {
     OcrfileUpload: store.ocr.OcrfileUpload,
@@ -216,8 +217,9 @@ export class OcrUpload extends React.Component {
     }
     return (
       <div style={{ display:"inline-block" ,marginRight:'10px'}}>
+      <ReactTooltip place="top" type="light"/> 
       {this.props.uploadMode == 'topPanel'?
-      <Button bsStyle="primary" onClick={this.openPopup.bind(this)} ><i class="fa fa-upload"></i></Button>:
+      <Button bsStyle="primary" onClick={this.openPopup.bind(this)} data-tip="Upload Documents" ><i class="fa fa-upload"></i></Button>:
       <div class="icon " onClick={this.openPopup.bind(this)}><i  class="fa fa-upload fa-2x xs-mt-10"></i></div>}
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">

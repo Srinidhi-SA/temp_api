@@ -22766,6 +22766,9 @@ button[disabled], html .filter_input[disabled] {
   padding: 6px;
   border-radius: 4px;
   border: 1px solid #4dc8b9;
+  max-width: 220px;
+  text-align: center;
+  z-index: 99999;
 }
 .__react_component_tooltip.type-light.place-top:after {
   border-top-color: #4dc8b9;
@@ -22777,4 +22780,17 @@ button[disabled], html .filter_input[disabled] {
   position: relative;
   color: #f3f3f3;
   border-radius: 5px 5px 5px 5px;
+}
+.__react_component_tooltip.type-light.place-right:after {
+  border-right-color: #4ec8ba;
+}
+.__react_component_tooltip.type-light.place-left:after {
+  border-left-color: #4ec8ba;
+}
+.ocr_section .cst_table thead th{
+  text-align: center;
+  padding: 10px;
+}
+.ocr_section .cst_table {
+  text-align: center;
 }

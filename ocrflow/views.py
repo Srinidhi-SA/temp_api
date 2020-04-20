@@ -201,19 +201,19 @@ class ReviewRequestView(viewsets.ModelViewSet):
                 if accuracy_operator == 'GTE':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['confidence'] >= float(accuracy):
+                        if not float(user['ocrImageData']['confidence']) >= float(accuracy):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
                 if accuracy_operator == 'LTE':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['confidence'] <= float(accuracy):
+                        if not float(user['ocrImageData']['confidence']) <= float(accuracy):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
                 if accuracy_operator == 'EQL':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['confidence'] == float(accuracy):
+                        if not float(user['ocrImageData']['confidence']) == float(accuracy):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
 
@@ -221,19 +221,19 @@ class ReviewRequestView(viewsets.ModelViewSet):
                 if fields_operator == 'GTE':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['fields'] >= int(fields):
+                        if not int(user['ocrImageData']['fields']) >= int(fields):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
                 if fields_operator == 'LTE':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['fields'] <= int(fields):
+                        if not int(user['ocrImageData']['fields']) <= int(fields):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
                 if fields_operator == 'EQL':
                     buffer = list()
                     for user in add_key:
-                        if not user['ocrImageData']['fields'] == int(fields):
+                        if not int(user['ocrImageData']['fields']) == int(fields):
                             buffer.append(user)
                     add_key = [ele for ele in add_key if ele not in buffer]
 
