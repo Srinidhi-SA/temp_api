@@ -178,6 +178,7 @@ export class OcrTable extends React.Component {
    var filterInputs= document.getElementsByClassName('filter_input')
    for(let i=0;i<filterInputs.length;i++){
      document.getElementsByClassName('filter_input')[i].value='';
+     document.getElementsByClassName('filter_input')[i].disabled=false;
    }
    
     this.props.dispatch(storeOcrFilterStatus(''));
