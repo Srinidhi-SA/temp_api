@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -51,8 +51,9 @@ export class OcrTable extends React.Component {
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
-  handleImagePageFlag = (slug) => {
+  handleImagePageFlag = (slug,name) => {
     this.getImage(slug)
+    this.props.dispatch(saveSelectedImageName(name));
     this.props.dispatch(saveImagePageFlag(true));
   }
 
@@ -176,7 +177,7 @@ export class OcrTable extends React.Component {
       bootbox.alert("Please select only one file to export.")
       return false;
     }
-    else if (statusList != "ready_to_export") {
+    else if (statusList != "Ready to export") {
       bootbox.alert("Please select the file with status ready to export.")
       return false;
     }
@@ -250,24 +251,36 @@ export class OcrTable extends React.Component {
 
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
       <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
-        <Modal.Header closeButton>
-          <h3 className="modal-title">Recognize Data</h3>
-        </Modal.Header>
         <Modal.Body style={{ padding: 0 }} >
           <div className="row" style={{ margin: 0 }}>
+            <h4 className="text-center">Recognizing Document</h4>
             {(this.state.loader && !this.state.recognized) &&
-              <div style={{ height: 310, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
-                <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-              </div>
+              <img src={STATIC_URL+"assets/images/Processing_mAdvisor.gif"} className="img-responsive" style={{margin:"auto"}}/>
             }
             {this.state.recognized &&
-              <div className="col-md-12 ocrSuccess">
-                <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
-
-                <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
-                  <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Recognized Successfully</span></div>
-              </div>
+              <img src={STATIC_URL+"assets/images/alert_success.png"} className="img-responsive" style={{margin:"auto"}}/>
             }
+            <div className="recognizeImgSteps">
+              <div className="row">
+                <div className="col-sm-9">
+                  <ul>
+                    <li>Fetching image</li>
+                    <li>Text extraction</li>
+                    <li>Template Classification</li>
+                    <li>Pre processing and mapping</li>
+                    <li>Output file created</li>
+                  </ul>
+                </div>
+                <div className="col-sm-3 text-center">
+                {(this.state.loader && !this.state.recognized) &&
+                  <h5 className="loaderValue">In Progress</h5>
+                }
+                {this.state.recognized &&
+                  <h5 className="loaderValue">Completed</h5>
+                }
+                </div>
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -290,7 +303,7 @@ export class OcrTable extends React.Component {
               <i class="fa fa-file-text"></i>
             </td>
             <td style={item.status == "ready_to_recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug) }}>{item.name}</Link>
+              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
@@ -335,8 +348,8 @@ export class OcrTable extends React.Component {
                 {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
 
                 <div class="form-group pull-right ocr_highlightblock">
-                  <label class="control-label xs-mb-0" for="select_export" style={{ cursor: 'pointer' }} onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export to</label>
-                  <select class="form-control inline-block 1-100" id="select_export" onChange={(e) => this.setState({ exportType: e.target.value })}>
+                  <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
+                  <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                     <option value="csv">CSV</option>

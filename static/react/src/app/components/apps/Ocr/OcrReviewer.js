@@ -22,6 +22,10 @@ export class OcrReviewer extends React.Component {
    }  
   }
 
+  componentWillMount(){
+    if(store.getState().ocr.selected_reviewer_name!="")
+      this.props.dispatch(saveRevDocumentPageFlag(true)); //onClick of BreadCrumb(reviewerName) if selRevName is not empty, setting flag true to Show RevDocTable
+  }
   render()
    { 
     var  renderComponents=null;

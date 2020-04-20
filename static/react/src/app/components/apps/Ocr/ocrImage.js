@@ -17,6 +17,9 @@ import { store } from '../../../store';
     ocrDocList: store.ocr.OcrRevwrDocsList,
     imageTaskId: store.ocr.imageTaskId,
     feedback: "",
+    projectName: store.ocr.selected_project_name,
+    reviewerName: store.ocr.selected_reviewer_name,
+    selected_image_name:store.ocr.selected_image_name,
   };
 })
 
@@ -84,7 +87,7 @@ export class OcrImage extends React.Component {
       .then(data => {
         if (data.submitted === true) {
           this.finalAnalysis();
-          bootbox.alert(statusMessages("success", "Document saved with reviewed changes.", "small_mascot"));
+          bootbox.alert(statusMessages("success", "Changes have been successfully saved. Thank you for reviewing the document.", "small_mascot"));
         }
       });
   }
@@ -204,6 +207,7 @@ export class OcrImage extends React.Component {
       });
 
   }
+
   hightlightField = () => {
     document.getElementById("confidence_loader").classList.add("loader_ITE_confidence")
     return fetch(API + '/ocr/ocrimage/confidence_filter/', {
@@ -230,10 +234,22 @@ export class OcrImage extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className="col-sm-12">
-            <div class="form-group pull-right ocr_highlightblock">
-              <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField} style={{ cursor: 'pointer' }}>Highlight fields with confidence less than</label>
-              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value })}>
+        <div class="col-sm-6">
+            {window.location.href.includes("reviewer")? (<ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
+              <li class="breadcrumb-item active"><a onClick={()=>history.go(-1)} href="#">{this.props.reviewerName}</a></li>
+            <li class="breadcrumb-item active"><a href="#">{this.props.selected_image_name}</a></li>
+            </ol>) : (<ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+              <li class="breadcrumb-item active"><a onClick={()=>history.go(-1)}  href="#">{this.props.projectName}</a></li>
+            <li class="breadcrumb-item active"><a    href="#">{this.props.selected_image_name}</a></li>
+            </ol>)
+            }
+          </div>
+          <div className="col-sm-6">
+          <div class="form-group pull-right ocr_highlightblock"  style={{ cursor: 'pointer' }}>
+              <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
+              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>
@@ -246,6 +262,7 @@ export class OcrImage extends React.Component {
                 <option value="10">10</option>
               </select>
             </div>
+          </div>
           </div>
           <div className="col-sm-6">
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
@@ -320,7 +337,6 @@ export class OcrImage extends React.Component {
             </div>
 
           </div>
-        </div>
         <div className="row">
             {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") ?
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>

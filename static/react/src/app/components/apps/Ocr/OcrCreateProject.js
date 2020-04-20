@@ -6,6 +6,7 @@ import store from "../../../store";
 import { open, close } from "../../../actions/dataUploadActions";
 import { getOcrProjectsList,storeProjectSearchElem,saveDocumentPageFlag,selectedProjectDetails } from '../../../actions/ocrActions';
 import { API } from "../../../helpers/env";
+import ReactTooltip from 'react-tooltip'
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -97,8 +98,9 @@ export class OcrCreateProject extends React.Component {
           }
           </div>
           <div class="col-sm-6 text-right">
-            <div class="form-inline">
-              <button id="btn_ceate_project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
+            <div class="form-inline"> 
+            <ReactTooltip place="top" type="light"/>     
+              <button id="btn_ceate_project" data-tip="Create New Project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
               <span className="search-wrapper">
                <div class="form-group xs-mr-5">
                 <input type="text" id="search" class="form-control btn-rounded "  onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
@@ -132,6 +134,7 @@ export class OcrCreateProject extends React.Component {
                           <option>Medical, Health</option>
                           <option>Web Tech</option>
                           <option>Marketing and Customer Experience</option>
+                          <option>Others</option>
                         </select>
                       </div>
                     </div>

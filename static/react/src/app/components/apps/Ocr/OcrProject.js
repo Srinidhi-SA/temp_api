@@ -4,6 +4,7 @@ import {OcrDocument} from "./OcrDocument";
 import { OcrProjectScreen } from "./OcrProjectScreen";
 import { OcrTopNavigation } from "./ocrTopNavigation";
 import store from '../../../store';
+import { saveDocumentPageFlag } from '../../../actions/ocrActions';
 
 @connect((store) => {
   return {
@@ -19,25 +20,12 @@ export class OcrProject extends React.Component {
     if(this.props.documentFlag==''&&this.props.revDocumentFlag==''&& window.location.pathname.includes('reviewer')){
     window.history.go(-1)
   }}
+  componentWillMount(){
+    if(store.getState().ocr.selected_project_name!=""){
+      this.props.dispatch(saveDocumentPageFlag(true)); // onClick of BreadCrumb(projectName) if selProjName is not empty, setting flag true to Show ProDocTable 
+    }}
 
-  render() {
-
-    var paths=[
-     { "name":"Projects","url":'#'},
-     {"name":"Documents","url":"#"},
-     {"name":"Image","url":"#"} 
-    ]
-   var  breadCrumbDetails=[paths[0]];
-     if(this.props.documentFlag){
-     breadCrumbDetails=[paths[0]].concat(paths[1])
-     }
-     else if(this.props.imageFlag)
-     breadCrumbDetails=[paths[0]].concat(paths[1]).concat(paths[2])
-     else
-     breadCrumbDetails=[paths[0]]
-  
-
-  
+    render() {
    var  renderComponents=null;
    renderComponents=((this.props.documentFlag||this.props.imageFlag)?
     <OcrDocument/>
