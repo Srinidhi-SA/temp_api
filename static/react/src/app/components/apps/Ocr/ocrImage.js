@@ -8,7 +8,7 @@ import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper
 import { Scrollbars } from 'react-custom-scrollbars';
 import { STATIC_URL } from '../../../helpers/env';
 import { store } from '../../../store';
-
+import ReactTooltip from 'react-tooltip';
 @connect((store) => {
   return {
     ocrImgPath: store.ocr.ocrImgPath,
@@ -340,7 +340,8 @@ export class OcrImage extends React.Component {
         <div className="row">
             {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") ?
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
-            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan">
+            <ReactTooltip place="top" type="light"/>   
+            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
               <i class="fa fa-info-circle"></i> Bad Scan
           </button>
               <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
