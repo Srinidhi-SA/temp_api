@@ -35,6 +35,7 @@ export class OcrTable extends React.Component {
       tab: 'pActive',
       filterVal:'',
       exportType: "json",
+      checkAll:false
     }
   }
 
@@ -48,6 +49,7 @@ export class OcrTable extends React.Component {
     };
   };
   handlePagination = (pageNo) => {
+    this.setState({checkAll:false,checkedList:[]})
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
@@ -115,11 +117,27 @@ export class OcrTable extends React.Component {
      }
   }
 
-  handleCheck = (e) => {
+  handleCheck(data,e){
     let updateList = [...this.state.checkedList];
     e.checked ? updateList.push(e.value) : updateList.splice(updateList.indexOf(e.value), 1);
     this.setState({ checkedList: updateList });
+    
+    let overallSlugs = data.OcrDataList.data.map(i=>i.slug);
+    if(overallSlugs.length==updateList.length)// make checkAll is true if both the arrays length is same
+      this.setState({checkAll: true})
+    else
+    this.setState({checkAll: false})
   }
+
+  handleCheckAll(data,e) {
+      this.setState({checkAll: e.target.checked})
+      let overallSlugs = data.OcrDataList.data.map(i=>i.slug);
+
+      if(e.target.checked) //If checkAll is true update the state with all the slugs present in the list.
+      this.setState({ checkedList: overallSlugs });
+      else
+      this.setState({ checkedList: [] })
+      }
 
   handleRecognise = () => {
     if (this.state.checkedList.length == 0) {
@@ -157,6 +175,18 @@ export class OcrTable extends React.Component {
   }
 
   filterByImageStatus(e) {
+    this.setState({checkAll:false,checkedList:[]})
+  //  var filterInputs= document.getElementsByClassName('filter_input')
+  //  for(let i=0;i<filterInputs.length;i++){
+  //    document.getElementsByClassName('filter_input')[i].value=''
+  //  }
+   
+  //   this.props.dispatch(storeOcrFilterStatus(''))
+  //   this.props.dispatch(storeOcrFilterConfidence(''))
+  //   this.props.dispatch(storeOcrFilterAssignee(''))
+  //   this.props.dispatch(storeOcrFilterFields(''))
+
+
     this.props.dispatch(tabActiveVal(e.target.id))
     this.props.dispatch(getOcrUploadedFiles())
   }
@@ -297,7 +327,7 @@ export class OcrTable extends React.Component {
         return (
           <tr id={index}>
             <td>
-              <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
+              <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck.bind(this,this.props)} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
             </td>
             <td>
               <i class="fa fa-file-text"></i>
@@ -376,7 +406,10 @@ export class OcrTable extends React.Component {
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                     <thead>
                       <tr>
-                        <th></th>
+                        {this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0 ?
+                        <th>
+                         <Checkbox  onChange={this.handleCheckAll.bind(this,this.props)} checked={this.state.checkAll}></Checkbox>
+                        </th>:"":""}
                         <th><i class="fa fa-file-text-o"></i></th>
                         <th>NAME</th>
                         <th class="dropdown" >
