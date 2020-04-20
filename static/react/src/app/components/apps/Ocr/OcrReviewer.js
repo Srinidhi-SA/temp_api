@@ -16,7 +16,7 @@ import store from "../../../store";
 export class OcrReviewer extends React.Component {
   constructor(props) {
    super(props);
-   if(getUserDetailsOrRestart.get().userRole != ("Admin" || "Superuser")){
+   if((getUserDetailsOrRestart.get().userRole != "Admin") || (getUserDetailsOrRestart.get().userRole != "Superuser")){//Skipping revTable to load if userRole is reviewer_
     this.props.dispatch(saveRevDocumentPageFlag(true));
     this.props.dispatch(selectedReviewerDetails('',getUserDetailsOrRestart.get().userName))
    }  
