@@ -130,7 +130,7 @@ export class RevDocTable extends React.Component {
       )
     }
 
-   if(getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser")){
+   if(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser"){
    breadcrumb= (
     <div class="row">
     <div class="col-sm-6">

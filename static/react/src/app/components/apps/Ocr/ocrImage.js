@@ -338,7 +338,7 @@ export class OcrImage extends React.Component {
 
           </div>
         <div className="row">
-            {getUserDetailsOrRestart.get().userRole == ("ReviewerL1" || "ReviewerL2") ?
+            {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
           <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
             <ReactTooltip place="top" type="light"/>   
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
