@@ -38,6 +38,7 @@ def ingestion_1(file_full_path, path):
     print("ingestion module running")
 
     folder_name = random_folder_generator()
+    os.makedirs(os.path.join('ocr/ITE/pdf_to_images_folder', folder_name))
     if file_extension:
         if file_extension == ".pdf":
             pages = convert_from_path(file_full_path)
@@ -49,6 +50,7 @@ def ingestion_1(file_full_path, path):
                                                                                filename.split("/")[-1], str(index))),
                     'JPEG')
                 index = index + 1
+            print(os.path.join(path, folder_name))
             return os.path.join(path, folder_name)
 
         elif file_extension == ".jpg" or file_extension == ".png" or file_extension == ".jpeg":
