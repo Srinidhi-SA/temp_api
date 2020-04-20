@@ -100,9 +100,9 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
       this.props.OcrReviewerList != '' ? (this.props.OcrReviewerList.data.length != 0 ? this.props.OcrReviewerList.data.map((item, index) => {
         return (
           <tr id={index}>
-            <td>
+            {/* <td>
               <Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocr_profile.slug)}></Checkbox>
-            </td>
+            </td> */}
             <td>
               <i class="fa fa-user-o"></i>
             </td>
@@ -112,7 +112,7 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
             <td>{item.ocr_profile.role[0]}</td>
             <td>{item.ocr_data.assignments}</td>
             <td>{item.ocr_data.completionPercentage}%</td>
-            <td>{item.ocr_data.avgTimeperWord}</td>
+            {/* <td>{item.ocr_data.avgTimeperWord}</td> */}
             <td>{item.ocr_data.accuracyModel}</td>
             <td>{item.last_login}</td>
             <td>{(item.ocr_profile.active === true) ? "Active" : "Inactive"}</td>
@@ -140,7 +140,6 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
               <table class="table table-condensed table-hover cst_table ">
                <thead>
                   <tr>
-                    <th></th>
                     <th><i class="fa fa-user-o"></i></th>
                     <th>Reviewer Name</th>
                     <th>Role</th>
@@ -148,18 +147,7 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
                     <th class="text-center">
                       Complete %
                     </th>
-                     {/* <th class="dropdown">
-                      <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Avg Time/Word" aria-expanded="true">
-                      <span>Avg Time/Word</span> <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu scrollable-menu">
-                          <li><a class="cursor" name="all"    onClick={this.filterRevList.bind(this, '', 'time')}  data-toggle="modal" data-target="#modal_equal">All</a></li>
-                          <li><a class="cursor" name="delete" onClick={this.filterRevList.bind(this, 'E', 'time')} data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                          <li><a class="cursor" name="rename" onClick={this.filterRevList.bind(this, 'G', 'time')} data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                          <li><a class="cursor" name="replace"onClick={this.filterRevList.bind(this, 'L', 'time')}data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                      </ul>
-                    </th> */}
-                    <th class="dropdown" >
+                    {/* <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Avg Time/Word" aria-expanded="true">
                             <span>Avg Time/Word</span> <b class="caret"></b>
                           </a>
@@ -173,7 +161,7 @@ filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
                              <input className='confidence filter_input' id='TLTE' onChange={this.handleFil.bind(this,'TLTE')} type='number'></input></li>
                             <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevList.bind(this, '', 'time','')}><i class="fa fa-check"></i></button>
                           </ul>
-                        </th>
+                        </th> */}
                     {/* <th class="dropdown">
                       <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Accuracy of model" aria-expanded="true">
                       <span>ACCURACY of Model</span> <b class="caret"></b>
