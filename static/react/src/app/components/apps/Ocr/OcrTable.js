@@ -93,8 +93,7 @@ export class OcrTable extends React.Component {
   filterOcrList(filtertBy, filterOn,reset) {
      var filterByVal=''
      if(reset!='reset'){
-       let numericVal=$(`#${this.state.filterVal}`).val().trim();
-      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
       }
      switch (filterOn) {
        case 'status':
@@ -176,15 +175,16 @@ export class OcrTable extends React.Component {
 
   filterByImageStatus(e) {
     this.setState({checkAll:false,checkedList:[]})
-  //  var filterInputs= document.getElementsByClassName('filter_input')
-  //  for(let i=0;i<filterInputs.length;i++){
-  //    document.getElementsByClassName('filter_input')[i].value=''
-  //  }
+   var filterInputs= document.getElementsByClassName('filter_input')
+   for(let i=0;i<filterInputs.length;i++){
+     document.getElementsByClassName('filter_input')[i].value='';
+   }
    
-  //   this.props.dispatch(storeOcrFilterStatus(''))
-  //   this.props.dispatch(storeOcrFilterConfidence(''))
-  //   this.props.dispatch(storeOcrFilterAssignee(''))
-  //   this.props.dispatch(storeOcrFilterFields(''))
+    this.props.dispatch(storeOcrFilterStatus(''));
+    this.props.dispatch(storeOcrFilterConfidence(''));
+    this.props.dispatch(storeOcrFilterAssignee(''));
+    this.props.dispatch(storeOcrFilterFields(''));
+
 
 
     this.props.dispatch(tabActiveVal(e.target.id))
