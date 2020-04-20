@@ -40,7 +40,7 @@ export class RevDocTable extends React.Component {
     };
   };
   handlePagination = (pageNo) => {
-    this.props.dispatch(getRevrDocsList())
+    this.props.dispatch(getRevrDocsList(pageNo))
   }
 
   handleImagePageFlag = (slug,name) => {
@@ -68,43 +68,43 @@ export class RevDocTable extends React.Component {
   }
 
   handleFil(mode){//                Don't delete this method
-    // this.disableInputs(mode,'')
-    // this.setState({filterVal:mode})
+    this.disableInputs(mode,'')
+    this.setState({filterVal:mode})
   }
  
   disableInputs(mode,reset){//      Don't delete this method
-    //  let  idList=''
-    //  mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
+     let  idList=''
+     mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
      
-    //  let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
+     let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
  
-    //  if(document.getElementById(mode).value.trim()!='')
-    //  disableIds.map(i=>$(`#${i}`).attr('disabled', true))
-    //  else
-    //  disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+     if(document.getElementById(mode).value.trim()!='')
+     disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+     else
+     disableIds.map(i=>$(`#${i}`).attr('disabled', false))
   }
 
   filterRevDocrList(filtertBy, filterOn,reset ) {//  Don't delete this method
-    // var filterByVal=''
-    // if(reset!='reset'){
-    //  filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
-    //  }
-    // switch (filterOn) {
-    //   case 'status':
-    //   this.props.dispatch(ocrRdFilterStatus(filterByVal))
-    //   break;
-    //   case 'confidence':
-    //   this.props.dispatch(ocrRdFilterConfidence(filterByVal))
-    //   break;
-    //   case 'fields':
-    //   this.props.dispatch(ocrRdFilterFields(filterByVal))
-    //   break;
-    // }
-    // this.props.dispatch(getRevrDocsList())
-    // if(reset=='reset'){
-    //   document.getElementById(this.state.filterVal).value=''
-    //   this.disableInputs(this.state.filterVal,'reset')
-    // }
+    var filterByVal=''
+    if(reset!='reset'){
+     filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
+     }
+    switch (filterOn) {
+      case 'status':
+      this.props.dispatch(ocrRdFilterStatus(filterByVal))
+      break;
+      case 'confidence':
+      this.props.dispatch(ocrRdFilterConfidence(filterByVal))
+      break;
+      case 'fields':
+      this.props.dispatch(ocrRdFilterFields(filterByVal))
+      break;
+    }
+    this.props.dispatch(getRevrDocsList())
+    if(reset=='reset'){
+      document.getElementById(this.state.filterVal).value=''
+      this.disableInputs(this.state.filterVal,'reset')
+    }
   }
 
   handleCheck = (e) => {
@@ -130,7 +130,7 @@ export class RevDocTable extends React.Component {
       )
     }
 
-   if(getUserDetailsOrRestart.get().userRole == ("Admin" || "Superuser")){
+   if(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser"){
    breadcrumb= (
     <div class="row">
     <div class="col-sm-6">
@@ -186,9 +186,13 @@ export class RevDocTable extends React.Component {
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,'', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 1, 'status')} name="ready to recognize">Ready to Recognize</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 2, 'status')} name="ready to verify">Ready to Verify</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'status')} name="ready to export">Ready to Export</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'created', 'status')} name="ready to recognize">Created</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'review', 'status')} name="ready to verify">Submitted For Review</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l2reviewed', 'status')} name="ready to export">ReviewerL2 Reviewed</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l2rejected', 'status')} name="ready to export">ReviewerL2 Rejected</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l1reviewed', 'status')} name="ready to export">ReviewerL1 Reviewed</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l1rejected', 'status')} name="ready to export">ReviewerL1 Rejected</a></li>
+
                   </ul>
                 </th>
                 <th class="dropdown" >
