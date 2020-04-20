@@ -8,8 +8,8 @@ import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
-import { API } from "../../../helpers/env"
-
+import { API } from "../../../helpers/env";
+import ReactTooltip from 'react-tooltip';
 
 @connect((store) => {
   return {
@@ -344,10 +344,11 @@ export class OcrTable extends React.Component {
                 <div class="form-group xs-mr-5">
                   <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
                 </div>
-                <Button onClick={this.handleRecognise}>Recognize</Button>
+                <ReactTooltip place="top" type="light"/> 
+                <Button onClick={this.handleRecognise} data-tip="Select documents and click here to run ITE operation" style={{marginRight:4}}>Recognize</Button>
                 {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
 
-                <div class="form-group pull-right ocr_highlightblock">
+                <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
                   <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
                   <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
                     <option value="json">JSON</option>
@@ -364,8 +365,8 @@ export class OcrTable extends React.Component {
 
         <div class="tab-container">
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{ cursor: "default" }}>
-            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog">Backlog</a></li>
-            <li className=""><a data-toggle="tab" id="active" name="Active">Active</a></li>
+            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog" data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
+            <li className=""><a data-toggle="tab" id="active" name="Active" data-tip="Documents that are assigned for review are displayed here">Active</a></li>
           </ul> : "" : ""}
 
           <div className="tab-content">
