@@ -110,6 +110,7 @@ export function getOcrUploadedFiles(pageNo){
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
 			 dispatch(fetchUploadsSuccess(json))
+			 dispatch(setProjectTabLoaderFlag(false));
 			}
 			else{
 			 dispatch(fetchUploadsFail(json))
@@ -155,7 +156,11 @@ export function fetchUploadsFail(data){
 	}
 }
 ////
-
+export function setProjectTabLoaderFlag(flag){
+	return {
+		type:"SET_PROJECT_TAB_LOADER_FLAG",flag
+	}
+} 
 //Actions for Reviewers list 
 export function getOcrReviewersList(pageNo){
 	return (dispatch) => {

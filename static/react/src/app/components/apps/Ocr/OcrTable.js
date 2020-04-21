@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
+  saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -18,7 +20,8 @@ import ReactTooltip from 'react-tooltip';
     documentFlag: store.ocr.documentFlag,
     projectName: store.ocr.selected_project_name,
     revDocumentFlag: store.ocr.revDocumentFlag,
-    reviewerName: store.ocr.selected_reviewer_name
+    reviewerName: store.ocr.selected_reviewer_name,
+    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag
   };
 })
 
@@ -177,11 +180,13 @@ export class OcrTable extends React.Component {
 
   filterByImageStatus(e) {
     this.setState({checkAll:false,checkedList:[]})
-   var filterInputs= document.getElementsByClassName('filter_input')
-   for(let i=0;i<filterInputs.length;i++){
-     document.getElementsByClassName('filter_input')[i].value='';
-     document.getElementsByClassName('filter_input')[i].disabled=false;
-   }
+    this.props.dispatch(setProjectTabLoaderFlag(true));
+     
+  //  var filterInputs= document.getElementsByClassName('filter_input') //For resetting input values on tabChange, Dont delete
+  //  for(let i=0;i<filterInputs.length;i++){
+  //    document.getElementsByClassName('filter_input')[i].value='';
+  //    document.getElementsByClassName('filter_input')[i].disabled=false;
+  //  }
    
     this.props.dispatch(storeOcrFilterStatus(''));
     this.props.dispatch(storeOcrFilterConfidence(''));
@@ -397,16 +402,16 @@ export class OcrTable extends React.Component {
 
 
         <div class="tab-container">
-          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{ cursor: "default" }}>
-            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog" data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
-            <li className=""><a data-toggle="tab" id="active" name="Active" data-tip="Documents that are assigned for review are displayed here">Active</a></li>
+          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" style={{ cursor: "default" }}>
+            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
+            <li className=""><a data-toggle="tab" id="active" name="Active"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are assigned for review are displayed here">Active</a></li>
           </ul> : "" : ""}
 
           <div className="tab-content">
             <div id="nav" className={this.state.tab === "pActive" ? "tab-pane fade in active" : "tab-pane fade"}>
               <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
-                {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+                {!this.props.projectTabLoaderFlag ? this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                     <thead>
                       <tr>
@@ -490,6 +495,7 @@ export class OcrTable extends React.Component {
                     </div>
                   </div>)
                   : (<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+                :(<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)  
                 }
                 {paginationTag}
                 {ShowModel}
