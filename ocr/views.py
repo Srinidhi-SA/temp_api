@@ -22,6 +22,7 @@ import datetime
 import os
 import random
 import ast
+import string
 import uuid
 from io import BytesIO
 
@@ -33,6 +34,7 @@ from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User, Group
+from django.template.defaultfilters import slugify
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route, api_view
@@ -135,97 +137,100 @@ def ocr_datasource_config_list(request):
 # -------------------------------------------------------------------------------
 @api_view(['GET'])
 def get_dashboard_metrics(request):
-
     return JsonResponse({
         'status': True,
         'projectMetrics': get_ocr_data(),
         'reviewerL1data': get_reviewer_metrics()
     })
 
-def get_ocr_data():
-    totProjects=Project.objects.all().count()
-    totOCRImages=OCRImage.objects.all().count()
 
-    totalaccuracy=OCRImage.objects.filter(
+def get_ocr_data():
+    totProjects = Project.objects.all().count()
+    totOCRImages = OCRImage.objects.all().count()
+
+    totalaccuracy = OCRImage.objects.filter(
         is_recognized=True
-        ).aggregate(Sum('confidence'))['confidence__sum'] or 0.00
+    ).aggregate(Sum('confidence'))['confidence__sum'] or 0.00
     try:
-        accuracy = round((totalaccuracy/totOCRImages),2)
+        accuracy = round((totalaccuracy / totOCRImages), 2)
     except:
         accuracy = 0
 
     return {
         'Project': {
-            'totalProject':totProjects,
-            'accuracy':accuracy
+            'totalProject': totProjects,
+            'accuracy': accuracy
         },
         'Pages': {
             'TotalImages': totOCRImages,
-            'accuracy':accuracy
+            'accuracy': accuracy
         },
-        'TotalTexts':{
+        'TotalTexts': {
             'totalTexts': get_total_texts_extracted(),
             'accuracy': accuracy
         },
-        'TypedTexts':{
+        'TypedTexts': {
             'typedTexts': get_total_texts_extracted(),
             'accuracy': accuracy
         },
-        'HandPrintedTexts':{
+        'HandPrintedTexts': {
             'handPrintedTexts': get_total_texts_extracted(),
             'accuracy': accuracy
         },
-        'HandWrittenTexts':{
+        'HandWrittenTexts': {
             'handWrittenTexts': get_total_texts_extracted(),
             'accuracy': accuracy
         }
     }
 
-def get_total_texts_extracted():
 
+def get_total_texts_extracted():
     return OCRImage.objects.filter(
         is_recognized=True
-        ).aggregate(Sum('fields'))['fields__sum'] or 0
+    ).aggregate(Sum('fields'))['fields__sum'] or 0
+
 
 def get_reviewer_metrics():
     totalReviewers = OCRUserProfile.objects.filter(
-        ocr_user__groups__name__in = ['ReviewerL1'],
-        is_active = True
+        ocr_user__groups__name__in=['ReviewerL1'],
+        is_active=True
     ).count()
-    totL1AssignedDocs = OCRImage.objects.filter(is_L1assigned = True)
+    totL1AssignedDocs = OCRImage.objects.filter(is_L1assigned=True)
     count = totL1AssignedDocs.count()
 
     if not count == 0:
         # for doc in totL1AssignedDocs:
         from ocrflow.models import ReviewRequest
-        reviewedL1Docs=ReviewRequest.objects.filter(
-            ocr_image__in = totL1AssignedDocs,
-            status = 'reviewerL1_reviewed'
+        reviewedL1Docs = ReviewRequest.objects.filter(
+            ocr_image__in=totL1AssignedDocs,
+            status='reviewerL1_reviewed'
         ).count()
-        totalPendingDocs=ReviewRequest.objects.filter(
-            ocr_image__in = totL1AssignedDocs,
-            status = 'submitted_for_review'
+        totalPendingDocs = ReviewRequest.objects.filter(
+            ocr_image__in=totL1AssignedDocs,
+            status='submitted_for_review'
         ).count()
         return {
             'totalReviewers': totalReviewers,
             'totalReviewedDocs': reviewedL1Docs,
             'totalPendingDocs': totalPendingDocs,
-            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers,count)
+            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers, count)
         }
     else:
         return {
             'totalReviewers': totalReviewers,
             'totalReviewedDocs': None,
             'totalPendingDocs': None,
-            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers,count)
+            'reviewsPerReviewer': avg_reviews_per_reviewer(totalReviewers, count)
         }
 
-def avg_reviews_per_reviewer(totalReviewers,count):
+
+def avg_reviews_per_reviewer(totalReviewers, count):
     from math import floor
     try:
-        return (floor(count/totalReviewers))
+        return (floor(count / totalReviewers))
     except:
         return 0
+
 
 # -------------------------------------------------------------------------------
 
@@ -318,31 +323,31 @@ class OCRUserView(viewsets.ModelViewSet):
         from ocrflow.models import Task, ReviewRequest
         userGroup = user.groups.all()[0].name
         if userGroup == "ReviewerL1":
-            tasks=Task.objects.filter(
-                    assigned_user=user,
-                    is_closed=False)
+            tasks = Task.objects.filter(
+                assigned_user=user,
+                is_closed=False)
             for task in tasks:
-                reviewObj=ReviewRequest.objects.get(tasks=task)
-                imageObj=OCRImage.objects.get(id=reviewObj.ocr_image.id)
+                reviewObj = ReviewRequest.objects.get(tasks=task)
+                imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L1assigned = False
                 imageObj.status = "ready_to_verify"
                 imageObj.assignee = None
                 imageObj.save()
                 reviewObj.delete()
         elif userGroup == "ReviewerL2":
-            tasks=Task.objects.filter(
-                    assigned_user=user,
-                    is_closed=False)
+            tasks = Task.objects.filter(
+                assigned_user=user,
+                is_closed=False)
             for task in tasks:
-                reviewObj=ReviewRequest.objects.get(tasks=task)
-                imageObj=OCRImage.objects.get(id=reviewObj.ocr_image.id)
+                reviewObj = ReviewRequest.objects.get(tasks=task)
+                imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
                 imageObj.save()
 
-        print("~"*50)
+        print("~" * 50)
         print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
-        print("~"*50)
+        print("~" * 50)
 
     def delete(self, request, *args, **kwargs):
         """Delete OCR User"""
@@ -656,8 +661,21 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['confidence'] = 100 - round(
             (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
 
-        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                         context={"request": self.request})
+        if 'extension' in response and response['extension'] == '.pdf':
+            original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
+            with open('ocr/ITE/ir/{}_original_image.png'.format(slug), 'wb') as f:
+                f.write(original_image)
+            data['imagefile'] = File(name='{}_original_image.png'.format(slug),
+                                     file=open('ocr/ITE/ir/{}_original_image.png'.format(slug), 'rb'))
+            data['imageset'] = image_queryset.imageset.id
+            data['project'] = image_queryset.project.id
+            data['created_by'] = image_queryset.created_by.id
+            data['name'] = response['image_name']
+            serializer = self.get_serializer(data=data, context={"request": self.request})
+        else:
+            del data['slug']
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
         return serializer
 
     @list_route(methods=['post'])
@@ -855,6 +873,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 res = AsyncResult(result)
                 res = res.get()
                 for response in res.values():
+                    slug = response['image_slug']
                     serializer = self.process_image(data, response, slug, image_queryset)
                     if serializer.is_valid():
                         serializer.save()
@@ -1002,7 +1021,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         review_end_time = image_queryset.review_end
         total_words = image_queryset.fields
         total_time = review_end_time - review_start_time
-        stats = {'time': round(total_time.total_seconds(), 2), 'seconds/word': round(total_time.total_seconds() / total_words, 2)}
+        stats = {'time': round(total_time.total_seconds(), 2),
+                 'seconds/word': round(total_time.total_seconds() / total_words, 2)}
         return JsonResponse(stats)
 
     @list_route(methods=['post'])

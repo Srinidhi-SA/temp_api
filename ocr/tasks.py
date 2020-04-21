@@ -84,11 +84,12 @@ def send_my_messages(access_token, return_mail_id, subject, username):
 
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug):
-    path = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
     response = dict()
     if os.path.isdir(path):
         for index, image in enumerate(os.listdir(path)):
-            response[index] = analyse(os.path.join(path, image), slug)
+            response[index] = analyse(os.path.join(path, image))
+            response[index]['extension'] = extension
         return response
     else:
         response[0] = analyse(path, slug)

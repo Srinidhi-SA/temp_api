@@ -67,12 +67,12 @@ export class RevDocTable extends React.Component {
       });
   }
 
-  handleFil(mode){//                Don't delete this method
+  handleFil(mode){
     this.disableInputs(mode,'')
     this.setState({filterVal:mode})
   }
  
-  disableInputs(mode,reset){//      Don't delete this method
+  disableInputs(mode,reset){
      let  idList=''
      mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
      
@@ -84,11 +84,12 @@ export class RevDocTable extends React.Component {
      disableIds.map(i=>$(`#${i}`).attr('disabled', false))
   }
 
-  filterRevDocrList(filtertBy, filterOn,reset ) {//  Don't delete this method
+  filterRevDocrList(filtertBy, filterOn,reset ) {
     var filterByVal=''
     if(reset!='reset'){
-     filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
-     }
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
+    }
+    // filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
     switch (filterOn) {
       case 'status':
       this.props.dispatch(ocrRdFilterStatus(filterByVal))
