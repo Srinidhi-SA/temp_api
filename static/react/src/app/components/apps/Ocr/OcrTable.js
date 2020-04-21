@@ -164,8 +164,10 @@ export class OcrTable extends React.Component {
   }
 
   proceedClick() {
-    this.closePopup()
-    this.props.dispatch(getOcrUploadedFiles())
+    let id= document.getElementById("active");
+    id.click();
+    this.closePopup();
+    // this.props.dispatch(getOcrUploadedFiles());
   }
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()
