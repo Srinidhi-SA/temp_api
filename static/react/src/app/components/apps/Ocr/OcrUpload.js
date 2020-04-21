@@ -230,8 +230,8 @@ export class OcrUpload extends React.Component {
             <Modal.Body style={{ padding:"0px"}} >
               <div className="tab-container ocrFileTab">
                   <ul className="ocrUploadTabs nav-tab" onClick={this.getTabContent.bind(this)}>
-                    <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Image Files</a></li>
-                    <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">s3 Files</a></li>
+                    <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Upload Local File</a></li>
+                    <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">Amazon S3 Bucket</a></li>
                   </ul>
               </div>
               <div className="tab-content" style={{padding:"0px"}}>

@@ -214,7 +214,7 @@ function fetchRevrDocsList(pageNo=1,token){
 	let filter_rd_status=store.getState().ocr.filter_rd_status
 	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
-	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&fields='+filter_rd_fields+'&page_number=' + pageNo, {
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
 	method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))

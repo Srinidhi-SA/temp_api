@@ -172,7 +172,9 @@ export class RevDocTable extends React.Component {
        {breadcrumb}
             <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
-            {this.props.OcrRevwrDocsList != '' ? this.props.OcrRevwrDocsList.total_data_count>= 1 ? (
+            {this.props.OcrRevwrDocsList != '' ? 
+            // this.props.OcrRevwrDocsList.total_data_count>= 1 ?
+             (
             <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
@@ -256,8 +258,8 @@ export class RevDocTable extends React.Component {
               {OcrRevDocTableHtml}
              </tbody>
             </table>)
-            :
-           (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+          //   :
+          //  (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}
