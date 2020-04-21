@@ -88,6 +88,7 @@ export default function reducer(state = {
   topLevelData:{},
   tensorValidateFlag: false,
   pytorchValidateFlag: false,
+  createSigLoaderFlag: false,
   
 }, action) {
 
@@ -1009,6 +1010,13 @@ export default function reducer(state = {
       return {
         ...state,
         isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+      }
+    }
+    break;
+    case "SET_CREATE_SIG_LOADER_FLAG":{
+      return {
+        ...state,
+        createSigLoaderFlag : action.flag
       }
     }
     break;
