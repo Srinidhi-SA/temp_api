@@ -55,11 +55,18 @@ class ReviewRequestListSerializer(serializers.ModelSerializer):
 class ReviewRequestSerializer(serializers.ModelSerializer):
     """
     """
+    status_mapping = {"created": "Created",
+                      "submitted_for_review": "Review Pending",
+                      "reviewerL2_reviewed": "Review Completed",
+                      "reviewerL2_rejected": "Rejected L2",
+                      "reviewerL1_reviewed": "Review Completed",
+                      "reviewerL1_rejected": "Rejected L1"}
 
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
     def to_representation(self, instance):
         serialized_data = super(ReviewRequestSerializer, self).to_representation(instance)
         Image_instance = OCRImage.objects.get(id=instance.ocr_image.id)
+        serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['ocrImageData'] = OCRImageReviewSerializer(Image_instance).data
         return serialized_data
 
