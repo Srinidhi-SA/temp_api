@@ -39,7 +39,8 @@ export class RevDocTable extends React.Component {
       'Content-Type': 'application/json'
     };
   };
-  handlePagination = (pageNo) => {
+
+  handlePagination(pageNo){
     this.props.dispatch(getRevrDocsList(pageNo))
   }
 
@@ -124,7 +125,7 @@ export class RevDocTable extends React.Component {
         <div class="col-md-12 text-center">
           <div className="footer" id="Pagination">
             <div className="pagination">
-              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page} />
             </div>
           </div>
         </div>
