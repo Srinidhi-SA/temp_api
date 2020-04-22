@@ -330,7 +330,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 reviewObj = ReviewRequest.objects.get(tasks=task)
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L1assigned = False
-                imageObj.status = "ready_to_verify"
+                imageObj.status = "ready_to_assign"
                 imageObj.assignee = None
                 imageObj.save()
                 reviewObj.delete()
@@ -646,7 +646,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['conf_google_response'] = json.dumps(response['conf_google_response'])
         data['flag'] = json.dumps(response['flag']).replace('"', '').replace('[', '').replace(']', '')
         data['analysis'] = json.dumps(response['analysis'])
-        data['status'] = "ready_to_verify"
+        data['status'] = "ready_to_assign"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
                                        file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
         mask_image = base64.decodebytes(response['mask'].encode('utf-8'))

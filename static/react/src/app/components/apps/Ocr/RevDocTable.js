@@ -39,7 +39,8 @@ export class RevDocTable extends React.Component {
       'Content-Type': 'application/json'
     };
   };
-  handlePagination = (pageNo) => {
+
+  handlePagination(pageNo){
     this.props.dispatch(getRevrDocsList(pageNo))
   }
 
@@ -67,12 +68,12 @@ export class RevDocTable extends React.Component {
       });
   }
 
-  handleFil(mode){//                Don't delete this method
+  handleFil(mode){
     this.disableInputs(mode,'')
     this.setState({filterVal:mode})
   }
  
-  disableInputs(mode,reset){//      Don't delete this method
+  disableInputs(mode,reset){
      let  idList=''
      mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
      
@@ -84,11 +85,12 @@ export class RevDocTable extends React.Component {
      disableIds.map(i=>$(`#${i}`).attr('disabled', false))
   }
 
-  filterRevDocrList(filtertBy, filterOn,reset ) {//  Don't delete this method
+  filterRevDocrList(filtertBy, filterOn,reset ) {
     var filterByVal=''
     if(reset!='reset'){
-     filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
-     }
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
+    }
+    // filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
     switch (filterOn) {
       case 'status':
       this.props.dispatch(ocrRdFilterStatus(filterByVal))
@@ -123,7 +125,7 @@ export class RevDocTable extends React.Component {
         <div class="col-md-12 text-center">
           <div className="footer" id="Pagination">
             <div className="pagination">
-              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page} />
             </div>
           </div>
         </div>

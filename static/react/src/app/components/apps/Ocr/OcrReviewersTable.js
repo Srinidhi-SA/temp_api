@@ -44,12 +44,12 @@ handleDocumentPageFlag (slug,name){
   this.props.dispatch(selectedReviewerDetails(slug,name))
 }
 
-handleFil(mode){//                   Don't delete this method
+handleFil(mode){                 
   this.disableInputs(mode,'')
   this.setState({filterVal:mode})
 }
 
-disableInputs(mode,reset){//         Don't delete this method
+disableInputs(mode,reset){    
   let  idList=''
   mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['TEQL','TGTE','TLTE']
   
@@ -61,12 +61,11 @@ disableInputs(mode,reset){//         Don't delete this method
   disableIds.map(i=>$(`#${i}`).attr('disabled', false))
 }
 
-filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
+filterRevList(filtertBy, filterOn,reset) {
   var filterByVal=''
 
   if(reset!='reset'){
-    let numericVal=$(`#${this.state.filterVal}`).val().trim();
-    filterByVal = (filterOn==('time')||(filterOn=='accuracy'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
+    filterByVal = (filterOn==('time')||(filterOn=='accuracy'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
     }
   switch (filterOn) {
     case 'time':

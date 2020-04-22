@@ -78,7 +78,8 @@ export default function reducer(state = {
   sRFlag : true,
   tabActive:'backlog',
   imageTaskId: "",
-  
+  projectTabLoaderFlag:false,
+
 }, action) {
   switch (action.type) {
     case "OCR_UPLOAD_FILE":
@@ -517,6 +518,13 @@ export default function reducer(state = {
         return {
           ...state,
           userTableLoaderFlag : action.flag
+        }
+      }
+      break;
+      case "SET_PROJECT_TAB_LOADER_FLAG":{
+        return {
+          ...state,
+          projectTabLoaderFlag : action.flag
         }
       }
       break;

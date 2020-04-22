@@ -244,6 +244,7 @@ class OCRImage(models.Model):
     """
     STATUS_CHOICES = [
         ("ready_to_recognize", "Ready to recognize"),
+        ("ready_to_assign", "Ready to assign"),
         ("ready_to_verify", "Ready to verify"),
         ("ready_to_export", "Ready to export")
     ]
