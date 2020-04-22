@@ -29,39 +29,21 @@ export class DataUploadLoader extends React.Component {
   constructor() {
     super();
   }
+componentDidMount() {
 
-  componentWillUpdate(){
-    if(this.props.dataUploadLoaderModal){
-      if(store.getState().datasets.dULoaderValue<=0 && store.getState().datasets.dataLoaderText!="" && store.getState().datasets.dataLoadedText.length===0){
-        document.getElementById("loadingMsgs").innerHTML = store.getState().datasets.dataLoaderText
-      }
-      else if(store.getState().datasets.dULoaderValue>=0 && store.getState().datasets.dataLoaderText!="" && store.getState().datasets.dataLoadedText.length!=0){
-        var loaderText = store.getState().datasets.dataLoaderText
-        var array = Object.values(store.getState().datasets.dataLoadedText)
-        var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        
-        let pos = array.indexOf(loaderText)
-        if(pos<3){
-          x.innerHTML = "Step 1"+ ": " + array[0];
-          x1.innerHTML ="Step 2"+ ": " + array[1];
-          x2.innerHTML ="Step 3"+ ": " + array[2];
-        }
-        else if(pos>array.length-3){
-          x.innerHTML = "Step "+ (array.length-1) +": " + array[array.length-1];
-          x1.innerHTML ="Step "+ (array.length-2) +": " + array[array.length-2];
-          x2.innerHTML ="Step "+ (array.length-3) +": " + array[array.length-3];
-        }
-        else{
-          x.innerHTML = "Step " + (pos-1) + ": " + array[pos-1];
-          x1.innerHTML ="Step " + pos + ": " + array[pos];
-          x2.innerHTML ="Step " + (pos+1) + ": " + array[pos+1];
-        }
-      }
+}
+    componentWillUpdate(){
+            var getText = [];
+            if((this.props.dULoaderValue < 0) && (Object.keys(this.props.dataLoadedText).length <= 0) ){
+                $("#loadingMsgs1").empty()
+                $("#loadingMsgs2").empty()
+            }
+            else if((this.props.dULoaderValue >= 0) && (Object.keys(this.props.dataLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
+                getText = Object.values(this.props.dataLoadedText)
+                this.makeULforData(getText);
+            }
     }
-  }
-  
+
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
   }
@@ -76,7 +58,26 @@ export class DataUploadLoader extends React.Component {
       this.props.dispatch(hideDataPreview());
       clearDatasetPreview();
     }
-
+    makeULforData(array) {
+        var x = document.getElementById("loadingMsgs");
+        var x1 = document.getElementById("loadingMsgs1");
+        var x2 = document.getElementById("loadingMsgs2");
+        var myTimer;
+        for (var i = 1; i < array.length-3; i++) {
+            (function(i) {
+                myTimer = setTimeout(function() {
+                    x.innerHTML = "Step " + i + ": " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
+                }, 4000 * i);
+            })(i);
+        }
+        for(var i=array.length-3;i<array.length;i++){
+          x.innerHTML ='Please wait while analysing...';
+          x1.innerHTML ='';
+          x2.innerHTML ='';
+        }
+    }
   render() {
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
     //let checked=!this.props.showHideData

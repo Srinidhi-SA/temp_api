@@ -36,34 +36,20 @@ export class AppsLoader extends React.Component {
     super();
 	}
 
-	componentWillUpdate(){
-		if(store.getState().apps.appsLoaderPerValue<=0 && store.getState().apps.appsLoaderText!="" && Object.keys(store.getState().apps.appsLoadedText).length===0){
-			document.getElementById("loadingMsgs").innerHTML = store.getState().apps.appsLoaderText
-		}else if(store.getState().apps.appsLoaderPerValue>=0 && store.getState().apps.appsLoaderText!="" && Object.keys(store.getState().apps.appsLoadedText).length!=0){
-			var loaderText = store.getState().apps.appsLoaderText
-			var array = Object.values(store.getState().apps.appsLoadedText)
-			var x = document.getElementById("loadingMsgs");
-			var x1 = document.getElementById("loadingMsgs1");
-			var x2 = document.getElementById("loadingMsgs2");
-			
-			let pos = array.indexOf(loaderText)
-			if(pos<3){
-				x.innerHTML = "Step 1"+ ": " + array[0];
-				x1.innerHTML ="Step 2"+ ": " + array[1];
-				x2.innerHTML ="Step 3"+ ": " + array[2];
-			}
-			else if(pos>array.length-3){
-				x.innerHTML = "Step "+ (array.length-1) +": " + array[array.length-1];
-				x1.innerHTML ="Step "+ (array.length-2) +": " + array[array.length-2];
-				x2.innerHTML ="Step "+ (array.length-3) +": " + array[array.length-3];
-			}
-			else{
-				x.innerHTML = "Step " + (pos-1) + ": " + array[pos-1];
-				x1.innerHTML ="Step " + pos + ": " + array[pos];
-				x2.innerHTML ="Step " + (pos+1) + ": " + array[pos+1];
-			}
-		}
-	}
+
+
+componentWillUpdate(){
+            var getText = [];
+            if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
+                $("#loadingMsgs1").empty()
+                $("#loadingMsgs2").empty()
+            }
+            else if((this.props.appsLoaderPerValue >= 0) && (Object.keys(this.props.appsLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
+                getText = Object.values(this.props.appsLoadedText)
+                this.makeUL(getText);
+            }
+    }
+
 
 	openModelPopup(){
   		this.props.dispatch(openAppsLoaderValue())
@@ -113,6 +99,30 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
 	}
+
+
+	makeUL(array) {
+        var x = document.getElementById("loadingMsgs");
+        var x1 = document.getElementById("loadingMsgs1");
+        var x2 = document.getElementById("loadingMsgs2");
+        var myTimer;
+        for (var i = 1; i < array.length-5; i++) {
+            (function(i) {
+                myTimer = setTimeout(function() {
+                    x.innerHTML = "Step " + i + ": " + array[i];
+                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
+                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
+                }, 4000 * i);
+            })(i);
+        }
+		for(var i=array.length-5;i<array.length;i++){
+			x.innerHTML ='Please wait while analysing...';
+			x1.innerHTML ='';
+			x2.innerHTML ='';
+		}
+    }
+
+
 
   render() {
 		$('#text-carousel').carousel();
