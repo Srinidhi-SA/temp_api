@@ -29,22 +29,37 @@ export class CreateSignalLoader extends React.Component {
     super(props);
   }
 
-
-	componentWillUpdate(){
-            var getText = [];
-            if((this.props.createSignalLoaderValue < 0) && (Object.keys(this.props.signalLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.createSignalLoaderValue >= 0) && (Object.keys(this.props.signalLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.signalLoadedText)
-                this.makeULSig(getText);
-            }
-    }
-
-
-
-
+  componentWillUpdate(){
+	  if(this.props.createSignalLoaderModal){
+		if(store.getState().signals.createSignalLoaderValue<=0 && store.getState().signals.loaderText!="" && store.getState().signals.signalLoadedText.length===0){
+			document.getElementById("loadingMsgs").innerHTML = store.getState().signals.loaderText
+		}
+		else if(store.getState().signals.createSignalLoaderValue>=0 && store.getState().signals.loaderText!="" && store.getState().signals.signalLoadedText.length!=0){
+				var loadText = store.getState().signals.loaderText
+				var array = Object.values(store.getState().signals.signalLoadedText)
+				var x = document.getElementById("loadingMsgs");
+				var x1 = document.getElementById("loadingMsgs1");
+				var x2 = document.getElementById("loadingMsgs2");
+				
+				let pos = array.indexOf(loadText)
+				if(pos<3){
+					x.innerHTML = "Step 1"+ ": " + array[0];
+					x1.innerHTML ="Step 2"+ ": " + array[1];
+					x2.innerHTML ="Step 3"+ ": " + array[2];
+				}
+				else if(pos>array.length-3){
+					x.innerHTML = "Step "+ (array.length-1) +": " + array[array.length-1];
+					x1.innerHTML ="Step "+ (array.length-2) +": " + array[array.length-2];
+					x2.innerHTML ="Step "+ (array.length-3) +": " + array[array.length-3];
+				}
+				else{
+					x.innerHTML = "Step " + (pos-1) + ": " + array[pos-1];
+					x1.innerHTML ="Step " + pos + ": " + array[pos];
+					x2.innerHTML ="Step " + (pos+1) + ": " + array[pos+1];
+				}
+			}
+	  }
+	}
 
   openModelPopup() {
     this.props.dispatch(openCsLoaderModal())
@@ -60,26 +75,6 @@ export class CreateSignalLoader extends React.Component {
     clearCreateSignalInterval();
     this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
-  makeULSig(array) {
-				var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-5; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-				for(var i=array.length-5;i<array.length;i++){
-					x.innerHTML = 'Please wait while analysing...';
-					x1.innerHTML ='';
-					x2.innerHTML ='';
-				}
-}
     render() {
         var that = this;
         if(this.props.signalData != null){
