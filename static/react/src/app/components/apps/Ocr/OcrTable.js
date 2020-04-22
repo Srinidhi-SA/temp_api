@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
+import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
+  saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -18,7 +20,8 @@ import ReactTooltip from 'react-tooltip';
     documentFlag: store.ocr.documentFlag,
     projectName: store.ocr.selected_project_name,
     revDocumentFlag: store.ocr.revDocumentFlag,
-    reviewerName: store.ocr.selected_reviewer_name
+    reviewerName: store.ocr.selected_reviewer_name,
+    projectTabLoaderFlag: store.ocr.projectTabLoaderFlag
   };
 })
 
@@ -35,6 +38,7 @@ export class OcrTable extends React.Component {
       tab: 'pActive',
       filterVal:'',
       exportType: "json",
+      checkAll:false
     }
   }
 
@@ -48,6 +52,7 @@ export class OcrTable extends React.Component {
     };
   };
   handlePagination = (pageNo) => {
+    this.setState({checkAll:false,checkedList:[]})
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
@@ -91,8 +96,7 @@ export class OcrTable extends React.Component {
   filterOcrList(filtertBy, filterOn,reset) {
      var filterByVal=''
      if(reset!='reset'){
-       let numericVal=$(`#${this.state.filterVal}`).val().trim();
-      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?numericVal!=''?(this.state.filterVal.slice(1,4)+numericVal):"":filtertBy;
+      filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
       }
      switch (filterOn) {
        case 'status':
@@ -115,11 +119,27 @@ export class OcrTable extends React.Component {
      }
   }
 
-  handleCheck = (e) => {
+  handleCheck(data,e){
     let updateList = [...this.state.checkedList];
     e.checked ? updateList.push(e.value) : updateList.splice(updateList.indexOf(e.value), 1);
     this.setState({ checkedList: updateList });
+    
+    let overallSlugs = data.OcrDataList.data.map(i=>i.slug);
+    if(overallSlugs.length==updateList.length)// make checkAll is true if both the arrays length is same
+      this.setState({checkAll: true})
+    else
+    this.setState({checkAll: false})
   }
+
+  handleCheckAll(data,e) {
+      this.setState({checkAll: e.target.checked})
+      let overallSlugs = data.OcrDataList.data.map(i=>i.slug);
+
+      if(e.target.checked) //If checkAll is true update the state with all the slugs present in the list.
+      this.setState({ checkedList: overallSlugs });
+      else
+      this.setState({ checkedList: [] })
+      }
 
   handleRecognise = () => {
     if (this.state.checkedList.length == 0) {
@@ -147,8 +167,10 @@ export class OcrTable extends React.Component {
   }
 
   proceedClick() {
-    this.closePopup()
-    this.props.dispatch(getOcrUploadedFiles())
+    let id= document.getElementById("active");
+    id.click();
+    this.closePopup();
+    // this.props.dispatch(getOcrUploadedFiles());
   }
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()
@@ -157,6 +179,22 @@ export class OcrTable extends React.Component {
   }
 
   filterByImageStatus(e) {
+    this.setState({checkAll:false,checkedList:[]})
+    this.props.dispatch(setProjectTabLoaderFlag(true));
+     
+  //  var filterInputs= document.getElementsByClassName('filter_input') //For resetting input values on tabChange, Dont delete
+  //  for(let i=0;i<filterInputs.length;i++){
+  //    document.getElementsByClassName('filter_input')[i].value='';
+  //    document.getElementsByClassName('filter_input')[i].disabled=false;
+  //  }
+   
+    this.props.dispatch(storeOcrFilterStatus(''));
+    this.props.dispatch(storeOcrFilterConfidence(''));
+    this.props.dispatch(storeOcrFilterAssignee(''));
+    this.props.dispatch(storeOcrFilterFields(''));
+
+
+
     this.props.dispatch(tabActiveVal(e.target.id))
     this.props.dispatch(getOcrUploadedFiles())
   }
@@ -297,13 +335,13 @@ export class OcrTable extends React.Component {
         return (
           <tr id={index}>
             <td>
-              <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
+              <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck.bind(this,this.props)} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
             </td>
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td style={item.status == "ready_to_recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "ready_to_recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+            <td style={item.status == "Ready to recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
+              <Link style={item.status == "Ready to recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
@@ -364,20 +402,23 @@ export class OcrTable extends React.Component {
 
 
         <div class="tab-container">
-          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" onClick={this.filterByImageStatus.bind(this)} style={{ cursor: "default" }}>
-            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog" data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
-            <li className=""><a data-toggle="tab" id="active" name="Active" data-tip="Documents that are assigned for review are displayed here">Active</a></li>
+          {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" style={{ cursor: "default" }}>
+            <li className="active"><a data-toggle="tab" id="backlog" name="Backlog"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
+            <li className=""><a data-toggle="tab" id="active" name="Active"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are assigned for review are displayed here">Active</a></li>
           </ul> : "" : ""}
 
           <div className="tab-content">
             <div id="nav" className={this.state.tab === "pActive" ? "tab-pane fade in active" : "tab-pane fade"}>
               <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
-                {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+                {!this.props.projectTabLoaderFlag ? this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                     <thead>
                       <tr>
-                        <th></th>
+                        {this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0 ?
+                        <th>
+                         <Checkbox  onChange={this.handleCheckAll.bind(this,this.props)} checked={this.state.checkAll}></Checkbox>
+                        </th>:"":""}
                         <th><i class="fa fa-file-text-o"></i></th>
                         <th>NAME</th>
                         <th class="dropdown" >
@@ -454,6 +495,7 @@ export class OcrTable extends React.Component {
                     </div>
                   </div>)
                   : (<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
+                :(<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)  
                 }
                 {paginationTag}
                 {ShowModel}

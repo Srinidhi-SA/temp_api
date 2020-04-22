@@ -54,9 +54,9 @@ export class OcrUpload extends React.Component {
       document.getElementById("resetMsg").innerText = "";
     }
     let activeId = $(".ocrFileTab").find(".active")[0].innerText;
-    if(activeId === "IMAGE FILES" && this.state.uploaded){
+    if(activeId === "UPLOAD LOCAL FILE" && this.state.uploaded){
       $("#loadDataBtn")[0].disabled = false
-    }else if(activeId === "S3 FILES" && this.props.s3Uploaded){
+    }else if(activeId === "AMAZON S3 BUCKET" && this.props.s3Uploaded){
       $("#loadDataBtn")[0].disabled = false
     }else{
       $("#loadDataBtn")[0].disabled = true
@@ -129,7 +129,7 @@ export class OcrUpload extends React.Component {
     let activeId = $(".ocrFileTab").find(".active")[0].innerText;
     let projectSlug= this.props.projectslug;
 
-    if(activeId === "IMAGE FILES"){
+    if(activeId === "UPLOAD LOCAL FILE"){
       if (acceptedFiles.length == 0) {
         document.getElementById("resetMsg").innerText = "Please select files to upload.";
         return false
@@ -151,7 +151,7 @@ export class OcrUpload extends React.Component {
         this.setState({ uploaded: true })
     })
     }
-    else if(activeId === "S3 FILES"){
+    else if(activeId === "AMAZON S3 BUCKET"){
       if($(".p-multiselect-label")[0].innerHTML === "Choose"){
         $("#resetMsg")[0].innerText = "Please select files to upload.";
         return false
@@ -230,8 +230,8 @@ export class OcrUpload extends React.Component {
             <Modal.Body style={{ padding:"0px"}} >
               <div className="tab-container ocrFileTab">
                   <ul className="ocrUploadTabs nav-tab" onClick={this.getTabContent.bind(this)}>
-                    <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Image Files</a></li>
-                    <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">s3 Files</a></li>
+                    <li className="active"><a className="nav-link" data-toggle="tab" href="#ocrImage" id="ocrImageTab">Upload Local File</a></li>
+                    <li><a className="nav-link" data-toggle="tab" href="#ocrS3" id="ocrS3Tab">Amazon S3 Bucket</a></li>
                   </ul>
               </div>
               <div className="tab-content" style={{padding:"0px"}}>

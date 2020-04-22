@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import random
+import string
+
+from django.template.defaultfilters import slugify
 
 from ocr.ITE.timesheet_templates2 import *
 from ocr.ITE.timesheet_templates1 import *
@@ -11,9 +15,11 @@ from ocr.ITE.transcript_module import intermediate_1, extract_metadata_transcrip
 global analysis, google_response
 
 
-def analyse(path, image_slug):
+def analyse(path, image_slug=None):
     image_name = path.split('/')[-1].split('.')[0]
-
+    if image_slug is None:
+        image_slug = slugify("img-" + ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
     image = cv2.imread(path)
     original_image = "ocr/ITE/ir/{}_original_image.png".format(image_slug)
     cv2.imwrite(original_image, image)
@@ -47,17 +53,24 @@ def analyse(path, image_slug):
 
     mask1 = base64.encodebytes(img1)
 
+    with open(original_image, mode='rb') as file:
+        img2 = file.read()
+
+    og = base64.encodebytes(img2)
+
     response = dict()
     response['analysis'] = analysis
     response['google_response'] = str(google_response.text_annotations)
     response['conf_google_response'] = conf_google_response
     response['flag'] = flag
-    response['original_image'] = original_image
+    response['original_image'] = og
     response['extracted_image'] = mask
     response['data'] = data
     response['data2'] = data2
     response['data3'] = data3
     response['mask'] = mask1
+    response['image_name'] = image_name
+    response['image_slug'] = image_slug
     return response
 
 

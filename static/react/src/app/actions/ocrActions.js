@@ -110,6 +110,7 @@ export function getOcrUploadedFiles(pageNo){
 		return fetchUploadedFiles(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
 			 dispatch(fetchUploadsSuccess(json))
+			 dispatch(setProjectTabLoaderFlag(false));
 			}
 			else{
 			 dispatch(fetchUploadsFail(json))
@@ -155,7 +156,11 @@ export function fetchUploadsFail(data){
 	}
 }
 ////
-
+export function setProjectTabLoaderFlag(flag){
+	return {
+		type:"SET_PROJECT_TAB_LOADER_FLAG",flag
+	}
+} 
 //Actions for Reviewers list 
 export function getOcrReviewersList(pageNo){
 	return (dispatch) => {
@@ -172,8 +177,8 @@ export function getOcrReviewersList(pageNo){
 
 function fetchReviewersList(pageNo=1,token){
 	let filter_rev_time =store.getState().ocr.filter_rev_time
-	let filter_rev_accuracy=store.getState().ocr.filter_rev_time
-		return fetch(API + '/ocr/user/reviewer_detail_list/?page_number=' + pageNo, {
+	let filter_rev_accuracy=store.getState().ocr.filter_rev_accuracy
+		return fetch(API + '/ocr/user/reviewer_detail_list/?time='+filter_rev_time+'&accuracy='+filter_rev_accuracy+'&page_number=' + pageNo, {
       method: 'get', 
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
@@ -214,9 +219,8 @@ function fetchRevrDocsList(pageNo=1,token){
 	let filter_rd_status=store.getState().ocr.filter_rd_status
 	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
-	
-	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&page_number=' + pageNo, {
-		method: 'get',
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
+	method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
 }

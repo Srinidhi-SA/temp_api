@@ -186,16 +186,17 @@ class ReviewRequestView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def assigned_requests(self, request, *args, **kwargs):
         username = self.request.query_params.get('username')
-        response = get_specific_assigned_requests(
+        response, queryset = get_specific_assigned_requests(
             viewset=self,
             request=request,
             list_serializer=ReviewRequestSerializer,
             username=username
         )
+        print(queryset)
         add_key = response.data['data']
         if 'accuracy' in request.GET or 'fields' in request.GET:
             accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
-            fields_operator, fields = request.GET['fields'][:3], request.GET['fields'][3:]
+            fields_operator, fields = request.GET['field_count'][:3], request.GET['field_count'][3:]
 
             if accuracy:
                 if accuracy_operator == 'GTE':

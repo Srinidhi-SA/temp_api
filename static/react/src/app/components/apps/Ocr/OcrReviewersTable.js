@@ -44,41 +44,42 @@ handleDocumentPageFlag (slug,name){
   this.props.dispatch(selectedReviewerDetails(slug,name))
 }
 
-handleFil(mode){//                   Don't delete this method
-  // this.disableInputs(mode,'')
-  // this.setState({filterVal:mode})
+handleFil(mode){                 
+  this.disableInputs(mode,'')
+  this.setState({filterVal:mode})
 }
 
-disableInputs(mode,reset){//         Don't delete this method
-  // let  idList=''
-  // mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['TEQL','TGTE','TLTE']
+disableInputs(mode,reset){    
+  let  idList=''
+  mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['TEQL','TGTE','TLTE']
   
-  // let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
+  let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
 
-  // if(document.getElementById(mode).value.trim()!='')
-  // disableIds.map(i=>$(`#${i}`).attr('disabled', true))
-  // else
-  // disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+  if(document.getElementById(mode).value.trim()!='')
+  disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+  else
+  disableIds.map(i=>$(`#${i}`).attr('disabled', false))
 }
 
-filterRevList(filtertBy, filterOn,reset) {//    Don't delete this method
-  // var filterByVal=''
-  // if(reset!='reset'){
-  //   filterByVal = (filterOn==('time')||(filterOn=='accuracy'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
-  //   }
-  // switch (filterOn) {
-  //   case 'time':
-  //   this.props.dispatch(ocrRevFilterTime(filterByVal))
-  //   break;
-  //   case 'accuracy':
-  //   this.props.dispatch(ocrRevFilterAccuracy(filterByVal))
-  //   break;
-  // }
-  // this.props.dispatch(getOcrReviewersList())
-  // if(reset=='reset'){
-  //   document.getElementById(this.state.filterVal).value=''
-  //   this.disableInputs(this.state.filterVal,'reset')
-  // }
+filterRevList(filtertBy, filterOn,reset) {
+  var filterByVal=''
+
+  if(reset!='reset'){
+    filterByVal = (filterOn==('time')||(filterOn=='accuracy'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
+    }
+  switch (filterOn) {
+    case 'time':
+    this.props.dispatch(ocrRevFilterTime(filterByVal))
+    break;
+    case 'accuracy':
+    this.props.dispatch(ocrRevFilterAccuracy(filterByVal))
+    break;
+  }
+  this.props.dispatch(getOcrReviewersList())
+  if(reset=='reset'){
+    document.getElementById(this.state.filterVal).value=''
+    this.disableInputs(this.state.filterVal,'reset')
+  }
 }
   render() {
     const pages = this.props.OcrReviewerList.total_number_of_pages;

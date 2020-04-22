@@ -22455,14 +22455,15 @@ ul.ocrUploadTabs{
   text-transform: uppercase; 
   display: block; 
   color: #34495e; 
-  background-color: #f7f7f7;
+  background-color: #ffffff;
 }
 .ocrUploadTabs a:hover{ 
-  background-color: #dedede;
+  background-color: #f7f7f7;
 }
 .ocrUploadTabs li.active a{ 
   color: #505050;
-  background-color: #ffffff;
+  background-color: #f7f7f7;
+  border-bottom: 2px solid #45afa0;
 }
 #fetchS3FileBtn {
   margin-left: 462px;
@@ -22793,4 +22794,7 @@ button[disabled], html .filter_input[disabled] {
 }
 .ocr_section .cst_table {
   text-align: center;
+}
+.ocr_section .cst_table thead th a{
+  text-transform: none;
 }
