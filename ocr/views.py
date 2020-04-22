@@ -29,7 +29,7 @@ from io import BytesIO
 import cv2
 import simplejson as json
 from PIL import Image
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse, HttpResponse
