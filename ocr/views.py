@@ -658,8 +658,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         comparision_data = json.loads(data['comparision_data'])
         data['fields'] = len(comparision_data)
         data['modified_by'] = self.request.user.id
-        data['confidence'] = 100 - round(
-            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
+        data['confidence'] = round(100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2), 2)
 
         if 'extension' in response and response['extension'] == '.pdf':
             original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
