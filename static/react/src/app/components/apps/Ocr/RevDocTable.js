@@ -190,13 +190,8 @@ export class RevDocTable extends React.Component {
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,'', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'created', 'status')} name="ready to recognize">Created</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'review', 'status')} name="ready to verify">Submitted For Review</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l2reviewed', 'status')} name="ready to export">ReviewerL2 Reviewed</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l2rejected', 'status')} name="ready to export">ReviewerL2 Rejected</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l1reviewed', 'status')} name="ready to export">ReviewerL1 Reviewed</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'l1rejected', 'status')} name="ready to export">ReviewerL1 Rejected</a></li>
-
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'pending', 'status')} name="pending">Review Pending</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewed', 'status')} name="reviewed">Review Completed</a></li>
                   </ul>
                 </th>
                 <th class="dropdown" >
