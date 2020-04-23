@@ -20714,8 +20714,8 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 
-.ocr_section { background: #f6f6f6; padding-top: 20px; border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 20px; }
+.ocr_section { background: #f6f6f6; padding-top: 15px; border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 15px; }
 
 
 .modal_stepsBlock .col-sm-9 p b {

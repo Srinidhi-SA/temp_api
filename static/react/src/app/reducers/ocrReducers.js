@@ -79,6 +79,7 @@ export default function reducer(state = {
   tabActive:'backlog',
   imageTaskId: "",
   projectTabLoaderFlag:false,
+  dashboardMetrics: {},
 
 }, action) {
   switch (action.type) {
@@ -787,6 +788,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "DASHBOARD_METRICS" :
+        {
+          return {
+            ...state,
+            dashboardMetrics : action.data
+          }
+        }
+        break;
 }
   return state
 }

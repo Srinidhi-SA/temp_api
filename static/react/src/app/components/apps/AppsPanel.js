@@ -23,6 +23,7 @@ import {
   updateAnalystModeSelectedFlag,
 } from "../../actions/appActions";
 import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
+import { API } from "../../helpers/env";;
 import {
   SEARCHCHARLIMIT,
   APPID1,
@@ -38,7 +39,8 @@ import {
   getUserDetailsOrRestart,
   isEmpty
 } from "../../helpers/helper.js"
-import {cookieObj} from '../../helpers/cookiesHandler'
+import {cookieObj} from '../../helpers/cookiesHandler';
+import { dashboardMetrics } from '../../actions/ocrActions';
 
 @connect((store) => {
   return {
@@ -125,7 +127,30 @@ export class AppsPanel extends React.Component {
     this.props.dispatch(uploadStockAnalysisFlag(false));
     this.props.dispatch(clearModelSummary());
     this.props.dispatch(clearDataPreview());
+    if(appDetails.displayName === "ITE"){
+     this.getITEDashboardMetrics();
+    }
   }
+
+  getHeader = (token) => {
+    return {
+      'Authorization': token,
+      'Content-Type': 'application/json',
+    }
+  }
+
+  getITEDashboardMetrics=()=>{
+      return fetch(API + '/ocr/get_dashboard_metrics/', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then(response => response.json())
+      .then(data=>{
+        if(data != ""){
+          this.props.dispatch(dashboardMetrics(data));
+        }
+      })
+
+}  
   handleSelect(eventKey) {
     if (this.props.app_filtered_keywords.length == this.props.appsList.data[0].tag_keywords.length) {
       this.props.history.push('/apps?page=' + eventKey + '');
