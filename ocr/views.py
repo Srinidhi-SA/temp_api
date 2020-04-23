@@ -29,7 +29,7 @@ from io import BytesIO
 import cv2
 import simplejson as json
 from PIL import Image
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse, HttpResponse
@@ -330,7 +330,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 reviewObj = ReviewRequest.objects.get(tasks=task)
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L1assigned = False
-                imageObj.status = "ready_to_verify"
+                imageObj.status = "ready_to_assign"
                 imageObj.assignee = None
                 imageObj.save()
                 reviewObj.delete()
@@ -604,7 +604,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize'],
+            status__in=['ready_to_recognize', 'ready_to_assign'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -646,7 +646,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['conf_google_response'] = json.dumps(response['conf_google_response'])
         data['flag'] = json.dumps(response['flag']).replace('"', '').replace('[', '').replace(']', '')
         data['analysis'] = json.dumps(response['analysis'])
-        data['status'] = "ready_to_verify"
+        data['status'] = "ready_to_assign"
         data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
                                        file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
         mask_image = base64.decodebytes(response['mask'].encode('utf-8'))
@@ -658,8 +658,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         comparision_data = json.loads(data['comparision_data'])
         data['fields'] = len(comparision_data)
         data['modified_by'] = self.request.user.id
-        data['confidence'] = 100 - round(
-            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2)
+        data['confidence'] = round(100 - round(
+            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2), 2)
 
         if 'extension' in response and response['extension'] == '.pdf':
             original_image = base64.decodebytes(response['original_image'].encode('utf-8'))

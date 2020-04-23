@@ -160,6 +160,7 @@ export function getDataSetPreview(slug,interval) {
                 }
                 else
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                dispatch(setCreateSignalLoaderFlag(false))
             }
             else{
                 dispatch(hideDULoaderPopup());
@@ -1984,4 +1985,10 @@ export function clearDataCleansing(){
 }
 export function clearFeatureEngineering(){
     return {type:"CLEAR_FEATUREENGINEERING"}
+}
+
+export function setCreateSignalLoaderFlag(flag){
+    return {
+        type : "SET_CREATE_SIG_LOADER_FLAG",flag
+    }
 }

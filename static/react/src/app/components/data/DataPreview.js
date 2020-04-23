@@ -47,6 +47,7 @@ import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../ac
     currentAppDetails: store.apps.currentAppDetails,
     allDataList:store.datasets.allDataSets,
     datasets:store.datasets.dataList.data,
+		createSigLoaderFlag : store.datasets.createSigLoaderFlag,
 
 
   };
@@ -352,7 +353,18 @@ else{
         //need to change in future
         isCreateAllowed = true
       }
-      if (dataPrev && !isEmpty(dataPrev)) {
+      if(this.props.createSigLoaderFlag){
+          return (
+            <div>
+              <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+              <div>
+                <div className="text-center text-muted">
+                  <h3>Please wait while loading...</h3>
+                </div>
+              </div>
+            </div>
+          );
+      }else if (dataPrev && !isEmpty(dataPrev) && !this.props.createSigLoaderFlag) {
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
           if (item.display) {
             return (

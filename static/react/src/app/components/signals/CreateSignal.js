@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview, setCreateSignalLoaderFlag} from "../../actions/dataActions";
 import {isEmpty,ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
@@ -63,10 +63,9 @@ export class CreateSignal extends React.Component {
 		$("#errorMsgs").html("Please select a data set to create signal from")
 		return false
 		}
+		this.props.dispatch(setCreateSignalLoaderFlag(true));
 		this.props.dispatch(showDataPreview());
 		this.props.dispatch(getDataSetPreview(this.selectedData.name));
-
-
 	}
 
 	checkSelection(e){
