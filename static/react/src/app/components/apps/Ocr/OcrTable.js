@@ -428,6 +428,7 @@ export class OcrTable extends React.Component {
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'A', 'status')} name="ready to assign">Ready to Assign</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V', 'status')} name="ready to verify">Ready to Verify</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
