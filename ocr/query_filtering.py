@@ -144,12 +144,12 @@ class QueryCommonFiltering:
             if operator == 'EQL':
                 self.query_set = self.query_set.filter(confidence=float(value))
         if self.status is not None:
-            status_mapping_dict = {'R': 'ready_to_recognize', 'V': 'ready_to_verify', 'E': 'ready_to_export'}
+            status_mapping_dict = {'R': 'ready_to_recognize','A': 'ready_to_assign', 'V': 'ready_to_verify', 'E': 'ready_to_export'}
             print(status_mapping_dict[self.status])
             self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
         if self.reviewStatus is not None:
-            status_mapping_dict = {'created': 'created', 'review': 'submitted_for_review', 'l2reviewed': 'reviewerL2_reviewed', 'l2rejected': 'reviewerL2_rejected', 'l1reviewed': 'reviewerL1_reviewed', 'l1rejected': 'reviewerL1_rejected'}
-            self.query_set = self.query_set.filter(status=status_mapping_dict[self.reviewStatus])
+            status_mapping_dict = {'created': ['created'], 'pending': ['submitted_for_review'], 'reviewed': ['reviewerL2_reviewed', 'reviewerL1_reviewed'], 'rejected': ['reviewerL2_rejected', 'reviewerL1_rejected']}
+            self.query_set = self.query_set.filter(status__in=status_mapping_dict[self.reviewStatus])
         if self.fields is not None:
             operator, value = self.fields[:3], self.fields[3:]
             if operator == 'GTE':

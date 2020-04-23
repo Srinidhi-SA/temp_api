@@ -156,7 +156,7 @@ export class OcrTable extends React.Component {
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
     }).then(response => response.json()).then(json => {
-      if (json.map(i => i.status).includes("ready_to_verify"))
+      if (json.map(i => i.status).includes("ready_to_assign"))
         this.setState({ loader: false, recognized: true })
     })
 
@@ -167,10 +167,8 @@ export class OcrTable extends React.Component {
   }
 
   proceedClick() {
-    let id= document.getElementById("active");
-    id.click();
     this.closePopup();
-    // this.props.dispatch(getOcrUploadedFiles());
+    this.props.dispatch(getOcrUploadedFiles());
   }
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()

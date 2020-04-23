@@ -210,6 +210,7 @@ class SimpleFlow(models.Model):
             else:
                 imageObject.is_L2assigned = True
             imageObject.assignee=reviewer
+            imageObject.status='ready_to_verify'
             imageObject.save()
             self.status='submitted_for_review'
             self.save()
