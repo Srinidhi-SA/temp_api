@@ -29,7 +29,7 @@ from io import BytesIO
 import cv2
 import simplejson as json
 from PIL import Image
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse, HttpResponse
@@ -604,7 +604,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize'],
+            status__in=['ready_to_recognize', 'ready_to_assign'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
