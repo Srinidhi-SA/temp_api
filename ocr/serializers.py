@@ -75,6 +75,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
     -------------------------------------------------
     """
     status_mapping = {"ready_to_recognize": "Ready to Recognize",
+                      "ready_to_assign": "Ready to Assign",
                       "ready_to_verify": "Ready to Verify",
                       "ready_to_export": "Ready to Export"}
 
