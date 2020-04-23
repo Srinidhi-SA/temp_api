@@ -178,46 +178,6 @@ company_list = {"XOM": "Exxon Mobil Corporation",
                 }
 
 
-def fetch_news_articles1(cur_stock, domains):
-    from newsapi import NewsApiClient
-
-    API_KEY = settings.STOCK_SENSE_CREDS['newsapi']['api_key']
-
-    # Init
-    newsapi = NewsApiClient(api_key=API_KEY)
-
-    today = datetime.date.today()
-    date_diff = datetime.timedelta(days=10)
-    from_date = today - date_diff
-
-    articles = []
-    top_news = newsapi.get_top_headlines(q=str(cur_stock), qintitle=None, language="en",
-                                         country=None, category=None, page_size=None, page=None)
-    if top_news is not None:
-        articles.extend(top_news['articles'])
-    i = 1
-    while True:
-        try:
-            all_news = newsapi.get_everything(q=str(cur_stock),
-                                              language='en',
-                                              page_size=100,
-                                              page=i,
-                                              domains=domains,
-                                              sort_by='publishedAt',
-                                              from_param=from_date,
-                                              to=today
-                                              )
-            if all_news is not None:
-                articles.extend(all_news['articles'])
-                i += 1
-            else:
-                break
-        except NewsAPIException as ex:
-            print("Method failed with message: " + ex.get_message())
-            break
-    return articles
-
-
 def fetch_news_articles(cur_stock, domains):
     from newsapi import NewsApiClient
 
@@ -268,10 +228,6 @@ def fetch_stock_news_from_newsapi(cur_stock, domains):
         histogram[i] = item
 
     return [v for k, v in list(histogram.items())]
-
-
-def less_then_six_months(date_and_time, str=True):
-    pass
 
 
 def process_marketwatch_news_article(content):
