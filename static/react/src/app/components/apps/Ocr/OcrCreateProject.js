@@ -92,7 +92,7 @@ export class OcrCreateProject extends React.Component {
           {this.props.OcrProjectList != '' &&
           <div>
             <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalProjects} <br></br><small class="text-primary">PROJECTS</small></h4>
-            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <br></br><small class="text-primary">DOCUMENETS</small></h4>
+            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <br></br><small class="text-primary">DOCUMENTS</small></h4>
             <h4 class="xs-mt-0 inline-block box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalReviewers} <br></br><small class="text-primary">REVIEWERS</small></h4>
           </div>
           }

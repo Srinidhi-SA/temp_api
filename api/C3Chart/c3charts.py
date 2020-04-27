@@ -296,7 +296,7 @@ class C3Chart(object):
             # self._axis['x']['label']['text'] = Y_LABEL_DEFAULT_TEXT
             self._axis['x']['tick']['rotate'] = 0
             self._axis['x']['tick']['fit'] = True
-            self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
+            # self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
             # self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
             self.set_multiline_x()
 

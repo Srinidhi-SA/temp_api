@@ -2729,17 +2729,8 @@ class StockDataset(models.Model):
 
     def create(self):
         from api.tasks import stock_sense_crawl
-        # stock_sense_crawl(object_slug=self.slug)
-        # self.stock_symbols = json.loads(self.stock_symbols)
         self.create_folder_in_scripts_data()
-        # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
-        # self.get_bluemix_natural_language_understanding()
-
-        # self.stock_sense_crawl()
-        # from api import tasks
-        # res = tasks.add.delay(10, 20)
-        # print(res)
         self.add_to_job()
         stock_sense_crawl.delay(self.slug)
 
@@ -2998,8 +2989,6 @@ class StockDataset(models.Model):
         return self.crawl_stats()
 
     def get_stock_symbol_names(self):
-        # list_of_stock = self.stock_symbols.split(', ')
-        # return [stock_name.lower() for stock_name in list_of_stock]
         stock_symbols = json.loads(self.stock_symbols)
         return [key.lower() for key in stock_symbols.keys()]
 
@@ -3051,10 +3040,6 @@ class StockDataset(models.Model):
                                                                         THIS_SERVER_DETAILS.get('port'),
                                                                         self.get_data_api(), protocol)
 
-        # data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-        #                                                               THIS_SERVER_DETAILS.get('port'),
-        #                                                               self.get_data_api())
-
         hdfs_path = self.get_hdfs_relative_path()
 
         return {
@@ -3084,24 +3069,13 @@ class StockDataset(models.Model):
         return str(self.slug)
 
     def add_to_job(self, *args, **kwargs):
-        # jobConfig = self.generate_config(*args, **kwargs)
-
-        # job = job_submission(
-        #     instance=self,
-        #     jobConfig=jobConfig,
-        #     job_type='stockAdvisor'
-        # )
         job_type='stockAdvisor'
-
-        """Submit job to jobserver"""
-        # Job Book Keeping
         job = Job()
         job.name = "-".join([job_type, self.slug])
         job.job_type = job_type
         job.object_id = str(self.slug)
         job.submitted_by = self.created_by
 
-        # job.config = json.dumps(jobConfig)
         from api.helper import create_message_log_and_message_for_stocksense
         job.message_log, job.messages = create_message_log_and_message_for_stocksense(self.stock_symbols)
         job.save()
@@ -3122,7 +3096,6 @@ class StockDataset(models.Model):
         queue_name = None
         try:
             data_size = 3000
-
             queue_name = get_queue_to_use(job_type='stockAdvisor', data_size=data_size)
         except Exception as e:
             print(e)
@@ -3134,22 +3107,7 @@ class StockDataset(models.Model):
         ac = AccessFeedbackMessage()
         message_slug = get_message_slug(job)
         ac.delete_this_key(message_slug)
-        # app_id = None
-        # if 'score' == job_type:
-        #     app_id = instance.app_id
-        # elif 'model' == job_type:
-        #     app_id = instance.app_id
-        '''
-        job_type = {
-                "metadata": "metaData",
-                "master": "story",
-                "model":"training",
-                "score": "prediction",
-                "robo": "robo",
-                "subSetting": "subSetting",
-                "stockAdvisor": "stockAdvisor"
-            }
-        '''
+
         # Submitting JobServer
         from .utils import submit_job
         try:
@@ -3173,7 +3131,6 @@ class StockDataset(models.Model):
             job.config = json.dumps(readable_job_config)
             job.save()
         except Exception as exc:
-            # send_alert_through_email(exc)
             return None
 
         return job

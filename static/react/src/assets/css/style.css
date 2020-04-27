@@ -20714,8 +20714,8 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 
-.ocr_section { background: #f6f6f6; padding-top: 20px; border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 20px; }
+.ocr_section { background: #f6f6f6; padding-top: 15px; border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 15px; }
 
 
 .modal_stepsBlock .col-sm-9 p b {
@@ -22797,4 +22797,32 @@ button[disabled], html .filter_input[disabled] {
 }
 .ocr_section .cst_table thead th a{
   text-transform: none;
+}
+.export{
+  display: inline-block;
+  list-style: none;
+  text-align: center;
+  background: white;
+  border: 1px solid #dedede;
+  padding: 3.7px 10px;
+  margin-bottom: 0px;
+}
+.export ul{
+  left: 16px;
+  margin-top: 4px;
+  min-width: 75px;
+  text-align: center;
+  cursor: pointer;
+}
+.export a{
+  color: #555555;
+}
+.export .dropdown-menu > li > a:hover {
+  background-color: #ddd;
+  color: #504e4e;
+}
+.export .caret{
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  border-top: 6px dashed;
 }

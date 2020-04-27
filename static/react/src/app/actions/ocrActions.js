@@ -1025,5 +1025,11 @@ export function clearReviewerConfigStatesAction(){
 		type : "CLEAR_REVIEWER_CONFIG"
 	}
 }
+export function dashboardMetrics(data){
+	return {
+		type : "DASHBOARD_METRICS",
+		data
+	}
+}
 
 

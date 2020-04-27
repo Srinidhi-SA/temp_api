@@ -2,14 +2,45 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
 import { saveDocumentPageFlag } from '../../../actions/ocrActions';
+import { API } from "../../../helpers/env";
+import { dashboardMetrics } from '../../../actions/ocrActions';
+import { connect } from "react-redux";
+
+@connect((store) => {
+  return {
+    dashboardMetrics: store.ocr.dashboardMetrics,
+  };
+})
+
 export class OcrTopNavigation extends React.Component {
   constructor(props) {
     super(props);
+    this.getITEDashboardMetrics();
   }
 
   handleRoute(){ //Making docFlag false on click of navLink,to load project & reviewer table,Without this proDoc table is getting loaded
   this.props.dispatch(saveDocumentPageFlag(false)) 
   }
+  getHeader = (token) => {
+    return {
+      'Authorization': token,
+      'Content-Type': 'application/json',
+    }
+  }
+
+  getITEDashboardMetrics=()=>{
+      return fetch(API + '/ocr/get_dashboard_metrics/', {
+        method: 'get',
+        headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+      }).then(response => response.json())
+      .then(data=>{
+        if(data != ""){
+          this.props.dispatch(dashboardMetrics(data));
+        }
+      })
+
+}
+
   render() {
     return (
       <div>

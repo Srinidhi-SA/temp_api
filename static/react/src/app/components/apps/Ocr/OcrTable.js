@@ -213,7 +213,7 @@ export class OcrTable extends React.Component {
       bootbox.alert("Please select only one file to export.")
       return false;
     }
-    else if (statusList != "Ready to export") {
+    else if (statusList != "Ready to Export") {
       bootbox.alert("Please select the file with status ready to export.")
       return false;
     }
@@ -384,14 +384,30 @@ export class OcrTable extends React.Component {
                 <Button onClick={this.handleRecognise} data-tip="Select documents and click here to run ITE operation" style={{marginRight:4}}>Recognize</Button>
                 {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
 
-                <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
+                {/* <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
                   <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
                   <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                     <option value="csv">CSV</option>
                   </select>
-                </div>
+                </div> */}
+                                <ul className="export" >
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <ReactTooltip place="left" type="light" id="exportTip"/>
+                      <span data-for="exportTip" style={{paddingRight: 10}} place="left" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
+                        <i class="fa fa-paper-plane"></i>  Export
+                      </span>
+                      <b class="caret"></b>
+                      </a>
+                    <ul class="dropdown-menu" onClick={(e) => this.setState({ exportType: e.target.text.toLowerCase() }, this.handleExport)}>
+                      <li><a role="tab" value="json" data-toggle="tab">JSON</a></li>
+                      <li><a role="tab" value="xml" data-toggle="tab">CSV</a></li>
+                      <li><a role="tab" value="csv" data-toggle="tab">XML</a></li>
+                    </ul>
+                  </li>
+                </ul>
 
               </div>
             </div> : "" : ""}

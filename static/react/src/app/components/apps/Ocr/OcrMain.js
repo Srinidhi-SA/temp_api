@@ -4,7 +4,8 @@ import { OcrTopNavigation } from "./ocrTopNavigation";
 import { STATIC_URL } from "../../../helpers/env";
 @connect((store) => {
   return {
-    login_response: store.login.login_response
+    login_response: store.login.login_response,
+    dashboardMetrics: store.ocr.dashboardMetrics,
   };
 })
 
@@ -19,6 +20,7 @@ export class OcrMain extends React.Component {
       <div className="side-body main-content">
         <OcrTopNavigation />
         <section class="ocr_section">
+          {Object.keys(this.props.dashboardMetrics).length != 0?
           <div class="container-fluid">
             {/* inroduction modal starts*/}
             <div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
@@ -189,8 +191,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 95, '--fill': '#ff1888' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>95% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.Project.accuracy}`, '--fill': '#ff1888' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.Project.accuracy}% </span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -198,7 +200,7 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-4"><span class="number">10</span> <span class="title">Projects</span></div>
+                    <div class="col-md-4"><span class="number">{this.props.dashboardMetrics.projectMetrics.Project.totalProject}</span> <span class="title">Projects</span></div>
                     <div class="col-md-8"><span class="number">60</span> <span class="title">Mins for 100 Images</span></div>
 
                   </div>
@@ -209,8 +211,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 55, '--fill': '#ef27c0' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>55% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.Pages.accuracy}`, '--fill': '#ef27c0' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.Pages.accuracy}% </span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -218,7 +220,7 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-4"><span class="number"></span> <span class="title">Page</span></div>
+                    <div class="col-md-4"><span class="number">{this.props.dashboardMetrics.projectMetrics.Pages.TotalImages}</span> <span class="title">Page</span></div>
                     <div class="col-md-8"><span class="number">05</span> <span class="title">Mins for 1000 Texts</span></div>
 
                   </div>
@@ -229,8 +231,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 80, '--fill': '#8458be' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>80% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.TotalTexts.accuracy}`, '--fill': '#8458be' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.TotalTexts.accuracy}% </span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -238,7 +240,9 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-12 text-center"><span class="number">10,000 &nbsp;</span><span class="title"> Texts Extracted</span></div>
+                    <div class="col-md-12 text-center">
+                      <span class="number">{this.props.dashboardMetrics.projectMetrics.TotalTexts.totalTexts} &nbsp;</span>
+                      <span class="title"> Texts Extracted</span></div>
 
                   </div>
                 </div>
@@ -249,8 +253,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 45, '--fill': '#c1556c' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>45% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.TypedTexts.accuracy}`, '--fill': '#c1556c' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.TypedTexts.accuracy}% </span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -258,7 +262,9 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-12 text-center"><span class="number">5,000 &nbsp;</span><span class="title"> Typed Text Extracted</span></div>
+                    <div class="col-md-12 text-center">
+                      <span class="number">{this.props.dashboardMetrics.projectMetrics.TypedTexts.typedTexts} &nbsp;</span>
+                      <span class="title"> Typed Text Extracted</span></div>
 
                   </div>
                 </div>
@@ -269,8 +275,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 70, '--fill': '#93c155' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>70% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.accuracy}`, '--fill': '#93c155' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.accuracy}% </span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -278,7 +284,9 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-12 text-center"><span class="number">3,000 &nbsp;</span><span class="title"> Hand Printed Text Extracted</span></div>
+                    <div class="col-md-12 text-center">
+                      <span class="number">{this.props.dashboardMetrics.projectMetrics.HandPrintedTexts.handPrintedTexts} &nbsp;</span>
+                      <span class="title"> Hand Printed Text Extracted</span></div>
 
                   </div>
                 </div>
@@ -289,8 +297,8 @@ export class OcrMain extends React.Component {
                   <div class="row chart-container">
                     <div class="col-md-12 text-center">
                       <div class="chart" id="widget-top-1" style={{ padding: 0, position: 'relative' }}>
-                        <div class="semi-donut margin" style={{ '--percentage': 60, '--fill': '#58beae' }}>
-                          <span style={{ color: '#000', fontSize: 16 }}>60% </span><br></br>
+                        <div class="semi-donut margin" style={{ '--percentage': `${this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.accuracy}`, '--fill': '#58beae' }}>
+                          <span style={{ color: '#000', fontSize: 16 }}>{this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.accuracy}%</span><br></br>
                           <span style={{ color: '#777', fontSize: 16 }}>Accuracy</span>
                         </div>
                       </div>
@@ -298,7 +306,9 @@ export class OcrMain extends React.Component {
 
                   </div>
                   <div class="row chart-info">
-                    <div class="col-md-12 text-center"><span class="number">2,000 &nbsp;</span><span class="title"> Hand Written Text Extracted</span></div>
+                    <div class="col-md-12 text-center">
+                      <span class="number">{this.props.dashboardMetrics.projectMetrics.HandWrittenTexts.handWrittenTexts} &nbsp;</span>
+                    <span class="title"> Hand Written Text Extracted</span></div>
 
                   </div>
                 </div>
@@ -314,7 +324,8 @@ export class OcrMain extends React.Component {
                     <div class="col-md-4">
                       <img src={STATIC_URL + "assets/images/icon_reviewer.png"} />
                     </div>
-                    <div class="col-md-8"><span class="number">05</span><br></br><span class="title">Reviewers <br></br>&nbsp;</span></div>
+          <div class="col-md-8"><span class="number">{this.props.dashboardMetrics.reviewerL1data.totalReviewers}</span><br></br>
+                    <span class="title">Reviewers <br></br>&nbsp;</span></div>
                   </div>
                 </div>
               </div>
@@ -324,7 +335,8 @@ export class OcrMain extends React.Component {
                     <div class="col-md-4">
                       <img src={STATIC_URL + "assets/images/icon_docReview.png"} />
                     </div>
-                    <div class="col-md-8"><span class="number">30</span><br></br><span class="title">Documents <br></br>Reviewed</span></div>
+                    <div class="col-md-8"><span class="number">{this.props.dashboardMetrics.reviewerL1data.totalReviewedDocs}</span><br></br>
+                    <span class="title">Documents <br></br>Reviewed</span></div>
                   </div>
                 </div>
               </div>
@@ -334,7 +346,8 @@ export class OcrMain extends React.Component {
                     <div class="col-md-4">
                       <img src={STATIC_URL + "assets/images/icon_docpendingReview.png"} />
                     </div>
-                    <div class="col-md-8"><span class="number">70</span><br></br><span class="title">Documents <br></br>Pending Review</span></div>
+                    <div class="col-md-8"><span class="number">{this.props.dashboardMetrics.reviewerL1data.totalPendingDocs}</span><br></br>
+                    <span class="title">Documents <br></br>Pending Review</span></div>
                   </div>
                 </div>
               </div>
@@ -344,12 +357,16 @@ export class OcrMain extends React.Component {
                     <div class="col-md-4">
                       <img src={STATIC_URL + "assets/images/icon_reviewersReview.png"} />
                     </div>
-                    <div class="col-md-8"><span class="number">03</span><br></br><span class="title">Reviews <br></br>per reviewer</span></div>
+                    <div class="col-md-8"><span class="number">{this.props.dashboardMetrics.reviewerL1data.reviewsPerReviewer}</span><br></br>
+                    <span class="title">Reviews <br></br>per reviewer</span></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+           :
+           <img id="loading" style={{ position: 'relative', paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+          }
         </section>
       </div>
     );
