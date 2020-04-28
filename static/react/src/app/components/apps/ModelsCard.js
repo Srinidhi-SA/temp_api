@@ -52,9 +52,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
-        getFailedMsg(status) {
+        getFailedMsg(status,e) {
             if(status==FAILED){
-                bootbox.alert(statusMessages("error","Unable to create Model. Please check your connection and try again.","small_mascot"));            
+                bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));            
             }
             else
                 return;

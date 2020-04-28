@@ -45,9 +45,9 @@ export class SignalCard extends React.Component {
         super(props);
         this.props=props;
     }
-    getSignalAnalysis(status) {
+    getSignalAnalysis(status,e) {
       if(status==FAILED){
-        bootbox.alert(statusMessages("error","We are unable to process the request. Please check your connection and try again.","small_mascot"));
+        bootbox.alert(statusMessages("error",this.props.signalList.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));
       }else{
         this.props.dispatch(emptySignalAnalysis());
       }
