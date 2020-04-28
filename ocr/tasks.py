@@ -5,10 +5,12 @@ Miscellaneous celery tasks module for OCR.
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 
-from ocr.ITE.master_all import *
-from ocr.ITE.ingestion import ingestion_1
+from ocr.ITE.scripts.data_ingestion import ingestion_1
+# from ocr.ITE.ingestion import ingestion_1
 from django.conf import settings
 from django.contrib.auth.models import User
+
+from ocr.ITE.master_ite import main
 
 
 @task(name='send_welcome_email', queue=CONFIG_FILE_NAME)
@@ -24,10 +26,11 @@ def send_welcome_email(username=None):
         print("Sending Welcome mail to : {0}".format(username))
 
         welcome_mail('send', access_token=access_token, return_mail_id=user.email,
-             subject='Marlabs-Welcome', username=username)
+                     subject='Marlabs-Welcome', username=username)
         print("~" * 90)
     else:
         print("Please enable SEND_WELCOME_MAIL=True in order to send welcome email to users.")
+
 
 def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subject=None, username=None):
     if not access_token:
@@ -40,6 +43,7 @@ def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subje
         except Exception as e:
             print(e)
             print("Some issue with mail sending module...")
+
 
 def send_my_messages(access_token, return_mail_id, subject, username):
     '''
@@ -82,6 +86,7 @@ def send_my_messages(access_token, return_mail_id, subject, username):
         return "{0}: {1}".format(r.status_code, r.text)
 
 
+'''
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug):
     path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
@@ -93,6 +98,21 @@ def extract_from_image(image, slug):
         return response
     else:
         response[0] = analyse(path, slug)
+        return response
+'''
+
+
+@task(name='extract_from_image', queue=CONFIG_FILE_NAME)
+def extract_from_image(image, slug):
+    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    response = dict()
+    if os.path.isdir(path):
+        for index, image in enumerate(os.listdir(path)):
+            response[index] = main(os.path.join(path, image))
+            response[index]['extension'] = extension
+        return response
+    else:
+        response[0] = main(path, slug)
         return response
 
 
