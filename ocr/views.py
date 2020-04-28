@@ -22,28 +22,21 @@ import datetime
 import os
 import random
 import ast
-import string
-import uuid
-from io import BytesIO
 
 import cv2
 import simplejson as json
-from PIL import Image
 from django.db.models import Q, Sum
 from django.conf import settings
 from django.core.files import File
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User, Group
-from django.template.defaultfilters import slugify
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route, api_view
 from rest_framework.response import Response
-from shapely.geometry import Point, Polygon
 
 from api.datasets.helper import convert_to_string
 from api.utils import name_check
-from google.protobuf.json_format import MessageToJson
 # ---------------------EXCEPTIONS-----------------------------
 from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
@@ -51,9 +44,9 @@ from api.exceptions import creation_failed_exception, \
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
     get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list
 # -----------------------MODELS-------------------------------
-from .ITE.Functions import plot
-from .ITE.master_all import get_word_in_bounding_box, update_word
-from .ITE.ocr_mods import not_clear
+
+from .ITE.scripts.info_mapping import Final_json
+from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
@@ -80,7 +73,6 @@ from .serializers import OCRImageSerializer, \
     OCRReviewerSerializer
 
 # ------------------------------------------------------------
-
 # ---------------------PAGINATION----------------------------
 from .pagination import CustomOCRPagination
 
@@ -625,48 +617,37 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             slug=self.kwargs.get('slug'),
         )
 
-    def optimised_fetch_google_response(self, slug):
-        try:
-            google_response_as_string = OCRImage.objects.get(slug=slug).conf_google_response
-            return google_response_as_string
-        except:
-            google_response_as_string = OCRImage.objects.get(slug=slug).conf_google_response
-            serialized = json.loads(MessageToJson(google_response_as_string))
-            return serialized
-
     def process_image(self, data, response, slug, image_queryset):
-        image = base64.decodebytes(response['extracted_image'].encode('utf-8'))
 
-        with open('ocr/ITE/ir/{}_mask.png'.format(slug), 'wb') as f:
+        data['final_result'] = json.dumps(response['final_json'])
+        image = base64.decodebytes(response['mask'].encode('utf-8'))
+        with open('ocr/ITE/database/{}_mask.png'.format(slug), 'wb') as f:
             f.write(image)
+        data['mask'] = File(name='{}_mask.png'.format(slug),
+                            file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
+        gen_image = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
+                               response['final_json'], response['google_response'],
+                               'ocr/ITE/database/{}_gen_image.png'.format(slug))
+        image = base64.decodebytes(gen_image)
+        with open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'wb') as f:
+            f.write(image)
+        data['generated_image'] = File(name='{}_gen_image.png'.format(slug),
+                                       file=open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'rb'))
+        data['metadata'] = json.dumps(response['metadata'])
 
-        data['slug'] = slug
-        data['converted_Coordinates'] = json.dumps(response['data2'])
-        data['comparision_data'] = json.dumps(response['data3'])
-        data['conf_google_response'] = json.dumps(response['conf_google_response'])
-        data['flag'] = json.dumps(response['flag']).replace('"', '').replace('[', '').replace(']', '')
-        data['analysis'] = json.dumps(response['analysis'])
-        data['status'] = "ready_to_assign"
-        data['generated_image'] = File(name='{}_generated_image.png'.format(slug),
-                                       file=open('ocr/ITE/ir/{}_mask.png'.format(slug), 'rb'))
-        mask_image = base64.decodebytes(response['mask'].encode('utf-8'))
-        with open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'wb') as f:
-            f.write(mask_image)
-        data['mask'] = File(name='{}_mask_image.png'.format(slug),
-                            file=open('ocr/ITE/ir/{}_mask1.png'.format(slug), 'rb'))
+        data['conf_google_response'] = json.dumps(response['google_response'])
         data['is_recognized'] = True
-        comparision_data = json.loads(data['comparision_data'])
-        data['fields'] = len(comparision_data)
+        data['status'] = "ready_to_assign"
         data['modified_by'] = self.request.user.id
-        data['confidence'] = round(100 - round(
-            (len([v[3] for k, v in comparision_data.items() if v[3] == 'False']) / data['fields']) * 100, 2), 2)
+        data['slug'] = slug
+        data['flag'] = response['flag']
 
         if 'extension' in response and response['extension'] == '.pdf':
             original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
-            with open('ocr/ITE/ir/{}_original_image.png'.format(slug), 'wb') as f:
+            with open('ocr/ITE/database/{}_original_image.png'.format(slug), 'wb') as f:
                 f.write(original_image)
             data['imagefile'] = File(name='{}_original_image.png'.format(slug),
-                                     file=open('ocr/ITE/ir/{}_original_image.png'.format(slug), 'rb'))
+                                     file=open('ocr/ITE/database/{}_original_image.png'.format(slug), 'rb'))
             data['imageset'] = image_queryset.imageset.id
             data['project'] = image_queryset.project.id
             data['created_by'] = image_queryset.created_by.id
@@ -868,6 +849,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)
+                analysis_list = json.loads(image_queryset.analysis_list)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug)
                 result = response.task_id
                 res = AsyncResult(result)
@@ -880,21 +862,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
                     else:
                         results.append(serializer.errors)
-        return Response(results)
-
-    @list_route(methods=['post'])
-    def get_images(self, request, *args, **kwargs):
-
-        data = request.data
-        instance = OCRImage.objects.get(slug=data['slug'])
-
-        if instance is None:
-            return retrieve_failed_exception("File Doesn't exist.")
-
-        serializer = OCRImageExtractListSerializer(instance=instance, context={'request': request})
-        object_details = serializer.data
-
-        return Response(object_details)
+                return Response(results)
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -910,40 +878,34 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                              context={"request": self.request})
             if serializer.is_valid():
                 serializer.save()
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-
-        response = get_word_in_bounding_box(converted_Coordinates, x, y)
-
-        if response is not None:
-            return JsonResponse({'word': response[0], 'index': response[1]})
-        return JsonResponse({'word': None, 'index': None})
+        final_json = json.loads(image_queryset.final_result)
+        response = fetch_click_word_from_final_json(final_json, [x, y])
+        return JsonResponse({'exists': response[0], 'word': response[1]})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
         data = request.data
-        index = data['index']
+        x = data['x']
+        y = data['y']
         word = data['word']
 
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
+        final_json = json.loads(image_queryset.final_result)
+        google_response = json.loads(image_queryset.conf_google_response)
+        update_history = json.loads(image_queryset.analysis_list)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        final_json_obj = Final_json(final_json, update_history)
+        final_json, update_history = final_json_obj.update_final_json([x, y], word)
+        data['final_result'] = json.dumps(final_json)
+        data['analysis_list'] = json.dumps(update_history)
+        image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, image_path)
+        image = base64.decodebytes(gen_image)
+        with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+            f.write(image)
+        data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                       file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
 
-        converted_Coordinates, comparision_data, analysis_list = update_word(index, word, converted_Coordinates,
-                                                                             comparision_data)
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
-
-        existing = json.loads(image_queryset.analysis_list)
-        if existing:
-            analysis_list.extend(existing)
-        else:
-            analysis_list = analysis_list
-
-        data['analysis_list'] = json.dumps(analysis_list)
-        image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
-        response = plot(image, comparision_data, data['slug'])
-        data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
-                                       file=open(response, 'rb'))
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
@@ -953,6 +915,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             object_details['message'] = 'SUCCESS'
             return Response(object_details)
         return Response(serializer.errors)
+
+    @list_route(methods=['post'])
+    def get_images(self, request, *args, **kwargs):
+
+        data = request.data
+        instance = OCRImage.objects.get(slug=data['slug'])
+
+        if instance is None:
+            return retrieve_failed_exception("File Doesn't exist.")
+
+        serializer = OCRImageExtractListSerializer(instance=instance, context={'request': request})
+        object_details = serializer.data
+
+        return Response(object_details)
 
     @list_route(methods=['post'])
     def not_clear(self, request, *args, **kwargs):
@@ -984,24 +960,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
-
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        analysis = json.loads(image_queryset.analysis)
-
-        response = final_data_generation.delay(image_queryset.imagefile.path, analysis,
-                                               json.loads(image_queryset.analysis_list),
-                                               image_queryset.flag)
-
-        result = response.task_id
-        res = AsyncResult(result)
-        flag, json_final, metadata, analysis = res.get()
-
-        data['analysis'] = json.dumps(analysis)
-        if flag == 'Transcript':
-            data['final_result'] = str(json_final)
-        else:
-            data['final_result'] = json.dumps(json_final)
-
         review_end_time = image_queryset.review_end
         if not review_end_time:
             data['review_end'] = datetime.datetime.now()
@@ -1049,46 +1008,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def confidence_filter(self, request):
         data = request.data
-        user_input = 0.75
+        user_input = 1.0
         if 'filter' in data:
             user_input = data['filter']
         slug = data['slug']
         image_queryset = OCRImage.objects.get(slug=slug)
-        comparision_data = json.loads(image_queryset.comparision_data)
-        response = json.loads(image_queryset.conf_google_response)
-        loi = []
-        for page in response["fullTextAnnotation"]["pages"]:
-            for block in page["blocks"]:
-                for paragraph in block["paragraphs"]:
-                    for word in paragraph["words"]:
-                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
-                        #                        print(word["confidence"])
-                        if word["confidence"] < user_input:
-                            loi.append({word_text: [
-                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
-                                [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
+        google_response = json.loads(image_queryset.conf_google_response)
+        final_json = json.loads(image_queryset.final_result)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-            for lis in loi:
-                bb = list(lis.values())[0]
-                centroid = ((bb[0][0] + bb[1][0]) * 0.5, (bb[0][1] + bb[1][1]) * 0.5)
-                point = Point(centroid)
+        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, image_path, percent=user_input)
 
-                for b in comparision_data:
+        image = base64.decodebytes(gen_image)
+        with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+            f.write(image)
 
-                    reference_bb = comparision_data[b][0]
-                    poly_bb = [reference_bb[:2], reference_bb[2:4], reference_bb[4:6], reference_bb[6:]]
-                    polygon = Polygon(poly_bb)
-
-                    if polygon.contains(point):
-                        comparision_data[b][3] = 'True'
-                    else:
-                        pass
-
-        image = Image.open(BytesIO(open('ocr/ITE/ir/{}_mask1.png'.format(image_queryset.slug), 'rb').read()))
-        response = plot(image, comparision_data, data['slug'])
-        data['generated_image'] = File(name='{}_generated_image_{}.png'.format(data['slug'], str(uuid.uuid1())),
-                                       file=open(response, 'rb'))
-
+        data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                       file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():

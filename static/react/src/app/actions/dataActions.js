@@ -186,9 +186,11 @@ function fetchDataPreview(slug,dispatch,interval) {
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
-    dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
-        column.checked = true;
-    });
+    if(window.location.pathname != "/apps-stock-advisor/"){
+        dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+            column.checked = true;
+        });
+    }
     var  slug = dataPreview.slug;
     var dataset = slug;
     if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )

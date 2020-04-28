@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
 import os
 import random
 import shutil
@@ -50,7 +46,6 @@ def ingestion_1(file_full_path, path):
                                                                                filename.split("/")[-1], str(index))),
                     'JPEG')
                 index = index + 1
-            print(os.path.join(path, folder_name))
             return os.path.join(path, folder_name), file_extension
 
         elif file_extension == ".jpg" or file_extension == ".png" or file_extension == ".jpeg":

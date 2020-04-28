@@ -1,12 +1,12 @@
 """
 OCR MODELS
 """
-
+import os
 import random
 import string
 import datetime
 from statistics import mean
-
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -127,6 +127,13 @@ def send_email(sender, instance, created, **kwargs):
     if created:
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
+
+
+def upload_dir(instance, filename):
+    fullname = os.path.join(settings.MEDIA_ROOT, 'ocrData', filename)
+    if os.path.exists(fullname):
+        os.remove(fullname)
+    return os.path.join('ocrData', filename)
 
 
 post_save.connect(send_email, sender=OCRUserProfile)
@@ -263,7 +270,7 @@ class OCRImage(models.Model):
     status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='ready_to_recognize')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
-    generated_image = models.FileField(null=True, upload_to='ocrData')
+    generated_image = models.FileField(null=True, upload_to=upload_dir)
     comparision_data = models.TextField(max_length=300000, default="{}", null=True)
     converted_Coordinates = models.TextField(max_length=300000, default="{}", null=True)
     conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
@@ -272,7 +279,7 @@ class OCRImage(models.Model):
     flag = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=300000, default="{}", null=True)
     is_recognized = models.BooleanField(default=False)
-    mask = models.FileField(null=True, upload_to='ocrData')
+    mask = models.FileField(null=True, upload_to=upload_dir)
     is_L1assigned = models.BooleanField(default=False)
     is_L2assigned = models.BooleanField(default=False)
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
