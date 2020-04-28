@@ -42,7 +42,7 @@ ocrflow/migrations/
 *.egg
 ocr/ITE/ir/
 
-ocr/ITE/pdf_to_images_folder/
+
 ocr/ITE/demo_images/
 ocr/ITE/classified_templates.json
 Updated_Analysis.json
