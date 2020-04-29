@@ -230,6 +230,10 @@ export class OcrImage extends React.Component {
     document.getElementById("successMsg").innerText = " ";
   }
 
+  handleImageLoad =()=>{
+    document.getElementById("originalOcrImg").style.display= "block";
+    document.getElementsByClassName("oLoader")[0].style.display= "none"
+  }
   render() {
     return (
       <div>
@@ -270,15 +274,13 @@ export class OcrImage extends React.Component {
               <div className="ocrImgTitle">Original</div>
               <Scrollbars style={{ height: 820 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
-                  {this.props.originalImgPath != "" ?
-                    <img style={{ height: 800, width: 700 }}
+                    <img style={{ height: 800, width: 700 , display:'none'}}
                       src={this.props.originalImgPath}
                       id="originalOcrImg"
-                    />
-                    :
-                    <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                  }
-                </div>
+                      onLoad={(e) => this.handleImageLoad(e)}
+                      />
+                    <img className="oLoader" id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                 </div>
               </Scrollbars>
             </div>
           </div>

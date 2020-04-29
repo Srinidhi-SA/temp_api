@@ -35,6 +35,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 		this.props.dispatch(addDefaultStockSymbolsComp())
 	}
 	updateCreateStockPopup(flag) {
+		this.setState({domain:[],company:[]})
 		this.props.dispatch(updateCreateStockPopup(flag))
 	}
 	handleInputChange(event) {

@@ -56,7 +56,7 @@ export class DataCard extends React.Component {
     
     getPreviewData(status,e) {
         if(status==FAILED){
-            bootbox.alert(statusMessages("error","The uploaded file does not contain data in readable format. Please check the source file and try uploading again.","small_mascot"));            
+            bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));            
         }else{
             var that = this;
             this.selectedData = e.target.id;
