@@ -92,8 +92,10 @@ class ui_corrections:
         for k in final_json["paragraphs"]:
             for l in final_json["paragraphs"][k]:
                 for m in l['words']:
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
                     for i in needed_words:
                         x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
                         if mode:
@@ -155,10 +157,12 @@ class ui_corrections:
         for k in final_json_to_flag["paragraphs"]:
             for l in final_json_to_flag["paragraphs"][k]:
                 for m in l['words']:
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
-                    p2 = [p3[0], p1[1]]
-                    p4 = [p1[0], p3[1]]
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
+                            p2 = [p3[0], p1[1]]
+                            p4 = [p1[0], p3[1]]
                     text = list(m.keys())[0]
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
