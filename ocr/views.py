@@ -55,8 +55,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRAdminUser
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, \
-    final_data_generation
+from ocr.tasks import extract_from_image
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -641,6 +640,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
+        data['fields'] = 50
+        data['confidence'] = 95
 
         if 'extension' in response and response['extension'] == '.pdf':
             original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
