@@ -109,7 +109,7 @@ filterRevList(filtertBy, filterOn,reset) {
             </td>
             {/* <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link> */}
 
-            <td><Link to='/apps/ocr-mq44ewz7bp/reviewer/' onClick={() => { this.handleDocumentPageFlag(item.ocr_profile.slug,item.username) }}>{item.username}</Link></td>
+            <td><Link to='/apps/ocr-mq44ewz7bp/reviewer/' onClick={() => { this.handleDocumentPageFlag(item.ocr_profile.slug,item.username) }} title={item.username}>{item.username}</Link></td>
             <td>{item.ocr_profile.role[0]}</td>
             <td>{item.ocr_data.assignments}</td>
             <td>{item.ocr_data.completionPercentage}%</td>

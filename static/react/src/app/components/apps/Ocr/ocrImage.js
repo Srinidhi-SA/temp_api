@@ -238,6 +238,7 @@ export class OcrImage extends React.Component {
     return (
       <div>
         <div className="row">
+ 
         <div class="col-sm-6">
             {window.location.href.includes("reviewer")?((getUserDetailsOrRestart.get().userRole == "Admin") || (getUserDetailsOrRestart.get().userRole == "Superuser"))? (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
@@ -255,6 +256,7 @@ export class OcrImage extends React.Component {
           <div class="form-group pull-right ocr_highlightblock"  style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
               <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
+ 
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>
@@ -268,9 +270,10 @@ export class OcrImage extends React.Component {
               </select>
             </div>
           </div>
-          </div>
+ <div class="clearfix"></div>
           <div className="col-sm-6">
-            <div style={{ backgroundColor: '#fff', padding: 15 }}>
+            <div className="box-shadow" style={{ backgroundColor: '#fff', padding: 15 }}>
+ 
               <div className="ocrImgTitle">Original</div>
               <Scrollbars style={{ height: 820 }} id="originalImgDiv" onScroll={this.imageScroll}>
                 <div>
@@ -284,8 +287,8 @@ export class OcrImage extends React.Component {
               </Scrollbars>
             </div>
           </div>
-          <div className="col-sm-6">
-            <div style={{ backgroundColor: '#fff', padding: 15 }}>
+          <div className="col-sm-6" title="OCR">
+            <div className="box-shadow" style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">OCR</div>
               <div id="confidence_loader"></div>
               <Scrollbars id="ocrScroll" style={{ height: 820 }} onScroll={this.imageScroll}>
@@ -321,7 +324,7 @@ export class OcrImage extends React.Component {
                   <div id="loader"></div>
                   <div className="row">
                     <div className="col-sm-9" style={{ paddingRight: 5 }}>
-                      <input type="text" id="ocrText" placeholder="Enter text.." onChange={this.handleText} />
+                      <input type="text" id="ocrText" title="Enter text.." placeholder="Enter text.." onChange={this.handleText} />
                     </div>
                     <div className="col-sm-3" style={{ paddingLeft: 0 }}>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
@@ -329,8 +332,8 @@ export class OcrImage extends React.Component {
                         <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                       </button>
                       <ul class="dropdown-menu" style={{ left: -110 }}>
-                        <li><a href="javascript::" class="btn btn-block" onClick={this.notClear}><i class="fa fa-ban"></i> Not Clear</a></li>
-                        <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
+                        <li><a href="javascript::" class="btn btn-block" onClick={this.notClear} title="Not Clear"><i class="fa fa-ban"></i> Not Clear</a></li>
+                        <li><a class="btn btn-block" title="Properties"><i class="fa fa-external-link"></i> Properties</a></li>
                       </ul>
                     </div>
                     <div className="col-sm-12" id="successMsg" style={{ paddingTop: 5, color: '#ff8c00' }}></div>
@@ -340,21 +343,24 @@ export class OcrImage extends React.Component {
             </div>
 
           </div>
+		  
+		  </div>
         <div className="row">
             {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
-          <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
+          
+		  <div class="col-md-6 col-md-offset-6" style={{ marginTop: '3%' }}>
             <ReactTooltip place="top" type="light"/>   
             <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
-              <i class="fa fa-info-circle"></i> Bad Scan
+              <i class="fa fa-info-circle"></i>
           </button>
-              <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+              <button class="btn btn-primary pull-right" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> Mark as complete</button>
           </div>
           :
-          <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
-          <button class="btn btn-warning" disabled>
-            <i class="fa fa-info-circle"></i> Bad Scan
+		  <div class="col-md-6 col-md-offset-6" style={{ marginTop: '3%' }}>
+          <button class="btn btn-warning" title="Bad Scan" disabled>
+            <i class="fa fa-info-circle"></i>
           </button>
-            <button class="btn btn-primary" disabled><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+            <button class="btn btn-primary pull-right" disabled><i class="fa fa-check-circle"></i> Mark as complete</button>
           </div>
             }
         </div>
