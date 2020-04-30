@@ -163,7 +163,9 @@ class ui_corrections:
                             p3 = val['p3']
                             p2 = [p3[0], p1[1]]
                             p4 = [p1[0], p3[1]]
-                    text = list(m.keys())[0]
+                    for key, val in m.items():
+                        if isinstance(val, dict):
+                            text = key
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
                     if (m['flag'] == 'True'):
