@@ -19,6 +19,7 @@ import requests
 import base64
 import simplejson as json
 import re
+import datetime
 
 from django.conf import settings
 import yarn_api_client
@@ -1240,19 +1241,56 @@ def round_sig(x, sig=3):
     return x
 
 
-def update_stock_sense_message(job_instance, stock):
+def calculate_percentage(message_log, stock, messages):
+    percentage = 0
+    msg_log = json.loads(message_log)
+    # index = None
+    # for d in msg_log:
+    #     msg = msg_log[d]
+    #     print(msg_log[d])
+    #     if stock in msg:
+    #         index = d
+    #         break
+    # index = int(index) -1
+    # number_of_stocks = len(msg_log) - 2
+    # if index == 0:
+    #     percentage = 10
+    # else:
+    #     percentage = 80/number_of_stocks
+    # actual_percentage = messages[-1]['globalCompletionPercentage'] + percentage
 
+    if messages[-1]['globalCompletionPercentage'] == 0:
+        percentage = 10
+    else:
+        number_of_stocks = len(msg_log) - 2
+        percentage = 80/number_of_stocks
+    actual_percentage = messages[-1]['globalCompletionPercentage'] + percentage
+    return actual_percentage
+
+
+def update_stock_sense_message(job_instance, stock):
     message = json.loads(job_instance.messages)
+    percentage = None
     if stock == "ml-work":
         info = "Performing analysis"
-    else :
+        percentage = 80
+    else:
         info = "Fetching news articles and NLU for {0}".format(stock)
+        percentage = calculate_percentage(job_instance.message_log, stock, message)
+        import math
+        percentage = math.floor(percentage)
+
+    print("!!!!!!!!!!! @@@@@@@@@@ PERCENTAGE {0}".format(percentage))
+    time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     latest_message = {
         "analysisName": "stockAdvisor",
         "display": True,
         "stageName": "custom",
         "shortExplanation": info,
         "messageType": "info",
+        "globalCompletionPercentage": percentage,
+        "gmtDateTime": time_stamp,
+        "stageCompletionPercentage": percentage
     }
     message.append(latest_message)
     return json.dumps(message)
@@ -1267,18 +1305,18 @@ def create_message_log_and_message_for_stocksense(stock_symbols):
         message_log[index+1] = "Fetching news articles and NLU for "+value
 
     message_log[len(stock_symbols) + 1] = "Performing analysis"
-
+    time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     message = [
         {
             "analysisName": "stockAdvisor",
             "display": True,
             "stageName": "custom",
             "shortExplanation": message_log[0],
-            # "messageIndex": "1",
             "messageType": "info",
-            # "globalCompletionPercentage": 25,
+            "globalCompletionPercentage": 0,
             # "gmtDateTime": "2020-04-07 11:55:15",
-            # "stageCompletionPercentage": 25
+            "gmtDateTime": time_stamp,
+            "stageCompletionPercentage": 0
         },
     ]
     message_log = json.dumps(message_log)
