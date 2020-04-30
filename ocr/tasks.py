@@ -1,12 +1,12 @@
 """
 Miscellaneous celery tasks module for OCR.
 """
+import os
 
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 
 from ocr.ITE.scripts.data_ingestion import ingestion_1
-# from ocr.ITE.ingestion import ingestion_1
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -86,22 +86,6 @@ def send_my_messages(access_token, return_mail_id, subject, username):
         return "{0}: {1}".format(r.status_code, r.text)
 
 
-'''
-@task(name='extract_from_image', queue=CONFIG_FILE_NAME)
-def extract_from_image(image, slug):
-    path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
-    response = dict()
-    if os.path.isdir(path):
-        for index, image in enumerate(os.listdir(path)):
-            response[index] = analyse(os.path.join(path, image))
-            response[index]['extension'] = extension
-        return response
-    else:
-        response[0] = analyse(path, slug)
-        return response
-'''
-
-
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug):
     path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
@@ -114,8 +98,3 @@ def extract_from_image(image, slug):
     else:
         response[0] = main(path, slug)
         return response
-
-
-@task(name='final_data_generation', queue=CONFIG_FILE_NAME)
-def final_data_generation(path, analysis, analysis_list, flag):
-    return finalize(path, analysis, analysis_list, flag)
