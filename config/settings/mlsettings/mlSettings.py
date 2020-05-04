@@ -499,6 +499,45 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
             "description": "This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
         },
-
+        {
+            "algorithmName": "TensorFlow",
+            "selected": True,
+            "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is implementation of tensorflow algorithm"
+        },
+        {
+            "algorithmName": "Neural Networks(pyTorch)",
+            "selected": True,
+            "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of PyTorch algorithm"
+        },
+        {
+            "algorithmName": "LightGBM",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "lgbm",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of LightGBM algorithm"
+        },
+        {
+            "algorithmName": "Ensemble",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "en",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of Ensemble algorithm"
+        },
+        {
+            "algorithmName": "Adaboost",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "adab",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of Adaboost algorithm"
+        }
     ]
 }
