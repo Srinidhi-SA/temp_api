@@ -514,7 +514,30 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
             "description": "This is an implementation of PyTorch algorithm"
+        },
+        {
+            "algorithmName": "LightGBM",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "lgbm",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of LightGBM algorithm"
+        },
+        {
+            "algorithmName": "Ensemble",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "en",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of Ensemble algorithm"
+        },
+        {
+            "algorithmName": "Adaboost",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "adab",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": "This is an implementation of Adaboost algorithm"
         }
-
     ]
 }
