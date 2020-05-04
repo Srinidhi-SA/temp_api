@@ -223,11 +223,15 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
     for k in final_json["paragraphs"]:
         for l in final_json["paragraphs"][k]:
             for m in l['words']:
-                #                print(m)
-                p1 = list(m.values())[0][0:2]
-                p3 = list(m.values())[0][4:6]
+                p1 = m['boundingBox'][0:2]
+                p3 = m['boundingBox'][4:6]
+                '''for val in list(m.values()):
+                    if isinstance(val, list):
+                        p1 = val[0:2]
+                        p3 = val[4:6]'''
                 if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
-                    return True, list(m.values())[1]
+                    return True, m['text']
+                    # return True, list(m.values())[1]
 
     for k in final_json["tables"]:
         for l in final_json["tables"][k]:
