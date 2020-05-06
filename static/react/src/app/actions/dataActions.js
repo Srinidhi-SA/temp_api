@@ -193,8 +193,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     }
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
-    var getStatus = dataPreview.meta_data_status;
+    // if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
+    if(window.location.pathname.includes("apps-stock-advisor-analyze") )
+     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
     if(getStatus == SUCCESS){
@@ -236,7 +237,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dispatch(setDataLoadedText(dataPreview.initial_messages));
         }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
-            dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
+            var msgLength=dataPreview.message.length-1
+            dispatch(openAppsLoaderValue(dataPreview.message[msgLength].stageCompletionPercentage, dataPreview.message[msgLength].shortExplanation));
         }
         // setTimeout(function() {
         //    if(dataPreview.message[0].globalCompletionPercentage<=0){
