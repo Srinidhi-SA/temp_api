@@ -92,8 +92,10 @@ class ui_corrections:
         for k in final_json["paragraphs"]:
             for l in final_json["paragraphs"][k]:
                 for m in l['words']:
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
                     for i in needed_words:
                         x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
                         if mode:
@@ -155,11 +157,15 @@ class ui_corrections:
         for k in final_json_to_flag["paragraphs"]:
             for l in final_json_to_flag["paragraphs"][k]:
                 for m in l['words']:
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
-                    p2 = [p3[0], p1[1]]
-                    p4 = [p1[0], p3[1]]
-                    text = list(m.keys())[0]
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
+                            p2 = [p3[0], p1[1]]
+                            p4 = [p1[0], p3[1]]
+                    for key, val in m.items():
+                        if isinstance(val, dict):
+                            text = key
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
                     if (m['flag'] == 'True'):
@@ -217,11 +223,15 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
     for k in final_json["paragraphs"]:
         for l in final_json["paragraphs"][k]:
             for m in l['words']:
-                #                print(m)
-                p1 = list(m.values())[0][0:2]
-                p3 = list(m.values())[0][4:6]
+                p1 = m['boundingBox'][0:2]
+                p3 = m['boundingBox'][4:6]
+                '''for val in list(m.values()):
+                    if isinstance(val, list):
+                        p1 = val[0:2]
+                        p3 = val[4:6]'''
                 if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
-                    return True, list(m.values())[1]
+                    return True, m['text']
+                    # return True, list(m.values())[1]
 
     for k in final_json["tables"]:
         for l in final_json["tables"][k]:
