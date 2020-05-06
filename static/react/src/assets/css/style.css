@@ -22826,3 +22826,8 @@ button[disabled], html .filter_input[disabled] {
   border-left: 6px solid transparent;
   border-top: 6px dashed;
 }
+.tickmark::before{
+  content: '\f00c';
+  font-family: "FontAwesome";
+  color: #ffffff;
+}
