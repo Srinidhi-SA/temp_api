@@ -8,27 +8,28 @@ export class HighChart extends React.Component {
   }
 
   render(){
-        var that = this;
         let chartData = this.props.data;
-        let xDt = [];
-        let dtes = chartData.data.columns;
-        for(let i=1;i<dtes[0].length;i++){
-            xDt.push([Date.parse(dtes[1][i]),dtes[0][i],dtes[2][i]])
+        var axesList = [];
+        for(let i=0;i<chartData.data.columns.length;i++){
+            axesList.push([]);
+            let j=1;
+            let array1 = []
+            axesList[i]["name"]=chartData.data.columns[i][0];
+            axesList[i]["data"]=[];
+            for(j=1;j<chartData.data.columns[i].length;j++){
+                axesList[i]["data"].push([Date.parse(this.props.xdata[j-1]),chartData.data.columns[i][j]])
+                array1.push(chartData.data.columns[i][j])
+            }
+            axesList[i]["high"] = Math.max(...array1)
+            axesList[i]["low"] = Math.min(...array1)
         }
-        // for(let i=1;i<dtes[0].length;i++){
-        //     xDt.push([Date.parse(dtes[1][i]),dtes[0][i],dtes[2][i]])
-        // }
-        console.log(xDt)
+
         const config = {
-            credits: {
-                enabled: false
-            },
-                title: {
-                text: chartData.title.text
-            },
-            navigator: {
-                enabled: false
-            },
+            credits: { enabled: false },
+            title: { text: chartData.title.text },
+            navigator: { enabled: false },
+            scrollbar: { enabled: false },
+            legend : chartData.legend.show,
             rangeSelector: {
                 inputEnabled:false,
                 buttons: [
@@ -42,30 +43,19 @@ export class HighChart extends React.Component {
                 buttonTheme: {
                     fill: "none",
                     r:4,
-                    style: {
-                        color: "#32b5a6",
-                        fontWeight: 'bold'
-                    },
+                    style: { color: "#32b5a6", fontWeight: 'bold' },
                     states: {
                         select: {
                             fill: "#32b5a6",
-                            style: {
-                                color: "white"
-                            }
+                            style: { color: "white" }
                         }
                     }
                 }
             },
-            scrollbar: {
-                enabled: false
-            },
-            legend : chartData.legend.show,
             xAxis: {
                 type: 'datetime',
                 align: "left",
-                labels:{
-                    format:"{value:%b \'%y}"
-                },
+                labels:{ format:"{value:%b \'%y}" },
                 crosshair : {
                     width:2,
                     color:"#36c4b5"
@@ -76,50 +66,46 @@ export class HighChart extends React.Component {
                     width:2,
                     color:"#525b59"
                 },
-                labels: {
-                    text: chartData.axis.y.label.text,
-                    align: 'left'
-                },
+                labels: { text: chartData.axis.y.label.text, align: 'left' },
                 height: '80%',
-                resize: {
-                    enabled: false
-                },
+                resize: { enabled: false },
                 },
                 {
-                    labels: {
-                        enabled: false
-                    },
+                    labels: { enabled: false },
                     top:"80%",
                     height: '20%',
-                    // offset: 0
-                }],
+                }
+            ],
         tooltip: {
             useHTML: true,
 			formatter: function() {
-                var s = ''
-                s= "<table><thead><tr class='text-center'><th colspan=3>"+ Highcharts.dateFormat('%e %B %Y', this.x) +"</th></tr></thead><tbody><tr><td><b>Value:"+ this.y+"</b></td></tr></tbody></table>"
-        	    	return s;
-				}
+                var htmlTip = "<table><thead><tr class='text-center'><th colspan=3>"+ Highcharts.dateFormat('%e %B %Y', this.x) +"</th></tr></thead><tbody><tr><td><b>Value:"+ this.points[0].y+"</b></td></tr><tr><td><b>Value1:"+ this.points[1].y+"</b></td></tr></tbody></table>"
+                return htmlTip;
+            }
         },
         plotOptions :{
             series:{
                 color:"#0fc4b5",
-                marker:{
-                    enabled:false
-                }
+                marker:{ enabled:false }
             }
         },
         series: [{
             type: 'spline',
             id:"dateseries",
             name:"Values",
-            data:xDt,
+            data:axesList[0]["data"],
             yAxis:0
+        },{
+            type: 'spline',
+            id:"dateseries2",
+            name:"Values2",
+            data:axesList[2]["data"],
+            color:"#bcf3a2"
         },{
             type: 'column',
             name:"date1",
             id:"dateseries1",
-            data:xDt,
+            data:axesList[0]["data"],
             color:"#148071",
             yAxis:1
         },{
