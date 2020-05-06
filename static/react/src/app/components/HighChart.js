@@ -11,17 +11,21 @@ export class HighChart extends React.Component {
         let chartData = this.props.data;
         var axesList = [];
         for(let i=0;i<chartData.data.columns.length;i++){
-            axesList.push([]);
-            let j=1;
-            let array1 = []
-            axesList[i]["name"]=chartData.data.columns[i][0];
-            axesList[i]["data"]=[];
-            for(j=1;j<chartData.data.columns[i].length;j++){
-                axesList[i]["data"].push([Date.parse(this.props.xdata[j-1]),chartData.data.columns[i][j]])
-                array1.push(chartData.data.columns[i][j])
+            if(chartData.data.columns[i][0] != "date"){
+                axesList.push([]);
+                let j=1;
+                let array1 = []
+                axesList[axesList.length-1]["color"]=chartData.color.pattern[i+1]
+                axesList[axesList.length-1]["name"]=chartData.data.columns[i][0];
+                axesList[axesList.length-1]["data"]=[];
+                axesList[axesList.length-1]["yAxis"]=0;
+                for(j=1;j<chartData.data.columns[i].length;j++){
+                    axesList[axesList.length-1]["data"].push([Date.parse(this.props.xdata[j-1]),chartData.data.columns[i][j]])
+                    array1.push(chartData.data.columns[i][j])
+                }
+                axesList[axesList.length-1]["high"] = Math.max(...array1)
+                axesList[axesList.length-1]["low"] = Math.min(...array1)
             }
-            axesList[i]["high"] = Math.max(...array1)
-            axesList[i]["low"] = Math.min(...array1)
         }
 
         const config = {
@@ -56,16 +60,11 @@ export class HighChart extends React.Component {
                 type: 'datetime',
                 align: "left",
                 labels:{ format:"{value:%b \'%y}" },
-                crosshair : {
-                    width:2,
-                    color:"#36c4b5"
-                },
+                crosshair : { width:2, color:"#525b59" },
+
             },
             yAxis: [{
-                crosshair : {
-                    width:2,
-                    color:"#525b59"
-                },
+                crosshair : { width:2, color:"#525b59" },
                 labels: { text: chartData.axis.y.label.text, align: 'left' },
                 height: '80%',
                 resize: { enabled: false },
@@ -78,8 +77,16 @@ export class HighChart extends React.Component {
             ],
         tooltip: {
             useHTML: true,
+            shape: 'square',
+            headerShape: 'callout',
+            borderWidth: 0,
+           	shadow: false,
 			formatter: function() {
-                var htmlTip = "<table><thead><tr class='text-center'><th colspan=3>"+ Highcharts.dateFormat('%e %B %Y', this.x) +"</th></tr></thead><tbody><tr><td><b>Value:"+ this.points[0].y+"</b></td></tr><tr><td><b>Value1:"+ this.points[1].y+"</b></td></tr></tbody></table>"
+                var htmlTip = "<table class='tooltip-table'><thead><tr class='text-center'><th colspan=4>"+ Highcharts.dateFormat('%e %B %Y', this.x) +"</th></tr></thead><tbody>"
+                                $.each(this.points, function(i, point) {
+                                    htmlTip = htmlTip+"<tr><td><span style=color:" + point.color + ">\u25FC</span></td><td>"+ point.series.name+"</td><td> |  </td> <td>"+point.y +"</td></tr>" ;
+                                });
+                                htmlTip = htmlTip +"</tbody></table>"
                 return htmlTip;
             }
         },
@@ -89,39 +96,7 @@ export class HighChart extends React.Component {
                 marker:{ enabled:false }
             }
         },
-        series: [{
-            type: 'spline',
-            id:"dateseries",
-            name:"Values",
-            data:axesList[0]["data"],
-            yAxis:0
-        },{
-            type: 'spline',
-            id:"dateseries2",
-            name:"Values2",
-            data:axesList[2]["data"],
-            color:"#bcf3a2"
-        },{
-            type: 'column',
-            name:"date1",
-            id:"dateseries1",
-            data:axesList[0]["data"],
-            color:"#148071",
-            yAxis:1
-        },{
-            type : 'flags',
-            data : [{
-                x: Date.UTC(2020,2,12),
-                title: "H",
-                text: ""
-            },{
-                x: Date.UTC(2020,3,12),
-                title: "L",
-                text: ""
-            }],
-            onSeries:"dateseries",
-            shape:"squarepin"
-        }]
+        series : axesList
       };
       return(
         <div className="chart-area">
