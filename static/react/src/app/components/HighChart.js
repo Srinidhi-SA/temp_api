@@ -3,7 +3,6 @@ import store from "../store";
 import {connect} from "react-redux";
 import Highcharts from "highcharts";
 import ReactHighstock from "react-highcharts/ReactHighstock";
-// import HighchartsReact from "highcharts-react-official";
 import { showChartData, showZoomChart } from "../actions/signalActions";
 import {ViewChart} from "./common/ViewChart";
 import {ViewChartData} from "./common/ViewChartData";
@@ -57,21 +56,72 @@ export class HighChart extends React.Component {
         var axesList = [];
         for(let i=0;i<chartData.data.columns.length;i++){
             if(chartData.data.columns[i][0] != "date"){
-                axesList.push([]);
+                axesList.push({});
                 let j=1;
                 let array1 = []
-                axesList[axesList.length-1]["color"]=chartData.color.pattern[i+1]
-                axesList[axesList.length-1]["name"]=chartData.data.columns[i][0];
+                axesList[axesList.length-1].color=chartData.color.pattern[i+1]
+                axesList[axesList.length-1].name=chartData.data.columns[i][0];
+                axesList[axesList.length-1].id="series"+(axesList.length-1);
                 axesList[axesList.length-1]["data"]=[];
                 // axesList[axesList.length-1]["yAxis"]=axesList.length-1;
                 for(j=1;j<chartData.data.columns[i].length;j++){
                     axesList[axesList.length-1]["data"].push([Date.parse(this.props.xdata[j-1]),chartData.data.columns[i][j]])
                     array1.push(chartData.data.columns[i][j])
                 }
-                axesList[axesList.length-1]["high"] = Math.max(...array1)
-                axesList[axesList.length-1]["low"] = Math.min(...array1)
+                axesList[axesList.length-1].high = Date.parse(this.props.xdata[array1.indexOf(Math.max(...array1))])
+                axesList[axesList.length-1].low = Date.parse(this.props.xdata[array1.indexOf(Math.min(...array1))])
             }
         }
+
+        let getAxesList = []
+        let flagList = []
+        for(let i=0;i<axesList.length;i++){
+            flagList.push({});
+                flagList[i].type="flags";
+                flagList[i].onSeries="series"+i;
+                flagList[i].shape="squarepin";
+                flagList[i].states={}
+                // flagList[i].states.hover.fillColor="#395c84"
+                flagList[i].data=[];
+                flagList[i].data[0] = {};
+                flagList[i].data[1] = {};
+
+                flagList[i].data[0]["x"] = axesList[i].high;
+                flagList[i].data[0]["title"]="H"+(i+1);
+                flagList[i].data[0]["text"]="High";
+
+                flagList[i].data[1]["x"] = axesList[i].low;
+                flagList[i].data[1]["title"]="L"+(i+1);
+                flagList[i].data[1]["text"]="Low";          
+        }
+        getAxesList = axesList.concat(flagList)
+
+        let getYAxis = [];
+        getYAxis.push({});
+        getYAxis[0].opposite=false;
+        getYAxis[0].crosshair = {};
+        getYAxis[0].crosshair.width = 2;
+        getYAxis[0].crosshair.color = "#f1f14e";
+        getYAxis[0].title = {};
+        getYAxis[0].title.text = chartData.axis.y.label.text;
+        getYAxis[0].title.offset = 30;
+        getYAxis[0].title.style = {}
+        getYAxis[0].title.style.fontSize = "13px"
+        
+        for(let i=1;i<axesList.length;i++){
+            getYAxis.push({});
+            getYAxis[i].crosshair = {};
+            getYAxis[i].crosshair.width = 2;
+            getYAxis[i].crosshair.color = "#f1f14e";
+        }
+        //To be added for bar chart
+        // resize: { enabled: false },
+                // height: '80%',
+                // {
+                //     labels: { enabled: false },
+                //     top:"80%",
+                //     height: '20%',
+                // }
 
         const config = {
             chart: { type: "spline" },
@@ -106,7 +156,7 @@ export class HighChart extends React.Component {
                 type: 'datetime',
                 align: "left",
                 labels:{ format:"{value:%d %b \'%y}" },
-                crosshair : { width:2, color:"#525b59" },
+                crosshair : { width:2, color:"#f1f14e" },
                 title: { 
                     text: "<span style=color:#333333>"+chartData.axis.x.label.text+"</span>",
                     style: {
@@ -115,54 +165,40 @@ export class HighChart extends React.Component {
                     offset: 20,
                 },
             },
-            yAxis: {
-                    opposite:false,
-                    crosshair : { width:2, color:"#525b59" },
-                    title: { 
-                        text: "<span style=color:#333333>"+chartData.axis.y.label.text+"</span>",
-                        offset: 30,
-                        style: {
-                            fontSize:"13px",
-                        }
-                    }
-                    // resize: { enabled: false },
-                    // height: '80%',
-                // {
-                //     labels: { enabled: false },
-                //     top:"80%",
-                //     height: '20%',
-                // }
-            },
+            yAxis: getYAxis,
             tooltip: {
+                shared:true,
                 useHTML: true,
                 shape: 'square',
                 headerShape: 'callout',
                 borderWidth: 0,
                 shadow: false,
                 formatter: function() {
-                    var htmlTip = "<table class='tooltip-table'><thead><tr class='text-center'><th colspan=4>"+ Highcharts.dateFormat('%e %B %Y', this.x) +"</th></tr></thead><tbody>"
-                    $.each(this.points, function(i, point) {
-                        htmlTip = htmlTip+"<tr><td><span style=color:" + point.color + ">\u25FC</span></td><td>"+ point.series.name+"</td><td> |  </td> <td>"+point.y +"</td></tr>" ;
-                    });
-                    htmlTip = htmlTip +"</tbody></table>"
-                    return htmlTip;
+                    if(this.series != undefined){
+                        var htmlTip = ""
+                        for(let i=0;i<this.series.userOptions.data.length;i++){
+                            if(this.series.userOptions.data[i].x === this.x){
+                                htmlTip = "<span>"+Highcharts.dateFormat('%B %e, %Y', this.x) +"</br>"+this.series.userOptions.data[i].text+":"+this.y+"</span>"
+                            }
+                        }
+                        return htmlTip;
+                    }else{
+                        var htmlTip = "<table class='tooltip-table'><thead><tr class='text-center'><th colspan=4>"+ Highcharts.dateFormat('%B %e, %Y', this.x) +"</th></tr></thead><tbody>"
+                        $.each(this.points, function(i, point) {
+                            htmlTip = htmlTip+"<tr><td><span style=color:" + point.color + ">\u25FC</span></td><td>"+ point.series.name+"</td><td> |  </td> <td>"+point.y +"</td></tr>" ;
+                        });
+                        htmlTip = htmlTip +"</tbody></table>"
+                        return htmlTip;
+                    }
                 }
             },
             plotOptions :{
                 series:{
                     color:"#0fc4b5",
                     marker:{ enabled:false }
-                }
+                },
             },
-            series : axesList,
-            exporting: {
-                chartOptions: {
-                    chart: {
-                        width: 1024,
-                        height: 768
-                    }
-                }
-            }
+            series : getAxesList
         };
 
         return(
@@ -172,7 +208,7 @@ export class HighChart extends React.Component {
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i className="fa fa-more-img" aria-hidden="true"></i>
                         </button>
-                        <button id="button" onClick={this.exportChart} >Export chart</button>
+                        {/* <button id="button" onClick={this.exportChart} >Export chart</button> */}
                         <ul role="menu" class="dropdown-menu dropdown-menu-right">
                             <li>
                             <a href="javascript:;" onClick={this.openZoomChart.bind(this, true)} >
@@ -198,7 +234,6 @@ export class HighChart extends React.Component {
                     </div>
                     <div className="clearfix"></div>
                 </div>
-                {/* chart data Popup */}
                 <div id="" className={this.modalCls} role="dialog">
                     <div className="modal-colored-header uploadData modal-dialog ">
                         <ViewChartData tabledata={this.props.tabledata} tableCls={this.tableCls} classId={this.props.classId} tableDownload={this.tableDownload}/>
