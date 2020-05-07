@@ -28,6 +28,7 @@
     "dateformat": "^2.0.0",
     "faker": "^4.1.0",
     "highcharts": "^8.0.4",
+    "highcharts-react-official": "^3.0.0",
     "moment": "^2.24.0",
     "primeicons": "^1.0.0",
     "primereact": "^3.0.0",

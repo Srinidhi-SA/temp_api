@@ -491,9 +491,12 @@ export function bytesToSize(bytes) {
 };
 
 export function downloadSVGAsPNG(chartClassId) {
-  var nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
-  var nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
-  var nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
+  var nodeList = []
+  var nodeList2 = []
+  var nodeList3 = []
+  nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+  nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
+  nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
 
   var line_graph = Array.from(nodeList);
   var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
