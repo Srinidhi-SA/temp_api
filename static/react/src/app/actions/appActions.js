@@ -1944,7 +1944,7 @@ export function fetchStockListSuccess(doc) {
 export function crawlDataForAnalysis(domains, companies,analysisName,list) {
     return (dispatch) => {
       dispatch(updateCreateStockPopup(false))
-      dispatch(openAppsLoader(APPSLOADERPERVALUE, "Extracting historic stock prices.... "));
+      dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200 && json.status!=false) {
           dispatch(crawlSuccess(json, dispatch))
