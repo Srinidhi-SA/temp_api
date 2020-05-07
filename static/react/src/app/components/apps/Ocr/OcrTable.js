@@ -364,10 +364,10 @@ export class OcrTable extends React.Component {
           <div class="col-sm-6">
             <a id="downloadAnchorElem" style={{ display: 'none' }}></a>
             {this.props.revDocumentFlag ? (<ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/" title="Reviewers"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
             </ol>) : (<ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+              <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/" title="Projects"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
               <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
             </ol>)
             }
@@ -377,25 +377,26 @@ export class OcrTable extends React.Component {
             <div class="col-sm-6 text-right">
               <div class="form-inline">
                 <OcrUpload uploadMode={'topPanel'} />
-                <div class="form-group xs-mr-5">
-                  <input type="text" id="search" class="form-control btn-rounded" onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
-                </div>
+				
                 <ReactTooltip place="top" type="light"/> 
-                <Button onClick={this.handleRecognise} data-tip="Select documents and click here to run ITE operation" style={{marginRight:4}}>Recognize</Button>
-                {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
-
+                <Button onClick={this.handleRecognise} title="Recognize" className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
+                
+				{/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
                 {/* <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
-                  <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
+                  
+				  <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
                   <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
+
                     <option value="json">JSON</option>
                     <option value="xml">XML</option>
                     <option value="csv">CSV</option>
                   </select>
                 </div> */}
-                                <ul className="export" >
+				
+				<ReactTooltip place="left" type="light" id="exportTip"/>
+                  <ul className="export" >
                   <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <ReactTooltip place="left" type="light" id="exportTip"/>
                       <span data-for="exportTip" style={{paddingRight: 10}} place="left" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
                         <i class="fa fa-paper-plane"></i>  Export
                       </span>
@@ -419,9 +420,15 @@ export class OcrTable extends React.Component {
           {this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? <ul className="nav nav-tabs" style={{ cursor: "default" }}>
             <li className="active"><a data-toggle="tab" id="backlog" name="Backlog"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are pending assignment are displayed here">Backlog</a></li>
             <li className=""><a data-toggle="tab" id="active" name="Active"  onClick={this.filterByImageStatus.bind(this)} data-tip="Documents that are assigned for review are displayed here">Active</a></li>
+			
+			<li className="pull-right">
+			<div class="form-group xs-mt-10 xs-mb-0">
+                  <input type="text" id="search" class="form-control btn-rounded" title="Search by name..." onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search by name..."></input>
+                </div>
+			</li>
           </ul> : "" : ""}
 
-          <div className="tab-content">
+          <div className="tab-content xs-pl-0 xs-pr-0 xs-pt-0 xs-mt-5">
             <div id="nav" className={this.state.tab === "pActive" ? "tab-pane fade in active" : "tab-pane fade"}>
               <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
@@ -455,14 +462,14 @@ export class OcrTable extends React.Component {
                             <span>Fields</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
-                            <li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a className="equal" style={{display:'inline-block',width:101}} >Equal to</a> 
-                             <input id='FEQL' className='fields filter_input' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></li>
-                            <li><a className="greater" style={{display:'inline-block',width:101}} >Greater than</a>
-                             <input id='FGTE' className='fields filter_input' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
-                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
-                             <input id='FLTE' className='fields filter_input'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
-                            <button className="btn btn-primary filterCheckBtn"  onClick={this.filterOcrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
+								<li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+								<li><a className="equal" style={{display:'inline-block',width:101}} >Equal to</a> 
+										<input id='FEQL' className='fields filter_input pull-right xs-mr-5' onChange={this.handleFil.bind(this,'FEQL')} type='number'></input></li>
+								<li><a className="greater" style={{display:'inline-block',width:101}} >Greater than</a>
+										<input id='FGTE' className='fields filter_input pull-right xs-mr-5' onChange={this.handleFil.bind(this,'FGTE')} type='number'></input></li>
+								<li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+									<input id='FLTE' className='fields filter_input pull-right xs-mr-5'  onChange={this.handleFil.bind(this,'FLTE')} type='number'></input></li>
+								<button className="btn btn-xs btn-primary pull-right xs-mt-10 xs-mr-5 filterCheckBtn"  onClick={this.filterOcrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
                          </ul>
                         </th>
                         <th class="dropdown" >
@@ -470,14 +477,15 @@ export class OcrTable extends React.Component {
                             <span>ACCURACY</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
-                            <li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                            <li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
-                             <input className='confidence filter_input'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
-                            <li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
-                             <input className='confidence filter_input' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
-                            <li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
-                             <input className='confidence filter_input' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
-                            <button className="btn btn-primary filterCheckBtn" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
+								<li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'confidence','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
+								<li><a className="equal" style={{display:'inline-block',width:101}}>Equal to</a>
+										<input className='confidence filter_input pull-right xs-mr-5'  id='CEQL' onChange={this.handleFil.bind(this,'CEQL')} type='number' ></input></li>
+								<li><a className="greater" style={{display:'inline-block',width:101}}>Greater than</a>
+										<input className='confidence filter_input pull-right xs-mr-5' id='CGTE' onChange={this.handleFil.bind(this,'CGTE')} type='number' ></input></li>
+								<li><a className="less" style={{display:'inline-block',width:101}}>Less than</a>
+										<input className='confidence filter_input pull-right xs-mr-5' id='CLTE' onChange={this.handleFil.bind(this,'CLTE')} type='number'></input></li>
+								<button className="btn btn-xs btn-primary filterCheckBtn pull-right xs-mt-10 xs-mr-5" onClick={this.filterOcrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
+ 
                           </ul>
                         </th>
                         {store.getState().ocr.tabActive=='active'?<th class="dropdown" >
