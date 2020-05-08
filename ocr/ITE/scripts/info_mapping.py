@@ -1,5 +1,6 @@
 import json
 import sys
+from ocr.ITE.scripts.ui_corrections import ui_corrections
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
@@ -8,6 +9,10 @@ class Final_json:
 
     def __init__(self, final_json, history_json=None):
         self.json = final_json
+        try:
+            self.json = self.final_json_para_corrections(self.json)
+        except:
+            pass
         self.table_count = len(self.json['tables'])
         self.para_count = len(self.json['paragraphs'])
         self.history_json = history_json
@@ -54,8 +59,9 @@ class Final_json:
 
                 if temp_polygon.contains(p):
                     for k, d in enumerate(final_json['paragraphs']['p_' + str(i + 1)][j]['words']):
+                        print(d)
                         bb = list(d.values())[0]
-                        print(list(d.values())[1])
+                        # print(list(d.values())[1])
                         if cord[0] in range(bb['p1'][0], bb['p3'][0]) and cord[1] in range(bb['p1'][1], bb['p3'][1]):
                             #                            old_key = list(d.keys())[0]
                             final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k] = {}
@@ -69,6 +75,49 @@ class Final_json:
                     pass
 
         return False
+
+    def final_json_para_corrections(self, final_json):
+        paradata = final_json["paragraphs"]
+        for i in paradata:
+            for j in paradata[i]:
+                for k in range(len(j["words"])):
+                    temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
+                                                    "p3": j["words"][k]["boundingBox"][4:6]}}
+                    j["words"][k].clear()
+                    j["words"][k].update(temp)
+        final_json["paragraphs"] = paradata
+        return final_json
+
+    """
+    def check_update_paras(self, final_json, cord, inp):
+        p = Point(cord)
+        for i in range(len(final_json['paragraphs'])):
+            for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):  ## p_i contains a list of lines
+                polygon_coordinates_list = line['boundingBox'][:2], line['boundingBox'][2:4], line['boundingBox'][4:6], \
+                                           line['boundingBox'][6:]
+                temp_polygon = Polygon(polygon_coordinates_list)
+
+                if temp_polygon.contains(p):
+                    for k, d in enumerate(
+                            final_json['paragraphs']['p_' + str(i + 1)][j]['words']):  ## d  is each word dict
+                        # bb = list(d.values())[0]
+                        # print(list(d.values())[1])
+                        bb = d['boundingBox']
+
+                        if cord[0] in range(bb[0], bb[4]) and cord[1] in range(bb[1], bb[5]):
+                            old_key = list(d.keys())[0]
+                            final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k] = {}
+                            final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k][inp] = bb
+                            final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['flag'] = False
+                            # self.update_history(inp, bb)
+                            return True
+                        else:
+                            pass
+                else:
+                    pass
+
+        return False
+    """
 
     def check_update_tables(self, final_json, cord, inp):
         p = Point(cord)

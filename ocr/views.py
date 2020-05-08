@@ -33,6 +33,7 @@ from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route, api_view
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 
 from api.datasets.helper import convert_to_string
@@ -222,6 +223,52 @@ def avg_reviews_per_reviewer(totalReviewers, count):
     except:
         return 0
 
+@api_view(['GET'])
+def get_recent_activity(request):
+    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+    from django.contrib.contenttypes.models import ContentType
+
+    user = request.user
+    recent_activity = []
+    group=Group.objects.get(user=user.id)
+
+    if group.name == 'ReviewerL1' or  group.name == 'ReviewerL2':
+        recentActions = LogEntry.objects.filter(user=user.id).order_by('-action_time')[:30]
+
+        for each in recentActions:
+            recent_activity.append(
+                {
+                    "Message":each.__str__().replace("\"", ""),
+                    "Object":each.object_repr,
+                }
+            )
+        return JsonResponse({"message": "success", "Activity":recent_activity})
+    else:
+        recent_activity = {}
+        usersList = User.objects.filter(
+            groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+        ).values_list('username', flat=True)
+
+        for user in usersList:
+            activity=[]
+            userID = User.objects.get(username=user).id
+            recentActions = LogEntry.objects.filter(user=userID).order_by('-action_time')[:30]
+
+            for each in recentActions:
+                activity.append(
+                    {
+                        "Message":each.__str__().replace("\"", ""),
+                        "Object":each.object_repr,
+                        "user":each.user.username
+                    }
+                )
+            recent_activity[user]=activity
+
+        return JsonResponse({
+            "message": "success",
+            "Activity":recent_activity
+            #"Users":usersList
+        })
 
 # -------------------------------------------------------------------------------
 
@@ -894,6 +941,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         final_json = json.loads(image_queryset.final_result)
         google_response = json.loads(image_queryset.conf_google_response)
         update_history = json.loads(image_queryset.analysis_list)
+        if not update_history:
+            update_history = {}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         final_json_obj = Final_json(final_json, update_history)
         final_json, update_history = final_json_obj.update_final_json([x, y], word)
@@ -1009,7 +1058,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def confidence_filter(self, request):
         data = request.data
-        user_input = 1.0
+        user_input = 0.5
         if 'filter' in data:
             user_input = data['filter']
         slug = data['slug']

@@ -31,7 +31,9 @@ export class OcrImage extends React.Component {
       text: "",
       imageDetail: "",
       heightLightVal: "100",
-      zoom: "Reset"
+      zoom: "Reset",
+      x: "",
+      y: "",
     }
   }
 
@@ -66,21 +68,25 @@ export class OcrImage extends React.Component {
     // ctx.rect(x, y, 100, 50);
     // ctx.stroke();
     if (this.state.zoom == "Reset") {
+      this.setState({x:canvasX, y:canvasY});
       this.extractText(canvasX, canvasY);
     }
     else if (this.state.zoom == "110%") {
       var xaxis = canvasX / 1.10;
       var yaxis = canvasY / 1.10;
+      this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
     else if (this.state.zoom == "125%") {
       var xaxis = canvasX / 1.25;
       var yaxis = canvasY / 1.25;
+      this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
     else if (this.state.zoom == "150%") {
       var xaxis = canvasX / 1.50;
       var yaxis = canvasY / 1.50;
+      this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
     let canvasBack = document.getElementById("ocrScroll");
@@ -216,7 +222,7 @@ export class OcrImage extends React.Component {
     return fetch(API + '/ocr/ocrimage/update_word/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ "slug": this.props.imageSlug, "index": index, "word": this.state.text })
+      body: JSON.stringify({ "slug": this.props.imageSlug, "x": this.state.x, "y": this.state.y, "word": this.state.text })
     }).then(response => response.json())
       .then(data => {
         if (data.message === "SUCCESS") {
@@ -294,6 +300,7 @@ export class OcrImage extends React.Component {
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
               <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
+ 
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>

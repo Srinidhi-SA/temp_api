@@ -120,17 +120,18 @@ export class OcrConfigure extends React.Component {
 
   render() {
     return (
-      <div className="side-body main-content">
+      <div className="side-body">
           <OcrTopNavigation/>
-          <section className="ocr_section">
+		  <div className="main-content">
+          <section className="ocr_section box-shadow">
             <div className="container-fluid">
-                <h4 className="nText">Stages</h4>
+                <h3 className="nText">Stages</h3>
                 <ul className="nav nav-tabs">
                   <li className={this.props.configureTabSelected === "initialReview"?"active":""}>
-                    <a data-toggle="tab" href="#initialReview" name="initialReview" onClick={this.saveSelectedConfigureTab.bind(this)}>Initial Review</a>
+                    <a data-toggle="tab" href="#initialReview" name="initialReview" title="Initial Review" onClick={this.saveSelectedConfigureTab.bind(this)}>Initial Review</a>
                   </li>
                   <li>
-                    <a data-toggle="tab" href="#secondaryReview" name="secondaryReview" onClick={this.saveSelectedConfigureTab.bind(this)}>Secondary Review</a>
+                    <a data-toggle="tab" href="#secondaryReview" name="secondaryReview" title="Secondary Review" onClick={this.saveSelectedConfigureTab.bind(this)}>Secondary Review</a>
                   </li>
                 </ul>
                 <div className="tab-content">
@@ -142,13 +143,14 @@ export class OcrConfigure extends React.Component {
                   </div>
                   <div className="row">
                       <div className="col-md-6 col-md-offset-6 text-right" style={{marginTop:"10px",marginBottom:"10px"}}>
-                          <button className="btn btn-default" onClick={this.clearReviewerConfigStates.bind(this)}>Cancel</button> 
-                          <button className="btn btn-primary" onClick={this.submitReviewerConfig.bind(this)}><i className="fa fa-check-circle"></i> &nbsp; Save</button>
+                          <button className="btn btn-default" title="Cancel" onClick={this.clearReviewerConfigStates.bind(this)}>Cancel</button> 
+                          <button className="btn btn-primary" title="Save" onClick={this.submitReviewerConfig.bind(this)}><i className="fa fa-check-circle"></i> &nbsp; Save</button>
                       </div>
                   </div>
                 </div>
             </div>
             </section>
+			</div>
       </div>
     );
   }

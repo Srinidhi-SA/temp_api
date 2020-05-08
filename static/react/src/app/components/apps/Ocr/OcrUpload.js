@@ -216,11 +216,13 @@ export class OcrUpload extends React.Component {
       optionsTemp.push({"value":this.props.s3FileList[i],"label":this.props.s3FileList[i]});
     }
     return (
-      <div style={{ display:"inline-block" ,marginRight:'10px'}}>
+ 
+      <div style={{ display:"inline-block" }}>
       <ReactTooltip place="top" type="light"/> 
       {this.props.uploadMode == 'topPanel'?
       <Button bsStyle="primary" onClick={this.openPopup.bind(this)} data-tip="Upload Documents" ><i class="fa fa-upload"></i></Button>:
       <div class="icon " onClick={this.openPopup.bind(this)}><i  class="fa fa-upload fa-2x xs-mt-10"></i></div>}
+ 
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
           <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">
             <Modal.Header closeButton>
@@ -274,17 +276,17 @@ export class OcrUpload extends React.Component {
                 <div id="ocrS3" className="tab-pane" style={{height:"260px",position:"relative"}}>
                   {!this.props.s3Uploaded &&
                     <div className="s3Detail">
-                        <label className="col-sm-4 mandate">Bucket Name</label>
+                        <label className="col-sm-4 mandate" for="bucket_name">Bucket Name</label>
                         <div className="col-sm-8 s3DetailsInput">
                           <input type="text" id="bucket_name" name="bucket_name" onInput={this.saveS3Details.bind(this)} className="form-control bucket_name" autoComplete="off"/>
                         </div>
-                        <label className="col-sm-4 mandate">Access key</label>
+                        <label className="col-sm-4 mandate" for="access_key_id">Access key</label>
                         <div className="col-sm-8 s3DetailsInput">
-                          <input type="text" name="access_key_id" onInput={this.saveS3Details.bind(this)} className="form-control access_key_id" autoComplete="off"/>
+                          <input type="text" name="access_key_id" id="access_key_id" onInput={this.saveS3Details.bind(this)} className="form-control access_key_id" autoComplete="off"/>
                         </div>
-                        <label className="col-sm-4 mandate">Secret key</label>
+                        <label className="col-sm-4 mandate" for="secret_key">Secret key</label>
                         <div className="col-sm-8 s3DetailsInput">
-                          <input type="text" name="secret_key" onInput={this.saveS3Details.bind(this)} className="form-control secret_key" autoComplete="off"/>
+                          <input type="text" name="secret_key" id="secret_key" onInput={this.saveS3Details.bind(this)} className="form-control secret_key" autoComplete="off"/>
                         </div>
                         {!this.props.s3Uploaded && this.props.s3FileFetchSuccessFlag && (this.props.s3FileList != "") &&
                             <div>
@@ -294,7 +296,7 @@ export class OcrUpload extends React.Component {
                               </div>
                             </div>
                         }
-                        <Button id="fetchS3FileBtn" bsStyle="primary" onClick={this.validateAndFetchS3Files.bind(this)}>Fetch Files</Button>
+                        <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)}><i class="fa fa-files-o"></i> Fetch Files</Button>
                     </div>
                   }
                   {this.props.s3Loader && (this.props.s3Uploaded === false) &&
