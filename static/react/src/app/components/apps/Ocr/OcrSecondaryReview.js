@@ -112,7 +112,7 @@ export class OcrSecondaryReview extends React.Component{
         }
         return (
             <div className="ocrSecondaryReview">
-                <div className="row">
+                <div className="row alert alert-gray">
                     <div className="col-md-12">
                         <div className="form-group">
                             <div className="checkbox checbox-switch switch-success">
@@ -126,9 +126,8 @@ export class OcrSecondaryReview extends React.Component{
                         </div>
                     </div>
                 </div>
-                <hr/>
-                <div>
-                    <div className="row">
+                  
+                    <div className="row alert alert-gray">
                     <div className="col-md-12">
                         <h4>Select sampling procedure for Audit</h4>
                         <div className="row col-md-8" style={{margin:"0px"}}>
@@ -159,8 +158,8 @@ export class OcrSecondaryReview extends React.Component{
                         </div>
                     </div>
                 </div>
-                <hr/>
-                <div className="row">
+                 
+                <div className="row alert alert-gray">
                     <div className="col-md-12">
                         <h4>Reviewers 
                             <span id="sRCountVal">
@@ -168,14 +167,13 @@ export class OcrSecondaryReview extends React.Component{
                             </span>
                         </h4>
                         <div className="pull-right xs-mb-10">
-                            <input type="text" id="searchSR" className="form-control" style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchSRElement.bind(this)}/>
+                            <input type="text" id="searchSR" className="form-control" title="Search Name..." style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchSRElement.bind(this)}/>
                         </div>
                         <div className="clearfix"></div>
                         <div className="table-responsive">
                             {sReviewerTable}
-                        </div>
-                        <hr/>
-                        <div className="row">
+                        </div> 
+                        <div className="col-md-12 alert alert-white xs-mt-15">
                             <div className="col-md-12">
                                 <h4>How would you like to assign any remaining documents?</h4>
                                 <div className="ma-radio">
@@ -192,10 +190,8 @@ export class OcrSecondaryReview extends React.Component{
                                 </div>
                             </div>
                         </div>
-                        <hr/>
                     </div>
-                </div>
-                </div>
+                </div> 
             </div>
         );
     }

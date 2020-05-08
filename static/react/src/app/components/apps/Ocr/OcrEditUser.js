@@ -177,7 +177,7 @@ export class OcrEditUser extends React.Component{
                     <div id="resetMsg"></div>
                     {!this.props.enableEditingFlag?<Button bsStyle="primary" id="editUser" onClick={this.enableEditingUser.bind(this)}>Edit</Button>:""}
                     {this.props.enableEditingFlag && !this.props.editUserSuccessFlag?<Button bsStyle="primary" id="saveEditedUser" onClick={this.submitEditedForms.bind(this)}>Save</Button>:""}
-                    <Button bsStyle="primary" onClick={this.closeEditUserModal.bind(this)}>Close</Button>
+                    <Button bsStyle="default" onClick={this.closeEditUserModal.bind(this)}>Close</Button>
                 </Modal.Footer>
             </Modal>
         );

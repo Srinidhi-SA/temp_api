@@ -153,8 +153,8 @@ export class RevDocTable extends React.Component {
             <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }}>{item.ocrImageData.name}</Link></td>
-            <td>{item.status}</td>
+            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
+             <td>{item.status}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>
             <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
