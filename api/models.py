@@ -2742,7 +2742,7 @@ class StockDataset(models.Model):
         self.save()
 
     def crawl_news_data(self):
-
+        from api.StockAdvisor.crawling.news_parser import NewJsonParse
         extracted_data = []
         stock_symbols = json.loads(self.stock_symbols)
         for key in stock_symbols:
@@ -2750,6 +2750,12 @@ class StockDataset(models.Model):
             self.job.messages = update_stock_sense_message(self.job, company_name)
             self.job.save()
             stock_data = fetch_news_sentiments_from_newsapi(company_name, self.domains)
+            try:
+                obj = NewJsonParse(stock_data)
+                stock_data = obj.remove_attributes()
+            except:
+                print("Issue while removing unwanted IBM watson attributes")
+
             self.write_to_concepts_folder(
                 stockDataType="news",
                 stockName=key,

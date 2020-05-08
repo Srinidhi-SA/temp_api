@@ -19,6 +19,7 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		appsLoaderText:store.apps.appsLoaderText,
 		appsLoadedText:store.apps.appsLoadedText,
 		appsLoaderImage:store.apps.appsLoaderImage,
+		dataLoadedText:store.datasets.dataLoadedText,
 		currentAppId: store.apps.currentAppId,
 	    modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
@@ -38,19 +39,47 @@ export class AppsLoader extends React.Component {
 
 
 
-componentWillUpdate(){
-            var getText = [];
-            if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.appsLoaderPerValue >= 0) && (Object.keys(this.props.appsLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.appsLoadedText)
-                this.makeUL(getText);
-            }
-    }
+	componentWillUpdate(){
+   	var getText = [];
+		if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
+				$("#loadingMsgs1").empty()
+				$("#loadingMsgs2").empty()
+		}
+		else if((this.props.appsLoaderPerValue >= 0) && (Object.keys(this.props.appsLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){		 
+			if(window.location.pathname == "/apps-stock-advisor/"){
+		    return false
+		 	}
+			getText = Object.values(this.props.appsLoadedText)
+			this.makeUL(getText);
+		}
+}
+	 
+	componentDidUpdate(){
+		 if(window.location.pathname == "/apps-stock-advisor/" && (Object.keys(this.props.dataLoadedText).length >0) ){
+		 	 var node = document.createElement("I");
 
+			(document.getElementById("loadingMsgs").innerText=='Please wait while analysing...'||
+			this.props.appsLoaderText==document.getElementById("loadingMsgs").innerText.split(': ')[1])
+			?"":document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
 
+		  	var indexVal= Object.values(this.props.dataLoadedText).indexOf(this.props.appsLoaderText)
+		   var updatedMsgs =Object.values(this.props.dataLoadedText).slice(indexVal,Object.values(this.props.dataLoadedText).length)
+
+		   this.loadMsgs(indexVal,updatedMsgs)
+		   } 
+	   }
+
+	 loadMsgs(indexVal,updatedMsgs){ 
+		var x = document.getElementById("loadingMsgs");
+		var x1 = document.getElementById("loadingMsgs1");
+		var x2 = document.getElementById("loadingMsgs2");
+		setTimeout(() => {
+		x.innerHTML = "Step " + (indexVal+1) + ": " +updatedMsgs[0]; 
+		x1.innerHTML = updatedMsgs[1]==undefined?"":"Step " + (indexVal+2) + ": " +updatedMsgs[1];
+		x2.innerHTML =updatedMsgs[2]==undefined?"":"Step " + (indexVal+3) + ": " + updatedMsgs[2];
+		 }, 3000);
+		
+		}
 	openModelPopup(){
   		this.props.dispatch(openAppsLoaderValue())
   	}
@@ -311,10 +340,10 @@ componentWillUpdate(){
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-							<div class="modal-steps" id="loadingMsgs">
+							<div class="modal-steps active" id="loadingMsgs">
 								Please wait while analysing...
 							</div>
-							<div class="modal-steps active" id="loadingMsgs1">
+							<div class="modal-steps " id="loadingMsgs1">
                                 </div>
                                 <div class="modal-steps" id="loadingMsgs2">
                                 </div>

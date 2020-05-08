@@ -20714,7 +20714,7 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .modal-steps { margin-left:10px; }
 .modal-steps.active { color:#FFFFFF; }
 
-.ocr_section { background: #f6f6f6; padding-top: 15px; border-bottom-left-radius: 10px;
+.ocr_section { background: #f6f6f6; padding-top: 20px; border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px; overflow: hidden; padding-bottom: 15px; }
 
 
@@ -22438,8 +22438,8 @@ width: 24px;
   z-index:9999;
 }
 .ocrImgTitle{
-  margin-bottom: 20px;
-  display: block;
+  margin-bottom: 25px;
+  display: inline-block;
   font-size: 16px;
   height: 20px;
 }
@@ -22803,9 +22803,10 @@ button[disabled], html .filter_input[disabled] {
   list-style: none;
   text-align: center;
   background: white;
-  border: 1px solid #dedede;
+  border: 1px solid #00998c;
   padding: 3.7px 10px;
   margin-bottom: 0px;
+  border-radius: 2px;
 }
 .export ul{
   left: 16px;
@@ -22825,4 +22826,75 @@ button[disabled], html .filter_input[disabled] {
   border-right: 6px solid transparent;
   border-left: 6px solid transparent;
   border-top: 6px dashed;
+}
+.tickmark::before{
+  content: '\f00c';
+  font-family: "FontAwesome";
+  color: #ffffff;
+}
+#myCanvas{
+  -webkit-transition: all 2s ease;
+  -moz-transition: all 2s ease;
+  -ms-transition: all 2s ease;
+  transition: all 2s ease;
+}
+#scrollOcr{
+  z-index: 9;
+}
+
+/**** OCR STYLES **************/
+.cst_ocr_tabs {
+    background: #2e3c56;
+    border-radius: 4px;
+    overflow: hidden;
+    border-radius: 20px 0 0 20px;
+    /* border-top-right-radius: 10px; */
+}
+
+.cst_ocr_tabs li a, .cst_ocr_tabs li a:active, .cst_ocr_tabs li a:link {
+    color: #aeb0b1;
+    text-transform: capitalize;
+    background: none;
+    text-transform: uppercase;
+}
+.cst_ocr_tabs li a.active {
+    background: #232e42;
+    color: #ffffff;
+}
+.text-light {
+    color: #d0d6d6;
+}
+.bg-white {
+	 background:#FFFFFF; 
+}
+
+/* .export {
+    list-style: none;
+    padding: 6px 10px;     border-color: #d1d1d1;
+}
+.export ul {
+    left: -11px;
+    margin-top: 4px;
+min-width: 102px; }
+.export .dropdown-menu > li > a:hover {
+  background-color: #00998c ;
+  color: #FFFFFF;
+} */
+.btn-color {
+    color: #00998c;
+    border-color: #00998c;
+}
+.form-control {border: 1px solid #00998c;}
+.btn {
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.nav-tabs > li a {font-weight: 500;}
+.btn-warning { background-color: #FFC107;
+    border-color: #FFC107; }
+	
+.alert-gray {
+    background: #f6f6f6;
+    padding: 10px;
+    margin: 10px 5px;
 }

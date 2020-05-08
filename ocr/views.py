@@ -941,6 +941,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         final_json = json.loads(image_queryset.final_result)
         google_response = json.loads(image_queryset.conf_google_response)
         update_history = json.loads(image_queryset.analysis_list)
+        if not update_history:
+            update_history = {}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         final_json_obj = Final_json(final_json, update_history)
         final_json, update_history = final_json_obj.update_final_json([x, y], word)
@@ -1056,7 +1058,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def confidence_filter(self, request):
         data = request.data
-        user_input = 1.0
+        user_input = 0.5
         if 'filter' in data:
             user_input = data['filter']
         slug = data['slug']

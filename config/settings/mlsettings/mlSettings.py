@@ -515,6 +515,5 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
             "description": "This is an implementation of PyTorch algorithm"
         }
-
     ]
 }

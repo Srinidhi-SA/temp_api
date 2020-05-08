@@ -7,7 +7,7 @@ from google.protobuf.json_format import MessageToJson
 from ocr.ITE.scripts.apis import fetch_google_response
 import cv2
 import json
-from ocr.ITE.scripts.info_mapping import update_u1
+# from ocr.ITE.scripts.info_mapping import update_u1
 
 
 class ui_corrections:
@@ -69,6 +69,7 @@ class ui_corrections:
         for i in paradata:
             for j in paradata[i]:
                 for k in range(len(j["words"])):
+                    print('>>> ', j["words"][k])
                     temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
                                                     "p3": j["words"][k]["boundingBox"][4:6]}}
                     j["words"][k].clear()
@@ -169,7 +170,7 @@ class ui_corrections:
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
                     if (m['flag'] == 'True'):
-                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 0, 255), 1)
+                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
         for k in final_json_to_flag["tables"]:
             for l in final_json_to_flag["tables"][k]:
                 for m in final_json_to_flag["tables"][k][l]["words"]:
@@ -181,7 +182,7 @@ class ui_corrections:
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.6, color=(0, 0, 0), thickness=1)
                     if (m['flag'] == 'True'):
-                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 0, 255), 1)
+                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
         return texted_image
 
 
@@ -190,8 +191,10 @@ def ui_flag_v2(mask, final_json, google_response, gen_image, percent=100):
     final_json = final_json
 
     adsfff = ui_corrections(mask, final_json, google_response)
-
-    final_json = adsfff.final_json_para_corrections(final_json)
+    try:
+        final_json = adsfff.final_json_para_corrections(final_json)
+    except:
+        pass
     final_json = adsfff.default_all_words_flag_to_false(final_json)
     needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
 
@@ -223,11 +226,15 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
     for k in final_json["paragraphs"]:
         for l in final_json["paragraphs"][k]:
             for m in l['words']:
-                #                print(m)
-                p1 = list(m.values())[0][0:2]
-                p3 = list(m.values())[0][4:6]
+                p1 = m['boundingBox'][0:2]
+                p3 = m['boundingBox'][4:6]
+                '''for val in list(m.values()):
+                    if isinstance(val, list):
+                        p1 = val[0:2]
+                        p3 = val[4:6]'''
                 if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
-                    return True, list(m.values())[1]
+                    return True, m['text']
+                    # return True, list(m.values())[1]
 
     for k in final_json["tables"]:
         for l in final_json["tables"][k]:

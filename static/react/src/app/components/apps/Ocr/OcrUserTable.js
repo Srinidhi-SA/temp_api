@@ -181,32 +181,30 @@ export class OcrUserTable extends React.Component{
                             {tabOptions}
                         </ul>
                     </div>
-                    <div className="col-md-1">
-                        <div className="btn-group ocrAddUser">
-                            <a className="btn btn-info" onClick={this.openAddUserPopup.bind(this)}>
-                                <i className ="fa fa-user-plus fa-lg">
+                    
+                    <div className="col-md-4 text-right">
+					 <a className="btn btn-primary" onClick={this.openAddUserPopup.bind(this)} title="Add User">
+                                <i className ="zmdi zmdi-account-add zmdi-hc-lg">
                                     <OcrAddUser/>
                                 </i>
                             </a>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="btn-group actionOcrUser">
-                            <button type="button" className ="btn btn-default dropdown-toggle" data-toggle="dropdown">ACTION <span className ="caret"></span></button>
+                        <div className="btn-group xs-ml-5 xs-mr-5">
+						
+                            <button type="button" className ="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Action">ACTION <span className ="caret"></span></button>
                             <ul role="menu" className ="dropdown-menu dropdown-menu-right">
-                                <li><a name="actionType" id="activate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-plus-circle text-primary"></i> Activate</a></li>
-                                <li><a name="actionType" id="deactivate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-minus-circle text-warning"></i> Deactivate</a></li>
-                                <li><a name="actionType" id="delete" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-trash text-danger"></i> Delete</a></li>
-                                <li><a name="actionType" id="edit" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-pencil-square-o text-secondary"></i> Edit</a></li>
+                                <li><a name="actionType" title="Activate" id="activate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-plus-circle text-primary xs-mr-5"></i> Activate</a></li>
+                                <li><a name="actionType" title="Deactivate" id="deactivate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-minus-circle text-warning xs-mr-5"></i> Deactivate</a></li>
+                                <li><a name="actionType" title="Delete" id="delete" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-trash text-danger xs-mr-5"></i> Delete</a></li>
+                                <li><a name="actionType" title="Edit" id="edit" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-pencil-square-o text-secondary xs-mr-5"></i> Edit</a></li>
                             </ul>
                         </div>
                         <div className="pull-right searchOcrUser">
-                            <input type="text" id="searchOcrUser" className="form-control btn-rounded" placeholder="Search User..." onKeyUp={this.handleSearchElement.bind(this)} />
+                            <input type="text" id="searchOcrUser" title="Search User..." className="form-control btn-rounded" placeholder="Search User..." onKeyUp={this.handleSearchElement.bind(this)} />
                             <button className="close-icon"  style={{paddingTop: "0px", marginLeft:"59%"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
                         </div>
                     </div>
                 </div>
-                <div className = "table-responsive box-shadow">
+                <div className = "table-responsive box-shadow xs-mt-5">
                     {manageUsersTable}
                 </div>
                 <div className="ma-datatable-footer"  id="idPagination">
