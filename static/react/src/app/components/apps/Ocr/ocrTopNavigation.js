@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
-import { saveDocumentPageFlag } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag,selectedReviewerDetails } from '../../../actions/ocrActions';
 import { API } from "../../../helpers/env";
 import { dashboardMetrics } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
@@ -20,6 +20,10 @@ export class OcrTopNavigation extends React.Component {
 
   handleRoute(){ //Making docFlag false on click of navLink,to load project & reviewer table,Without this proDoc table is getting loaded
   this.props.dispatch(saveDocumentPageFlag(false)) 
+  this.props.dispatch(selectedReviewerDetails('',''))
+  this.props.dispatch(selectedProjectDetails('',''))
+
+
   }
   getHeader = (token) => {
     return {
