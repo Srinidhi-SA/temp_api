@@ -63,7 +63,7 @@ export class HighChart extends React.Component {
                 axesList[axesList.length-1].name=chartData.data.columns[i][0];
                 axesList[axesList.length-1].id="series"+(axesList.length-1);
                 axesList[axesList.length-1]["data"]=[];
-                // axesList[axesList.length-1]["yAxis"]=axesList.length-1;
+                // axesList[axesList.length-1]["yAxis"]=axesList.length-1;          //Creates multiple y axis lines
                 for(j=1;j<chartData.data.columns[i].length;j++){
                     axesList[axesList.length-1]["data"].push([Date.parse(this.props.xdata[j-1]),chartData.data.columns[i][j]])
                     array1.push(chartData.data.columns[i][j])
@@ -98,6 +98,7 @@ export class HighChart extends React.Component {
 
         let getYAxis = [];
         getYAxis.push({});
+        // getYAxis[0].visible= true;
         getYAxis[0].opposite=false;
         getYAxis[0].crosshair = {};
         getYAxis[0].crosshair.width = 2;
@@ -110,6 +111,7 @@ export class HighChart extends React.Component {
         
         for(let i=1;i<axesList.length;i++){
             getYAxis.push({});
+            // getYAxis[0].visible= false;
             getYAxis[i].crosshair = {};
             getYAxis[i].crosshair.width = 2;
             getYAxis[i].crosshair.color = "#f1f14e";
