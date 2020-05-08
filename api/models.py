@@ -319,7 +319,10 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
         datasource_details = ""
-        inputFileSize = os.stat(self.input_file.path).st_size
+        try:
+            inputFileSize = os.stat(self.input_file.path).st_size
+        except:
+            inputFileSize = ""
         if self.datasource_type in ['file', 'fileUpload']:
             inputFile = self.get_input_file()
 
