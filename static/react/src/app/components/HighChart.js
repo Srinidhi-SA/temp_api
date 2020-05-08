@@ -3,12 +3,9 @@ import store from "../store";
 import {connect} from "react-redux";
 import Highcharts from "highcharts";
 import ReactHighstock from "react-highcharts/ReactHighstock";
-import { showChartData, showZoomChart } from "../actions/signalActions";
-import {ViewChart} from "./common/ViewChart";
+import { showChartData } from "../actions/signalActions";
 import {ViewChartData} from "./common/ViewChartData";
-import { downloadSVGAsPNG } from "../helpers/helper";
 import { API } from "../helpers/env";
-require('highcharts/modules/exporting')(Highcharts)
 
 @connect((store) => {
     return {
@@ -24,20 +21,10 @@ export class HighChart extends React.Component {
         this.tableCls = "table-responsive table-area table" + props.classId;
         this.chartData = "";
         this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
-        this.state = { seconds: 0 };
-        this.chart = {};
-        this.exportChart = () => {
-            console.log(this.chart);
-            this.chart.exportchart();
-        };
     }
 
-    componentDidMount() {
-        this.chart = this.refs.chart.chart;
-      }
-
     openZoomChart(flag) {
-        this.props.dispatch(showZoomChart(flag, this.props.classId));
+        this.props.dispatch(showZoomHighChart(flag, this.props.classId));
     }
 
     openChartData(flag) {
@@ -45,7 +32,10 @@ export class HighChart extends React.Component {
     }
 
     downloadSVG(){
-      downloadSVGAsPNG("chartDownload"+this.props.classId)
+        saveSvgAsPng(document.getElementsByClassName("highChartArea")[0].children[0].children[0].children[0], "Stock Performance Analysis.png", {
+            backgroundColor: "white",
+            height: "500"
+          });
     }
 
     render(){
@@ -98,14 +88,14 @@ export class HighChart extends React.Component {
 
         let getYAxis = [];
         getYAxis.push({});
-        // getYAxis[0].visible= true;
         getYAxis[0].opposite=false;
+        getYAxis[0].min=0;
         getYAxis[0].crosshair = {};
         getYAxis[0].crosshair.width = 2;
-        getYAxis[0].crosshair.color = "#f1f14e";
+        getYAxis[0].crosshair.color = "#80bdf3";
         getYAxis[0].title = {};
         getYAxis[0].title.text = chartData.axis.y.label.text;
-        getYAxis[0].title.offset = 30;
+        getYAxis[0].title.offset = 40;
         getYAxis[0].title.style = {}
         getYAxis[0].title.style.fontSize = "13px"
         
@@ -114,16 +104,16 @@ export class HighChart extends React.Component {
             // getYAxis[0].visible= false;
             getYAxis[i].crosshair = {};
             getYAxis[i].crosshair.width = 2;
-            getYAxis[i].crosshair.color = "#f1f14e";
+            getYAxis[i].crosshair.color = "#80bdf3";
         }
         //To be added for bar chart
         // resize: { enabled: false },
-                // height: '80%',
-                // {
-                //     labels: { enabled: false },
-                //     top:"80%",
-                //     height: '20%',
-                // }
+        // height: '80%',
+        // {
+        //     labels: { enabled: false },
+        //     top:"80%",
+        //     height: '20%',
+        // }
 
         const config = {
             chart: { type: "spline" },
@@ -158,33 +148,30 @@ export class HighChart extends React.Component {
                 type: 'datetime',
                 align: "left",
                 labels:{ format:"{value:%d %b \'%y}" },
-                crosshair : { width:2, color:"#f1f14e" },
+                crosshair : { width:2, color:"#80bdf3" },
                 title: { 
                     text: "<span style=color:#333333>"+chartData.axis.x.label.text+"</span>",
-                    style: {
-                        fontSize:"13px",
-                    },
-                    offset: 20,
+                    style: { fontSize:"13px" },
+                    offset: 40,
                 },
             },
             yAxis: getYAxis,
             tooltip: {
-                shared:true,
                 useHTML: true,
-                shape: 'square',
                 headerShape: 'callout',
-                borderWidth: 0,
-                shadow: false,
+                style:{fontSize:"12px"},
+                backgroundColor: "white",
                 formatter: function() {
                     if(this.series != undefined){
                         var htmlTip = ""
                         for(let i=0;i<this.series.userOptions.data.length;i++){
                             if(this.series.userOptions.data[i].x === this.x){
-                                htmlTip = "<span>"+Highcharts.dateFormat('%B %e, %Y', this.x) +"</br>"+this.series.userOptions.data[i].text+":"+this.y+"</span>"
+                                htmlTip = "<span>"+Highcharts.dateFormat('%B %e, %Y', this.x) +"</br>"+this.series.userOptions.data[i].text+" :"+this.y+"</span>"
                             }
                         }
                         return htmlTip;
-                    }else{
+                    }
+                    else{
                         var htmlTip = "<table class='tooltip-table'><thead><tr class='text-center'><th colspan=4>"+ Highcharts.dateFormat('%B %e, %Y', this.x) +"</th></tr></thead><tbody>"
                         $.each(this.points, function(i, point) {
                             htmlTip = htmlTip+"<tr><td><span style=color:" + point.color + ">\u25FC</span></td><td>"+ point.series.name+"</td><td> |  </td> <td>"+point.y +"</td></tr>" ;
@@ -198,7 +185,7 @@ export class HighChart extends React.Component {
                 series:{
                     color:"#0fc4b5",
                     marker:{ enabled:false }
-                },
+                }
             },
             series : getAxesList
         };
@@ -210,13 +197,7 @@ export class HighChart extends React.Component {
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i className="fa fa-more-img" aria-hidden="true"></i>
                         </button>
-                        {/* <button id="button" onClick={this.exportChart} >Export chart</button> */}
                         <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                            <li>
-                            <a href="javascript:;" onClick={this.openZoomChart.bind(this, true)} >
-                                <i class="fa fa-search-plus" aria-hidden="true"></i>&nbsp;
-                                Zoom Chart</a>
-                            </li>
                             <li>
                             <a href="javascript:;" id="button" onClick={this.downloadSVG.bind(this)}>
                                 <i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp;
@@ -239,7 +220,6 @@ export class HighChart extends React.Component {
                 <div id="" className={this.modalCls} role="dialog">
                     <div className="modal-colored-header uploadData modal-dialog ">
                         <ViewChartData tabledata={this.props.tabledata} tableCls={this.tableCls} classId={this.props.classId} tableDownload={this.tableDownload}/>
-                        <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
                     </div>
                 </div>
                 <div className="highChartArea">
