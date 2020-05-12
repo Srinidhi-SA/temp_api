@@ -33,6 +33,7 @@ from django.contrib.auth.models import User, Group
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route, api_view
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 
 from api.datasets.helper import convert_to_string
@@ -46,7 +47,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
-from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json
+from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
@@ -222,6 +223,52 @@ def avg_reviews_per_reviewer(totalReviewers, count):
     except:
         return 0
 
+@api_view(['GET'])
+def get_recent_activity(request):
+    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+    from django.contrib.contenttypes.models import ContentType
+
+    user = request.user
+    recent_activity = []
+    group=Group.objects.get(user=user.id)
+
+    if group.name == 'ReviewerL1' or  group.name == 'ReviewerL2':
+        recentActions = LogEntry.objects.filter(user=user.id).order_by('-action_time')[:30]
+
+        for each in recentActions:
+            recent_activity.append(
+                {
+                    "Message":each.__str__().replace("\"", ""),
+                    "Object":each.object_repr,
+                }
+            )
+        return JsonResponse({"message": "success", "Activity":recent_activity})
+    else:
+        recent_activity = {}
+        usersList = User.objects.filter(
+            groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+        ).values_list('username', flat=True)
+
+        for user in usersList:
+            activity=[]
+            userID = User.objects.get(username=user).id
+            recentActions = LogEntry.objects.filter(user=userID).order_by('-action_time')[:30]
+
+            for each in recentActions:
+                activity.append(
+                    {
+                        "Message":each.__str__().replace("\"", ""),
+                        "Object":each.object_repr,
+                        "user":each.user.username
+                    }
+                )
+            recent_activity[user]=activity
+
+        return JsonResponse({
+            "message": "success",
+            "Activity":recent_activity
+            #"Users":usersList
+        })
 
 # -------------------------------------------------------------------------------
 
@@ -640,8 +687,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
-        data['fields'] = 50
-        data['confidence'] = 95
+        obj = ui_corrections(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
+                             response['final_json'], response['google_response'])
+        doc_accuracy, total_words = obj.document_confidence(obj.final_json, obj.google_response)
+        data['fields'] = total_words
+        data['confidence'] = round(doc_accuracy*100, 2)
 
         if 'extension' in response and response['extension'] == '.pdf':
             original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
