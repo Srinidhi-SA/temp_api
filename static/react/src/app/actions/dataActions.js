@@ -199,23 +199,35 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
      var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true){
+        var node = document.createElement("I");
+        dispatch(openAppsLoaderValue(100, ''))
+        document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
+        var x = document.getElementById("loadingMsgs");
+		x.innerHTML = 'Completed Succesfully';
+    }
     if(getStatus == SUCCESS){
 
         if(interval != undefined){
-            clearInterval(interval);
-            dispatch(dispatchDataPreview(dataPreview,slug));
-            dispatch(hideDULoaderPopup());
-            dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-            dispatch(closeAppsLoaderValue());
+            setTimeout(() => {
+                clearInterval(interval);
+                dispatch(dispatchDataPreview(dataPreview,slug));
+                dispatch(hideDULoaderPopup());
+                dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+                dispatch(closeAppsLoaderValue());
+                 }, 2000);
+            
         } else{
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
         dispatch(clearLoadingMsg())
-        return {
-            type: "DATA_PREVIEW",
-            dataPreview,
-            slug,
-        }
+        setTimeout(() => {
+            return {
+                type: "DATA_PREVIEW",
+                dataPreview,
+                slug,
+            }
+             }, 2000);       
     }else if(getStatus == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
