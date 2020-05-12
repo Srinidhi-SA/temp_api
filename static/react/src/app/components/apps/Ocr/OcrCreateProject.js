@@ -86,24 +86,37 @@ export class OcrCreateProject extends React.Component {
   render() {
     return (
       <div>
-        <div class="xs-mt-30"></div>
+        <div class="xs-mt-5"></div>
         <div class="row" style={{ display: 'flex', marginBottom: '1%', alignItems: 'center' }}>
-          <div class="col-sm-6">
+          <div class="col-md-6">
           {this.props.OcrProjectList != '' &&
           <div>
-            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalProjects} <br></br><small class="text-primary">PROJECTS</small></h4>
-            <h4 class="xs-mt-0 inline-block xs-mr-10 box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <br></br><small class="text-primary">DOCUMENTS</small></h4>
-            <h4 class="xs-mt-0 inline-block box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalReviewers} <br></br><small class="text-primary">REVIEWERS</small></h4>
+			<div className="col-md-4">
+				 
+				<h4 class="xs-mt-0 xs-p-5 text-center bg-white box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalProjects} <i class="fa fa-briefcase fa-1x xs-pl-5 text-light"></i> <br></br><small> PROJECTS</small></h4>
+				 
+			</div>
+			<div className="col-md-4">
+				 
+				<h4 class="xs-mt-0 xs-p-5 text-center bg-white box-shadow"> {store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <i class="fa fa-file-text-o fa-1x xs-pl-5 text-light"></i><br></br><small> DOCUMENETS</small></h4>
+				 
+			</div>
+			<div className="col-md-4">
+				 
+				<h4 class="xs-mt-0 xs-p-5 text-center bg-white box-shadow">{store.getState().ocr.OcrProjectList.overall_info.totalReviewers} <i class="fa fa-user-o fa-1x xs-pl-5 text-light"></i><br></br><small> REVIEWERS</small></h4>
+				 
+			</div>			            
           </div>
           }
           </div>
-          <div class="col-sm-6 text-right">
-            <div class="form-inline"> 
-            <ReactTooltip place="top" type="light"/>     
-              <button id="btn_ceate_project" data-tip="Create New Project" className="btn btn-info btn-rounded xs-mr-5" onClick={this.openPopup.bind(this)}><i class="fa fa-plus"></i></button>
+          <div class="col-md-6 col-md-offset-2 text-right">
+            <div class="form-inline">
+			<ReactTooltip place="top" type="light"/>
+              <button id="btn_ceate_project" className="btn btn-primary btn-rounded xs-mr-5 000" title="Create Project" onClick={this.openPopup.bind(this)}><i className="fa fa-plus"></i> New Project</button>
+
               <span className="search-wrapper">
                <div class="form-group xs-mr-5">
-                <input type="text" id="search" class="form-control btn-rounded "  onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
+                <input type="text" title="Search Project..." id="search" class="form-control btn-rounded "  onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
                         <button className="close-icon"  style={{position:"absolute",left:'173px',top:'7px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
                         </div>
                 </span>
@@ -119,7 +132,7 @@ export class OcrCreateProject extends React.Component {
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label for="pName" class="form-label">Project Name <span class="text-danger">*</span></label>
+                        <label for="projectName" class="form-label">Project Name <span class="text-danger">*</span></label>
                         <input className="form-control" id="projectName" type="text" defaultValue={name} />
                       </div>
                     </div>
@@ -127,7 +140,7 @@ export class OcrCreateProject extends React.Component {
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label for="uEmail" class="form-label">Project Type </label>
+                        <label for="projectType" class="form-label">Project Type </label>
                         <select id="projectType" class="form-control">
                           <option>Select</option>
                           <option>Financial Services</option>
@@ -142,7 +155,7 @@ export class OcrCreateProject extends React.Component {
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label for="pLead" class="form-label">Project Lead</label>
+                        <label for="projectLead" class="form-label">Project Lead</label>
                         <input className="form-control" id="projectLead" type="text" placeHolder="Lead Name" />
                       </div>
                     </div>

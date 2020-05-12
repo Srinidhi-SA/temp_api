@@ -33,13 +33,15 @@ export class OcrProject extends React.Component {
     <OcrProjectScreen/>
    )
     return (
-      <div className="side-body main-content">
+      <div className="side-body">
         <OcrTopNavigation/>
-          <section class="ocr_section">
+		  <div className="main-content">
+          <section class="ocr_section box-shadow">
            <div class="container-fluid">
             {renderComponents}
             </div>
           </section>
+		  </div>
       </div>
     );
   }

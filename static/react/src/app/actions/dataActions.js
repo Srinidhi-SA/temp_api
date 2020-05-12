@@ -132,6 +132,7 @@ export function getStockDataSetPreview(slug,interval) {
 		return fetchStockDataPreview(slug).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                dispatch(setDataLoadedText(''));           
 			}
 			else{
 				dispatch(hideDULoaderPopup());

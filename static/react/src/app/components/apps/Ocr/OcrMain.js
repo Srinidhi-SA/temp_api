@@ -17,9 +17,11 @@ export class OcrMain extends React.Component {
 
   render() {
     return (
-      <div className="side-body main-content">
+      <div className="side-body">
         <OcrTopNavigation />
-        <section class="ocr_section">
+		<div className="main-content">
+      
+        <section class="ocr_section box-shadow">
           {Object.keys(this.props.dashboardMetrics).length != 0?
           <div class="container-fluid">
             {/* inroduction modal starts*/}
@@ -174,9 +176,9 @@ export class OcrMain extends React.Component {
               </div>
             </div>
             {/* inroduction modal ends*/}
-            <div className="row alignCenter">
+            <div className="row alignCenter xs-pt-0">
               <div className="col-sm-6">
-                <div style={{ fontSize: 23 }}>Project Metrics</div>
+                <h3 class="xs-mt-10">Project Metrics</h3>
               </div>
               <div className="col-sm-6">
                 <button style={{ float: 'right' }} type="button" class="btn btn-primary" data-toggle="modal" data-target="#ocr_Instructions_modal">
@@ -368,6 +370,7 @@ export class OcrMain extends React.Component {
            <img id="loading" style={{ position: 'relative', paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />
           }
         </section>
+		</div>
       </div>
     );
   }

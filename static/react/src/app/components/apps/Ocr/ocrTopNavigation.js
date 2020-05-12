@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
-import { saveDocumentPageFlag } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag,selectedReviewerDetails } from '../../../actions/ocrActions';
 import { API } from "../../../helpers/env";
 import { dashboardMetrics } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
@@ -20,6 +20,10 @@ export class OcrTopNavigation extends React.Component {
 
   handleRoute(){ //Making docFlag false on click of navLink,to load project & reviewer table,Without this proDoc table is getting loaded
   this.props.dispatch(saveDocumentPageFlag(false)) 
+  this.props.dispatch(selectedReviewerDetails('',''))
+  this.props.dispatch(selectedProjectDetails('',''))
+
+
   }
   getHeader = (token) => {
     return {
@@ -43,20 +47,20 @@ export class OcrTopNavigation extends React.Component {
 
   render() {
     return (
-      <div>
-        <div class="page-head" style={{ paddingTop: 10, paddingBottom: 15, paddingLeft: 2 }}>
+     
+        <div class="page-head">
           <div class="row">
-            <div class="col-md-7">
-              <h3 class="xs-mt-0 nText">Intelligent Text Extractor</h3>
+            <div class="col-md-4">
+              <h3 class="nText xs-mt-0">Intelligent Text Extractor</h3>
             </div>
-          </div>
-        </div>
-        <ul className="nav nav-tabs cst_ocr_tabs">
+			<div class="col-md-8">
+				<ul className="nav nav-tabs cst_ocr_tabs pull-right">
           <li>
-            <NavLink exact={true} className="" to="/apps/ocr-mq44ewz7bp/" activeClassName="active">
+            <NavLink exact={true} className="" to="/apps/ocr-mq44ewz7bp/" activeClassName="active" title="Dashboard">
               <i class="fa fa-tachometer fa-lg"></i> Dashboard
             </NavLink>
           </li>
+
           {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser") &&
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/project/" onClick={this.handleRoute.bind(this)} activeClassName="active">
               <i class="fa fa-book fa-lg"></i> Projects
@@ -65,23 +69,30 @@ export class OcrTopNavigation extends React.Component {
           }
           {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser") &&
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/configure/" activeClassName="active">
+
               <i class="fa fa-sliders fa-lg"></i> Configure
               </NavLink>
             </li>
           }
+
           <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" onClick={this.handleRoute.bind(this)} activeClassName="active">
             <i class="fa fa-users fa-lg"></i> Reviewers
               </NavLink>
           </li>
           {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser") &&
             <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/manageUser/" activeClassName="active">
+
               <i class="fa fa-user fa-lg"></i> Users
               </NavLink>
             </li>
           }
         </ul>
+			</div>
+          </div>
+        </div>
+        
 
-      </div>
+      
     );
   }
 

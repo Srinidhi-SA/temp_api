@@ -120,7 +120,7 @@ export class OcrAddUser extends React.Component{
                                     </div>
                                 }
                                 {!this.props.ocrUserProfileFlag && !this.props.createUserFlag &&
-                                    <p style={{marginTop: "75px",marginLeft: "15px"}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
+                                    <p style={{marginTop: "30px",marginLeft: "15px"}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
                                     </p>
                                 }
                             </div>

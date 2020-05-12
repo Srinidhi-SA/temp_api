@@ -300,6 +300,7 @@ export class OcrImage extends React.Component {
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
               <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
+ 
                 <option value="100">100</option>
                 <option value="90">90</option>
                 <option value="80">80</option>
