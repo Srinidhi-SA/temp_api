@@ -47,7 +47,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
-from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections
+from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
@@ -930,6 +930,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if serializer.is_valid():
                 serializer.save()
         final_json = json.loads(image_queryset.final_result)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        [x, y] = offset([x, y], size)
         response = fetch_click_word_from_final_json(final_json, [x, y])
         return JsonResponse({'exists': response[0], 'word': response[1]})
 
@@ -947,6 +950,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if not update_history:
             update_history = {}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        [x, y] = offset([x, y], size)
         final_json_obj = Final_json(final_json, update_history)
         final_json, update_history = final_json_obj.update_final_json([x, y], word)
         data['final_result'] = json.dumps(final_json)

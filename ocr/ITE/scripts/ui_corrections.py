@@ -331,3 +331,11 @@ def update_user_changes_to_from_final_json(final_json, click_coordinate, user_in
                     m['text'] = user_input
                     return True, final_json
     return False, final_json
+
+
+def offset(dev_click_cord, image_size):
+    x, y = dev_click_cord[0], dev_click_cord[1]
+    x_offseted = int(x * (image_size[1] / 700))
+    y_offseted = int(y * (image_size[0] / 800))
+
+    return [x_offseted, y_offseted]
