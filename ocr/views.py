@@ -47,7 +47,8 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
-from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections
+from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
+    cleaned_final_json
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
@@ -930,6 +931,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if serializer.is_valid():
                 serializer.save()
         final_json = json.loads(image_queryset.final_result)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        [x, y] = offset([x, y], size)
         response = fetch_click_word_from_final_json(final_json, [x, y])
         return JsonResponse({'exists': response[0], 'word': response[1]})
 
@@ -947,6 +951,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if not update_history:
             update_history = {}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        [x, y] = offset([x, y], size)
         final_json_obj = Final_json(final_json, update_history)
         final_json, update_history = final_json_obj.update_final_json([x, y], word)
         data['final_result'] = json.dumps(final_json)
@@ -1014,6 +1020,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
         image_queryset = OCRImage.objects.get(slug=data['slug'])
+        final_result = json.loads(image_queryset.final_result)
+        final_result_user = cleaned_final_json(final_result)
+        data['converted_Coordinates'] = json.dumps(final_result_user)
         review_end_time = image_queryset.review_end
         if not review_end_time:
             data['review_end'] = datetime.datetime.now()
@@ -1042,7 +1051,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         slug = ast.literal_eval(str(data['slug']))[0]
         image_queryset = OCRImage.objects.get(slug=slug)
-        result = image_queryset.final_result
+        # result = image_queryset.final_result
+        result = image_queryset.converted_Coordinates
         if data['format'] == 'json':
             response = HttpResponse(result, content_type="application/json")
             response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])

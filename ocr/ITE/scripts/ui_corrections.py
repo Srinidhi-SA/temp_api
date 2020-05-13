@@ -195,8 +195,10 @@ class ui_corrections:
             for l in final_json["paragraphs"][k]:
                 for m in l['words']:
                     tooooootal_words = tooooootal_words + 1
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
                     for i in needed_words:
                         x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
                         if mode:
@@ -331,3 +333,40 @@ def update_user_changes_to_from_final_json(final_json, click_coordinate, user_in
                     m['text'] = user_input
                     return True, final_json
     return False, final_json
+
+
+def offset(dev_click_cord, image_size):
+    x, y = dev_click_cord[0], dev_click_cord[1]
+    x_offseted = int(x * (image_size[1] / 700))
+    y_offseted = int(y * (image_size[0] / 800))
+
+    return [x_offseted, y_offseted]
+
+
+def cleaned_final_json(final_json):
+    clean_final_json = final_json.copy()
+
+    if 'paragraphs' in final_json.keys():
+        for i in range(len(final_json['paragraphs'])):
+
+            lines = {}
+            for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
+                lines['line_' + str(j + 1)] = clean_final_json['paragraphs']['p_' + str(i + 1)][j]['text']
+
+            clean_final_json['paragraphs']['p_' + str(i + 1)] = lines
+    else:
+        pass
+
+    if 'tables' in final_json.keys():
+        for i in range(len(final_json['tables'])):
+
+            for cell in final_json['tables'][str(i + 1)]:
+                cell_content = {}
+                for j, word in enumerate(clean_final_json['tables'][str(i + 1)][cell]['words']):
+                    cell_content[j + 1] = clean_final_json['tables'][str(i + 1)][cell]['words'][j]['text']
+
+                clean_final_json['tables'][str(i + 1)][cell] = cell_content
+    else:
+        pass
+
+    return clean_final_json

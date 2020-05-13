@@ -282,7 +282,7 @@ export default function reducer(state = {
         {
           return {
             ...state,
-            ocrImgPath: action.data,
+            ocrImgPath: action.data + "?" +new Date().getTime(),
           }
         }
         break;
