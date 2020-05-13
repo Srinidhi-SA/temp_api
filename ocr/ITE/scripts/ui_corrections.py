@@ -195,8 +195,10 @@ class ui_corrections:
             for l in final_json["paragraphs"][k]:
                 for m in l['words']:
                     tooooootal_words = tooooootal_words + 1
-                    p1 = list(m.values())[0]['p1']
-                    p3 = list(m.values())[0]['p3']
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
                     for i in needed_words:
                         x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
                         if mode:
