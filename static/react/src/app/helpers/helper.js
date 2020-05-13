@@ -234,10 +234,12 @@ export function generateNormalTableRows(table) {
   var tbodyData = table.tableData.map(function(rowData, i) {
     if (i != 0) {
       var rows = rowData.map(function(colData, j) {
-        if (j == 0 || j == 1)
+        if(typeof(colData)==="object" && colData != null){
+          return <td key={j}>{colData["loss"]!=undefined?colData["loss"]:colData["optimizer"]}</td>
+        }
+        else if (j == 0 || j == 1)
           return <td key={j}>{colData}</td>;
-
-else
+        else
           return <td key={j}>{colData}</td>;
         }
       );
