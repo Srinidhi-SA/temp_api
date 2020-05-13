@@ -379,7 +379,7 @@ export class OcrTable extends React.Component {
                 <OcrUpload uploadMode={'topPanel'} />
 				
                 <ReactTooltip place="top" type="light"/> 
-                <Button onClick={this.handleRecognise} title="Recognize" className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
+                <Button onClick={this.handleRecognise} title="Recognize" style={{textTransform:'none'}} className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
                 
 				{/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
                 {/* <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>

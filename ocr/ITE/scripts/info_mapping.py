@@ -9,10 +9,6 @@ class Final_json:
 
     def __init__(self, final_json, history_json=None):
         self.json = final_json
-        try:
-            self.json = self.final_json_para_corrections(self.json)
-        except:
-            pass
         self.table_count = len(self.json['tables'])
         self.para_count = len(self.json['paragraphs'])
         self.history_json = history_json
@@ -26,6 +22,7 @@ class Final_json:
         self.history_json = upd
         return self.history_json
 
+    """
     def update_final_json(self, cord, inp):
 
         if len(self.json['tables']) > 0 and len(self.json['paragraphs']) > 0:
@@ -48,7 +45,41 @@ class Final_json:
             else:
                 print("Couldn't Update")
         return self.json, self.history_json
+    """
 
+    def update_final_json(self, cord, inp):
+
+        final_json = self.json
+        if len(final_json['tables']) > 0 and len(final_json['paragraphs']) > 0:
+            status, final_json = self.check_update_tables(final_json, cord, inp)
+            if status:
+                print('Updated In table')
+            elif not status:
+                status, final_json = self.check_update_paras(final_json, cord, inp)
+                if status:
+                    print('Updated In Paraaaaa')
+                else:
+                    print("Couldn't Update")
+            else:
+                pass
+
+
+        elif len(final_json['tables']) > 0:
+            status, final_json = self.check_update_tables(final_json, cord, inp)
+            if status:
+                print('Updated In table')
+            else:
+                print("Couldn't Update")
+
+        else:
+            status, final_json = self.check_update_paras(final_json, cord, inp)
+            if status:
+                print('Updated In Paraaaaa')
+            else:
+                print("Couldn't Update")
+        return final_json, self.history_json
+
+    """
     def check_update_paras(self, final_json, cord, inp):
         p = Point(cord)
         for i in range(len(final_json['paragraphs'])):
@@ -75,6 +106,24 @@ class Final_json:
                     pass
 
         return False
+        """
+
+    def check_update_paras(self, final_json, cord, inp):
+        for i in range(len(final_json['paragraphs'])):
+            for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
+                for k, d in enumerate(final_json['paragraphs']['p_' + str(i + 1)][j]['words']):
+                    bb = list(d.values())[0]
+                    if (cord[0] in range(bb[0], bb[2])) and (cord[1] in range(bb[1], bb[5])):
+                        print("ijk:", i, j, k)
+                        print("before update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])
+                        final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'] = inp
+                        print("after update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])
+                        #                                    self.update_history(history_json,inp,bb)
+                        return True, final_json
+                    else:
+                        pass
+
+        return False, final_json
 
     def final_json_para_corrections(self, final_json):
         paradata = final_json["paragraphs"]
@@ -119,7 +168,7 @@ class Final_json:
         return False
     """
 
-    def check_update_tables(self, final_json, cord, inp):
+    """def check_update_tables(self, final_json, cord, inp):
         p = Point(cord)
         for i in range(len(final_json['tables'])):  ## CURRENTLY ONLY 4 SIDED TABLES
             p1, p3 = final_json['table_coordinates'][str(i + 1)][:2], final_json['table_coordinates'][str(i + 1)][2:]
@@ -151,7 +200,42 @@ class Final_json:
             else:
                 pass
 
-        return False
+        return False"""
+
+    def check_update_tables(self, final_json, cord, inp):
+        p = Point(cord)
+        for i in range(len(final_json['tables'])):  ## CURRENTLY ONLY 4 SIDED TABLES
+            p1, p3 = final_json['table_coordinates'][str(i + 1)][:2], final_json['table_coordinates'][str(i + 1)][
+                                                                      2:]
+            p2 = [p3[0], p1[1]]
+            p4 = [p1[0], p3[1]]
+            polygon_coordinates_list = [p1, p2, p3, p4]
+            temp_polygon = Polygon(polygon_coordinates_list)
+
+            if temp_polygon.contains(p):
+                for cell in final_json['tables'][str(i + 1)]:
+                    bb = final_json['tables'][str(i + 1)][cell]['boundingBox']
+
+                    if cord[0] in range(bb['p1'][0], bb['p3'][0]) and cord[1] in range(bb['p1'][1], bb['p3'][1]):
+                        words_bb = final_json['tables'][str(i + 1)][cell]['words']
+
+                        for j, bb in enumerate([el['boundingBox'] for el in words_bb]):
+                            if cord[0] in range(bb['p1'][0], bb['p3'][0]) and cord[1] in range(bb['p1'][1],
+                                                                                               bb['p3'][1]):
+
+                                final_json['tables'][str(i + 1)][cell]['words'][j]['text'] = inp
+                                print("ij", i, j)
+                                #                                self.update_history(history_json,inp,bb)
+                                return True, final_json
+
+                            else:
+                                pass
+                    else:
+                        pass
+            else:
+                pass
+
+        return False, final_json
 
     def update_history(self, updated_word, bounding_box):
         self.history_json[self.present_update_key].append({updated_word: [bounding_box['p1'], bounding_box['p3']]})

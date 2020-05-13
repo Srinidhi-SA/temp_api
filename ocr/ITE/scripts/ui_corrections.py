@@ -7,6 +7,8 @@ from google.protobuf.json_format import MessageToJson
 from ocr.ITE.scripts.apis import fetch_google_response
 import cv2
 import json
+
+
 # from ocr.ITE.scripts.info_mapping import update_u1
 
 
@@ -69,7 +71,6 @@ class ui_corrections:
         for i in paradata:
             for j in paradata[i]:
                 for k in range(len(j["words"])):
-                    print('>>> ', j["words"][k])
                     temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
                                                     "p3": j["words"][k]["boundingBox"][4:6]}}
                     j["words"][k].clear()
@@ -169,7 +170,7 @@ class ui_corrections:
                             text = key
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
-                    if (m['flag'] == 'True'):
+                    if m['flag'] == 'True':
                         cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
         for k in final_json_to_flag["tables"]:
             for l in final_json_to_flag["tables"][k]:
@@ -181,9 +182,68 @@ class ui_corrections:
                     text = m["text"]
                     texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                fontFace=3, fontScale=0.6, color=(0, 0, 0), thickness=1)
-                    if (m['flag'] == 'True'):
+                    if m['flag'] == 'True':
                         cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
         return texted_image
+
+    def document_confidence(self, final_json, google_response, mode="default"):
+        needed_words = self.confidence_filter(google_response, (100 / 100))
+        tooooootal_words = 0
+        cooorect_words = 0
+        u1 = []
+        for k in final_json["paragraphs"]:
+            for l in final_json["paragraphs"][k]:
+                for m in l['words']:
+                    tooooootal_words = tooooootal_words + 1
+                    p1 = list(m.values())[0]['p1']
+                    p3 = list(m.values())[0]['p3']
+                    for i in needed_words:
+                        x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
+                        if mode:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    list(m.keys())[0] == list(i.keys())[0])):
+                                m.update({"flag": "False"})
+                                cooorect_words = cooorect_words + 1
+                                break
+                            else:
+                                m.update({"flag": "True"})
+                                u1.append({list(m.keys())[0]: [p1, p3]})
+
+                        else:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1,
+                                                                       p3)):  # and (list(m.keys())[0]==list(i.keys())[0])):
+                                m.update({"flag": "True"})
+                                break
+                            else:
+                                m.update({"flag": "False"})
+        for k in final_json["tables"]:
+            for l in final_json["tables"][k]:
+                for m in final_json["tables"][k][l]["words"]:
+                    tooooootal_words = tooooootal_words + 1
+                    p1 = m["boundingBox"]["p1"]
+                    p3 = m["boundingBox"]["p3"]
+                    for i in needed_words:
+                        x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
+                        if mode:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    m["text"] == list(i.keys())[0])):
+                                m.update({"flag": "False"})
+                                cooorect_words = cooorect_words + 1
+                                break
+                            else:
+                                m.update({"flag": "True"})
+                                u1.append({m["text"]: [p1, p3]})
+                        else:
+                            if (
+                                    self.check_if_centroid_inbetween_p1_p3([x, y], p1,
+                                                                           p3)):  # and (m["text"]==list(i.keys())[0])):
+                                m.update({"flag": "True"})
+                                break
+                            else:
+                                m.update({"flag": "False"})
+        #        print(u1)
+        doc_accuracy = (cooorect_words / tooooootal_words)
+        return doc_accuracy, tooooootal_words
 
 
 def ui_flag_v2(mask, final_json, google_response, gen_image, percent=100):
@@ -271,3 +331,11 @@ def update_user_changes_to_from_final_json(final_json, click_coordinate, user_in
                     m['text'] = user_input
                     return True, final_json
     return False, final_json
+
+
+def offset(dev_click_cord, image_size):
+    x, y = dev_click_cord[0], dev_click_cord[1]
+    x_offseted = int(x * (image_size[1] / 700))
+    y_offseted = int(y * (image_size[0] / 800))
+
+    return [x_offseted, y_offseted]
