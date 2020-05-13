@@ -339,3 +339,32 @@ def offset(dev_click_cord, image_size):
     y_offseted = int(y * (image_size[0] / 800))
 
     return [x_offseted, y_offseted]
+
+
+def cleaned_final_json(final_json):
+    clean_final_json = final_json.copy()
+
+    if 'paragraphs' in final_json.keys():
+        for i in range(len(final_json['paragraphs'])):
+
+            lines = {}
+            for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
+                lines['line_' + str(j + 1)] = clean_final_json['paragraphs']['p_' + str(i + 1)][j]['text']
+
+            clean_final_json['paragraphs']['p_' + str(i + 1)] = lines
+    else:
+        pass
+
+    if 'tables' in final_json.keys():
+        for i in range(len(final_json['tables'])):
+
+            for cell in final_json['tables'][str(i + 1)]:
+                cell_content = {}
+                for j, word in enumerate(clean_final_json['tables'][str(i + 1)][cell]['words']):
+                    cell_content[j + 1] = clean_final_json['tables'][str(i + 1)][cell]['words'][j]['text']
+
+                clean_final_json['tables'][str(i + 1)][cell] = cell_content
+    else:
+        pass
+
+    return clean_final_json
