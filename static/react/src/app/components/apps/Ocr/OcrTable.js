@@ -369,10 +369,10 @@ export class OcrTable extends React.Component {
             <a id="downloadAnchorElem" style={{ display: 'none' }}></a>
             {this.props.revDocumentFlag ? (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/" title="Reviewers"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+              <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.reviewerName}</a></li>
             </ol>) : (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/" title="Projects"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
+              <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.projectName}</a></li>
             </ol>)
             }
           </div>
