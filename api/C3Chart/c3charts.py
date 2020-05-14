@@ -122,10 +122,11 @@ class C3Chart(object):
 
     def set_basic_axis(self):
 
-        if USE_MULTILINE_LABELS:
-            X_TICK_MULTILNE = True
-        else:
-            X_TICK_MULTILNE = False
+        X_TICK_MULTILNE = True
+        # if USE_MULTILINE_LABELS:
+        #     X_TICK_MULTILNE = True
+        # else:
+        #     X_TICK_MULTILNE = False
 
         self._axis = {
             'x':
