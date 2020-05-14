@@ -61,3 +61,21 @@ def fetch_google_response(path):
     conf_response = json.loads(MessageToJson(conf_response))
 
     return conf_response
+
+
+def fetch_google_response2(path):
+    """Detects text in the file."""
+
+    client = vision.ImageAnnotatorClient()
+    with io.open(path, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.types.Image(content=content)
+    response = client.text_detection(image=image)
+    texts = response.text_annotations
+    response = json.loads(MessageToJson(response))
+
+    return response
+
+
+
+

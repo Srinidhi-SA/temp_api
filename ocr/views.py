@@ -673,7 +673,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask.png'.format(slug),
                             file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
         gen_image = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                               response['final_json'], response['google_response'],
+                               response['final_json'], response['google_response'], response['google_response2'],
                                'ocr/ITE/database/{}_gen_image.png'.format(slug))
         image = base64.decodebytes(gen_image)
         with open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'wb') as f:
@@ -683,13 +683,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['metadata'] = json.dumps(response['metadata'])
 
         data['conf_google_response'] = json.dumps(response['google_response'])
+        data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
         data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
         obj = ui_corrections(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                             response['final_json'], response['google_response'])
+                             response['final_json'], response['google_response'], response['google_response2'])
         doc_accuracy, total_words = obj.document_confidence(obj.final_json, obj.google_response)
         data['fields'] = total_words
         data['confidence'] = round(doc_accuracy*100, 2)
@@ -947,6 +948,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         final_json = json.loads(image_queryset.final_result)
         google_response = json.loads(image_queryset.conf_google_response)
+        google_response2 = json.loads(image_queryset.google_response)
         update_history = json.loads(image_queryset.analysis_list)
         if not update_history:
             update_history = {}
@@ -958,7 +960,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['final_result'] = json.dumps(final_json)
         data['analysis_list'] = json.dumps(update_history)
         image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, image_path)
+        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path)
         image = base64.decodebytes(gen_image)
         with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
             f.write(image)
@@ -1022,7 +1024,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         final_result = json.loads(image_queryset.final_result)
         final_result_user = cleaned_final_json(final_result)
-        data['converted_Coordinates'] = json.dumps(final_result_user)
+        data['google_response'] = json.dumps(final_result_user)
         review_end_time = image_queryset.review_end
         if not review_end_time:
             data['review_end'] = datetime.datetime.now()
@@ -1052,7 +1054,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = ast.literal_eval(str(data['slug']))[0]
         image_queryset = OCRImage.objects.get(slug=slug)
         # result = image_queryset.final_result
-        result = image_queryset.converted_Coordinates
+        result = image_queryset.google_response
         if data['format'] == 'json':
             response = HttpResponse(result, content_type="application/json")
             response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
@@ -1071,17 +1073,18 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def confidence_filter(self, request):
         data = request.data
-        user_input = 0.5
+        user_input = 1
         if 'filter' in data:
             user_input = data['filter']
         slug = data['slug']
         image_queryset = OCRImage.objects.get(slug=slug)
         google_response = json.loads(image_queryset.conf_google_response)
+        google_response2 = json.loads(image_queryset.google_response)
         final_json = json.loads(image_queryset.final_result)
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, image_path, percent=user_input)
+        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path, percent=user_input)
 
         image = base64.decodebytes(gen_image)
         with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:

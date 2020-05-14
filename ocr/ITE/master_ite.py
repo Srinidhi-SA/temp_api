@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 
 from ocr.ITE.scripts.data_ingestion import ingestion_1
 from ocr.ITE.scripts.image_class import image_cls
-from ocr.ITE.scripts.apis import Api_Call, fetch_google_response
+from ocr.ITE.scripts.apis import Api_Call, fetch_google_response, fetch_google_response2
 from ocr.ITE.scripts.domain_classification import Domain
 from ocr.ITE.scripts.preprocessing import Preprocess
 from ocr.ITE.scripts.base_module import BaseModule
@@ -23,6 +23,7 @@ def main(input_path, slug=None):
     print("Waiting For API Response")
     api_response = Api_Call(input_path)
     google_response = fetch_google_response(input_path)
+    google_response2 = fetch_google_response2(input_path)
     image_obj = image_cls(input_path, input_path.split('/')[-1])
     if slug is None:
         slug = slugify("img-" + ''.join(
@@ -81,6 +82,7 @@ def main(input_path, slug=None):
             'mask': mask,
             'metadata': metadata,
             'google_response': google_response,
+            'google_response2': google_response2,
             'flag': flag,
             'image_slug': slug,
             'original_image': og,
