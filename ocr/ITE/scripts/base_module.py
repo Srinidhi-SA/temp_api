@@ -487,7 +487,7 @@ class BaseModule:
         return final_mapped_dict_table
 
     # GET ALL THE POLYGONS WHICH HAVE SAME START OR STOP PLACES
-    def get_similar(self, line_number, p1_p3, lines, dst,
+    """def get_similar(self, line_number, p1_p3, lines, dst,
                     parent_area):  ## GET ALL THE POLYGONS WHICH HAVE SAME START OR STOP PLACES
 
         x1, x3 = p1_p3[line_number][0][0], p1_p3[line_number][1][0]
@@ -614,6 +614,163 @@ class BaseModule:
                 clubbed_lines.append(line_number)
                 clubbed_lines_, depth, relative_para_area = self.get_similar(line_number, p1_p3,
                                                                              lines, dst, parent_area)
+                # print(clubbed_lines_)
+                clubbed_lines = clubbed_lines + clubbed_lines_
+                rel_para_area['p_' + str(para)] = relative_para_area
+                paras['p_' + str(para)] = \
+                    [lines[line_number]] + [lines[line_number]
+                                            for line_number in clubbed_lines_]
+                order['p_' + str(para)] = depth
+                para = para + 1
+
+        return paras, rel_para_area"""
+
+    def get_similar(self, line_number, p1_p3, lines, dst, parent_area,
+                    cl=[]):  ## GET ALL THE POLYGONS WHICH HAVE SAME START OR STOP PLACES
+
+        x1, x3 = p1_p3[line_number][0][0], p1_p3[line_number][1][0]
+        y1, y3 = p1_p3[line_number][0][1], p1_p3[line_number][1][1]
+
+        thrx = round(((x3 - x1) / len(lines[line_number]['text'])) * 6)  ## USUAL INTEND IS 5 SPACES
+
+        #     net1,net2  = range(x1-10,x1+10),range(x3-10,x3+10)    ## net for X's
+        #     net3,net4 = range(y1-100,y1+100),range(y3-100,y3+100) ## net for Y's
+
+        similar = []
+
+        thr_centroid = int(1.2 * abs(
+            y3 - y1))  # + (y3-y1)*1.45   ##For most text, the optimal line spacing is between 120% and 145% of the point size
+        similar = [y for (x, y) in dst.keys() if
+                   (x == line_number) and (dst[(x, y)] < thr_centroid) and (y not in cl)]
+        similar = similar + [x for (x, y) in dst.keys() if
+                             (y == line_number) and (dst[(x, y)] < thr_centroid) and (x not in cl)]
+
+        #        print('SIMILAR FOR : ', lines[line_number]['text'])
+        #        r = [lines[ln]['text']  for ln in similar]
+        #        print(r,'\n')
+        # if len(similar): thry = round(((y3-y1) + (y3-y1))*0.5 *1.25) * 2
+        #        current_line = ''
+        for i, key in enumerate(p1_p3):  ## Key here is line number!!!!
+
+            p1, p3 = p1_p3[key]
+
+            if (key not in similar) and (key != line_number) and (key not in cl):
+
+                if i == 0 and len(similar) > 0:  ## PRESENT LINE IS NOT INITAL LINE
+                    x1, x3 = p1_p3[similar[0]][0][0], p1_p3[similar[0]][1][0]
+                    y1, y3 = p1_p3[similar[0]][0][1], p1_p3[similar[0]][1][1]
+
+                thrx = round(((x3 - x1) / len(lines[line_number]['text'])) * 6)
+                #                thry = round(((y3-y1) + (y3-y1))*0.5 *1.25)
+                thry = round((y3 - y1) * 1.25)
+
+                netx1, netx3 = range(x1 - thrx, x1 + thrx), range(x3 - thrx, x3 + thrx)  ## net for X's
+                nety1, nety3 = range(y1 + 1, y1 + thry), range(y3 + 1, y3 + thry)
+                #                text_size_diff = abs((p3[1]-p1[1]) - (y3-y1))
+
+                if ((p1[0] in netx1) or (p3[0] in netx3)) and (
+                        (p1[1] in nety1) or (p3[1] in nety3)):  # or (p3[1] in net2)):
+
+                    similar.append(key)
+                    #                 thrx = thrx
+
+                    #
+                    #                    if lines[key]['text'] in ['U.S.A.','U.S.A'] :
+                    #
+                    #                        print('\n CAUGHT', lines[key]['text'] ,' WITH :' , current_line)
+                    #                        print('ref coord :', )
+
+                    #                    current_line = lines[key]['text']
+                    x1, x3 = p1[0], p3[0]
+                    y1, y3 = p1[1], p3[1]
+        #     similar_lines = [lines[i] for i in similar]
+        # if para_cord == True:
+        #     p1 = [p1_p3[line_number][0][0],p1_p3[line_number][0][1]]
+        #     p3 = [x3,y3]
+        #     p2 = [p1[1],p3[0]]
+        #     p4 = [p1[0],p3[1]]
+        #
+        #     return [p1,p2,p3,p4]
+
+        width = abs(p1_p3[line_number][0][0] - p1_p3[line_number][1][0])
+        height = abs(p1_p3[line_number][0][1] - y3)
+        para_area = width * height
+        rel_area = round((para_area / parent_area), 4) * 100
+
+        return similar, p1_p3[line_number][0][1], rel_area  ## ALL THE LINE NUMBERS AND Y1 AND RELATIVE AREA OF PARA
+
+    def detect_paragraphs(self, analysis, table_cell_dict, order, parent_area):
+        polygons = []
+        polygons = analysis["lines"]
+        #        polygons = [(line["boundingBox"], line["text"]) for line in analysis["lines"]]
+
+        #        print('polygons!!!!!!!!!!!!!!!!!!!! \n\n', polygons,'\n\n')
+        table_coordinates = {}
+        for table in table_cell_dict:
+            i = sum([sum(sum(table_cell_dict[table][i], []), [])
+                     for i in table_cell_dict[table]], [])
+            #     print(i)
+            try:
+                table_coordinates[table] = [
+                    (min(i[::2]), min(i[1::2])), (max(i[::2]), max(i[1::2]))]
+            except BaseException:
+                pass
+        polygons_ = []
+        for i in polygons:  # Filtering all the polygons that are inside tables
+            x_min, y_min, x_max, y_max = min(i['boundingBox'][::2]), \
+                                         min(i['boundingBox'][1::2]), max(i['boundingBox'][::2]), \
+                                         max(i['boundingBox'][1::2])
+            flag = True
+            for v in table_coordinates.values():
+                if ((v[0][0] <= x_min <= v[1][0]) or
+                    (v[0][0] <= x_max <= v[1][0])) and (
+                        (v[0][1] <= y_min <= v[1][1])
+                        or (v[0][1] <= y_max <= v[1][1])):
+                    flag = False
+                    break
+            if flag:
+                polygons_.append(i)
+
+        polygons = polygons_
+
+        # {line_number: Content of that line}
+        lines = {i: polygons[i - 1] for i in range(1, len(polygons) + 1)}
+        #        print('LINES :' ,lines)
+        # Point 1 Point 3 DICTIONARY FOR ALL THE POLYGONS {line_number:
+        # [point1,point3]}
+        p1_p3 = {}
+        centroids = {}
+
+        for line_number, line in enumerate(polygons):
+            line_number = line_number + 1
+            p1_p3[line_number] = line["boundingBox"][: 2], \
+                                 line["boundingBox"][4:6]
+            #     print(p1_p3[line_number][1][0])
+            centroids[line_number] = (p1_p3[line_number][0][0] +
+                                      p1_p3[line_number][1][0]) * 0.5, \
+                                     (p1_p3[line_number][0][1] +
+                                      p1_p3[line_number][1][1]) * 0.5
+        line_numbers = p1_p3.keys()
+
+        combinations = [(x, y) for x in line_numbers
+                        for y in line_numbers if x != y and y > x]
+        dst = {combination: distance.euclidean(centroids[combination[0]],
+                                               centroids[combination[1]])
+               for combination in combinations}
+        rel_para_area = {}
+        paras = {}  # PARAGRAPHS  { para_1 : [line1,line2]}
+        para = 1
+        i = 1
+        clubbed_lines = []
+        for line_number in p1_p3:
+            # if (len(lines[line_number])<6) or(' ' not in lines[line_number]):
+            # ALL THE SMALL WORDS WHICH WILL BE EXTRACTED SEPERATELY LATER
+            #     pass
+            if (line_number not in clubbed_lines):
+                clubbed_lines.append(line_number)
+                clubbed_lines_, depth, relative_para_area = self.get_similar(line_number, p1_p3,
+                                                                             lines, dst, parent_area,
+                                                                             cl=clubbed_lines)
                 # print(clubbed_lines_)
                 clubbed_lines = clubbed_lines + clubbed_lines_
                 rel_para_area['p_' + str(para)] = relative_para_area
