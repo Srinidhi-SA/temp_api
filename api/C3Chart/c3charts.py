@@ -122,10 +122,11 @@ class C3Chart(object):
 
     def set_basic_axis(self):
 
-        if USE_MULTILINE_LABELS:
-            X_TICK_MULTILNE = True
-        else:
-            X_TICK_MULTILNE = False
+        X_TICK_MULTILNE = True
+        # if USE_MULTILINE_LABELS:
+        #     X_TICK_MULTILNE = True
+        # else:
+        #     X_TICK_MULTILNE = False
 
         self._axis = {
             'x':
@@ -135,7 +136,7 @@ class C3Chart(object):
                             'fit': X_TICK_FIT,
                             'rotate': self._x_label_rotation,
                             'multiline': X_TICK_MULTILNE,
-                            "multilineMax": 2,
+                            'multilineMax': 2,
                             # 'count': 15
                         },
                     'height': self._x_height,

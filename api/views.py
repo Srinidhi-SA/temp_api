@@ -2274,7 +2274,8 @@ dummy_robo_data = {
                                 "x": {
                                     "tick": {
                                         "rotate": -45,
-                                        "multiline": False,
+                                        "multiline": True,
+                                        "multilineMax": 2,
                                         "fit": False,
                                         "format": ".2s"
                                     },
@@ -2739,7 +2740,8 @@ dummy_robo_data = {
                                 "x": {
                                     "tick": {
                                         "rotate": -45,
-                                        "multiline": False,
+                                        "multiline": True,
+                                        "multilineMax": 2,
                                         "fit": False,
                                         "format": ".2s"
                                     },
@@ -4192,7 +4194,8 @@ dummy_robo_data = {
                                 "x": {
                                     "tick": {
                                         "rotate": -45,
-                                        "multiline": False,
+                                        "multiline": True,
+                                        "multilineMax": 2,
                                         "fit": False,
                                         "format": ".2s"
                                     },
@@ -5558,7 +5561,8 @@ dummy_robo_data = {
                                 "x": {
                                     "tick": {
                                         "rotate": -45,
-                                        "multiline": False,
+                                        "multiline": True,
+                                        "multilineMax": 2,
                                         "fit": False
                                     },
                                     "type": "category",
