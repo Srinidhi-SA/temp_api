@@ -112,7 +112,10 @@ class Final_json:
         for i in range(len(final_json['paragraphs'])):
             for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
                 for k, d in enumerate(final_json['paragraphs']['p_' + str(i + 1)][j]['words']):
-                    bb = list(d.values())[0]
+                    bb = list(d.values())
+                    for item in bb:
+                        if isinstance(item, list):
+                            bb = item
                     if (cord[0] in range(bb[0], bb[2])) and (cord[1] in range(bb[1], bb[5])):
                         print("ijk:", i, j, k)
                         print("before update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])

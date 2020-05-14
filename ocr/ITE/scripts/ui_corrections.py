@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import os
+from collections import OrderedDict
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 from google.protobuf.json_format import MessageToJson
@@ -339,7 +340,7 @@ class ui_corrections:
         return doc_accuracy, tooooootal_words
 
 
-def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, percent=100):
+def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, percent=1):
     mask = mask
     final_json = final_json
 
@@ -463,3 +464,32 @@ def cleaned_final_json(final_json):
         pass
 
     return clean_final_json
+
+
+def sort_json(final_json):
+    sorted_json = {}
+    for key in final_json.keys():
+        if key not in ['tables', 'paragraphs']:
+            sorted_json[key] = final_json[key]
+
+    if 'paragraphs' in final_json.keys():
+        para_order = sorted(final_json['paragraphs'], key=lambda x: int(x.split('_')[1]))
+
+        paras = []
+        for para in para_order:
+            paras.append((para, final_json['paragraphs'][para]))
+
+        sorted_json['paragraphs'] = OrderedDict(paras)
+
+    if 'tables' in final_json.keys():
+        sorted_json['tables'] = {}
+        for table in final_json['tables']:
+            cell_order = sorted(final_json['tables'][table], key=lambda x: int(x.split('r')[0].split('c')[-1]))
+
+            cells = []
+            for cell in cell_order:
+                cells.append((cell, final_json['tables'][table][cell]))
+
+            sorted_json['tables'][table] = OrderedDict(cells)
+
+    return sorted_json
