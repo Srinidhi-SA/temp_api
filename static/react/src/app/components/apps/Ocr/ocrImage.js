@@ -20,6 +20,7 @@ import ReactTooltip from 'react-tooltip';
     projectName: store.ocr.selected_project_name,
     reviewerName: store.ocr.selected_reviewer_name,
     selected_image_name: store.ocr.selected_image_name,
+    is_closed: store.ocr.is_closed,
   };
 })
 
@@ -57,6 +58,7 @@ export class OcrImage extends React.Component {
     });
   }
   handleCoords = (event) => {
+    if(!this.props.is_closed){
     document.getElementById("successMsg").innerText = " ";
     let canvasElem = document.getElementById("myCanvas");
     var ctx = canvasElem.getContext("2d");
@@ -95,7 +97,10 @@ export class OcrImage extends React.Component {
     let y = event.clientY - rect.top - 40;
     var popOver = document.getElementById("popoverOcr");
     popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
-
+  }
+  else{
+    bootbox.alert("This document is submitted for review so editing is restricted");   
+  }
   }
   handleMarkComplete = () => {
     //window.history.go(-1)
@@ -280,6 +285,7 @@ export class OcrImage extends React.Component {
     document.getElementsByClassName("oLoader")[0].style.display = "none"
   }
   render() {
+    let mark_text = this.props.is_closed!= true ? "Mark as complete" : "Completed";
     return (
       <div>
         <div className="row">
@@ -403,20 +409,20 @@ export class OcrImage extends React.Component {
 
         </div>
         <div className="row">
-          {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
+          {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") && this.props.is_closed != true ?
             <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
               <ReactTooltip place="top" type="light" />
               <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
                 <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-              <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+              <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
             </div>
             :
             <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
               <button class="btn btn-warning" disabled>
                 <i class="fa fa-info-circle"></i> Bad Scan
-          </button>
-              <button class="btn btn-primary" disabled><i class="fa fa-check-circle"></i> &nbsp; Mark as complete</button>
+              </button>
+              <button class="btn btn-primary" disabled><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
             </div>
           }
         </div>
