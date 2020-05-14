@@ -7,6 +7,12 @@ from google.protobuf.json_format import MessageToJson
 from ocr.ITE.scripts.apis import fetch_google_response
 import cv2
 import json
+import os
+import matplotlib as mpl
+
+if os.environ.get('DISPLAY', '') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -237,7 +243,9 @@ class ui_corrections:
                             p3 = val['p3']
                             p2 = [p3[0], p1[1]]
                             p4 = [p1[0], p3[1]]
-                    text = list(m.keys())[0]
+                    for key, val in m.items():
+                        if isinstance(val, dict):
+                            text = key
                     #                    p1[0],p1[1],p2[0],p2[1],p3[0],p3[1],p4[0],p4[1]=self.toPercentage(p1[0],p1[1],p2[0],p2[1],p3[0],p3[1],p4[0],p4[1])
                     vertices = [p1, p2, p3, p4]
 
@@ -341,14 +349,14 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, p
     except:
         pass
     final_json = adsfff.default_all_words_flag_to_false(final_json)
-    needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
+    # needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
 
     if percent == 1:
         mode = "default"
-        needed_words = adsfff.all_words(adsfff.google_response2, (percent))
+        needed_words = adsfff.all_words(adsfff.google_response2, percent)
     else:
         mode = None
-        needed_words = adsfff.confidence_filter(adsfff.google_response, (percent))
+        needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
     upd, tempasdfds = adsfff.flag_words_to_plot(final_json, needed_words, mode)
 
     texted_image = adsfff.render_flagged_image(tempasdfds, adsfff.mask)
