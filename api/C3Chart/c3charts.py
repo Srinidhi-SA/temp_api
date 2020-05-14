@@ -135,6 +135,7 @@ class C3Chart(object):
                             'fit': X_TICK_FIT,
                             'rotate': self._x_label_rotation,
                             'multiline': X_TICK_MULTILNE,
+                            "multilineMax": 2,
                             # 'count': 15
                         },
                     'height': self._x_height,
