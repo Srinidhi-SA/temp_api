@@ -138,7 +138,7 @@ export class RevDocTable extends React.Component {
     <div class="col-sm-6">
           <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+              <li class="breadcrumb-item"><a style={{'cursor':'default'}}>{this.props.reviewerName}</a></li>
             </ol>
           </div>
           </div>)

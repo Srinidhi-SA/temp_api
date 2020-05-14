@@ -287,13 +287,13 @@ export class OcrImage extends React.Component {
             {window.location.href.includes("reviewer") ?  (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
               {((getUserDetailsOrRestart.get().userRole == "Admin") || (getUserDetailsOrRestart.get().userRole == "Superuser")) ?
-              <li class="breadcrumb-item active"><a onClick={() => history.go(-1)} href="#">{this.props.reviewerName}</a></li>:""}
-              <li class="breadcrumb-item active"><a href="#">{this.props.selected_image_name}</a></li>
+              <li class="breadcrumb-item"><a onClick={() => history.go(-1)} href="#">{this.props.reviewerName}</a></li>:""}
+              <li class="breadcrumb-item"><a style={{'cursor': 'default'}} >{this.props.selected_image_name}</a></li>
             </ol>)
               : (<ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-                <li class="breadcrumb-item active"><a onClick={() => history.go(-1)} href="#">{this.props.projectName}</a></li>
-                <li class="breadcrumb-item active"><a href="#">{this.props.selected_image_name}</a></li>
+                <li class="breadcrumb-item"><a onClick={() => history.go(-1)} href="#">{this.props.projectName}</a></li>
+                <li class="breadcrumb-item"><a style={{'cursor': 'default'}}> {this.props.selected_image_name}</a></li>
               </ol>)
             }
           </div>
