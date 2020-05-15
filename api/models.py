@@ -3398,8 +3398,7 @@ bar_chart = {
                     "height": 90,
                     "tick": {
                         "rotate": -45,
-                        "multiline": True,
-                        "multilineMax": 2,
+                        "multiline": False,
                         "fit": False,
                         "format": ".2s"
                     },
@@ -3537,8 +3536,7 @@ horizontal_bar_chart = {
                     "height": 90,
                     "tick": {
                         "rotate": -45,
-                        "multiline": True,
-                        "multilineMax": 2,
+                        "multiline": False,
                         "fit": False,
                         "format": ".2s"
                     },
@@ -4029,8 +4027,7 @@ line_chart = {
                 "x": {
                     "tick": {
                         "rotate": -45,
-                        "multiline": True,
-                        "multilineMax": 2,
+                        "multiline": False,
                         "fit": False,
                         "format": ".2s"
                     },
@@ -4551,8 +4548,7 @@ combo_chart = {
             "height": 90,
             "tick": {
                 "rotate": -45,
-                "multiline": True,
-                "multilineMax": 2,
+                "multiline": False,
                 "fit": False,
                 "format": ".2s"
             },
