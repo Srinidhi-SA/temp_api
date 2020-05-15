@@ -441,7 +441,12 @@ class Dataset(models.Model):
                     else:
                         protocol = 'http'
                     dir_path = "{0}://{1}".format(protocol, THIS_SERVER_DETAILS.get('host'))
-                    file_name = os.path.join('/media/', str(self.input_file))
+
+                    path = str(self.input_file)
+                    if '/home/' in path:
+                        file_name=path.split("/config")[-1]
+                    else:
+                        file_name = os.path.join('/media/', str(self.input_file))
                 else:
                     dir_path = "hdfs://{}:{}".format(
                         settings.HDFS.get("host"),

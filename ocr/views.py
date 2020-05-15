@@ -48,7 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json
+    cleaned_final_json, sort_json
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project
 
 # ------------------------------------------------------------
@@ -915,7 +915,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
                     else:
                         results.append(serializer.errors)
-                return Response(results)
+            return Response(results)
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -1024,6 +1024,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         final_result = json.loads(image_queryset.final_result)
         final_result_user = cleaned_final_json(final_result)
+        final_result_user = sort_json(final_result)
         data['google_response'] = json.dumps(final_result_user)
         review_end_time = image_queryset.review_end
         if not review_end_time:

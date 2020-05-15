@@ -308,16 +308,16 @@ export class OcrImage extends React.Component {
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
               <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
  
-                <option value="100">10</option>
-                <option value="90">20</option>
-                <option value="80">30</option>
-                <option value="70">40</option>
-                <option value="60">50</option>
-                <option value="50">60</option>
-                <option value="40">70</option>
-                <option value="30">80</option>
-                <option value="20">90</option>
-                <option value="10">100</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+                <option value="70">70</option>
+                <option value="80">80</option>
+                <option value="90">90</option>
+                <option value="100">100</option>
               </select>
             </div>
           </div>
