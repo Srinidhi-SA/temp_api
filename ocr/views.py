@@ -920,6 +920,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if serializer.is_valid():
                         serializer.save()
                         results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                        temp_obj = Template.objects.first()
+                        temp_obj.template_classification = json.dumps(response['template'])
+                        temp_obj.save()
                     else:
                         results.append(serializer.errors)
             return Response(results)

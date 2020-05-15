@@ -58,7 +58,7 @@ class BaseModule:
             'table_coordinates': table_count_dict,
             'temp_number': template_obj.template_number,
             'domain_classification': 'base'}
-        return self.final_json, self.mask, self.metadata
+        return self.final_json, self.mask, self.metadata, template_obj.template
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working
