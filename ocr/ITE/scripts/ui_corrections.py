@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import base64
 import os
+import numpy as np
+from collections import OrderedDict
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 from google.protobuf.json_format import MessageToJson
@@ -73,6 +75,33 @@ class ui_corrections:
         x_centroid = ((p1[0] + p3[0]) * 0.5)
         y_centroid = ((p1[1] + p3[1]) * 0.5)
         return x_centroid, y_centroid
+
+    def adjust_gamma(self, image, gamma):  # TODO: Give Abishek's Autogamma correction code also.
+        invGamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+        return cv2.LUT(image, table)
+
+    def toPercentage(self, x1, y1, x2, y2, x3, y3, x4, y4, height, width):
+        x1p = round(x1 / width, 2)  # play with the round of parameter for better pricision
+        x2p = round(x2 / width, 2)
+        x3p = round(x3 / width, 2)
+        x4p = round(x4 / width, 2)
+        y1p = round(y1 / height, 3)
+        y2p = round(y2 / height, 3)
+        y3p = round(y3 / height, 3)
+        y4p = round(y4 / height, 3)
+        # def toImCoord(im1, x1p,y1p,x2p,y2p):
+        w, h = 700, 800
+        p1 = int(x1p * w)
+        p2 = int(y1p * h)
+        p3 = int(x2p * w)
+        p4 = int(y2p * h)
+        p5 = int(x3p * w)
+        p6 = int(y3p * h)
+        p7 = int(x4p * w)
+        p8 = int(y4p * h)
+
+        return p1, p2, p3, p4, p5, p6, p7, p8
 
     def confidence_filter(self, response, user_input):
         loi = []
@@ -178,7 +207,7 @@ class ui_corrections:
         # update_u1(upd, image_name)
         return upd, final_json
 
-    def highlight_word(self, img, text, cord):
+    """def highlight_word(self, img, text, cord):
 
         rectangle_bgr = (0, 255, 255)
 
@@ -196,40 +225,32 @@ class ui_corrections:
         image_final = cv2.putText(img, text, (text_offset_x, text_offset_y), fontFace=3, fontScale=0.7, color=(0, 0, 0),
                                   thickness=1)
 
+        return image_final"""
+
+    def highlight_word(self, img, text, cord, fontScale):  # text = "Some text in a box!"  img = np.zeros((500, 500))
+
+        #        font_scale = 0.7
+        #        font = cv2.FONT_HERSHEY_PLAIN
+
+        # set the rectangle background to Yellow
+        rectangle_bgr = (0, 255, 255)  # [255,255,0] (255, 255, 0)
+
+        # get the width and height of the text box
+        (text_width, text_height) = cv2.getTextSize(text, fontFace=2, fontScale=fontScale, thickness=1)[0]
+        # set the text start position
+        text_offset_x = cord[0]
+        text_offset_y = cord[1]  # org=(p1[0],int((p3[1]+p1[1])*0.5))
+        # make the coords of the box with a small padding of two pixels
+        box_coords = (
+        (text_offset_x, text_offset_y), (int(text_offset_x + (text_width) * 1.01), text_offset_y - text_height - 2))
+        # print("text : ", text, "box_coords : ", box_coords)
+        cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
+        image_final = cv2.putText(img, text, (text_offset_x, text_offset_y), fontFace=2, fontScale=fontScale,
+                                  color=(0, 0, 0), thickness=1)
+
         return image_final
 
     """def render_flagged_image(self, final_json_to_flag, texted_image):
-        for k in final_json_to_flag["paragraphs"]:
-            for l in final_json_to_flag["paragraphs"][k]:
-                for m in l['words']:
-                    for val in list(m.values()):
-                        if isinstance(val, dict):
-                            p1 = val['p1']
-                            p3 = val['p3']
-                            p2 = [p3[0], p1[1]]
-                            p4 = [p1[0], p3[1]]
-                    for key, val in m.items():
-                        if isinstance(val, dict):
-                            text = key
-                    texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
-                                               fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
-                    if m['flag'] == 'True':
-                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
-        for k in final_json_to_flag["tables"]:
-            for l in final_json_to_flag["tables"][k]:
-                for m in final_json_to_flag["tables"][k][l]["words"]:
-                    p1 = m["boundingBox"]["p1"]
-                    p3 = m["boundingBox"]["p3"]
-                    p2 = [p3[0], p1[1]]
-                    p4 = [p1[0], p3[1]]
-                    text = m["text"]
-                    texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
-                                               fontFace=3, fontScale=0.6, color=(0, 0, 0), thickness=1)
-                    if m['flag'] == 'True':
-                        cv2.rectangle(texted_image, (p1[0], p1[1]), (p3[0], p3[1]), (0, 255, 255), 1)
-        return texted_image"""
-
-    def render_flagged_image(self, final_json_to_flag, texted_image):
         plt.figure(figsize=(15, 15))
         #        texted_image = cv2.resize(texted_image, (700, 800))
         ax = plt.imshow(texted_image)
@@ -275,6 +296,80 @@ class ui_corrections:
                         texted_image = cv2.putText(img=texted_image, text=text, org=(p1[0], int((p3[1] + p1[1]) * 0.5)),
                                                    fontFace=3, fontScale=0.7, color=(0, 0, 0), thickness=1)
 
+        return texted_image"""
+
+    def render_flagged_image(self, final_json_to_flag, texted_image):
+
+        hieght_org, width_org, _ = texted_image.shape
+        #        plt.figure(figsize=(15,15))
+        texted_image = cv2.resize(texted_image, (700, 800))
+        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+        hieght, width, _ = texted_image.shape
+        fontScale = min(width, hieght) / (25 / 0.01)
+
+        #        ax = plt.imshow(texted_image)
+        #        plt.axis('off')
+        for k in final_json_to_flag["paragraphs"]:
+            for l in final_json_to_flag["paragraphs"][k]:
+                for m in l['words']:
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
+                            p2 = [p3[0], p1[1]]
+                            p4 = [p1[0], p3[1]]
+                    for key, val in m.items():
+                        if isinstance(val, dict):
+                            text = key
+                    p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] = self.toPercentage(p1[0], p1[1], p2[0],
+                                                                                               p2[1], p3[0], p3[1],
+                                                                                               p4[0], p4[1], hieght_org,
+                                                                                               width_org)
+                    vertices = [p1, p2, p3, p4]
+
+                    if m['flag'] == 'True':
+                        #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
+                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.50)),
+                                                           fontScale)
+                    #                        texted_image = cv2.rectangle(texted_image, tuple(p1), tuple(p3), (0, 255, 255), -1)
+                    #                        texted_image =cv2.putText(img=texted_image, text=text, org=(p1[0],int((p3[1]+p1[1])*0.5)),fontFace=3, fontScale=0.7, color=(0,0,0), thickness=1)
+                    else:
+                        #                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
+                        texted_image = cv2.putText(img=texted_image, text=text,
+                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.50)), fontFace=2,
+                                                   fontScale=fontScale, color=(0, 0, 0), thickness=1)
+
+        for k in final_json_to_flag["tables"]:
+            for l in final_json_to_flag["tables"][k]:
+                for m in final_json_to_flag["tables"][k][l]["words"]:
+                    p1 = m["boundingBox"]["p1"]
+                    p3 = m["boundingBox"]["p3"]
+                    p2 = [p3[0], p1[1]]
+                    p4 = [p1[0], p3[1]]
+                    text = m["text"]
+                    p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] = self.toPercentage(p1[0], p1[1], p2[0],
+                                                                                               p2[1], p3[0], p3[1],
+                                                                                               p4[0], p4[1], hieght_org,
+                                                                                               width_org)
+                    vertices = [p1, p2, p3, p4]
+
+                    if m['flag'] == 'True':
+                        #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
+                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.50)),
+                                                           fontScale)
+                    #                        texted_image = cv2.rectangle(texted_image, tuple(p1), tuple(p3), (0, 255, 255), -1)
+                    #                        texted_image =cv2.putText(img=texted_image, text=text, org=(p1[0],int((p3[1]+p1[1])*0.5)),fontFace=3, fontScale=0.7, color=(0,0,0), thickness=1)
+                    else:
+                        #                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
+                        texted_image = cv2.putText(img=texted_image, text=text,
+                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.50)), fontFace=2,
+                                                   fontScale=fontScale, color=(0, 0, 0), thickness=1)
+
+        #                    plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
+        #                    texted_image =cv2.putText(img=texted_image, text=text, org=(p1[0],int((p3[1]+p1[1])*0.5)),fontFace=3, fontScale=0.6, color=(0,0,0), thickness=1)
+        #                    if(m['flag']=='True'):
+        #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
+        #        plt.savefig('gen_image_with_matplotlib.png', bbox_inches='tight',pad_inches=0)
         return texted_image
 
     def document_confidence(self, final_json, google_response, mode="default"):
@@ -339,7 +434,7 @@ class ui_corrections:
         return doc_accuracy, tooooootal_words
 
 
-def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, percent=100):
+def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, percent=1):
     mask = mask
     final_json = final_json
 
@@ -463,3 +558,32 @@ def cleaned_final_json(final_json):
         pass
 
     return clean_final_json
+
+
+def sort_json(final_json):
+    sorted_json = {}
+    for key in final_json.keys():
+        if key not in ['tables', 'paragraphs']:
+            sorted_json[key] = final_json[key]
+
+    if 'paragraphs' in final_json.keys():
+        para_order = sorted(final_json['paragraphs'], key=lambda x: int(x.split('_')[1]))
+
+        paras = []
+        for para in para_order:
+            paras.append((para, final_json['paragraphs'][para]))
+
+        sorted_json['paragraphs'] = OrderedDict(paras)
+
+    if 'tables' in final_json.keys():
+        sorted_json['tables'] = {}
+        for table in final_json['tables']:
+            cell_order = sorted(final_json['tables'][table], key=lambda x: int(x.split('r')[0].split('c')[-1]))
+
+            cells = []
+            for cell in cell_order:
+                cells.append((cell, final_json['tables'][table][cell]))
+
+            sorted_json['tables'][table] = OrderedDict(cells)
+
+    return sorted_json

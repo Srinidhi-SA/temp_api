@@ -1,15 +1,17 @@
-import json
+import simplejson as json
 import sys
 
 
 class Templates:
 
-    def __init__(self, metadata):
+    def __init__(self, template, metadata):
+        self.template = template
         self.template_number = self.get_template(metadata)
 
     def create_new_templates(self):
 
-        with open('./ocr/ITE/classified_templates.json', 'r') as f:
+        # template_obgo to the admin pagej.template
+        with open('./ocr/ITE/scripts/database/classified_templates.json', 'r') as f:
             templates = json.load(f)
             f.close()
         print('Total Templates : \n', templates.keys())
@@ -21,10 +23,12 @@ class Templates:
     def get_template(self, current_metadata):
 
         try:
-            with open('./ocr/ITE/classified_templates.json', 'r') as f:
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'r') as f:
                 templates = json.load(f)
-                f.close()
-
+                f.close()"""
+            # template_obj = Template.objects.first()
+            # templates = json.loads(template_obj.template_classification)
+            templates = self.template
             defined_pages = [templates[key]['Pages'] for key in templates.keys()]
             defined_pages = [page for sublist in defined_pages for page in sublist]
             #            print(defined_pages)
@@ -56,9 +60,11 @@ class Templates:
                             pages.append(page)
 
                             templates[tem]['Pages'] = pages
-                            with open('./ocr/ITE/classified_templates.json', 'w+') as f:
+                            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w+') as f:
                                 json.dump(templates, f)
-                                f.close()
+                                f.close()"""
+                            # template_obj.template_classification = json.dumps(templates)
+                            # template_obj.save()
                         return tem, match_output
                     else:
                         ctn = ctn + 1
@@ -67,10 +73,11 @@ class Templates:
             templates['t' + str(ctn)] = {}
             templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
             templates['t' + str(ctn)]['meta'] = current
-            with open('./ocr/ITE/classified_templates.json', 'w+') as f:
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w+') as f:
                 json.dump(templates, f)
-                f.close()
-
+                f.close()"""
+            # template_obj.template_classification = json.dumps(templates)
+            # template_obj.save()
             return 't' + str(ctn), 'No Match'
 
         except:
@@ -89,10 +96,11 @@ class Templates:
             templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
             templates['t' + str(ctn)]['meta'] = current_metadata[page]
 
-            with open('./ocr/ITE/classified_templates.json', 'w') as f:
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w') as f:
                 json.dump(templates, f)
-                f.close()
-
+                f.close()"""
+            # t = Template(template_classification=json.dumps(templates))
+            # t.save()
             return 't1', 'No Match'
 
     def match(self, reference, current):
