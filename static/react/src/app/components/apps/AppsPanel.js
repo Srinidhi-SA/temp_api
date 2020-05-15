@@ -222,7 +222,17 @@ export class AppsPanel extends React.Component {
           <div class="col-md-4 xs-mb-20">
            <div key={index}>
              <div className="app-block">
-               <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= {(data.app_id == 2 || data.app_id == 13) ? data.app_url.replace("/models","") + "/modeSelection" : data.app_url.replace("/models","") + "/" }>
+               <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
+               {(data.app_id == 2 || data.app_id == 13) ? 
+               data.app_url.replace("/models","") + "/modeSelection" : 
+               (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
+               data.app_url.concat("project"):
+               ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL1"))?         
+               data.app_url.concat("reviewer"):
+               data.app_url.replace("/models","") + "/" 
+               )
+               }>
+
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
                   </div>
