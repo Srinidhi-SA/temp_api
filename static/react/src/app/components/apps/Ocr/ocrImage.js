@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage, clearImageDetails } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -21,6 +21,7 @@ import ReactTooltip from 'react-tooltip';
     reviewerName: store.ocr.selected_reviewer_name,
     selected_image_name: store.ocr.selected_image_name,
     is_closed: store.ocr.is_closed,
+    template: store.ocr.template,
   };
 })
 
@@ -115,6 +116,7 @@ export class OcrImage extends React.Component {
     }).then(response => response.json())
       .then(data => {
         if (data.submitted === true) {
+          this.props.dispatch(closeFlag(data));
           this.finalAnalysis();
           bootbox.alert(statusMessages("success", "Changes have been successfully saved. Thank you for reviewing the document.", "small_mascot"));
         }
@@ -304,23 +306,6 @@ export class OcrImage extends React.Component {
             }
           </div>
           <div className="col-sm-6">
-            {/* <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
-              <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
-              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
- 
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-                <option value="60">60</option>
-                <option value="70">70</option>
-                <option value="80">80</option>
-                <option value="90">90</option>
-                <option value="100">100</option>
-              </select>
-            </div> */}
-
             <ul className="export" style={{ float: 'right' }} >
               <li className="dropdown">
                 <a className="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -341,6 +326,17 @@ export class OcrImage extends React.Component {
                 </ul>
               </li>
             </ul>
+
+            <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
+              <label class="control-label xs-mb-0">Sub Template</label>
+              <select class="form-control inline-block 1-100 template">
+                {this.props.template.map(i =>(
+                  <option value={i}>{i}</option>
+                ))
+                }
+                
+                </select>
+            </div>
           </div>
         </div>
         <div className="col-sm-6">
