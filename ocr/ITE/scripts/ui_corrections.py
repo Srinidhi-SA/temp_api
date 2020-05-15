@@ -242,10 +242,10 @@ class ui_corrections:
         text_offset_y = cord[1]  # org=(p1[0],int((p3[1]+p1[1])*0.5))
         # make the coords of the box with a small padding of two pixels
         box_coords = (
-        (text_offset_x, text_offset_y), (int(text_offset_x + (text_width) * 1.5), text_offset_y - text_height - 2))
+        (text_offset_x, text_offset_y), (int(text_offset_x + (text_width) * 1.01), text_offset_y - text_height - 2))
         # print("text : ", text, "box_coords : ", box_coords)
         cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
-        image_final = cv2.putText(img, text, (text_offset_x, text_offset_y), fontFace=3, fontScale=fontScale,
+        image_final = cv2.putText(img, text, (text_offset_x, text_offset_y), fontFace=2, fontScale=fontScale,
                                   color=(0, 0, 0), thickness=1)
 
         return image_final
@@ -329,14 +329,14 @@ class ui_corrections:
 
                     if m['flag'] == 'True':
                         #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
-                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.51)),
+                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.50)),
                                                            fontScale)
                     #                        texted_image = cv2.rectangle(texted_image, tuple(p1), tuple(p3), (0, 255, 255), -1)
                     #                        texted_image =cv2.putText(img=texted_image, text=text, org=(p1[0],int((p3[1]+p1[1])*0.5)),fontFace=3, fontScale=0.7, color=(0,0,0), thickness=1)
                     else:
                         #                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
                         texted_image = cv2.putText(img=texted_image, text=text,
-                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.51)), fontFace=3,
+                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.50)), fontFace=2,
                                                    fontScale=fontScale, color=(0, 0, 0), thickness=1)
 
         for k in final_json_to_flag["tables"]:
@@ -355,14 +355,14 @@ class ui_corrections:
 
                     if m['flag'] == 'True':
                         #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
-                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.51)),
+                        texted_image = self.highlight_word(texted_image, text, (p1[0], int((p3[1] + p1[1]) * 0.50)),
                                                            fontScale)
                     #                        texted_image = cv2.rectangle(texted_image, tuple(p1), tuple(p3), (0, 255, 255), -1)
                     #                        texted_image =cv2.putText(img=texted_image, text=text, org=(p1[0],int((p3[1]+p1[1])*0.5)),fontFace=3, fontScale=0.7, color=(0,0,0), thickness=1)
                     else:
                         #                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
                         texted_image = cv2.putText(img=texted_image, text=text,
-                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.51)), fontFace=3,
+                                                   org=(p1[0], int((p3[1] + p1[1]) * 0.50)), fontFace=2,
                                                    fontScale=fontScale, color=(0, 0, 0), thickness=1)
 
         #                    plt.text(vertices[0][0], vertices[0][1], text, fontsize=7.5, va="top",color = 'black')
