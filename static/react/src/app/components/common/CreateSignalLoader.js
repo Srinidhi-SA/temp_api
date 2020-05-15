@@ -19,7 +19,6 @@ import {STATIC_URL} from "../../helpers/env";
     createSignalLoaderValue: store.signals.createSignalLoaderValue,
     loaderText: store.signals.loaderText,
     signalData: store.signals.signalData,
-	showHide: store.signals.showHide,
 	signalLoadedText: store.signals.signalLoadedText
   };
 })
@@ -310,8 +309,6 @@ export class CreateSignalLoader extends React.Component {
 
 
           </Modal.Body>
-          {(this.props.showHide)
-            ? (
               <Modal.Footer>
                 <div>
                   <Link to="/signals" style={{
@@ -324,11 +321,6 @@ export class CreateSignalLoader extends React.Component {
                   </Link>
                 </div>
               </Modal.Footer>
-            )
-            : (
-              <div></div>
-            )
-}
         </Modal>
       </div>
     );
