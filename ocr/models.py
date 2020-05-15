@@ -277,6 +277,7 @@ class OCRImage(models.Model):
     analysis_list = models.TextField(max_length=3000000, default="[]", null=True)
     analysis = models.TextField(max_length=3000000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
+    classification = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=3000000, default="{}", null=True)
     is_recognized = models.BooleanField(default=False)
     mask = models.FileField(null=True, upload_to=upload_dir)
@@ -340,3 +341,14 @@ class OCRImage(models.Model):
             return stats
         except Exception:
             return 0
+
+
+class Template(models.Model):
+
+    template_classification = models.TextField(max_length=3000000, default="{}", null=True)
+    modified_at = models.DateTimeField(auto_now_add=True, null=True)
+
+
+    def create(self):
+        """Create Template model"""
+        self.save()

@@ -17,7 +17,7 @@ class BaseModule:
         self.microsoft_analysis = img_obj.get_microsoft_analysis()
         self.image_name = image_name
 
-    def extract_info(self, bwimage):
+    def extract_info(self, template, bwimage):
         scalev, scaleh = optimal_params(bwimage, task='table')
         self.mask, horizontal, vertical = extract_mask(bwimage, scalev=scalev,
                                                        scaleh=scaleh)
@@ -50,7 +50,7 @@ class BaseModule:
             table_area_dict, table_count_dict, order, self.microsoft_analysis, rel_para_area, self.paras,
             table_rel_centroid_dist_dict)
 
-        template_obj = Templates({self.image_name: self.metadata})
+        template_obj = Templates(template, {self.image_name: self.metadata})
         print(template_obj.template_number, self.image_name)
         self.final_json = {
             'tables': self.final_mapped_dict_table,
