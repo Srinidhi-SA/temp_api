@@ -444,7 +444,7 @@ class Dataset(models.Model):
 
                     path = str(self.input_file)
                     if '/home/' in path:
-                        file_name=path.split("/media")[-1]
+                        file_name=path.split("/config")[-1]
                     else:
                         file_name = os.path.join('/media/', str(self.input_file))
                 else:
