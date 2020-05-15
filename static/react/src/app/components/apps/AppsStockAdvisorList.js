@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SEARCHCHARLIMIT} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList,clearDataPreview} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -41,6 +41,7 @@ export class AppsStockAdvisorList extends React.Component {
 		 this.callShowloader = this.callShowloader.bind(this);
 	}
 	componentWillMount(){
+		this.props.dispatch(clearDataPreview());
 		var pageNo = 1;
 		if(this.props.history.location.search.indexOf("page") != -1){
 			pageNo = this.props.history.location.search.split("page=")[1];
@@ -85,7 +86,7 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 
 	render() {
-		 if (this.props.dataPreviewFlag) {
+		 if (store.getState().datasets.dataPreviewFlag){
 		    	let _link = "/apps-stock-advisor-analyze/data/" + store.getState().datasets.selectedDataSet;
 		    	return (<Redirect to={_link}/>);
 		    }

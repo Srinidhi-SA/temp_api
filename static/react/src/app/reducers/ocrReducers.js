@@ -80,6 +80,7 @@ export default function reducer(state = {
   imageTaskId: "",
   projectTabLoaderFlag:false,
   dashboardMetrics: {},
+  is_closed: "",
 
 }, action) {
   switch (action.type) {
@@ -258,12 +259,14 @@ export default function reducer(state = {
     case "SAVE_IMAGE_DETAILS":
       {
         let taskId = action.data.tasks === null ? "" : action.data.tasks.id;
+        let close= action.data.tasks === null ? "" : action.data.tasks.is_closed;
         return {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
           imageTaskId: taskId,
+          is_closed: close,
         }
       }
       break;
@@ -282,7 +285,7 @@ export default function reducer(state = {
         {
           return {
             ...state,
-            ocrImgPath: action.data,
+            ocrImgPath: action.data + "?" +new Date().getTime(),
           }
         }
         break;
