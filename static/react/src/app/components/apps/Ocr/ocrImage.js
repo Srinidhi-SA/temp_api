@@ -304,7 +304,7 @@ export class OcrImage extends React.Component {
             }
           </div>
           <div className="col-sm-6">
-            <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
+            {/* <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
               <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
  
@@ -319,7 +319,28 @@ export class OcrImage extends React.Component {
                 <option value="90">90</option>
                 <option value="100">100</option>
               </select>
-            </div>
+            </div> */}
+
+            <ul className="export" style={{ float: 'right' }} >
+              <li className="dropdown">
+                <a className="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <span style={{ paddingRight: 10 }}>Select fields with confidence less than </span>
+                  <b className="caret"></b>
+                </a>
+                <ul className="dropdown-menu confidence" style={{ left: 195 }} onClick={(e)=>this.setState({heightLightVal:e.target.className},this.hightlightField)}>
+                  <li><a className="10" role="tab" data-toggle="tab">10%</a></li>
+                  <li><a className="20" role="tab" data-toggle="tab">20%</a></li>
+                  <li><a className="30" role="tab" data-toggle="tab">30%</a></li>
+                  <li><a className="40" role="tab" data-toggle="tab">40%</a></li>
+                  <li><a className="50" role="tab" data-toggle="tab">50%</a></li>
+                  <li><a className="60" role="tab" data-toggle="tab">60%</a></li>
+                  <li><a className="70" role="tab" data-toggle="tab">70%</a></li>
+                  <li><a className="80" role="tab" data-toggle="tab">80%</a></li>
+                  <li><a className="90" role="tab" data-toggle="tab">90%</a></li>
+                  <li><a className="100" role="tab" data-toggle="tab">100%</a></li>
+                </ul>
+              </li>
+            </ul>
           </div>
         </div>
         <div className="col-sm-6">

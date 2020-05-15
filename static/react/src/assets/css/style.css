@@ -22898,3 +22898,6 @@ min-width: 102px; }
     padding: 10px;
     margin: 10px 5px;
 }
+.confidence li a{
+  padding: 5px;
+}
