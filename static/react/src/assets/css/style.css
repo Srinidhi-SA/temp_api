@@ -20762,8 +20762,8 @@ h4.inline-block { background: white; padding: 8px 20px; }
 .cst_table .fa-file-text { color:#9E9E9E; }
 .cst_table .fa-briefcase { color:#607D8B; }
 .ocr_section .cst_table thead th.text-center { padding-right: 7px; }
-.ocr_highlightblock	{background:white; border:1px solid #e0e0e0; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
-.ocr_highlightblock select { width:70px; border:0;}
+.ocr_highlightblock	{background:white; border:1px solid #00998c; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
+.ocr_highlightblock select { width:70px; border:0;height: 30px;columns: #333333;}
 
 .checkbox.checbox-switch {
     padding-left: 0;
@@ -22897,4 +22897,10 @@ min-width: 102px; }
     background: #f6f6f6;
     padding: 10px;
     margin: 10px 5px;
+}
+.confidence li a{
+  padding: 5px;
+}
+.template:focus{
+  box-shadow: none !important;
 }

@@ -81,6 +81,7 @@ export default function reducer(state = {
   projectTabLoaderFlag:false,
   dashboardMetrics: {},
   is_closed: "",
+  template: [],
 
 }, action) {
   switch (action.type) {
@@ -267,9 +268,17 @@ export default function reducer(state = {
           imageSlug: action.data.slug,
           imageTaskId: taskId,
           is_closed: close,
+          template: action.data.values
         }
       }
       break;
+      case "CLOSE_FLAG":
+        {
+          return{
+            ...state,
+          is_closed: action.data.is_closed,
+          }
+        }
       case "CLEAR_IMAGE_DETAILS":
         {
           return {

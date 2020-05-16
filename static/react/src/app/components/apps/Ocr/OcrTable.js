@@ -347,6 +347,7 @@ export class OcrTable extends React.Component {
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
+            <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
             {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
@@ -461,9 +462,10 @@ export class OcrTable extends React.Component {
                         <th>
                           Template
                     </th>
+                    <th>SUB TEMPLATE</th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
-                            <span>Fields</span> <b class="caret"></b>
+                            <span>FIELDS</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
 								<li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
@@ -494,7 +496,7 @@ export class OcrTable extends React.Component {
                         </th>
                         {store.getState().ocr.tabActive=='active'?<th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
-                            <span>Assignee</span> <b class="caret"></b>
+                            <span>ASSIGNEE</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>

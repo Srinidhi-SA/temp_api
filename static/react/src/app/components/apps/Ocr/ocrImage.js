@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage, clearImageDetails } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -21,6 +21,7 @@ import ReactTooltip from 'react-tooltip';
     reviewerName: store.ocr.selected_reviewer_name,
     selected_image_name: store.ocr.selected_image_name,
     is_closed: store.ocr.is_closed,
+    template: store.ocr.template,
   };
 })
 
@@ -115,6 +116,7 @@ export class OcrImage extends React.Component {
     }).then(response => response.json())
       .then(data => {
         if (data.submitted === true) {
+          this.props.dispatch(closeFlag(data));
           this.finalAnalysis();
           bootbox.alert(statusMessages("success", "Changes have been successfully saved. Thank you for reviewing the document.", "small_mascot"));
         }
@@ -235,7 +237,7 @@ export class OcrImage extends React.Component {
           setTimeout(() => {
             document.getElementById("loader").classList.remove("loader_ITE");
             document.getElementById("successMsg").innerText = "Updated successfully.";
-          }, 3000);
+          }, 1000);
           //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
@@ -286,6 +288,10 @@ export class OcrImage extends React.Component {
   }
   render() {
     let mark_text = this.props.is_closed!= true ? "Mark as complete" : "Completed";
+    if (mark_text == "Completed"){
+      document.getElementById("badScan").disabled= true
+      document.getElementById("mac").disabled= true
+    }
     return (
       <div>
         <div className="row">
@@ -304,21 +310,36 @@ export class OcrImage extends React.Component {
             }
           </div>
           <div className="col-sm-6">
+            <ul className="export" style={{ float: 'right' }} >
+              <li className="dropdown">
+                <a className="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <span style={{ paddingRight: 10 }}>Select fields with confidence less than </span>
+                  <b className="caret"></b>
+                </a>
+                <ul className="dropdown-menu confidence" style={{ left: 195 }} onClick={(e)=>this.setState({heightLightVal:e.target.className},this.hightlightField)}>
+                  <li><a className="10" role="tab" data-toggle="tab">10%</a></li>
+                  <li><a className="20" role="tab" data-toggle="tab">20%</a></li>
+                  <li><a className="30" role="tab" data-toggle="tab">30%</a></li>
+                  <li><a className="40" role="tab" data-toggle="tab">40%</a></li>
+                  <li><a className="50" role="tab" data-toggle="tab">50%</a></li>
+                  <li><a className="60" role="tab" data-toggle="tab">60%</a></li>
+                  <li><a className="70" role="tab" data-toggle="tab">70%</a></li>
+                  <li><a className="80" role="tab" data-toggle="tab">80%</a></li>
+                  <li><a className="90" role="tab" data-toggle="tab">90%</a></li>
+                  <li><a className="100" role="tab" data-toggle="tab">100%</a></li>
+                </ul>
+              </li>
+            </ul>
+
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
-              <label class="control-label xs-mb-0" for="select_confidence" onClick={this.hightlightField}>Highlight fields with confidence less than</label>
-              <select class="form-control inline-block 1-100" id="select_confidence" onChange={(e) => this.setState({ heightLightVal: e.target.value }, this.hightlightField)}>
- 
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-                <option value="60">60</option>
-                <option value="70">70</option>
-                <option value="80">80</option>
-                <option value="90">90</option>
-                <option value="100">100</option>
-              </select>
+              <label class="control-label xs-mb-0">Sub Template</label>
+              <select class="form-control inline-block 1-100 template">
+                {this.props.template.map(i =>(
+                  <option value={i}>{i}</option>
+                ))
+                }
+                
+                </select>
             </div>
           </div>
         </div>
@@ -410,21 +431,16 @@ export class OcrImage extends React.Component {
 
         </div>
         <div className="row">
-          {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") && this.props.is_closed != true ?
+          {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
             <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
               <ReactTooltip place="top" type="light" />
-              <button class="btn btn-warning" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
+              <button class="btn btn-warning" id="badScan" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
                 <i class="fa fa-info-circle"></i> Bad Scan
           </button>
-              <button class="btn btn-primary" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
+              <button class="btn btn-primary" id="mac" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
             </div>
             :
-            <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
-              <button class="btn btn-warning" disabled>
-                <i class="fa fa-info-circle"></i> Bad Scan
-              </button>
-              <button class="btn btn-primary" disabled><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
-            </div>
+            <div></div>
           }
         </div>
 
