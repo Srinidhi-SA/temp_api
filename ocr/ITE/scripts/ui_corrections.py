@@ -491,7 +491,6 @@ class ui_corrections:
                                     m["text"] == list(i.keys())[0])):
                                 m.update({"flag": "False"})
                                 cooorect_words = cooorect_words + 1
-                                print(cooorect_words)
                                 break
                             else:
                                 m.update({"flag": "True"})
@@ -519,7 +518,7 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, p
     except:
         pass
     final_json = adsfff.default_all_words_flag_to_false(final_json)
-    # needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
+    doc_accuracy, total_words = adsfff.document_confidence(final_json, google_response)
 
     if percent == 1:
         mode = "default"
@@ -534,7 +533,7 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, p
     with open(gen_image, mode='rb') as file:
         img = file.read()
     gen_image = base64.encodebytes(img)
-    return gen_image
+    return gen_image, doc_accuracy, total_words
 
 
 def check_if_centroid_inbetween_p1_p3(centroid, p1, p3):
