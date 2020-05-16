@@ -906,7 +906,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)
-                analysis_list = json.loads(image_queryset.analysis_list)
                 response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
                 result = response.task_id
                 res = AsyncResult(result)
@@ -920,6 +919,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         temp_obj = Template.objects.first()
                         temp_obj.template_classification = json.dumps(response['template'])
                         temp_obj.save()
+                        if image_queryset.imagefile.path[-4:] == '.pdf':
+                            image_queryset.status = 'ready_to_assign'
+                            image_queryset.save()
                     else:
                         results.append(serializer.errors)
             return Response(results)
