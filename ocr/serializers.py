@@ -85,8 +85,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         serialized_data['modified_by'] = UserSerializer(instance.created_by).data['username']
-
-        return serialized_data
+        if not serialized_data['imagefile'][-4:] == '.pdf' and not serialized_data['status'] == 'Ready to Recognize':
+            return serialized_data
 
     class Meta(object):
         """
