@@ -79,12 +79,16 @@ class CustomOCRPagination(PageNumberPagination):
         end_count = initial_count + page_size
         page_data = page[initial_count:end_count]
         serialized_page_data = self.list_serializer(page_data, many=True,
-                                                    context={"request": self.request})  # pylint: disable= line-too-long
+                                                    context={"request": self.request})
+
+        data = [i for i in serialized_page_data.data if i]
+        total_data_count = len(data)
+        # pylint: disable= line-too-long
         return {
             "count": total_number_of_pages,
             "current_page": page_number,
             "current_page_size": page_size,
-            "current_data": serialized_page_data.data,
+            "current_data": data,
             "total_data_count": total_data_count
         }
 

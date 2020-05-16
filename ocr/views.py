@@ -674,7 +674,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             f.write(image)
         data['mask'] = File(name='{}_mask.png'.format(slug),
                             file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
-        gen_image = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
+        gen_image, doc_accuracy, total_words = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
                                response['final_json'], response['google_response'], response['google_response2'],
                                'ocr/ITE/database/{}_gen_image.png'.format(slug))
         image = base64.decodebytes(gen_image)
@@ -692,9 +692,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['slug'] = slug
         data['flag'] = response['flag']
         data['classification'] = str(response['final_json']['temp_number'][0])
-        obj = ui_corrections(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                             response['final_json'], response['google_response'], response['google_response2'])
-        doc_accuracy, total_words = obj.document_confidence(obj.final_json, obj.google_response)
+
         data['fields'] = total_words
         data['confidence'] = round(doc_accuracy * 100, 2)
 
@@ -905,7 +903,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         results = []
         template = json.loads(Template.objects.first().template_classification)
-        print(template)
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)
@@ -970,7 +967,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['final_result'] = json.dumps(final_json)
         data['analysis_list'] = json.dumps(update_history)
         image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path)
+        gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path)
         image = base64.decodebytes(gen_image)
         with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
             f.write(image)
@@ -1095,7 +1092,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-        gen_image = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+        gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
                                percent=user_input)
 
         image = base64.decodebytes(gen_image)
