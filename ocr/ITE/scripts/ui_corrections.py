@@ -602,7 +602,7 @@ def offset(dev_click_cord, image_size):
     x_offseted = int(x * (image_size[1] / 700))
     y_offseted = int(y * (image_size[0] / 800))
 
-    return [x_offseted-30, y_offseted+30]
+    return [x_offseted, y_offseted]
 
 
 def cleaned_final_json(final_json):
