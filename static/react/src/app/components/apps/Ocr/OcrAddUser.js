@@ -82,7 +82,7 @@ export class OcrAddUser extends React.Component{
                     </option>);
         }
             return(
-                <Modal show={this.props.addUserPopupFlag} onHide={this.props.createUserFlag?"":this.closeAddUserPopup.bind(this)}>
+                <Modal backdrop="static" show={this.props.addUserPopupFlag} onHide={this.props.createUserFlag?"":this.closeAddUserPopup.bind(this)}>
                     <Modal.Header>
                         <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
                         <h4 className="modal-title">Add User</h4>
