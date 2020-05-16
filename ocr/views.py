@@ -668,6 +668,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def process_image(self, data, response, slug, image_queryset):
 
+        tmp = copy.deepcopy(response['final_json'])
         data['final_result'] = json.dumps(response['final_json'])
         image = base64.decodebytes(response['mask'].encode('utf-8'))
         with open('ocr/ITE/database/{}_mask.png'.format(slug), 'wb') as f:
@@ -695,6 +696,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         obj = ui_corrections(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
                              response['final_json'], response['google_response'], response['google_response2'])
         doc_accuracy, total_words = obj.document_confidence(obj.final_json, obj.google_response)
+        print(doc_accuracy, total_words)
         data['fields'] = total_words
         data['confidence'] = round(doc_accuracy * 100, 2)
 
@@ -905,7 +907,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         results = []
         template = json.loads(Template.objects.first().template_classification)
-        print(template)
         if 'slug' in data:
             for slug in ast.literal_eval(str(data['slug'])):
                 image_queryset = OCRImage.objects.get(slug=slug)

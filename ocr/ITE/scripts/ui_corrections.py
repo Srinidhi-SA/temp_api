@@ -16,6 +16,7 @@ if os.environ.get('DISPLAY', '') == '':
     print('no display found. Using non-interactive Agg backend')
     mpl.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 
 # from ocr.ITE.scripts.info_mapping import update_u1
@@ -45,19 +46,13 @@ class ui_corrections:
                 json.dump(serialized, outfile)
             return serialized
 
-    # =============================================================================
-    # for i in needed_words:
-    #
-    #     x,y=calculate_centroid(list(i.values())[0][0],list(i.values())[0][1])
-    # =============================================================================
-
     def check_if_centroid_inbetween_p1_p3(self, centroid, p1, p3):
         if p1[0] <= centroid[0] <= p3[0] and p1[1] <= centroid[1] <= p3[1]:
             return True
         else:
             return False
 
-    def all_words(self, response, user_input):
+    """def all_words(self, response, user_input):
         loi = []
         for page in response["fullTextAnnotation"]["pages"]:
             for block in page["blocks"]:
@@ -69,6 +64,23 @@ class ui_corrections:
                             [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
                             [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
 
+        return loi"""
+
+    def all_words(self, response, user_input):
+        loi = []
+        for page in response["fullTextAnnotation"]["pages"]:
+            for block in page["blocks"]:
+                for paragraph in block["paragraphs"]:
+                    for word in paragraph["words"]:
+                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
+                        #                        print(word["confidence"])
+                        #                        print({word_text:[[word["boundingBox"]["vertices"][0],word["boundingBox"]["vertices"][0]],[word["boundingBox"]["vertices"][2],word["boundingBox"]["vertices"][2]]]})
+                        try:
+                            loi.append({word_text: [
+                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
+                                [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
+                        except:
+                            pass
         return loi
 
     def calculate_centroid(self, p1, p3):
@@ -242,7 +254,7 @@ class ui_corrections:
         text_offset_y = cord[1]  # org=(p1[0],int((p3[1]+p1[1])*0.5))
         # make the coords of the box with a small padding of two pixels
         box_coords = (
-        (text_offset_x, text_offset_y), (int(text_offset_x + (text_width) * 1.01), text_offset_y - text_height - 2))
+            (text_offset_x, text_offset_y), (int(text_offset_x + (text_width) * 1.01), text_offset_y - text_height - 2))
         # print("text : ", text, "box_coords : ", box_coords)
         cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
         image_final = cv2.putText(img, text, (text_offset_x, text_offset_y), fontFace=2, fontScale=fontScale,
@@ -298,7 +310,7 @@ class ui_corrections:
 
         return texted_image"""
 
-    def render_flagged_image(self, final_json_to_flag, texted_image):
+    """def render_flagged_image(self, final_json_to_flag, texted_image):
 
         hieght_org, width_org, _ = texted_image.shape
         #        plt.figure(figsize=(15,15))
@@ -370,7 +382,68 @@ class ui_corrections:
         #                    if(m['flag']=='True'):
         #                        cv2.rectangle(texted_image,(p1[0],p1[1]),(p3[0],p3[1]),(0,0,255),1)
         #        plt.savefig('gen_image_with_matplotlib.png', bbox_inches='tight',pad_inches=0)
-        return texted_image
+        return texted_image"""
+
+    def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
+
+        hieght_org, width_org, _ = texted_image.shape
+
+        texted_image = cv2.resize(texted_image, (700, 800))
+        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+
+        plt.figure(figsize=(15, 15))
+        ax = plt.imshow(texted_image)
+        plt.axis('off')
+        for k in final_json_to_flag["paragraphs"]:
+            for l in final_json_to_flag["paragraphs"][k]:
+                for m in l['words']:
+                    for val in list(m.values()):
+                        if isinstance(val, dict):
+                            p1 = val['p1']
+                            p3 = val['p3']
+                            p2 = [p3[0], p1[1]]
+                            p4 = [p1[0], p3[1]]
+                    for key, val in m.items():
+                        if isinstance(val, dict):
+                            text = key
+                    p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] = self.toPercentage(p1[0], p1[1], p2[0],
+                                                                                               p2[1], p3[0], p3[1],
+                                                                                               p4[0], p4[1], hieght_org,
+                                                                                               width_org)
+                    vertices = [p1, p2, p3, p4]
+
+                    if m['flag'] == 'True':
+                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.gca().add_patch(
+                            patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
+                                              edgecolor='y', facecolor='yellow', fill=True))
+                    else:
+                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+
+        for k in final_json_to_flag["tables"]:
+            for l in final_json_to_flag["tables"][k]:
+                for m in final_json_to_flag["tables"][k][l]["words"]:
+                    p1 = m["boundingBox"]["p1"]
+                    p3 = m["boundingBox"]["p3"]
+                    p2 = [p3[0], p1[1]]
+                    p4 = [p1[0], p3[1]]
+                    text = m["text"]
+                    p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1] = self.toPercentage(p1[0], p1[1], p2[0],
+                                                                                               p2[1], p3[0], p3[1],
+                                                                                               p4[0], p4[1], hieght_org,
+                                                                                               width_org)
+                    vertices = [p1, p2, p3, p4]
+
+                    if m['flag'] == 'True':
+                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.gca().add_patch(
+                            patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
+                                              edgecolor='y', facecolor='yellow', fill=True))
+                    else:
+                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+
+        plt.savefig(gen_image, bbox_inches='tight', pad_inches=0)
+        return
 
     def document_confidence(self, final_json, google_response, mode="default"):
         needed_words = self.confidence_filter(google_response, (100 / 100))
@@ -404,6 +477,7 @@ class ui_corrections:
                                 break
                             else:
                                 m.update({"flag": "False"})
+                    # print(cooorect_words)
         for k in final_json["tables"]:
             for l in final_json["tables"][k]:
                 for m in final_json["tables"][k][l]["words"]:
@@ -417,6 +491,7 @@ class ui_corrections:
                                     m["text"] == list(i.keys())[0])):
                                 m.update({"flag": "False"})
                                 cooorect_words = cooorect_words + 1
+                                print(cooorect_words)
                                 break
                             else:
                                 m.update({"flag": "True"})
@@ -454,8 +529,8 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, p
         needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
     upd, tempasdfds = adsfff.flag_words_to_plot(final_json, needed_words, mode)
 
-    texted_image = adsfff.render_flagged_image(tempasdfds, adsfff.mask)
-    cv2.imwrite(gen_image, texted_image)
+    adsfff.render_flagged_image(tempasdfds, adsfff.mask, gen_image)
+    # cv2.imwrite(gen_image, texted_image)
     with open(gen_image, mode='rb') as file:
         img = file.read()
     gen_image = base64.encodebytes(img)
