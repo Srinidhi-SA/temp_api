@@ -290,7 +290,7 @@ export class OcrTable extends React.Component {
     ) : '' : '')
 
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-      <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+      <Modal backdrop="static" show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
         <Modal.Body style={{ padding: 0 }} >
           <div className="row" style={{ margin: 0 }}>
             <h4 className="text-center">Recognizing Document</h4>
