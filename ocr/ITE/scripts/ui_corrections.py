@@ -425,12 +425,12 @@ class ui_corrections:
                     vertices = [p1, p2, p3, p4]
 
                     if m['flag'] == 'True':
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
                         plt.gca().add_patch(
                             patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
                                               edgecolor='y', facecolor='yellow', fill=True))
                     else:
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
 
         for k in final_json_to_flag["tables"]:
             for l in final_json_to_flag["tables"][k]:
@@ -447,12 +447,12 @@ class ui_corrections:
                     vertices = [p1, p2, p3, p4]
 
                     if m['flag'] == 'True':
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
                         plt.gca().add_patch(
                             patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
                                               edgecolor='y', facecolor='yellow', fill=True))
                     else:
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
 
         plt.savefig(gen_image, bbox_inches='tight', pad_inches=0)
         return
