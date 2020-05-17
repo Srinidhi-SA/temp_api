@@ -44,7 +44,7 @@ class Templates:
                 # =============================================================================
                 defined_pages = [templates[key]['Pages'] for key in templates.keys()]
                 template_number = ([True if page in sublist else False for sublist in defined_pages]).index(True)
-                return 't' + str(template_number + 1), 'match'
+                return 'T' + str(template_number + 1), 'match'
 
             else:
                 for tem in templates:
@@ -70,15 +70,15 @@ class Templates:
                         ctn = ctn + 1
 
             #### WHEN THERE IS NO MATCH
-            templates['t' + str(ctn)] = {}
-            templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
-            templates['t' + str(ctn)]['meta'] = current
+            templates['T' + str(ctn)] = {}
+            templates['T' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
+            templates['T' + str(ctn)]['meta'] = current
             """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w+') as f:
                 json.dump(templates, f)
                 f.close()"""
             # template_obj.template_classification = json.dumps(templates)
             # template_obj.save()
-            return 't' + str(ctn), 'No Match'
+            return 'T' + str(ctn), 'No Match'
 
         except:
             # =============================================================================
@@ -92,16 +92,16 @@ class Templates:
             templates = {}
             ctn = 1
 
-            templates['t' + str(ctn)] = {}
-            templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
-            templates['t' + str(ctn)]['meta'] = current_metadata[page]
+            templates['T' + str(ctn)] = {}
+            templates['T' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
+            templates['T' + str(ctn)]['meta'] = current_metadata[page]
 
             """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w') as f:
                 json.dump(templates, f)
                 f.close()"""
             # t = Template(template_classification=json.dumps(templates))
             # t.save()
-            return 't1', 'No Match'
+            return 'T1', 'No Match'
 
     """def match(self, reference, current):
 
