@@ -129,7 +129,7 @@ class BaseModule:
                     table_count_dict[table_number + 1] = [x,
                                                           y, x + width - 1,
                                                           y + height - 1]
-                    table_area_dict[table_number + 1] = area
+                    table_area_dict[table_number + 1] = round((area/parent_area),3)
 
                     M = cv2.moments(cnt)
                     cx = int(M['m10'] / M['m00'])
@@ -186,7 +186,9 @@ class BaseModule:
                             and (min(width, height) > 20)):
                         table_area_dict[int(
                             str(table_number) +
-                            str(inner_table_number + 1))] = area
+                            str(inner_table_number + 1))] = round(
+                            (area / (outer_table_mask.shape[0] * outer_table_mask.shape[1])), 3)
+
                         M = cv2.moments(cnt)
                         cx = int(M['m10'] / M['m00'])
                         cy = int(M['m01'] / M['m00'])

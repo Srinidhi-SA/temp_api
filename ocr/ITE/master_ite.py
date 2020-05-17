@@ -35,6 +35,7 @@ def main(input_path, template, slug=None):
         image_obj.microsoft_analysis,
         image_obj.image)
 
+    analysis = image_obj.microsoft_analysis
     image_obj.set_domain_flag(flag)
     print('\n FLAG : ', flag)
 
@@ -82,6 +83,7 @@ def main(input_path, template, slug=None):
             'mask': mask,
             'metadata': metadata,
             'google_response': google_response,
+            'analysis': analysis,
             'google_response2': google_response2,
             'flag': flag,
             'image_slug': slug,

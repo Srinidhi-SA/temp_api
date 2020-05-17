@@ -66,7 +66,7 @@ class ui_corrections:
 
         return loi"""
 
-    def all_words(self, response, user_input):
+    """def all_words(self, response, user_input):
         loi = []
         for page in response["fullTextAnnotation"]["pages"]:
             for block in page["blocks"]:
@@ -81,6 +81,18 @@ class ui_corrections:
                                 [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
                         except:
                             pass
+        return loi"""
+
+    def all_words(self, analysis):
+
+        loi = []
+        for line in analysis['lines']:
+            for word in line['words']:
+                if 'confidence' in word.keys():
+                    try:
+                        loi.append({word['text']: [word['boundingBox'][:2], word['boundingBox'][4:6]]})
+                    except:
+                        pass
         return loi
 
     def calculate_centroid(self, p1, p3):
@@ -167,7 +179,7 @@ class ui_corrections:
                         if mode:
                             if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
                                     list(m.keys())[0] == list(i.keys())[0])):
-                                m.update({"flag": "False"})
+                                m.update({"flag": "True"})
                                 break
                             elif (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
                                     list(m.keys())[0] != list(i.keys())[0])):
@@ -175,7 +187,7 @@ class ui_corrections:
                                 temp_dict = {list(m.keys())[0]: [p1, p3]}
                                 if temp_dict not in u1: u1.append(temp_dict)
                             else:
-                                m.update({"flag": "True"})
+                                m.update({"flag": "False"})
                         #                                temp_dict = {list(m.keys())[0]: [p1,p3]}
                         #                                if temp_dict not in u1: u1.append(temp_dict)
 
@@ -196,7 +208,7 @@ class ui_corrections:
                         if mode:
                             if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
                                     m["text"] == list(i.keys())[0])):
-                                m.update({"flag": "False"})
+                                m.update({"flag": "True"})
                                 break
                             elif (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
                                     m["text"] != list(i.keys())[0])):
@@ -204,7 +216,7 @@ class ui_corrections:
                                 temp_dict = {m["text"]: [p1, p3]}
                                 if temp_dict not in u1: u1.append(temp_dict)
                             else:
-                                m.update({"flag": "True"})
+                                m.update({"flag": "False"})
                         #                                    temp_dict = {m["text"]: [p1,p3]}
                         #                                    if temp_dict not in u1: u1.append(temp_dict)
                         else:
@@ -413,12 +425,12 @@ class ui_corrections:
                     vertices = [p1, p2, p3, p4]
 
                     if m['flag'] == 'True':
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
                         plt.gca().add_patch(
                             patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
                                               edgecolor='y', facecolor='yellow', fill=True))
                     else:
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
 
         for k in final_json_to_flag["tables"]:
             for l in final_json_to_flag["tables"][k]:
@@ -435,17 +447,17 @@ class ui_corrections:
                     vertices = [p1, p2, p3, p4]
 
                     if m['flag'] == 'True':
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
                         plt.gca().add_patch(
                             patches.Rectangle((p1[0] - 1, p1[1] - 2), p3[0] - p4[0] + 1, p4[1] - p1[1] + 3, linewidth=1,
                                               edgecolor='y', facecolor='yellow', fill=True))
                     else:
-                        plt.text(vertices[0][0], vertices[0][1], text, fontsize=8, va="top", color='black')
+                        plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
 
         plt.savefig(gen_image, bbox_inches='tight', pad_inches=0)
         return
 
-    def document_confidence(self, final_json, google_response, mode="default"):
+    """def document_confidence(self, final_json, google_response, mode="default"):
         needed_words = self.confidence_filter(google_response, (100 / 100))
         tooooootal_words = 0
         cooorect_words = 0
@@ -505,10 +517,25 @@ class ui_corrections:
                                 m.update({"flag": "False"})
         #        print(u1)
         doc_accuracy = (cooorect_words / tooooootal_words)
-        return doc_accuracy, tooooootal_words
+        return doc_accuracy, tooooootal_words"""
+
+    def document_confidence(self, analysis):
+        word_count, error = 0, 0
+        for line in analysis['lines']:
+
+            for word in line['words']:
+                word_count = word_count + 1
+
+                if 'confidence' in word.keys():
+                    error = error + 1
+                else:
+                    pass
+
+        document_accuracy = round((word_count - error) / word_count, 2)
+        return document_accuracy, word_count
 
 
-def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, percent=1):
+def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, analysis, percent=1):
     mask = mask
     final_json = final_json
 
@@ -518,11 +545,11 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, p
     except:
         pass
     final_json = adsfff.default_all_words_flag_to_false(final_json)
-    doc_accuracy, total_words = adsfff.document_confidence(final_json, google_response)
+    doc_accuracy, total_words = adsfff.document_confidence(analysis)
 
     if percent == 1:
         mode = "default"
-        needed_words = adsfff.all_words(adsfff.google_response2, percent)
+        needed_words = adsfff.all_words(analysis)
     else:
         mode = None
         needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
@@ -602,7 +629,7 @@ def offset(dev_click_cord, image_size):
     x_offseted = int(x * (image_size[1] / 700))
     y_offseted = int(y * (image_size[0] / 800))
 
-    return [x_offseted-30, y_offseted+30]
+    return [x_offseted, y_offseted]
 
 
 def cleaned_final_json(final_json):
