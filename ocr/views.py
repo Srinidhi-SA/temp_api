@@ -692,7 +692,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
-        data['classification'] = str(response['final_json']['temp_number'][0])
+        data['classification'] = str(response['final_json']['temp_number'][0]).upper()
 
         data['fields'] = total_words
         data['confidence'] = round(doc_accuracy * 100, 2)
