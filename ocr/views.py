@@ -602,7 +602,7 @@ class GroupListView(generics.ListCreateAPIView):
         name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOCRAdminUser]
 
     def list(self, request):
         queryset = self.get_queryset()
