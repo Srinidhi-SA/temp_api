@@ -22,6 +22,7 @@ import ReactTooltip from 'react-tooltip';
     selected_image_name: store.ocr.selected_image_name,
     is_closed: store.ocr.is_closed,
     template: store.ocr.template,
+    classification: store.ocr.classification,
   };
 })
 
@@ -286,6 +287,13 @@ export class OcrImage extends React.Component {
     document.getElementById("originalOcrImg").style.display = "block";
     document.getElementsByClassName("oLoader")[0].style.display = "none"
   }
+  breadcrumbClick=()=>{
+    history.go(-1);
+    setTimeout(()=>{
+      document.getElementById("backlog").click();
+    },1000
+    )
+  }
   render() {
     let mark_text = this.props.is_closed!= true ? "Mark as complete" : "Completed";
     if (mark_text == "Completed"){
@@ -304,7 +312,7 @@ export class OcrImage extends React.Component {
             </ol>)
               : (<ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-                <li class="breadcrumb-item active"><a onClick={() => history.go(-1)} href="#">{this.props.projectName}</a></li>
+                <li class="breadcrumb-item active"><a onClick={this.breadcrumbClick} href="#">{this.props.projectName}</a></li>
                 <li class="breadcrumb-item active"><a style={{'cursor': 'default'}}> {this.props.selected_image_name}</a></li>
               </ol>)
             }
@@ -330,17 +338,17 @@ export class OcrImage extends React.Component {
                 </ul>
               </li>
             </ul>
-
+           {this.props.classification!="" &&
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0">Sub Template</label>
-              <select class="form-control inline-block 1-100 template">
+              <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification}>
                 {this.props.template.map(i =>(
                   <option value={i}>{i}</option>
                 ))
                 }
-                
-                </select>
+              </select>
             </div>
+            }
           </div>
         </div>
         <div className="col-sm-6">

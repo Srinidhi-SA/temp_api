@@ -82,6 +82,7 @@ export default function reducer(state = {
   dashboardMetrics: {},
   is_closed: "",
   template: [],
+  classification: "",
 
 }, action) {
   switch (action.type) {
@@ -268,7 +269,8 @@ export default function reducer(state = {
           imageSlug: action.data.slug,
           imageTaskId: taskId,
           is_closed: close,
-          template: action.data.values
+          template: action.data.values,
+          classification: action.data.classification,
         }
       }
       break;
@@ -287,6 +289,7 @@ export default function reducer(state = {
             ocrImgPath: "",
             imageSlug: "",
             imageTaskId: "",
+            classification: "",
           }
         }
         break;
