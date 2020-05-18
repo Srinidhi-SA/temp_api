@@ -98,7 +98,7 @@ export class OcrCreateProject extends React.Component {
 			</div>
 			<div className="col-md-4">
 				 
-				<h4 class="xs-mt-0 xs-p-5 text-center bg-white box-shadow"> {store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <i class="fa fa-file-text-o fa-1x xs-pl-5 text-light"></i><br></br><small> DOCUMENETS</small></h4>
+				<h4 class="xs-mt-0 xs-p-5 text-center bg-white box-shadow"> {store.getState().ocr.OcrProjectList.overall_info.totalDocuments} <i class="fa fa-file-text-o fa-1x xs-pl-5 text-light"></i><br></br><small> DOCUMENTS</small></h4>
 				 
 			</div>
 			<div className="col-md-4">
@@ -112,7 +112,7 @@ export class OcrCreateProject extends React.Component {
           <div class="col-md-6 col-md-offset-2 text-right">
             <div class="form-inline">
 			<ReactTooltip place="top" type="light"/>
-              <button id="btn_ceate_project" className="btn btn-primary btn-rounded xs-mr-5 000" title="Create Project" onClick={this.openPopup.bind(this)}><i className="fa fa-plus"></i> New Project</button>
+              <button id="btn_ceate_project" className="btn btn-primary btn-rounded xs-mr-5 000" title="Create Project" onClick={this.openPopup.bind(this)} style={{textTransform:'none'}}><i className="fa fa-plus"></i> New Project</button>
 
               <span className="search-wrapper">
                <div class="form-group xs-mr-5">
@@ -123,7 +123,7 @@ export class OcrCreateProject extends React.Component {
             </div>
           </div>
           <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-            <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+            <Modal backdrop="static" show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
               <Modal.Header closeButton>
                 <h3 className="modal-title">Create Project</h3>
               </Modal.Header>

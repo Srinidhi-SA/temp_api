@@ -271,13 +271,14 @@ class OCRImage(models.Model):
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
     generated_image = models.FileField(null=True, upload_to=upload_dir)
-    comparision_data = models.TextField(max_length=300000, default="{}", null=True)
-    converted_Coordinates = models.TextField(max_length=300000, default="{}", null=True)
+    google_response = models.TextField(max_length=3000000, default="{}", null=True)
+    user_output = models.TextField(max_length=3000000, default="{}", null=True)
     conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
-    analysis_list = models.TextField(max_length=300000, default="[]", null=True)
-    analysis = models.TextField(max_length=300000, default="{}", null=True)
+    analysis_list = models.TextField(max_length=3000000, default="[]", null=True)
+    analysis = models.TextField(max_length=3000000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
-    final_result = models.TextField(max_length=300000, default="{}", null=True)
+    classification = models.CharField(max_length=300, default="", null=True)
+    final_result = models.TextField(max_length=3000000, default="{}", null=True)
     is_recognized = models.BooleanField(default=False)
     mask = models.FileField(null=True, upload_to=upload_dir)
     is_L1assigned = models.BooleanField(default=False)
@@ -340,3 +341,14 @@ class OCRImage(models.Model):
             return stats
         except Exception:
             return 0
+
+
+class Template(models.Model):
+
+    template_classification = models.TextField(max_length=3000000, default="{}", null=True)
+    modified_at = models.DateTimeField(auto_now_add=True, null=True)
+
+
+    def create(self):
+        """Create Template model"""
+        self.save()

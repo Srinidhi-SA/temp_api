@@ -158,6 +158,7 @@ export class OcrTable extends React.Component {
     }).then(response => response.json()).then(json => {
       if (json.map(i => i.status).includes("ready_to_assign"))
         this.setState({ loader: false, recognized: true })
+        this.setState({checkAll:false,checkedList:[]})
     })
 
   }
@@ -235,6 +236,7 @@ export class OcrTable extends React.Component {
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", `${this.state.exportName}.json`);
       dlAnchorElem.click();
+      this.setState({checkAll:false,checkedList:[]})
     })
   }
   else if(this.state.exportType==="xml"){
@@ -248,6 +250,7 @@ export class OcrTable extends React.Component {
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", `${this.state.exportName}.xml`);
       dlAnchorElem.click();
+      this.setState({checkAll:false,checkedList:[]})
     })
   }
   else if(this.state.exportType==="csv"){
@@ -261,6 +264,7 @@ export class OcrTable extends React.Component {
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
       dlAnchorElem.click();
+      this.setState({checkAll:false,checkedList:[]})
     })
   }
 }
@@ -286,7 +290,7 @@ export class OcrTable extends React.Component {
     ) : '' : '')
 
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-      <Modal show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+      <Modal backdrop="static" show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
         <Modal.Body style={{ padding: 0 }} >
           <div className="row" style={{ margin: 0 }}>
             <h4 className="text-center">Recognizing Document</h4>
@@ -343,6 +347,7 @@ export class OcrTable extends React.Component {
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
+            <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
             {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
@@ -365,10 +370,10 @@ export class OcrTable extends React.Component {
             <a id="downloadAnchorElem" style={{ display: 'none' }}></a>
             {this.props.revDocumentFlag ? (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/" title="Reviewers"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.reviewerName}</a></li>
+              <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.reviewerName}</a></li>
             </ol>) : (<ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/project/" title="Projects"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
-              <li class="breadcrumb-item active"><a href="#">{this.props.projectName}</a></li>
+              <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.projectName}</a></li>
             </ol>)
             }
           </div>
@@ -379,7 +384,7 @@ export class OcrTable extends React.Component {
                 <OcrUpload uploadMode={'topPanel'} />
 				
                 <ReactTooltip place="top" type="light"/> 
-                <Button onClick={this.handleRecognise} title="Recognize" className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
+                <Button onClick={this.handleRecognise} title="Recognize" style={{textTransform:'none'}} className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
                 
 				{/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
                 {/* <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
@@ -457,9 +462,10 @@ export class OcrTable extends React.Component {
                         <th>
                           Template
                     </th>
+                    <th>SUB TEMPLATE</th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
-                            <span>Fields</span> <b class="caret"></b>
+                            <span>FIELDS</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
 								<li><a className="cursor" onClick={this.filterOcrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
@@ -490,7 +496,7 @@ export class OcrTable extends React.Component {
                         </th>
                         {store.getState().ocr.tabActive=='active'?<th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
-                            <span>Assignee</span> <b class="caret"></b>
+                            <span>ASSIGNEE</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>

@@ -1,15 +1,17 @@
-import json
+import simplejson as json
 import sys
 
 
 class Templates:
 
-    def __init__(self, metadata):
+    def __init__(self, template, metadata):
+        self.template = template
         self.template_number = self.get_template(metadata)
 
     def create_new_templates(self):
 
-        with open('./ocr/ITE/classified_templates.json', 'r') as f:
+        # template_obgo to the admin pagej.template
+        with open('./ocr/ITE/scripts/database/classified_templates.json', 'r') as f:
             templates = json.load(f)
             f.close()
         print('Total Templates : \n', templates.keys())
@@ -21,10 +23,12 @@ class Templates:
     def get_template(self, current_metadata):
 
         try:
-            with open('./ocr/ITE/classified_templates.json', 'r') as f:
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'r') as f:
                 templates = json.load(f)
-                f.close()
-
+                f.close()"""
+            # template_obj = Template.objects.first()
+            # templates = json.loads(template_obj.template_classification)
+            templates = self.template
             defined_pages = [templates[key]['Pages'] for key in templates.keys()]
             defined_pages = [page for sublist in defined_pages for page in sublist]
             #            print(defined_pages)
@@ -40,7 +44,7 @@ class Templates:
                 # =============================================================================
                 defined_pages = [templates[key]['Pages'] for key in templates.keys()]
                 template_number = ([True if page in sublist else False for sublist in defined_pages]).index(True)
-                return 't' + str(template_number + 1), 'match'
+                return 'T' + str(template_number + 1), 'match'
 
             else:
                 for tem in templates:
@@ -56,22 +60,25 @@ class Templates:
                             pages.append(page)
 
                             templates[tem]['Pages'] = pages
-                            with open('./ocr/ITE/classified_templates.json', 'w+') as f:
+                            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w+') as f:
                                 json.dump(templates, f)
-                                f.close()
+                                f.close()"""
+                            # template_obj.template_classification = json.dumps(templates)
+                            # template_obj.save()
                         return tem, match_output
                     else:
                         ctn = ctn + 1
 
             #### WHEN THERE IS NO MATCH
-            templates['t' + str(ctn)] = {}
-            templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
-            templates['t' + str(ctn)]['meta'] = current
-            with open('./ocr/ITE/classified_templates.json', 'w+') as f:
+            templates['T' + str(ctn)] = {}
+            templates['T' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
+            templates['T' + str(ctn)]['meta'] = current
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w+') as f:
                 json.dump(templates, f)
-                f.close()
-
-            return 't' + str(ctn), 'No Match'
+                f.close()"""
+            # template_obj.template_classification = json.dumps(templates)
+            # template_obj.save()
+            return 'T' + str(ctn), 'No Match'
 
         except:
             # =============================================================================
@@ -85,17 +92,18 @@ class Templates:
             templates = {}
             ctn = 1
 
-            templates['t' + str(ctn)] = {}
-            templates['t' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
-            templates['t' + str(ctn)]['meta'] = current_metadata[page]
+            templates['T' + str(ctn)] = {}
+            templates['T' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
+            templates['T' + str(ctn)]['meta'] = current_metadata[page]
 
-            with open('./ocr/ITE/classified_templates.json', 'w') as f:
+            """with open('./ocr/ITE/scripts/database/classified_templates.json', 'w') as f:
                 json.dump(templates, f)
-                f.close()
+                f.close()"""
+            # t = Template(template_classification=json.dumps(templates))
+            # t.save()
+            return 'T1', 'No Match'
 
-            return 't1', 'No Match'
-
-    def match(self, reference, current):
+    """def match(self, reference, current):
 
         if len(reference['order']) > 0 and (reference['order'] == current['order']):
             return "match"
@@ -117,6 +125,51 @@ class Templates:
                 return "match"
             elif favorable_cases == 2:
                 return 0  ## CHECKS FOR PARAS
+            else:
+                return 0
+
+            ## CHECK FOR PARA PARAMS  TODO
+        #            cur_areas,ref_areas = reference['para_rel_area'].values(),current['para_rel_area'].values()
+
+        elif reference['no_of_tables'] == 0 and current['no_of_tables'] == 0:
+            word_density_match = len(set(reference['words']).intersection(set(current['words']))) / len(
+                set(current['words']))
+            # =============================================================================
+            #             print('*'*50)
+            #             print('MATCHING BASED ON WORDS AS THERE ARE NO TABLES : \n',word_density_match)
+            #             print('*'*50)
+            # =============================================================================
+            if word_density_match > 0.8:
+                return "match"
+            else:
+                return 0
+        else:
+            return 0"""
+
+    def match(self, reference, current):
+
+        if len(reference['order']) > 0 and (reference['order'] == current['order']):
+            return "match"
+
+
+
+        elif (reference['no_of_tables'] == current['no_of_tables']) and \
+                (current['no_of_tables'] > 0) and \
+                abs(len(reference['order']) - len(current['order'])) <= 1.5 * max(len(reference['order']),
+                                                                                  len(current['order'])):
+
+            area_percent_difference = max([abs(reference['table'][str(i)][1] - current['table'][str(i)][1]) for i in
+                                           range(1, reference['no_of_tables'] + 1)]) < 0.05
+            relative_dist_difference = max([abs(reference['table'][str(i)][0] - current['table'][str(i)][0]) for i in
+                                            range(1, reference['no_of_tables'] + 1)]) < 0.05
+            total_relative_area_difference = abs(
+                reference['total_relative_table_area'] - current['total_relative_table_area']) < 0.05
+
+            favorable_cases = sum([area_percent_difference, relative_dist_difference, total_relative_area_difference])
+            if favorable_cases == 3:
+                return "match"
+            elif favorable_cases == 2:
+                return "match"  ## CHECKS FOR PARAS
             else:
                 return 0
 

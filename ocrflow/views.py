@@ -117,11 +117,13 @@ class TaskView(viewsets.ModelViewSet):
                 )
                 return JsonResponse({
                     "submitted": True,
+                    "is_closed": True,
                     "message": "Task Updated Successfully."
                 })
             else:
                 return JsonResponse({
                     "submitted": False,
+                    "is_closed": True,
                     "message": form.errors
                 })
         else:
