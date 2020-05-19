@@ -390,7 +390,6 @@ def get_filtered_ocrimage_list(
     )
 
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
-
     if 'page' in request.query_params:
         if request.query_params.get('page') == 'all':
             serializer = list_serializer(query_set, many=True)

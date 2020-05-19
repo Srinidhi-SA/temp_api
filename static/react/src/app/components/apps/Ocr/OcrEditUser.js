@@ -126,7 +126,7 @@ export class OcrEditUser extends React.Component{
                     </option>);
         }
         return(
-            <Modal show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
+            <Modal backdrop="static" show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
                 <Modal.Header>
                     <button type="button" className="close" data-dismiss="modal" onClick={this.closeEditUserModal.bind(this)}>&times;</button>
                     <h4 className="modal-title">Edit User</h4>

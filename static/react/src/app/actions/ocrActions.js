@@ -1031,5 +1031,11 @@ export function dashboardMetrics(data){
 		data
 	}
 }
+export function closeFlag(data){
+	return {
+		type : "CLOSE_FLAG",
+		data
+	}
+}
 
 

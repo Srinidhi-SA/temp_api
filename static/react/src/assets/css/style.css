@@ -20762,8 +20762,8 @@ h4.inline-block { background: white; padding: 8px 20px; }
 .cst_table .fa-file-text { color:#9E9E9E; }
 .cst_table .fa-briefcase { color:#607D8B; }
 .ocr_section .cst_table thead th.text-center { padding-right: 7px; }
-.ocr_highlightblock	{background:white; border:1px solid #e0e0e0; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
-.ocr_highlightblock select { width:70px; border:0;}
+.ocr_highlightblock	{background:white; border:1px solid #00998c; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
+.ocr_highlightblock select { width:70px; border:0;height: 30px;columns: #333333;}
 
 .checkbox.checbox-switch {
     padding-left: 0;
@@ -22450,28 +22450,28 @@ ul.ocrUploadTabs{
   margin-bottom:0px;
 }
 .ocrUploadTabs a {
-  margin:2px 2px 0px 2px;
   padding: 10px 15px; 
   text-transform: uppercase; 
   display: block; 
   color: #34495e; 
-  background-color: #ffffff;
+  background-color: #f1f1f1;
 }
-.ocrUploadTabs a:hover{ 
+/* .ocrUploadTabs a:hover{ 
   background-color: #f7f7f7;
-}
+} */
 .ocrUploadTabs li.active a{ 
-  color: #505050;
-  background-color: #f7f7f7;
-  border-bottom: 2px solid #45afa0;
+  color: #3a998c;
+  background-color: #ffffff;
+  font-weight: 600;
 }
 #fetchS3FileBtn {
-  margin-left: 462px;
-  margin-top: 15px;
+  float: right;
+  right: 12px;
+  position: relative;
 }
 .s3Detail {
   margin: 0px 20px;
-  padding: 20px 0px;
+  padding: 25px 0px;
 }
 .s3DetailsInput {
   margin-bottom: 20px;
@@ -22897,4 +22897,10 @@ min-width: 102px; }
     background: #f6f6f6;
     padding: 10px;
     margin: 10px 5px;
+}
+.confidence li a{
+  padding: 5px;
+}
+.template:focus{
+  box-shadow: none !important;
 }

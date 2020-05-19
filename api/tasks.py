@@ -774,7 +774,7 @@ def trigger_outlook_periodic_job():
                         # value is a dict
                         #############  Create config and trigger metadata job for train and test Dataset  #################
                         if key == 'sub_target':
-                            data['sub_target'] = value.capitalize()
+                            data['sub_target'] = value
                         if key == 'target':
                             data['target'] = value.capitalize()
                         if 'train_dataset' in key:

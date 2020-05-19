@@ -123,7 +123,7 @@ export class OcrCreateProject extends React.Component {
             </div>
           </div>
           <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-            <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
+            <Modal backdrop="static" show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
               <Modal.Header closeButton>
                 <h3 className="modal-title">Create Project</h3>
               </Modal.Header>

@@ -224,7 +224,7 @@ export class OcrUpload extends React.Component {
       <div class="icon " onClick={this.openPopup.bind(this)}><i  class="fa fa-upload fa-2x xs-mt-10"></i></div>}
  
         <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal">
+          <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header ocrUploadModal" backdrop="static">
             <Modal.Header closeButton>
               <h3 className="modal-title">Upload Data</h3>
             </Modal.Header>

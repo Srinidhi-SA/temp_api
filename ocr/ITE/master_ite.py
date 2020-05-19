@@ -18,7 +18,7 @@ from ocr.ITE.scripts.base_module import BaseModule
 from ocr.ITE.scripts.transcripts import Transcript
 
 
-def main(input_path, slug=None):
+def main(input_path, template, slug=None):
     print("Loading File")
     print("Waiting For API Response")
     api_response = Api_Call(input_path)
@@ -35,6 +35,7 @@ def main(input_path, slug=None):
         image_obj.microsoft_analysis,
         image_obj.image)
 
+    analysis = image_obj.microsoft_analysis
     image_obj.set_domain_flag(flag)
     print('\n FLAG : ', flag)
 
@@ -55,7 +56,7 @@ def main(input_path, slug=None):
 
         base_obj = BaseModule(image_obj, input_path.split('/')[-1])
 
-        final_json, mask, metadata = base_obj.extract_info(base_obj.bwimage)
+        final_json, mask, metadata, template = base_obj.extract_info(template, base_obj.bwimage)
         image_obj.set_final_json_mask_metadata(final_json, mask, metadata)
         white_background_mask = cv2.bitwise_not(mask)
         if os.path.exists("ocr/ITE/database/{}_mask.png".format(slug)):
@@ -82,10 +83,12 @@ def main(input_path, slug=None):
             'mask': mask,
             'metadata': metadata,
             'google_response': google_response,
+            'analysis': analysis,
             'google_response2': google_response2,
             'flag': flag,
             'image_slug': slug,
             'original_image': og,
-            'image_name': input_path.split('/')[-1].split('.')[0]
+            'image_name': input_path.split('/')[-1].split('.')[0],
+            'template': template
         }
         return response

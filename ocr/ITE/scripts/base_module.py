@@ -17,7 +17,7 @@ class BaseModule:
         self.microsoft_analysis = img_obj.get_microsoft_analysis()
         self.image_name = image_name
 
-    def extract_info(self, bwimage):
+    def extract_info(self, template, bwimage):
         scalev, scaleh = optimal_params(bwimage, task='table')
         self.mask, horizontal, vertical = extract_mask(bwimage, scalev=scalev,
                                                        scaleh=scaleh)
@@ -50,7 +50,7 @@ class BaseModule:
             table_area_dict, table_count_dict, order, self.microsoft_analysis, rel_para_area, self.paras,
             table_rel_centroid_dist_dict)
 
-        template_obj = Templates({self.image_name: self.metadata})
+        template_obj = Templates(template, {self.image_name: self.metadata})
         print(template_obj.template_number, self.image_name)
         self.final_json = {
             'tables': self.final_mapped_dict_table,
@@ -58,7 +58,7 @@ class BaseModule:
             'table_coordinates': table_count_dict,
             'temp_number': template_obj.template_number,
             'domain_classification': 'base'}
-        return self.final_json, self.mask, self.metadata
+        return self.final_json, self.mask, self.metadata, template_obj.template
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working
@@ -129,7 +129,7 @@ class BaseModule:
                     table_count_dict[table_number + 1] = [x,
                                                           y, x + width - 1,
                                                           y + height - 1]
-                    table_area_dict[table_number + 1] = area
+                    table_area_dict[table_number + 1] = round((area/parent_area),3)
 
                     M = cv2.moments(cnt)
                     cx = int(M['m10'] / M['m00'])
@@ -186,7 +186,9 @@ class BaseModule:
                             and (min(width, height) > 20)):
                         table_area_dict[int(
                             str(table_number) +
-                            str(inner_table_number + 1))] = area
+                            str(inner_table_number + 1))] = round(
+                            (area / (outer_table_mask.shape[0] * outer_table_mask.shape[1])), 3)
+
                         M = cv2.moments(cnt)
                         cx = int(M['m10'] / M['m00'])
                         cy = int(M['m01'] / M['m00'])
