@@ -859,7 +859,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details = serializer.data
         temp_obj = Template.objects.first()
         values = list(json.loads(temp_obj.template_classification).keys())
-        object_details.update({'values': values})
+        value = [i.upper() for i in values]
+        object_details.update({'values': value})
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
