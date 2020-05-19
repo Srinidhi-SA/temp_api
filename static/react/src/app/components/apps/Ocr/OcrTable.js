@@ -343,7 +343,7 @@ export class OcrTable extends React.Component {
               <i class="fa fa-file-text"></i>
             </td>
             <td style={item.status == "Ready to Recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+              <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.flag}</td>
