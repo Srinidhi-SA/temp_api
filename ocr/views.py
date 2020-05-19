@@ -385,6 +385,8 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
                 imageObj.save()
+        else:
+            tasks = []
 
         print("~" * 50)
         print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
