@@ -17,7 +17,7 @@ export class Home extends React.Component {
   render() {
 	let redirectUrl = sessionStorage.url;
 	if(redirectUrl == undefined || redirectUrl == "/" || redirectUrl == "/login" || redirectUrl == ""){
-		redirectUrl = "/signals"	
+		redirectUrl = "/apps"	
 	}
     return(
       <div>
