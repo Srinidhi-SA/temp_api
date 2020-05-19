@@ -148,12 +148,9 @@ export class RevDocTable extends React.Component {
         return (
           <tr id={index}>
             <td>
-              <Checkbox id={item.ocrImageData.slug} value={item.ocrImageData.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocrImageData.slug)}></Checkbox>
-            </td>
-            <td>
               <i class="fa fa-file-text"></i>
             </td>
-            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
              <td>{item.status}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>

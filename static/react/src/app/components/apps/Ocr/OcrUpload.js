@@ -258,7 +258,7 @@ export class OcrUpload extends React.Component {
                   }
 
                   {(this.state.loader  && !this.state.uploaded) &&
-                    <div style={{ height: 260, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(208, 234, 232,0.5)' }}>
                       <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                     </div>
                   }
@@ -299,11 +299,6 @@ export class OcrUpload extends React.Component {
                         <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)}><i class="fa fa-files-o"></i> Fetch Files</Button>
                     </div>
                   }
-                  {this.props.s3Loader && (this.props.s3Uploaded === false) &&
-                        <div style={{position: "absolute",background: "rgba(0,0,0,0.1)",width: "100%",top: "0px",height: "260px" }} >
-                          <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                        </div>
-                  }
                   {this.props.s3Uploaded &&
                     <div className="col-md-12 ocrSuccess">
                     <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105 }} />
@@ -312,6 +307,11 @@ export class OcrUpload extends React.Component {
                   </div>
                   }
                 </div>
+                {this.props.s3Loader && (this.props.s3Uploaded === false) &&
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(208, 234, 232,0.5)' }} >
+                      <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                    </div>
+                  }
             </div>
             </Modal.Body>
             <Modal.Footer>
