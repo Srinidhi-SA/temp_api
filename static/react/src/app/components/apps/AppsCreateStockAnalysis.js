@@ -57,6 +57,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 		var domains = this.state.domain;
 		var companies=this.state.company
 		var list=[];
+		document.getElementById("resetMsg").innerText=''
 
 		if(domains.length==0||companies.length==0){
 			document.getElementById("resetMsg").innerText="Please select all mandatory fields."
@@ -71,7 +72,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 			window['value'+i] = new this.companyDetails(companyList.filter(j=>j.value==companies[i])[0].label, companies[i]);
 			list.push((window['value'+i]))
 		}
-
+    $('#extractData').prop('disabled', true);
 		this.props.dispatch(crawlDataForAnalysis(domains, companies,analysisName,list));
 	}
 	render() {
@@ -208,7 +209,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 						<Modal.Footer>
 						<div id="resetMsg"></div>
 							<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this, false)}>Close</Button>
-							<Button bsStyle="primary" onClick={this.crawlDataForAnalysis.bind(this,companyList)}>Extract Data</Button>
+							<Button bsStyle="primary" id='extractData' onClick={this.crawlDataForAnalysis.bind(this,companyList)}>Extract Data</Button>
 						</Modal.Footer>
 					</Modal>
 				</div>

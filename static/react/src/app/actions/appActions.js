@@ -1943,15 +1943,19 @@ export function fetchStockListSuccess(doc) {
 
 export function crawlDataForAnalysis(domains, companies,analysisName,list) {
     return (dispatch) => {
-      dispatch(updateCreateStockPopup(false))
-      dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200 && json.status!=false) {
+          dispatch(updateCreateStockPopup(false))
+          dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
           dispatch(crawlSuccess(json, dispatch))
         } else {
-          dispatch(closeAppsLoaderValue());
-          var body_msg = statusMessages("warning", json.errors + ", " + json.exception+'.', "small_mascot");
-          bootbox.alert(body_msg);        
+          dispatch(closeAppsLoaderValue()); 
+          $('#extractData').prop('disabled', false);          
+          if(json.exception=='Analysis name already exists')
+           document.getElementById("resetMsg").innerText=json.exception
+           else{
+           document.getElementById("resetMsg").innerText='No articles found for selected company and domain'
+           }
         }
       });
     }
