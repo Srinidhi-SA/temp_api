@@ -48,7 +48,7 @@ class BaseModule:
             self.microsoft_analysis, self.table_cell_dict, order, parent_area)
         self.metadata = self.fetch_metadata(
             table_area_dict, table_count_dict, order, self.microsoft_analysis, rel_para_area, self.paras,
-            table_rel_centroid_dist_dict)
+            table_rel_centroid_dist_dict, self.table_cell_dict)
 
         template_obj = Templates(template, {self.image_name: self.metadata})
         print(template_obj.template_number, self.image_name)
@@ -784,7 +784,7 @@ class BaseModule:
 
         return paras, rel_para_area
 
-    def fetch_metadata(self, table_area_dict, table_count_dict, order, analysis, rel_para_area, paras,
+    """def fetch_metadata(self, table_area_dict, table_count_dict, order, analysis, rel_para_area, paras,
                        table_rel_centroid_dist_dict):
         page_metadata = {}
         page_metadata = {"order": [], "table": {}, "para_rel_area": {}}
@@ -796,6 +796,54 @@ class BaseModule:
         if len(table_count_dict) == 0:
             # page_metadata["words"] = extract_words(analysis)
             pass
+        else:
+            page_metadata["words"] = []
+        page_metadata["no_of_tables"] = len(page_metadata["table"])
+        page_metadata["total_relative_table_area"] = sum(table_area_dict.values())
+
+        page_metadata['para_rel_area'] = rel_para_area
+        page_metadata['no_of_paras'] = len(paras)
+        page_metadata['order'] = sorted(order, key=order.get)
+        return page_metadata"""
+
+    def extract_struct_details(self, table_cell_dict):
+        table_struc_stats = {}
+        for table in table_cell_dict:
+            table_struc_stats[table] = {}
+
+            cells_dict = dict(table_cell_dict[table])
+            cells = list(cells_dict.keys())
+
+            ncols = max([int(cell.split('r')[0].split('c')[1]) for cell in cells])
+            nrows = max([int(cell.split('r')[1]) for cell in cells])
+            #        print('ncols:',ncols , '*'*20)
+            #        print('nrows:',nrows , '*'*20)
+
+            table_struc_stats[table]['ncols'] = ncols
+            table_struc_stats[table]['nrows'] = nrows
+
+        return table_struc_stats
+
+    def fetch_metadata(self, table_area_dict, table_count_dict, order, analysis, rel_para_area, paras,
+                       table_rel_centroid_dist_dict, table_cell_dict):
+        page_metadata = {}
+        page_metadata = {"order": [], "table": {}, "para_rel_area": {}}
+
+        table_structure_details = self.extract_struct_details(table_cell_dict)
+        for table_number in table_count_dict:
+            page_metadata["table"][table_number] = {}
+            # page_metadata[page_name]["table"][table_number] = table_centroid_dict[table_number]
+
+            stats = [table_rel_centroid_dist_dict[table_number], table_area_dict[table_number]]
+            page_metadata["table"][table_number]['Stats'] = stats
+
+            page_metadata["table"][table_number]['ncols'] = table_structure_details[table_number]['ncols']
+            page_metadata["table"][table_number]['nrows'] = table_structure_details[table_number]['nrows']
+        #            stats = page_metadata["table"][table_number]['Stats']
+        #            page_metadata["table"][table_number].append(table_area_dict[table_number])
+
+        if len(table_count_dict) == 0:
+            page_metadata["words"] = self.extract_words(analysis)
         else:
             page_metadata["words"] = []
         page_metadata["no_of_tables"] = len(page_metadata["table"])
