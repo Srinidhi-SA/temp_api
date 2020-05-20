@@ -262,8 +262,8 @@ export default function reducer(state = {
       {
         let taskId = action.data.tasks === null ? "" : action.data.tasks.id;
         let close= action.data.tasks === null ? "" : action.data.tasks.is_closed;
-        let templateVal = action.data.classification === undefined || action.data.classification === null  ? "" : action.data.classification;
-        let valueVal = action.data.values === undefined || action.data.values === null ? "" : action.data.values;
+        let templateVal = action.data.values === undefined || action.data.values === null ? "" : action.data.values;
+        let classificationVal = action.data.classification === undefined || action.data.classification === null  ? "" : action.data.classification;
         return {
           ...state,
           originalImgPath: action.data.imagefile ,
@@ -272,7 +272,7 @@ export default function reducer(state = {
           imageTaskId: taskId,
           is_closed: close,
           template: templateVal,
-          classification: valueVal,
+          classification: classificationVal,
         }
       }
       break;

@@ -346,8 +346,8 @@ export class OcrTable extends React.Component {
               <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
-            <td>{item.flag}</td>
             <td>{item.classification}</td>
+            <td>{item.fields}</td>
             <td>{item.confidence}</td>
             {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
             <td>{item.created_by}</td>
