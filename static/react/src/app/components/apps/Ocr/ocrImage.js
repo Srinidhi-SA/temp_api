@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag,tabActiveVal } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -295,6 +295,7 @@ export class OcrImage extends React.Component {
   }
   breadcrumbClick=()=>{
     history.go(-1);
+    this.props.dispatch(tabActiveVal('backlog'));
     this.props.dispatch(setProjectTabLoaderFlag(true));
   }
   render() {
