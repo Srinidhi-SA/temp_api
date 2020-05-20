@@ -56,7 +56,7 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             
-            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="TensorFlow")[0].selected
+            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected
             
         if(!isContinueRange || !isContinueMulticheck){
              if(document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
@@ -178,7 +178,7 @@ export class ModelAlgorithmSelection extends React.Component {
         var pyTorchClassFlag = false;
         var targetCount;
         var pyTorchLayerCount;
-        if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].selected){
+        if(this.props.currentAppId === 2 && this.props.automaticAlgorithmData.filter(i=>i.algorithmName==="Neural Network (PyTorch)")[0].selected){
             pyTorchClassFlag = true;
             targetCount = store.getState().apps.targetLevelCounts;
             pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
@@ -357,9 +357,9 @@ export class ModelAlgorithmSelection extends React.Component {
                         return(
                             <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <FormGroup role="form">
-                                {data.algorithmName === "TensorFlow"?
+                                {data.algorithmName === "Neural Network (TensorFlow)"?
                                 <TensorFlow data/>
-                                :data.algorithmName === "Neural Networks(pyTorch)"?
+                                :data.algorithmName === "Neural Network (PyTorch)"?
                                 <PyTorch parameterData={data} type="NonTuningParameter"/>:
                                 (
 								 <div className="xs-mt-20">
@@ -373,7 +373,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <div class="clearfix"></div>
                                     </div>
                                  </div>)}
-                                 {(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":
+                                 {(data.algorithmName === "Neural Network (TensorFlow)") || (data.algorithmName === "Neural Network (PyTorch)")?"":
                                  (<span>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div>
@@ -396,7 +396,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span>Enter values in one or multiple intervals</span></b></label>
                                 </div>:""}
                                 
-                                <div>{(data.algorithmName === "TensorFlow") || (data.algorithmName === "Neural Networks(pyTorch)")?"":parametersData}</div>
+                                <div>{(data.algorithmName === "Neural Network (TensorFlow)") || (data.algorithmName === "Neural Network (PyTorch)")?"":parametersData}</div>
 								</FormGroup>
                             </Tab>
                         );

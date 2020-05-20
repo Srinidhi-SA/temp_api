@@ -555,7 +555,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
       var pySub = store.getState().apps.pyTorchSubParams
       var pyTorchmerged = {};
       Object.assign(pyTorchmerged, pyLyr, pySub);
-      let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Networks(pyTorch)")[0];
+      let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Network (PyTorch)")[0];
       let nnptc = {"nnptc_parameters":[pyTorchmerged]}
       Object.assign(algorithmChanges,nnptc);
     }
