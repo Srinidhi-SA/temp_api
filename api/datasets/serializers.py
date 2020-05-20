@@ -49,7 +49,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         try:
             # ret['message'] = get_message(instance.job)
-            ret['message'] = json.loads(instance.job.messages)
+            ret['message'] = json.loads(instance.job.message_log)
         except:
             ret['message'] = None
         try:

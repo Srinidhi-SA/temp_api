@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, tabActiveVal } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag,tabActiveVal } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -37,6 +37,8 @@ export class OcrImage extends React.Component {
       zoom: "Reset",
       x: "",
       y: "",
+      img1Load: false,
+      img2Load: false,
     }
   }
 
@@ -54,6 +56,7 @@ export class OcrImage extends React.Component {
       // canvas.height= OcrImg.style.height;
       // canvas.width= OcrImg.style.width;
       ctx.drawImage(OcrImg, 0, 0, 700, 800);
+      this.refs.rootImg && this.setState({img2Load:true});
     };
     $('[data-toggle="popover"]').popover({
       placement: 'top'
@@ -286,21 +289,29 @@ export class OcrImage extends React.Component {
   }
 
   handleImageLoad = () => {
+    this.refs.rootImg && this.setState({img1Load:true});
     document.getElementById("originalOcrImg").style.display = "block";
     document.getElementsByClassName("oLoader")[0].style.display = "none"
   }
   breadcrumbClick=()=>{
     history.go(-1);
     this.props.dispatch(tabActiveVal('backlog'));
+    this.props.dispatch(setProjectTabLoaderFlag(true));
   }
   render() {
+    if (this.state.img1Load && this.state.img2Load){
+      document.getElementById("imgLoader").style.display = "none";
+      document.getElementById("imgSection").style.display = "block";
+    }
     let mark_text = this.props.is_closed!= true ? "Mark as complete" : "Completed";
     if (mark_text == "Completed"){
       document.getElementById("badScan").disabled= true
       document.getElementById("mac").disabled= true
     }
     return (
-      <div>
+      <div ref="rootImg">
+        <img id="imgLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />      
+        <div id="imgSection" style={{display:'none'}}>
         <div className="row">
           <div class="col-sm-6">
             {window.location.href.includes("reviewer") ?  (<ol class="breadcrumb">
@@ -437,7 +448,6 @@ export class OcrImage extends React.Component {
           </div>
 
         </div>
-        <div className="row">
           {(getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole == "ReviewerL2") ?
             <div class="col-sm-12 text-right" style={{ marginTop: '3%' }}>
               <ReactTooltip place="top" type="light" />
@@ -449,7 +459,6 @@ export class OcrImage extends React.Component {
             :
             <div></div>
           }
-        </div>
 
         <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
@@ -472,7 +481,7 @@ export class OcrImage extends React.Component {
             </div>
           </div>
         </div>
-
+        </div>
       </div>
     )
   }

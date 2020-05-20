@@ -22912,3 +22912,10 @@ min-width: 102px; }
 .template:focus{
   box-shadow: none !important;
 }
+#imgLoader{
+  position: relative;
+  left: 50%;
+  margin-left: -64px;
+  padding-top: 8%;
+  padding-bottom: 8%;
+}

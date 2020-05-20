@@ -265,7 +265,7 @@ export class OcrUpload extends React.Component {
                   }
 
                   {(this.state.loader  && !this.state.uploaded) &&
-                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(208, 234, 232,0.5)' }}>
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(189, 216, 214, 0.5)' }}>
                       <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                     </div>
                   }
@@ -316,7 +316,7 @@ export class OcrUpload extends React.Component {
                   }
                 </div>
                 {this.props.s3Loader && (this.props.s3Uploaded === false) &&
-                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(208, 234, 232,0.5)' }} >
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(189, 216, 214, 0.5)' }} >
                       <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                     </div>
                   }
