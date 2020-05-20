@@ -147,9 +147,6 @@ export class RevDocTable extends React.Component {
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
           <tr id={index}>
-            <td>
-              <i class="fa fa-file-text"></i>
-            </td>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
              <td>{item.status}</td>
             <td>{item.ocrImageData.fields}</td>
@@ -177,8 +174,6 @@ export class RevDocTable extends React.Component {
             <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
-                <th></th>
-                <th><i class="fa fa-file-text-o"></i></th>
                 <th>NAME
                   </th>
                 <th class="dropdown" >

@@ -348,7 +348,6 @@ export class OcrTable extends React.Component {
             <td>{item.status}</td>
             <td>{item.flag}</td>
             <td>{item.classification}</td>
-            <td>{item.fields}</td>
             <td>{item.confidence}</td>
             {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
             <td>{item.created_by}</td>
@@ -459,10 +458,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
-                        <th>
-                          Template
-                    </th>
-                    <th>SUB TEMPLATE</th>
+                    <th>TEMPLATE</th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>FIELDS</span> <b class="caret"></b>
