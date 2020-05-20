@@ -9,8 +9,13 @@ from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from ocr.models import OCRImage
 from ocrflow.models import *
 import datetime
+import math
+import random
 
-#@task(name='start_auto_assignment_L1', queue=CONFIG_FILE_NAME)
+def get_L2_task_assignment_count(querysetCount, percentage):
+    percentage = int(math.floor((percentage/100)*querysetCount))
+    return percentage
+
 @periodic_task(run_every=(crontab(minute='*/2')), name="start_auto_assignment_L1", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L1():
@@ -60,14 +65,26 @@ def start_auto_assignment_L2():
     OCRRule = OCRRules.objects.get(id=1)
     if OCRRule.auto_assignmentL2:
         print("~" * 90)
-        reviewRequestQueryset = ReviewRequest.objects.filter(
+        reviewRequestIDs = ReviewRequest.objects.filter(
             tasks__is_closed = True,
             ocr_image__is_L2assigned = False,
             ocr_image__modified_at__gt = datetime.datetime.now()-datetime.timedelta(days=7),
             ocr_image__modified_at__lte = datetime.datetime.now()
-        )
-        print("Total Tasks :  {0}".format(len(reviewRequestQueryset)))
-        if len(reviewRequestQueryset) > 0:
+        ).values_list('id', flat=True)
+
+        #Calculate taskLimit as per the percentage of Assignment and Total reviewRequestIDs
+
+        percentage = settings.OCR_SECONDARY_TASK_PERCENTAGE
+        querysetCount = len(reviewRequestIDs)
+        taskLimit = get_L2_task_assignment_count(querysetCount, percentage)
+
+        #Randomly select Review Objects as per the taskLimit
+        random_reviewRequestIDs_list = random.sample(list(reviewRequestIDs), min(len(reviewRequestIDs), taskLimit))
+        reviewRequestQueryset = ReviewRequest.objects.filter(id__in=random_reviewRequestIDs_list)
+        print("Total Pending Tasks for L2 Review: {0}".format(querysetCount))
+        print("Percentage Assignment :  {0}".format(percentage))
+        print("Total Task in Queue for L2 assignment :  {0}".format(taskLimit))
+        if taskLimit > 0:
             for reviewObj in reviewRequestQueryset:
                 reviewObj.start_simpleflow(initial_state='RL2_approval')
 
