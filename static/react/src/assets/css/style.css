@@ -22291,7 +22291,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   display: inline-block;
   float: left;
   color: #ff0000;
-  width: 66%;
+  width: auto;
   text-align: left;
 }
 #binErrorMsg {

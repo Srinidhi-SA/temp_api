@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag } from '../../../actions/ocrActions';
+import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, tabActiveVal } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import { API } from "../../../helpers/env";
@@ -192,6 +192,8 @@ export class OcrImage extends React.Component {
     $("#ocrScroll div").attr("id", "scrollOcr");
     document.getElementById("scrollOriginal").scrollLeft = e.target.scrollLeft;
     document.getElementById("scrollOcr").scrollLeft = e.target.scrollLeft;
+    document.getElementById("scrollOriginal").scrollTop = e.target.scrollTop;
+    document.getElementById("scrollOcr").scrollTop = e.target.scrollTop;
   }
 
   getHeader = (token) => {
@@ -289,10 +291,7 @@ export class OcrImage extends React.Component {
   }
   breadcrumbClick=()=>{
     history.go(-1);
-    setTimeout(()=>{
-      document.getElementById("backlog").click();
-    },1000
-    )
+    this.props.dispatch(tabActiveVal('backlog'));
   }
   render() {
     let mark_text = this.props.is_closed!= true ? "Mark as complete" : "Completed";

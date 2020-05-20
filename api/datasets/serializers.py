@@ -48,7 +48,8 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(instance.created_by).data
 
         try:
-            ret['message'] = get_message(instance.job)
+            # ret['message'] = get_message(instance.job)
+            ret['message'] = json.loads(instance.job.message_log)
         except:
             ret['message'] = None
         try:

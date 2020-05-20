@@ -159,9 +159,10 @@ export function getDataSetPreview(slug,interval) {
                     window.location.pathname="/signals";
                     },2000);
                 }
-                else
-                dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                else{
                 dispatch(setCreateSignalLoaderFlag(false))
+                dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                }
             }
             else{
                 dispatch(hideDULoaderPopup());
