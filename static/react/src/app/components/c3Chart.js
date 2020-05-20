@@ -213,9 +213,7 @@ export class C3Chart extends React.Component {
       let xdata = this.props.xdata;
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 13) {
-          return xdata[x].substr(0, 9) + "..";
-        // } else if(xdata[x] && data.title.text === "Stock Performance Analysis"){
-        //   return xdata[x].substr(0,3) + " \'" +xdata[x].substr(9)
+          return xdata[x].substr(0, 8) + "...";
         } else {
           return xdata[x];
         }
@@ -325,6 +323,57 @@ export class C3Chart extends React.Component {
 
   }
   render() {
+    window.onmouseover = function(event){
+        if(event.target.tagName==="tspan" && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
+          let str = that.props.xdata
+          let stockData = store.getState().signals.signalAnalysis.listOfNodes;
+          switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
+            case "Articles by Stock": 
+              str = stockData[0].listOfCards[0].cardData[1].data.xdata
+              break;
+            case "Top Sources":
+              str = stockData[0].listOfCards[0].cardData[4].data.xdata
+              break;
+            case "Sentiment Score by Stocks":
+              str = stockData[0].listOfCards[0].cardData[5].data.xdata
+              break;
+            case "Sentiment Score by Source":
+                str = stockData[1].listOfNodes[0].listOfCards[0].cardData[1].data.xdata
+                break;
+            case "Sentiment Score by Concept":
+                str = stockData[1].listOfNodes[0].listOfCards[0].cardData[2].data.xdata
+                break;
+          }
+          let tooltip = event.target.innerHTML
+            if(str != undefined){
+              let substr = event.target.innerHTML
+              for(let i=0;i<str.length;i++){
+                if(str[i].includes(substr.slice(0,substr.length-3))){
+                  tooltip = str[i]
+                }
+              }
+            }else{
+              if(event.target.parentElement.children.length>1){
+                let ar=[]
+                for(let i=0;i<(event.target.parentElement.children).length;i++){
+                  ar.push((event.target.parentElement.children)[i].innerHTML)
+                }
+                tooltip = ar.join(" ")
+              }
+            }
+          
+          var divi = d3.select("body").append("div").attr("class", "c3axistooltip").style("opacity", 0);
+          divi.transition().duration(200).style("opacity", .9);
+          divi.html(tooltip)
+            .style("left",(window.event.pageX) + "px")
+            .style("top", (window.event.pageY - 28) + "px");	
+        }
+    }
+    window.onmouseout = function(){
+      if($(".c3axistooltip")[0]!=undefined){
+        $(".c3axistooltip").remove()
+      }
+    }
     var that = this;
     if (this.props.classId != '_side' && !this.props.widthPercent) {
       this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";

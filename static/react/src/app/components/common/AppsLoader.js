@@ -22,7 +22,6 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		dataLoadedText:store.datasets.dataLoadedText,
 		currentAppId: store.apps.currentAppId,
 	    modelSlug: store.apps.modelSlug,
-		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
@@ -377,8 +376,6 @@ export class AppsLoader extends React.Component {
 		</div>
 	</div>
 		</Modal.Body>
-		 {(this.props.updateCreateModelHideShow)
-            ? (
 		<Modal.Footer>
                 <div>
                   <Link to={this.props.match.url} style={{
@@ -391,11 +388,6 @@ export class AppsLoader extends React.Component {
                    </Link>
                 </div>
               </Modal.Footer>
-			   )
-            : (
-              <div></div>
-            )
-}
 		</Modal>
           </div>
        );

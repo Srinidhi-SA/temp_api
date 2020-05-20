@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
-  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields } from '../../../actions/ocrActions';
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -343,10 +343,9 @@ export class OcrTable extends React.Component {
               <i class="fa fa-file-text"></i>
             </td>
             <td style={item.status == "Ready to Recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={item.name} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+              <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
-            <td>{item.flag}</td>
             <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
@@ -459,10 +458,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
-                        <th>
-                          Template
-                    </th>
-                    <th>SUB TEMPLATE</th>
+                    <th>TEMPLATE</th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>FIELDS</span> <b class="caret"></b>
@@ -534,5 +530,8 @@ export class OcrTable extends React.Component {
         </div>
       </div>
     )
+  }
+  componentWillUnmount = () => {
+    this.props.dispatch(clearImageDetails());
   }
 }

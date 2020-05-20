@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus } from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -147,13 +147,7 @@ export class RevDocTable extends React.Component {
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
           <tr id={index}>
-            <td>
-              <Checkbox id={item.ocrImageData.slug} value={item.ocrImageData.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocrImageData.slug)}></Checkbox>
-            </td>
-            <td>
-              <i class="fa fa-file-text"></i>
-            </td>
-            <td><Link to={item.ocrImageData.name} onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
+            <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
              <td>{item.status}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>
@@ -180,8 +174,6 @@ export class RevDocTable extends React.Component {
             <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
-                <th></th>
-                <th><i class="fa fa-file-text-o"></i></th>
                 <th>NAME
                   </th>
                 <th class="dropdown" >
@@ -263,5 +255,8 @@ export class RevDocTable extends React.Component {
          </div>
         </div>
     )
+  }
+  componentWillUnmount = () => {
+    this.props.dispatch(clearImageDetails());
   }
 }

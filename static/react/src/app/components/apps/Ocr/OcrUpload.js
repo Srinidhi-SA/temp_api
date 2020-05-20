@@ -47,6 +47,7 @@ export class OcrUpload extends React.Component {
   componentDidUpdate(){
     if(this.props.s3FileFetchSuccessFlag && !this.props.s3FileFetchErrorFlag){
       $("#fetchS3FileBtn").hide()
+      $("#dataCloseBtn")[0].disabled = false;
     } else {
       $("#fetchS3FileBtn").show()
     }
@@ -171,6 +172,7 @@ export class OcrUpload extends React.Component {
   getTabContent(e){
     $("#resetMsg")[0].innerText = "";
     if(e.target.id === "ocrImageTab"){
+      $("#dataCloseBtn")[0].disabled = false;
       if(!this.state.loader && this.state.uploaded){
         this.setState({uploaded:false,loader:false,selectedFiles:""})
         $("#dataCloseBtn").show();
@@ -186,6 +188,9 @@ export class OcrUpload extends React.Component {
       }
     }
     else if(e.target.id === "ocrS3Tab"){
+      $("#dataCloseBtn").show();
+      $("#loadDataBtn")[0].disabled = true;
+      $("#dataCloseBtn")[0].disabled = true;
       if(this.props.s3Loader && (this.props.s3Uploaded === false) ){
         $("#dataCloseBtn").show();
         $("#loadDataBtn")[0].disabled = true;
@@ -198,6 +203,8 @@ export class OcrUpload extends React.Component {
         this.props.dispatch(uploadS3FileSuccess(false));
         $("#dataCloseBtn").show();
         $("#loadDataBtn")[0].disabled = true;
+      }else if(this.props.s3FileFetchSuccessFlag){
+        $("#dataCloseBtn")[0].disabled = false;
       }
     }
   }
@@ -258,7 +265,7 @@ export class OcrUpload extends React.Component {
                   }
 
                   {(this.state.loader  && !this.state.uploaded) &&
-                    <div style={{ height: 260, background: 'rgba(0,0,0,0.1)', position: 'relative' }}>
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(189, 216, 214, 0.5)' }}>
                       <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                     </div>
                   }
@@ -296,13 +303,9 @@ export class OcrUpload extends React.Component {
                               </div>
                             </div>
                         }
-                        <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)}><i class="fa fa-files-o"></i> Fetch Files</Button>
+                        <ReactTooltip place="top" type="light"/> 
+                        <Button id="fetchS3FileBtn" bsStyle="default" onClick={this.validateAndFetchS3Files.bind(this)} data-tip="Please click here to get files"><i class="fa fa-files-o"></i> Fetch Files</Button>
                     </div>
-                  }
-                  {this.props.s3Loader && (this.props.s3Uploaded === false) &&
-                        <div style={{position: "absolute",background: "rgba(0,0,0,0.1)",width: "100%",top: "0px",height: "260px" }} >
-                          <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                        </div>
                   }
                   {this.props.s3Uploaded &&
                     <div className="col-md-12 ocrSuccess">
@@ -312,6 +315,11 @@ export class OcrUpload extends React.Component {
                   </div>
                   }
                 </div>
+                {this.props.s3Loader && (this.props.s3Uploaded === false) &&
+                    <div style={{ height: '100%', width:'100%',position:'absolute',zIndex:9999999,top:0,background: 'rgba(189, 216, 214, 0.5)' }} >
+                      <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
+                    </div>
+                  }
             </div>
             </Modal.Body>
             <Modal.Footer>

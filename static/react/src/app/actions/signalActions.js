@@ -53,11 +53,9 @@ export function checkIfDateTimeIsSelected(){
 //x-www-form-urlencoded'
 export function createSignal(metaData) {
   return (dispatch) => {
-    dispatch(updateHide(false));
     dispatch(hideDataPreview())
     return fetchCreateSignal(metaData,dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        dispatch(updateHide(true));
         dispatch(fetchCreateSignalSuccess(json, dispatch))
       } else {
         dispatch(fetchCreateSignalError(json))
@@ -857,10 +855,6 @@ export function selectProbabilityBlock(evt) {
 }
 export function showZoomChart(flag, classId) {
   return {type: "ZOOM_CHART", flag, classId}
-}
-
-export function updateHide(flag) {
-  return {type: "UPDATE_HIDE", flag}
 }
 
 export function showChartData(flag, classId) {

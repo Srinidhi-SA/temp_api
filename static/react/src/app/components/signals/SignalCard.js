@@ -24,7 +24,6 @@ import {
     triggerSignalAnalysis,
     emptySignalData,
     refreshSignals,
-    updateHide,
     updateTargetTypForSelSignal
   } from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
@@ -63,7 +62,6 @@ export class SignalCard extends React.Component {
           var signalData = {};
           signalData.slug = slug
           this.props.dispatch(openCsLoaderModal());
-          this.props.dispatch(updateHide(true))
           this.props.dispatch(emptySignalAnalysis());
           this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
     }

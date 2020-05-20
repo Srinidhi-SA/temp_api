@@ -1943,15 +1943,19 @@ export function fetchStockListSuccess(doc) {
 
 export function crawlDataForAnalysis(domains, companies,analysisName,list) {
     return (dispatch) => {
-      dispatch(updateCreateStockPopup(false))
-      dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200 && json.status!=false) {
+          dispatch(updateCreateStockPopup(false))
+          dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
           dispatch(crawlSuccess(json, dispatch))
         } else {
-          dispatch(closeAppsLoaderValue());
-          var body_msg = statusMessages("warning", json.errors + ", " + json.exception+'.', "small_mascot");
-          bootbox.alert(body_msg);        
+          dispatch(closeAppsLoaderValue()); 
+          $('#extractData').prop('disabled', false);          
+          if(json.exception=='Analysis name already exists')
+           document.getElementById("resetMsg").innerText=json.exception
+           else{
+           document.getElementById("resetMsg").innerText='No articles found for selected company and domain'
+           }
         }
       });
     }
@@ -1962,14 +1966,13 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
-  var displayHideCancel = false;
   // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
   appsInterval = setInterval(function () {
     dispatch(getStockDataSetPreview(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 function triggerCrawlingAPI(domains, companies,analysisName,list) {
 
@@ -2025,12 +2028,11 @@ function triggerStockUpload(token, slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 export function triggerStockAnalysis(slug, dispatch) {
-  var displayHideCancel = true;
   appsInterval = setInterval(function () {
     dispatch(getStockAnalysis(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 
 }
 export function getStockAnalysis(slug, appsInterval) {
@@ -2073,8 +2075,7 @@ function fetchStockAnalysisAPI(token, slug) {
 }
 
 export function updateStockSlug(slug) {
-  var displayHideCancel = false;
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 
 export function getConceptsList() {
