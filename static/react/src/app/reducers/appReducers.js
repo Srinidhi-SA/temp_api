@@ -97,7 +97,6 @@ export default function reducer(state = {
         latestStocks:{},
         targetLevelCounts:"",
         currentAppDetails:null,
-        updateCreateModelHideShow:false,
         apps_regression_modelName:"",
         apps_regression_targetType:"",
         apps_regression_levelCount:"",
@@ -510,7 +509,6 @@ export default function reducer(state = {
             appsLoaderModal:false,
             appsLoaderPerValue:-1,
             appsLoaderText :"",
-            updateCreateModelHideShow:false,
         }
     }
     break;
@@ -540,7 +538,6 @@ export default function reducer(state = {
         return {
             ...state,
             modelSlug:action.slug,
-            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -572,7 +569,6 @@ export default function reducer(state = {
             ...state,
             scoreSlug:action.slug,
             scoreSlugShared:action.sharedSlug,
-            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -654,7 +650,6 @@ export default function reducer(state = {
         return {
             ...state,
             roboDatasetSlug:action.slug,
-            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -1025,7 +1020,6 @@ export default function reducer(state = {
         return{
             ...state,
             stockSlug:action.slug,
-            updateCreateModelHideShow:action.displayHideCancel,
         }
     }
     break;

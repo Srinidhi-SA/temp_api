@@ -13,7 +13,6 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
-  updateHide,
   getAllSignalList
 } from "../../actions/signalActions";
 import {
@@ -122,7 +121,6 @@ export class Signals extends React.Component {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
-    this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
 

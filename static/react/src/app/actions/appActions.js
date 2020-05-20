@@ -1966,14 +1966,13 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
-  var displayHideCancel = false;
   // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
   appsInterval = setInterval(function () {
     dispatch(getStockDataSetPreview(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 function triggerCrawlingAPI(domains, companies,analysisName,list) {
 
@@ -2029,12 +2028,11 @@ function triggerStockUpload(token, slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 export function triggerStockAnalysis(slug, dispatch) {
-  var displayHideCancel = true;
   appsInterval = setInterval(function () {
     dispatch(getStockAnalysis(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 
 }
 export function getStockAnalysis(slug, appsInterval) {
@@ -2077,8 +2075,7 @@ function fetchStockAnalysisAPI(token, slug) {
 }
 
 export function updateStockSlug(slug) {
-  var displayHideCancel = false;
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 
 export function getConceptsList() {
