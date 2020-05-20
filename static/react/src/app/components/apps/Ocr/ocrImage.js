@@ -348,9 +348,9 @@ export class OcrImage extends React.Component {
                 </ul>
               </li>
             </ul>
-           {this.props.classification!="" &&
+           {(this.props.classification!="" && this.props.template.length !=0) &&
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
-              <label class="control-label xs-mb-0">Sub Template</label>
+              <label class="control-label xs-mb-0">Template</label>
               <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification}>
                 {this.props.template.map(i =>(
                   <option value={i}>{i}</option>
