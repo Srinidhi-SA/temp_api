@@ -334,12 +334,12 @@ else:
                 "description": "A meta estimator that uses averaging predictive power of a number of decision tree classification models. This is very effective in predicting the expected values of numeric variables and also to control overfitting."
             },
             {
-                "algorithmName": "TensorFlow",
+                "algorithmName": "Neural Network (TensorFlow)",
                 "selected": False,
                 "parameters": SKLEARN_ML_TENSORFLOW_REGRESSION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
-                "description": "This is implementation of tensorflow algorithm"
+                "description": "An end-to-end open source platform for machine learning. TensorFlow is a rich system for managing all aspects of a machine learning system."
             }
         ]
     }
@@ -385,7 +385,7 @@ else:
                 However, in practice, fractional counts such as tf-idf may also work."""
             },
             {
-                "algorithmName": "Neural Network",
+                "algorithmName": "Neural Network (Sklearn)",
                 "selected": True,
                 "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
@@ -393,20 +393,20 @@ else:
                 "description": "This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
             },
             {
-                "algorithmName": "TensorFlow",
+                "algorithmName": "Neural Network (TensorFlow)",
                 "selected": False,
                 "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-                "description": "This is implementation of tensorflow algorithm"
+                "description": "An end-to-end open source platform for machine learning. TensorFlow is a rich system for managing all aspects of a machine learning system."
             },
             {
-                "algorithmName": "Neural Networks(pyTorch)",
+                "algorithmName": "Neural Network (PyTorch)",
                 "selected": False,
                 "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
                 "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-                "description": "This is an implementation of PyTorch algorithm"
+                "description": "A python based library built to provide flexibility as a deep learning development platform. It is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing."
             }
         ]
     }
@@ -492,7 +492,7 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             However, in practice, fractional counts such as tf-idf may also work."""
         },
         {
-            "algorithmName": "Neural Network",
+            "algorithmName": "Neural Network (Sklearn)",
             "selected": True,
             "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
@@ -500,20 +500,20 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             "description": "This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
         },
         {
-            "algorithmName": "TensorFlow",
+            "algorithmName": "Neural Network (TensorFlow)",
             "selected": True,
             "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "This is implementation of tensorflow algorithm"
+            "description": "An end-to-end open source platform for machine learning. TensorFlow is a rich system for managing all aspects of a machine learning system."
         },
         {
-            "algorithmName": "Neural Networks(pyTorch)",
+            "algorithmName": "Neural Network (PyTorch)",
             "selected": True,
             "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "This is an implementation of PyTorch algorithm"
+            "description": "A python based library built to provide flexibility as a deep learning development platform. It is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing."
         }
     ]
 }
