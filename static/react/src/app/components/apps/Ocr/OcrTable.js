@@ -169,8 +169,18 @@ export class OcrTable extends React.Component {
 
   proceedClick() {
     this.closePopup();
+    var refreshList=setInterval(() =>{
+    this.props.dispatch(getOcrUploadedFiles());
+    if(store.getState().ocr.tabActive=='active'){
+    clearInterval( refreshList )
+    return false
+    }
+    }, 15000);
+    refreshList;
+    setTimeout(function( ) { clearInterval( refreshList );}, 120000);
     this.props.dispatch(getOcrUploadedFiles());
   }
+  
   handleSearchBox() {
     var searchElememt = document.getElementById('search').value.trim()
     this.props.dispatch(storeDocSearchElem(searchElememt))
