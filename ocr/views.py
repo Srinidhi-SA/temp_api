@@ -384,7 +384,10 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
+                imageObj.status = "ready_to_export"
                 imageObj.save()
+        else:
+            tasks = []
 
         print("~" * 50)
         print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
@@ -602,7 +605,7 @@ class GroupListView(generics.ListCreateAPIView):
         name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOCRAdminUser]
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -638,7 +641,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_verify', 'ready_to_export'],
+            status__in=['ready_to_verify(L1)', 'ready_to_verify(L2)', 'ready_to_export'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -779,6 +782,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 img_data = dict()
                 django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                 img_data['imagefile'] = django_file
+                img_data['projectslug'] = data['projectslug']
                 img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                 if file is None:
                     img_data['name'] = img_data.get('name',
@@ -961,9 +965,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         google_response = json.loads(image_queryset.conf_google_response)
         google_response2 = json.loads(image_queryset.google_response)
         analysis = json.loads(image_queryset.analysis)
+
+        try:
+            user_object = OCRUserProfile.objects.get(ocr_user=request.user.id)
+            reviewer = list(user_object.json_serialized()['role'])
+            if reviewer:
+                reviewer = reviewer[0]
+            else:
+                reviewer = 'Admin'
+        except:
+            reviewer = 'Superuser'
+
         update_history = json.loads(image_queryset.analysis_list)
         if not update_history:
-            update_history = {}
+            update_history = {reviewer: {}}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         size = cv2.imread(mask).shape
         [x, y] = offset([x, y], size)

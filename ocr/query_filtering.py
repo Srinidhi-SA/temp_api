@@ -144,7 +144,7 @@ class QueryCommonFiltering:
             if operator == 'EQL':
                 self.query_set = self.query_set.filter(confidence=float(value))
         if self.status is not None:
-            status_mapping_dict = {'R': 'ready_to_recognize','A': 'ready_to_assign', 'V': 'ready_to_verify', 'E': 'ready_to_export'}
+            status_mapping_dict = {'R': 'ready_to_recognize','A': 'ready_to_assign', 'V1': 'ready_to_verify(L1)', 'V2': 'ready_to_verify(L2)', 'E': 'ready_to_export'}
             print(status_mapping_dict[self.status])
             self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
         if self.reviewStatus is not None:

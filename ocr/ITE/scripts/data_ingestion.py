@@ -42,8 +42,7 @@ def ingestion_1(file_full_path, path):
             for page in pages:
                 # page.save(path + "/" + filename.split("/")[-1] + '_page_' + str(index) + '.jpg', 'JPEG')
                 page.save(
-                    os.path.join(path, folder_name, '{}-{}_page_{}.jpg'.format(random.randint(10000, 99999),
-                                                                               filename.split("/")[-1], str(index))),
+                    os.path.join(path, folder_name, '{}_page_{}.jpg'.format(filename.split("/")[-1], str(index))),
                     'JPEG')
                 index = index + 1
             return os.path.join(path, folder_name), file_extension
@@ -62,9 +61,8 @@ def ingestion_1(file_full_path, path):
                 index = 1
                 for page in pages:
                     # page.save(path + "/" + filename.split("/")[-1] + '_page_' + str(index) + '.jpg', 'JPEG')
-                    page.save(os.path.join(path, folder_name, '{}-{}_page_{}.jpg'.format(random.randint(10000, 99999),
-                                                                                         filename.split("/")[-1],
-                                                                                         str(index))),
+                    page.save(os.path.join(path, folder_name, '{}_page_{}.jpg'.format(filename.split("/")[-1],
+                                                                                      str(index))),
                               'JPEG')
                     index = index + 1
                 return os.path.join(path, folder_name), file_extension

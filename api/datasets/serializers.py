@@ -49,7 +49,11 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         try:
             # ret['message'] = get_message(instance.job)
-            ret['message'] = json.loads(instance.job.message_log)
+            message_list = json.loads(instance.job.message_log)
+            if message_list[-1]['globalCompletionPercentage'] == -1:
+                ret['message'] = get_message(instance.job)
+            else:
+                ret['message'] = json.loads(instance.job.message_log)
         except:
             ret['message'] = None
         try:
