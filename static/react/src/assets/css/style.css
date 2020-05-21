@@ -22898,9 +22898,24 @@ min-width: 102px; }
     padding: 10px;
     margin: 10px 5px;
 }
+.c3axistooltip{
+  opacity:0;
+  position: absolute;
+  text-align: center;
+  padding: 2px;
+  background: #d7ebef;
+  color:black
+}
 .confidence li a{
   padding: 5px;
 }
 .template:focus{
   box-shadow: none !important;
+}
+#imgLoader{
+  position: relative;
+  left: 50%;
+  margin-left: -64px;
+  padding-top: 8%;
+  padding-bottom: 8%;
 }

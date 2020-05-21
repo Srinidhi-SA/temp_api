@@ -37,13 +37,13 @@ export class PyTorch extends React.Component {
     }
 
     savePyTorchParams(){
-        let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].nnptc_parameters[0];
+        let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Network (PyTorch)")[0].nnptc_parameters[0];
         let subParamDt = { "loss": params.loss, "optimizer": params.optimizer, "regularizer":params.regularizer, "batch_size": params.batch_size, "number_of_epochs": params.number_of_epochs }
         this.props.dispatch(setPyTorchSubParams(subParamDt));
     }
 
     savePyTorchLayerParams(){
-        let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Networks(pyTorch)")[0].nnptc_parameters[0];
+        let params = this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Network (PyTorch)")[0].nnptc_parameters[0];
         let layersLen = Object.keys(params.hidden_layer_info).length;
         for(var i=0;i<layersLen;i++){
             this.props.dispatch(setIdLayer(parseInt(Object.keys(params.hidden_layer_info)[i])));

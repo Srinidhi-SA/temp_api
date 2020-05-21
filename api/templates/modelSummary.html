@@ -358,6 +358,26 @@
         <table class="apps_table_style" id="fifthAlgoMatrixTable"></table>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="sixthAlgo"></div>
+        <div id="sixthAlgoDesc"></div>
+      </div>
+      <div class="col-md-5 col-md-offset-1">
+        <div id="sixthAlgoMatrix"></div>
+        <table class="apps_table_style" id="sixthAlgoMatrixTable"></table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="seventhAlgo"></div>
+        <div id="seventhAlgoDesc"></div>
+      </div>
+      <div class="col-md-5 col-md-offset-1">
+        <div id="seventhAlgoMatrix"></div>
+        <table class="apps_table_style" id="seventhAlgoMatrixTable"></table>
+      </div>
+    </div>
 
   </div>
   <script>
@@ -450,6 +470,28 @@
 
         var matrixTable5 = response.modelDetail.data.model_summary.listOfCards[12]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[12].cardData[1].data.tableData
 
+        var sixthAlgo = response.modelDetail.data.model_summary.listOfCards[13]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[13].cardData[0].data
+        document.getElementById("sixthAlgo").innerHTML = sixthAlgo;
+
+        var sixthAlgoDesc = response.modelDetail.data.model_summary.listOfCards[13]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[13].cardData[1].data
+        document.getElementById("sixthAlgoDesc").innerHTML = sixthAlgoDesc;
+
+        var sixthAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[14]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[14].cardData[0].data
+        document.getElementById("sixthAlgoMatrix").innerHTML = sixthAlgoMatrix;
+
+        var matrixTable6 = response.modelDetail.data.model_summary.listOfCards[14]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[14].cardData[1].data.tableData
+
+        var seventhAlgo = response.modelDetail.data.model_summary.listOfCards[15]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[15].cardData[0].data
+        document.getElementById("seventhAlgo").innerHTML = seventhAlgo;
+
+        var seventhAlgoDesc = response.modelDetail.data.model_summary.listOfCards[15]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[15].cardData[1].data
+        document.getElementById("seventhAlgoDesc").innerHTML = seventhAlgoDesc;
+
+        var seventhAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[16]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[16].cardData[0].data
+        document.getElementById("seventhAlgoMatrix").innerHTML = seventhAlgoMatrix;
+
+        var matrixTable7 = response.modelDetail.data.model_summary.listOfCards[16]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[16].cardData[1].data.tableData
+
         if(secondAlgo!=""){
         var matrixTabTwo = confusionMatrix(matrixTable2);
         var table = document.getElementById("secondAlgoMatrixTable");
@@ -473,6 +515,19 @@
         var table = document.getElementById("fifthAlgoMatrixTable");
         table.innerHTML = matrixTabFive;
         }
+
+        if(sixthAlgo!=""){
+        var matrixTabSix = confusionMatrix(matrixTable6);
+        var table = document.getElementById("sixthAlgoMatrixTable");
+        table.innerHTML = matrixTabSix;
+        }
+
+        if(seventhAlgo!=""){
+        var matrixTabSeven = confusionMatrix(matrixTable7);
+        var table = document.getElementById("seventhAlgoMatrixTable");
+        table.innerHTML = matrixTabSeven;
+        }
+
 
         featureTable(featureTabData);
 

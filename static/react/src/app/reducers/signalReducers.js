@@ -25,7 +25,6 @@ export default function reducer(state = {
   loading_message:[],
   viewChartFlag:false,
   chartClassId :"",
-  showHide:false,
   viewChartDataFlag:false,
   chartDataClassId :"",
   selectedL1: "",
@@ -293,16 +292,6 @@ export default function reducer(state = {
           }
     }
     break;
-
-    case "UPDATE_HIDE":
-    {
-      return{
-        ...state,
-        showHide:action.flag
-      }
-    }
-    break;
-
   case "CHART_DATA":
   {
       return {

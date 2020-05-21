@@ -234,10 +234,12 @@ export function generateNormalTableRows(table) {
   var tbodyData = table.tableData.map(function(rowData, i) {
     if (i != 0) {
       var rows = rowData.map(function(colData, j) {
-        if (j == 0 || j == 1)
+        if(typeof(colData)==="object" && colData != null){
+          return <td key={j}>{colData["loss"]!=undefined?colData["loss"]:colData["optimizer"]}</td>
+        }
+        else if (j == 0 || j == 1)
           return <td key={j}>{colData}</td>;
-
-else
+        else
           return <td key={j}>{colData}</td>;
         }
       );
@@ -491,9 +493,12 @@ export function bytesToSize(bytes) {
 };
 
 export function downloadSVGAsPNG(chartClassId) {
-  var nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
-  var nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
-  var nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
+  var nodeList = []
+  var nodeList2 = []
+  var nodeList3 = []
+  nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+  nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
+  nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
 
   var line_graph = Array.from(nodeList);
   var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));

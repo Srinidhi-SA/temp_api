@@ -68,6 +68,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         Image_instance = OCRImage.objects.get(id=instance.ocr_image.id)
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['ocrImageData'] = OCRImageReviewSerializer(Image_instance).data
+        serialized_data['project'] = Image_instance.project.name
         return serialized_data
 
     class Meta:

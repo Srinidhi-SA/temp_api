@@ -69,7 +69,7 @@ export class ScoreCard extends React.Component {
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
            
             if(data.status==FAILED){
-                var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "scores/";
+                var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/";
             }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
