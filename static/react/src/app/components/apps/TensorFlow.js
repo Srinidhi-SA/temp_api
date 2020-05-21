@@ -13,7 +13,7 @@ import {statusMessages} from  "../../helpers/helper";
         tensorValidateFlag: store.datasets.tensorValidateFlag,
         tensorFlowInputs:store.apps.tensorFlowInputs,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
-        tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="TensorFlow")[0].algorithmSlug,
+        tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].algorithmSlug,
         layerType:store.apps.layerType,
         panels:store.apps.panels,
         editmodelFlag:store.datasets.editmodelFlag,
@@ -28,7 +28,7 @@ export class TensorFlow extends React.Component {
 
   componentWillMount(){
     if(this.props.editmodelFlag && this.props.panels.length ===0){
-      let editTfInput = Object.assign([],this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="TensorFlow")[0].tensorflow_params.hidden_layer_info);
+      let editTfInput = Object.assign([],this.props.modelEditconfig.config.config.ALGORITHM_SETTING.filter(i=>i.algorithmName==="Neural Network (TensorFlow)")[0].tensorflow_params.hidden_layer_info);
       this.props.dispatch(saveEditTfInput(editTfInput));
       let len = editTfInput.length;
       for(var i=1;i<=len;i++){

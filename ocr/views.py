@@ -384,7 +384,10 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
+                imageObj.status = "ready_to_export"
                 imageObj.save()
+        else:
+            tasks = []
 
         print("~" * 50)
         print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
@@ -602,7 +605,7 @@ class GroupListView(generics.ListCreateAPIView):
         name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOCRAdminUser]
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -638,7 +641,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_verify', 'ready_to_export'],
+            status__in=['ready_to_verify(L1)', 'ready_to_verify(L2)', 'ready_to_export'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
