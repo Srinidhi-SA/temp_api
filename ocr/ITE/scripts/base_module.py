@@ -806,6 +806,11 @@ class BaseModule:
         page_metadata['order'] = sorted(order, key=order.get)
         return page_metadata"""
 
+    def extract_words(self, analysis):
+
+        words = [bb['text'] for line in analysis["lines"] for bb in line['words']]
+        return words
+
     def extract_struct_details(self, table_cell_dict):
         table_struc_stats = {}
         for table in table_cell_dict:

@@ -779,6 +779,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 img_data = dict()
                 django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                 img_data['imagefile'] = django_file
+                img_data['projectslug'] = data['projectslug']
                 img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                 if file is None:
                     img_data['name'] = img_data.get('name',
@@ -961,9 +962,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         google_response = json.loads(image_queryset.conf_google_response)
         google_response2 = json.loads(image_queryset.google_response)
         analysis = json.loads(image_queryset.analysis)
+
+        try:
+            user_object = OCRUserProfile.objects.get(ocr_user=request.user.id)
+            reviewer = list(user_object.json_serialized()['role'])
+            if reviewer:
+                reviewer = reviewer[0]
+            else:
+                reviewer = 'Admin'
+        except:
+            reviewer = 'Superuser'
+
         update_history = json.loads(image_queryset.analysis_list)
         if not update_history:
-            update_history = {}
+            update_history = {reviewer: {}}
         mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
         size = cv2.imread(mask).shape
         [x, y] = offset([x, y], size)
