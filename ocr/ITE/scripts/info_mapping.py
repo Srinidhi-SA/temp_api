@@ -121,7 +121,7 @@ class Final_json:
                         print("before update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])
                         final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'] = inp
                         print("after update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])
-                        self.update_history(history_json,inp,bb)
+                        # self.update_history(history_json,inp,bb)
                         return True, final_json
                     else:
                         pass
@@ -228,7 +228,7 @@ class Final_json:
 
                                 final_json['tables'][str(i + 1)][cell]['words'][j]['text'] = inp
                                 print("ij", i, j)
-                                self.update_history(history_json,inp,bb)
+                                # self.update_history(history_json,inp,bb)
                                 return True, final_json
 
                             else:

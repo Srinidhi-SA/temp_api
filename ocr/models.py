@@ -252,7 +252,8 @@ class OCRImage(models.Model):
     STATUS_CHOICES = [
         ("ready_to_recognize", "Ready to recognize"),
         ("ready_to_assign", "Ready to assign"),
-        ("ready_to_verify", "Ready to verify"),
+        ("ready_to_verify(L1)", "Ready to verify(L1)"),
+        ("ready_to_verify(L2)", "Ready to verify(L2)"),
         ("ready_to_export", "Ready to export")
     ]
     name = models.CharField(max_length=300, null=True)

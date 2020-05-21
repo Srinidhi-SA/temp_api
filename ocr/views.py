@@ -384,7 +384,10 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
+                imageObj.status = "ready_to_export"
                 imageObj.save()
+        else:
+            tasks = []
 
         print("~" * 50)
         print("Total tasks un-assigned for user {0} : {1}".format(user.username, len(tasks)))
@@ -602,7 +605,7 @@ class GroupListView(generics.ListCreateAPIView):
         name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOCRAdminUser]
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -638,7 +641,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_verify', 'ready_to_export'],
+            status__in=['ready_to_verify(L1)', 'ready_to_verify(L2)', 'ready_to_export'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -779,6 +782,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 img_data = dict()
                 django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
                 img_data['imagefile'] = django_file
+                img_data['projectslug'] = data['projectslug']
                 img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
                 if file is None:
                     img_data['name'] = img_data.get('name',
@@ -904,29 +908,32 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = []
-        template = json.loads(Template.objects.first().template_classification)
-        if 'slug' in data:
-            for slug in ast.literal_eval(str(data['slug'])):
-                image_queryset = OCRImage.objects.get(slug=slug)
-                response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
-                result = response.task_id
-                res = AsyncResult(result)
-                res = res.get()
-                for response in res.values():
-                    slug = response['image_slug']
-                    serializer = self.process_image(data, response, slug, image_queryset)
-                    if serializer.is_valid():
-                        serializer.save()
-                        results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
-                        temp_obj = Template.objects.first()
-                        temp_obj.template_classification = json.dumps(response['template'])
-                        temp_obj.save()
-                        if image_queryset.imagefile.path[-4:] == '.pdf':
-                            image_queryset.status = 'ready_to_assign'
-                            image_queryset.save()
-                    else:
-                        results.append(serializer.errors)
-            return Response(results)
+        try:
+            template = json.loads(Template.objects.first().template_classification)
+            if 'slug' in data:
+                for slug in ast.literal_eval(str(data['slug'])):
+                    image_queryset = OCRImage.objects.get(slug=slug)
+                    response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
+                    result = response.task_id
+                    res = AsyncResult(result)
+                    res = res.get()
+                    for response in res.values():
+                        slug = response['image_slug']
+                        serializer = self.process_image(data, response, slug, image_queryset)
+                        if serializer.is_valid():
+                            serializer.save()
+                            results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                            temp_obj = Template.objects.first()
+                            temp_obj.template_classification = json.dumps(response['template'])
+                            temp_obj.save()
+                            if image_queryset.imagefile.path[-4:] == '.pdf':
+                                image_queryset.status = 'ready_to_assign'
+                                image_queryset.save()
+                        else:
+                            results.append(serializer.errors)
+                return Response(results)
+        except Exception as e:
+            return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -934,20 +941,23 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
-        review_start_time = image_queryset.review_start
-        if not review_start_time:
-            data['review_start'] = datetime.datetime.now()
-            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                             context={"request": self.request})
-            if serializer.is_valid():
-                serializer.save()
-        final_json = json.loads(image_queryset.final_result)
-        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-        size = cv2.imread(mask).shape
-        [x, y] = offset([x, y], size)
-        response = fetch_click_word_from_final_json(final_json, [x, y])
-        return JsonResponse({'exists': response[0], 'word': response[1]})
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            review_start_time = image_queryset.review_start
+            if not review_start_time:
+                data['review_start'] = datetime.datetime.now()
+                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                 context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+            final_json = json.loads(image_queryset.final_result)
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            size = cv2.imread(mask).shape
+            [x, y] = offset([x, y], size)
+            response = fetch_click_word_from_final_json(final_json, [x, y])
+            return JsonResponse({'exists': response[0], 'word': response[1]})
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
@@ -956,38 +966,52 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         y = data['y']
         word = data['word']
 
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
-        final_json = json.loads(image_queryset.final_result)
-        google_response = json.loads(image_queryset.conf_google_response)
-        google_response2 = json.loads(image_queryset.google_response)
-        analysis = json.loads(image_queryset.analysis)
-        update_history = json.loads(image_queryset.analysis_list)
-        if not update_history:
-            update_history = {}
-        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-        size = cv2.imread(mask).shape
-        [x, y] = offset([x, y], size)
-        final_json_obj = Final_json(final_json, update_history)
-        final_json, update_history = final_json_obj.update_final_json([x, y], word)
-        data['final_result'] = json.dumps(final_json)
-        data['analysis_list'] = json.dumps(update_history)
-        image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-        gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path, analysis)
-        image = base64.decodebytes(gen_image)
-        with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
-            f.write(image)
-        data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
-                                       file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            final_json = json.loads(image_queryset.final_result)
+            google_response = json.loads(image_queryset.conf_google_response)
+            google_response2 = json.loads(image_queryset.google_response)
+            analysis = json.loads(image_queryset.analysis)
 
-        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                         context={"request": self.request})
-        if serializer.is_valid():
-            serializer.save()
-            od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
-            object_details = od.data
-            object_details['message'] = 'SUCCESS'
-            return Response(object_details)
-        return Response(serializer.errors)
+            try:
+                user_object = OCRUserProfile.objects.get(ocr_user=request.user.id)
+                reviewer = list(user_object.json_serialized()['role'])
+                if reviewer:
+                    reviewer = reviewer[0]
+                else:
+                    reviewer = 'Admin'
+            except:
+                reviewer = 'Superuser'
+
+            update_history = json.loads(image_queryset.analysis_list)
+            if not update_history:
+                update_history = {reviewer: {}}
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            size = cv2.imread(mask).shape
+            [x, y] = offset([x, y], size)
+            final_json_obj = Final_json(final_json, update_history)
+            final_json, update_history = final_json_obj.update_final_json([x, y], word)
+            data['final_result'] = json.dumps(final_json)
+            data['analysis_list'] = json.dumps(update_history)
+            image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path, analysis)
+            image = base64.decodebytes(gen_image)
+            with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+                f.write(image)
+            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+                object_details = od.data
+                object_details['message'] = 'SUCCESS'
+                return Response(object_details)
+            return Response(serializer.errors)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to update the word!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_images(self, request, *args, **kwargs):
@@ -1033,55 +1057,49 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def final_analysis(self, request, *args, **kwargs):
         data = request.data
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
-        final_result = json.loads(image_queryset.final_result)
-        final_result_user = cleaned_final_json(final_result)
-        final_result_user = sort_json(final_result)
-        data['google_response'] = json.dumps(final_result_user)
-        review_end_time = image_queryset.review_end
-        if not review_end_time:
-            data['review_end'] = datetime.datetime.now()
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            final_result = json.loads(image_queryset.final_result)
+            final_result_user = cleaned_final_json(final_result)
+            final_result_user = sort_json(final_result)
+            data['google_response'] = json.dumps(final_result_user)
+            review_end_time = image_queryset.review_end
+            if not review_end_time:
+                data['review_end'] = datetime.datetime.now()
 
-        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                         context={"request": self.request})
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse({'message': 'SUCCESS'})
-        return Response(serializer.errors)
-
-    @list_route(methods=['post'])
-    def field_count_and_confidence(self, request):
-        data = request.data
-        image_queryset = OCRImage.objects.get(slug=data['slug'])
-        review_start_time = image_queryset.review_start
-        review_end_time = image_queryset.review_end
-        total_words = image_queryset.fields
-        total_time = review_end_time - review_start_time
-        stats = {'time': round(total_time.total_seconds(), 2),
-                 'seconds/word': round(total_time.total_seconds() / total_words, 2)}
-        return JsonResponse(stats)
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse({'message': 'SUCCESS'})
+            return Response(serializer.errors)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to generate final results!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def export_data(self, request):
         data = request.data
         slug = ast.literal_eval(str(data['slug']))[0]
-        image_queryset = OCRImage.objects.get(slug=slug)
-        # result = image_queryset.final_result
-        result = image_queryset.google_response
-        if data['format'] == 'json':
-            response = HttpResponse(result, content_type="application/json")
-            response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
-        elif data['format'] == 'xml':
-            result = json_2_xml(result)
-            response = HttpResponse(result, content_type="application/xml")
-            response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
-        elif data['format'] == 'csv':
-            result = json_2_csv(json.loads(result))
-            response = HttpResponse(result, content_type="application/text")
-            response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
-        else:
-            response = JsonResponse({'message': 'Invalid export format!'})
-        return response
+        try:
+            image_queryset = OCRImage.objects.get(slug=slug)
+            # result = image_queryset.final_result
+            result = image_queryset.google_response
+            if data['format'] == 'json':
+                response = HttpResponse(result, content_type="application/json")
+                response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
+            elif data['format'] == 'xml':
+                result = json_2_xml(result)
+                response = HttpResponse(result, content_type="application/xml")
+                response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
+            elif data['format'] == 'csv':
+                result = json_2_csv(json.loads(result))
+                response = HttpResponse(result, content_type="application/text")
+                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+            else:
+                response = JsonResponse({'message': 'Invalid export format!'})
+            return response
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to export data!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def confidence_filter(self, request):
@@ -1090,32 +1108,35 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if 'filter' in data:
             user_input = data['filter']
         slug = data['slug']
-        image_queryset = OCRImage.objects.get(slug=slug)
-        google_response = json.loads(image_queryset.conf_google_response)
-        google_response2 = json.loads(image_queryset.google_response)
-        analysis = json.loads(image_queryset.analysis)
-        final_json = json.loads(image_queryset.final_result)
-        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-        image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+        try:
+            image_queryset = OCRImage.objects.get(slug=slug)
+            google_response = json.loads(image_queryset.conf_google_response)
+            google_response2 = json.loads(image_queryset.google_response)
+            analysis = json.loads(image_queryset.analysis)
+            final_json = json.loads(image_queryset.final_result)
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-        gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
-                               analysis, percent=user_input)
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+                                   analysis, percent=user_input)
 
-        image = base64.decodebytes(gen_image)
-        with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
-            f.write(image)
+            image = base64.decodebytes(gen_image)
+            with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+                f.write(image)
 
-        data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
-                                       file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
-        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                         context={"request": self.request})
-        if serializer.is_valid():
-            serializer.save()
-            od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
-            object_details = od.data
-            object_details['message'] = 'SUCCESS'
-            return Response(object_details)
-        return Response(serializer.errors)
+            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+                object_details = od.data
+                object_details['message'] = 'SUCCESS'
+                return Response(object_details)
+            return Response(serializer.errors)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to generate image!', 'error': str(e)})
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
