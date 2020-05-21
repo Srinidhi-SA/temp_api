@@ -132,9 +132,8 @@ class SimpleFlow(models.Model):
     class Meta:
         abstract = True
 
-    def assigned_user(self, users=None):
-        state = self.PROCESS['initial']
-        rules = json.loads(self.rule.rulesL1)
+    def assigned_user(self, initial, state, rules, users=None):
+
         if users is None:
             Reviewers_queryset = User.objects.filter(
                 groups__name=state['group'],
@@ -188,10 +187,10 @@ class SimpleFlow(models.Model):
         else:
             rules = json.loads(self.rule.rulesL2)
         if rules['auto']['active'] == "True":
-            reviewer = self.assigned_user()
+            reviewer = self.assigned_user(initial, state, rules)
         else:
             usersList = rules['custom']['selected_reviewers']
-            reviewer = self.assigned_user(users=usersList)
+            reviewer = self.assigned_user(initial, state, rules, users=usersList)
         if reviewer is None:
             print("No Reviewers available. Moving to backlog")
             pass
@@ -207,10 +206,11 @@ class SimpleFlow(models.Model):
             imageObject=OCRImage.objects.get(id=self.ocr_image.id)
             if initial == 'initial':
                 imageObject.is_L1assigned = True
+                imageObject.status='ready_to_verify(L1)'
             else:
                 imageObject.is_L2assigned = True
+                imageObject.status='ready_to_verify(L2)'
             imageObject.assignee=reviewer
-            imageObject.status='ready_to_verify'
             imageObject.save()
             self.status='submitted_for_review'
             self.save()
