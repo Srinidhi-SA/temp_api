@@ -313,8 +313,8 @@ export function saveS3SelFiles(fileName){
 	}
 }
 
-export function uploadS3Files(selectedFiles){
-	let data = Object.assign({"dataSourceType":"S3"},{"file_names":selectedFiles},store.getState().ocr.ocrS3BucketDetails)
+export function uploadS3Files(selectedFiles,projectSlug){
+	let data = Object.assign({"dataSourceType":"S3"},{"file_names":selectedFiles},store.getState().ocr.ocrS3BucketDetails,{"projectslug":projectSlug})
 	return (dispatch) => {
 		return uploadS3FilesAPI(data,getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200 && json.message != "FAILED"){
