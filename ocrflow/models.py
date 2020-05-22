@@ -207,12 +207,13 @@ class SimpleFlow(models.Model):
             if initial == 'initial':
                 imageObject.is_L1assigned = True
                 imageObject.status='ready_to_verify(L1)'
+                self.status='submitted_for_review(L1)'
             else:
                 imageObject.is_L2assigned = True
                 imageObject.status='ready_to_verify(L2)'
+                self.status='submitted_for_review(L2)'
             imageObject.assignee=reviewer
             imageObject.save()
-            self.status='submitted_for_review'
             self.save()
 
 class ReviewRequest(SimpleFlow):
@@ -246,7 +247,8 @@ class ReviewRequest(SimpleFlow):
         null=True,
         choices=[
             ('created', 'Created'),
-            ('submitted_for_review', 'Submitted for review'),
+            ('submitted_for_review(L1)', 'Submitted for review(L1)'),
+            ('submitted_for_review(L2)', 'Submitted for review(L2)'),
             ('reviewerL2_reviewed', 'ReviewerL2 Reviewed'),
             ('reviewerL2_rejected', 'ReviewerL2 Rejected'),
             ('reviewerL1_reviewed', 'ReviewerL1 Reviewed'),

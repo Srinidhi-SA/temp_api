@@ -56,10 +56,11 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
     """
     """
     status_mapping = {"created": "Created",
-                      "submitted_for_review": "Review Pending",
-                      "reviewerL2_reviewed": "Review Completed",
+                      "submitted_for_review(L1)": "Review Pending(L1)",
+                      "submitted_for_review(L2)": "Review Pending(L2)",
+                      "reviewerL2_reviewed": "Review Completed(L1)",
                       "reviewerL2_rejected": "Rejected L2",
-                      "reviewerL1_reviewed": "Review Completed",
+                      "reviewerL1_reviewed": "Review Completed(L2)",
                       "reviewerL1_rejected": "Rejected L1"}
 
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
