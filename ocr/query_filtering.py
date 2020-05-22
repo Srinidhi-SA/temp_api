@@ -148,7 +148,7 @@ class QueryCommonFiltering:
             print(status_mapping_dict[self.status])
             self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
         if self.reviewStatus is not None:
-            status_mapping_dict = {'created': ['created'], 'pending': ['submitted_for_review'], 'reviewed': ['reviewerL2_reviewed', 'reviewerL1_reviewed'], 'rejected': ['reviewerL2_rejected', 'reviewerL1_rejected']}
+            status_mapping_dict = {'created': ['created'], 'pendingL1': ['submitted_for_review(L1)'], 'pendingL2': ['submitted_for_review(L2)'], 'reviewedL1': ['reviewerL1_reviewed'], 'reviewedL2': ['reviewerL2_reviewed'], 'rejected': ['reviewerL2_rejected', 'reviewerL1_rejected']}
             self.query_set = self.query_set.filter(status__in=status_mapping_dict[self.reviewStatus])
         if self.fields is not None:
             operator, value = self.fields[:3], self.fields[3:]
