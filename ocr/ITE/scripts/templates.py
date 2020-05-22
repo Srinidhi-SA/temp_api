@@ -31,19 +31,16 @@ class Templates:
 
             ctn = 1
             if page in defined_pages:
-                print(1111111111111111111111111111111)
                 defined_pages = [templates[key]['Pages'] for key in templates.keys()]
                 template_number = ([True if page in sublist else False for sublist in defined_pages]).index(True)
                 return 'T' + str(template_number + 1), 'match'
 
             else:
-                print(2222222222222222222222222222222)
                 for tem in templates:
                     reference = templates[tem]['meta']
 
                     current['table'] = {str(i): val for i, val in current['table'].items()}
                     match_output = self.match(reference, current)
-
                     if match_output == 'match':
 
                         if page not in templates[tem]['Pages']:
@@ -61,7 +58,6 @@ class Templates:
             return 'T' + str(ctn), 'No Match'
 
         except:
-            print(3333333333333333333333333333333)
             page = list(current_metadata.keys())[0]
             templates = {}
             ctn = 1
