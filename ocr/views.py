@@ -865,6 +865,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
         object_details.update({'values': value})
+        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values', 'classification']
+        object_details = {key: val for key, val in object_details.items() if key in desired_response}
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
