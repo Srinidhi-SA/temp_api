@@ -160,7 +160,7 @@ export class OcrUpload extends React.Component {
       $("#resetMsg")[0].innerText = "";
       $("#dataCloseBtn").hide()
       this.props.dispatch(setS3Loader(true));
-      this.props.dispatch(uploadS3Files(this.props.s3SelFileList));
+      this.props.dispatch(uploadS3Files(this.props.s3SelFileList,projectSlug));
     }
   }
 
