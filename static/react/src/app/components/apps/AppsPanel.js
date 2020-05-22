@@ -40,7 +40,7 @@ import {
   isEmpty
 } from "../../helpers/helper.js"
 import {cookieObj} from '../../helpers/cookiesHandler';
-import { dashboardMetrics } from '../../actions/ocrActions';
+import { dashboardMetrics,selectedProjectDetails,saveDocumentPageFlag } from '../../actions/ocrActions';
 
 @connect((store) => {
   return {
@@ -73,6 +73,8 @@ export class AppsPanel extends React.Component {
     } else
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
+    this.props.dispatch(selectedProjectDetails('',''));
+    this.props.dispatch(saveDocumentPageFlag(false));
   }
 
   onChangeAppsSearchBox(e) {

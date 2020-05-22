@@ -129,7 +129,7 @@ function fetchUploadedFiles(pageNo=1,token){
 	let filter_fields=store.getState().ocr.filter_fields
 	if(search_document==''){
 		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
-      method: 'get',
+			method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
@@ -219,8 +219,9 @@ function fetchRevrDocsList(pageNo=1,token){
 	let filter_rd_status=store.getState().ocr.filter_rd_status
 	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
-	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&project'+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
-	method: 'get',
+	let search_project=store.getState().ocr.search_project_in_revtable
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&project='+search_project+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
+		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
 }
@@ -786,6 +787,12 @@ export function storeDocSearchElem(elem){
 export function storeProjectSearchElem(elem){
 	return{
 		type:"SEARCH_OCR_PROJECT",
+		elem
+	}
+}
+export function storeSearchInRevElem(elem){
+	return{
+		type:"SEARCH_OCR_PROJECT_IN_REV",
 		elem
 	}
 }

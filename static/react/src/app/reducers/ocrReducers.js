@@ -57,6 +57,7 @@ export default function reducer(state = {
   ocrUserPageNum : 1,
   search_document:'',
   search_project:'',
+  search_project_in_revtable:'',
   selected_project_slug:'',
   selected_project_name:'',
   selected_reviewer_slug:'',
@@ -613,6 +614,15 @@ export default function reducer(state = {
         }
       }
       break;
+      case "SEARCH_OCR_PROJECT_IN_REV":
+      {
+        return {
+          ...state,
+          search_project_in_revtable:action.elem
+        }
+      }
+      break;
+      
        case "TAB_ACTIVE_VALUE":
       {
         return {
