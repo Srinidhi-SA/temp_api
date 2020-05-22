@@ -478,10 +478,13 @@ class ScoreSerlializer(serializers.ModelSerializer):
             instance.save()
         try:
             message_list = get_message(instance.job)
-
-            if message_list is not None:
-                message_list = [message_list[-1]]
-            ret['message'] = message_list
+            if message_list[-1]['globalCompletionPercentage'] == -1:
+                ret['message'] = get_message(instance.job)
+            else:
+                ret['message'] = json.loads(instance.job.message_log)
+            # if message_list is not None:
+            #     message_list = [message_list[-1]]
+            # ret['message'] = message_list
         except:
             ret['message'] = None
         try:
