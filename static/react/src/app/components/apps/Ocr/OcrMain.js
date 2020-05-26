@@ -25,7 +25,7 @@ export class OcrMain extends React.Component {
           {Object.keys(this.props.dashboardMetrics).length != 0?
           <div class="container-fluid">
             {/* inroduction modal starts*/}
-            <div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
+            <div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div id="ocrInstructions" class="carousel slide" data-ride="carousel">
@@ -159,6 +159,14 @@ export class OcrMain extends React.Component {
                           </div>
                         </div>
                       </div>
+                      <a className="left carousel-control" href="#ocrInstructions" data-slide="prev" style={{left:-30}}>
+                      <span className="glyphicon glyphicon-chevron-left" style={{fontSize:21}}></span>
+                      <span className="sr-only">Previous</span>
+                    </a>
+                    <a className="right carousel-control" href="#ocrInstructions" data-slide="next" style={{right:-30}}>
+                      <span className="glyphicon glyphicon-chevron-right" style={{fontSize:21}}></span>
+                      <span class="sr-only">Next</span>
+                    </a>
                     </div>
                     <div class="modal-footer">
                       <ol class="carousel-indicators cst_indicators">
@@ -187,7 +195,7 @@ export class OcrMain extends React.Component {
               </div>
             </div>
 
-            <div class="row">
+            <div class="row firstRow">
               <div class="col-md-4">
                 <div class="widget widget-pie">
                   <div class="row chart-container">

@@ -142,8 +142,18 @@ export class OcrTable extends React.Component {
       }
 
   handleRecognise = () => {
+    let recognizeList = [];
+    let dataList = this.props.OcrDataList.data;
+    for (var i = 0; i < this.state.checkedList.length; i++) {
+      let val = dataList.filter(j => j.slug == this.state.checkedList[i])[0].status;
+      recognizeList.push(val);
+    }
     if (this.state.checkedList.length == 0) {
       bootbox.alert("Please select the image file to recognize.")
+      return false;
+    }
+    else if (!recognizeList.includes("Ready to Recognize")) {
+      bootbox.alert("Please select the file with status ready to recognize.")
       return false;
     }
     this.props.dispatch(updateCheckList(this.state.checkedList))
@@ -171,15 +181,16 @@ export class OcrTable extends React.Component {
 
   proceedClick() {
     this.closePopup();
+    this.setState({checkAll:false,checkedList:[]})
     var refreshList=setInterval(() =>{
     this.props.dispatch(getOcrUploadedFiles());
     if(store.getState().ocr.tabActive=='active'){
     clearInterval( refreshList )
     return false
     }
-    }, 15000);
+    }, 5000);
     refreshList;
-    setTimeout(function( ) { clearInterval( refreshList );}, 120000);
+    setTimeout(function( ) { clearInterval( refreshList );}, 180000);
     this.props.dispatch(getOcrUploadedFiles());
   }
   
@@ -337,7 +348,7 @@ export class OcrTable extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <div id="resetMsg"></div>
-          <Button id="Rd_dataCloseBtn" onClick={this.closePopup.bind(this)} bsStyle="primary">Cancel</Button>
+          <Button id="Rd_dataCloseBtn" onClick={this.proceedClick.bind(this)} bsStyle="primary">Hide</Button>
           <Button id="Rd_loadDataBtn" onClick={this.proceedClick.bind(this)} disabled={this.state.loader} bsStyle="primary">Proceed</Button>
 
         </Modal.Footer>
@@ -354,8 +365,8 @@ export class OcrTable extends React.Component {
             <td>
             <i style={{color:'#414f50',fontSize:14}} className={item.type==".pdf"? "fa fa-file-pdf-o":"fa fa-file-image-o"}></i>
             </td>
-            <td style={item.status == "Ready to Recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+            <td style={item.status == "Ready to Recognize" || item.status == "Recognizing" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
+              <Link style={item.status == "Ready to Recognize" || item.status == "Recognizing" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.classification}</td>
