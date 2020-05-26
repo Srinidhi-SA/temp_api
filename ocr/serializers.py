@@ -76,6 +76,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
     """
     status_mapping = {"ready_to_recognize": "Ready to Recognize",
                       "ready_to_assign": "Ready to Assign",
+                      "recognizing": "Recognizing",
                       "ready_to_verify(L1)": "Ready to Verify(L1)",
                       "ready_to_verify(L2)": "Ready to Verify(L2)",
                       "ready_to_export": "Ready to Export"}
@@ -86,6 +87,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         serialized_data['modified_by'] = UserSerializer(instance.created_by).data['username']
+        serialized_data['type'] = serialized_data['imagefile'][-4:]
         if serialized_data['imagefile'][-4:] == '.pdf':
             if serialized_data['status'] == 'Ready to Recognize':
                 return serialized_data

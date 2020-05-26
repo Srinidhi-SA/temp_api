@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -115,6 +115,17 @@ export class RevDocTable extends React.Component {
     this.setState({ checkedList: updateList });
   }
 
+  handleSearchBox(){
+    var searchElememt=document.getElementById('searchInRev').value.trim()
+    this.props.dispatch(storeSearchInRevElem(searchElememt))
+    // this.props.dispatch(getOcrProjectsList())
+    this.props.dispatch(getRevrDocsList())
+  }
+  clearSearchElement(e){
+    document.getElementById('searchInRev').value=""
+    this.props.dispatch(storeSearchInRevElem(''));
+    this.props.dispatch(getRevrDocsList())
+  }
   render() {
     const pages = this.props.OcrRevwrDocsList.total_number_of_pages;
     const current_page = this.props.OcrRevwrDocsList.current_page;
@@ -134,14 +145,11 @@ export class RevDocTable extends React.Component {
 
    if(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser"){
    breadcrumb= (
-    <div class="row">
-    <div class="col-sm-6">
           <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Reviewers</a></li>
               <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.reviewerName}</a></li>
             </ol>
-          </div>
-          </div>)
+          )
    }
     var OcrRevDocTableHtml = (
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
@@ -165,8 +173,22 @@ export class RevDocTable extends React.Component {
     )
 
     return (
-      <div>
-       {breadcrumb}
+    <div>
+      <div class="row">
+        <div class="col-md-6">
+         {breadcrumb}
+        </div>
+        <div class="col-md-6 text-right">
+          <div class="form-inline" style={{'marginBottom': '10px'}}>
+            <span className="search-wrapper">
+              <div class="form-group xs-mr-5">
+                <input type="text" title="Search Project..." id="searchInRev" class="form-control btn-rounded " onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
+                <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}} onClick={this.clearSearchElement.bind(this)} type="reset"></button>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
             <div className="table-responsive noSwipe xs-pb-10">
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
             {this.props.OcrRevwrDocsList != '' ? 
@@ -254,7 +276,7 @@ export class RevDocTable extends React.Component {
           }
           {paginationTag}
          </div>
-        </div>
+    </div>
     )
   }
   componentWillUnmount = () => {

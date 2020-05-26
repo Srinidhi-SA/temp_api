@@ -242,7 +242,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
             if request.GET['project']:
                 buffer = list()
                 for user in add_key:
-                    if not request.GET['project'] in user['project']:
+                    if not request.GET['project'].lower() in user['project'].lower():
                         buffer.append(user)
                 add_key = [ele for ele in add_key if ele not in buffer]
 

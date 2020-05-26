@@ -155,11 +155,13 @@ export class OcrTable extends React.Component {
       method: "post",
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(postData)
-    }).then(response => response.json()).then(json => {
-      if (json.map(i => i.status).includes("ready_to_assign"))
-        this.setState({ loader: false, recognized: true })
-        this.setState({checkAll:false,checkedList:[]})
-    })
+    }).then(response => response.json())
+      .then(json => {
+        if ((json.map(i=>i.message=="SUCCESS")) && (json.map(i => i.status).includes("ready_to_assign"))){
+          this.setState({ loader: false, recognized: true })
+          this.setState({checkAll:false,checkedList:[]})
+        }
+      })
 
   }
 
@@ -350,7 +352,7 @@ export class OcrTable extends React.Component {
               <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck.bind(this,this.props)} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
             </td>
             <td>
-              <i class="fa fa-file-text"></i>
+            <i style={{color:'#414f50',fontSize:14}} className={item.type==".pdf"? "fa fa-file-pdf-o":"fa fa-file-image-o"}></i>
             </td>
             <td style={item.status == "Ready to Recognize" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
               <Link style={item.status == "Ready to Recognize" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
@@ -464,7 +466,8 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'A', 'status')} name="ready to assign">Ready to Assign</a></li>
-                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V', 'status')} name="ready to verify">Ready to Verify</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V1', 'status')} name="ready to verify">Ready to Verify(L1)</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V2', 'status')} name="ready to verify">Ready to Verify(L2)</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
