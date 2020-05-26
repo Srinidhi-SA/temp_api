@@ -428,18 +428,18 @@ export class OcrImage extends React.Component {
               <div class="popover-content">
                 <div id="loader"></div>
                 <div className="row">
-                  <div className="col-sm-9" style={{ paddingRight: 5 }}>
+                  <div className="col-sm-10" style={{ paddingRight: 5 }}>
                     <input type="text" id="ocrText" placeholder="Enter text.." onChange={this.handleText} />
                   </div>
-                  <div className="col-sm-3" style={{ paddingLeft: 0 }}>
+                  <div className="col-sm-2" style={{ paddingLeft: 0 }}>
                     <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
-                    <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
+                    {/* <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
                       <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
                     </button>
                     <ul class="dropdown-menu" style={{ left: -110 }}>
                       <li><a href="javascript::" class="btn btn-block" onClick={this.notClear}><i class="fa fa-ban"></i> Not Clear</a></li>
                       <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
-                    </ul>
+                    </ul> */}
                   </div>
                   <div className="col-sm-12" id="successMsg" style={{ paddingTop: 5, color: '#ff8c00' }}></div>
                 </div>
