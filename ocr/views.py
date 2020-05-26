@@ -648,7 +648,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize', 'ready_to_assign'],
+            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -915,6 +915,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     image_queryset = OCRImage.objects.get(slug=slug)
+                    image_queryset.status = 'recognizing'
+                    image_queryset.save()
                     response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
                     result = response.task_id
                     res = AsyncResult(result)
