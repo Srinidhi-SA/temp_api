@@ -117,7 +117,7 @@ export class OcrCreateProject extends React.Component {
               <span className="search-wrapper">
                <div class="form-group xs-mr-5">
                 <input type="text" title="Search Project..." id="search" class="form-control btn-rounded "  onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
-                        <button className="close-icon"  style={{position:"absolute",left:'173px',top:'7px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
+                        <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}}  onClick={this.clearSearchElement.bind(this)}type="reset"></button>
                         </div>
                 </span>
             </div>

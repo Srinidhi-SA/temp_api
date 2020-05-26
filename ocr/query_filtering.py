@@ -42,6 +42,7 @@ class QueryCommonFiltering:
     time = None
     assignee = None
     reviewStatus = None
+    template = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -127,6 +128,13 @@ class QueryCommonFiltering:
             else:
                 self.assignee = temp_name
 
+        if 'template' in request.query_params:
+            temp_name = self.request.query_params.get('template')
+            if temp_name is None or temp_name is "":
+                self.template = self.template
+            else:
+                self.template = temp_name
+
     def execute_common_filtering_and_sorting_and_ordering(self):
         """
         Method that handles filtering, sorting and ordering.
@@ -162,6 +170,8 @@ class QueryCommonFiltering:
             self.query_set = self.query_set.filter(assignee=User.objects.get(username=self.assignee))
         if self.time is not None:
             self.query_set = self.query_set.filter(time_taken=float(self.time))
+        if self.template is not None:
+            self.query_set = self.query_set.filter(classification=self.template)
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
