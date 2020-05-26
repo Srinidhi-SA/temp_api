@@ -194,59 +194,59 @@ class ReviewRequestView(viewsets.ModelViewSet):
             list_serializer=ReviewRequestSerializer,
             username=username
         )
-        add_key = response.data['data']
-        if 'accuracy' in request.GET or 'field_count' in request.GET or 'project' in request.GET:
-            accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
-            fields_operator, fields = request.GET['field_count'][:3], request.GET['field_count'][3:]
-
-            if accuracy:
-                if accuracy_operator == 'GTE':
-                    buffer = list()
-                    for user in add_key:
-                        if not float(user['ocrImageData']['confidence']) >= float(accuracy):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-                if accuracy_operator == 'LTE':
-                    buffer = list()
-                    for user in add_key:
-                        if not float(user['ocrImageData']['confidence']) <= float(accuracy):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-                if accuracy_operator == 'EQL':
-                    buffer = list()
-                    for user in add_key:
-                        if not float(user['ocrImageData']['confidence']) == float(accuracy):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-
-            if fields:
-                if fields_operator == 'GTE':
-                    buffer = list()
-                    for user in add_key:
-                        if not int(user['ocrImageData']['fields']) >= int(fields):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-                if fields_operator == 'LTE':
-                    buffer = list()
-                    for user in add_key:
-                        if not int(user['ocrImageData']['fields']) <= int(fields):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-                if fields_operator == 'EQL':
-                    buffer = list()
-                    for user in add_key:
-                        if not int(user['ocrImageData']['fields']) == int(fields):
-                            buffer.append(user)
-                    add_key = [ele for ele in add_key if ele not in buffer]
-
-            if request.GET['project']:
-                buffer = list()
-                for user in add_key:
-                    if not request.GET['project'].lower() in user['project'].lower():
-                        buffer.append(user)
-                add_key = [ele for ele in add_key if ele not in buffer]
-
-            response.data['data'] = add_key
+        # add_key = response.data['data']
+        # if 'accuracy' in request.GET or 'field_count' in request.GET or 'project' in request.GET:
+        #     accuracy_operator, accuracy = request.GET['accuracy'][:3], request.GET['accuracy'][3:]
+        #     fields_operator, fields = request.GET['field_count'][:3], request.GET['field_count'][3:]
+        #
+        #     if accuracy:
+        #         if accuracy_operator == 'GTE':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not float(user['ocrImageData']['confidence']) >= float(accuracy):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #         if accuracy_operator == 'LTE':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not float(user['ocrImageData']['confidence']) <= float(accuracy):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #         if accuracy_operator == 'EQL':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not float(user['ocrImageData']['confidence']) == float(accuracy):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #
+        #     if fields:
+        #         if fields_operator == 'GTE':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not int(user['ocrImageData']['fields']) >= int(fields):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #         if fields_operator == 'LTE':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not int(user['ocrImageData']['fields']) <= int(fields):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #         if fields_operator == 'EQL':
+        #             buffer = list()
+        #             for user in add_key:
+        #                 if not int(user['ocrImageData']['fields']) == int(fields):
+        #                     buffer.append(user)
+        #             add_key = [ele for ele in add_key if ele not in buffer]
+        #
+        #     if request.GET['project']:
+        #         buffer = list()
+        #         for user in add_key:
+        #             if not request.GET['project'] in user['project']:
+        #                 buffer.append(user)
+        #         add_key = [ele for ele in add_key if ele not in buffer]
+        #
+        #     response.data['data'] = add_key
         return response
 
     def retrieve(self, request, *args, **kwargs):

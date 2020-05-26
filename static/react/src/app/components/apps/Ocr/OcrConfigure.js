@@ -31,6 +31,7 @@ export class OcrConfigure extends React.Component {
   }
 
   saveSelectedConfigureTab(e){
+    this.props.dispatch(fetchReviewersRules());
     this.props.dispatch(clearReviewerConfigStatesAction());
     this.props.dispatch(storeSelectedConfigureTabAction(e.target.name));
     if(e.target.name === "initialReview"){
