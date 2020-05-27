@@ -497,7 +497,7 @@ export class OcrTable extends React.Component {
                             <span>TEMPLATE</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{minWidth:'130px'}}>
-                          <Scrollbars style={{ height: 160 }} >
+                          <Scrollbars className="templateScroll" style={{ height: 160,overflowX:'hidden' }} >
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'template')} name='all'>All</a></li>
                             {getTemplateOptions}
                             </Scrollbars>
