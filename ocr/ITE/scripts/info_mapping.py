@@ -108,7 +108,7 @@ class Final_json:
         return False
         """
 
-    def check_update_paras(self, final_json, cord, inp):
+    """def check_update_paras(self, final_json, cord, inp):
         for i in range(len(final_json['paragraphs'])):
             for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
                 for k, d in enumerate(final_json['paragraphs']['p_' + str(i + 1)][j]['words']):
@@ -122,6 +122,20 @@ class Final_json:
                         final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'] = inp
                         print("after update:", final_json['paragraphs']['p_' + str(i + 1)][j]['words'][k]['text'])
                         # self.update_history(history_json,inp,bb)
+                        return True, final_json
+                    else:
+                        pass
+
+        return False, final_json"""
+
+    def check_update_paras(self, final_json, cord, inp):
+        for i in range(len(final_json['paragraphs'])):
+            for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):  ## j th line
+                for k, d in enumerate(final_json['paragraphs']['p_' + str(i + 1)][j]):  ## k th word
+
+                    bb = d['boundingBox']['p1'] + d['boundingBox']['p3']
+                    if (cord[0] in range(bb[0], bb[2])) and (cord[1] in range(bb[1], bb[3])):
+                        final_json['paragraphs']['p_' + str(i + 1)][j][k]['text'] = inp
                         return True, final_json
                     else:
                         pass
