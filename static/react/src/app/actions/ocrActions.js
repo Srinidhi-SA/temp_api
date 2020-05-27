@@ -841,6 +841,12 @@ export function saveSelectedImageName(name){
 		name
 	}
 }
+export function saveSelectedTemplate(template){
+	return{
+		type:"SELECTED_TEMPLATE",
+		template
+	}
+}
 //Configure Page Actions
 export function storeSelectedConfigureTabAction(selTab){
 	return {
