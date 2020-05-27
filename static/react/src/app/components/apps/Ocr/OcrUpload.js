@@ -326,6 +326,7 @@ export class OcrUpload extends React.Component {
               <div id="resetMsg">
               {this.props.s3FileFetchErrorFlag ?this.props.s3FileFetchErrorMsg:""}
               </div>
+              <Button bsStyle="primary">Hide</Button>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
               <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} >Proceed</Button>
             </Modal.Footer>
