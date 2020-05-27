@@ -83,7 +83,7 @@ export class OcrSecondaryReview extends React.Component{
             <Scrollbars style={{height:250}} >
                 <table className = "table table-bordered table-hover" id="sRTable" style={{background:"#FFF"}}>
                     <thead><tr id="sRHead">
-                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.selectedSRList != undefined && sRListCount!=0 && sRListCount === this.props.selectedSRList.length)?true:false} disabled={getDisabledVal}/></th>
+                        <th className="text-center xs-pr-5" style={{width:"80px"}}><Checkbox id="selectAllSR" name="selectAllSR" value={listForSRTable} onChange={this.saveSRConfig.bind(this)} checked={( this.props.active === "all" && sRListCount!=0)?true:(this.props.selectedSRList != undefined && sRListCount!=0 && sRListCount === this.props.selectedSRList.length)?true:false} disabled={getDisabledVal}/></th>
                         <th style={{width:"40%"}}>NAME</th>
                         <th>EMAIL</th>
                     </tr></thead>
@@ -94,7 +94,7 @@ export class OcrSecondaryReview extends React.Component{
                                     return (
                                         <tr>
                                             <td className="text-center">
-                                                <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name)} disabled={getDisabledVal}/>
+                                                <Checkbox name="selectedSR" id={item.name} value={item.name} onChange={this.saveSRConfig.bind(this)} checked={ (this.props.active==="all")?true:(this.props.selectedSRList !=undefined && this.props.selectedSRList.includes(item.name))} disabled={getDisabledVal}/>
                                             </td>
                                             <td>{item.name}</td>
                                             <td>{item.email}</td>

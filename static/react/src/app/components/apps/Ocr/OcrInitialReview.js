@@ -90,7 +90,7 @@ export class OcrInitialReview extends React.Component {
             <table className = "table table-bordered table-hover" id="iRtable" style={{background:"#FFF"}}>
                 <thead><tr id="iRtHead">
                     <th className="text-center xs-pr-5" style={{width:"80px"}}>
-                        <Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.selectedIRList !=undefined && iRListCount!=0 && iRListCount === this.props.selectedIRList.length)?true:false} disabled={getDisabledVal}/>
+                        <Checkbox id="selectAllIR" name="selectAllIR" value={listForIRTable} onChange={this.saveIRConfig.bind(this)} checked={( this.props.activeiR === "all" && iRListCount!=0)?true:(this.props.selectedIRList !=undefined && iRListCount!=0 && iRListCount === this.props.selectedIRList.length)?true:false} disabled={getDisabledVal}/>
                     </th>
                     <th style={{width:"40%"}}>NAME</th>
                     <th>EMAIL</th>
@@ -102,7 +102,7 @@ export class OcrInitialReview extends React.Component {
                                 return (
                                     <tr>
                                         <td className="text-center">
-                                            <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name)} disabled={getDisabledVal}/>
+                                            <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ (this.props.activeiR==="all")?true:(this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name))} disabled={getDisabledVal}/>
                                         </td>
                                         <td>{item.name}</td>
                                         <td>{item.email}</td>
