@@ -648,7 +648,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing'],
+            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -821,6 +821,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 serializer_data.append(serializer.data)
             else:
                 serializer_error.append(serializer.errors)
+            image_object.status = 'ready_to_recognize'
+            image_object.save()
         if not serializer_error:
             response['serializer_data'] = serializer_data
             response['message'] = 'SUCCESS'
@@ -1141,6 +1143,27 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             return Response(serializer.errors)
         except Exception as e:
             return JsonResponse({'message': 'Failed to generate image!', 'error': str(e)})
+
+    @list_route(methods=['post'])
+    def update_template(self, request):
+        data = request.data
+        slug = data['slug']
+        template = data['template']
+        try:
+            image_queryset = OCRImage.objects.get(slug=slug)
+            name = image_queryset.imagefile.path.split('/')[-1]
+            classification = image_queryset.classification
+            template_data = Template.objects.first()
+            template_classification = json.loads(template_data.template_classification)
+            template_classification[classification]['Pages'].remove(name)
+            template_classification[template]['Pages'].append(name)
+            image_queryset.classification = template
+            template_data.template_classification = json.dumps(template_classification)
+            image_queryset.save()
+            template_data.save()
+            return JsonResponse({'message': 'SUCCESS'})
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
