@@ -22926,3 +22926,7 @@ min-width: 102px; }
 .firstRow .widget-pie{
   height: 170px;
 }
+.dropdownScroll{
+  max-height: 100px;
+  overflow-y: scroll;
+}

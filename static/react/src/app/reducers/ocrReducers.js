@@ -26,6 +26,7 @@ export default function reducer(state = {
   filter_confidence: '',
   filter_assignee: '',
   filter_fields:'',
+  filter_template:'',
   filter_rd_status:'',
   filter_rd_confidence:'',
   filter_rd_fields:'',
@@ -348,6 +349,15 @@ export default function reducer(state = {
         }
       }
     break;
+    
+    case "FILTER_BY_TEMPLATE":
+    {
+      return {
+        ...state,
+        filter_template: action.template
+      }
+    }
+  break;
     case "FILTER_BY_FIELDS":
       {
         return {

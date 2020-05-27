@@ -44,8 +44,9 @@ class BaseModule:
         self.final_mapped_dict_table = self.map_info_to_cells(
             self.microsoft_analysis,
             self.table_cell_dict, self.final_mapped_dict_table)
-        self.paras, rel_para_area = self.detect_paragraphs(
+        paras, rel_para_area = self.detect_paragraphs(
             self.microsoft_analysis, self.table_cell_dict, order, parent_area)
+        self.paras = self.final_json_para_corrections(paras)
         self.metadata = self.fetch_metadata(
             table_area_dict, table_count_dict, order, self.microsoft_analysis, rel_para_area, self.paras,
             table_rel_centroid_dist_dict, self.table_cell_dict)
@@ -811,7 +812,7 @@ class BaseModule:
         words = [bb['text'] for line in analysis["lines"] for bb in line['words']]
         return words
 
-    def extract_struct_details(self, table_cell_dict):
+    """def extract_struct_details(self, table_cell_dict):
         table_struc_stats = {}
         for table in table_cell_dict:
             table_struc_stats[table] = {}
@@ -826,6 +827,29 @@ class BaseModule:
 
             table_struc_stats[table]['ncols'] = ncols
             table_struc_stats[table]['nrows'] = nrows
+
+        return table_struc_stats"""
+
+    def extract_struct_details(self, table_cell_dict):
+        table_struc_stats = {}
+        for table in table_cell_dict:
+
+            table_struc_stats[table] = {}
+
+            if len(table_cell_dict[table]) > 0:
+                cells_dict = dict(table_cell_dict[table])
+                cells = list(cells_dict.keys())
+
+                ncols = max([int(cell.split('r')[0].split('c')[1]) for cell in cells])
+                nrows = max([int(cell.split('r')[1]) for cell in cells])
+                #        print('ncols:',ncols , '*'*20)
+                #        print('nrows:',nrows , '*'*20)
+
+                table_struc_stats[table]['ncols'] = ncols
+                table_struc_stats[table]['nrows'] = nrows
+            else:
+                table_struc_stats[table]['ncols'] = 0
+                table_struc_stats[table]['nrows'] = 0
 
         return table_struc_stats
 
@@ -858,3 +882,17 @@ class BaseModule:
         page_metadata['no_of_paras'] = len(paras)
         page_metadata['order'] = sorted(order, key=order.get)
         return page_metadata
+
+    def final_json_para_corrections(self, temp):
+        paragraphs = {}
+        for para in temp:
+            lines_all = []
+            for lines in temp[para]:
+                all_words = []
+                for word in lines["words"]:
+                    all_words.append({"text": word["text"], "boundingBox": {"p1": word["boundingBox"][0:2],
+                                                                            "p3": word["boundingBox"][4:6]}})
+                #                    print(para,word["text"],word["boundingBox"])
+                lines_all.append(all_words)
+            paragraphs.update({para: lines_all})
+        return paragraphs
