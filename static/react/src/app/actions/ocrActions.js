@@ -127,14 +127,15 @@ function fetchUploadedFiles(pageNo=1,token){
 	let selected_project_slug=store.getState().ocr.selected_project_slug
 	let tabActive	= store.getState().ocr.tabActive==''?'active':store.getState().ocr.tabActive;
 	let filter_fields=store.getState().ocr.filter_fields
+	let filter_template=store.getState().ocr.filter_template
 	if(search_document==''){
-		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
+		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo, {
 			method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
 	else{
-	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -368,6 +369,12 @@ export function storeOcrFilterAssignee(assignee){
 	return{
 		type: "FILTER_BY_ASSIGNEE",
 		assignee
+	}
+}
+export function storeOcrFilterTemplate(template){
+	return{
+		type: "FILTER_BY_TEMPLATE",
+		template
 	}
 }
 export function storeOcrFilterFields(fields){

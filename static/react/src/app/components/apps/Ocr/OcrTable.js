@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
-  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails } from '../../../actions/ocrActions';
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails,storeOcrFilterTemplate } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -110,6 +110,9 @@ export class OcrTable extends React.Component {
          break;
        case 'fields':
          this.props.dispatch(storeOcrFilterFields(filterByVal))
+         break;
+        case 'template':
+         this.props.dispatch(storeOcrFilterTemplate(filterByVal))
          break;
      }
      this.props.dispatch(getOcrUploadedFiles())
@@ -312,6 +315,13 @@ export class OcrTable extends React.Component {
     }
     ) : '' : '')
 
+    var getTemplateOptions = (this.props.OcrDataList != '' ?this.props.OcrDataList.values.map(item => {
+      return <li><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'template')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+    }
+    ) : '')
+
+
+
     var ShowModel = (<div id="uploadData" role="dialog" className="modal fade modal-colored-header">
       <Modal backdrop="static" show={this.state.showRecognizePopup} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header">
         <Modal.Body style={{ padding: 0 }} >
@@ -473,7 +483,7 @@ export class OcrTable extends React.Component {
                           <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                             <span>STATUS</span> <b class="caret"></b>
                           </a>
-                          <ul class="dropdown-menu scrollable-menu">
+                          <ul class="dropdown-menu scrollable-menu dropdownScroll">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'status')} name='all'>All</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'A', 'status')} name="ready to assign">Ready to Assign</a></li>
@@ -482,7 +492,15 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
-                    <th>TEMPLATE</th>
+                        <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
+                            <span>TEMPLATE</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{minWidth:'130px'}}>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'template')} name='all'>All</a></li>
+                            {getTemplateOptions}
+                          </ul>
+                        </th>
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>FIELDS</span> <b class="caret"></b>
@@ -518,7 +536,7 @@ export class OcrTable extends React.Component {
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Assignee" aria-expanded="true">
                             <span>ASSIGNEE</span> <b class="caret"></b>
                           </a>
-                          <ul class="dropdown-menu scrollable-menu">
+                          <ul class="dropdown-menu scrollable-menu dropdownScroll">
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>
                             {getAssigneeOptions}
                           </ul>
