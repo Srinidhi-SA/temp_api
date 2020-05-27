@@ -43,6 +43,9 @@ class QueryCommonFiltering:
     assignee = None
     reviewStatus = None
     template = None
+    accuracy = None
+    field_count = None
+    project = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -135,6 +138,27 @@ class QueryCommonFiltering:
             else:
                 self.template = temp_name
 
+        if 'accuracy' in request.query_params:
+            temp_name = self.request.query_params.get('accuracy')
+            if temp_name is None or temp_name is "":
+                self.accuracy = self.accuracy
+            else:
+                self.accuracy = temp_name
+
+        if 'field_count' in request.query_params:
+            temp_name = self.request.query_params.get('field_count')
+            if temp_name is None or temp_name is "":
+                self.field_count = self.field_count
+            else:
+                self.field_count = temp_name
+
+        if 'project' in request.query_params:
+            temp_name = self.request.query_params.get('project')
+            if temp_name is None or temp_name is "":
+                self.project = self.project
+            else:
+                self.project = temp_name
+
     def execute_common_filtering_and_sorting_and_ordering(self):
         """
         Method that handles filtering, sorting and ordering.
@@ -156,7 +180,7 @@ class QueryCommonFiltering:
             print(status_mapping_dict[self.status])
             self.query_set = self.query_set.filter(status=status_mapping_dict[self.status])
         if self.reviewStatus is not None:
-            status_mapping_dict = {'created': ['created'], 'pending': ['submitted_for_review'], 'reviewed': ['reviewerL2_reviewed', 'reviewerL1_reviewed'], 'rejected': ['reviewerL2_rejected', 'reviewerL1_rejected']}
+            status_mapping_dict = {'created': ['created'], 'pendingL1': ['submitted_for_review(L1)'], 'pendingL2': ['submitted_for_review(L2)'], 'reviewedL1': ['reviewerL1_reviewed'], 'reviewedL2': ['reviewerL2_reviewed'], 'rejected': ['reviewerL2_rejected', 'reviewerL1_rejected']}
             self.query_set = self.query_set.filter(status__in=status_mapping_dict[self.reviewStatus])
         if self.fields is not None:
             operator, value = self.fields[:3], self.fields[3:]
@@ -184,6 +208,28 @@ class QueryCommonFiltering:
         if self.sorted_by is not None:
             query_args = "{0}{1}".format(self.ordering, self.sorted_by)
             self.query_set = self.query_set.order_by(query_args)
+
+        if self.accuracy is not None:
+            operator, value = self.accuracy[:3], self.accuracy[3:]
+            if operator == 'GTE':
+                self.query_set = self.query_set.filter(ocr_image__confidence__gte=float(value))
+            if operator == 'LTE':
+                self.query_set = self.query_set.filter(ocr_image__confidence__lte=float(value))
+            if operator == 'EQL':
+                self.query_set = self.query_set.filter(ocr_image__confidence=int(value))
+
+        if self.field_count is not None:
+            operator, value = self.field_count[:3], self.field_count[3:]
+            if operator == 'GTE':
+                self.query_set = self.query_set.filter(ocr_image__fields__gte=int(value))
+            if operator == 'LTE':
+                self.query_set = self.query_set.filter(ocr_image__fields__lte=int(value))
+            if operator == 'EQL':
+                self.query_set = self.query_set.filter(ocr_image__fields=int(value))
+
+        if self.project is not None:
+            self.query_set = self.query_set.filter(ocr_image__project__name__icontains=self.project)
+
         return self.query_set
 
 

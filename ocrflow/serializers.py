@@ -56,10 +56,11 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
     """
     """
     status_mapping = {"created": "Created",
-                      "submitted_for_review": "Review Pending",
-                      "reviewerL2_reviewed": "Review Completed",
+                      "submitted_for_review(L1)": "Review Pending(L1)",
+                      "submitted_for_review(L2)": "Review Pending(L2)",
+                      "reviewerL1_reviewed": "Review Completed(L1)",
                       "reviewerL2_rejected": "Rejected L2",
-                      "reviewerL1_reviewed": "Review Completed",
+                      "reviewerL2_reviewed": "Review Completed(L2)",
                       "reviewerL1_rejected": "Rejected L1"}
 
     tasks=ContentObjectRelatedField(many=True, queryset=Task.objects.all())
@@ -69,6 +70,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['ocrImageData'] = OCRImageReviewSerializer(Image_instance).data
         serialized_data['project'] = Image_instance.project.name
+        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
         return serialized_data
 
     class Meta:
@@ -76,7 +78,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         Meta class definition for ReviewRequestSerializer
         """
         model = ReviewRequest
-        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule', 'modified_by')
+        exclude = ('id', 'slug', 'ocr_image', 'created_by', 'rule')
 
 class OCRRulesSerializer(serializers.ModelSerializer):
     """

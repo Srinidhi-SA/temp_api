@@ -22919,3 +22919,10 @@ min-width: 102px; }
   padding-top: 8%;
   padding-bottom: 8%;
 }
+#ocrInstructions .carousel-control{
+  background: none;
+  color: #3a998c;
+}
+.firstRow .widget-pie{
+  height: 170px;
+}
