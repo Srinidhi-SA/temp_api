@@ -200,7 +200,7 @@ def get_reviewer_metrics():
         ).count()
         totalPendingDocs = ReviewRequest.objects.filter(
             ocr_image__in=totL1AssignedDocs,
-            status='submitted_for_review'
+            status='submitted_for_review(L1)'
         ).count()
         return {
             'totalReviewers': totalReviewers,

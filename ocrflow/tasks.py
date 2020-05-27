@@ -42,7 +42,7 @@ def start_auto_assignment_L1():
                     object = ReviewRequest.objects.get(ocr_image = image)
                     object.start_simpleflow()
 
-                if object.status =='submitted_for_review':
+                if object.status =='submitted_for_review(L1)':
                     task=Task.objects.get(object_id = object.id)
                     print("Task assigned:  {0}  -  User:  {1}".format(image.name, task.assigned_user))
                     continue
@@ -88,7 +88,7 @@ def start_auto_assignment_L2():
             for reviewObj in reviewRequestQueryset:
                 reviewObj.start_simpleflow(initial_state='RL2_approval')
 
-                if reviewObj.status =='submitted_for_review':
+                if reviewObj.status =='submitted_for_review(L2)':
                     task=Task.objects.get(object_id = reviewObj.id, is_closed=False)
                     print("Task assigned:  {0}  -  User:  {1}".format(reviewObj.ocr_image.name, task.assigned_user))
         else:
