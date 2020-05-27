@@ -32,6 +32,7 @@ export default function reducer(state = {
   selected_signal_type:"",
   toggleValues:{},
   fromVariableSelectionPage:false,
+  sigLoaderidxVal:0,
 }, action) {
 
   switch (action.type) {
@@ -112,7 +113,13 @@ export default function reducer(state = {
         }
       }
       break;
-
+    case "SIGNAL_LOADER_IDX_VAL": {
+        return {
+          ...state,
+          sigLoaderidxVal : action.idxVal
+        }
+      }
+      break;
     case "CREATE_SUCCESS":
       {
         return {

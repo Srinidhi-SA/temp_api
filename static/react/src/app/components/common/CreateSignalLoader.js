@@ -19,7 +19,8 @@ import {STATIC_URL} from "../../helpers/env";
     createSignalLoaderValue: store.signals.createSignalLoaderValue,
     loaderText: store.signals.loaderText,
     signalData: store.signals.signalData,
-	signalLoadedText: store.signals.signalLoadedText
+	signalLoadedText: store.signals.signalLoadedText,
+	sigLoaderidxVal: store.signals.sigLoaderidxVal,
   };
 })
 
@@ -28,22 +29,18 @@ export class CreateSignalLoader extends React.Component {
     super(props);
   }
 
-
-	componentWillUpdate(){
-            var getText = [];
-            if((this.props.createSignalLoaderValue < 0) && (Object.keys(this.props.signalLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.createSignalLoaderValue >= 0) && (Object.keys(this.props.signalLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.signalLoadedText)
-                this.makeULSig(getText);
-            }
-    }
-
-
-
-
+	loadSignalMsgs(){
+		var array = Object.values(this.props.signalLoadedText)
+		if(array.length>0 && $("#loadingMsgs")[0] != undefined){
+			for (var x = 0; x < this.props.sigLoaderidxVal; x++) {
+				setTimeout(function(i) {    
+					$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+					$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+					$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+				}, x * 1000, x);
+			}
+		}
+	}
 
   openModelPopup() {
     this.props.dispatch(openCsLoaderModal())
@@ -59,27 +56,8 @@ export class CreateSignalLoader extends React.Component {
     clearCreateSignalInterval();
     this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
-  makeULSig(array) {
-				var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-5; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-				for(var i=array.length-5;i<array.length;i++){
-					x.innerHTML = 'Please wait while analysing...';
-					x1.innerHTML ='';
-					x2.innerHTML ='';
-				}
-}
     render() {
+		this.loadSignalMsgs()
         var that = this;
         if(this.props.signalData != null){
             setTimeout(function() {
