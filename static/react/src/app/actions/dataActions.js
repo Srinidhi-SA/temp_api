@@ -249,6 +249,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
+            dispatch(updateMetaDataIndexValue(dataPreview.message.length));
         }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             var msgLength=dataPreview.message.length-1
@@ -270,6 +271,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         }
     }
 }
+function updateMetaDataIndexValue(idxVal) {
+    return {
+      type: "METADATA_LOADER_IDX_VAL",idxVal
+    }  
+  }
 function dispatchDataPreview(dataPreview,slug){
     return {
         type: "DATA_PREVIEW",

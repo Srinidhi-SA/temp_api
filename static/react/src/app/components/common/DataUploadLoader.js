@@ -21,7 +21,8 @@ import {handleJobProcessing} from "../../helpers/helper";
     dataLoaderText: store.datasets.dataLoaderText,
     showHideData: store.dataUpload.showHideData,
     selectedDataSet:store.datasets.selectedDataSet,
-    dataLoadedText:store.datasets.dataLoadedText
+    dataLoadedText:store.datasets.dataLoadedText,
+    metaDataLoaderidxVal:store.datasets.metaDataLoaderidxVal,
   };
 })
 
@@ -29,20 +30,19 @@ export class DataUploadLoader extends React.Component {
   constructor() {
     super();
   }
-componentDidMount() {
 
-}
-    componentWillUpdate(){
-            var getText = [];
-            if((this.props.dULoaderValue < 0) && (Object.keys(this.props.dataLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.dULoaderValue >= 0) && (Object.keys(this.props.dataLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.dataLoadedText)
-                this.makeULforData(getText);
-            }
-    }
+  loadDataMsgs(){
+		var array = Object.values(this.props.dataLoadedText)
+		if(array.length>0 && $("#loadingMsgs")[0] != undefined){
+			for (var x = 0; x < this.props.metaDataLoaderidxVal; x++) {
+				setTimeout(function(i) {    
+					$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+					$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+					$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+				}, x * 2000, x);
+			}
+		}
+	}
 
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
@@ -58,27 +58,9 @@ componentDidMount() {
       this.props.dispatch(hideDataPreview());
       clearDatasetPreview();
     }
-    makeULforData(array) {
-        var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-3; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-        for(var i=array.length-3;i<array.length;i++){
-          x.innerHTML ='Please wait while analysing...';
-          x1.innerHTML ='';
-          x2.innerHTML ='';
-        }
-    }
+
   render() {
+    this.props.metaDataLoaderidxVal>0?this.loadDataMsgs():""
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
     //let checked=!this.props.showHideData
 	$('#text-carousel').carousel();

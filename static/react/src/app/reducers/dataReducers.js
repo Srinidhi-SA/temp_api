@@ -89,7 +89,7 @@ export default function reducer(state = {
   tensorValidateFlag: false,
   pytorchValidateFlag: false,
   createSigLoaderFlag: false,
-  
+  metaDataLoaderidxVal:0,
 }, action) {
 
   switch (action.type) {
@@ -1017,6 +1017,13 @@ export default function reducer(state = {
       return {
         ...state,
         createSigLoaderFlag : action.flag
+      }
+    }
+    break;
+    case "METADATA_LOADER_IDX_VAL":{
+      return{
+        ...state,
+        metaDataLoaderidxVal : action.idxVal
       }
     }
     break;
