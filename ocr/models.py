@@ -250,6 +250,7 @@ class OCRImage(models.Model):
     Description :
     """
     STATUS_CHOICES = [
+        ("uploading", "Uploading"),
         ("ready_to_recognize", "Ready to recognize"),
         ("recognizing", "Recognizing"),
         ("ready_to_assign", "Ready to assign"),
@@ -269,7 +270,7 @@ class OCRImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='ready_to_recognize')
+    status = models.CharField(max_length=100, null=True, choices=STATUS_CHOICES, default='uploading')
     confidence = models.CharField(max_length=30, default="", null=True)
     comment = models.CharField(max_length=300, default="", null=True)
     generated_image = models.FileField(null=True, upload_to=upload_dir)

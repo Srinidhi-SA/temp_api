@@ -284,6 +284,15 @@ export default function reducer(state = {
           is_closed: action.data.is_closed,
           }
         }
+        break;
+        case "SELECTED_TEMPLATE":
+          {
+            return{
+              ...state,
+              classification: action.template,
+            }
+          }
+          break;
       case "CLEAR_IMAGE_DETAILS":
         {
           return {
