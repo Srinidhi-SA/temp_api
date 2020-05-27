@@ -154,7 +154,7 @@ class ui_corrections:
         final_json["paragraphs"] = paradata
         return final_json
 
-    def default_all_words_flag_to_false(self, final_json):
+    """def default_all_words_flag_to_false(self, final_json):
         for k in final_json["paragraphs"]:
             for l in final_json["paragraphs"][k]:
                 for m in l['words']:
@@ -163,9 +163,21 @@ class ui_corrections:
             for l in final_json["tables"][k]:
                 for m in final_json["tables"][k][l]["words"]:
                     m.update({"flag": "False"})
+        return final_json"""
+
+    def default_all_words_flag_to_false(self,final_json):
+        for para in final_json["paragraphs"]:
+            for line in final_json["paragraphs"][para]:
+                for word in line:
+                    word.update({"flag":False,"color":None})
+        #            print(word)
+        for table in final_json["tables"]:
+            for cell in final_json["tables"][table]:
+                for word in final_json["tables"][table][cell]["words"]:
+                   word.update({"flag":False,"color":None})
         return final_json
 
-    def flag_words_to_plot(self, final_json, needed_words, mode):
+    """def flag_words_to_plot(self, final_json, needed_words, mode):
         u1 = []
         for k in final_json["paragraphs"]:
             for l in final_json["paragraphs"][k]:
@@ -229,7 +241,7 @@ class ui_corrections:
 
         upd = {'U1': u1}
         # update_u1(upd, image_name)
-        return upd, final_json
+        return upd, final_json"""
 
     """def highlight_word(self, img, text, cord):
 
@@ -250,6 +262,72 @@ class ui_corrections:
                                   thickness=1)
 
         return image_final"""
+
+    def flag_words_to_plot(self, final_json, needed_words, mode):
+        u1 = []
+        for k in final_json["paragraphs"]:
+            for l in final_json["paragraphs"][k]:
+                for m in l:
+                    p1 = m['boundingBox']["p1"]
+                    p3 = m['boundingBox']["p3"]
+
+                    #            print(p1,p3)
+                    for i in needed_words:
+                        x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
+                        if mode:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    m['text'] == list(i.keys())[0])):
+                                m['flag'] = True
+                                break
+                            elif (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    m['text'] != list(i.keys())[0])):
+                                m['flag'] = True
+                                temp_dict = {m['text']: [p1, p3]}
+                                if temp_dict not in u1: u1.append(temp_dict)
+                            else:
+                                m['flag'] = False
+                        #                                temp_dict = {list(m.keys())[0]: [p1,p3]}
+                        #                                if temp_dict not in u1: u1.append(temp_dict)
+
+                        else:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1,
+                                                                       p3)):  # and (list(m.keys())[0]==list(i.keys())[0])):
+                                m['flag'] = True
+                                break
+                            else:
+                                m['flag'] = False
+        for k in final_json["tables"]:
+            for l in final_json["tables"][k]:
+                for m in final_json["tables"][k][l]["words"]:
+                    p1 = m["boundingBox"]["p1"]
+                    p3 = m["boundingBox"]["p3"]
+                    for i in needed_words:
+                        x, y = self.calculate_centroid(list(i.values())[0][0], list(i.values())[0][1])
+                        if mode:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    m["text"] == list(i.keys())[0])):
+                                m.update({"flag": True})
+                                break
+                            elif (self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3) and (
+                                    m["text"] != list(i.keys())[0])):
+                                m.update({"flag": True})
+                                temp_dict = {m["text"]: [p1, p3]}
+                                if temp_dict not in u1: u1.append(temp_dict)
+                            else:
+                                m.update({"flag": False})
+                        #                                    temp_dict = {m["text"]: [p1,p3]}
+                        #                                    if temp_dict not in u1: u1.append(temp_dict)
+                        else:
+                            if (self.check_if_centroid_inbetween_p1_p3([x, y], p1,
+                                                                       p3)):  # and (m["text"]==list(i.keys())[0])):
+                                m.update({"flag": True})
+                                break
+                            else:
+                                m.update({"flag": False})
+
+        upd = {'U1': u1}
+        # update_u1(upd, image_name)
+        return upd, final_json
 
     def highlight_word(self, img, text, cord, fontScale):  # text = "Some text in a box!"  img = np.zeros((500, 500))
 
@@ -396,7 +474,7 @@ class ui_corrections:
         #        plt.savefig('gen_image_with_matplotlib.png', bbox_inches='tight',pad_inches=0)
         return texted_image"""
 
-    def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
+    """def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
 
         hieght_org, width_org, _ = texted_image.shape
 
@@ -455,7 +533,7 @@ class ui_corrections:
                         plt.text(vertices[3][0], vertices[3][1], text, fontsize=8, va="bottom", color='black')
 
         plt.savefig(gen_image, bbox_inches='tight', pad_inches=0)
-        return
+        return"""
 
     """def document_confidence(self, final_json, google_response, mode="default"):
         needed_words = self.confidence_filter(google_response, (100 / 100))
@@ -519,6 +597,57 @@ class ui_corrections:
         doc_accuracy = (cooorect_words / tooooootal_words)
         return doc_accuracy, tooooootal_words"""
 
+    def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
+
+        #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+        hieght, width, _ = texted_image.shape
+        fontScale = 0.6
+        print(fontScale)
+
+        if 'paragraphs' in final_json_to_flag:
+            for k in final_json_to_flag["paragraphs"]:
+                for l in final_json_to_flag["paragraphs"][k]:
+                    for m in l:
+                        p1 = m['boundingBox']["p1"]
+                        p3 = m['boundingBox']["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m['text']
+
+                        if m['flag'] == True:
+                            texted_image = self.highlight_word(texted_image, text,
+                                                               (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale)
+                        else:
+                            cv2.putText(texted_image, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)),
+                                        cv2.FONT_HERSHEY_SIMPLEX, fontScale, (0, 0, 0), 1, cv2.LINE_AA)
+        else:
+            pass
+
+        if 'tables' in final_json_to_flag:
+            for k in final_json_to_flag["tables"]:
+                for l in final_json_to_flag["tables"][k]:
+                    for m in final_json_to_flag["tables"][k][l]["words"]:
+                        p1 = m["boundingBox"]["p1"]
+                        p3 = m["boundingBox"]["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m["text"]
+                        vertices = [p1, p2, p3, p4]
+
+                        if m['flag'] == True:
+                            texted_image = self.highlight_word(texted_image, text,
+                                                               (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale)
+                        else:
+                            cv2.putText(texted_image, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)),
+                                        cv2.FONT_HERSHEY_SIMPLEX, fontScale, (0, 0, 0), 1, cv2.LINE_AA)
+        else:
+            pass
+
+        #        int((p4[1]+p1[1])*0.5)
+        texted_image = self.adjust_gamma(texted_image, gamma=0.1)
+        cv2.imwrite(gen_image, texted_image)
+        return
+
     def document_confidence(self, analysis):
         word_count, error = 0, 0
         for line in analysis['lines']:
@@ -539,23 +668,23 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, a
     mask = mask
     final_json = final_json
 
-    adsfff = ui_corrections(mask, final_json, google_response, google_response2)
-    try:
-        final_json = adsfff.final_json_para_corrections(final_json)
+    uc_obj = ui_corrections(mask, final_json, google_response, google_response2)
+    """try:
+        final_json = uc_obj.final_json_para_corrections(final_json)
     except:
-        pass
-    final_json = adsfff.default_all_words_flag_to_false(final_json)
-    doc_accuracy, total_words = adsfff.document_confidence(analysis)
+        pass"""
+    final_json = uc_obj.default_all_words_flag_to_false(final_json)
+    doc_accuracy, total_words = uc_obj.document_confidence(analysis)
 
     if percent == 1:
         mode = "default"
-        needed_words = adsfff.all_words(analysis)
+        needed_words = uc_obj.all_words(analysis)
     else:
         mode = None
-        needed_words = adsfff.confidence_filter(adsfff.google_response, percent)
-    upd, tempasdfds = adsfff.flag_words_to_plot(final_json, needed_words, mode)
+        needed_words = uc_obj.confidence_filter(uc_obj.google_response, percent)
+    upd, fj = uc_obj.flag_words_to_plot(final_json, needed_words, mode)
 
-    adsfff.render_flagged_image(tempasdfds, adsfff.mask, gen_image)
+    uc_obj.render_flagged_image(fj, uc_obj.mask, gen_image)
     # cv2.imwrite(gen_image, texted_image)
     with open(gen_image, mode='rb') as file:
         img = file.read()
@@ -570,10 +699,7 @@ def check_if_centroid_inbetween_p1_p3(centroid, p1, p3):
         return False
 
 
-def fetch_click_word_from_final_json(final_json, click_coordinate):
-    """
-
-        """
+"""def fetch_click_word_from_final_json(final_json, click_coordinate):
     for k in final_json["paragraphs"]:
         for l in final_json["paragraphs"][k]:
             for m in l['words']:
@@ -594,6 +720,33 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
                 p3 = m["boundingBox"]["p3"]
                 if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
                     return True, m['text']
+
+    return False, """""
+
+
+def fetch_click_word_from_final_json(final_json, click_coordinate):
+    if "paragraphs" in final_json.keys():
+        for para in final_json["paragraphs"]:
+            for line in final_json["paragraphs"][para]:
+                for word in line:
+
+                    p1 = word['boundingBox']['p1']
+                    p3 = word['boundingBox']['p3']
+                    print(p1, p3)
+                    '''for val in list(m.values()):
+                        if isinstance(val, list):
+                            p1 = val[0:2]
+                            p3 = val[4:6]'''
+                    if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
+                        return True, word['text']
+    if "tables" in final_json.keys():
+        for k in final_json["tables"]:
+            for l in final_json["tables"][k]:
+                for m in final_json["tables"][k][l]["words"]:
+                    p1 = m["boundingBox"]["p1"]
+                    p3 = m["boundingBox"]["p3"]
+                    if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
+                        return True, m['text']
 
     return False, ""
 
@@ -640,7 +793,7 @@ def cleaned_final_json(final_json):
 
             lines = {}
             for j, line in enumerate(final_json['paragraphs']['p_' + str(i + 1)]):
-                lines['line_' + str(j + 1)] = clean_final_json['paragraphs']['p_' + str(i + 1)][j]['text']
+                lines['line_' + str(j + 1)] = ' '.join([word['text'] for word in line])
 
             clean_final_json['paragraphs']['p_' + str(i + 1)] = lines
     else:
