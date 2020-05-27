@@ -937,35 +937,34 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = []
-        """try:"""
-        template = json.loads(Template.objects.first().template_classification)
-        if 'slug' in data:
-            for slug in ast.literal_eval(str(data['slug'])):
-                image_queryset = OCRImage.objects.get(slug=slug)
-                image_queryset.status = 'recognizing'
-                image_queryset.save()
-                response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
-                result = response.task_id
-                res = AsyncResult(result)
-                res = res.get()
-                for response in res.values():
-                    slug = response['image_slug']
-                    serializer = self.process_image(data, response, slug, image_queryset)
-                    if serializer.is_valid():
-                        serializer.save()
-                        results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
-                        temp_obj = Template.objects.first()
-                        temp_obj.template_classification = json.dumps(response['template'])
-                        temp_obj.save()
-                        if image_queryset.imagefile.path[-4:] == '.pdf':
-                            image_queryset.status = 'ready_to_assign'
-                            image_queryset.save()
-                    else:
-                        results.append(serializer.errors)
-            return Response(results)
-        """except Exception as e:
+        try:
+            template = json.loads(Template.objects.first().template_classification)
+            if 'slug' in data:
+                for slug in ast.literal_eval(str(data['slug'])):
+                    image_queryset = OCRImage.objects.get(slug=slug)
+                    image_queryset.status = 'recognizing'
+                    image_queryset.save()
+                    response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
+                    result = response.task_id
+                    res = AsyncResult(result)
+                    res = res.get()
+                    for response in res.values():
+                        slug = response['image_slug']
+                        serializer = self.process_image(data, response, slug, image_queryset)
+                        if serializer.is_valid():
+                            serializer.save()
+                            results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                            temp_obj = Template.objects.first()
+                            temp_obj.template_classification = json.dumps(response['template'])
+                            temp_obj.save()
+                            if image_queryset.imagefile.path[-4:] == '.pdf':
+                                image_queryset.status = 'ready_to_assign'
+                                image_queryset.save()
+                        else:
+                            results.append(serializer.errors)
+                return Response(results)
+        except Exception as e:
             return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
-"""
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
