@@ -200,7 +200,7 @@ def get_reviewer_metrics():
         ).count()
         totalPendingDocs = ReviewRequest.objects.filter(
             ocr_image__in=totL1AssignedDocs,
-            status='submitted_for_review'
+            status='submitted_for_review(L1)'
         ).count()
         return {
             'totalReviewers': totalReviewers,
@@ -851,6 +851,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             projectslug=projectslug
         )
         project_id = Project.objects.get(slug=projectslug).id
+        temp_obj = Template.objects.first()
+        values = list(json.loads(temp_obj.template_classification).keys())
+        value = [i.upper() for i in values]
+        response.data['values'] = value
         response.data['total_data_count_wf'] = len(
             OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
         return response
