@@ -189,7 +189,7 @@ export class RevDocTable extends React.Component {
           </div>
         </div>
       </div>
-            <div className="table-responsive noSwipe xs-pb-10">
+            <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:250,background:'#fff',overflow:'inherit'}}>
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
             {this.props.OcrRevwrDocsList != '' ? 
             // this.props.OcrRevwrDocsList.total_data_count>= 1 ?
@@ -205,8 +205,10 @@ export class RevDocTable extends React.Component {
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,'', 'status')} name='all'>All</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'pending', 'status')} name="pending">Review Pending</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewed', 'status')} name="reviewed">Review Completed</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'pendingL1', 'status')} name="pending">Review Pending(L1)</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'pendingL2', 'status')} name="reviewed">Review Pending(L2)</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL1', 'status')} name="pending">Review Completed(L1)</a></li>
+                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
                   </ul>
                 </th>
                 <th class="dropdown" >
