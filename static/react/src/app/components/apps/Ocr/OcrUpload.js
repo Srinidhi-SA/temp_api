@@ -57,10 +57,18 @@ export class OcrUpload extends React.Component {
     let activeId = $(".ocrFileTab").find(".active")[0].innerText;
     if(activeId === "UPLOAD LOCAL FILE" && this.state.uploaded){
       document.getElementById("loadDataBtn").disabled = false
+      $("#hideUploadBtn").hide();
+    }else if(activeId === "UPLOAD LOCAL FILE" && this.state.loader && !this.state.uploaded){
+      $("#hideUploadBtn").show();
     }else if(activeId === "AMAZON S3 BUCKET" && this.props.s3Uploaded){
+      $("#dataCloseBtn").hide();
       document.getElementById("loadDataBtn").disabled = false
+      $("#hideUploadBtn").hide();
+    }else if(activeId === "AMAZON S3 BUCKET" && this.props.s3Loader && !this.props.s3Uploaded && !(this.props.s3FileList === "")){
+      $("#hideUploadBtn").show();
     }else{
       document.getElementById("loadDataBtn").disabled = true
+      $("#hideUploadBtn").hide();
     }
   }
   openPopup() {
@@ -137,6 +145,7 @@ export class OcrUpload extends React.Component {
       }
       $("#dataCloseBtn").hide()
       this.setState({ loader: true })
+      $("#hideUploadBtn").show();
       var data = new FormData();
     for (var x = 0; x < acceptedFiles.length; x++) {
       data.append("imagefile", acceptedFiles[x]);
@@ -159,6 +168,7 @@ export class OcrUpload extends React.Component {
       }
       document.getElementById("resetMsg").innerText = "";
       $("#dataCloseBtn").hide()
+      $("#hideUploadBtn").show();
       this.props.dispatch(setS3Loader(true));
       this.props.dispatch(uploadS3Files(this.props.s3SelFileList,projectSlug));
     }
@@ -172,6 +182,8 @@ export class OcrUpload extends React.Component {
   getTabContent(e){
     document.getElementById("resetMsg").innerText = "";
     if(e.target.id === "ocrImageTab"){
+      $("#dataCloseBtn").show();
+      document.getElementById("loadDataBtn").disabled = true;
       document.getElementById("dataCloseBtn").disabled = false;
       if(!this.state.loader && this.state.uploaded){
         this.setState({uploaded:false,loader:false,selectedFiles:""})
@@ -326,7 +338,7 @@ export class OcrUpload extends React.Component {
               <div id="resetMsg">
               {this.props.s3FileFetchErrorFlag ?this.props.s3FileFetchErrorMsg:""}
               </div>
-              <Button bsStyle="primary">Hide</Button>
+              <Button id="hideUploadBtn" bsStyle="primary">Hide</Button>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
               <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} >Proceed</Button>
             </Modal.Footer>
