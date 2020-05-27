@@ -169,7 +169,13 @@ export class OcrInitialReview extends React.Component {
             <div className="row alert alert-gray">
                 <div className="col-md-12">
                     <h4>Reviewers 
-                        <span id="countVal">{this.props.selectedIRList !=undefined?" ("+this.props.selectedIRList.length+")":"(0)"}</span>
+                        { this.props.activeiR === "all" &&
+                            <span id="countVal">
+                                {this.props.iRList !=0?" ("+Object.keys(this.props.iRList).length+")":"(0)"}</span>
+                        }
+                        { this.props.activeiR != "all" &&
+                            <span id="countVal">{this.props.selectedIRList !=undefined?" ("+this.props.selectedIRList.length+")":"(0)"}</span>
+                        }
                     </h4>
                     <div className="pull-right xs-mb-10">
                         <input type="text" id="searchIR" className="form-control" title="Search Name..." style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchIRElement.bind(this)} />

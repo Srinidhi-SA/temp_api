@@ -162,9 +162,12 @@ export class OcrSecondaryReview extends React.Component{
                 <div className="row alert alert-gray">
                     <div className="col-md-12">
                         <h4>Reviewers 
-                            <span id="sRCountVal">
-                                {this.props.selectedSRList !=undefined?" ("+this.props.selectedSRList.length+")":"(0)"}
-                            </span>
+                            { this.props.active === "all" &&
+                                <span id="sRCountVal">{this.props.sRList !=0?" ("+Object.keys(this.props.sRList).length+")":"(0)"}</span>
+                            }
+                            { this.props.active != "all" &&
+                                <span id="sRCountVal">{this.props.selectedSRList !=undefined?" ("+this.props.selectedSRList.length+")":"(0)"}</span>
+                            }
                         </h4>
                         <div className="pull-right xs-mb-10">
                             <input type="text" id="searchSR" className="form-control" title="Search Name..." style={{marginTop:"-30px"}} placeholder="Search Name..." onKeyUp={this.searchSRElement.bind(this)}/>
