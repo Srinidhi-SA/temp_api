@@ -670,7 +670,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def process_image(self, data, response, slug, image_queryset):
-
         data['final_result'] = json.dumps(response['final_json'])
         data['analysis'] = json.dumps(response['analysis'])
         image = base64.decodebytes(response['mask'].encode('utf-8'))
@@ -950,6 +949,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     res = res.get()
                     for response in res.values():
                         slug = response['image_slug']
+                        data = {}
                         serializer = self.process_image(data, response, slug, image_queryset)
                         if serializer.is_valid():
                             serializer.save()
