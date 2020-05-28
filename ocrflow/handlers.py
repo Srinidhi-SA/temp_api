@@ -12,6 +12,7 @@ def update_reviewrequest_after_RL1_approval(form, reviewrequest, user):
     ocrImageObj= OCRImage.objects.get(id=reviewrequest.ocr_image.id)
     ocrImageStatus = 'ready_to_export'
     ocrImageObj.modified_at = datetime.datetime.now()
+    ocrImageObj.modified_by = user
     ocrImageObj.update_status(status=ocrImageStatus)
     reviewrequest.save()
 
@@ -27,5 +28,6 @@ def update_reviewrequest_after_RL2_approval(form, reviewrequest, user):
     ocrImageObj= OCRImage.objects.get(id=reviewrequest.ocr_image.id)
     ocrImageStatus = 'ready_to_export'
     ocrImageObj.modified_at = datetime.datetime.now()
+    ocrImageObj.modified_by = user
     ocrImageObj.update_status(status=ocrImageStatus)
     reviewrequest.save()

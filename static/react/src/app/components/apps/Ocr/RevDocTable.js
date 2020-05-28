@@ -157,12 +157,13 @@ export class RevDocTable extends React.Component {
           <tr id={index}>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
             <td>{item.project}</td>
-             <td>{item.status}</td>
+            <td>{item.status}</td>
+            <td>{item.ocrImageData.classification}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>
-            <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
-            <td>{new Date(item.modified_at).toLocaleString()}</td>
-            <td>{item.ocrImageData.modified_by}</td>
+            <td>{new Date(item.created_on).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td>{item.modified_by}</td>
           </tr>
         )
       }
@@ -211,6 +212,7 @@ export class RevDocTable extends React.Component {
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
                   </ul>
                 </th>
+                <th>TEMPLATE</th>
                 <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>Fields</span> <b class="caret"></b>

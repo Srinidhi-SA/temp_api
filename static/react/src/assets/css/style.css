@@ -9177,6 +9177,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', end
   margin-bottom: 15px;
   padding: 20px;
   text-align: center;
+  cursor: pointer;
 }
 .icon-container .icon span {
   font-size: 55px;
@@ -20750,7 +20751,7 @@ img.img-responsive.pull-left.xs-pl-5.xs-pr-10 {
 .ocr_section .cst_table tr { border-bottom: 1px solid #efefef; }
 .ocr_section .cst_table thead th a span { width: inherit; }
 .ocr_section .cst_table thead th { text-transform: uppercase; font-weight: 500; }
-.cst_table td .label-success, .cst_table td .label-danger, .cst_table td .label-warning { padding: 1px 8px; color: #FFFFFF; border-radius: 10px; min-width: 70px; text-align: center;  }
+.cst_table td .label-success, .cst_table td .label-danger, .cst_table td .label-warning { padding: 1px 8px; color: #FFFFFF; border-radius: 10px; min-width: 70px; text-align: center; margin-top: 4px;margin-bottom: 4px;  }
 .cst_table td .label-warning { background:#FF9800 }
 /*.cst_table a { color:#232e42 }
 .cst_table a i { color:#1cb4e8 }
@@ -22577,6 +22578,8 @@ ul.ocrUploadTabs{
   border-radius: 10px;
   min-width: 70px;
   text-align: center;
+  margin-bottom: 4px;
+  margin-top: 4px;
 }
 #popoverOcr .popover-content{
   padding: 9px 14px;
@@ -22928,4 +22931,11 @@ min-width: 102px; }
 }
 .templateScroll div:nth-child(2) {
   height: 0px !important;
+}
+.cst_table td{
+  vertical-align: middle !important;
+}
+.manageUserTable td{
+  vertical-align: middle !important;
+  padding: 7px !important;
 }

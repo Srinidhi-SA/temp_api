@@ -154,8 +154,8 @@ export class OcrUserTable extends React.Component{
                                         <td>{item.last_name}</td>
                                         <td>{item.email}</td>
                                         <td>{item.ocr_profile.role[0]}</td>
-                                        <td>{new Date(item.date_joined).toLocaleDateString()}</td>
-                                        <td>{item.last_login != null? new Date(item.last_login).toLocaleString():""}</td>
+                                        <td>{new Date(item.date_joined).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+                                        <td>{item.last_login != null? new Date(item.last_login).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3"):""}</td>
                                         <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
                                     </tr>
                                 )}
