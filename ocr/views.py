@@ -71,7 +71,7 @@ from .serializers import OCRImageSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
     GroupSerializer, \
-    OCRReviewerSerializer
+    OCRReviewerSerializer, OCRImageNameListSerializer
 
 # ------------------------------------------------------------
 # ---------------------PAGINATION----------------------------
@@ -1190,6 +1190,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         except Exception as e:
             return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})
 
+    @detail_route(methods=['get'])
+    def all(self, request, *args, **kwargs):
+        project = OCRImage.objects.get(slug=self.kwargs['slug']).project
+        queryset = OCRImage.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            project=project
+        )
+        serializer = OCRImageNameListSerializer(queryset, many=True, context={"request": self.request})
+        return Response({
+            "data": set(item['name'] for item in serializer.data)
+        })
+
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
@@ -1332,7 +1345,9 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         for i in project_query:
             projectname_list.append(i.name)
         if data['name'] in projectname_list:
-            response['project_serializer_error'] = creation_failed_exception("project name already exists!.")
+            response['project_serializer_error'] = creation_failed_exception("project name already exists!.").data['exception']
+            response['project_serializer_message'] = 'FAILED'
+            return JsonResponse(response)
 
         data['created_by'] = request.user.id
 
@@ -1346,7 +1361,6 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response['project_serializer_error'] = serializer.errors
             response['project_serializer_message'] = 'FAILED'
-        print(response)
         return JsonResponse(response)
 
     @detail_route(methods=['get'])
