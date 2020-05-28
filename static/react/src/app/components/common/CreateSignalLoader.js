@@ -9,7 +9,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {isEmpty, DYNAMICLOADERINTERVAL, getUserDetailsOrRestart, handleJobProcessing} from "../../helpers/helper";
-import {clearCreateSignalInterval} from "../../actions/signalActions";
+import {clearCreateSignalInterval, clearSignalLoaderValues} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 
 @connect((store) => {
@@ -21,6 +21,7 @@ import {STATIC_URL} from "../../helpers/env";
     signalData: store.signals.signalData,
 	signalLoadedText: store.signals.signalLoadedText,
 	sigLoaderidxVal: store.signals.sigLoaderidxVal,
+	sigLoaderidx:store.signals.sigLoaderidx,
   };
 })
 
@@ -32,12 +33,14 @@ export class CreateSignalLoader extends React.Component {
 	loadSignalMsgs(){
 		var array = Object.values(this.props.signalLoadedText)
 		if(array.length>0 && $("#loadingMsgs")[0] != undefined){
-			for (var x = 0; x < this.props.sigLoaderidxVal; x++) {
-				setTimeout(function(i) {    
-					$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-					$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-					$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
-				}, x * 1000, x);
+			for (var x = this.props.sigLoaderidx; x < this.props.sigLoaderidxVal; x++) {
+				setTimeout(function(i) {
+					if(store.getState().signals.createSignalLoaderModal){
+						$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+						$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+						$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+					}
+				}, x * 2000, x);
 			}
 		}
 	}
@@ -46,6 +49,7 @@ export class CreateSignalLoader extends React.Component {
     this.props.dispatch(openCsLoaderModal())
   }
   closeModelPopup() {
+	this.props.dispatch(clearSignalLoaderValues());
     this.props.dispatch(closeCsLoaderModal());
     this.props.dispatch(hideDataPreview());
     clearCreateSignalInterval();

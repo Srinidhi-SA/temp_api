@@ -125,10 +125,14 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
           loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
           //alert(msg + "  " + loaderVal)
         }
+        if(loaderVal!=-1 && store.getState().signals.sigLoaderidxVal!=0){
+          dispatch(updateSignalIndex(store.getState().signals.sigLoaderidxVal))
+        }
         dispatch(updateSignalIndexValue(loading_message.length));
         dispatch(updateCsLoaderValue(loaderVal));
         dispatch(updateCsLoaderMsg(msg));
       } else {
+        dispatch(clearSignalLoaderValues())
         dispatch(clearLoadingMsg())
       }
 
@@ -142,6 +146,16 @@ function updateSignalIndexValue(idxVal) {
   return {
     type: "SIGNAL_LOADER_IDX_VAL",idxVal
   }  
+}
+function updateSignalIndex(idx) {
+  return {
+    type: "SIGNAL_LOADER_IDX",idx
+  }  
+}
+export function clearSignalLoaderValues() {
+  return {
+    type: "CLEAR_SIGNAL_LOADER_VALUES"
+  }
 }
 export function clearCreateSignalInterval() {
   clearInterval(createSignalInterval);
