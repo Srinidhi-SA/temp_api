@@ -385,7 +385,7 @@ export class OcrTable extends React.Component {
             {store.getState().ocr.tabActive=='active'?<td>{item.assignee}</td>:''}
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
-            <td>{new Date(item.modified_at).toLocaleString()}</td>
+            <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
           </tr>
         )
       }

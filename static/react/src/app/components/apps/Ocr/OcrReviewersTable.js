@@ -115,8 +115,8 @@ filterRevList(filtertBy, filterOn,reset) {
             <td>{item.ocr_data.completionPercentage}%</td>
             {/* <td>{item.ocr_data.avgTimeperWord}</td> */}
             <td>{item.ocr_data.accuracyModel}</td>
-            <td>{new Date(item.last_login).toLocaleString()}</td>
-            <td>{(item.ocr_profile.active === true) ? "Active" : "Inactive"}</td>
+            <td>{new Date(item.last_login).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
           </tr>
         )
       }
