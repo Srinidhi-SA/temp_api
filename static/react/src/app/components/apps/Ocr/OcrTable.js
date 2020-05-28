@@ -12,7 +12,7 @@ import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
 import { API } from "../../../helpers/env";
 import ReactTooltip from 'react-tooltip';
-
+import { Scrollbars } from 'react-custom-scrollbars';
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -375,8 +375,8 @@ export class OcrTable extends React.Component {
             <td>
             <i style={{color:'#414f50',fontSize:14}} className={item.type==".pdf"? "fa fa-file-pdf-o":"fa fa-file-image-o"}></i>
             </td>
-            <td style={item.status == "Ready to Recognize" || item.status == "Recognizing" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "Ready to Recognize" || item.status == "Recognizing" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+            <td style={item.status == "Ready to Recognize" || item.status == "Recognizing" || item.status == "Uploading" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
+              <Link style={item.status == "Ready to Recognize" || item.status == "Recognizing" || item.status == "Uploading" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.classification}</td>
@@ -497,8 +497,10 @@ export class OcrTable extends React.Component {
                             <span>TEMPLATE</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{minWidth:'130px'}}>
+                          <Scrollbars className="templateScroll" style={{ height: 160,overflowX:'hidden' }} >
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'template')} name='all'>All</a></li>
                             {getTemplateOptions}
+                            </Scrollbars>
                           </ul>
                         </th>
                         <th class="dropdown" >

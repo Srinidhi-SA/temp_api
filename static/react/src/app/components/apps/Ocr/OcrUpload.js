@@ -173,7 +173,19 @@ export class OcrUpload extends React.Component {
       this.props.dispatch(uploadS3Files(this.props.s3SelFileList,projectSlug));
     }
   }
-
+ hideModel=()=>{
+  this.closePopup();
+  var refreshList=setInterval(() =>{
+  this.props.dispatch(getOcrUploadedFiles());
+  if(store.getState().ocr.tabActive=='active'){
+  clearInterval( refreshList )
+  return false
+  }
+  }, 3000);
+  refreshList;
+  setTimeout(function( ) { clearInterval( refreshList );}, 180000);
+  this.props.dispatch(getOcrUploadedFiles());
+}
   proceedClick() {
     this.closePopup()
     this.props.dispatch(getOcrUploadedFiles())
@@ -338,7 +350,7 @@ export class OcrUpload extends React.Component {
               <div id="resetMsg">
               {this.props.s3FileFetchErrorFlag ?this.props.s3FileFetchErrorMsg:""}
               </div>
-              <Button id="hideUploadBtn" bsStyle="primary">Hide</Button>
+              <Button id="hideUploadBtn" bsStyle="primary" onClick={this.hideModel}>Hide</Button>
               <Button id="dataCloseBtn" bsStyle="primary" onClick={this.handleSubmit.bind(this, this.state.selectedFiles)}>Upload Data</Button>
               <Button id="loadDataBtn" bsStyle="primary" onClick={this.proceedClick.bind(this)} >Proceed</Button>
             </Modal.Footer>
