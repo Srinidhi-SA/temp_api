@@ -792,7 +792,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = file[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
-                img_data['modified_by'] = request.user.id
+                #img_data['modified_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
@@ -809,7 +809,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = file.name[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
-                img_data['modified_by'] = request.user.id
+                #img_data['modified_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
@@ -836,7 +836,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if serializer.is_valid():
                 serializer.save()
                 serializer_data.append(serializer.data)
-                """            
+                """
                 if serializer.is_valid():
                 image_object = serializer.save()
                 image_object.create()
