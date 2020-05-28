@@ -1345,7 +1345,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         for i in project_query:
             projectname_list.append(i.name)
         if data['name'] in projectname_list:
-            response['project_serializer_error'] = str(creation_failed_exception("project name already exists!."))
+            response['project_serializer_error'] = creation_failed_exception("project name already exists!.").data['exception']
             response['project_serializer_message'] = 'FAILED'
             return JsonResponse(response)
 
