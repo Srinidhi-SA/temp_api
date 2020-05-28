@@ -127,6 +127,28 @@ class OCRImageExtractListSerializer(serializers.ModelSerializer):
         fields = ['imagefile', 'generated_image', 'slug']
 
 
+class OCRImageNameListSerializer(serializers.ModelSerializer):
+    """
+        List Serializer definition for OCRImage
+    -------------------------------------------------
+    Model : OCRImage
+    List Serializer : OCRImageExtractListSerializer
+    -------------------------------------------------
+    """
+
+    def to_representation(self, instance):
+        serialized_data = super(OCRImageNameListSerializer, self).to_representation(instance)
+
+        return serialized_data
+
+    class Meta(object):
+        """
+        Meta class definition for OCRImageExtractListSerializer
+        """
+        model = OCRImage
+        fields = ['name']
+
+
 class OCRImageSetSerializer(serializers.ModelSerializer):
     """
         *Serializers*
