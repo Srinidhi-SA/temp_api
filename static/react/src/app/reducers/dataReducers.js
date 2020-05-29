@@ -90,6 +90,7 @@ export default function reducer(state = {
   pytorchValidateFlag: false,
   createSigLoaderFlag: false,
   metaDataLoaderidxVal:0,
+  metaDataLoaderidx:0,
 }, action) {
 
   switch (action.type) {
@@ -1024,6 +1025,21 @@ export default function reducer(state = {
       return{
         ...state,
         metaDataLoaderidxVal : action.idxVal
+      }
+    }
+    break;
+    case "METADATA_LOADER_IDX":{
+      return{
+        ...state,
+        metaDataLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_METADATA_LOADER_VALUES":{
+      return {
+        ...state,
+        metaDataLoaderidxVal:0,
+        metaDataLoaderidx:0,
       }
     }
     break;

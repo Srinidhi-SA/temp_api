@@ -222,6 +222,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
         dispatch(clearLoadingMsg())
+        dispatch(setDataLoadedText(''));
+        dispatch(clearMetaDataLoaderValues())
         setTimeout(() => {
             return {
                 type: "DATA_PREVIEW",
@@ -249,6 +251,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
+            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+                dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
+            }
             dispatch(updateMetaDataIndexValue(dataPreview.message.length));
         }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
@@ -276,6 +281,16 @@ function updateMetaDataIndexValue(idxVal) {
       type: "METADATA_LOADER_IDX_VAL",idxVal
     }  
   }
+function updateMetaDataIndex(idx) {
+    return {
+        type: "METADATA_LOADER_IDX",idx
+    }  
+}
+export function clearMetaDataLoaderValues() {
+    return {
+        type: "CLEAR_METADATA_LOADER_VALUES"
+    }
+}
 function dispatchDataPreview(dataPreview,slug){
     return {
         type: "DATA_PREVIEW",

@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
-import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview} from "../../actions/dataActions";
+import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview, clearMetaDataLoaderValues} from "../../actions/dataActions";
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -23,6 +23,7 @@ import {handleJobProcessing} from "../../helpers/helper";
     selectedDataSet:store.datasets.selectedDataSet,
     dataLoadedText:store.datasets.dataLoadedText,
     metaDataLoaderidxVal:store.datasets.metaDataLoaderidxVal,
+    metaDataLoaderidx:store.datasets.metaDataLoaderidx
   };
 })
 
@@ -33,12 +34,16 @@ export class DataUploadLoader extends React.Component {
 
   loadDataMsgs(){
 		var array = Object.values(this.props.dataLoadedText)
-		if(array.length>0 && $("#loadingMsgs")[0] != undefined){
-			for (var x = 0; x < this.props.metaDataLoaderidxVal; x++) {
-				setTimeout(function(i) {    
-					$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-					$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-					$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+		if(array.length>0 && $("#loadingMsgs")[0] != undefined && this.props.metaDataLoaderidxVal!=0){
+      console.log(this.props.metaDataLoaderidx, this.props.metaDataLoaderidxVal+"-----------------------------------------")
+			for (var x = this.props.metaDataLoaderidx; x < this.props.metaDataLoaderidxVal; x++) {
+  			console.log(this.props.metaDataLoaderidx, this.props.metaDataLoaderidxVal+"++++++++++++++++++++++++++++++++++++++++")
+        setTimeout(function(i) {    
+          if(store.getState().datasets.dataUploadLoaderModal){
+            $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+          }
 				}, x * 2000, x);
 			}
 		}
@@ -48,6 +53,7 @@ export class DataUploadLoader extends React.Component {
     this.props.dispatch(openDULoaderPopup());
   }
   closeModelPopup() {
+    this.props.dispatch(clearMetaDataLoaderValues());
     this.props.dispatch(hideDULoaderPopup());
     clearDatasetPreview();
     this.props.dispatch(hideDataPreview());
@@ -60,7 +66,7 @@ export class DataUploadLoader extends React.Component {
     }
 
   render() {
-    this.props.metaDataLoaderidxVal>0?this.loadDataMsgs():""
+    this.loadDataMsgs();
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
     //let checked=!this.props.showHideData
 	$('#text-carousel').carousel();

@@ -760,6 +760,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
 
         else if (json.status == SUCCESS) {
           (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
+            dispatch(clearModelLoaderValues())
             clearInterval(appsInterval);
             dispatch(fetchModelSummarySuccess(json));
             dispatch(closeAppsLoaderValue());
@@ -782,6 +783,10 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             dispatch(setAppsLoaderText(json.initial_messages));
           }
           if (json.message !== null && json.message.length > 0) {
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
             dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
             dispatch(getAppsModelList("1"));
@@ -796,7 +801,21 @@ export function getAppsModelSummary(slug, fromCreateModel) {
     })
   }
 }
-
+function updateModelIndexValue(idxVal) {
+  return {
+    type: "MODEL_LOADER_IDX_VAL",idxVal
+  }  
+}
+function updateModelIndex(idx) {
+  return {
+    type: "MODEL_LOADER_IDX",idx
+  }  
+}
+export function clearModelLoaderValues() {
+  return {
+    type: "CLEAR_MODEL_LOADER_VALUES"
+  }
+}
 export function fetchModelSummary(token, slug) {
   return fetch(API + '/api/trainer/' + slug + '/', {
     method: 'get',
@@ -889,6 +908,7 @@ export function getAppsScoreSummary(slug) {
         }
 
         else if (json.status == SUCCESS) {
+          dispatch(clearModelLoaderValues())
           clearInterval(appsInterval);
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
@@ -907,6 +927,10 @@ export function getAppsScoreSummary(slug) {
             dispatch(setAppsLoaderText(json.initial_messages));
           }
           if (json.message !== null && json.message.length > 0) {
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }
