@@ -691,7 +691,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
-        data['modified_by'] = self.request.user.id
+        #data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
         data['classification'] = str(response['final_json']['temp_number'][0]).upper()
