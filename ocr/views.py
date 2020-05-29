@@ -796,11 +796,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     img_data['name'] = file[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                if img_data['name'] in imagename_list:
-                    serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                    response['serializer_error'] = str(serializer_error)
-                    response['message'] = 'FAILED'
-                    return JsonResponse(response)
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
@@ -817,11 +817,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     img_data['name'] = file.name[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                if img_data['name'] in imagename_list:
-                    serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                    response['serializer_error'] = str(serializer_error)
-                    response['message'] = 'FAILED'
-                    return JsonResponse(response)
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
