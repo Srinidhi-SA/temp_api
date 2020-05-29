@@ -9,7 +9,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {isEmpty, DYNAMICLOADERINTERVAL, getUserDetailsOrRestart, handleJobProcessing} from "../../helpers/helper";
-import {clearCreateSignalInterval} from "../../actions/signalActions";
+import {clearCreateSignalInterval, clearSignalLoaderValues} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 
 @connect((store) => {
@@ -19,7 +19,9 @@ import {STATIC_URL} from "../../helpers/env";
     createSignalLoaderValue: store.signals.createSignalLoaderValue,
     loaderText: store.signals.loaderText,
     signalData: store.signals.signalData,
-	signalLoadedText: store.signals.signalLoadedText
+	signalLoadedText: store.signals.signalLoadedText,
+	sigLoaderidxVal: store.signals.sigLoaderidxVal,
+	sigLoaderidx:store.signals.sigLoaderidx,
   };
 })
 
@@ -28,22 +30,25 @@ export class CreateSignalLoader extends React.Component {
     super(props);
   }
 
-
-	componentWillUpdate(){
-            var getText = [];
-            if((this.props.createSignalLoaderValue < 0) && (Object.keys(this.props.signalLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.createSignalLoaderValue >= 0) && (Object.keys(this.props.signalLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.signalLoadedText)
-                this.makeULSig(getText);
-            }
-    }
-
-
-
-
+  componentWillReceiveProps(newProps){
+	  console.log(newProps.sigLoaderidxVal, this.props.sigLoaderidxVal)
+	if(newProps.sigLoaderidxVal != this.props.sigLoaderidxVal)
+		if(store.getState().signals.createSignalLoaderModal){
+			var array = this.props.signalLoadedText
+			if(Object.values(array).length>0 && array!=undefined){
+				console.log(this.props.sigLoaderidx,newProps.sigLoaderidxVal+"++++++++++++++++++++++++++++++")
+				for (var x = this.props.sigLoaderidx; x < newProps.sigLoaderidxVal; x++) {
+					setTimeout(function(i) {
+						if(store.getState().signals.createSignalLoaderModal){
+							$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+							$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+							$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+						}
+					}, x * 2000, x);
+				}
+			}
+		}
+	}
 
   openModelPopup() {
     this.props.dispatch(openCsLoaderModal())
@@ -59,26 +64,6 @@ export class CreateSignalLoader extends React.Component {
     clearCreateSignalInterval();
     this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
-  makeULSig(array) {
-				var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-5; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-				for(var i=array.length-5;i<array.length;i++){
-					x.innerHTML = 'Please wait while analysing...';
-					x1.innerHTML ='';
-					x2.innerHTML ='';
-				}
-}
     render() {
         var that = this;
         if(this.props.signalData != null){

@@ -200,7 +200,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
      var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
-    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true){
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("apps-stock-advisor-analyze")){
         var node = document.createElement("I");
         dispatch(openAppsLoaderValue(100, ''))
         document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
@@ -222,6 +222,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
         dispatch(clearLoadingMsg())
+        dispatch(setDataLoadedText(''));
+        dispatch(clearMetaDataLoaderValues())
         setTimeout(() => {
             return {
                 type: "DATA_PREVIEW",
@@ -249,6 +251,10 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
+            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+                dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
+            }
+            dispatch(updateMetaDataIndexValue(dataPreview.message.length));
         }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             var msgLength=dataPreview.message.length-1
@@ -268,6 +274,21 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             type: "SELECTED_DATASET",
             dataset,
         }
+    }
+}
+function updateMetaDataIndexValue(idxVal) {
+    return {
+      type: "METADATA_LOADER_IDX_VAL",idxVal
+    }  
+  }
+function updateMetaDataIndex(idx) {
+    return {
+        type: "METADATA_LOADER_IDX",idx
+    }  
+}
+export function clearMetaDataLoaderValues() {
+    return {
+        type: "CLEAR_METADATA_LOADER_VALUES"
     }
 }
 function dispatchDataPreview(dataPreview,slug){

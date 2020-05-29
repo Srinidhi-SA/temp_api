@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, setAppsLoaderValues,} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, setAppsLoaderValues, clearModelLoaderValues,} from "../../actions/appActions";
 import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -27,6 +27,8 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		setAppsLoaderValues: store.apps.setAppsLoaderValues,
 		currentAppDetails:store.apps.currentAppDetails,
+		modelLoaderidxVal: store.apps.modelLoaderidxVal,
+		modelLoaderidx:store.apps.modelLoaderidx,
 	};
 })
 
@@ -48,10 +50,25 @@ export class AppsLoader extends React.Component {
 			if(window.location.pathname == "/apps-stock-advisor/"){
 		    return false
 		 	}
-			getText = Object.values(this.props.appsLoadedText)
-			this.makeUL(getText);
 		}
 }
+	componentWillReceiveProps(newProps){
+		if(newProps.modelLoaderidxVal != this.props.modelLoaderidxVal)
+			if((window.location.pathname != "/apps-stock-advisor/") && (store.getState().apps.appsLoaderModal)){
+				var array = this.props.appsLoadedText
+				if(Object.values(array).length>1){
+					for (var x = this.props.modelLoaderidx; x < newProps.modelLoaderidxVal; x++) {
+						setTimeout(function(i) {
+							if(store.getState().apps.appsLoaderModal){
+								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+								$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+								$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+							}
+						}, x * 2000, x);
+					}
+				}
+			}
+	}
 	 
 	componentDidUpdate(){
 		 if(window.location.pathname == "/apps-stock-advisor/" && (Object.keys(this.props.dataLoadedText).length >0) ){
@@ -127,30 +144,6 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
 	}
-
-
-	makeUL(array) {
-        var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-5; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-		for(var i=array.length-5;i<array.length;i++){
-			x.innerHTML ='Please wait while analysing...';
-			x1.innerHTML ='';
-			x2.innerHTML ='';
-		}
-    }
-
-
 
   render() {
 		$('#text-carousel').carousel();
