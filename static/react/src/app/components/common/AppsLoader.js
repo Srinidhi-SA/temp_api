@@ -52,23 +52,23 @@ export class AppsLoader extends React.Component {
 		 	}
 		}
 }
-
-loadModelMsgs(){
-	var array = Object.values(this.props.appsLoadedText)
-	if(array.length>1 && $("#loadingMsgs")[0] != undefined){
-		console.log(this.props.modelLoaderidx, this.props.modelLoaderidxVal+"++++++++++++++++++++++++++++++++++++++++")
-		for (var x = this.props.modelLoaderidx; x < this.props.modelLoaderidxVal; x++) {
-			console.log(this.props.modelLoaderidx, this.props.modelLoaderidxVal+"++++++++++++++++++++++++++++++++++++++++")
-			setTimeout(function(i) {
-				if(store.getState().apps.appsLoaderModal){
-					$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-					$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-					$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+	componentWillReceiveProps(newProps){
+		if(newProps.modelLoaderidxVal != this.props.modelLoaderidxVal)
+			if((window.location.pathname != "/apps-stock-advisor/") && (store.getState().apps.appsLoaderModal)){
+				var array = this.props.appsLoadedText
+				if(Object.values(array).length>1){
+					for (var x = this.props.modelLoaderidx; x < newProps.modelLoaderidxVal; x++) {
+						setTimeout(function(i) {
+							if(store.getState().apps.appsLoaderModal){
+								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+								$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+								$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+							}
+						}, x * 2000, x);
+					}
 				}
-			}, x * 2000, x);
-		}
+			}
 	}
-}
 	 
 	componentDidUpdate(){
 		 if(window.location.pathname == "/apps-stock-advisor/" && (Object.keys(this.props.dataLoadedText).length >0) ){
@@ -123,7 +123,6 @@ loadModelMsgs(){
 		},10000);
 	}
   closeModelPopup(){
-	  this.props.dispatch(clearModelLoaderValues());
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
 	  this.props.dispatch(closeAppsLoaderValue());
@@ -147,7 +146,6 @@ loadModelMsgs(){
 	}
 
   render() {
-		window.location.pathname != "/apps-stock-advisor/"?this.loadModelMsgs():""
 		$('#text-carousel').carousel();
 		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
 		var hideUrl = "";

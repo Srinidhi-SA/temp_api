@@ -200,7 +200,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
      var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
-    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true){
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("apps-stock-advisor-analyze")){
         var node = document.createElement("I");
         dispatch(openAppsLoaderValue(100, ''))
         document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');

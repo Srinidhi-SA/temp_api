@@ -32,28 +32,30 @@ export class DataUploadLoader extends React.Component {
     super();
   }
 
-  loadDataMsgs(){
-		var array = Object.values(this.props.dataLoadedText)
-		if(array.length>0 && $("#loadingMsgs")[0] != undefined && this.props.metaDataLoaderidxVal!=0){
-      console.log(this.props.metaDataLoaderidx, this.props.metaDataLoaderidxVal+"-----------------------------------------")
-			for (var x = this.props.metaDataLoaderidx; x < this.props.metaDataLoaderidxVal; x++) {
-  			console.log(this.props.metaDataLoaderidx, this.props.metaDataLoaderidxVal+"++++++++++++++++++++++++++++++++++++++++")
-        setTimeout(function(i) {    
-          if(store.getState().datasets.dataUploadLoaderModal){
-            $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-            $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-            $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+  componentWillReceiveProps(newProps){
+    console.log(newProps.metaDataLoaderidxVal,this.props.metaDataLoaderidxVal)
+    if(newProps.metaDataLoaderidxVal !=this.props.metaDataLoaderidxVal)
+      if(store.getState().datasets.dataUploadLoaderModal){
+        var array = this.props.dataLoadedText
+        if(Object.values(array).length>0 && array!=undefined){
+          console.log(this.props.metaDataLoaderidx,newProps.metaDataLoaderidxVal,this.props.metaDataLoaderidxVal)
+          for (var x = this.props.metaDataLoaderidx; x < newProps.metaDataLoaderidxVal; x++) {
+            setTimeout(function(i) {    
+              if(store.getState().datasets.dataUploadLoaderModal){
+                $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+                $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+                $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+              }
+            }, x * 2000, x);
           }
-				}, x * 2000, x);
-			}
-		}
+        }
+      }
 	}
 
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
   }
   closeModelPopup() {
-    this.props.dispatch(clearMetaDataLoaderValues());
     this.props.dispatch(hideDULoaderPopup());
     clearDatasetPreview();
     this.props.dispatch(hideDataPreview());
@@ -66,7 +68,6 @@ export class DataUploadLoader extends React.Component {
     }
 
   render() {
-    this.loadDataMsgs();
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
     //let checked=!this.props.showHideData
 	$('#text-carousel').carousel();

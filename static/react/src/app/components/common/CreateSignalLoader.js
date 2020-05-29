@@ -30,17 +30,22 @@ export class CreateSignalLoader extends React.Component {
     super(props);
   }
 
-	loadSignalMsgs(){
-		var array = Object.values(this.props.signalLoadedText)
-		if(array.length>0 && $("#loadingMsgs")[0] != undefined){
-			for (var x = this.props.sigLoaderidx; x < this.props.sigLoaderidxVal; x++) {
-				setTimeout(function(i) {
-					if(store.getState().signals.createSignalLoaderModal){
-						$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-						$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-						$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
-					}
-				}, x * 2000, x);
+  componentWillReceiveProps(newProps){
+	  console.log(newProps.sigLoaderidxVal, this.props.sigLoaderidxVal)
+	if(newProps.sigLoaderidxVal != this.props.sigLoaderidxVal)
+		if(store.getState().signals.createSignalLoaderModal){
+			var array = this.props.signalLoadedText
+			if(Object.values(array).length>0 && array!=undefined){
+				console.log(this.props.sigLoaderidx,newProps.sigLoaderidxVal+"++++++++++++++++++++++++++++++")
+				for (var x = this.props.sigLoaderidx; x < newProps.sigLoaderidxVal; x++) {
+					setTimeout(function(i) {
+						if(store.getState().signals.createSignalLoaderModal){
+							$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+							$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+							$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+						}
+					}, x * 2000, x);
+				}
 			}
 		}
 	}
@@ -49,7 +54,6 @@ export class CreateSignalLoader extends React.Component {
     this.props.dispatch(openCsLoaderModal())
   }
   closeModelPopup() {
-	this.props.dispatch(clearSignalLoaderValues());
     this.props.dispatch(closeCsLoaderModal());
     this.props.dispatch(hideDataPreview());
     clearCreateSignalInterval();
@@ -61,7 +65,6 @@ export class CreateSignalLoader extends React.Component {
     this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
     render() {
-		this.loadSignalMsgs()
         var that = this;
         if(this.props.signalData != null){
             setTimeout(function() {

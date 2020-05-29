@@ -788,7 +788,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             }
             dispatch(updateModelIndexValue(json.message.length));
             dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
-            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+            dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
             dispatch(getAppsModelList("1"));
           }
         }
