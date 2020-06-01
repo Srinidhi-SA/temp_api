@@ -33,12 +33,10 @@ export class DataUploadLoader extends React.Component {
   }
 
   componentWillReceiveProps(newProps){
-    console.log(newProps.metaDataLoaderidxVal,this.props.metaDataLoaderidxVal)
     if(newProps.metaDataLoaderidxVal !=this.props.metaDataLoaderidxVal)
       if(store.getState().datasets.dataUploadLoaderModal){
         var array = this.props.dataLoadedText
         if(Object.values(array).length>0 && array!=undefined){
-          console.log(this.props.metaDataLoaderidx,newProps.metaDataLoaderidxVal,this.props.metaDataLoaderidxVal)
           for (var x = this.props.metaDataLoaderidx; x < newProps.metaDataLoaderidxVal; x++) {
             setTimeout(function(i) {    
               if(store.getState().datasets.dataUploadLoaderModal){

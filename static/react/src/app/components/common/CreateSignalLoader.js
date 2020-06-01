@@ -31,12 +31,10 @@ export class CreateSignalLoader extends React.Component {
   }
 
   componentWillReceiveProps(newProps){
-	  console.log(newProps.sigLoaderidxVal, this.props.sigLoaderidxVal)
 	if(newProps.sigLoaderidxVal != this.props.sigLoaderidxVal)
 		if(store.getState().signals.createSignalLoaderModal){
 			var array = this.props.signalLoadedText
 			if(Object.values(array).length>0 && array!=undefined){
-				console.log(this.props.sigLoaderidx,newProps.sigLoaderidxVal+"++++++++++++++++++++++++++++++")
 				for (var x = this.props.sigLoaderidx; x < newProps.sigLoaderidxVal; x++) {
 					setTimeout(function(i) {
 						if(store.getState().signals.createSignalLoaderModal){
