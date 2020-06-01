@@ -308,6 +308,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
    clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+    dispatch(clearSignalLoaderValues())
     dispatch(clearLoadingMsg());
     dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
   } 

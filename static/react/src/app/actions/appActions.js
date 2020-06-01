@@ -759,7 +759,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
+          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
             dispatch(clearModelLoaderValues())
             clearInterval(appsInterval);
             dispatch(fetchModelSummarySuccess(json));
@@ -787,7 +787,7 @@ export function getAppsModelSummary(slug, fromCreateModel) {
               dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
             }
             dispatch(updateModelIndexValue(json.message.length));
-            dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
+            dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
             dispatch(getAppsModelList("1"));
           }

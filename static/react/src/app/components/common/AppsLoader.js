@@ -107,9 +107,9 @@ export class AppsLoader extends React.Component {
 				headers: getHeader(getUserDetailsOrRestart.get().userToken)
 				}).then(response => response.json())
 				.then(responsejson => {
-					if(responsejson.message[0].globalCompletionPercentage <= 100){
-						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[0].globalCompletionPercentage){
-							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[0].globalCompletionPercentage,responsejson.status))
+					if(responsejson.message[responsejson.message.length-1].globalCompletionPercentage <= 100){
+						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[responsejson.message.length-1].globalCompletionPercentage){
+							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[responsejson.message.length-1].globalCompletionPercentage,responsejson.status))
 							this.props.dispatch(getAppsModelList(1));
 						}
 					}
