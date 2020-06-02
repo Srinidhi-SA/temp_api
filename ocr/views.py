@@ -931,6 +931,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = []
+        image_list = []
         try:
             template = json.loads(Template.objects.first().template_classification)
             if 'slug' in data:
@@ -956,7 +957,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                 image_queryset.status = 'ready_to_assign'
                                 image_queryset.save()
                         else:
+                            image_list.append(response['image_slug'])
                             results.append(serializer.errors)
+                if image_list:
+                    for slug in image_list:
+                        image_queryset = OCRImage.objects.get(slug=slug)
+                        image_queryset.status = 'failed'
+                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                         context={"request": self.request})
+                        if serializer.is_valid():
+                            serializer.save()
                 return Response(results)
         except Exception as e:
             return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
@@ -1056,28 +1066,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def not_clear(self, request, *args, **kwargs):
         data = request.data
-        index = data['index']
-        word = data['word']
-
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates,
-                                                                           comparision_data)
-
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
-
-        if 'analysis_list' in request.session:
-            request.session['analysis_list'].extend(analysis_list)
-        else:
-            request.session['analysis_list'] = analysis_list
-        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        data['status'] = 'bad_scan'
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'marked': True})
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
