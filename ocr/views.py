@@ -500,7 +500,10 @@ class OCRUserView(viewsets.ModelViewSet):
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):
-                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id'), 'email': i.get('email')}})
+                UsersList.update({index: {
+                    'name': (i.get('username')).capitalize(),
+                    'Uid': i.get('id'),
+                    'email': i.get('email')}})
             return JsonResponse({'allUsersList': UsersList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
