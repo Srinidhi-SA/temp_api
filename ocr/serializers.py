@@ -78,6 +78,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
                       "ready_to_recognize": "Ready to Recognize",
                       "ready_to_assign": "Ready to Assign",
                       "recognizing": "Recognizing",
+                      "bad_scan": "Bad Scan",
                       "ready_to_verify(L1)": "Ready to Verify(L1)",
                       "ready_to_verify(L2)": "Ready to Verify(L2)",
                       "ready_to_export": "Ready to Export"}
