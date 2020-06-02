@@ -322,7 +322,7 @@ class OCRImage(models.Model):
     def get_assignee(self):
         """Return OCRImage Reviewer"""
         try:
-            return self.assignee.username
+            return (self.assignee.username).capitalize()
         except:
             return None
 

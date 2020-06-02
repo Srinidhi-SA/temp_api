@@ -87,8 +87,8 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
         serialized_data['assignee'] = instance.get_assignee()
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
-        serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
-        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
+        serialized_data['created_by'] = (UserSerializer(instance.created_by).data['username']).capitalize()
+        serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
         serialized_data['type'] = serialized_data['imagefile'][-4:]
         if serialized_data['imagefile'][-4:] == '.pdf':
             if serialized_data['status'] == 'Ready to Recognize':
@@ -286,6 +286,8 @@ class OCRUserListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serialized_data = super(OCRUserListSerializer, self).to_representation(instance)
         ocr_profile_obj = get_object_or_none(OCRUserProfile, instance)
+        serialized_data['first_name'] = serialized_data['first_name'].capitalize()
+        serialized_data['last_name'] = serialized_data['last_name'].capitalize()
         if ocr_profile_obj is None:
             serialized_data['ocr_profile'] = None
             serialized_data['ocr_user'] = False
@@ -352,6 +354,7 @@ class OCRReviewerSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         serialized_data = super(OCRReviewerSerializer, self).to_representation(instance)
+        serialized_data['username'] = (serialized_data['username']).capitalize()
         ocr_profile_obj = OCRUserProfile.objects.get(ocr_user=instance)
         serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
         serialized_data['ocr_data'] = ocr_profile_obj.reviewer_data()
