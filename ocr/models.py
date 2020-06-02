@@ -257,6 +257,7 @@ class OCRImage(models.Model):
         ("failed", "Failed to Recognize"),
         ("ready_to_assign", "Ready to assign"),
         ("ready_to_verify(L1)", "Ready to verify(L1)"),
+        ("l1_verified", "L1 Verified"),
         ("ready_to_verify(L2)", "Ready to verify(L2)"),
         ("ready_to_export", "Ready to export")
     ]
