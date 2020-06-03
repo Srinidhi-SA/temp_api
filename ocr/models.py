@@ -252,7 +252,9 @@ class OCRImage(models.Model):
     STATUS_CHOICES = [
         ("uploading", "Uploading"),
         ("ready_to_recognize", "Ready to recognize"),
+        ("bad_scan", "Bad Scan"),
         ("recognizing", "Recognizing"),
+        ("failed", "Failed to Recognize"),
         ("ready_to_assign", "Ready to assign"),
         ("ready_to_verify(L1)", "Ready to verify(L1)"),
         ("ready_to_verify(L2)", "Ready to verify(L2)"),
@@ -320,7 +322,7 @@ class OCRImage(models.Model):
     def get_assignee(self):
         """Return OCRImage Reviewer"""
         try:
-            return self.assignee.username
+            return (self.assignee.username).capitalize()
         except:
             return None
 
