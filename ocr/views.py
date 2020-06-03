@@ -500,7 +500,10 @@ class OCRUserView(viewsets.ModelViewSet):
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):
-                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id'), 'email': i.get('email')}})
+                UsersList.update({index: {
+                    'name': (i.get('username')).capitalize(),
+                    'Uid': i.get('id'),
+                    'email': i.get('email')}})
             return JsonResponse({'allUsersList': UsersList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
@@ -776,8 +779,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             response['imageset_serializer_error'] = serializer.errors
             response['imageset_message'] = 'FAILED'
 
+        imagename_list = []
+        image_query = self.get_queryset()
+        for i in image_query:
+            imagename_list.append(i.name)
+
         for file in files:
-            image_object = ''
             if data['dataSourceType'] == 'S3':
                 img_data = dict()
                 django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
@@ -791,8 +798,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = file[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
-                #img_data['modified_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
@@ -808,8 +819,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     img_data['name'] = file.name[:-4].replace('.', '_')
                 img_data['created_by'] = request.user.id
-                #img_data['modified_by'] = request.user.id
                 img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
                 serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
                 if serializer.is_valid():
                     image_object = serializer.save()
@@ -818,29 +833,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if data['dataSourceType'] == 'SFTP':
                 pass
 
-            imagename_list = []
-            image_query = self.get_queryset()
-            for i in image_query:
-                imagename_list.append(i.imagefile.name)
-            if img_data['name'] in imagename_list:
-                serializer_error.append(creation_failed_exception("Image name already exists!."))
-
-            # img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-            # img_data['created_by'] = request.user.id
-            # img_data['modified_by'] = request.user.id
             img_data['status'] = 'ready_to_recognize'
-            # serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
             serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
                                              context={"request": self.request})
             if serializer.is_valid():
                 serializer.save()
                 serializer_data.append(serializer.data)
-                """
-                if serializer.is_valid():
-                image_object = serializer.save()
-                image_object.create()
-                serializer_data.append(serializer.data)
-                """
             else:
                 serializer_error.append(serializer.errors)
         if not serializer_error:
@@ -936,6 +934,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = []
+        image_list = []
         try:
             template = json.loads(Template.objects.first().template_classification)
             if 'slug' in data:
@@ -961,7 +960,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                 image_queryset.status = 'ready_to_assign'
                                 image_queryset.save()
                         else:
+                            image_list.append(response['image_slug'])
                             results.append(serializer.errors)
+                if image_list:
+                    for slug in image_list:
+                        image_queryset = OCRImage.objects.get(slug=slug)
+                        image_queryset.status = 'failed'
+                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                         context={"request": self.request})
+                        if serializer.is_valid():
+                            serializer.save()
                 return Response(results)
         except Exception as e:
             return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
@@ -1061,28 +1069,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def not_clear(self, request, *args, **kwargs):
         data = request.data
-        index = data['index']
-        word = data['word']
-
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates,
-                                                                           comparision_data)
-
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
-
-        if 'analysis_list' in request.session:
-            request.session['analysis_list'].extend(analysis_list)
-        else:
-            request.session['analysis_list'] = analysis_list
-        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        data['status'] = 'bad_scan'
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'marked': True})
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -1180,8 +1173,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             classification = image_queryset.classification
             template_data = Template.objects.first()
             template_classification = json.loads(template_data.template_classification)
-            template_classification[classification]['Pages'].remove(name)
-            template_classification[template]['Pages'].append(name)
+            for item in template_classification[classification]['Pages']:
+                if slug in item:
+                    template_classification[classification]['Pages'].remove(item)
+                    template_classification[template]['Pages'].append(item)
+                else:
+                    if name == item:
+                        template_classification[classification]['Pages'].remove(name)
+                        template_classification[template]['Pages'].append(name)
             image_queryset.classification = template
             template_data.template_classification = json.dumps(template_classification)
             image_queryset.save()
