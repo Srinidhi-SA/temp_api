@@ -262,7 +262,7 @@ export class OcrImage extends React.Component {
           setTimeout(() => {
             document.getElementById("loader").classList.remove("loader_ITE");
             document.getElementById("successMsg").innerText = "Updated successfully.";
-          }, 1000);
+          }, 2000);
           //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
