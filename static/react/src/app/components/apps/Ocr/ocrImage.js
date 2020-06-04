@@ -16,7 +16,6 @@ import ReactTooltip from 'react-tooltip';
     imageSlug: store.ocr.imageSlug,
     ocrDocList: store.ocr.OcrRevwrDocsList,
     imageTaskId: store.ocr.imageTaskId,
-    feedback: "",
     projectName: store.ocr.selected_project_name,
     reviewerName: store.ocr.selected_reviewer_name,
     selected_image_name: store.ocr.selected_image_name,
@@ -39,6 +38,8 @@ export class OcrImage extends React.Component {
       y: "",
       img1Load: false,
       img2Load: false,
+      badScanFlag: false,
+      feedback: "",
     }
   }
 
@@ -63,7 +64,7 @@ export class OcrImage extends React.Component {
     });
   }
   handleCoords = (event) => {
-    if(!this.props.is_closed){
+    if((!this.props.is_closed && !this.state.badScanFlag) || (!this.state.badScanFlag)){
     document.getElementById("successMsg").innerText = " ";
     let canvasElem = document.getElementById("myCanvas");
     var ctx = canvasElem.getContext("2d");
@@ -128,9 +129,11 @@ export class OcrImage extends React.Component {
   }
   handleBadScan = () => {
     //window.history.go(-1)
+    if (this.state.feedback!=""){
     let feedbackID = this.props.imageTaskId;
     var data = new FormData();
     data.append("bad_scan", this.state.feedback);
+    data.append("slug", this.props.imageSlug);
     return fetch(API + '/ocrflow/tasks/feedback/?feedbackId=' + feedbackID, {
       method: 'post',
       headers: this.getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
@@ -138,9 +141,18 @@ export class OcrImage extends React.Component {
     }).then(response => response.json())
       .then(data => {
         if (data.submitted === true) {
+          $('#modal_badscan').hide();
+          $('.modal-backdrop').hide();
+          this.setState({badScanFlag: true});
+          document.getElementById("badScan").disabled= true;
+          document.getElementById("mac").disabled= true;
           bootbox.alert(statusMessages("success", "Feedback submitted.", "small_mascot"));
         }
       });
+    }
+    else{
+    document.getElementById("resetMsg").innerText="Please provide the feedback"
+    }
   }
   finalAnalysis = () => {
     return fetch(API + '/ocr/ocrimage/final_analysis/', {
@@ -482,8 +494,9 @@ export class OcrImage extends React.Component {
                 </div>
               </div>
               <div class="modal-footer">
+                <div id="resetMsg"></div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onClick={this.handleBadScan} data-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-primary" onClick={this.handleBadScan}>Submit</button>
               </div>
             </div>
           </div>
