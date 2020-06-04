@@ -57,7 +57,7 @@ export class AppsLoader extends React.Component {
 			if((window.location.pathname != "/apps-stock-advisor/") && (store.getState().apps.appsLoaderModal)){
 				var array = this.props.appsLoadedText
 				if(Object.values(array).length>1){
-					for (var x = this.props.modelLoaderidx; x < newProps.modelLoaderidxVal; x++) {
+					for (var x = this.props.modelLoaderidx; x < (newProps.modelLoaderidxVal-2); x++) {
 						setTimeout(function(i) {
 							if(store.getState().apps.appsLoaderModal){
 								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];

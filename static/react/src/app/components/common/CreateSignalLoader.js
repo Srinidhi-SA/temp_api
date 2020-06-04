@@ -35,7 +35,7 @@ export class CreateSignalLoader extends React.Component {
 		if(store.getState().signals.createSignalLoaderModal){
 			var array = this.props.signalLoadedText
 			if(Object.values(array).length>0 && array!=undefined){
-				for (var x = this.props.sigLoaderidx; x < newProps.sigLoaderidxVal; x++) {
+				for (var x = this.props.sigLoaderidx; x < (newProps.sigLoaderidxVal-2); x++) {
 					setTimeout(function(i) {
 						if(store.getState().signals.createSignalLoaderModal){
 							$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];

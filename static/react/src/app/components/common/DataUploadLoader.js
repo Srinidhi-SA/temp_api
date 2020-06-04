@@ -37,7 +37,7 @@ export class DataUploadLoader extends React.Component {
       if(store.getState().datasets.dataUploadLoaderModal){
         var array = this.props.dataLoadedText
         if(Object.values(array).length>0 && array!=undefined){
-          for (var x = this.props.metaDataLoaderidx; x < newProps.metaDataLoaderidxVal; x++) {
+          for (var x = this.props.metaDataLoaderidx; x < (newProps.metaDataLoaderidxVal-2); x++) {
             setTimeout(function(i) {    
               if(store.getState().datasets.dataUploadLoaderModal){
                 $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
