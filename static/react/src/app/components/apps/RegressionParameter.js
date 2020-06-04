@@ -733,7 +733,6 @@ export class RegressionParameter extends React.Component {
                 }
             }
          //(Review it)Changes from here to 
-         debugger
        if(this.props.algorithmData.filter(i=>i.algorithmName==="Neural Network (Sklearn)")[0].hyperParameterSetting[0].selected == true){
         //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
