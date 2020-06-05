@@ -489,6 +489,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'A', 'status')} name="ready to assign">Ready to Assign</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V1', 'status')} name="ready to verify">Ready to Verify(L1)</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'C1', 'status')} name="ready to verify">L1 Verified</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V2', 'status')} name="ready to verify">Ready to Verify(L2)</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
