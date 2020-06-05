@@ -367,6 +367,7 @@ export class OcrTable extends React.Component {
 
     var OcrTableHtml = (
       this.props.OcrDataList != '' ? (this.props.OcrDataList.data.length != 0 ? this.props.OcrDataList.data.map((item, index) => {
+       var status=["Ready to Recognize","Recognizing","Uploading"]
         return (
           <tr id={index}>
             <td>
@@ -375,8 +376,8 @@ export class OcrTable extends React.Component {
             <td>
             <i style={{color:'#414f50',fontSize:14}} className={item.type==".pdf"? "fa fa-file-pdf-o":"fa fa-file-image-o"}></i>
             </td>
-            <td style={item.status == "Ready to Recognize" || item.status == "Recognizing" || item.status == "Uploading" ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={item.status == "Ready to Recognize" || item.status == "Recognizing" || item.status == "Uploading" ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+            <td style={status.includes(item.status) ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
+              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.classification}</td>
