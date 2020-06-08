@@ -766,8 +766,8 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
             $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
           }
+          clearInterval(appsInterval);
           setTimeout(()=>{
-              clearInterval(appsInterval);
               dispatch(clearModelLoaderValues())
               dispatch(fetchModelSummarySuccess(json));
               dispatch(closeAppsLoaderValue());

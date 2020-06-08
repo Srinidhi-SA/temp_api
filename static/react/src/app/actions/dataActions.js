@@ -214,9 +214,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             $("#loadingMsgs1")[0].innerHTML ="Step " + (dataPreview.message.length-2) + ": " + dataPreview.message[dataPreview.message.length-2].shortExplanation;
             $("#loadingMsgs2")[0].innerHTML ="Step " + (dataPreview.message.length-1) + ": " + dataPreview.message[dataPreview.message.length-1].shortExplanation;
         }
+        clearInterval(interval);
         if(interval != undefined){
             setTimeout(() => {
-                clearInterval(interval);
                 dispatch(dispatchDataPreview(dataPreview,slug));
                 dispatch(hideDULoaderPopup());
                 dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
