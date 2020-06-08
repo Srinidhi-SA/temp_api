@@ -261,7 +261,7 @@ export class CreateSignalLoader extends React.Component {
 
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().signals.createSignalLoaderValue >= 0?<h2 className="text-white">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h5>}
+							{store.getState().signals.createSignalLoaderValue >= 0?<h2 className="text-white sigProgress">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue sigProgress">In Progress</h5>}
 
 						</div>
 					</div>

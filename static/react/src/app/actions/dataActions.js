@@ -208,7 +208,12 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		x.innerHTML = 'Completed Succesfully';
     }
     if(getStatus == SUCCESS){
-
+        if(store.getState().datasets.dataUploadLoaderModal && dataPreview.initial_messages!=null && Object.keys(dataPreview.initial_messages).length != 0){
+            document.getElementsByClassName("dataPercent")[0].innerHTML = (document.getElementsByClassName("dataPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (dataPreview.message.length-3) + ": " + dataPreview.message[dataPreview.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (dataPreview.message.length-2) + ": " + dataPreview.message[dataPreview.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (dataPreview.message.length-1) + ": " + dataPreview.message[dataPreview.message.length-1].shortExplanation;
+        }
         if(interval != undefined){
             setTimeout(() => {
                 clearInterval(interval);
@@ -221,9 +226,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         } else{
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
-        dispatch(clearLoadingMsg())
-        dispatch(setDataLoadedText(''));
-        dispatch(clearMetaDataLoaderValues())
+        setTimeout(()=>{
+            dispatch(clearLoadingMsg())
+            dispatch(setDataLoadedText(''));
+            dispatch(clearMetaDataLoaderValues())
+        },2000); 
         setTimeout(() => {
             return {
                 type: "DATA_PREVIEW",

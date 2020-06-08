@@ -305,12 +305,20 @@ function fetchPosts_analysis(token, errandId) {
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
   if (signalAnalysis.status == SUCCESS) {
-   clearInterval(createSignalInterval);
-    dispatch(closeCsLoaderModal())
-    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-    dispatch(clearSignalLoaderValues())
-    dispatch(clearLoadingMsg());
-    dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
+    if(store.getState().signals.createSignalLoaderModal && signalAnalysis.message!=null && signalAnalysis.message.length>0){
+      document.getElementsByClassName("sigProgress")[0].innerHTML = (document.getElementsByClassName("sigProgress")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+      $("#loadingMsgs")[0].innerHTML = "Step " + (signalAnalysis.message.length-3) + ": " + signalAnalysis.message[signalAnalysis.message.length-3].shortExplanation;
+      $("#loadingMsgs1")[0].innerHTML ="Step " + (signalAnalysis.message.length-2) + ": " + signalAnalysis.message[signalAnalysis.message.length-2].shortExplanation;
+      $("#loadingMsgs2")[0].innerHTML ="Step " + (signalAnalysis.message.length-1) + ": " + signalAnalysis.message[signalAnalysis.message.length-1].shortExplanation;
+    }
+   setTimeout(()=>{
+      clearInterval(createSignalInterval);
+      dispatch(closeCsLoaderModal())
+      dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+      dispatch(clearSignalLoaderValues())
+      dispatch(clearLoadingMsg());
+      dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
+    },2000) 
   } 
   else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
@@ -322,7 +330,9 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
   } else if (signalAnalysis.status == "INPROGRESS") {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
   }
-  return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
+  setTimeout(()=>{
+    return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
+  },2000)
 }
 
 

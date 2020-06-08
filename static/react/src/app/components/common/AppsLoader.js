@@ -332,10 +332,10 @@ export class AppsLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-							<div class="modal-steps active" id="loadingMsgs">
+							<div class="modal-steps" id="loadingMsgs">
 								Please wait while analysing...
 							</div>
-							<div class="modal-steps " id="loadingMsgs1">
+							<div class="modal-steps active" id="loadingMsgs1">
                                 </div>
                                 <div class="modal-steps" id="loadingMsgs2">
                                 </div>
@@ -347,7 +347,7 @@ export class AppsLoader extends React.Component {
 
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue" style={{display:"block", textAlign: "center" }}>In Progress</h5>}
+							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white appsPercent">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue appsPercent" style={{display:"block", textAlign: "center" }}>In Progress</h5>}
 				  	</div>
 					</div>
 					</div>

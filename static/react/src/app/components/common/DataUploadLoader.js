@@ -239,25 +239,16 @@ export class DataUploadLoader extends React.Component {
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
 
-                                <div class="modal-steps" id="loadingMsgs">
-                                Please wait while preparing data...
-                                </div>
-                                <div class="modal-steps active" id="loadingMsgs1">
-                                </div>
-                                <div class="modal-steps" id="loadingMsgs2">
-                                </div>
-
-								{/* <ul class="modal-steps hidden">
-										<li>----</li>
-									<li class="active">
-                    {store.getState().datasets.dataLoaderText}
-                  </li>
-										<li>----</li>
-								</ul> */}
-
+                <div class="modal-steps" id="loadingMsgs">
+                Please wait while preparing data...
+                </div>
+                <div class="modal-steps active" id="loadingMsgs1">
+                </div>
+                <div class="modal-steps" id="loadingMsgs2">
+                </div>
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white">{store.getState().datasets.dULoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h5>}
+							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white dataPercent">{store.getState().datasets.dULoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue dataPercent">In Progress</h5>}
 						</div>
 					</div>
 					</div>

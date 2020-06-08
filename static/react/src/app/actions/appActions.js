@@ -760,13 +760,21 @@ export function getAppsModelSummary(slug, fromCreateModel) {
 
         else if (json.status == SUCCESS) {
           (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
-            dispatch(clearModelLoaderValues())
-            clearInterval(appsInterval);
-            dispatch(fetchModelSummarySuccess(json));
-            dispatch(closeAppsLoaderValue());
-            dispatch(hideDataPreview());
-            dispatch(updateModelSummaryFlag(true));
-            dispatch(reSetRegressionVariables());
+          if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
+            document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+          }
+          setTimeout(()=>{
+              clearInterval(appsInterval);
+              dispatch(clearModelLoaderValues())
+              dispatch(fetchModelSummarySuccess(json));
+              dispatch(closeAppsLoaderValue());
+              dispatch(hideDataPreview());
+              dispatch(updateModelSummaryFlag(true));
+              dispatch(reSetRegressionVariables());
+            },2000);
         }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function () {
