@@ -958,6 +958,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             temp_obj.save()
                             if image_queryset.imagefile.path[-4:] == '.pdf':
                                 image_queryset.status = 'ready_to_assign'
+                                image_queryset.deleted = True
                                 image_queryset.save()
                         else:
                             image_list.append(response['image_slug'])
