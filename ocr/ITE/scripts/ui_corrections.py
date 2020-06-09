@@ -134,16 +134,16 @@ class ui_corrections:
                     m.update({"flag": "False"})
         return final_json"""
 
-    def default_all_words_flag_to_false(self,final_json):
+    def default_all_words_flag_to_false(self, final_json):
         for para in final_json["paragraphs"]:
             for line in final_json["paragraphs"][para]:
                 for word in line:
-                    word.update({"flag":False,"color":None})
+                    word.update({"flag": False, "color": None})
         #            print(word)
         for table in final_json["tables"]:
             for cell in final_json["tables"][table]:
                 for word in final_json["tables"][table][cell]["words"]:
-                   word.update({"flag":False,"color":None})
+                    word.update({"flag": False, "color": None})
         return final_json
 
     def flag_words_to_plot(self, final_json, needed_words, mode):
@@ -285,7 +285,7 @@ class ui_corrections:
         #        fontscale_final = (fontScale_default+fontscale)*0.5
         return fontscale, font
 
-    def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
+    """def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
 
         #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
         height, width, _ = texted_image.shape
@@ -356,7 +356,90 @@ class ui_corrections:
         else:
             texted_image = self.adjust_gamma(texted_image, gamma=0.4)
         cv2.imwrite(gen_image, texted_image)
+        return"""
+
+    def render_flagged_image(self, final_json_to_flag, mask, gen_image):  # plain_mask = False
+
+        #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+        height, width, _ = mask.shape
+        area = height * width
+        #        fontScale = 0.6
+        #        print (fontScale)
+        #        print(final_json_to_flag)
+        #        print('RESULT: ',sum([len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]))
+        if ((len(final_json_to_flag["tables"]) == 0) or (sum(
+                [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
+            height, width) < 700:  # or plain_mask == True:
+            white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
+            mask = white_canvas.copy()
+        else:
+            pass
+
+        if 'paragraphs' in final_json_to_flag:
+            for k in final_json_to_flag["paragraphs"]:
+                for l in final_json_to_flag["paragraphs"][k]:
+                    for m in l:
+                        p1 = m['boundingBox']["p1"]
+                        p3 = m['boundingBox']["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m['text']
+                        #
+                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
+                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
+                        #
+                        #                        print('*'*10)
+                        #
+                        height, ratio = abs(p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                        fontScale, font = self.get_optimal_params(height, ratio, area)
+                        #                        print('FONT : ',font)
+                        if m['flag'] == True:
+                            mask = self.highlight_word(mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale,
+                                                       font)
+                        else:
+                            cv2.putText(mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), font, fontScale, (0, 0, 0),
+                                        1, cv2.LINE_AA)
+        else:
+            pass
+
+        if 'tables' in final_json_to_flag:
+            for k in final_json_to_flag["tables"]:
+                for l in final_json_to_flag["tables"][k]:
+                    for m in final_json_to_flag["tables"][k][l]["words"]:
+                        p1 = m["boundingBox"]["p1"]
+                        p3 = m["boundingBox"]["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m["text"]
+                        vertices = [p1, p2, p3, p4]
+
+                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
+                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
+                        #
+                        #                        print('*'*10)
+
+                        height, ratio = abs(p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                        fontScale, font = self.get_optimal_params(height, ratio, area)
+                        #                        print('FONT : ',font)
+                        if m['flag'] == True:
+                            mask = self.highlight_word(mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale,
+                                                       font)
+                        else:
+                            cv2.putText(mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), font, fontScale, (0, 0, 0),
+                                        1, cv2.LINE_AA)
+        else:
+            pass
+
+        #        int((p4[1]+p1[1])*0.5)
+
+        if area < 1000 * 1000:
+            pass
+
+        else:
+            mask = self.adjust_gamma(mask, gamma=0.4)
+        cv2.imwrite(gen_image, mask)
         return
+
 
     def document_confidence(self, analysis):
         word_count, error = 0, 0
@@ -404,31 +487,6 @@ def check_if_centroid_inbetween_p1_p3(centroid, p1, p3):
         return True
     else:
         return False
-
-
-"""def fetch_click_word_from_final_json(final_json, click_coordinate):
-    for k in final_json["paragraphs"]:
-        for l in final_json["paragraphs"][k]:
-            for m in l['words']:
-                p1 = m['boundingBox'][0:2]
-                p3 = m['boundingBox'][4:6]
-                '''for val in list(m.values()):
-                    if isinstance(val, list):
-                        p1 = val[0:2]
-                        p3 = val[4:6]'''
-                if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
-                    return True, m['text']
-                    # return True, list(m.values())[1]
-
-    for k in final_json["tables"]:
-        for l in final_json["tables"][k]:
-            for m in final_json["tables"][k][l]["words"]:
-                p1 = m["boundingBox"]["p1"]
-                p3 = m["boundingBox"]["p3"]
-                if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
-                    return True, m['text']
-
-    return False, """""
 
 
 def fetch_click_word_from_final_json(final_json, click_coordinate):
@@ -548,3 +606,30 @@ def sort_json(final_json):
             sorted_json['tables'][table] = OrderedDict(cells)
 
     return sorted_json
+
+
+"""def dynamic_cavas(image):
+    height, width = image.shape[:2]
+
+    if max(height, width) > 2000:  # 35% size reduction
+        scale_percent = 65  # percent of original size
+
+    elif max(height, width) > 1500:
+        scale_percent = 75
+
+
+
+    elif max(height, width) > 1000:
+        scale_percent = 85
+
+    else:
+        scale_percent = 100
+
+    width_scaled = int(image.shape[1] * scale_percent / 100)
+    height_scaled = int(image.shape[0] * scale_percent / 100)
+
+    dim = (width_scaled, height_scaled)
+    # resize image
+    resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+
+    return resized, dim"""

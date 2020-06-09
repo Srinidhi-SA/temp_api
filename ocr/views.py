@@ -644,7 +644,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_verify(L1)', 'l1_verified', 'ready_to_verify(L2)', 'ready_to_export'],
+            status__in=['ready_to_verify(L1)', 'l1_verified', 'ready_to_verify(L2)', 'ready_to_export', 'bad_scan'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -1181,10 +1181,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if name == item:
                         template_classification[classification]['Pages'].remove(name)
                         template_classification[template]['Pages'].append(name)
-            image_queryset.classification = template
             template_data.template_classification = json.dumps(template_classification)
-            image_queryset.save()
             template_data.save()
+            image_queryset.classification = template
+            print(image_queryset.classification)
+            image_queryset.save()
             return JsonResponse({'message': 'SUCCESS'})
         except Exception as e:
             return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})

@@ -175,7 +175,7 @@ class Project(models.Model):
     def get_project_overview(self):
         totalImages, WorkflowCount = self.get_overview_data()
         overview = {
-            "workflows": WorkflowCount,
+            "workflows": totalImages,
             "completion": self.get_completion_percentage(totalImages, WorkflowCount)
         }
         return overview
