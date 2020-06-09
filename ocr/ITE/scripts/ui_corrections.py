@@ -441,20 +441,20 @@ class ui_corrections:
         return
 
 
-def document_confidence(self, analysis):
-    word_count, error = 0, 0
-    for line in analysis['lines']:
+    def document_confidence(self, analysis):
+        word_count, error = 0, 0
+        for line in analysis['lines']:
 
-        for word in line['words']:
-            word_count = word_count + 1
+            for word in line['words']:
+                word_count = word_count + 1
 
-            if 'confidence' in word.keys():
-                error = error + 1
-            else:
-                pass
+                if 'confidence' in word.keys():
+                    error = error + 1
+                else:
+                    pass
 
-    document_accuracy = round((word_count - error) / word_count, 2)
-    return document_accuracy, word_count
+        document_accuracy = round((word_count - error) / word_count, 2)
+        return document_accuracy, word_count
 
 
 def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, analysis, percent=1):
