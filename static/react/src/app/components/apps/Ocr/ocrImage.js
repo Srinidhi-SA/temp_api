@@ -44,70 +44,55 @@ export class OcrImage extends React.Component {
   }
 
   componentDidMount() {
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
-    var OcrImg = document.getElementById("ocrImg");
-    // var imgPath = this.props.imagePath;
-    // var imgObj = new Image();
-    // imgObj.src = imgPath;
-    // OcrImg.src = this.props.ocrImgPath;
+   var OcrImg = document.getElementById("ocrImg");
     OcrImg.onload = () => {
-      // canvas.height = '800';
-      // canvas.width = '700';
-      // canvas.height= OcrImg.style.height;
-      // canvas.width= OcrImg.style.width;
-      ctx.drawImage(OcrImg, 0, 0, 700, 800);
       this.refs.rootImg && this.setState({img2Load:true});
     };
     $('[data-toggle="popover"]').popover({
       placement: 'top'
     });
   }
-  handleCoords = (event) => {
-    if((!this.props.is_closed && !this.state.badScanFlag) || (!this.state.badScanFlag)){
-    document.getElementById("successMsg").innerText = " ";
-    let canvasElem = document.getElementById("myCanvas");
-    var ctx = canvasElem.getContext("2d");
-    let canvasrect = canvasElem.getBoundingClientRect();
-    let canvasX = event.clientX - canvasrect.left;
-    let canvasY = event.clientY - canvasrect.top;
-    // console.log("Coordinate x: " + canvasX, "Coordinate y: " + canvasY);
-    // ctx.beginPath();
-    // ctx.rect(x, y, 100, 50);
-    // ctx.stroke();
+  handleCoords=(e)=>{
+    if((this.props.is_closed)|| (this.state.badScanFlag))
+    {
+      bootbox.alert("This document is submitted for review so editing is restricted");  
+    }
+    else{   
+    document.getElementById("successMsg").innerText = " ";   
+    var offset = $("#ocrImg").offset();
+    var X = (e.pageX - offset.left);
+    var Y = (e.pageY - offset.top);
     if (this.state.zoom == "Reset") {
-      this.setState({x:canvasX, y:canvasY});
-      this.extractText(canvasX, canvasY);
+      this.setState({x:X, y:Y});
+      this.extractText(X, Y);
     }
     else if (this.state.zoom == "110%") {
-      var xaxis = canvasX / 1.10;
-      var yaxis = canvasY / 1.10;
+      var xaxis = X / 1.10;
+      var yaxis = Y / 1.10;
       this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
     else if (this.state.zoom == "125%") {
-      var xaxis = canvasX / 1.25;
-      var yaxis = canvasY / 1.25;
+      var xaxis = X / 1.25;
+      var yaxis = Y / 1.25;
       this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
     else if (this.state.zoom == "150%") {
-      var xaxis = canvasX / 1.50;
-      var yaxis = canvasY / 1.50;
+      var xaxis = X / 1.50;
+      var yaxis = Y / 1.50;
       this.setState({x:xaxis, y:yaxis});
       this.extractText(xaxis, yaxis);
     }
-    let canvasBack = document.getElementById("ocrScroll");
-    let rect = canvasBack.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top - 40;
+    var offset = $("#ocrScroll").offset();
+    var X1 = (e.pageX - offset.left);
+    var Y1 = (e.pageY - offset.top);
     var popOver = document.getElementById("popoverOcr");
-    popOver.setAttribute("style", `position: absolute; left: ${x}px ;top:  ${y}px;display: block; z-index:99`);
+    popOver.setAttribute("style", `position: absolute; left: ${X1}px ;top:  ${Y1-33}px;display: block; z-index:99`);
   }
-  else{
-    bootbox.alert("This document is submitted for review so editing is restricted");   
+  
   }
-  }
+
   handleMarkComplete = () => {
     this.saveTemplate();
     let id = this.props.imageTaskId;
@@ -173,7 +158,7 @@ export class OcrImage extends React.Component {
     document.getElementById("popoverOcr").style.display = 'none';
   }
   zoomIn = () => {
-    var img = document.getElementById("myCanvas");
+    var img = document.getElementById("ocrImg");
     var originalimg = document.getElementById("originalOcrImg");
     if (this.state.zoom == "Reset") {
       img.style.width = 700 + "px";
@@ -200,15 +185,7 @@ export class OcrImage extends React.Component {
       originalimg.style.height = 1200 + "px";
     }
   }
-  // zoomOut=()=>{
-  //   var img = document.getElementById("myCanvas");
-  //   var currWidth = img.clientWidth;
-  //   if(currWidth <= 700) return false;
-  //    else{
-  //       img.style.width = (currWidth - 100) + "px";
-  //       img.style.height= (currLength - 100) + "px";
-  //   } 
-  // }
+
   imageScroll = (e) => {
     $("#originalImgDiv div").attr("id", "scrollOriginal");
     $("#ocrScroll div").attr("id", "scrollOcr");
@@ -309,8 +286,6 @@ export class OcrImage extends React.Component {
 
   handleImageLoad = () => {
     this.refs.rootImg && this.setState({img1Load:true});
-    document.getElementById("originalOcrImg").style.display = "block";
-    document.getElementsByClassName("oLoader")[0].style.display = "none"
   }
   breadcrumbClick=()=>{
     history.go(-1);
@@ -329,7 +304,7 @@ export class OcrImage extends React.Component {
     }
     return (
       <div ref="rootImg">
-        <img id="imgLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />      
+        <img id="imgLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />     
         <div id="imgSection" style={{display:'none'}}>
         <div className="row">
           <div class="col-sm-6">
@@ -384,14 +359,11 @@ export class OcrImage extends React.Component {
           <div style={{ backgroundColor: '#fff', padding: 15 }}>
             <div className="ocrImgTitle">Original</div>
             <Scrollbars style={{ height: 820 }} id="originalImgDiv" onScroll={this.imageScroll}>
-              <div>
-                <img style={{ height: 800, width: 700, display: 'none' }}
+                <img style={{ height: 800, width: 700}}
                   src={this.props.originalImgPath}
                   id="originalOcrImg"
                   onLoad={(e) => this.handleImageLoad(e)}
                 />
-                <img className="oLoader" id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-              </div>
             </Scrollbars>
           </div>
         </div>
@@ -416,28 +388,11 @@ export class OcrImage extends React.Component {
             </ul>
             <div id="confidence_loader"></div>
             <Scrollbars id="ocrScroll" style={{ height: 820 }} onScroll={this.imageScroll}>
-              <div id="popDiv">
-                {/* <span className="ocrZoom" onClick={this.zoomOut}><i class="fa fa-minus"></i></span>
-                <span className="ocrZoom" onClick={this.zoomIn}><i class="fa fa-plus"></i></span>
-                 */}
-
-                <canvas
-                  onClick={this.handleCoords}
-                  id="myCanvas"
-                  className="ocrCanvas"
-                  height="800"
-                  width="700"
-                ></canvas>
-
-                <img style={{ height: 800, width: 700, display: 'none' }}
+                <img style={{ height: 800, width: 700,}}
                   id="ocrImg"
+                  onClick={this.handleCoords}
                   src={this.props.ocrImgPath}
                 />
-                {this.props.ocrImgPath == "" &&
-                  <img id="loading" style={{ position: 'absolute', top: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />
-                }
-
-              </div>
             </Scrollbars>
             <div class="popover fade top in" role="tooltip" id="popoverOcr" style={{ display: 'none' }}>
               <div class="arrow" style={{ left: '91%' }}></div>
