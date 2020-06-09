@@ -139,7 +139,13 @@ class TaskView(viewsets.ModelViewSet):
             if form.is_valid():
                 bad_scan = form.cleaned_data['bad_scan']
                 instance.bad_scan = bad_scan
+                instance.is_closed = True
                 instance.save()
+                reviewrequest = ReviewRequest.objects.get(id=instance.object_id)
+                reviewrequest.status = "reviewerL1_reviewed"
+                reviewrequest.modified_at = datetime.datetime.now()
+                reviewrequest.modified_by = user
+                reviewrequest.save()
                 image_queryset = OCRImage.objects.get(slug=data['slug'])
                 image_queryset.status = "bad_scan"
                 image_queryset.modified_by = self.request.user

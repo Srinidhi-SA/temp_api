@@ -181,7 +181,9 @@ class Project(models.Model):
         return overview
 
     def get_overview_data(self):
-        totalImages = OCRImage.objects.filter(project=self.id).count()
+        totalImages = OCRImage.objects.filter(
+            project=self.id,
+            deleted = False).count()
         WorkflowCount = OCRImage.objects.filter(
             project = self.id,
             is_L2assigned = True,
