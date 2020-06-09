@@ -48,7 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json
+    cleaned_final_json, sort_json, dynamic_cavas_size
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 
 # ------------------------------------------------------------
@@ -980,23 +980,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        try:
-            image_queryset = OCRImage.objects.get(slug=data['slug'])
-            review_start_time = image_queryset.review_start
-            if not review_start_time:
-                data['review_start'] = datetime.datetime.now()
-                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                 context={"request": self.request})
-                if serializer.is_valid():
-                    serializer.save()
-            final_json = json.loads(image_queryset.final_result)
-            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-            size = cv2.imread(mask).shape
-            [x, y] = offset([x, y], size)
-            response = fetch_click_word_from_final_json(final_json, [x, y])
-            return JsonResponse({'exists': response[0], 'word': response[1]})
-        except Exception as e:
-            return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
+        #try:
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        review_start_time = image_queryset.review_start
+        if not review_start_time:
+            data['review_start'] = datetime.datetime.now()
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+        final_json = json.loads(image_queryset.final_result)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        dynamic_shape = dynamic_cavas_size(size[:-1])
+        [x, y] = offset([x, y], size, dynamic_shape)
+        response = fetch_click_word_from_final_json(final_json, [x, y])
+        return JsonResponse({'exists': response[0], 'word': response[1]})
+        #except Exception as e:
+        #    return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
@@ -1027,7 +1028,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 update_history = {reviewer: {}}
             mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
             size = cv2.imread(mask).shape
-            [x, y] = offset([x, y], size)
+            dynamic_shape = dynamic_cavas_size(size[:-1])
+            [x, y] = offset([x, y], size, dynamic_shape)
             final_json_obj = Final_json(final_json, update_history)
             final_json, update_history = final_json_obj.update_final_json([x, y], word)
             data['final_result'] = json.dumps(final_json)
