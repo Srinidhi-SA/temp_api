@@ -441,7 +441,6 @@ class ui_corrections:
         cv2.imwrite(gen_image, mask)
         return
 
-
     def document_confidence(self, analysis):
         word_count, error = 0, 0
         for line in analysis['lines']:
@@ -644,8 +643,6 @@ def dynamic_cavas_size(shape):
 
     elif max(height, width) > 1500:
         scale_percent = 75
-
-
 
     elif max(height, width) > 1000:
         scale_percent = 85
