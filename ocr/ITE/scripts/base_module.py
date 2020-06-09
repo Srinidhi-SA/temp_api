@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ocr.ITE.scripts.utils import optimal_params
-from ocr.ITE.scripts.utils import extract_mask
+from ocr.ITE.scripts.utils import extract_mask, extract_mask_horizontal
 import numpy as np
 import cv2
 from sklearn.cluster import DBSCAN
@@ -59,7 +59,26 @@ class BaseModule:
             'table_coordinates': table_count_dict,
             'temp_number': template_obj.template_number,
             'domain_classification': 'base'}
+
+        tables = self.final_mapped_dict_table
+        #        print('TABLES : ' , tables)
+        if max(self.mask.shape) <= 500:
+
+            white_canvas = 0 * np.ones(self.mask.shape).astype(self.mask.dtype)
+            self.mask2 = white_canvas.copy()
+
+            return self.final_json, self.mask2, self.metadata, template_obj.template
+
+        elif (len(tables) == 0) or (sum([len(tables[table]) for table in tables]) == 0):
+
+            self.mask2, horizontal, vertical = extract_mask_horizontal(bwimage, scalev=scalev,
+                                                                       scaleh=scaleh)
+            return self.final_json, self.mask2, self.metadata, template_obj.template
+        else:
+            pass
+
         return self.final_json, self.mask, self.metadata, template_obj.template
+
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working

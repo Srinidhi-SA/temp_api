@@ -367,13 +367,13 @@ class ui_corrections:
         #        print (fontScale)
         #        print(final_json_to_flag)
         #        print('RESULT: ',sum([len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]))
-        if ((len(final_json_to_flag["tables"]) == 0) or (sum(
-                [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
-            height, width) < 700:  # or plain_mask == True:
-            white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
-            mask = white_canvas.copy()
-        else:
-            pass
+        # if ((len(final_json_to_flag["tables"]) == 0) or (sum(
+        #         [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
+        #     height, width) < 700:  # or plain_mask == True:
+        #     white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
+        #     mask = white_canvas.copy()
+        # else:
+        #     pass
 
         if 'paragraphs' in final_json_to_flag:
             for k in final_json_to_flag["paragraphs"]:
