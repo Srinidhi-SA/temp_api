@@ -1181,10 +1181,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if name == item:
                         template_classification[classification]['Pages'].remove(name)
                         template_classification[template]['Pages'].append(name)
-            image_queryset.classification = template
             template_data.template_classification = json.dumps(template_classification)
-            image_queryset.save()
             template_data.save()
+            image_queryset.classification = template
+            print(image_queryset.classification)
+            image_queryset.save()
             return JsonResponse({'message': 'SUCCESS'})
         except Exception as e:
             return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})
