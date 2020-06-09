@@ -141,11 +141,14 @@ class TaskView(viewsets.ModelViewSet):
                 instance.bad_scan = bad_scan
                 instance.save()
                 image_queryset = OCRImage.objects.get(slug=data['slug'])
-                data = {'status': 'bad_scan'}
-                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                 context={"request": self.request})
-                if serializer.is_valid():
-                    serializer.save()
+                image_queryset.status = "bad_scan"
+                image_queryset.modified_by = self.request.user
+                image_queryset.save()
+                # data = {'status': 'bad_scan'}
+                # serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                #                                  context={"request": self.request})
+                # if serializer.is_valid():
+                #     serializer.save()
                 return JsonResponse({
                     "submitted": True,
                     "message": "Feedback submitted Successfully."
