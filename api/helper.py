@@ -1536,7 +1536,10 @@ def get_random_model_id(algo_name):
         "Linear Regression": "LR",
         "Neural Network (Sklearn)": "NN",
         "Neural Network (TensorFlow)": "TF",
-        "Neural Network (PyTorch)": "PT"
+        "Neural Network (PyTorch)": "PT",
+        "LightGBM": "LGBM",
+        "Ensemble": "EN",
+        "Adaboost": "ADAB"
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number])
