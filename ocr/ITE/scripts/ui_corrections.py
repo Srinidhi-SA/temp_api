@@ -437,9 +437,9 @@ class ui_corrections:
 
         else:
             mask = self.adjust_gamma(mask, gamma=0.4)
+        mask = dynamic_cavas(mask)
         cv2.imwrite(gen_image, mask)
         return
-
 
     def document_confidence(self, analysis):
         word_count, error = 0, 0
@@ -542,10 +542,10 @@ def update_user_changes_to_from_final_json(final_json, click_coordinate, user_in
     return False, final_json
 
 
-def offset(dev_click_cord, image_size):
+def offset(dev_click_cord, image_size, dim):
     x, y = dev_click_cord[0], dev_click_cord[1]
-    x_offseted = int(x * (image_size[1] / 700))
-    y_offseted = int(y * (image_size[0] / 800))
+    x_offseted = int(x * (image_size[1] / dim[1]))
+    y_offseted = int(y * (image_size[0] / dim[0]))
 
     return [x_offseted, y_offseted]
 
@@ -608,7 +608,7 @@ def sort_json(final_json):
     return sorted_json
 
 
-"""def dynamic_cavas(image):
+def dynamic_cavas(image):
     height, width = image.shape[:2]
 
     if max(height, width) > 2000:  # 35% size reduction
@@ -630,6 +630,29 @@ def sort_json(final_json):
 
     dim = (width_scaled, height_scaled)
     # resize image
-    resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+    resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
 
-    return resized, dim"""
+    return resized
+
+
+def dynamic_cavas_size(shape):
+    height, width = shape
+
+    if max(height, width) > 2000:  # 35% size reduction
+        scale_percent = 65  # percent of original size
+
+    elif max(height, width) > 1500:
+        scale_percent = 75
+
+    elif max(height, width) > 1000:
+        scale_percent = 85
+
+    else:
+        scale_percent = 100
+
+    width_scaled = int(shape[1] * scale_percent / 100)
+    height_scaled = int(shape[0] * scale_percent / 100)
+
+    dim = height_scaled, width_scaled
+
+    return dim
