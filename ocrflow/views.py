@@ -144,7 +144,7 @@ class TaskView(viewsets.ModelViewSet):
                 reviewrequest = ReviewRequest.objects.get(id=instance.object_id)
                 reviewrequest.status = "reviewerL1_reviewed"
                 reviewrequest.modified_at = datetime.datetime.now()
-                reviewrequest.modified_by = user
+                reviewrequest.modified_by = request.user
                 reviewrequest.save()
                 image_queryset = OCRImage.objects.get(slug=data['slug'])
                 image_queryset.status = "bad_scan"
