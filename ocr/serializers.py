@@ -87,6 +87,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serialized_data = super(OCRImageListSerializer, self).to_representation(instance)
         serialized_data['assignee'] = instance.get_assignee()
+        serialized_data['role'] = instance.assignee.groups.values_list('name', flat=True)
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = (UserSerializer(instance.created_by).data['username']).capitalize()
         serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
