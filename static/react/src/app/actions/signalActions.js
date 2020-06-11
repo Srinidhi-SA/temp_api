@@ -320,6 +320,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
       dispatch(clearSignalLoaderValues())
       dispatch(clearLoadingMsg());
       dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
+      dispatch(updateSignalAnalysis(signalAnalysis, errandId))
     },2000) 
   } 
   else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
@@ -329,10 +330,15 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg())
+    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
   } else if (signalAnalysis.status == "INPROGRESS") {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
+    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
   }
-    return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
+}
+
+function updateSignalAnalysis(signalAnalysis,errandId){
+  return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
 }
 
 
