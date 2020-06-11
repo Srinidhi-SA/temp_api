@@ -311,8 +311,8 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
       $("#loadingMsgs1")[0].innerHTML ="Step " + (signalAnalysis.message.length-2) + ": " + signalAnalysis.message[signalAnalysis.message.length-2].shortExplanation;
       $("#loadingMsgs2")[0].innerHTML ="Step " + (signalAnalysis.message.length-1) + ": " + signalAnalysis.message[signalAnalysis.message.length-1].shortExplanation;
     }
-    clearInterval(createSignalInterval);
    setTimeout(()=>{
+      clearInterval(createSignalInterval);
       dispatch(closeCsLoaderModal())
       dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       dispatch(clearSignalLoaderValues())
@@ -330,9 +330,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
   } else if (signalAnalysis.status == "INPROGRESS") {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
   }
-  setTimeout(()=>{
     return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
-  },2000)
 }
 
 
