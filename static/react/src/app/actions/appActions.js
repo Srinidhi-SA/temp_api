@@ -765,6 +765,8 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
             $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
             $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
           }
           clearInterval(appsInterval);
           setTimeout(()=>{

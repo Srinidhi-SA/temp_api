@@ -213,6 +213,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             $("#loadingMsgs")[0].innerHTML = "Step " + (dataPreview.message.length-3) + ": " + dataPreview.message[dataPreview.message.length-3].shortExplanation;
             $("#loadingMsgs1")[0].innerHTML ="Step " + (dataPreview.message.length-2) + ": " + dataPreview.message[dataPreview.message.length-2].shortExplanation;
             $("#loadingMsgs2")[0].innerHTML ="Step " + (dataPreview.message.length-1) + ": " + dataPreview.message[dataPreview.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
         }
         clearInterval(interval);
         if(interval != undefined){
