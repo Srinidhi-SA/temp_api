@@ -1176,6 +1176,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         template = data['template']
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
+            image_queryset.classification = template
+            print(image_queryset.classification)
+            image_queryset.save()
             name = image_queryset.imagefile.path.split('/')[-1]
             classification = image_queryset.classification
             template_data = Template.objects.first()
@@ -1190,9 +1193,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         template_classification[template]['Pages'].append(name)
             template_data.template_classification = json.dumps(template_classification)
             template_data.save()
-            image_queryset.classification = template
-            print(image_queryset.classification)
-            image_queryset.save()
             return JsonResponse({'message': 'SUCCESS'})
         except Exception as e:
             return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})
