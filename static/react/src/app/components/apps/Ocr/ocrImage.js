@@ -42,6 +42,7 @@ export class OcrImage extends React.Component {
       img2Load: false,
       badScanFlag: false,
       feedback: "",
+      template: "" ,
     }
   }
 
@@ -96,7 +97,6 @@ export class OcrImage extends React.Component {
   }
 
   handleMarkComplete = () => {
-    this.saveTemplate();
     let id = this.props.imageTaskId;
     var data = new FormData();
     data.append("status", "reviewed");
@@ -152,8 +152,15 @@ export class OcrImage extends React.Component {
     return fetch(API + '/ocr/ocrimage/update_template/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ 'slug': this.props.imageSlug,'template':this.props.classification })
-    }).then(response => response.json());
+      body: JSON.stringify({ 'slug': this.props.imageSlug,'template':this.state.template })
+    }).then(response => response.json())
+    .then(data=>{
+      if(data.message=="SUCCESS"){
+        bootbox.alert(statusMessages("success", "Template Updated.", "small_mascot"));
+      }
+    }
+
+    )
   }
 
   closePopOver = () => {
@@ -347,7 +354,7 @@ export class OcrImage extends React.Component {
            {(this.props.classification!="" && this.props.template.length !=0) &&
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0">Template</label>
-              <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification} onChange={(e)=> this.props.dispatch(saveSelectedTemplate(e.target.value)) }>
+              <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification} onChange={(e)=> this.setState({template: e.target.value},this.saveTemplate)}>
                 {this.props.template.map(i =>(
                   <option value={i}>{i}</option>
                 ))
