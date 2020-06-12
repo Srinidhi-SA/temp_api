@@ -59,7 +59,7 @@ def start_auto_assignment_L1():
         print("Auto-Assignment is not Active.")
         print("~" * 90)
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="start_auto_assignment_L2", ignore_result=False,
+@periodic_task(run_every=(crontab(minute='*/2')), name="start_auto_assignment_L2", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L2():
     OCRRule = OCRRules.objects.get(id=1)

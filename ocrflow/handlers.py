@@ -1,7 +1,7 @@
 import datetime
 from ocr.models import OCRImage
 def update_reviewrequest_after_RL1_approval(form, reviewrequest, user):
-    """This function will get trigger after admin approval.
+    """This function will get trigger after ReviewerL1 approval.
     Use this function for appropriate state in PROCESS config(process.py).
     """
     status = form.cleaned_data['status']
@@ -17,7 +17,7 @@ def update_reviewrequest_after_RL1_approval(form, reviewrequest, user):
     reviewrequest.save()
 
 def update_reviewrequest_after_RL2_approval(form, reviewrequest, user):
-    """This function will get trigger after superuser approval.
+    """This function will get trigger after ReviewerL2 approval.
     Use this function for appropriate state in PROCESS config(process.py).
     """
     status = form.cleaned_data['status']
