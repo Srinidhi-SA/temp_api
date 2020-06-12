@@ -4,7 +4,7 @@ OCR AdminSite Settings
 from django.contrib import admin
 
 # Register your models here.
-from ocr.models import OCRImage, OCRImageset, OCRUserProfile, Template
+from ocr.models import OCRImage, OCRImageset, OCRUserProfile, Template, Project
 
 # -------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods
@@ -78,8 +78,24 @@ class TemplateAdmin(admin.ModelAdmin):
         #queryset = queryset.order_by('-created_at')
         return queryset
 
+class ProjectAdmin(admin.ModelAdmin):
+    """
+    Model: Project
+    """
+    icon = '<i class="material-icons">cloud_done</i>'
+    search_fields = ["slug", "name"]
+    list_display = ["name", "slug", "deleted"]
+    #list_filter = ["slug", "name"]
+    readonly_fields = ["slug"]
+
+    def get_queryset(self, request):
+        queryset = super(ProjectAdmin, self).get_queryset(request)
+        queryset = queryset.order_by('-created_at')
+        return queryset
+
 
 admin.site.register(OCRImage, OCRImageAdmin)
 admin.site.register(OCRImageset, OCRImagesetAdmin)
 admin.site.register(OCRUserProfile, OCRUserProfileAdmin)
 admin.site.register(Template, TemplateAdmin)
+admin.site.register(Project, ProjectAdmin)

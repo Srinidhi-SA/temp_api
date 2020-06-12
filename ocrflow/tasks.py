@@ -59,7 +59,7 @@ def start_auto_assignment_L1():
         print("Auto-Assignment is not Active.")
         print("~" * 90)
 
-@periodic_task(run_every=(crontab(minute='*/5')), name="start_auto_assignment_L2", ignore_result=False,
+@periodic_task(run_every=(crontab(minute='*/2')), name="start_auto_assignment_L2", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L2():
     OCRRule = OCRRules.objects.get(id=1)
@@ -68,6 +68,7 @@ def start_auto_assignment_L2():
         reviewRequestIDs = ReviewRequest.objects.filter(
             tasks__is_closed = True,
             ocr_image__is_L2assigned = False,
+            ocr_image__status__in = ["l1_verified"],
             ocr_image__modified_at__gt = datetime.datetime.now()-datetime.timedelta(days=7),
             ocr_image__modified_at__lte = datetime.datetime.now()
         ).values_list('id', flat=True)

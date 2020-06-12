@@ -377,7 +377,7 @@ export class OcrTable extends React.Component {
             <i style={{color:'#414f50',fontSize:14}} className={item.type==".pdf"? "fa fa-file-pdf-o":"fa fa-file-image-o"}></i>
             </td>
             <td style={status.includes(item.status) ? { cursor: 'not-allowed' } : { cursor: 'pointer' }}>
-              <Link style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
+              <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
             <td>{item.classification}</td>
@@ -471,6 +471,7 @@ export class OcrTable extends React.Component {
               <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
                 {!this.props.projectTabLoaderFlag ? this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+                  <Scrollbars style={{ width: 'calc(100% - 1px)', height:360 }}>
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                     <thead>
                       <tr>
@@ -489,6 +490,7 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'R', 'status')} name="ready to recognize">Ready to Recognize</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'A', 'status')} name="ready to assign">Ready to Assign</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V1', 'status')} name="ready to verify">Ready to Verify(L1)</a></li>
+                            <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'C1', 'status')} name="ready to verify">L1 Verified</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'V2', 'status')} name="ready to verify">Ready to Verify(L2)</a></li>
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
@@ -552,7 +554,8 @@ export class OcrTable extends React.Component {
                     <tbody className="no-border-x">
                       {OcrTableHtml}
                     </tbody>
-                  </table>)
+                  </table>
+                  </Scrollbars>)
                   :
                   (<div class="panel">
                     <div class="panel-body">

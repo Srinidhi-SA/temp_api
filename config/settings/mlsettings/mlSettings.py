@@ -514,6 +514,30 @@ AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
             "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
             "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
             "description": "A python based library built to provide flexibility as a deep learning development platform. It is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing."
+        },
+        {
+            "algorithmName": "LightGBM",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "lgbm",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": """For LightGBM Algorithm"""
+        },
+        {
+            "algorithmName": "Ensemble",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "en",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": """For Ensemble Algorithm"""
+        },
+        {
+            "algorithmName": "Adaboost",
+            "selected": True,
+            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+            "algorithmSlug": ALGORITHMRANDOMSLUG + "adab",
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+            "description": """For Adaboost Algorithm"""
         }
     ]
 }

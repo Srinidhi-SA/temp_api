@@ -85,6 +85,8 @@ export default function reducer(state = {
   is_closed: "",
   template: [],
   classification: "",
+  ocrImgHeight: "",
+  ocrImgWidth: "",
 
 }, action) {
   switch (action.type) {
@@ -275,6 +277,8 @@ export default function reducer(state = {
           is_closed: close,
           template: templateVal,
           classification: classificationVal,
+          ocrImgHeight: action.data.height,
+          ocrImgWidth: action.data.width,
         }
       }
       break;

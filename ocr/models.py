@@ -173,29 +173,39 @@ class Project(models.Model):
         self.save()
 
     def get_project_overview(self):
-        totalTasks, closedTasks = self.get_workflow_data()
+        totalImages, WorkflowCount = self.get_overview_data()
         overview = {
-            "workflows": totalTasks,
-            "completion": self.get_completion_percentage(totalTasks, closedTasks)
+            "workflows": totalImages,
+            "completion": self.get_completion_percentage(totalImages, WorkflowCount)
         }
         return overview
 
-    def get_workflow_data(self):
-        from ocrflow.models import Task, ReviewRequest
-        totalTasks = 0
-        closedTasks = 0
-        reviewObjQueryset = ReviewRequest.objects.filter(
-            ocr_image__project=self.id
-        )
-        for reviewObj in reviewObjQueryset:
-            TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
-            for task in TaskQueryset:
-                totalTasks += 1
-                if task.is_closed:
-                    closedTasks += 1
-
-        return totalTasks, closedTasks
-
+    def get_overview_data(self):
+        totalImages = OCRImage.objects.filter(
+            project=self.id,
+            deleted = False).count()
+        WorkflowCount = OCRImage.objects.filter(
+            project = self.id,
+            is_L2assigned = True,
+            status = "ready_to_export"
+        ).count()
+        return totalImages, WorkflowCount
+    # def get_workflow_data(self):
+    #     from ocrflow.models import Task, ReviewRequest
+    #     totalTasks = 0
+    #     closedTasks = 0
+    #     reviewObjQueryset = ReviewRequest.objects.filter(
+    #         ocr_image__project=self.id
+    #     )
+    #     for reviewObj in reviewObjQueryset:
+    #         TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
+    #         for task in TaskQueryset:
+    #             totalTasks += 1
+    #             if task.is_closed:
+    #                 closedTasks += 1
+    #
+    #     return totalTasks, closedTasks
+    #
     def get_completion_percentage(self, totalTasks, closedTasks):
         if totalTasks == 0:
             return 0
@@ -257,6 +267,7 @@ class OCRImage(models.Model):
         ("failed", "Failed to Recognize"),
         ("ready_to_assign", "Ready to assign"),
         ("ready_to_verify(L1)", "Ready to verify(L1)"),
+        ("l1_verified", "L1 Verified"),
         ("ready_to_verify(L2)", "Ready to verify(L2)"),
         ("ready_to_export", "Ready to export")
     ]

@@ -79,4 +79,18 @@ def extract_mask(bw, scalev=40, scaleh=20):  ## OVERLAP OF HORIZONTAL AND VERTIC
     vertical = vertical + cv2.morphologyEx(vertical, cv2.MORPH_GRADIENT, np.ones(
         (4, 4)))  ## ADDDING OUTPUT TO ADDITIONAL LAYER OF EXO SKELETON OF THE LINES
     mask = horizontal + vertical
+
     return mask, horizontal, vertical
+
+
+def extract_mask_horizontal(bw, scalev=40, scaleh=20):  ## OVERLAP OF HORIZONTAL AND VERTICAL MASKS
+    # Scalev and Scaleh are Used to increase/decrease the amount of lines to be detected
+
+    horizontal = bw.copy()
+    horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal.shape[1] // int(scaleh), 1))
+    horizontal = cv2.erode(horizontal, horizontalStructure, iterations=2)
+    horizontal = cv2.dilate(horizontal, horizontalStructure, iterations=1)
+    # horizontal = cv2.dilate(horizontal, np.ones((4, 4)))
+    horizontal = horizontal + cv2.morphologyEx(horizontal, cv2.MORPH_GRADIENT, np.ones((4, 4)))
+
+    return horizontal, horizontal, None
