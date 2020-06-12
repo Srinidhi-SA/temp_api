@@ -19,7 +19,6 @@ import {handleJobProcessing} from "../../helpers/helper";
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
     dULoaderValue: store.datasets.dULoaderValue,
     dataLoaderText: store.datasets.dataLoaderText,
-    showHideData: store.dataUpload.showHideData,
     selectedDataSet:store.datasets.selectedDataSet,
     dataLoadedText:store.datasets.dataLoadedText,
     metaDataLoaderidxVal:store.datasets.metaDataLoaderidxVal,
@@ -67,7 +66,6 @@ export class DataUploadLoader extends React.Component {
 
   render() {
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
-    //let checked=!this.props.showHideData
 	$('#text-carousel').carousel();
     return (
       <div id="dULoader">
@@ -268,8 +266,6 @@ export class DataUploadLoader extends React.Component {
               </div>
             </div>
           </Modal.Body>
-          {(this.props.showHideData)
-            ? (
               <Modal.Footer>
                 <div>
                   <Link to="/data" style={{
@@ -282,10 +278,6 @@ export class DataUploadLoader extends React.Component {
                   </Link>
                 </div>
               </Modal.Footer>
-            )
-            : (
-              <div></div>
-            )
 }
 
         </Modal>
