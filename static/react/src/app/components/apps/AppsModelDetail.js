@@ -94,12 +94,12 @@ export class AppsModelDetail extends React.Component {
 					att.value = "summaryLink";
 					info.setAttributeNode(att);
 					var modelName= store.getState().apps.modelSummary.name;
-					info.innerText = 	modelName.includes("shared") ? " ":"For More Info Click Here";
-
-					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName) )
-					info.href = (sel.length !=0)?
-					this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug):"#"
-					$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
+					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName+"_"))
+					if( (sel.length!=0) && (!modelName.includes("shared")) ){
+						info.innerText = "For More Info Click Here";
+						info.href = this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug)
+						$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
+					}
 				}
 			}
 
