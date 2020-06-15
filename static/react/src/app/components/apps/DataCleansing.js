@@ -150,6 +150,18 @@ setMissingValuesOnEdit(){
   componentDidMount() {
 
 
+var selectElements = document.getElementsByTagName("select");
+  var i,j;
+  for (i = 1; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+    if(selectElements[i].options.length==3){   
+      if(selectElements[i].options[j].selected)
+       selectElements[i].options[j].style.display = 'none';
+      else
+       selectElements[i].options[j].style.display = 'inline';
+    }
+  }
+  }
     var table = document.getElementById('dctable'),
     tableHead = table.querySelector('thead'),
     tableHeaders = tableHead.querySelectorAll('th'),
@@ -287,14 +299,24 @@ tableHead.addEventListener('click', function (e) {
 
   handleDataTypeChange(colSlug, event) {
     this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
+    
+    var select = document.getElementById(`${colSlug}dataType`);
+    const selectedOption = event.target.value
+
+    for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==selectedOption)
+        select.options[i].style.display='none'
+      else
+        select.options[i].style.display='inline'
+    }
   }
 
   getUpdatedDataType(colSlug) {
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
-   if(!this.props.editmodelFlag)
+    if(!this.props.editmodelFlag)
     var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-   else
-        colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
+    else
+    colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
       if (item.toLowerCase() == colType.toLowerCase()) {
@@ -303,7 +325,7 @@ tableHead.addEventListener('click', function (e) {
         return <option value={item.toLowerCase()} > {item}</option>
       }
     })
-    return <select className="form-control" id={colSlug} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
+    return <select className="form-control" id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
