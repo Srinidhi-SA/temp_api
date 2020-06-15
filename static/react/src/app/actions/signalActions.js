@@ -125,10 +125,14 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
           loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
           //alert(msg + "  " + loaderVal)
         }
-
+        if(loaderVal!=-1 && store.getState().signals.sigLoaderidxVal!=0){
+          dispatch(updateSignalIndex(store.getState().signals.sigLoaderidxVal))
+        }
+        dispatch(updateSignalIndexValue(loading_message.length));
         dispatch(updateCsLoaderValue(loaderVal));
         dispatch(updateCsLoaderMsg(msg));
       } else {
+        dispatch(clearSignalLoaderValues())
         dispatch(clearLoadingMsg())
       }
 
@@ -137,6 +141,21 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
   }
 
   return {type: "CREATE_SUCCESS", signalData}
+}
+function updateSignalIndexValue(idxVal) {
+  return {
+    type: "SIGNAL_LOADER_IDX_VAL",idxVal
+  }  
+}
+function updateSignalIndex(idx) {
+  return {
+    type: "SIGNAL_LOADER_IDX",idx
+  }  
+}
+export function clearSignalLoaderValues() {
+  return {
+    type: "CLEAR_SIGNAL_LOADER_VALUES"
+  }
 }
 export function clearCreateSignalInterval() {
   clearInterval(createSignalInterval);
@@ -286,11 +305,23 @@ function fetchPosts_analysis(token, errandId) {
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
   if (signalAnalysis.status == SUCCESS) {
-   clearInterval(createSignalInterval);
-    dispatch(closeCsLoaderModal())
-    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-    dispatch(clearLoadingMsg());
-    dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
+    if(store.getState().signals.createSignalLoaderModal && signalAnalysis.message!=null && signalAnalysis.message.length>0){
+      document.getElementsByClassName("sigProgress")[0].innerHTML = (document.getElementsByClassName("sigProgress")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+      $("#loadingMsgs")[0].innerHTML = "Step " + (signalAnalysis.message.length-3) + ": " + signalAnalysis.message[signalAnalysis.message.length-3].shortExplanation;
+      $("#loadingMsgs1")[0].innerHTML ="Step " + (signalAnalysis.message.length-2) + ": " + signalAnalysis.message[signalAnalysis.message.length-2].shortExplanation;
+      $("#loadingMsgs2")[0].innerHTML ="Step " + (signalAnalysis.message.length-1) + ": " + signalAnalysis.message[signalAnalysis.message.length-1].shortExplanation;
+      $("#loadingMsgs1")[0].className = "modal-steps"
+      $("#loadingMsgs2")[0].className = "modal-steps active"
+    }
+   setTimeout(()=>{
+      clearInterval(createSignalInterval);
+      dispatch(closeCsLoaderModal())
+      dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+      dispatch(clearSignalLoaderValues())
+      dispatch(clearLoadingMsg());
+      dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
+      dispatch(updateSignalAnalysis(signalAnalysis, errandId))
+    },2000) 
   } 
   else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
@@ -299,9 +330,14 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg())
+    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
   } else if (signalAnalysis.status == "INPROGRESS") {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
+    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
   }
+}
+
+function updateSignalAnalysis(signalAnalysis,errandId){
   return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
 }
 

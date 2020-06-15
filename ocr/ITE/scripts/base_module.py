@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ocr.ITE.scripts.utils import optimal_params
-from ocr.ITE.scripts.utils import extract_mask
+from ocr.ITE.scripts.utils import extract_mask, extract_mask_horizontal
 import numpy as np
 import cv2
 from sklearn.cluster import DBSCAN
@@ -44,8 +44,9 @@ class BaseModule:
         self.final_mapped_dict_table = self.map_info_to_cells(
             self.microsoft_analysis,
             self.table_cell_dict, self.final_mapped_dict_table)
-        self.paras, rel_para_area = self.detect_paragraphs(
+        paras, rel_para_area = self.detect_paragraphs(
             self.microsoft_analysis, self.table_cell_dict, order, parent_area)
+        self.paras = self.final_json_para_corrections(paras)
         self.metadata = self.fetch_metadata(
             table_area_dict, table_count_dict, order, self.microsoft_analysis, rel_para_area, self.paras,
             table_rel_centroid_dist_dict, self.table_cell_dict)
@@ -58,7 +59,26 @@ class BaseModule:
             'table_coordinates': table_count_dict,
             'temp_number': template_obj.template_number,
             'domain_classification': 'base'}
+
+        tables = self.final_mapped_dict_table
+        #        print('TABLES : ' , tables)
+        if max(self.mask.shape) <= 500:
+
+            white_canvas = 0 * np.ones(self.mask.shape).astype(self.mask.dtype)
+            self.mask2 = white_canvas.copy()
+
+            return self.final_json, self.mask2, self.metadata, template_obj.template
+
+        elif (len(tables) == 0) or (sum([len(tables[table]) for table in tables]) == 0):
+
+            self.mask2, horizontal, vertical = extract_mask_horizontal(bwimage, scalev=scalev,
+                                                                       scaleh=scaleh)
+            return self.final_json, self.mask2, self.metadata, template_obj.template
+        else:
+            pass
+
         return self.final_json, self.mask, self.metadata, template_obj.template
+
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working
@@ -811,7 +831,7 @@ class BaseModule:
         words = [bb['text'] for line in analysis["lines"] for bb in line['words']]
         return words
 
-    def extract_struct_details(self, table_cell_dict):
+    """def extract_struct_details(self, table_cell_dict):
         table_struc_stats = {}
         for table in table_cell_dict:
             table_struc_stats[table] = {}
@@ -826,6 +846,29 @@ class BaseModule:
 
             table_struc_stats[table]['ncols'] = ncols
             table_struc_stats[table]['nrows'] = nrows
+
+        return table_struc_stats"""
+
+    def extract_struct_details(self, table_cell_dict):
+        table_struc_stats = {}
+        for table in table_cell_dict:
+
+            table_struc_stats[table] = {}
+
+            if len(table_cell_dict[table]) > 0:
+                cells_dict = dict(table_cell_dict[table])
+                cells = list(cells_dict.keys())
+
+                ncols = max([int(cell.split('r')[0].split('c')[1]) for cell in cells])
+                nrows = max([int(cell.split('r')[1]) for cell in cells])
+                #        print('ncols:',ncols , '*'*20)
+                #        print('nrows:',nrows , '*'*20)
+
+                table_struc_stats[table]['ncols'] = ncols
+                table_struc_stats[table]['nrows'] = nrows
+            else:
+                table_struc_stats[table]['ncols'] = 0
+                table_struc_stats[table]['nrows'] = 0
 
         return table_struc_stats
 
@@ -858,3 +901,17 @@ class BaseModule:
         page_metadata['no_of_paras'] = len(paras)
         page_metadata['order'] = sorted(order, key=order.get)
         return page_metadata
+
+    def final_json_para_corrections(self, temp):
+        paragraphs = {}
+        for para in temp:
+            lines_all = []
+            for lines in temp[para]:
+                all_words = []
+                for word in lines["words"]:
+                    all_words.append({"text": word["text"], "boundingBox": {"p1": word["boundingBox"][0:2],
+                                                                            "p3": word["boundingBox"][4:6]}})
+                #                    print(para,word["text"],word["boundingBox"])
+                lines_all.append(all_words)
+            paragraphs.update({para: lines_all})
+        return paragraphs

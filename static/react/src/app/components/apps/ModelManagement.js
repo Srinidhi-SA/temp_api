@@ -241,6 +241,7 @@ export class ModelManagement extends React.Component {
           <option value="GB_">GBTree Regression</option>
           <option value="RFR_">Random Forest Regression</option>
           <option value="LR_">Linear Regression</option>
+          <option value="TF_">Neural Network (TensorFlow)</option>
           </select>)
           :renderSelectBoxAlgorithms=(
             <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
@@ -250,8 +251,10 @@ export class ModelManagement extends React.Component {
             <option value="LG_">Linear Regression</option>
             <option value="NB_">Naive Bayes</option>
             <option value="NN_">Neural Network (Sklearn)</option>
-            <option value="TF_">Tensor Flow</option>
-            <option value="PT_">Neural Networks(pyTorch)</option>
+            <option value="TF_">Neural Network (TensorFlow)</option>
+            <option value="PT_">Neural Network (PyTorch)</option>
+            <option value="EN_">Ensemble</option>
+            <option value="ADAB_">Adaboost</option>
           </select>);
 
     // mapping of list items into table

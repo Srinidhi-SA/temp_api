@@ -48,7 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json
+    cleaned_final_json, sort_json, dynamic_cavas_size
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 
 # ------------------------------------------------------------
@@ -71,7 +71,7 @@ from .serializers import OCRImageSerializer, \
     ProjectListSerializer, \
     OCRImageExtractListSerializer, \
     GroupSerializer, \
-    OCRReviewerSerializer
+    OCRReviewerSerializer, OCRImageNameListSerializer
 
 # ------------------------------------------------------------
 # ---------------------PAGINATION----------------------------
@@ -500,7 +500,10 @@ class OCRUserView(viewsets.ModelViewSet):
             serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
             UsersList = dict()
             for index, i in enumerate(serializer.data):
-                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id'), 'email': i.get('email')}})
+                UsersList.update({index: {
+                    'name': (i.get('username')).capitalize(),
+                    'Uid': i.get('id'),
+                    'email': i.get('email')}})
             return JsonResponse({'allUsersList': UsersList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
@@ -641,7 +644,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_verify(L1)', 'ready_to_verify(L2)', 'ready_to_export'],
+            status__in=['ready_to_verify(L1)', 'l1_verified', 'ready_to_verify(L2)', 'ready_to_export', 'bad_scan'],
             created_by=self.request.user,
             project__slug=projectslug
         ).order_by('-created_at')
@@ -670,7 +673,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         )
 
     def process_image(self, data, response, slug, image_queryset):
-
         data['final_result'] = json.dumps(response['final_json'])
         data['analysis'] = json.dumps(response['analysis'])
         image = base64.decodebytes(response['mask'].encode('utf-8'))
@@ -692,7 +694,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
-        data['modified_by'] = self.request.user.id
+        #data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
         data['classification'] = str(response['final_json']['temp_number'][0]).upper()
@@ -777,6 +779,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             response['imageset_serializer_error'] = serializer.errors
             response['imageset_message'] = 'FAILED'
 
+        imagename_list = []
+        image_query = self.get_queryset()
+        for i in image_query:
+            imagename_list.append(i.name)
+
         for file in files:
             if data['dataSourceType'] == 'S3':
                 img_data = dict()
@@ -790,6 +797,17 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                                         random.randint(1000000, 10000000)))
                 else:
                     img_data['name'] = file[:-4].replace('.', '_')
+                img_data['created_by'] = request.user.id
+                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
+                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                if serializer.is_valid():
+                    image_object = serializer.save()
+                    image_object.create()
 
             if data['dataSourceType'] == 'fileUpload':
                 img_data['imagefile'] = file
@@ -800,29 +818,29 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                                         random.randint(1000000, 10000000)))
                 else:
                     img_data['name'] = file.name[:-4].replace('.', '_')
+                img_data['created_by'] = request.user.id
+                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                # if img_data['name'] in imagename_list:
+                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                #     response['serializer_error'] = str(serializer_error)
+                #     response['message'] = 'FAILED'
+                #     return JsonResponse(response)
+                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                if serializer.is_valid():
+                    image_object = serializer.save()
+                    image_object.create()
 
             if data['dataSourceType'] == 'SFTP':
                 pass
 
-            imagename_list = []
-            image_query = self.get_queryset()
-            for i in image_query:
-                imagename_list.append(i.imagefile.name)
-            if img_data['name'] in imagename_list:
-                serializer_error.append(creation_failed_exception("Image name already exists!."))
-
-            img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-            img_data['created_by'] = request.user.id
-            img_data['modified_by'] = request.user.id
-            serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+            img_data['status'] = 'ready_to_recognize'
+            serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
+                                             context={"request": self.request})
             if serializer.is_valid():
-                image_object = serializer.save()
-                image_object.create()
+                serializer.save()
                 serializer_data.append(serializer.data)
             else:
                 serializer_error.append(serializer.errors)
-            image_object.status = 'ready_to_recognize'
-            image_object.save()
         if not serializer_error:
             response['serializer_data'] = serializer_data
             response['message'] = 'SUCCESS'
@@ -873,6 +891,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details.update({'values': value})
         desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values', 'classification']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
+        mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
+        size = cv2.imread(mask).shape
+        dynamic_shape = dynamic_cavas_size(size[:-1])
+        object_details.update({'height': dynamic_shape[0], 'width': dynamic_shape[1]})
         return Response(object_details)
 
     def update(self, request, *args, **kwargs):
@@ -916,6 +938,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def extract(self, request, *args, **kwargs):
         data = request.data
         results = []
+        image_list = []
         try:
             template = json.loads(Template.objects.first().template_classification)
             if 'slug' in data:
@@ -929,6 +952,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     res = res.get()
                     for response in res.values():
                         slug = response['image_slug']
+                        data = {}
                         serializer = self.process_image(data, response, slug, image_queryset)
                         if serializer.is_valid():
                             serializer.save()
@@ -938,9 +962,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             temp_obj.save()
                             if image_queryset.imagefile.path[-4:] == '.pdf':
                                 image_queryset.status = 'ready_to_assign'
+                                image_queryset.deleted = True
                                 image_queryset.save()
                         else:
+                            image_list.append(response['image_slug'])
                             results.append(serializer.errors)
+                if image_list:
+                    for slug in image_list:
+                        image_queryset = OCRImage.objects.get(slug=slug)
+                        image_queryset.status = 'failed'
+                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                         context={"request": self.request})
+                        if serializer.is_valid():
+                            serializer.save()
                 return Response(results)
         except Exception as e:
             return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
@@ -951,23 +985,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        try:
-            image_queryset = OCRImage.objects.get(slug=data['slug'])
-            review_start_time = image_queryset.review_start
-            if not review_start_time:
-                data['review_start'] = datetime.datetime.now()
-                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                 context={"request": self.request})
-                if serializer.is_valid():
-                    serializer.save()
-            final_json = json.loads(image_queryset.final_result)
-            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-            size = cv2.imread(mask).shape
-            [x, y] = offset([x, y], size)
-            response = fetch_click_word_from_final_json(final_json, [x, y])
-            return JsonResponse({'exists': response[0], 'word': response[1]})
-        except Exception as e:
-            return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
+        #try:
+        image_queryset = OCRImage.objects.get(slug=data['slug'])
+        review_start_time = image_queryset.review_start
+        if not review_start_time:
+            data['review_start'] = datetime.datetime.now()
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+        final_json = json.loads(image_queryset.final_result)
+        mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+        size = cv2.imread(mask).shape
+        dynamic_shape = dynamic_cavas_size(size[:-1])
+        [x, y] = offset([x, y], size, dynamic_shape)
+        response = fetch_click_word_from_final_json(final_json, [x, y])
+        return JsonResponse({'exists': response[0], 'word': response[1]})
+        #except Exception as e:
+        #    return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
@@ -998,7 +1033,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 update_history = {reviewer: {}}
             mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
             size = cv2.imread(mask).shape
-            [x, y] = offset([x, y], size)
+            dynamic_shape = dynamic_cavas_size(size[:-1])
+            [x, y] = offset([x, y], size, dynamic_shape)
             final_json_obj = Final_json(final_json, update_history)
             final_json, update_history = final_json_obj.update_final_json([x, y], word)
             data['final_result'] = json.dumps(final_json)
@@ -1040,28 +1076,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     @list_route(methods=['post'])
     def not_clear(self, request, *args, **kwargs):
         data = request.data
-        index = data['index']
-        word = data['word']
-
         image_queryset = OCRImage.objects.get(slug=data['slug'])
-        comparision_data = json.loads(image_queryset.comparision_data)
-        converted_Coordinates = json.loads(image_queryset.converted_Coordinates)
-        converted_Coordinates, comparision_data, analysis_list = not_clear(index, word, converted_Coordinates,
-                                                                           comparision_data)
-
-        data['comparision_data'] = json.dumps(comparision_data)
-        data['converted_Coordinates'] = json.dumps(converted_Coordinates)
-
-        if 'analysis_list' in request.session:
-            request.session['analysis_list'].extend(analysis_list)
-        else:
-            request.session['analysis_list'] = analysis_list
-        data['analysis_list'] = json.dumps(request.session['analysis_list'])
+        data['status'] = 'bad_scan'
         serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
                                          context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'marked': True})
+            return JsonResponse({'message': 'SUCCESS'})
         return Response(serializer.errors)
 
     @list_route(methods=['post'])
@@ -1155,19 +1176,39 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         template = data['template']
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
+            image_queryset.classification = template
+            print(image_queryset.classification)
+            image_queryset.save()
             name = image_queryset.imagefile.path.split('/')[-1]
             classification = image_queryset.classification
             template_data = Template.objects.first()
             template_classification = json.loads(template_data.template_classification)
-            template_classification[classification]['Pages'].remove(name)
-            template_classification[template]['Pages'].append(name)
-            image_queryset.classification = template
+            for item in template_classification[classification]['Pages']:
+                if slug in item:
+                    template_classification[classification]['Pages'].remove(item)
+                    template_classification[template]['Pages'].append(item)
+                else:
+                    if name == item:
+                        template_classification[classification]['Pages'].remove(name)
+                        template_classification[template]['Pages'].append(name)
             template_data.template_classification = json.dumps(template_classification)
-            image_queryset.save()
             template_data.save()
             return JsonResponse({'message': 'SUCCESS'})
         except Exception as e:
             return JsonResponse({'message': 'Failed to modify template!', 'error': str(e)})
+
+    @detail_route(methods=['get'])
+    def all(self, request, *args, **kwargs):
+        project = OCRImage.objects.get(slug=self.kwargs['slug']).project
+        queryset = OCRImage.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            project=project
+        )
+        serializer = OCRImageNameListSerializer(queryset, many=True, context={"request": self.request})
+        return Response({
+            "data": set(item['name'] for item in serializer.data)
+        })
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -1311,7 +1352,9 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         for i in project_query:
             projectname_list.append(i.name)
         if data['name'] in projectname_list:
-            response['project_serializer_error'] = creation_failed_exception("project name already exists!.")
+            response['project_serializer_error'] = creation_failed_exception("project name already exists!.").data['exception']
+            response['project_serializer_message'] = 'FAILED'
+            return JsonResponse(response)
 
         data['created_by'] = request.user.id
 
@@ -1325,7 +1368,6 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             response['project_serializer_error'] = serializer.errors
             response['project_serializer_message'] = 'FAILED'
-        print(response)
         return JsonResponse(response)
 
     @detail_route(methods=['get'])

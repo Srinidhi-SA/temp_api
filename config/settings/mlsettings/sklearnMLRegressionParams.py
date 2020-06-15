@@ -555,14 +555,14 @@ TENSORFLOW_LAMBDA_FUNCTIONS = [
     {"name": "2*X", "selected": True, "displayName": "2*X"},
 ]
 SKLEARN_ML_SUPPORTED_TF_LOSS_PARAMETERS = [
-    {"name": "mean_squared_error", "selected": False, "displayName": "mean_squared_error"},
+    {"name": "mean_squared_error", "selected": True, "displayName": "mean_squared_error"},
     {"name": "mean_absolute_error", "selected": False, "displayName": "mean_absolute_error"},
     {"name": "mean_absolute_percentage_error", "selected": False, "displayName": "mean_absolute_percentage_error"},
     {"name": "mean_squared_logarithmic_error", "selected": False, "displayName": "mean_squared_logarithmic_error"},
     {"name": "cosine_proximity", "selected": False, "displayName": "cosine_proximity"},
 ]
 SKLEARN_ML_SUPPORTED_TF_OPTIMIZER_PARAMETERS = [
-    {"name": "SGD", "selected": False, "displayName": "SGD"},
+    {"name": "SGD", "selected": True, "displayName": "SGD"},
     {"name": "RMSprop", "selected": False, "displayName": "RMSprop"},
     {"name": "Adagrad", "selected": False, "displayName": "Adagrad"},
     {"name": "Adadelta", "selected": False, "displayName": "Adadelta"},
@@ -577,7 +577,7 @@ TF_REGRESSION_METRICS = [
     {"name": "mean", "selected": False, "displayName": "mean"},
     {"name": "mean_absolute_error", "selected": False, "displayName": "mean_absolute_error"},
     {"name": "mean_absolute_percentage_error", "selected": False, "displayName": "mean_absolute_percentage_error"},
-    {"name": "mean_squared_error", "selected": False, "displayName": "mean_squared_error"},
+    {"name": "mean_squared_error", "selected": True, "displayName": "mean_squared_error"},
     {"name": "mean_squared_logarithmic_error", "selected": False, "displayName": "mean_squared_logarithmic_error"},
 ]
 TENSORFLOW_DENSE_PARAMETERS = [
@@ -747,7 +747,7 @@ TENSORFLOW_LAMBDA_PARAMETERS = [
     },
 ]
 SKLEARN_ML_SUPPORTED_TF_LAYER = [
-    {"name": "Dense", "selected": False, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
+    {"name": "Dense", "selected": True, "displayName": "Dense","parameters":[obj for obj in TENSORFLOW_DENSE_PARAMETERS]},
     {"name": "Dropout", "selected": False, "displayName": "Dropout","parameters":[obj for obj in TENSORFLOW_DROPOUT_PARAMETERS]},
     {"name": "Lambda", "selected": False, "displayName": "Lambda","parameters":[obj for obj in TENSORFLOW_LAMBDA_PARAMETERS]}
 ]
@@ -798,29 +798,29 @@ SKLEARN_ML_TENSORFLOW_REGRESSION_PARAMS = [
         "name": "batch_size",
         "displayName": "Batch Size",
         "description": "The number of training examples in one Forward/Backward Pass.",
-        "defaultValue": 0.0,
+        "defaultValue": 100,
         "acceptedValue": None,
         "valueRange": [0.0, 100.0],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "number_of_epochs",
         "displayName": "Number of Epochs",
         "description": "An epoch refers to one cycle through the full training data-set.",
-        "defaultValue": 0.0,
+        "defaultValue": 100,
         "acceptedValue": None,
         "valueRange": [0.0, 10000.0],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
         "hyperpatameterTuningCandidate": False,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "metrics",

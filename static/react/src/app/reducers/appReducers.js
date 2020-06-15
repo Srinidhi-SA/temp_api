@@ -117,6 +117,8 @@ export default function reducer(state = {
         idLayer:[],
         layerType:"Dense",
         panels:[],
+        modelLoaderidxVal:0,
+        modelLoaderidx:0,
 
 }, action) {
 
@@ -501,6 +503,29 @@ export default function reducer(state = {
             appsLoadedText : action.text,
         }
     }
+    break;
+    case "MODEL_LOADER_IDX_VAL": {
+        return {
+          ...state,
+          modelLoaderidxVal : action.idxVal
+        }
+      }
+      break;
+    case "MODEL_LOADER_IDX": {
+      return {
+        ...state,
+        modelLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_MODEL_LOADER_VALUES":{
+      return {
+        ...state,
+        modelLoaderidxVal:0,
+        modelLoaderidx:0,
+      }
+    }
+    break;
     case "HIDE_APPS_LOADER_MODAL":
     {
 

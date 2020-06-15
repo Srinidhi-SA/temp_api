@@ -17,7 +17,7 @@ import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName,openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
-import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED, statusMessages} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -86,7 +86,6 @@ export class DataCard extends React.Component {
         dataUpload.slug = slug
         this.props.dispatch(openDULoaderPopup());
         this.props.dispatch(updateDatasetName(slug));
-        this.props.dispatch(updateHideData(true));
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
     

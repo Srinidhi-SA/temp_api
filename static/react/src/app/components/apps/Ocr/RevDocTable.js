@@ -8,7 +8,8 @@ import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
-import { API } from "../../../helpers/env"
+import { API } from "../../../helpers/env";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 @connect((store) => {
   return {
@@ -157,12 +158,13 @@ export class RevDocTable extends React.Component {
           <tr id={index}>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
             <td>{item.project}</td>
-             <td>{item.status}</td>
+            <td>{item.status}</td>
+            <td>{item.ocrImageData.classification}</td>
             <td>{item.ocrImageData.fields}</td>
             <td>{item.ocrImageData.confidence}</td>
-            <td>{new Date(item.created_on).toLocaleString().split(',')[0]}</td>
-            <td>{new Date(item.modified_at).toLocaleString()}</td>
-            <td>{item.ocrImageData.modified_by}</td>
+            <td>{new Date(item.created_on).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td>{item.modified_by}</td>
           </tr>
         )
       }
@@ -194,7 +196,8 @@ export class RevDocTable extends React.Component {
             {this.props.OcrRevwrDocsList != '' ? 
             // this.props.OcrRevwrDocsList.total_data_count>= 1 ?
              (
-            <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+            <Scrollbars style={{ width: 'calc(100% - 1px)', height:390 }}>
+            <table id="reviewDocumentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
                 <th>NAME</th>
@@ -211,6 +214,7 @@ export class RevDocTable extends React.Component {
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
                   </ul>
                 </th>
+                <th>TEMPLATE</th>
                 <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>Fields</span> <b class="caret"></b>
@@ -271,7 +275,8 @@ export class RevDocTable extends React.Component {
              <tbody className="no-border-x">
               {OcrRevDocTableHtml}
              </tbody>
-            </table>)
+            </table>
+            </Scrollbars>)
           //   :
           //  (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)

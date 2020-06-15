@@ -8,6 +8,7 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from ocr.models import OCRImage
 from ocr.pagination import CustomOCRPagination
 from ocr.permission import IsOCRAdminUser
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
@@ -131,13 +132,29 @@ class TaskView(viewsets.ModelViewSet):
 
     @list_route(methods=['post'])
     def feedback(self, request, *args, **kwargs):
+        data = request.data
         instance = Task.objects.get(id=self.request.query_params.get('feedbackId'))
         if request.user == instance.assigned_user:
             form = feedbackForm(request.POST)
             if form.is_valid():
                 bad_scan = form.cleaned_data['bad_scan']
                 instance.bad_scan = bad_scan
+                instance.is_closed = True
                 instance.save()
+                reviewrequest = ReviewRequest.objects.get(id=instance.object_id)
+                reviewrequest.status = "reviewerL1_reviewed"
+                reviewrequest.modified_at = datetime.datetime.now()
+                reviewrequest.modified_by = request.user
+                reviewrequest.save()
+                image_queryset = OCRImage.objects.get(slug=data['slug'])
+                image_queryset.status = "bad_scan"
+                image_queryset.modified_by = self.request.user
+                image_queryset.save()
+                # data = {'status': 'bad_scan'}
+                # serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                #                                  context={"request": self.request})
+                # if serializer.is_valid():
+                #     serializer.save()
                 return JsonResponse({
                     "submitted": True,
                     "message": "Feedback submitted Successfully."

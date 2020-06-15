@@ -975,7 +975,10 @@ class Trainer(models.Model):
             configAPI = self.dataset.get_config()
             try:
                 if 'TENSORFLOW' in configUI:
-                    config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
+                    if (self.app_id in settings.REGRESSION_APP_ID):
+                        config['config']["ALGORITHM_SETTING"][4].update({'tensorflow_params': configUI['TENSORFLOW']})
+                    elif self.app_id in settings.CLASSIFICATION_APP_ID:
+                        config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
                 if 'nnptc_parameters' in config['config']["ALGORITHM_SETTING"][6]:
                     config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
             except Exception as err:

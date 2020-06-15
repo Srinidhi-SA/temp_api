@@ -51,10 +51,10 @@ export class OcrProjectScreen extends React.Component {
                   <td>
                      <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link>
                   </td>
-                  <td>{new Date(item.created_at).toLocaleString().split(',')[0]}</td>
                   <td>{item.project_overview.workflows}</td>
-                  <td>{new Date(item.updated_at).toLocaleString()}</td>
                   <td>{item.project_overview.completion}%</td>
+                  <td>{new Date(item.created_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+                  <td>{new Date(item.updated_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
                </tr>
             )
          }
@@ -72,10 +72,10 @@ export class OcrProjectScreen extends React.Component {
                   <thead>
                      <tr>
                         <th data-tip="Click here to see workflows under the respective project" >Project Name</th>
-                        <th>Created At</th>
-                        <th>Workflows</th>
-                        <th>Last Update</th>
+                        <th>Pages</th>
                         <th>Complete %</th>
+                        <th>Created At</th>
+                        <th>Last Update</th>
                      </tr>
                   </thead>
                   <tbody class="no-border-x">
