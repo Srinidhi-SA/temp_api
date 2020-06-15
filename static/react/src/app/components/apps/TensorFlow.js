@@ -178,10 +178,10 @@ export class TensorFlow extends React.Component {
   }
    render() {
     if(this.props.layerType==="Dense")
-    var data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters
+    var data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters
     else if(this.props.layerType==="Dropout")
-     data=this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters
-     var algorithmData=this.props.manualAlgorithmData[5].parameters.filter(i=>i.name!="layer")
+     data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters
+     var algorithmData=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters.filter(i=>i.name!="layer")
       var rendercontent = algorithmData.map((item,index)=>{
            if(item.paramType=="list"){
               return (
@@ -229,7 +229,7 @@ export class TensorFlow extends React.Component {
                    <div className="col-md-6">
                  <div className ="row">
                    <div className="col-md-6">
-                    {this.getOptions(this.props.manualAlgorithmData[5].parameters[0])}
+                    {this.getOptions(this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0])}
                    </div>
                    <div className="col-md-6" style={{textAlign:'center'}}>
                    <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
@@ -249,10 +249,10 @@ export class TensorFlow extends React.Component {
                     store.getState().apps.panels.map((panelId) => {
                       let tenFlwInp = store.getState().apps.tensorFlowInputs;
                       if( (tenFlwInp.length != 0) && (panelId <= tenFlwInp.length)){
-                        data = (tenFlwInp[panelId-1].layer === "Dense")? this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters;
+                        data = (tenFlwInp[panelId-1].layer === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
                         var layrTyp = tenFlwInp[panelId-1].layer
                       }else{
-                        data = (this.props.layerType === "Dense")? this.props.manualAlgorithmData[5].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData[5].parameters[0].defaultValue[1].parameters;
+                        data = (this.props.layerType === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
                         var layrTyp = this.props.layerType
                       }
                       return (<Layer key={panelId} id={panelId} parameters={data} layerType={layrTyp} />);

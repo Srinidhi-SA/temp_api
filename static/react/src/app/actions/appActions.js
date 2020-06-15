@@ -98,7 +98,7 @@ function fetchAllModelError(json) {
 }
 export function fetchAllModelSuccess(doc){
   var data = ""
-  if(doc.allModelList[0]!= undefined){
+  if(doc.allModelList !=undefined && doc.allModelList[0]!= undefined){
       data = doc.allModelList;
   }
   return {
@@ -759,13 +759,24 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
-            clearInterval(appsInterval);
-            dispatch(fetchModelSummarySuccess(json));
-            dispatch(closeAppsLoaderValue());
-            dispatch(hideDataPreview());
-            dispatch(updateModelSummaryFlag(true));
-            dispatch(reSetRegressionVariables());
+          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
+          if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
+            document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+          }
+          clearInterval(appsInterval);
+          setTimeout(()=>{
+              dispatch(clearModelLoaderValues())
+              dispatch(fetchModelSummarySuccess(json));
+              dispatch(closeAppsLoaderValue());
+              dispatch(hideDataPreview());
+              dispatch(updateModelSummaryFlag(true));
+              dispatch(reSetRegressionVariables());
+            },2000);
         }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function () {
@@ -782,8 +793,12 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             dispatch(setAppsLoaderText(json.initial_messages));
           }
           if (json.message !== null && json.message.length > 0) {
-            dispatch(setAppsLoaderValues(json.slug,json.message[0].globalCompletionPercentage,json.status));
-            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
+            dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
+            dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
             dispatch(getAppsModelList("1"));
           }
         }
@@ -796,7 +811,21 @@ export function getAppsModelSummary(slug, fromCreateModel) {
     })
   }
 }
-
+function updateModelIndexValue(idxVal) {
+  return {
+    type: "MODEL_LOADER_IDX_VAL",idxVal
+  }  
+}
+function updateModelIndex(idx) {
+  return {
+    type: "MODEL_LOADER_IDX",idx
+  }  
+}
+export function clearModelLoaderValues() {
+  return {
+    type: "CLEAR_MODEL_LOADER_VALUES"
+  }
+}
 export function fetchModelSummary(token, slug) {
   return fetch(API + '/api/trainer/' + slug + '/', {
     method: 'get',
@@ -889,6 +918,7 @@ export function getAppsScoreSummary(slug) {
         }
 
         else if (json.status == SUCCESS) {
+          dispatch(clearModelLoaderValues())
           clearInterval(appsInterval);
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
@@ -907,6 +937,10 @@ export function getAppsScoreSummary(slug) {
             dispatch(setAppsLoaderText(json.initial_messages));
           }
           if (json.message !== null && json.message.length > 0) {
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }

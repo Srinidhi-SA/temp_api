@@ -471,6 +471,7 @@ export class OcrTable extends React.Component {
               <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:300}}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
                 {!this.props.projectTabLoaderFlag ? this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+                  <Scrollbars style={{ width: 'calc(100% - 1px)', height:360 }}>
                   <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                     <thead>
                       <tr>
@@ -553,7 +554,8 @@ export class OcrTable extends React.Component {
                     <tbody className="no-border-x">
                       {OcrTableHtml}
                     </tbody>
-                  </table>)
+                  </table>
+                  </Scrollbars>)
                   :
                   (<div class="panel">
                     <div class="panel-body">

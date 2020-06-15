@@ -22946,3 +22946,10 @@ min-width: 102px; }
   -ms-transition: all 2s ease;
   transition: all 2s ease;
 }
+#reviewDocumentTable th, #reviewDocumentTable td, #documentTable th,#documentTable td{
+  width: 300px;
+  text-overflow: inherit;
+  white-space: pre;
+  overflow: inherit;
+  max-width: fit-content;
+}

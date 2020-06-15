@@ -19,7 +19,7 @@ import {Share} from "../common/Share"
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,setEditModelValues,fetchModelEdit} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
-import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";

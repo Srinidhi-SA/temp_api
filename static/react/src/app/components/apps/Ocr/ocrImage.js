@@ -22,6 +22,8 @@ import ReactTooltip from 'react-tooltip';
     is_closed: store.ocr.is_closed,
     template: store.ocr.template,
     classification: store.ocr.classification,
+    ocrImgHeight: store.ocr.ocrImgHeight,
+    ocrImgWidth: store.ocr.ocrImgWidth,
   };
 })
 
@@ -40,6 +42,7 @@ export class OcrImage extends React.Component {
       img2Load: false,
       badScanFlag: false,
       feedback: "",
+      template: "" ,
     }
   }
 
@@ -94,7 +97,6 @@ export class OcrImage extends React.Component {
   }
 
   handleMarkComplete = () => {
-    this.saveTemplate();
     let id = this.props.imageTaskId;
     var data = new FormData();
     data.append("status", "reviewed");
@@ -150,8 +152,15 @@ export class OcrImage extends React.Component {
     return fetch(API + '/ocr/ocrimage/update_template/', {
       method: 'post',
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
-      body: JSON.stringify({ 'slug': this.props.imageSlug,'template':this.props.classification })
-    }).then(response => response.json());
+      body: JSON.stringify({ 'slug': this.props.imageSlug,'template':this.state.template })
+    }).then(response => response.json())
+    .then(data=>{
+      if(data.message=="SUCCESS"){
+        bootbox.alert(statusMessages("success", "Template Updated.", "small_mascot"));
+      }
+    }
+
+    )
   }
 
   closePopOver = () => {
@@ -161,28 +170,28 @@ export class OcrImage extends React.Component {
     var img = document.getElementById("ocrImg");
     var originalimg = document.getElementById("originalOcrImg");
     if (this.state.zoom == "Reset") {
-      img.style.width = 700 + "px";
-      img.style.height = 800 + "px";
-      originalimg.style.width = 700 + "px";
-      originalimg.style.height = 800 + "px";
+      img.style.width = this.props.ocrImgWidth + "px"; 
+      img.style.height = this.props.ocrImgHeight + "px";
+      originalimg.style.width = this.props.ocrImgWidth + "px";
+      originalimg.style.height = this.props.ocrImgHeight + "px";
     }
     else if (this.state.zoom == "110%") {
-      img.style.width = 770 + "px";
-      img.style.height = 880 + "px";
-      originalimg.style.width = 770 + "px";
-      originalimg.style.height = 880 + "px";
+      img.style.width =  this.props.ocrImgWidth * 1.1 + "px";
+      img.style.height = this.props.ocrImgHeight * 1.1 + "px";
+      originalimg.style.width =  this.props.ocrImgWidth*1.1 + "px";
+      originalimg.style.height = this.props.ocrImgHeight * 1.1 + "px";
     }
     else if (this.state.zoom == "125%") {
-      img.style.width = 875 + "px";
-      img.style.height = 1000 + "px";
-      originalimg.style.width = 875 + "px";
-      originalimg.style.height = 1000 + "px";
+      img.style.width = this.props.ocrImgWidth * 1.25 + "px";
+      img.style.height = this.props.ocrImgHeight * 1.25 + "px";
+      originalimg.style.width = this.props.ocrImgWidth * 1.25 + "px";
+      originalimg.style.height = this.props.ocrImgHeight * 1.25 + "px";
     }
     else if (this.state.zoom == "150%") {
-      img.style.width = 1050 + "px";
-      img.style.height = 1200 + "px";
-      originalimg.style.width = 1050 + "px";
-      originalimg.style.height = 1200 + "px";
+      img.style.width = this.props.ocrImgWidth * 1.50 + "px";
+      img.style.height = this.props.ocrImgHeight * 1.50 + "px";
+      originalimg.style.width = this.props.ocrImgWidth * 1.50 + "px";
+      originalimg.style.height = this.props.ocrImgHeight * 1.50 + "px";
     }
   }
 
@@ -345,7 +354,7 @@ export class OcrImage extends React.Component {
            {(this.props.classification!="" && this.props.template.length !=0) &&
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0">Template</label>
-              <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification} onChange={(e)=> this.props.dispatch(saveSelectedTemplate(e.target.value)) }>
+              <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification} onChange={(e)=> this.setState({template: e.target.value},this.saveTemplate)}>
                 {this.props.template.map(i =>(
                   <option value={i}>{i}</option>
                 ))
@@ -358,8 +367,8 @@ export class OcrImage extends React.Component {
         <div className="col-sm-6">
           <div style={{ backgroundColor: '#fff', padding: 15 }}>
             <div className="ocrImgTitle">Original</div>
-            <Scrollbars style={{ height: 820 }} id="originalImgDiv" onScroll={this.imageScroll}>
-                <img style={{ height: 800, width: 700}}
+            <Scrollbars style={{ height: 700 }} id="originalImgDiv" onScroll={this.imageScroll}>
+                <img style={{ height: `${this.props.ocrImgHeight}`, width: `${this.props.ocrImgWidth}`}}
                   src={this.props.originalImgPath}
                   id="originalOcrImg"
                   onLoad={(e) => this.handleImageLoad(e)}
@@ -387,8 +396,8 @@ export class OcrImage extends React.Component {
               </li>
             </ul>
             <div id="confidence_loader"></div>
-            <Scrollbars id="ocrScroll" style={{ height: 820 }} onScroll={this.imageScroll}>
-                <img style={{ height: 800, width: 700,}}
+            <Scrollbars id="ocrScroll" style={{ height: 700 }} onScroll={this.imageScroll}>
+                <img style={{ height: `${this.props.ocrImgHeight}`, width: `${this.props.ocrImgWidth}`}}
                   id="ocrImg"
                   onClick={this.handleCoords}
                   src={this.props.ocrImgPath}

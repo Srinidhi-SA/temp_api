@@ -8,7 +8,8 @@ import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
 import { getUserDetailsOrRestart } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
-import { API } from "../../../helpers/env"
+import { API } from "../../../helpers/env";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 @connect((store) => {
   return {
@@ -195,7 +196,8 @@ export class RevDocTable extends React.Component {
             {this.props.OcrRevwrDocsList != '' ? 
             // this.props.OcrRevwrDocsList.total_data_count>= 1 ?
              (
-            <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
+            <Scrollbars style={{ width: 'calc(100% - 1px)', height:390 }}>
+            <table id="reviewDocumentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
              <thead>
               <tr>
                 <th>NAME</th>
@@ -273,7 +275,8 @@ export class RevDocTable extends React.Component {
              <tbody className="no-border-x">
               {OcrRevDocTableHtml}
              </tbody>
-            </table>)
+            </table>
+            </Scrollbars>)
           //   :
           //  (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)

@@ -51,7 +51,6 @@ export function dataUpload() {
 }
 function uploadFileOrDB(dbDetails){
     return (dispatch) => {
-        dispatch(updateHideData(false));
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
@@ -64,7 +63,6 @@ function uploadFileOrDB(dbDetails){
           // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
           // dispatch()
           if (response.status === 200) {
-            dispatch(updateHideData(true));
             dispatch(updateDatasetName(json.slug))
             dispatch(dataUploadSuccess(json, dispatch))
           } else {
@@ -200,11 +198,9 @@ export function dataSubsetting(subsetRq, slug) {
    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
    dispatch(close());
-   dispatch(updateHideData(false));
  dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
     if (response.status === 200) {
-        dispatch(updateHideData(true));
         dispatch(updateDatasetName(json.slug))
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))
@@ -233,9 +229,6 @@ export function clearDataPreview() {
 
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
-}
-export function updateHideData(flag) {
-  return {type: "UPDATE_HIDE_DATA", flag}
 }
 export function clearDatasetPreview(){
     clearInterval(dataPreviewInterval)
