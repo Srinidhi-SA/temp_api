@@ -32,6 +32,8 @@ export default function reducer(state = {
   selected_signal_type:"",
   toggleValues:{},
   fromVariableSelectionPage:false,
+  sigLoaderidxVal:0,
+  sigLoaderidx:0,
 }, action) {
 
   switch (action.type) {
@@ -112,13 +114,35 @@ export default function reducer(state = {
         }
       }
       break;
-
+    case "SIGNAL_LOADER_IDX_VAL": {
+        return {
+          ...state,
+          sigLoaderidxVal : action.idxVal
+        }
+      }
+      break;
+    case "SIGNAL_LOADER_IDX": {
+      return {
+        ...state,
+        sigLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_SIGNAL_LOADER_VALUES":{
+      return {
+        ...state,
+        sigLoaderidxVal:0,
+        sigLoaderidx:0,
+      }
+    }
+    break;
     case "CREATE_SUCCESS":
       {
         return {
           ...state,
           signalData: action.signalData,
-          loading_message:[]
+          loading_message:[],
+          signalLoadedText:[]
         }
       }
       break;

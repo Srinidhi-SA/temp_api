@@ -200,7 +200,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
      var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
-    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true){
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("apps-stock-advisor-analyze")){
         var node = document.createElement("I");
         dispatch(openAppsLoaderValue(100, ''))
         document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
@@ -208,10 +208,17 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		x.innerHTML = 'Completed Succesfully';
     }
     if(getStatus == SUCCESS){
-
+        if(store.getState().datasets.dataUploadLoaderModal && dataPreview.initial_messages!=null && Object.keys(dataPreview.initial_messages).length != 0){
+            document.getElementsByClassName("dataPercent")[0].innerHTML = (document.getElementsByClassName("dataPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (dataPreview.message.length-3) + ": " + dataPreview.message[dataPreview.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (dataPreview.message.length-2) + ": " + dataPreview.message[dataPreview.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (dataPreview.message.length-1) + ": " + dataPreview.message[dataPreview.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+        }
+        clearInterval(interval);
         if(interval != undefined){
             setTimeout(() => {
-                clearInterval(interval);
                 dispatch(dispatchDataPreview(dataPreview,slug));
                 dispatch(hideDULoaderPopup());
                 dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
@@ -221,7 +228,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         } else{
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
-        dispatch(clearLoadingMsg())
+        setTimeout(()=>{
+            dispatch(clearLoadingMsg())
+            dispatch(setDataLoadedText(''));
+            dispatch(clearMetaDataLoaderValues())
+        },2000); 
         setTimeout(() => {
             return {
                 type: "DATA_PREVIEW",
@@ -249,6 +260,10 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if(Object.keys(dataPreview.initial_messages).length != 0){
             dispatch(setDataLoadedText(dataPreview.initial_messages));
+            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+                dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
+            }
+            dispatch(updateMetaDataIndexValue(dataPreview.message.length));
         }
         if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             var msgLength=dataPreview.message.length-1
@@ -268,6 +283,21 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             type: "SELECTED_DATASET",
             dataset,
         }
+    }
+}
+function updateMetaDataIndexValue(idxVal) {
+    return {
+      type: "METADATA_LOADER_IDX_VAL",idxVal
+    }  
+  }
+function updateMetaDataIndex(idx) {
+    return {
+        type: "METADATA_LOADER_IDX",idx
+    }  
+}
+export function clearMetaDataLoaderValues() {
+    return {
+        type: "CLEAR_METADATA_LOADER_VALUES"
     }
 }
 function dispatchDataPreview(dataPreview,slug){

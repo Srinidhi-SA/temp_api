@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
-import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview} from "../../actions/dataActions";
+import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview, clearMetaDataLoaderValues} from "../../actions/dataActions";
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -19,9 +19,10 @@ import {handleJobProcessing} from "../../helpers/helper";
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
     dULoaderValue: store.datasets.dULoaderValue,
     dataLoaderText: store.datasets.dataLoaderText,
-    showHideData: store.dataUpload.showHideData,
     selectedDataSet:store.datasets.selectedDataSet,
-    dataLoadedText:store.datasets.dataLoadedText
+    dataLoadedText:store.datasets.dataLoadedText,
+    metaDataLoaderidxVal:store.datasets.metaDataLoaderidxVal,
+    metaDataLoaderidx:store.datasets.metaDataLoaderidx
   };
 })
 
@@ -29,20 +30,24 @@ export class DataUploadLoader extends React.Component {
   constructor() {
     super();
   }
-componentDidMount() {
 
-}
-    componentWillUpdate(){
-            var getText = [];
-            if((this.props.dULoaderValue < 0) && (Object.keys(this.props.dataLoadedText).length <= 0) ){
-                $("#loadingMsgs1").empty()
-                $("#loadingMsgs2").empty()
-            }
-            else if((this.props.dULoaderValue >= 0) && (Object.keys(this.props.dataLoadedText).length > 0) && (document.getElementById("loadingMsgs1") != null) && (document.getElementById("loadingMsgs1").innerText === "")){
-                getText = Object.values(this.props.dataLoadedText)
-                this.makeULforData(getText);
-            }
-    }
+  componentWillReceiveProps(newProps){
+    if(newProps.metaDataLoaderidxVal !=this.props.metaDataLoaderidxVal)
+      if(store.getState().datasets.dataUploadLoaderModal){
+        var array = this.props.dataLoadedText
+        if(Object.values(array).length>0 && array!=undefined){
+          for (var x = this.props.metaDataLoaderidx; x < (newProps.metaDataLoaderidxVal-2); x++) {
+            setTimeout(function(i) {    
+              if(store.getState().datasets.dataUploadLoaderModal){
+                $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+                $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+                $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+              }
+            }, x * 2000, x);
+          }
+        }
+      }
+	}
 
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup());
@@ -58,29 +63,9 @@ componentDidMount() {
       this.props.dispatch(hideDataPreview());
       clearDatasetPreview();
     }
-    makeULforData(array) {
-        var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-3; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-        for(var i=array.length-3;i<array.length;i++){
-          x.innerHTML ='Please wait while analysing...';
-          x1.innerHTML ='';
-          x2.innerHTML ='';
-        }
-    }
+
   render() {
     let img_src = STATIC_URL + "assets/images/Processing_mAdvisor.gif"
-    //let checked=!this.props.showHideData
 	$('#text-carousel').carousel();
     return (
       <div id="dULoader">
@@ -252,25 +237,16 @@ componentDidMount() {
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
 
-                                <div class="modal-steps" id="loadingMsgs">
-                                Please wait while preparing data...
-                                </div>
-                                <div class="modal-steps active" id="loadingMsgs1">
-                                </div>
-                                <div class="modal-steps" id="loadingMsgs2">
-                                </div>
-
-								{/* <ul class="modal-steps hidden">
-										<li>----</li>
-									<li class="active">
-                    {store.getState().datasets.dataLoaderText}
-                  </li>
-										<li>----</li>
-								</ul> */}
-
+                <div class="modal-steps" id="loadingMsgs">
+                Please wait while preparing data...
+                </div>
+                <div class="modal-steps active" id="loadingMsgs1">
+                </div>
+                <div class="modal-steps" id="loadingMsgs2">
+                </div>
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white">{store.getState().datasets.dULoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue">In Progress</h5>}
+							{store.getState().datasets.dULoaderValue >= 0?<h2 className="text-white dataPercent">{store.getState().datasets.dULoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue dataPercent">In Progress</h5>}
 						</div>
 					</div>
 					</div>
@@ -290,8 +266,6 @@ componentDidMount() {
               </div>
             </div>
           </Modal.Body>
-          {(this.props.showHideData)
-            ? (
               <Modal.Footer>
                 <div>
                   <Link to="/data" style={{
@@ -304,10 +278,6 @@ componentDidMount() {
                   </Link>
                 </div>
               </Modal.Footer>
-            )
-            : (
-              <div></div>
-            )
 }
 
         </Modal>

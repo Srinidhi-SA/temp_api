@@ -727,13 +727,13 @@ export class RegressionParameter extends React.Component {
         if(letter.test(textboxVal)){
             return {"iserror":true,"errmsg":"only numbers allowed here"};
         }
-            if(this.props.algorithmData[4].hyperParameterSetting[0].selected == false){
+            if(this.props.algorithmData.filter(i=>i.algorithmName==="Neural Network (Sklearn)")[0].hyperParameterSetting[0].selected == false){
                 if(e.target.classList[1]=="fractionCls" && !numbers.test($('.fractionCls').val())){
                     return {"iserror":true,"errmsg":"only numbers allowed"};
                 }
             }
          //(Review it)Changes from here to 
-       if(this.props.algorithmData[4].hyperParameterSetting[0].selected == true){
+       if(this.props.algorithmData.filter(i=>i.algorithmName==="Neural Network (Sklearn)")[0].hyperParameterSetting[0].selected == true){
         //    var sliderTextBoxes=["maxSolverGrid","convergGrid","epsilonGrid","iterationGrid"]
         if(e.target.classList[1]=="maxSolverGrid" && letter.test($('.maxSolverGrid').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
@@ -750,7 +750,7 @@ export class RegressionParameter extends React.Component {
 
        }
        //till here not necessary as directly tesing the textboxVal at first for all grid-slider-textboxex
-       if(this.props.algorithmData[4].hyperParameterSetting[1].selected){
+       if(this.props.algorithmData.filter(i=>i.algorithmName==="Neural Network (Sklearn)")[0].hyperParameterSetting[1].selected){
         if(e.target.classList[1]=="learningClsInit" && !numbers.test($('.learningClsInit').val())){
             return {"iserror":true,"errmsg":"only numbers allowed"};
           }
@@ -848,7 +848,7 @@ export class RegressionParameter extends React.Component {
             var allowedTypes = "";
             var wrongCount = 0;
             var that = this;
-            if(!this.props.algorithmData[4]){
+            if(!this.props.algorithmData.filter(i=>i.algorithmName==="Neural Network (Sklearn)")[0]){
             $.each(type,function(k,v){
                 if(v == "float"){
                     (k == 0)?allowedTypes = "Decimals" : allowedTypes+= ", Decimals";

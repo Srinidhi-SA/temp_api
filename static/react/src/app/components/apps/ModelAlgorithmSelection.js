@@ -170,8 +170,10 @@ export class ModelAlgorithmSelection extends React.Component {
             return false;
         }
        
-     if(tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
+        if(this.props.currentAppId === 2 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
             this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",store.getState().apps.targetLevelCounts.length.toString()))
+        }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
+            this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",1))
         }
         
     }

@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, setAppsLoaderValues,} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, setAppsLoaderValues, clearModelLoaderValues,} from "../../actions/appActions";
 import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -27,6 +27,8 @@ import {handleJobProcessing, getUserDetailsOrRestart} from "../../helpers/helper
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		setAppsLoaderValues: store.apps.setAppsLoaderValues,
 		currentAppDetails:store.apps.currentAppDetails,
+		modelLoaderidxVal: store.apps.modelLoaderidxVal,
+		modelLoaderidx:store.apps.modelLoaderidx,
 	};
 })
 
@@ -48,10 +50,25 @@ export class AppsLoader extends React.Component {
 			if(window.location.pathname == "/apps-stock-advisor/"){
 		    return false
 		 	}
-			getText = Object.values(this.props.appsLoadedText)
-			this.makeUL(getText);
 		}
 }
+	componentWillReceiveProps(newProps){
+		if(newProps.modelLoaderidxVal != this.props.modelLoaderidxVal)
+			if((window.location.pathname != "/apps-stock-advisor/") && (store.getState().apps.appsLoaderModal)){
+				var array = this.props.appsLoadedText
+				if(Object.values(array).length>1){
+					for (var x = this.props.modelLoaderidx; x < (newProps.modelLoaderidxVal-2); x++) {
+						setTimeout(function(i) {
+							if(store.getState().apps.appsLoaderModal){
+								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
+								$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
+								$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+							}
+						}, x * 2000, x);
+					}
+				}
+			}
+	}
 	 
 	componentDidUpdate(){
 		 if(window.location.pathname == "/apps-stock-advisor/" && (Object.keys(this.props.dataLoadedText).length >0) ){
@@ -90,9 +107,9 @@ export class AppsLoader extends React.Component {
 				headers: getHeader(getUserDetailsOrRestart.get().userToken)
 				}).then(response => response.json())
 				.then(responsejson => {
-					if(responsejson.message[0].globalCompletionPercentage <= 100){
-						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[0].globalCompletionPercentage){
-							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[0].globalCompletionPercentage,responsejson.status))
+					if(responsejson.message[responsejson.message.length-1].globalCompletionPercentage <= 100){
+						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[responsejson.message.length-1].globalCompletionPercentage){
+							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[responsejson.message.length-1].globalCompletionPercentage,responsejson.status))
 							this.props.dispatch(getAppsModelList(1));
 						}
 					}
@@ -127,30 +144,6 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
 	}
-
-
-	makeUL(array) {
-        var x = document.getElementById("loadingMsgs");
-        var x1 = document.getElementById("loadingMsgs1");
-        var x2 = document.getElementById("loadingMsgs2");
-        var myTimer;
-        for (var i = 1; i < array.length-5; i++) {
-            (function(i) {
-                myTimer = setTimeout(function() {
-                    x.innerHTML = "Step " + i + ": " + array[i];
-                    x1.innerHTML ="Step " + (i+1) + ": " + array[i+1];
-                    x2.innerHTML ="Step " + (i+2) + ": " + array[i+2];
-                }, 4000 * i);
-            })(i);
-        }
-		for(var i=array.length-5;i<array.length;i++){
-			x.innerHTML ='Please wait while analysing...';
-			x1.innerHTML ='';
-			x2.innerHTML ='';
-		}
-    }
-
-
 
   render() {
 		$('#text-carousel').carousel();
@@ -339,10 +332,10 @@ export class AppsLoader extends React.Component {
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-							<div class="modal-steps active" id="loadingMsgs">
+							<div class="modal-steps" id="loadingMsgs">
 								Please wait while analysing...
 							</div>
-							<div class="modal-steps " id="loadingMsgs1">
+							<div class="modal-steps active" id="loadingMsgs1">
                                 </div>
                                 <div class="modal-steps" id="loadingMsgs2">
                                 </div>
@@ -354,7 +347,7 @@ export class AppsLoader extends React.Component {
 
 						</div>
 						<div className="col-sm-3 text-center">
-							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue" style={{display:"block", textAlign: "center" }}>In Progress</h5>}
+							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white appsPercent">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue appsPercent" style={{display:"block", textAlign: "center" }}>In Progress</h5>}
 				  	</div>
 					</div>
 					</div>

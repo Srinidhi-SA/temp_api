@@ -1,7 +1,6 @@
 export default function reducer(state = {
 		dataUploadShowModal:false,
 		imgUploadShowModal:false,
-		showHideData:false,
 }, action) {
 
 	switch (action.type) {
@@ -38,16 +37,6 @@ export default function reducer(state = {
 		}
 	}
 	break;
-
-	case "UPDATE_HIDE_DATA":
-	{
-		return{
-			...state,
-			showHideData:action.flag
-		}
-	}
-	break;
-
  }
 return state
 }
