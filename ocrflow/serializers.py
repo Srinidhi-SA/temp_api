@@ -70,7 +70,7 @@ class ReviewRequestSerializer(serializers.ModelSerializer):
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['ocrImageData'] = OCRImageReviewSerializer(Image_instance).data
         serialized_data['project'] = Image_instance.project.name
-        serialized_data['modified_by'] = UserSerializer(instance.modified_by).data['username']
+        serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
         return serialized_data
 
     class Meta:

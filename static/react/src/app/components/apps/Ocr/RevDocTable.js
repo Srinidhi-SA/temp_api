@@ -217,7 +217,7 @@ export class RevDocTable extends React.Component {
                 <th>TEMPLATE</th>
                 <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
-                            <span>Fields</span> <b class="caret"></b>
+                            <span>FIELDS</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a className="cursor" onClick={this.filterRevDocrList.bind(this, '', 'fields','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
