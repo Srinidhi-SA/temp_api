@@ -30,28 +30,60 @@ class OCRRulesView(viewsets.ModelViewSet):
     model = OCRRules
     permission_classes = (IsAuthenticated, IsOCRAdminUser)
 
+    defaults = {
+        "auto_assignmentL1":True,
+        "auto_assignmentL2":True,
+        "rulesL1": {
+            "custom":{
+                "max_docs_per_reviewer": 10,
+                "selected_reviewers": [],
+                "remainaingDocsDistributionRule": 2,
+                "active": "False"
+                },
+            "auto":{
+                "max_docs_per_reviewer": 10,
+                "remainaingDocsDistributionRule": 2,
+                "active": "True"
+                }
+            },
+        "rulesL2":{
+            "custom":{
+                "max_docs_per_reviewer": 10,
+                "selected_reviewers": [],
+                "remainaingDocsDistributionRule": 2,
+                "active": "False"
+                },
+            "auto":{
+                "max_docs_per_reviewer": 10,
+                "remainaingDocsDistributionRule": 2,
+                "active": "True"
+                }
+            }
+    }
+
     @list_route(methods=['post'])
     def autoAssignment(self, request):
         data = request.data
+
         if data['autoAssignment'] == "True":
             if data['stage'] == "initial":
-                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
                 ruleObj.auto_assignmentL1 = True
                 ruleObj.save()
                 return JsonResponse({"message": "Initial Auto-Assignment Active.", "status": True})
             elif data['stage'] == "secondary":
-                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
                 ruleObj.auto_assignmentL2 = True
                 ruleObj.save()
                 return JsonResponse({"message": "Secondary Auto-Assignment Active.", "status": True})
         else:
             if data['stage'] == "initial":
-                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
                 ruleObj.auto_assignmentL1 = False
                 ruleObj.save()
                 return JsonResponse({"message": "Initial Auto-Assignment De-active.", "status": True})
             elif data['stage'] == "secondary":
-                ruleObj = OCRRules.objects.get(id=1)
+                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
                 ruleObj.auto_assignmentL2 = False
                 ruleObj.save()
                 return JsonResponse({"message": "Secondary Auto-Assignment De-active.", "status": True})
@@ -59,7 +91,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL1(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj = OCRRules.objects.get(id=1)
+        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
         ruleObj.rulesL1 = json.dumps(modifiedrule)
         ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
@@ -68,7 +100,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL2(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj = OCRRules.objects.get(id=1)
+        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
         ruleObj.rulesL2 = json.dumps(modifiedrule)
         ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
@@ -76,7 +108,11 @@ class OCRRulesView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def get_rules(self, request):
-        ruleObj = OCRRules.objects.get(id=1)
+        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+        if created:
+            ruleObj.rulesL1 = json.dumps(self.defaults['rulesL1'])
+            ruleObj.rulesL2 = json.dumps(self.defaults['rulesL2'])
+            ruleObj.save()
         serializer = OCRRulesSerializer(instance=ruleObj, context={"request": self.request})
         return Response(serializer.data)
 
