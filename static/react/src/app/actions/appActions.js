@@ -918,13 +918,23 @@ export function getAppsScoreSummary(slug) {
         }
 
         else if (json.status == SUCCESS) {
-          dispatch(clearModelLoaderValues())
+          if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
+            document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+          }
           clearInterval(appsInterval);
-          dispatch(fetchScoreSummarySuccess(json));
-          dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
-          dispatch(closeAppsLoaderValue());
-          dispatch(hideDataPreview());
-          dispatch(updateScoreSummaryFlag(true));
+          setTimeout(()=>{
+            dispatch(clearModelLoaderValues())
+            dispatch(fetchScoreSummarySuccess(json));
+            dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
+            dispatch(closeAppsLoaderValue());
+            dispatch(hideDataPreview());
+            dispatch(updateScoreSummaryFlag(true));
+            },2000);
         } else if (json.status == FAILED) {
           bootbox.alert("Your score could not created.Please try later.", function (result) {
             window.history.go(-2);
