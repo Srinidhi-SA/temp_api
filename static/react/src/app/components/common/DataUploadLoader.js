@@ -37,8 +37,11 @@ export class DataUploadLoader extends React.Component {
         var array = this.props.dataLoadedText
         if(Object.values(array).length>0 && array!=undefined){
           for (var x = this.props.metaDataLoaderidx; x < (newProps.metaDataLoaderidxVal-2); x++) {
-            setTimeout(function(i) {    
-              if(store.getState().datasets.dataUploadLoaderModal){
+            var dataProg = setTimeout(function(i) {
+              if(store.getState().datasets.dataUploadLoaderModal && document.getElementsByClassName("dataPercent")[0].innerHTML === "100%"){
+                clearTimeout(dataProg);
+                return false;
+              }else if(store.getState().datasets.dataUploadLoaderModal){
                 $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
                 $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
                 $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
