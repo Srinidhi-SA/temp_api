@@ -384,7 +384,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
-                imageObj.status = "ready_to_export"
+                imageObj.status = "l1_verified"
                 imageObj.save()
         else:
             tasks = []
