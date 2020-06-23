@@ -940,12 +940,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         results = []
         image_list = []
         try:
-            template = json.loads(Template.objects.first().template_classification)
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     image_queryset = OCRImage.objects.get(slug=slug)
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
+                    template = json.loads(Template.objects.first().template_classification)
                     response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
                     result = response.task_id
                     res = AsyncResult(result)
