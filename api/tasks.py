@@ -776,7 +776,7 @@ def trigger_outlook_periodic_job():
                         if key == 'sub_target':
                             data['sub_target'] = value
                         if key == 'target':
-                            data['target'] = value.capitalize()
+                            data['target'] = value
                         if 'train_dataset' in key:
                             input_file = value
                             data['Traindataset'] = input_file
