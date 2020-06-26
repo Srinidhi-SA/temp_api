@@ -1692,16 +1692,20 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                         info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
                         id = jsondata['value'][i]['id']
 
-                        if 'sub-label' and 'target' in info_dict[u_id]['mail'].lower():
+                        if ('sub-label')or('Sub-label') and ('target')or('Target') in info_dict[u_id]['mail']:
                             # check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
                             # if check:
                             # info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
                             # info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
-                            for info in info_dict[u_id]['mail'].lower().split('||'):
+                            for info in info_dict[u_id]['mail'].split('||'):
                                 if 'sub-label' in info:
                                     info_dict[u_id]['sub_target'] = info.replace('sub-label', '').replace(':', '').strip()
+                                elif 'Sub-label' in info:
+                                    info_dict[u_id]['sub_target'] = info.replace('Sub-label', '').replace(':', '').strip()
                                 elif 'target' in info:
                                     info_dict[u_id]['target'] = info.replace('target', '').replace(':', '').strip()
+                                elif 'Target' in info:
+                                    info_dict[u_id]['target'] = info.replace('Target', '').replace(':', '').strip()
                         '''if 'target' in info_dict[u_id]['mail'].lower():
                             # check = re.search(r'target: (\S+)',info_dict[u_id]['mail'].lower())
                             # if check:
@@ -1709,7 +1713,7 @@ def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id
                             # info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
                             info_dict[u_id]['target'] = info_dict[u_id]['mail'].split('||')[0].replace('target: ',
                                                                                                      '').strip()'''
-                        ''' 
+                        '''
                         if 'sub-label' in info_dict[u_id]['mail'].lower():
                             check = re.search(r'sub-label: (\S+)', info_dict[u_id]['mail'].lower())
                             if check:
