@@ -195,7 +195,10 @@ class QueryCommonFiltering:
         if self.time is not None:
             self.query_set = self.query_set.filter(time_taken=float(self.time))
         if self.template is not None:
-            self.query_set = self.query_set.filter(classification=self.template)
+            try:
+                self.query_set = self.query_set.filter(classification=self.template)
+            except:
+                self.query_set = self.query_set.filter(ocr_image__classification=self.template)
         if self.filter_fields is not None:
             self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
             self.filter_fields = ast.literal_eval(self.filter_fields)
