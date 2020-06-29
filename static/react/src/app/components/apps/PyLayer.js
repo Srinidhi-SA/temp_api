@@ -425,13 +425,13 @@ export class PyLayer extends React.Component {
             <div class={cls} id={clsId}>
                 <div class="layerHeader" id={this.props.idNum}>
                     Linear Layer {this.props.idNum}
-                    <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collapseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collapseExample${this.props.idNum}`} />
+                    <i className="fa fa-chevron-up" type="button" data-toggle="collapse" data-target={`#collpseExample${this.props.idNum}`} aria-expanded="true" aria-controls={`collpseExample${this.props.idNum}`} />
                     {(this.props.idLayer.length === this.props.idNum)?
                         <i className="fa fa-trash-o" type="button" onClick={this.deleteLayer.bind(this,this.props.idNum)}/>
                         :""
                     }
                 </div>
-                <div className="collapse in" id={`collapseExample${this.props.idNum}`}>
+                <div className="collapse in" id={`collpseExample${this.props.idNum}`}>
                     <div className="card card-body">
                         <div class="layerBody" style={{'paddingLeft':'15px'}}>
                             {renderPyTorchLayer}
