@@ -217,11 +217,12 @@ export function getRevrDocsList(pageNo){
 
 function fetchRevrDocsList(pageNo=1,token){
 	let filter_rd_fields=store.getState().ocr.filter_rd_fields
+	let filter_rd_template=store.getState().ocr.filter_rd_template
 	let filter_rd_status=store.getState().ocr.filter_rd_status
 	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
 	let search_project=store.getState().ocr.search_project_in_revtable
-	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&accuracy='+filter_rd_confidence+'&project='+search_project+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
+	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&template='+filter_rd_template+'&accuracy='+filter_rd_confidence+'&project='+search_project+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -400,6 +401,13 @@ export function ocrRdFilterFields(fields){
 	return{
 		type: "FILTER_RD_BY_FIELDS",
 		fields
+	}
+}
+
+export function ocrRdFiltertemplate(template){
+	return{
+		type: "FILTER_RD_BY_TEMPLATE",
+		template
 	}
 }
 
