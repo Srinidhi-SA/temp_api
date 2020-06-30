@@ -20330,8 +20330,8 @@ blockquote p:after {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding: 8px;
+  font-size: 12px;
 }
 #algosel .tab-content{
   padding: 25px;
