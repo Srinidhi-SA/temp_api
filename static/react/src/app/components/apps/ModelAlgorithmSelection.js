@@ -415,7 +415,7 @@ export class ModelAlgorithmSelection extends React.Component {
 
                     </div>
                     <div className="main-content">
-                          <div className="panel panel-mAd xs-p-20 box-shadow">
+                          <div className="panel panel-mAd">
                                 {/* {this.state.showParameterTuning == false ?
                                 <div>
                                     <div className="panel-heading xs-ml-0 xs-mb-10">

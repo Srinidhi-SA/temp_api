@@ -20290,10 +20290,56 @@ blockquote p:after {
   bottom: -0.7em;
   right: -12px;
 }
+#algosel .nav-tabs {
+  position: relative;
+  display: flex;
+}
+#algosel .nav-tabs li {
+  display: flex;
+  flex: 1;
+  background: whitesmoke;
+}
+#algosel .nav-tabs li:last-child {
+  margin: 0px;
+}
+#algosel .nav-tabs li.active {
+  z-index: 2;
+  background: #FFF;
+}
+#algosel .nav-tabs:after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  border-bottom: 1px solid #52807a;
+  z-index: 1;
+}
+#algosel .nav-tabs:before {
+  z-index: 1;
+}
+#algosel .nav-tabs li.active a{
+  border-color: #52807a;
+  border-bottom: none;
+  border-width: 1px;
+  border-top-width: 2px;
+}
 #algosel .nav-tabs li a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 600;
   padding-right: 15px;
   padding-left: 15px;
+}
+#algosel .tab-content{
+  padding: 25px;
+  overflow: auto;
+  border: 1px solid #52807a;
+  border-top:none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 .card_kpi .alert-primary {
   background-color: #f6f6f6;
@@ -22225,6 +22271,9 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   margin-bottom: 25px;
   margin-left: 1%;
   margin-right: 1%;
+}
+.panel-wrapper div:last-child .layerPanel {
+  margin-bottom: 35px;
 }
 .layerHeader {
   background-color: #e6e6e6;
