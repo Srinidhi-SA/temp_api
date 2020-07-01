@@ -43,7 +43,7 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
@@ -384,7 +384,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L2assigned = False
                 imageObj.assignee = None
-                imageObj.status = "ready_to_export"
+                imageObj.status = "l1_verified"
                 imageObj.save()
         else:
             tasks = []
@@ -940,12 +940,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         results = []
         image_list = []
         try:
-            template = json.loads(Template.objects.first().template_classification)
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     image_queryset = OCRImage.objects.get(slug=slug)
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
+                    template = json.loads(Template.objects.first().template_classification)
                     response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
                     result = response.task_id
                     res = AsyncResult(result)
@@ -1300,6 +1300,16 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
+    def get_reviewer_queryset(self):
+        """
+        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        """
+        queryset = Project.objects.filter(
+            ocrimage__assignee=self.request.user,
+            deleted=False,
+        ).order_by('-created_at')
+        return queryset
+
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
@@ -1384,3 +1394,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         object_details.data['total_data_count_wf'] = len(queryset)
         return object_details
+
+    @list_route(methods=['get'])
+    def reviewer(self, request, *args, **kwargs):
+        result = get_filtered_project_list(
+            viewset=self,
+            request=request,
+            list_serializer=ProjectListSerializer
+        )
+        result.data['overall_info'] = {
+            "totalProjects": self.total_projects(),
+            "totalDocuments": self.total_documents(),
+            "totalReviewers": self.total_reviewers()
+        }
+        return result

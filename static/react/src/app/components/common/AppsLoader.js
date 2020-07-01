@@ -58,8 +58,11 @@ export class AppsLoader extends React.Component {
 				var array = this.props.appsLoadedText
 				if(Object.values(array).length>1){
 					for (var x = this.props.modelLoaderidx; x < (newProps.modelLoaderidxVal-2); x++) {
-						setTimeout(function(i) {
-							if(store.getState().apps.appsLoaderModal){
+						var appsProg = setTimeout(function(i) {
+							if(store.getState().apps.appsLoaderModal && document.getElementsByClassName("appsPercent")[0].innerHTML === "100%"){
+								clearTimeout(appsProg);
+								return false;
+							}else if(store.getState().apps.appsLoaderModal){
 								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
 								$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
 								$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];

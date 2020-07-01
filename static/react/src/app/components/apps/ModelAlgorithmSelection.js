@@ -421,7 +421,7 @@ export class ModelAlgorithmSelection extends React.Component {
 
                     </div>
                     <div className="main-content">
-                          <div className="panel panel-mAd xs-p-20 box-shadow">
+                          <div className="panel panel-mAd">
                                 {/* {this.state.showParameterTuning == false ?
                                 <div>
                                     <div className="panel-heading xs-ml-0 xs-mb-10">
@@ -442,7 +442,7 @@ export class ModelAlgorithmSelection extends React.Component {
 							<div className="clearfix"></div>
                             <div>
                             <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                            <Button id="parameterCreateModel" type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName} <i class="fa fa-angle-double-right"></i></Button>
+                            <Button id="parameterCreateModel" type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName}</Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

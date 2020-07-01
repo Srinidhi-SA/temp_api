@@ -52,7 +52,6 @@ class BaseModule:
             table_rel_centroid_dist_dict, self.table_cell_dict)
 
         template_obj = Templates(template, {self.image_name: self.metadata})
-        print(template_obj.template_number, self.image_name)
         self.final_json = {
             'tables': self.final_mapped_dict_table,
             'paragraphs': self.paras,
