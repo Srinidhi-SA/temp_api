@@ -22233,12 +22233,12 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   z-index: 999999;
 }
 .dtModal {
-  width: 800px;
+  width: 1000px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 .dtModal .modal-content {
-  min-width: 800px;
+  min-width: 1000px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
