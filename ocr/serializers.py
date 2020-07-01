@@ -90,7 +90,7 @@ class OCRImageListSerializer(serializers.ModelSerializer):
         try:
             serialized_data['role'] = instance.assignee.groups.values_list('name', flat=True)
         except:
-            serialized_data['role'] = None    
+            serialized_data['role'] = None
         serialized_data['status'] = self.status_mapping[serialized_data['status']]
         serialized_data['created_by'] = (UserSerializer(instance.created_by).data['username']).capitalize()
         serialized_data['modified_by'] = (UserSerializer(instance.modified_by).data['username']).capitalize()
@@ -316,9 +316,16 @@ class OCRUserListSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     """
     """
+    role_mapping = {
+        "Admin": "Admin",
+        "Superuser": "Superuser",
+        "ReviewerL1": "Reviewer L1",
+        "ReviewerL2": "Reviewer L2",
+        }
 
     def to_representation(self, instance):
         serialized_data = super(GroupSerializer, self).to_representation(instance)
+        serialized_data['name'] = self.role_mapping[serialized_data['name']]
 
         return serialized_data
 

@@ -605,7 +605,7 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
 class GroupListView(generics.ListCreateAPIView):
     queryset = Group.objects.filter(
-        name__in=['Admin', 'Superuser', 'reviewerL1', 'ReviewerL2']
+        name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
     )
     serializer_class = GroupSerializer
     permission_classes = [IsOCRAdminUser]
