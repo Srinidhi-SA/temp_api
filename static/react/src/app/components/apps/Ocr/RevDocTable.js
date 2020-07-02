@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem,ocrRdFiltertemplate} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -102,6 +102,9 @@ export class RevDocTable extends React.Component {
       case 'fields':
       this.props.dispatch(ocrRdFilterFields(filterByVal))
       break;
+      case 'template':
+      this.props.dispatch(ocrRdFiltertemplate(filterByVal))
+      break;
     }
     this.props.dispatch(getRevrDocsList())
     if(reset=='reset'){
@@ -173,7 +176,12 @@ export class RevDocTable extends React.Component {
       )
         : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
-
+    let templateOptions= (this.props.OcrRevwrDocsList!=""?
+    this.props.OcrRevwrDocsList.values.map(item=>{
+      return(
+          <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+      )}):
+      "")
     return (
     <div>
       <div class="row">
@@ -183,10 +191,12 @@ export class RevDocTable extends React.Component {
         <div class="col-md-6 text-right">
           <div class="form-inline" style={{'marginBottom': '10px'}}>
             <span className="search-wrapper">
+              {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser")?
               <div class="form-group xs-mr-5">
                 <input type="text" title="Search Project..." id="searchInRev" class="form-control btn-rounded " onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
                 <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}} onClick={this.clearSearchElement.bind(this)} type="reset"></button>
               </div>
+                :""}
             </span>
           </div>
         </div>
@@ -214,7 +224,17 @@ export class RevDocTable extends React.Component {
                     <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'reviewedL2', 'status')} name="reviewed">Review Completed(L2)</a></li>
                   </ul>
                 </th>
-                <th>TEMPLATE</th>
+                <th class="dropdown" >
+                          <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
+                            <span>TEMPLATE</span> <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{minWidth:'130px'}}>
+                          <Scrollbars className="templateScroll" style={{ height: 160,overflowX:'hidden' }} >
+                            <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'template')} name='all'>All</a></li>
+                            {templateOptions}
+                             </Scrollbars>
+                          </ul>
+                        </th>
                 <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
                             <span>FIELDS</span> <b class="caret"></b>

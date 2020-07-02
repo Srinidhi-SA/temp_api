@@ -20330,8 +20330,8 @@ blockquote p:after {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding: 8px;
+  font-size: 12px;
 }
 #algosel .tab-content{
   padding: 25px;
@@ -22169,6 +22169,16 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   color: #6f9ec3;
   text-decoration-line: underline;
 }
+.summaryLinkReg {
+    position: relative;
+    left: 2px;
+    bottom: 21px;
+    color: #6f9ec3;
+}
+.summaryLinkReg:hover {
+  color: #6f9ec3;
+  text-decoration-line: underline;
+}
 .democlass {
   font-weight: bold;
   margin: 5px;
@@ -22233,12 +22243,12 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   z-index: 999999;
 }
 .dtModal {
-  width: 800px;
+  width: 1000px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 .dtModal .modal-content {
-  min-width: 800px;
+  min-width: 1000px;
   margin-top: 10px;
   margin-bottom: 10px;
 }

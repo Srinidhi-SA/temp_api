@@ -6,6 +6,8 @@ import { OcrTopNavigation } from "./ocrTopNavigation";
 import {saveRevDocumentPageFlag,selectedReviewerDetails}from '../../../actions/ocrActions'
 import { getUserDetailsOrRestart } from "../../../helpers/helper";
 import store from "../../../store";
+import {RevProjectTable} from './RevProjectTable'
+import { RevDocTable } from "./RevDocTable";
 
 @connect((store) => {
   return {
@@ -18,23 +20,31 @@ export class OcrReviewer extends React.Component {
    super(props);
    var userRole=getUserDetailsOrRestart.get().userRole
    if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){ //Skipping revTable to load if userRole is reviewer_  ||
-    this.props.dispatch(saveRevDocumentPageFlag(true));
+    this.props.dispatch(saveRevDocumentPageFlag(false));
     this.props.dispatch(selectedReviewerDetails('',getUserDetailsOrRestart.get().userName))
    }  
   }
 
   componentWillMount(){
-    if(store.getState().ocr.selected_reviewer_name!="")
+    if(store.getState().ocr.selected_reviewer_name!="" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser"))
       this.props.dispatch(saveRevDocumentPageFlag(true)); //onClick of BreadCrumb(reviewerName) if selRevName is not empty, setting flag true to Show RevDocTable
   }
   render()
    { 
     var  renderComponents=null;
+    var userRole=getUserDetailsOrRestart.get().userRole
+    if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){ 
+    renderComponents=(
+      store.getState().ocr.revDocumentFlag?<RevDocTable/>:
+      <RevProjectTable/>)
+    }
+    else{
     renderComponents=(store.getState().ocr.revDocumentFlag?
     <OcrDocument/>
     :
     <OcrReviewersTable/>
    )
+    }
     return (
       <div className="side-body">
         <OcrTopNavigation/>
