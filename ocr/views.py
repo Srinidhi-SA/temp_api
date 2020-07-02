@@ -980,7 +980,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             category = e.__class__.__name__
             messages = {
                 'PermissionError': 'Permission denied for the operation',
-                'FileNotFoundError': 'Unable to locate the file in the server.'
+                'FileNotFoundError': 'Unable to locate the file in the server.',
+                'ServiceUnavailable': 'Unable to connect to the recognition service.'
             }
             return JsonResponse({'message': messages[category], 'error': str(e)})
 
