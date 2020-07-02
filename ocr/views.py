@@ -681,8 +681,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask.png'.format(slug),
                             file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
         gen_image, doc_accuracy, total_words = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                               response['final_json'], response['google_response'], response['google_response2'],
-                               'ocr/ITE/database/{}_gen_image.png'.format(slug), response['analysis'])
+                                                          response['final_json'], response['google_response'],
+                                                          response['google_response2'],
+                                                          'ocr/ITE/database/{}_gen_image.png'.format(slug),
+                                                          response['analysis'])
         image = base64.decodebytes(gen_image)
         with open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'wb') as f:
             f.write(image)
@@ -694,7 +696,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
-        #data['modified_by'] = self.request.user.id
+        # data['modified_by'] = self.request.user.id
         data['slug'] = slug
         data['flag'] = response['flag']
         data['classification'] = str(response['final_json']['temp_number'][0]).upper()
@@ -835,7 +837,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
             img_data['status'] = 'ready_to_recognize'
             serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
-                                             context={"request": self.request})
+                                            context={"request": self.request})
             if serializer.is_valid():
                 serializer.save()
                 serializer_data.append(serializer.data)
@@ -889,7 +891,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
         object_details.update({'values': value})
-        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values', 'classification']
+        desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
+                            'classification']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
         mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
         size = cv2.imread(mask).shape
@@ -981,9 +984,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             messages = {
                 'PermissionError': 'Permission denied for the operation',
                 'FileNotFoundError': 'Unable to locate the file in the server.',
-                'ServiceUnavailable': 'Unable to connect to the recognition service.'
+                'ServiceUnavailable': 'Unable to connect to the recognition service.',
+                'HTTPError': 'Bad request from azure recognition service.'
             }
-            return JsonResponse({'message': messages[category], 'error': str(e)})
+            return JsonResponse(
+                {'message': messages[category] if category in messages else "Please check your image for issues.",
+                 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -991,7 +997,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         x = data['x']
         y = data['y']
 
-        #try:
+        # try:
         image_queryset = OCRImage.objects.get(slug=data['slug'])
         review_start_time = image_queryset.review_start
         if not review_start_time:
@@ -1007,7 +1013,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         [x, y] = offset([x, y], size, dynamic_shape)
         response = fetch_click_word_from_final_json(final_json, [x, y])
         return JsonResponse({'exists': response[0], 'word': response[1]})
-        #except Exception as e:
+        # except Exception as e:
         #    return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
     @list_route(methods=['post'])
@@ -1046,7 +1052,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path, analysis)
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+                                         analysis)
             image = base64.decodebytes(gen_image)
             with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
                 f.write(image)
@@ -1155,7 +1162,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
             gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
-                                   analysis, percent=user_input)
+                                         analysis, percent=user_input)
 
             image = base64.decodebytes(gen_image)
             with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
@@ -1368,7 +1375,8 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         for i in project_query:
             projectname_list.append(i.name)
         if data['name'] in projectname_list:
-            response['project_serializer_error'] = creation_failed_exception("project name already exists!.").data['exception']
+            response['project_serializer_error'] = creation_failed_exception("project name already exists!.").data[
+                'exception']
             response['project_serializer_message'] = 'FAILED'
             return JsonResponse(response)
 
