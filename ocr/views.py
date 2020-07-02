@@ -977,7 +977,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             serializer.save()
                 return Response(results)
         except Exception as e:
-            return JsonResponse({'message': 'Something went wrong with recognize.', 'error': str(e)})
+            category = e.__class__.__name__
+            messages = {
+                'PermissionError': 'Permission denied for the operation',
+                'FileNotFoundError': 'Unable to locate the file in the server.'
+            }
+            return JsonResponse({'message': messages[category], 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
