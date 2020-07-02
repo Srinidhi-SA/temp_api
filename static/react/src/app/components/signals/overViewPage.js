@@ -430,12 +430,14 @@ export class OverViewPage extends React.Component {
                                 </ul>
                                 {/* Tab panes */}
                                 <div className="tab-content">
+                                { varList!=null &&
                                   <div className="sb_navigation">
                                     <div id="subTab">
                                       <Slider ref='slider' {...settings}>{varList}</Slider>
                                     </div>
                                     <div className="clearfix"></div>
                                   </div>
+                                }
                                   <div className="content_scroll container-fluid">
                                     <div className="row">
                                       {/*/span*/}

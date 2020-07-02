@@ -30,6 +30,7 @@ export default function reducer(state = {
   filter_rd_status:'',
   filter_rd_confidence:'',
   filter_rd_fields:'',
+  filter_rd_template:'',
   filter_rev_accuracy:'',
   filter_rev_time:'',
   checked_list: '',
@@ -393,7 +394,15 @@ export default function reducer(state = {
           ...state,
           filter_rd_fields: action.fields
         }
-      }//end
+      }
+    break;
+    case "FILTER_RD_BY_TEMPLATE":
+      {
+        return {
+          ...state,
+          filter_rd_template: action.template
+        }
+      }
     break;
     case "FILTER_REV_BY_ACCURACY":
     {

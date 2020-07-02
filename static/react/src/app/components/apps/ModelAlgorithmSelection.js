@@ -128,7 +128,7 @@ export class ModelAlgorithmSelection extends React.Component {
        let units= document.getElementsByClassName("units_tf")
        let rates= document.getElementsByClassName("rate_tf")
        var errMsgs=document.getElementsByClassName("error")
-       var finalActivation = ["sigmoid","softmax"]
+       var finalActivationPrediction = ["sigmoid","softmax"]
         for(let i=0; i<units.length; i++){
             var unitFlag;
             if(units[i].value==="")
@@ -153,9 +153,15 @@ export class ModelAlgorithmSelection extends React.Component {
         }else if ($(".activation_tf option:selected").text().includes("--Select--")){
             bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
             return false
-        }else if(tfInputs.length>=1 && !finalActivation.includes(tfInputs[tfInputs.length-1].activation)){
+        }else if(this.props.currentAppId === 2 && tfInputs.length>=1 && !finalActivationPrediction.includes(tfInputs[tfInputs.length-1].activation)){
             bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Softmax' or 'Sigmoid' for activation.", "small_mascot"));
-            return false;
+            return false;           
+        }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].activation!='relu'){
+            bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Relu' for activation.", "small_mascot"));
+            return false;            
+        }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].units!=1){
+            bootbox.alert(statusMessages("warning", "TensorFlow Units in last layer should always be 1.", "small_mascot"));
+            return false;            
         }else if(unitFlag){
             bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
             return false;
@@ -415,7 +421,7 @@ export class ModelAlgorithmSelection extends React.Component {
 
                     </div>
                     <div className="main-content">
-                          <div className="panel panel-mAd xs-p-20 box-shadow">
+                          <div className="panel panel-mAd">
                                 {/* {this.state.showParameterTuning == false ?
                                 <div>
                                     <div className="panel-heading xs-ml-0 xs-mb-10">
@@ -436,7 +442,7 @@ export class ModelAlgorithmSelection extends React.Component {
 							<div className="clearfix"></div>
                             <div>
                             <Button onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
-                            <Button id="parameterCreateModel" type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName} <i class="fa fa-angle-double-right"></i></Button>
+                            <Button id="parameterCreateModel" type="button" bsStyle="primary xs-pl-20 xs-pr-20" style={{float:'right'}} onClick={this.createModel.bind(this)}>{buttonName}</Button>
                             </div>
 							<div className="clearfix"></div>
                          </div>

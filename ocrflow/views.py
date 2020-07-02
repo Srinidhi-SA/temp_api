@@ -8,7 +8,7 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from ocr.models import OCRImage
+from ocr.models import OCRImage, Template
 from ocr.pagination import CustomOCRPagination
 from ocr.permission import IsOCRAdminUser
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
@@ -300,6 +300,10 @@ class ReviewRequestView(viewsets.ModelViewSet):
         #         add_key = [ele for ele in add_key if ele not in buffer]
         #
         #     response.data['data'] = add_key
+        temp_obj = Template.objects.first()
+        values = list(json.loads(temp_obj.template_classification).keys())
+        value = [i.upper() for i in values]
+        response.data.update({'values': value})
         return response
 
     def retrieve(self, request, *args, **kwargs):

@@ -66,6 +66,7 @@ export class AppsModelDetail extends React.Component {
 		let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
 				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
+				let regAlgoName=$(".sm-mb-20")[i].textContent
 				let algorithmName = ""
 				if(algoNam === "LOGISTICREGRESSION")
 					algorithmName = "LG"
@@ -84,24 +85,36 @@ export class AppsModelDetail extends React.Component {
 				else if(algoNam === "ENSEMBLE")
 				  algorithmName = "EN"
 				else if(algoNam === "ADABOOST")
-				  algorithmName = "ADAB"
+					algorithmName = "ADAB"
+				else if(regAlgoName ==="Gradient Boosted Tree RegressionSummary")
+		      algorithmName = "GB"
+				else if(regAlgoName==="Random Forest RegressionSummary")
+			   	algorithmName = "RFR"
+				else if(regAlgoName==="Decision Tree RegressionSummary")
+			  	algorithmName = "DT"
+				else if(regAlgoName==="Linear RegressionSummary")
+				  algorithmName = "LR"
+				else if(regAlgoName==="Neural Network (TensorFlow)Summary")
+				  algorithmName = "TF"
 				else 
-				  algorithmName = ""
+					algorithmName = ""
 				
 				if(algorithmName != ""){
 					let info = document.createElement('a');
 					var att = document.createAttribute("class");
-					att.value = "summaryLink";
+					this.props.currentAppId==13?att.value = "summaryLinkReg":att.value = "summaryLink";
 					info.setAttributeNode(att);
 					var modelName= store.getState().apps.modelSummary.name;
 					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName+"_"))
+					this.props.currentAppId==13? document.getElementsByTagName('small')[i].hidden=true:"";
 					if( (sel.length!=0) && (!modelName.includes("shared")) ){
-						info.innerText = "For More Info Click Here";
-						info.href = this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug)
-						$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
+						info.innerText = "(For More Info Click Here)";
+						info.href = this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug);
+						this.props.currentAppId==13?$(".sm-mb-20")[i].parentNode.appendChild(info):$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
 					}
 				}
 			}
+
 
 	}
 
