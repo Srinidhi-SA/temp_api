@@ -17,7 +17,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
     OcrRevwrDocsList: store.ocr.OcrRevwrDocsList,
     documentFlag: store.ocr.documentFlag,
     revDocumentFlag:store.ocr.revDocumentFlag,
-    reviewerName: store.ocr.selected_reviewer_name
+    reviewerName: store.ocr.selected_reviewer_name,
+    projectName:store.ocr.selected_project_name
   };
 })
 
@@ -154,6 +155,14 @@ export class RevDocTable extends React.Component {
               <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.reviewerName}</a></li>
             </ol>
           )
+   }
+   else{
+    breadcrumb= (
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+          <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.projectName}</a></li>
+        </ol>
+      )
    }
     var OcrRevDocTableHtml = (
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
