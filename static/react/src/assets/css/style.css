@@ -22169,6 +22169,16 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   color: #6f9ec3;
   text-decoration-line: underline;
 }
+.summaryLinkReg {
+    position: relative;
+    left: 2px;
+    bottom: 21px;
+    color: #6f9ec3;
+}
+.summaryLinkReg:hover {
+  color: #6f9ec3;
+  text-decoration-line: underline;
+}
 .democlass {
   font-weight: bold;
   margin: 5px;

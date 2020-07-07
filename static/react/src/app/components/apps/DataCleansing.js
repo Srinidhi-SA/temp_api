@@ -147,9 +147,34 @@ setMissingValuesOnEdit(){
  }
 }
 
+componentDidUpdate(){
+  var selectElements = document.getElementsByTagName("select");
+  var i,j;
+  for (i = 1; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+      if(selectElements[i].options.length>=4){ 
+      if( selectElements[i].selectedOptions[0].value==selectElements[i].options[j].value)
+       selectElements[i].options[j].style.display = 'none';
+       else
+       selectElements[i].options[j].style.display = 'inline';
+      }
+  }
+  }
+}
+
   componentDidMount() {
 
 
+var selectElements = document.getElementsByTagName("select");
+  var i,j;
+  for (i = 0; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+      if(selectElements[i].options[j].selected)
+       selectElements[i].options[j].style.display = 'none';
+      else
+       selectElements[i].options[j].style.display = 'inline';
+  }
+  }
     var table = document.getElementById('dctable'),
     tableHead = table.querySelector('thead'),
     tableHeaders = tableHead.querySelectorAll('th'),
@@ -234,12 +259,14 @@ tableHead.addEventListener('click', function (e) {
   onchangeMissingValueTreatment(event, variable_name) {
   }
 
-  missingValueTreatmentOnChange(event) {
+  missingValueTreatmentOnChange(colSlug,event) {
     this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
+    this.handleDropdownOptions(colSlug, event,'missingValue')
   }
 
-  outlierRemovalOnChange(event) {
+  outlierRemovalOnChange(colSlug,event) {
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"], event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
+    this.handleDropdownOptions(colSlug, event,'outlier')
   }
 
 
@@ -277,7 +304,7 @@ tableHead.addEventListener('click', function (e) {
 
   handleDuplicateAttributesOnChange(event) {
     this.setState({ value1: event.target.value })
-    this.props.dispatch(removeDuplicateAttributesAction(event.target.name, event.target.value));
+    this.props.dispatch(removeDuplicateAttributesAction(event.target.name, event.target.value)); 
   }
 
   handleDuplicateObservationsOnChange(event) {
@@ -285,16 +312,48 @@ tableHead.addEventListener('click', function (e) {
     this.props.dispatch(removeDuplicateObservationsAction(event.target.name, event.target.value));
   }
 
+  handlefilterOptions(e){
+    var select = document.getElementById('sdataType');
+    var selectedOption = e.target.value
+     
+     for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==selectedOption)
+        select.options[i].style.display='none'
+        else
+        select.options[i].style.display='inline'
+    }
+  }
+
+  handleDropdownOptions(colSlug,event,type){
+    var select
+    if(type=='dataType')
+     select = document.getElementById(`${colSlug}dataType`);
+    else if(type=='missingValue')
+     select = document.getElementById(`${colSlug}missingValue`);
+    else if(type=='outlier')
+     select = document.getElementById(`${colSlug}outlier`);
+
+    var selectedOption = event.target.value
+
+    for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==selectedOption)
+        select.options[i].style.display='none'
+      else
+        select.options[i].style.display='inline'
+    }
+  }
+  
   handleDataTypeChange(colSlug, event) {
     this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
+    this.handleDropdownOptions(colSlug, event,'dataType')
   }
 
   getUpdatedDataType(colSlug) {
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
-   if(!this.props.editmodelFlag)
+    if(!this.props.editmodelFlag)
     var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-   else
-        colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
+    else
+    colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
     var optionsHtml = arr.map(item => {
       if (item.toLowerCase() == colType.toLowerCase()) {
@@ -303,7 +362,7 @@ tableHead.addEventListener('click', function (e) {
         return <option value={item.toLowerCase()} > {item}</option>
       }
     })
-    return <select className="form-control" id={colSlug} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
+    return <select className="form-control" id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -319,7 +378,7 @@ tableHead.addEventListener('click', function (e) {
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+        <select className="form-control"  id={colSlug+'outlier'} data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this,colSlug)} value={selectedValue} >{dcHTML}</select>
       );
     }
     else return ""
@@ -351,7 +410,7 @@ tableHead.addEventListener('click', function (e) {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+       <select className="form-control" data-coltype={dataType} id={colSlug+'missingValue'} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this,colSlug)} value={selectedValue} >{dcHTML}</select>
       );
     }
     else { return ""; }
@@ -470,12 +529,12 @@ tableHead.addEventListener('click', function (e) {
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div class="row xs-mb-10">
-                    <div className="col-md-3">
+                    <div className="col-md-6">
                       <div class="form-inline" >
                         <div class="form-group">
-                          <label for="sdataType">Filter By: </label>
-                          <select id="sdataType" className="form-control cst-width">
-                            <option value="all">Data Type</option>
+                          <label for="sdataType">Filter Data Type: </label>
+                          <select id="sdataType" onChange={this.handlefilterOptions.bind(this)}className="form-control cst-width">
+                            <option value="all">All</option>
                             <option value="measure">Measure</option>
                             <option value="dimension">Dimension</option>
                             <option value="datetime">Datetime</option>
@@ -484,7 +543,7 @@ tableHead.addEventListener('click', function (e) {
                       </div>
 
                     </div>
-                    <div class="col-md-3 col-md-offset-6">
+                    <div class="col-md-6">
                       <div class="form-inline" >
                         <div class="form-group pull-right">
                           <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>

@@ -73,7 +73,23 @@ export function getOcrProjectsList(pageNo){
 
 function fetchProjects(pageNo=1,token){
 	let search_project=store.getState().ocr.search_project
-	if(search_project!=""){
+	var userRole=getUserDetailsOrRestart.get().userRole
+	if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){
+    if(search_project!=""){
+			return fetch(API + '/ocr/project/reviewer/?page_number='+pageNo+'&name='+search_project, {
+				method: 'get',
+				headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]));
+		}
+		else{
+		return fetch(API + '/ocr/project/reviewer/?page_number='+pageNo, {
+			method: 'get',
+			headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]))
+		};
+	}
+	else{
+if(search_project!=""){
 		return fetch(API +'/ocr/project/?name='+search_project+'&page_number=' + pageNo, {
       method: 'get',
       headers: getHeader(token)
@@ -85,6 +101,7 @@ function fetchProjects(pageNo=1,token){
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
 }
+	}
 
 }
 
@@ -133,13 +150,13 @@ function fetchUploadedFiles(pageNo=1,token){
 			method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
-}
+  }
 	else{
 	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
-};
+  };
 }
 
 export function fetchUploadsSuccess(doc){
@@ -222,10 +239,21 @@ function fetchRevrDocsList(pageNo=1,token){
 	let filter_rd_confidence=store.getState().ocr.filter_rd_confidence
 	let selected_reviewer_name=store.getState().ocr.selected_reviewer_name
 	let search_project=store.getState().ocr.search_project_in_revtable
+	let selected_project_name =store.getState().ocr.selected_project_name
+
+	var userRole=getUserDetailsOrRestart.get().userRole
+	if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){
+		return fetch(API + '/ocrflow/review/assigned_requests/?username='+getUserDetailsOrRestart.get().userName+'&reviewStatus='+filter_rd_status+'&template='+filter_rd_template+'&accuracy='+filter_rd_confidence+'&project='+selected_project_name+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
+			method: 'get',
+			headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]))
+	}
+	else{
 	return fetch(API + '/ocrflow/review/assigned_requests/?username='+selected_reviewer_name+'&reviewStatus='+filter_rd_status+'&template='+filter_rd_template+'&accuracy='+filter_rd_confidence+'&project='+search_project+'&field_count='+filter_rd_fields+'&page_number=' + pageNo, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
+}
 }
 
 export function fetchRevrDocsSuccess(doc){

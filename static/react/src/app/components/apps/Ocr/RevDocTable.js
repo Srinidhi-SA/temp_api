@@ -191,10 +191,12 @@ export class RevDocTable extends React.Component {
         <div class="col-md-6 text-right">
           <div class="form-inline" style={{'marginBottom': '10px'}}>
             <span className="search-wrapper">
+              {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser")?
               <div class="form-group xs-mr-5">
                 <input type="text" title="Search Project..." id="searchInRev" class="form-control btn-rounded " onKeyUp={this.handleSearchBox.bind(this)} placeholder="Search project..."></input>
                 <button className="close-icon"  style={{position:"absolute",left:'165px',top:'7px'}} onClick={this.clearSearchElement.bind(this)} type="reset"></button>
               </div>
+                :""}
             </span>
           </div>
         </div>
