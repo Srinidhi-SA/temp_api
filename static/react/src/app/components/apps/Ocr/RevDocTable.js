@@ -160,7 +160,6 @@ export class RevDocTable extends React.Component {
         return (
           <tr id={index}>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
-            <td>{item.project}</td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.classification}</td>
             <td>{item.ocrImageData.fields}</td>
@@ -211,7 +210,6 @@ export class RevDocTable extends React.Component {
              <thead>
               <tr>
                 <th>NAME</th>
-                <th>PROJECT</th>
                 <th class="dropdown" >
                   <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                     <span>STATUS</span> <b class="caret"></b>
