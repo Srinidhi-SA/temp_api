@@ -239,7 +239,8 @@ class QueryCommonFiltering:
 def get_listed_data(
         viewset=None,
         request=None,
-        list_serializer=None
+        list_serializer=None,
+        role=None
 ):
     """
 
@@ -248,7 +249,7 @@ def get_listed_data(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_queryset()
+    query_set = viewset.get_queryset(request,role)
 
     # common filtering
     qcf = QueryCommonFiltering(

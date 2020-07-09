@@ -285,14 +285,22 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    #permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    def get_queryset(self):
-        queryset = User.objects.filter(
-            ~Q(is_active=False),
-            groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
-        ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
+    def get_queryset(self,request,role):
+        if role == 'Admin':
+            queryset = User.objects.filter(
+                ~Q(is_active=False),
+                groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+            ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
+        else:
+            queryset = User.objects.filter(
+                ~Q(is_active=False),
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                ocruserprofile__supervisor = request.user
+                ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def get_specific_reviewer_qyeryset(self, role):
@@ -331,11 +339,21 @@ class OCRUserView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        return get_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRUserListSerializer
-        )
+        user_group = request.user.groups.values_list('name',flat = True)
+        if 'Superuser'in user_group:
+            return get_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role='Superuser'
+            )
+        else:
+            return get_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role='Admin'
+            )
 
     @list_route(methods=['post'])
     def edit(self, request, *args, **kwargs):
@@ -551,9 +569,9 @@ class OCRUserProfileView(viewsets.ModelViewSet):
         return Response(profile_details)
 
     def update(self, request, *args, **kwargs):
-        print("updating profile")
         instance = self.get_object_from_all()
         instance.is_active = request.data.get("is_active")
+        instance.supervisor = request.user
         group_object = Group.objects.get(id=request.data.get("role"))
         try:
             user_group = User.groups.through.objects.get(user=instance.ocr_user)
@@ -604,14 +622,27 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 # -------------------------------------------------------------------------------
 
 class GroupListView(generics.ListCreateAPIView):
-    queryset = Group.objects.filter(
-        name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
-    )
+
+    def get_queryset(self,userGroup):
+        if userGroup == 'Admin':
+            queryset = Group.objects.filter(
+                name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+            )
+        else:
+            queryset = Group.objects.filter(
+                name__in=['ReviewerL1', 'ReviewerL2']
+            )
+        return queryset
+
     serializer_class = GroupSerializer
-    permission_classes = [IsOCRAdminUser]
+    permission_classes = [IsAuthenticated,]
+    #IsOCRAdminUser]
 
     def list(self, request):
-        queryset = self.get_queryset()
+        userGroup = request.user.groups.all()[0].name
+        print(userGroup)
+
+        queryset = self.get_queryset(userGroup)
         serializer = GroupSerializer(queryset, many=True)
         return Response(serializer.data)
 
