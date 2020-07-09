@@ -72,7 +72,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data = request.data
         data = convert_to_string(data)
-
+        response = []
         try:
             if data['mode'] == 'autoML':
                 self.mode = 'autoML'
@@ -82,6 +82,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 self.mode = 'analyst'
             self.save()
         except:
+            pass
+
+        try:
+            data['created_by'] = request.user.id
+        except:
+            # data['created_by'] = None
             pass
 
         if 'name' in data:
@@ -95,19 +101,32 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     return creation_failed_exception("Name have special_characters.")
 
         if 'input_file' in data:
-            data['input_file'] = request.FILES.get('input_file')
-            data['datasource_type'] = 'fileUpload'
-            if data['input_file'] is None:
-                data['name'] = data.get('name',
-                                        data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
-            else:
-                data['name'] = data.get('name', data['input_file'].name[:-4].replace('.', '_'))
-            datasetname_list = []
-            dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
-            for index, i in enumerate(dataset_query):
-                datasetname_list.append(i.name)
-            if data['name'] in datasetname_list:
-                return creation_failed_exception("Dataset file name already exists!.")
+            # data['input_file'] = request.FILES.get('input_file')
+            files = request.FILES.getlist('input_file')
+            for file in files:
+                data['input_file'] = file
+                data['datasource_type'] = 'fileUpload'
+                if data['input_file'] is None:
+                    data['name'] = data.get('name',
+                                            data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                else:
+                    data['name'] = data['input_file'].name[:-4].replace('.', '_')
+
+                datasetname_list = []
+                dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+                for index, i in enumerate(dataset_query):
+                    datasetname_list.append(i.name)
+                if data['name'] in datasetname_list:
+                    return creation_failed_exception("Dataset file name already exists!.")
+
+                serializer = DatasetSerializer(data=data, context={"request": self.request})
+                if serializer.is_valid():
+                    dataset_object = serializer.save()
+                    dataset_object.create()
+                    response.append(serializer.data)
+                else:
+                    return creation_failed_exception(serializer.errors)
+            return Response(response)
 
         elif 'datasource_details' in data:
             data['input_file'] = None
@@ -120,11 +139,6 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        try:
-            data['created_by'] = request.user.id
-        except:
-            # data['created_by'] = None
-            pass
 
         serializer = DatasetSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():

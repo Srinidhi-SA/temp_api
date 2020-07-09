@@ -91,7 +91,7 @@ from django.core.exceptions import PermissionDenied, \
 from api.utils import UserListSerializer
 
 # Create your views here.
-from .utils import json_2_xml, json_2_csv
+from .utils import json_2_xml, json_2_csv, error_message
 
 
 def ocr_datasource_config_list(request):
@@ -1029,16 +1029,17 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             serializer.save()
                 return Response(results)
         except Exception as e:
+            if image_list:
+                for slug in image_list:
+                    image_queryset = OCRImage.objects.get(slug=slug)
+                    image_queryset.status = 'failed'
+                    serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                     context={"request": self.request})
+                    if serializer.is_valid():
+                        serializer.save()
             category = e.__class__.__name__
-            messages = {
-                'PermissionError': 'Permission denied for the operation',
-                'FileNotFoundError': 'Unable to locate the file in the server.',
-                'ServiceUnavailable': 'Unable to connect to the recognition service.',
-                'HTTPError': 'Bad request from azure recognition service.'
-            }
             return JsonResponse(
-                {'message': messages[category] if category in messages else "Please check your image for issues.",
-                 'error': str(e)})
+                {'message': error_message(category), 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -1271,6 +1272,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response({
             "data": set(item['name'] for item in serializer.data)
         })
+
+    def delete(self, request, *args, **kwargs):
+        """
+        TODO
+        """
+        pass
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
