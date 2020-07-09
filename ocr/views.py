@@ -303,8 +303,14 @@ class OCRUserView(viewsets.ModelViewSet):
                 ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
-    def get_specific_reviewer_qyeryset(self, role):
-        queryset = User.objects.filter(groups=role)
+    def get_specific_reviewer_qyeryset(self, request, role, user_type):
+        if user_type == 'Admin':
+            queryset = User.objects.filter(groups=role)
+        else:
+            queryset = User.objects.filter(
+                groups=role,
+                ocruserprofile__supervisor = request.user
+                ).order_by('-date_joined')
         return queryset
 
     def get_specific_reviewer_detail_queryset(self):
@@ -443,12 +449,22 @@ class OCRUserView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def reviewer_list(self, request, *args, **kwargs):
         role = request.GET['role']
-        return get_specific_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRUserListSerializer,
-            role=role
-        )
+        user_group = request.user.groups.values_list('name',flat = True)
+        if 'Superuser'in user_group:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Superuser'
+            )
+        else:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Admin'
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
