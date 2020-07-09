@@ -20,7 +20,6 @@ export class OcrReviewer extends React.Component {
    super(props);
    var userRole=getUserDetailsOrRestart.get().userRole
    if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){ //Skipping revTable to load if userRole is reviewer_  ||
-    this.props.dispatch(saveRevDocumentPageFlag(false));
     this.props.dispatch(selectedReviewerDetails('',getUserDetailsOrRestart.get().userName))
    }  
   }

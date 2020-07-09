@@ -8,7 +8,7 @@ import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
-import { getUserDetailsOrRestart } from "../../../helpers/helper"
+import { getUserDetailsOrRestart ,statusMessages} from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
 import { API } from "../../../helpers/env";
 import ReactTooltip from 'react-tooltip';
@@ -170,13 +170,18 @@ export class OcrTable extends React.Component {
       body: JSON.stringify(postData)
     }).then(response => response.json())
       .then(json => {
-        if ((json.map(i=>i.message=="SUCCESS")) && (json.map(i => i.status).includes("ready_to_assign"))){
-          this.setState({ loader: false, recognized: true })
-          this.setState({checkAll:false,checkedList:[]})
-        }
-      })
+          if (Array.isArray(json) && (json.map(i=>i.message=="SUCCESS")) && (json.map(i => i.status).includes("ready_to_assign"))){
+            this.setState({ loader: false, recognized: true })
+            this.setState({checkAll:false,checkedList:[]})
+            }
+            else if(this.state.showRecognizePopup && json.message!=""){
+            this.closePopup();
+            bootbox.alert(statusMessages("warning", json.message , "small_mascot"));
+            }
+        })
+      }
 
-  }
+  
 
   closePopup() {
     this.setState({ showRecognizePopup: false })
