@@ -6137,15 +6137,18 @@ def get_algorithm_config_list(request):
 
     return JsonResponse(algorithm_config_list)
 
+@api_view(['GET'])
 def get_appID_appName_map(request):
-    # from django.core import serializers
+
     from api.models import CustomApps
-    appIDmapfromDB = CustomApps.objects.only('app_id', 'name', 'app_type')
-    # appIDmap_serialized = serializers.serialize('json', appIDmap)
+    appIDmapfromDB = CustomApps.objects.filter(
+        customappsusermapping__user=request.user).only('app_id', 'displayName')
+
     appIDmap = []
     for row in appIDmapfromDB:
         appIDmap.append({
-            "app_id": row.app_id, "app_name": row.name, "app_type": row.app_type
+            "app_id": row.app_id,
+            "displayName": row.displayName
         })
 
     return JsonResponse({"appIDMapping": appIDmap})

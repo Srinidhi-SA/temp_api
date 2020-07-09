@@ -40,6 +40,7 @@ class OCRUserProfile(models.Model):
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    supervisor = models.ForeignKey(User, null=True, related_name='client_user')
 
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])

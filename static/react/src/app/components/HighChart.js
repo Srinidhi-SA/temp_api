@@ -127,9 +127,6 @@ export class HighChart extends React.Component {
                 buttons: [
                     { type: 'month',count: 1,text: '1m' },
                     { type: 'month',count: 3,text: '3m' },
-                    { type: 'month',count: 6,text: '6m' },
-                    { type: 'month',count: 9,text: '9m' },
-                    { type: 'year',count: 1,text: '1y'},
                     { type: 'all',text: 'All'}
                 ],
                 buttonTheme: {
