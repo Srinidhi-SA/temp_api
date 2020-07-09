@@ -240,6 +240,45 @@ def get_listed_data(
         viewset=None,
         request=None,
         list_serializer=None,
+):
+    """
+
+    :param viewset: use to  get_queryset() / pagination_class
+    :param request: use to query_params
+    :param list_serializer: pass Listing Serializer
+    :return:
+    """
+    query_set = viewset.get_queryset()
+
+    # common filtering
+    qcf = QueryCommonFiltering(
+        query_set=query_set,
+        request=request
+    )
+
+    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    if 'page' in request.query_params:
+        if request.query_params.get('page') == 'all':
+            serializer = list_serializer(query_set, many=True)
+            return Response({
+                "data": serializer.data
+            })
+    page_class = viewset.pagination_class()
+    page = page_class.paginate_queryset(
+        queryset=query_set,
+        request=request,
+        list_serializer=list_serializer,
+        view=viewset
+    )
+
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
+
+def get_userlisted_data(
+        viewset=None,
+        request=None,
+        list_serializer=None,
         role=None
 ):
     """

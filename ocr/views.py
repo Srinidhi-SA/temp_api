@@ -43,7 +43,8 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list, \
+    get_userlisted_data
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
@@ -347,14 +348,14 @@ class OCRUserView(viewsets.ModelViewSet):
 
         user_group = request.user.groups.values_list('name',flat = True)
         if 'Superuser'in user_group:
-            return get_listed_data(
+            return get_userlisted_data(
                 viewset=self,
                 request=request,
                 list_serializer=OCRUserListSerializer,
                 role='Superuser'
             )
         else:
-            return get_listed_data(
+            return get_userlisted_data(
                 viewset=self,
                 request=request,
                 list_serializer=OCRUserListSerializer,
@@ -465,6 +466,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 list_serializer=OCRUserListSerializer,
                 role=role,
                 user_type='Admin'
+            )
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
