@@ -2692,6 +2692,7 @@ class StockDataset(models.Model):
     name = models.CharField(max_length=100, null=True)
     stock_symbols = models.CharField(max_length=500, null=True, blank=True)
     domains = models.CharField(max_length=500, null=True, blank=True, default='')
+    start_date = models.DateTimeField(auto_now_add=False, null=True)
     slug = models.SlugField(null=True, max_length=300)
     auto_update = models.BooleanField(default=False)
 
@@ -2772,7 +2773,10 @@ class StockDataset(models.Model):
             other_details={
                 'type': 'news_data'
             },
-            slug=self.slug
+            slug=self.slug,
+            symbols=self.get_stock_company_names(),
+            created_at=self.created_at,
+            start_date=self.start_date
         )
 
         meta_data['extracted_data'] = extracted_data
@@ -2899,7 +2903,6 @@ class StockDataset(models.Model):
         return hadoop_path
 
     def generate_meta_data(self):
-        print("generate_meta_data " * 3)
         self.meta_data = self.crawl_news_data()
         self.job.messages = update_stock_sense_message(self.job, "ml-work")
         self.job.save()
@@ -3004,7 +3007,8 @@ class StockDataset(models.Model):
     def get_stock_company_names(self):
         # list_of_stock = self.stock_symbols.split(', ')
         # return [stock_name.lower() for stock_name in list_of_stock]
-        return [value for value in self.stock_symbols.values()]
+        stock_symbols = json.loads(self.stock_symbols)
+        return [value for value in stock_symbols.values()]
 
     def get_brief_info(self):
         brief_info = dict()

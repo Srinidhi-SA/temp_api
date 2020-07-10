@@ -240,7 +240,8 @@ def get_nasdaq_news_articles(stock_symbol):
     return urls
 
 
-def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
+def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None, symbols=None,
+                                            created_at=None, start_date=None):
     if other_details is None:
         type = 'news_data'
     else:
@@ -249,9 +250,11 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
     headers = find_headers(news_data=news_data, type=type, slug=slug)
     headersUI = headers.copy()
     columnData = get_column_data_for_metadata(headers, slug=slug)
+    columnDataUI = columnData.copy()
     sampleData = get_sample_data(news_data=news_data, type=type, slug=slug)
     sampleDataUI = get_sample_data_ui(news_data=news_data, type=type, slug=slug)
     metaData = get_metaData(news_data=news_data, slug=slug)
+    metaData_UI = metaData.copy()
     transformation_settings = get_transformation_settings(slug=slug)
     headers_UI = []
     for case in headersUI:
@@ -259,6 +262,15 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         temp['name'] = case['name'].capitalize() if case['name'] != 'short_desc' else 'Short description'
         temp['slug'] = case['slug']
         headers_UI.append(temp)
+    startDate = start_date.date().strftime('%b %d,%Y')
+    endDate = created_at.date().strftime('%b %d,%Y')
+    for i in columnDataUI:
+        i['name'] = i['name'].capitalize() if i['name'] != 'short_desc' else 'Short description'
+    companyNames = {"displayName": "Company Names", "name": "companyNames", "value": symbols, "display": True}
+    timeline = {"displayName": "Timeline", "name": "timeline", "value": str(startDate) + ' to ' + str(endDate), "display": True}
+    metaData_UI.append(companyNames)
+    metaData_UI.append(timeline)
+
     metadata_json = {
         'scriptMetaData': {
             'columnData': columnData,
@@ -268,9 +280,9 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         },
         'uiMetaData': {
             'advanced_settings': {},
-            'columnDataUI': columnData,
+            'columnDataUI': columnDataUI,
             'headersUI': headers_UI,
-            'metaDataUI': metaData,
+            'metaDataUI': metaData_UI,
             'possibleAnalysis': '',
             'sampleDataUI': sampleDataUI,
             'transformation_settings': transformation_settings,

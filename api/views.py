@@ -1152,6 +1152,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         new_data['stock_symbols'] = json.dumps(stocks)
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
+        new_data['start_date'] = datetime.datetime.today() - datetime.timedelta(days=7)
 
         serializer = StockDatasetSerializer(data=new_data, context={"request": self.request})
         if serializer.is_valid():
