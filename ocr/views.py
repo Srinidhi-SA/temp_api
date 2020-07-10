@@ -43,7 +43,8 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list, \
+    get_userlisted_data
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
@@ -303,12 +304,21 @@ class OCRUserView(viewsets.ModelViewSet):
                 ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
-    def get_specific_reviewer_qyeryset(self, role):
-        queryset = User.objects.filter(groups=role)
+    def get_specific_reviewer_qyeryset(self, request, role, user_type):
+        if user_type == 'Admin':
+            queryset = User.objects.filter(groups=role)
+        else:
+            queryset = User.objects.filter(
+                groups=role,
+                ocruserprofile__supervisor = request.user
+                ).order_by('-date_joined')
         return queryset
 
-    def get_specific_reviewer_detail_queryset(self):
-        queryset = User.objects.filter(groups__name__in=['ReviewerL1', 'ReviewerL2'])
+    def get_specific_reviewer_detail_queryset(self, request):
+        queryset = User.objects.filter(
+            groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            ocruserprofile__supervisor = request.user
+            )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -341,14 +351,14 @@ class OCRUserView(viewsets.ModelViewSet):
 
         user_group = request.user.groups.values_list('name',flat = True)
         if 'Superuser'in user_group:
-            return get_listed_data(
+            return get_userlisted_data(
                 viewset=self,
                 request=request,
                 list_serializer=OCRUserListSerializer,
                 role='Superuser'
             )
         else:
-            return get_listed_data(
+            return get_userlisted_data(
                 viewset=self,
                 request=request,
                 list_serializer=OCRUserListSerializer,
@@ -443,12 +453,23 @@ class OCRUserView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def reviewer_list(self, request, *args, **kwargs):
         role = request.GET['role']
-        return get_specific_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRUserListSerializer,
-            role=role
-        )
+        user_group = request.user.groups.values_list('name',flat = True)
+        if 'Superuser'in user_group:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Superuser'
+            )
+        else:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Admin'
+            )
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
@@ -510,7 +531,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_ocr_users(self, request):
         try:
             role = request.GET['role']
-            queryset = self.get_specific_reviewer_qyeryset(role=role)
+            queryset = self.get_specific_reviewer_qyeryset(request, role=role, user_type='Superuser')
             for query in queryset.iterator():
                 ocr_profile_object = self.get_user_profile_object(username=query)
                 if not ocr_profile_object.is_active:

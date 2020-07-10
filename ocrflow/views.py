@@ -28,7 +28,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     """
     serializer_class = OCRRulesSerializer
     model = OCRRules
-    permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    permission_classes = (IsAuthenticated)
 
     defaults = {
         "auto_assignmentL1":True,
