@@ -211,8 +211,10 @@ class BaseModule:
                         M = cv2.moments(cnt)
                         cx = int(M['m10'] / M['m00'])
                         cy = int(M['m01'] / M['m00'])
-                        table_rel_centroid_dist_dict[table_number + 1] = round(
-                            ((cx) ** 2 + (cy) ** 2) ** 0.5 / (mask.shape[0] + mask.shape[1]), 2)
+                        table_rel_centroid_dist_dict[int(str(table_number) +
+                                                         str(inner_table_number +
+                                                             1))] = round(
+                            (cx ** 2 + cy ** 2) ** 0.5 / (mask.shape[0] + mask.shape[1]), 2)
 
                         # =============================================================================
                         #                         table_centroid_dict[int(

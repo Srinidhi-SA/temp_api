@@ -8,18 +8,6 @@ class Templates:
         self.template = template
         self.template_number = self.get_template(metadata)
 
-    def create_new_templates(self):
-
-        # template_obgo to the admin pagej.template
-        with open('./ocr/ITE/scripts/database/classified_templates.json', 'r') as f:
-            templates = json.load(f)
-            f.close()
-        print('Total Templates : \n', templates.keys())
-
-        with open('./metadata.json', 'w') as f:  # ALL THE PAGES OF THE DOC TEMPLATE DATA
-            f.close()
-        print('NEW Metadata FILE CREATED')
-
     def get_template(self, current_metadata):
 
         try:
