@@ -398,7 +398,7 @@ def get_reviewer_data(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_specific_reviewer_detail_queryset()
+    query_set = viewset.get_specific_reviewer_detail_queryset(request)
 
     # common filtering
     qcf = QueryCommonFiltering(

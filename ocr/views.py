@@ -314,8 +314,11 @@ class OCRUserView(viewsets.ModelViewSet):
                 ).order_by('-date_joined')
         return queryset
 
-    def get_specific_reviewer_detail_queryset(self):
-        queryset = User.objects.filter(groups__name__in=['ReviewerL1', 'ReviewerL2'])
+    def get_specific_reviewer_detail_queryset(self, request):
+        queryset = User.objects.filter(
+            groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            ocruserprofile__supervisor = request.user
+            )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -528,7 +531,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_ocr_users(self, request):
         try:
             role = request.GET['role']
-            queryset = self.get_specific_reviewer_qyeryset(role=role)
+            queryset = self.get_specific_reviewer_qyeryset(request, role=role, user_type='Superuser')
             for query in queryset.iterator():
                 ocr_profile_object = self.get_user_profile_object(username=query)
                 if not ocr_profile_object.is_active:
