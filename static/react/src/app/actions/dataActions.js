@@ -800,6 +800,14 @@ function updateTimeDimList(slug,array,evt){
 return array;
 }
 
+function defaultTimeDimList(slug,array){
+    for(var i=0;i<array.length;i++){
+        if(array[i].slug == slug){
+            array[i].selected = true;
+        }
+    }
+    return array;
+}
 function getIsAllSelected(array){
     var isAllSelected = true;
 
@@ -850,6 +858,22 @@ function applyFilterOnVaraibles(){
             evt.target.name = "datetime"
                 dispatch(handleDVSearch(evt));
         }
+    }
+}
+export function setDefaultTimeDimensionVariable(item){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        if(item.columnType == "datetime"){
+            dataSetTimeDimensions  = defaultTimeDimList(item.slug,dataSetTimeDimensions);
+        }
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
     }
 }
 export function updateSelectedVariables(evt){
