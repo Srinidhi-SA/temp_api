@@ -1,7 +1,3 @@
-import simplejson as json
-import sys
-
-
 class Templates:
 
     def __init__(self, template, metadata):
@@ -54,94 +50,6 @@ class Templates:
             templates['T' + str(ctn)]['Pages'] = [page]  ## SAVING PAGE NAME ONLY
             templates['T' + str(ctn)]['meta'] = current_metadata[page]
             return 'T1', 'No Match'
-
-    """def match(self, reference, current):
-
-        if len(reference['order']) > 0 and (reference['order'] == current['order']):
-            return "match"
-
-        elif (reference['no_of_tables'] == current['no_of_tables']) and \
-                (current['no_of_tables'] > 0) and \
-                abs(len(reference['order']) - len(current['order'])) <= 1.5 * max(len(reference['order']),
-                                                                                  len(current['order'])):
-
-            area_percent_difference = max([abs(reference['table'][str(i)][1] - current['table'][str(i)][1]) for i in
-                                           range(1, reference['no_of_tables'] + 1)]) < 5
-            relative_dist_difference = max([abs(reference['table'][str(i)][0] - current['table'][str(i)][0]) for i in
-                                            range(1, reference['no_of_tables'] + 1)]) < 10
-            total_relative_area_difference = abs(
-                reference['total_relative_table_area'] - current['total_relative_table_area']) < 10
-
-            favorable_cases = sum([area_percent_difference, relative_dist_difference, total_relative_area_difference])
-            if favorable_cases == 3:
-                return "match"
-            elif favorable_cases == 2:
-                return 0  ## CHECKS FOR PARAS
-            else:
-                return 0
-
-            ## CHECK FOR PARA PARAMS  TODO
-        #            cur_areas,ref_areas = reference['para_rel_area'].values(),current['para_rel_area'].values()
-
-        elif reference['no_of_tables'] == 0 and current['no_of_tables'] == 0:
-            word_density_match = len(set(reference['words']).intersection(set(current['words']))) / len(
-                set(current['words']))
-            # =============================================================================
-            #             print('*'*50)
-            #             print('MATCHING BASED ON WORDS AS THERE ARE NO TABLES : \n',word_density_match)
-            #             print('*'*50)
-            # =============================================================================
-            if word_density_match > 0.8:
-                return "match"
-            else:
-                return 0
-        else:
-            return 0"""
-
-    """def match(self, reference, current):
-
-        if len(reference['order']) > 0 and (reference['order'] == current['order']):
-            return "match"
-
-
-
-        elif (reference['no_of_tables'] == current['no_of_tables']) and \
-                (current['no_of_tables'] > 0) and \
-                abs(len(reference['order']) - len(current['order'])) <= 1.5 * max(len(reference['order']),
-                                                                                  len(current['order'])):
-
-            area_percent_difference = max([abs(reference['table'][str(i)][1] - current['table'][str(i)][1]) for i in
-                                           range(1, reference['no_of_tables'] + 1)]) < 0.05
-            relative_dist_difference = max([abs(reference['table'][str(i)][0] - current['table'][str(i)][0]) for i in
-                                            range(1, reference['no_of_tables'] + 1)]) < 0.05
-            total_relative_area_difference = abs(
-                reference['total_relative_table_area'] - current['total_relative_table_area']) < 0.05
-
-            favorable_cases = sum([area_percent_difference, relative_dist_difference, total_relative_area_difference])
-            if favorable_cases == 3:
-                return "match"
-            elif favorable_cases == 2:
-                return "match"  ## CHECKS FOR PARAS
-            else:
-                return 0
-
-            ## CHECK FOR PARA PARAMS  TODO
-        #            cur_areas,ref_areas = reference['para_rel_area'].values(),current['para_rel_area'].values()
-
-        elif reference['no_of_tables'] == 0 and current['no_of_tables'] == 0:
-            word_density_match = len(set(reference['words']).intersection(set(current['words']))) / len(
-                set(current['words']))
-            # =============================================================================
-            #             print('*'*50)
-            #             print('MATCHING BASED ON WORDS AS THERE ARE NO TABLES : \n',word_density_match)
-            #             print('*'*50)
-            # =============================================================================
-            if word_density_match > 0.8:
-                return "match"
-            else:
-                return 0
-        else:
-            return 0"""
 
     def match(self, reference, current):
 
