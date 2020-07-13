@@ -23,39 +23,19 @@ import json
 import pandas as pd
 import time
 # from dateutil.parser import parse
-from date_correctoins import date_operations, year_finder, month_finder, write_new_dates_to_dataframe, \
+from ocr.ITE.scripts.date_corrections import date_operations, year_finder, month_finder, write_new_dates_to_dataframe, \
     check_if_day_first
-from template_excel_filling import update_entry_template, update_entry_gen
 
 
 def timesheet_main(final_json_out):
-    print("\nLoading File sdfnfdjnfdjlgndfgndfjgndfg")
-    # ingestion_1(input_path, os.getcwd() + "/pdf_to_images_folder")
     df_final = pd.DataFrame()
-    # for count, i in enumerate(
-    #                          sorted(os.listdir(os.getcwd() +
-    #                                            '/pdf_to_images_folder/'))):
-    #     print(i)
-    #     print(os.getcwd())
-    #     timesheet_obj = timesheet_cls((os.getcwd() +
-    #                                    '/pdf_to_images_folder/') + i, i)
-    #     print("\nStarting to crop image")
-    #     Preprocessing(timesheet_obj.image_path).crop_and_save(timesheet_obj.image_path)
-    #     print("\nImage cropping completed and overwritten")
-    #     print("\nExtracting Info from the Image")
-    #     api_response = Api_Call(timesheet_obj.image_path).page_wise_response(1)
-    # Opening JSON file 
-    f = open(final_json_out, )
 
-    # returns JSON object as
-    # a dictionary
-    data = json.load(f)
+    data = final_json_out
     updated_analysis = convert_json(data)
     image_shape = data["image_shape"]
 
     timesheet_obj = timesheet_cls(image_shape)
     timesheet_obj.set_microsoft_analysis(updated_analysis)
-    #        time.sleep(10)
 
     weekdays_found, weekdays_with_coordinates = weekdays_timesheet().check_days(timesheet_obj.microsoft_analysis)
     timesheet_obj.set_weekdays_found(weekdays_found)
@@ -68,7 +48,7 @@ def timesheet_main(final_json_out):
         date_cleaned = list(detes)[1].replace('(', '')
         date_cleaned = date_cleaned.replace(')', '')
         dates_filter_for_brackets.append((bb_detes, date_cleaned))
-    #            print(i)
+
     print("dates_filter_for_brackets:", dates_filter_for_brackets)
     dates_with_coordinates = dates_filter_for_brackets
 
@@ -78,7 +58,6 @@ def timesheet_main(final_json_out):
     print("\ndates_found:", dates_found)
     print("weekdays_found:", weekdays_found)
     print("hours_found:\n", hours_found)
-    #        break
 
     dates_found = logic_less_filter(dates_with_coordinates)
     print("Dates_with_coordinates:", dates_with_coordinates)
@@ -194,9 +173,6 @@ def timesheet_main(final_json_out):
     return df_final
 
 
-#    return dates_corrected_dataframe
-
-
 def logic_less_filter(dates_with_coordinates):
     dates_found = False
     try:
@@ -209,10 +185,9 @@ def logic_less_filter(dates_with_coordinates):
             if len(header_groups[group]) > 3:
                 headers = header_groups[group]
                 header_loc = header_group_loc[group]
-            #                print("group:",group)
             else:
                 pass
-        #        orientation="hor"
+
         if headers:
             orientation = "hor"
             dates_found_in_horizontal = True
@@ -225,13 +200,11 @@ def logic_less_filter(dates_with_coordinates):
             del (headers)
         except:
             pass
-        #        print("in herer")
         header_groups, header_group_loc = group_matches_on_axis(dates_with_coordinates, typ="ver")
         for group in header_groups:
             if len(header_groups[group]) > 3:
                 headers = header_groups[group]
                 header_loc = header_group_loc[group]
-            #                print("group:",group)
             else:
                 pass
         if headers:
@@ -243,8 +216,7 @@ def logic_less_filter(dates_with_coordinates):
 
     print("xor:", xor(dates_found_in_vertical, dates_found_in_horizontal))
     dates_found = xor(dates_found_in_vertical, dates_found_in_horizontal)
-    #    print("orientationnnnnnnnnnn:",orientation)
-    #    print("dedicated_orientation:",check_orientation(dates_with_coordinates))
+
     return dates_found
 
 
@@ -253,7 +225,6 @@ def convert_json(data):
     data.pop("temp_number")
     data.pop("domain_classification")
     analysis = {}
-
     analysis["lines"] = []
 
     for table in data["tables"].keys():
@@ -281,236 +252,7 @@ def convert_json(data):
             ne = {"words": empty_list}
             analysis["lines"].append(ne)
     return analysis
-# info_to_process=
-# main(input("enter the file path : "))
-# main('/home/rajeev/Documents/v2/Intelligent-Text-Extraction-ITE_demo_improv/database/we 12-27-19 (3) (1)_page_1/final_json.json')
-# main('/home/rampfire/Downloads/we 03-06-20.png')
-#
-################### BATCH GENERAL FILLING
-
-# output_path = '/home/sainadh/outputs/OUTPUT.xlsx'
-# root_folder_path = '/home/sainadh/SAMPLES/PYRAMID CONSULTING (copy)'
-#
-#
-# def update_xl_for_folder(root_folder_path,output_path):
-#
-#    alphabet_path = root_folder_path
-#    template = pd.DataFrame(columns = ['Name'])
-#
-#    for folder in sorted(os.listdir(alphabet_path)):
-#        print('\n','*'*50)
-#        print('FOR FOLDER :' , folder)
-#        print('*'*50)
-#
-#        skip_folders = ['Aavula Manudeep Reddy','Bhanani Bhautik','Bheemakanahalli Nara Tejas Yadav','Gao He','Patel Yatinbhai Amrutbhai','Sanka Sri Naga Sai Krishna','Venkataswamy Kumar Naveen','Wang Shi']
-#        if folder in skip_folders:
-#            print(folder,' Skipped','*'*10)
-#            continue
-#
-#        alphabet = alphabet_path.split('/')[-1]
-#        df_to_write = pd.DataFrame()
-#        folder_path = alphabet_path+'/'+folder
-#
-#        if os.path.isdir(folder_path):
-#
-#            for file in sorted(os.listdir(folder_path)):
-#                print(file)
-#                if file.split('.')[-1] in ["PDF","pdf","jpg","png","jpeg","JPG","PNG"]:
-#    #                print('COMING HERE')
-#                    file_path = folder_path+'/'+file
-#    #                print(file_path)
-#                    df = main(file_path)
-#
-#                    if isinstance(df, pd.DataFrame) : df_to_write = pd.concat([df_to_write,df],axis =1,ignore_index =False)
-#
-#            print('FINAL!!!   DATA FRAME TO WRITE :' , df_to_write)
-#
-#            template = update_entry_gen(template,df_to_write,folder)
-#            print('*'*20 , '\nPRESENT STATUS :',template)
-#            template.to_excel(output_path)
-#        else:
-#            pass
-#
-#    template.to_excel(output_path)
-#
-#    return "update finished"
-#
-#
-##update_xl_for_folder(root_folder_path,output_path)
-#
-#
-################### BATCH TEMPLATE FILLING
-#
-# template_path = '/home/rampfire/Downloads/NewTemplate.xlsx'
-# root_folder_path = '/home/rampfire/Downloads/A (copy)'
-#
-#
-# def update_template_for_folder(root_folder_path,template_path):
-#
-#    alphabet_path = root_folder_path
-#    template = pd.read_excel(template_path,header =1)
-#
-#    for folder in sorted(os.listdir(alphabet_path)):
-#        print('\n','*'*50)
-#        print('FOR FOLDER :' , folder)
-#        print('*'*50)
-#        alphabet = alphabet_path.split('/')[-1]
-#        df_to_write = pd.DataFrame()
-#        folder_path = alphabet_path+'/'+folder
-#
-#        if os.path.isdir(folder_path):
-#            for file in sorted(os.listdir(folder_path)):
-#                print(file)
-#                if file.split('.')[-1] in ["PDF","pdf","jpg","png","jpeg","JPG","PNG"]:
-#    #                print('COMING HERE')
-#                    file_path = folder_path+'/'+file
-#    #                print(file_path)
-#                    df = main(file_path)
-#
-#                    if isinstance(df, pd.DataFrame) : df_to_write = pd.concat([df_to_write,df],axis =1,ignore_index =False)
-#
-#            print('FINAL!!!   DATA FRAME TO WRITE :' , df_to_write)
-#
-#            template = update_entry_template(template,df_to_write,folder)
-#            print('PRESENT STATUS :',template)
-#        else:
-#            pass
-#
-#    updated_template_path = '/'.join(template_path.split('/')[:-1]) +'/'+ template_path.split('/')[-1].split('.')[0] +'_1.xlsx'
-#    template.to_excel(updated_template_path)
-#
-#    return "update finished"
-#
-#
 
 
-# update_template_for_folder(root_folder_path,template_path)
-
-
-# info_to_process.columns = [str(col).split()[0] for col in info_to_process.columns]
-# template.columns=template.columns.astype(str)
-# info_to_process.columns=pd.to_datetime(info_to_process.columns)
-# ref_dict = template.to_dict()
-#
-##info_to_process.columns = [str(col).split()[0] for col in info_to_process.columns]
-# ed = info_to_process.to_dict()
-#
-# current_row_number = len(template)+1
-#
-# ref_dict['Name'][current_row_number] = "qwwqeqwew"
-#
-#
-##info_to_process.columns=pd.to_datetime(info_to_process.columns)
-#
-# for date in ed:
-#        if date in ref_dict.keys():
-#
-#            ref_dict[date][current_row_number] = ed[date][0]
-#        else:
-#            pass
-# updated_dataframe = pd.DataFrame(ref_dict)
-#
-#
-# for update in info_to_process:
-#    for date in template:
-#        if type(date)=="datetime.datetime":
-#            if date.year == update.year:
-#                print(date,update)
-#
-#
-# column_as_list=list(info_to_process.columns)
-#
-# column_as_list_template=list(template.columns)
-#
-#
-# column_as_list[0].year
-#
-#
-# template.loc[0,column_as_list[0]]
-#
-#
-#
-#
-#
-#
-#
-#
-#
-## =============================================================================
-## if __name__ == '__main__':
-##     main(sys.argv[1])
-## =============================================================================
-#
-#
-############## FOR BATCH TESTING PURPOSE
-##
-##alphabet_path = '/home/sainadh/SAMPLES/Insights_global'
-##output_path = '/home/sainadh/outputs'
-##
-##for folder in sorted(os.listdir(alphabet_path)):
-##    print('\n','*'*50)
-##    print('FOR FOLDER :' , folder)
-##    print('*'*50)
-##    alphabet = alphabet_path.split('/')[-1]
-##    df_to_write = pd.DataFrame()
-##    folder_path = alphabet_path+'/'+folder
-##
-##    if os.path.isdir(folder_path):
-##        for file in sorted(os.listdir(folder_path)):
-##            print(file)
-##            if file.split('.')[-1] in ["PDF","pdf","jpg","png","jpeg","JPG","PNG"]:
-###                print('COMING HERE')
-##                file_path = folder_path+'/'+file
-###                print(file_path)
-##                df = main(file_path)
-##
-##                if isinstance(df, pd.DataFrame) : df_to_write = pd.concat([df_to_write,df],axis =0,ignore_index =True)
-##
-##        print(output_path+ '/'+ alphabet + '/'+folder+'/')
-##        print('FINAL!!!   DATA FRAME TO WRITE :' , df_to_write)
-##        if isinstance(df_to_write, pd.DataFrame):
-##            if len(df_to_write) > 1:
-##                print('MAKING DIRECTORY')
-##                try: os.mkdir(output_path+ '/'+ alphabet + '/')
-##                except:pass
-##                try:os.mkdir(output_path+ '/'+ alphabet + '/'+ folder+'/')
-##                except:pass
-##                df_to_write.to_excel(output_path+ '/'+ alphabet + '/'+folder+'/'+file+'.xlsx')
-###            else: pass
-##        else:
-##            pass
-##    else:
-##        pass
-#
-##group_matches_on_axis([([176, 191, 358, 190, 357, 226, 175, 224], 'Samsung.com'), ([1166, 385, 1233, 385, 1234, 416, 1166, 416], 'Total'), ([17, 510, 82, 510, 82, 537, 17, 537], 'Mon'), ([22, 570, 69, 571, 69, 598, 22, 597], 'Tue'), ([20, 634, 81, 634, 81, 661, 19, 661], 'Wed'), ([21, 695, 72, 695, 71, 724, 21, 724], 'Thu'), ([20, 755, 59, 756, 58, 783, 19, 782], 'Fri'), ([19, 821, 61, 821, 60, 847, 19, 847], 'Sat'), ([20, 883, 70, 884, 69, 910, 19, 909], 'Sun'), ([846, 998, 919, 998, 919, 1028, 846, 1028], 'Total')])
-#
-#################################################
-##for testing puposes only
-##def plot_words_only(image_path,weekdays,dates,hrs,image_name,saving_folderrpath):
-##    ImageforDisplay(filename=image_path)
-##    im = Image.open(image_path)
-##    width, height = im.size
-##    plt.figure(figsize=(15, 15))
-###    img = Image.new('RGB', (width,height), (255, 255, 255))
-###    img.save("image.png", "PNG")
-##
-###    image_data = open("out.png", "rb").read()
-###    image = Image.open(BytesIO(image_data))
-###    width, height = img.size
-##    print (width, height)
-##    ax = plt.imshow(im)
-##    for polygon in weekdays[1]:
-##        vertices = [(polygon[0][i], polygon[0][i+1])
-##                    for i in range(0, len(polygon[0]), 2)]
-###        text = polygon[1]    
-##        patch = Polygon(vertices, closed=True, fill=False, linewidth=2, color='r')
-##        ax.axes.add_patch(patch)
-###        plt.text(vertices[0][0], vertices[0][1], text, fontsize=6, va="top",color = 'black')
-##    for polygon in dates[1]:
-##        vertices = [(polygon[0][i], polygon[0][i+1])
-##                    for i in range(0, len(polygon[0]), 2)]
-###        text = polygon[1]
-##        patch = Polygon(vertices, closed=True, fill=False, linewidth=2, color='r')
-##        ax.axes.add_patch(patch)
-###        plt.text(vertices[0][0], vertices[0][1], text, fontsize=6, va="top",color = 'black')
-##    plt.savefig(saving_folderrpath+image_name+'.png', bbox_inches='tight',pad_inches=0)
+# THIS FUNCTION NEEDS TO BE CALLED AFTER L1/L2 updates
+# timesheet_main('/home/sainadh/ITE_APP_DEV/Intelligent-Text-Extraction/database/we 03-13-20_page_1/final_json.json')

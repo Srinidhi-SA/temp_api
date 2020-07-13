@@ -48,6 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
+from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
     cleaned_final_json, sort_json, dynamic_cavas_size
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
@@ -1179,7 +1180,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            # result = image_queryset.final_result
+            final_result = json.loads(image_queryset.final_result)
+            flag = final_result['domain_classification']
+            if flag == 'Time Sheet':
+                data['format'] = 'csv'
+                df = timesheet_main(final_result)
+                result = df.to_csv()
+                response = HttpResponse(result, content_type="application/text")
+                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+                return response
             result = image_queryset.google_response
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
