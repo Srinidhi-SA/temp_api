@@ -200,6 +200,15 @@ def write_into_databases(job_type, object_slug, results):
         if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
+            #------------------------------------------------------------------#
+            #Sending failure mail on autoML model failure
+            if trainer_object.mode == 'autoML':
+                outlook_autoML_failure_mail(
+                    trainer_object_id=trainer_object.id,
+                    error='ML-failure',
+                    mail_id=trainer_object.email
+                )
+            #------------------------------------------------------------------#
             return results
 
         results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)

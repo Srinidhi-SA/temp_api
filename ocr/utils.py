@@ -13,3 +13,13 @@ def json_2_xml(data):
 def json_2_csv(data):
     df = pd.DataFrame(data)
     return df.to_csv()
+
+
+def error_message(err_cls):
+    messages = {
+        'PermissionError': 'Permission denied for the operation',
+        'FileNotFoundError': 'Unable to locate the file in the server.',
+        'ServiceUnavailable': 'Unable to connect to the recognition service.',
+        'HTTPError': 'Bad request from azure recognition service.'
+    }
+    return messages[err_cls] if err_cls in messages else "Please check your image for issues."

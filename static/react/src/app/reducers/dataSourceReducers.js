@@ -42,7 +42,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			fileUpload:action.files[0],
+			fileUpload:action.files,
 		}
 	}
 	break;

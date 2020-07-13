@@ -17,7 +17,7 @@ class BaseModule:
         self.microsoft_analysis = img_obj.get_microsoft_analysis()
         self.image_name = image_name
 
-    def extract_info(self, template, bwimage):
+    def extract_info(self, template, bwimage, domain_flag, image_shape):
         scalev, scaleh = optimal_params(bwimage, task='table')
         self.mask, horizontal, vertical = extract_mask(bwimage, scalev=scalev,
                                                        scaleh=scaleh)
@@ -57,7 +57,8 @@ class BaseModule:
             'paragraphs': self.paras,
             'table_coordinates': table_count_dict,
             'temp_number': template_obj.template_number,
-            'domain_classification': 'base'}
+            'domain_classification': domain_flag,
+            'image_shape': image_shape}
 
         tables = self.final_mapped_dict_table
         #        print('TABLES : ' , tables)
@@ -77,7 +78,6 @@ class BaseModule:
             pass
 
         return self.final_json, self.mask, self.metadata, template_obj.template
-
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working
@@ -148,7 +148,7 @@ class BaseModule:
                     table_count_dict[table_number + 1] = [x,
                                                           y, x + width - 1,
                                                           y + height - 1]
-                    table_area_dict[table_number + 1] = round((area/parent_area),3)
+                    table_area_dict[table_number + 1] = round((area / parent_area), 3)
 
                     M = cv2.moments(cnt)
                     cx = int(M['m10'] / M['m00'])
@@ -211,8 +211,10 @@ class BaseModule:
                         M = cv2.moments(cnt)
                         cx = int(M['m10'] / M['m00'])
                         cy = int(M['m01'] / M['m00'])
-                        table_rel_centroid_dist_dict[table_number + 1] = round(
-                            ((cx) ** 2 + (cy) ** 2) ** 0.5 / (mask.shape[0] + mask.shape[1]), 2)
+                        table_rel_centroid_dist_dict[int(str(table_number) +
+                                                         str(inner_table_number +
+                                                             1))] = round(
+                            (cx ** 2 + cy ** 2) ** 0.5 / (mask.shape[0] + mask.shape[1]), 2)
 
                         # =============================================================================
                         #                         table_centroid_dict[int(

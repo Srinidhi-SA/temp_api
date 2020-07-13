@@ -1,6 +1,4 @@
 import json
-import sys
-from ocr.ITE.scripts.ui_corrections import ui_corrections
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
@@ -141,18 +139,6 @@ class Final_json:
                         pass
 
         return False, final_json
-
-    def final_json_para_corrections(self, final_json):
-        paradata = final_json["paragraphs"]
-        for i in paradata:
-            for j in paradata[i]:
-                for k in range(len(j["words"])):
-                    temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
-                                                    "p3": j["words"][k]["boundingBox"][4:6]}}
-                    j["words"][k].clear()
-                    j["words"][k].update(temp)
-        final_json["paragraphs"] = paradata
-        return final_json
 
     """
     def check_update_paras(self, final_json, cord, inp):

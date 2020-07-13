@@ -17,7 +17,7 @@ export function dataUpload() {
     var dbDetails = {};
     return (dispatch) => {
     if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
-        if(store.getState().dataSource.fileUpload.name){
+        if(store.getState().dataSource.fileUpload[0].name!=""){
             $("#fileErrorMsg").addClass("visibilityHidden");
             dispatch(uploadFileOrDB());
         }else{
@@ -63,8 +63,8 @@ function uploadFileOrDB(dbDetails){
           // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
           // dispatch()
           if (response.status === 200) {
-            dispatch(updateDatasetName(json.slug))
-            dispatch(dataUploadSuccess(json, dispatch))
+              dispatch(updateDatasetName(json[0].slug))
+              dispatch(dataUploadSuccess(json[0], dispatch))
           } else {
             dispatch(dataUploadError(json))
           }
@@ -80,7 +80,9 @@ function triggerDataUpload(token,dbDetails) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
 
     var data = new FormData();
-    data.append("input_file", store.getState().dataSource.fileUpload);
+    for (var x = 0; x < store.getState().dataSource.fileUpload.length; x++) {
+      data.append("input_file", store.getState().dataSource.fileUpload[x]);
+    }
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeaderWithoutContent(token),
@@ -218,8 +220,8 @@ function triggerDataSubsetting(subsetRq, slug) {
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify(subsetRq)
   }).then(response => Promise.all([response, response.json()]));
-
 }
+
 function updateSubsetSuccess(subsetRs) {
   return {type: "SUBSETTED_DATASET", subsetRs}
 }

@@ -111,18 +111,6 @@ class ui_corrections:
 
         return loi
 
-    def final_json_para_corrections(self, final_json):
-        paradata = final_json["paragraphs"]
-        for i in paradata:
-            for j in paradata[i]:
-                for k in range(len(j["words"])):
-                    temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
-                                                    "p3": j["words"][k]["boundingBox"][4:6]}}
-                    j["words"][k].clear()
-                    j["words"][k].update(temp)
-        final_json["paragraphs"] = paradata
-        return final_json
-
     """def default_all_words_flag_to_false(self, final_json):
         for k in final_json["paragraphs"]:
             for l in final_json["paragraphs"][k]:

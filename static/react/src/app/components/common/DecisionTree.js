@@ -291,7 +291,6 @@ export class DecisionTree extends React.Component {
     </Modal.Header>
     <Modal.Body>
       {window.location.href.includes("scores")?
-          <Scrollbars style={store.getState().apps.scoreSummary.data.listOfCards[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
           <div className="row">
           <div className="col-sm-12" >
             <div ref="test" style={{padding: '0 15px'}}></div>
@@ -305,12 +304,12 @@ export class DecisionTree extends React.Component {
             <span>end node</span>
             </div>
             }
-            <div id="tree-vertical"></div>
           </div>
-           </div>
+          <Scrollbars style={store.getState().apps.scoreSummary.data.listOfCards[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
+            <div id="tree-vertical"></div>
           </Scrollbars>
+           </div>
          :
-    <Scrollbars style={this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
      <div className="row">
      <div className="col-sm-12" >
        <div ref="test" style={{padding: '0 15px'}}></div>
@@ -324,10 +323,11 @@ export class DecisionTree extends React.Component {
        <span>end node</span>
        </div>
        }
-       <div id="tree-vertical"></div>
      </div>
-      </div>
+     <Scrollbars style={this.props.dtData.filter(i=>i.name=="Prediction")[0].decisionTree != undefined ? {height:450} : {minHeight:90,maxHeight:250} }>
+       <div id="tree-vertical"></div>
      </Scrollbars>
+      </div>
      }
     </Modal.Body>
     <Modal.Footer>
