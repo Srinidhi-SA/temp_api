@@ -1185,7 +1185,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if flag == 'Time Sheet':
                 data['format'] = 'csv'
                 df = timesheet_main(final_result)
-                result = df.to_csv(df)
+                result = df.to_csv()
                 response = HttpResponse(result, content_type="application/text")
                 response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
                 return response

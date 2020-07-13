@@ -30,8 +30,7 @@ from ocr.ITE.scripts.date_corrections import date_operations, year_finder, month
 def timesheet_main(final_json_out):
     df_final = pd.DataFrame()
 
-    f = open(final_json_out, )
-    data = json.load(f)
+    data = final_json_out
     updated_analysis = convert_json(data)
     image_shape = data["image_shape"]
 
