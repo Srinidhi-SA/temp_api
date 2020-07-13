@@ -19445,12 +19445,13 @@ table.apps_table_style thead th {
   width: inherit !important;
   cursor: pointer;
   text-align: center;
-  height: 130px !important;
+  height: 100px !important;
   display: table-cell;
   vertical-align: middle;
-  padding: 30px;
+  padding: 20px;
   font-size: 16px;
   color: #c1c1c1;
+  top:-5px;
 }
 .dropzone div:hover {
   border-color: rgb(0, 153, 140) !important;
