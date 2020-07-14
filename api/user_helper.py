@@ -183,8 +183,8 @@ def create_profile(sender, **kwargs):
         ocr_user_profile.save()
         #Loading all customapps for the user
         ########################################
-        from api.views import all_apps_for_users
-        all_apps_for_users(user)
+        # from api.views import all_apps_for_users
+        # all_apps_for_users(user)
         ########################################
         user_profile.save()
 

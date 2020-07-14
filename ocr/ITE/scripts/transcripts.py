@@ -209,7 +209,7 @@ class Transcript:
 
                 if (line_number not in clubbed_lines):
 
-                    current_depth = p1_p3[line_number][1][1]
+                    current_depth = int((p1_p3[line_number][1][1] + p1_p3[line_number][0][1])*0.5)
                     cl = Domain().get_same_line_words_hori(p1_p3, line_number, current_depth, shape[0])
                     clubbed_lines = [line_number] + cl + clubbed_lines
 

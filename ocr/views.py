@@ -43,10 +43,12 @@ from api.exceptions import creation_failed_exception, \
     retrieve_failed_exception
 # ------------------------------------------------------------
 from ocr.query_filtering import get_listed_data, get_image_list_data, \
-    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list
+    get_specific_listed_data, get_reviewer_data, get_filtered_ocrimage_list, get_filtered_project_list, \
+    get_userlisted_data
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
+from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
     cleaned_final_json, sort_json, dynamic_cavas_size
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
@@ -90,7 +92,7 @@ from django.core.exceptions import PermissionDenied, \
 from api.utils import UserListSerializer
 
 # Create your views here.
-from .utils import json_2_xml, json_2_csv
+from .utils import json_2_xml, json_2_csv, error_message
 
 
 def ocr_datasource_config_list(request):
@@ -285,22 +287,39 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    #permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    def get_queryset(self):
+    def get_queryset(self,request,role):
+        if role == 'Admin':
+            queryset = User.objects.filter(
+                ~Q(is_active=False),
+                groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+            ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
+        else:
+            queryset = User.objects.filter(
+                ~Q(is_active=False),
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                ocruserprofile__supervisor = request.user
+                ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
+        return queryset
+
+    def get_specific_reviewer_qyeryset(self, request, role, user_type):
+        if user_type == 'Admin':
+            queryset = User.objects.filter(groups=role)
+        else:
+            queryset = User.objects.filter(
+                groups=role,
+                ocruserprofile__supervisor = request.user
+                ).order_by('-date_joined')
+        return queryset
+
+    def get_specific_reviewer_detail_queryset(self, request):
         queryset = User.objects.filter(
-            ~Q(is_active=False),
-            groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
-        ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
-        return queryset
-
-    def get_specific_reviewer_qyeryset(self, role):
-        queryset = User.objects.filter(groups=role)
-        return queryset
-
-    def get_specific_reviewer_detail_queryset(self):
-        queryset = User.objects.filter(groups__name__in=['ReviewerL1', 'ReviewerL2'])
+            groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            ocruserprofile__supervisor = request.user
+            )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -331,11 +350,21 @@ class OCRUserView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        return get_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRUserListSerializer
-        )
+        user_group = request.user.groups.values_list('name',flat = True)
+        if 'Superuser'in user_group:
+            return get_userlisted_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role='Superuser'
+            )
+        else:
+            return get_userlisted_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role='Admin'
+            )
 
     @list_route(methods=['post'])
     def edit(self, request, *args, **kwargs):
@@ -425,12 +454,23 @@ class OCRUserView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def reviewer_list(self, request, *args, **kwargs):
         role = request.GET['role']
-        return get_specific_listed_data(
-            viewset=self,
-            request=request,
-            list_serializer=OCRUserListSerializer,
-            role=role
-        )
+        user_group = request.user.groups.values_list('name',flat = True)
+        if 'Superuser'in user_group:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Superuser'
+            )
+        else:
+            return get_specific_listed_data(
+                viewset=self,
+                request=request,
+                list_serializer=OCRUserListSerializer,
+                role=role,
+                user_type='Admin'
+            )
 
     @list_route(methods=['get'])
     def reviewer_detail_list(self, request, *args, **kwargs):
@@ -492,7 +532,7 @@ class OCRUserView(viewsets.ModelViewSet):
     def get_ocr_users(self, request):
         try:
             role = request.GET['role']
-            queryset = self.get_specific_reviewer_qyeryset(role=role)
+            queryset = self.get_specific_reviewer_qyeryset(request, role=role, user_type='Superuser')
             for query in queryset.iterator():
                 ocr_profile_object = self.get_user_profile_object(username=query)
                 if not ocr_profile_object.is_active:
@@ -551,9 +591,9 @@ class OCRUserProfileView(viewsets.ModelViewSet):
         return Response(profile_details)
 
     def update(self, request, *args, **kwargs):
-        print("updating profile")
         instance = self.get_object_from_all()
         instance.is_active = request.data.get("is_active")
+        instance.supervisor = request.user
         group_object = Group.objects.get(id=request.data.get("role"))
         try:
             user_group = User.groups.through.objects.get(user=instance.ocr_user)
@@ -561,6 +601,19 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             user_group.save()
         except:
             group_object.user_set.add(instance.ocr_user)
+        try:
+            permitted_app_list = request.data.get("app_list")
+            from api.models import CustomAppsUserMapping, CustomApps
+            apps = CustomApps.objects.filter(app_id__in=permitted_app_list)
+            CustomAppsUserMapping.objects.filter(user=instance.ocr_user).delete()
+            for app in apps:
+                caum = CustomAppsUserMapping()
+                caum.user = instance.ocr_user
+                caum.app = app
+                caum.rank = app.rank
+                caum.save()
+        except Exception as err:
+            print(err)
 
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
@@ -604,14 +657,27 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 # -------------------------------------------------------------------------------
 
 class GroupListView(generics.ListCreateAPIView):
-    queryset = Group.objects.filter(
-        name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
-    )
+
+    def get_queryset(self,userGroup):
+        if userGroup == 'Admin':
+            queryset = Group.objects.filter(
+                name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+            )
+        else:
+            queryset = Group.objects.filter(
+                name__in=['ReviewerL1', 'ReviewerL2']
+            )
+        return queryset
+
     serializer_class = GroupSerializer
-    permission_classes = [IsOCRAdminUser]
+    permission_classes = [IsAuthenticated,]
+    #IsOCRAdminUser]
 
     def list(self, request):
-        queryset = self.get_queryset()
+        userGroup = request.user.groups.all()[0].name
+        print(userGroup)
+
+        queryset = self.get_queryset(userGroup)
         serializer = GroupSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -980,16 +1046,17 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             serializer.save()
                 return Response(results)
         except Exception as e:
+            if image_list:
+                for slug in image_list:
+                    image_queryset = OCRImage.objects.get(slug=slug)
+                    image_queryset.status = 'failed'
+                    serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                     context={"request": self.request})
+                    if serializer.is_valid():
+                        serializer.save()
             category = e.__class__.__name__
-            messages = {
-                'PermissionError': 'Permission denied for the operation',
-                'FileNotFoundError': 'Unable to locate the file in the server.',
-                'ServiceUnavailable': 'Unable to connect to the recognition service.',
-                'HTTPError': 'Bad request from azure recognition service.'
-            }
             return JsonResponse(
-                {'message': messages[category] if category in messages else "Please check your image for issues.",
-                 'error': str(e)})
+                {'message': error_message(category), 'error': str(e)})
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
@@ -1126,7 +1193,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            # result = image_queryset.final_result
+            final_result = json.loads(image_queryset.final_result)
+            flag = final_result['domain_classification']
+            if flag == 'Time Sheet':
+                data['format'] = 'csv'
+                df = timesheet_main(final_result)
+                result = df.to_csv()
+                response = HttpResponse(result, content_type="application/text")
+                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+                return response
             result = image_queryset.google_response
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
@@ -1222,6 +1297,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response({
             "data": set(item['name'] for item in serializer.data)
         })
+
+    def delete(self, request, *args, **kwargs):
+        """
+        TODO
+        """
+        pass
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -1326,9 +1407,10 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
-    def total_reviewers(self):
+    def total_reviewers(self, request):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            supervisor = request.user,
             is_active=True
         ).count()
 
@@ -1357,7 +1439,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         result.data['overall_info'] = {
             "totalProjects": self.total_projects(),
             "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers()
+            "totalReviewers": self.total_reviewers(request)
         }
         return result
 
