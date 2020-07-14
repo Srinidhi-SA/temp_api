@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Pagination} from "react-bootstrap";
 import store from "../../../store";
-import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction} from "../../../actions/ocrActions";
+import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction, getallAppsList} from "../../../actions/ocrActions";
 import { statusMessages } from "../../../helpers/helper";
 import { Checkbox } from "primereact/checkbox";
 import { OcrAddUser } from "./OcrAddUser";
@@ -29,6 +29,7 @@ export class OcrUserTable extends React.Component{
 
     componentWillMount(){
         this.props.dispatch(getReviewersListAction());
+        this.props.dispatch(getallAppsList());
         this.props.dispatch(setUserTableLoaderFlag(true));
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction()):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId)));
     }
