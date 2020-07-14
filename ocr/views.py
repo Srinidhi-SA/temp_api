@@ -747,8 +747,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask.png'.format(slug),
                             file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
         gen_image, doc_accuracy, total_words = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                                                          response['final_json'], response['google_response'],
-                                                          response['google_response2'],
+                                                          response['final_json'],
                                                           'ocr/ITE/database/{}_gen_image.png'.format(slug),
                                                           response['analysis'])
         image = base64.decodebytes(gen_image)
@@ -758,8 +757,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                        file=open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'rb'))
         data['metadata'] = json.dumps(response['metadata'])
 
-        data['conf_google_response'] = json.dumps(response['google_response'])
-        data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
         # data['modified_by'] = self.request.user.id
@@ -1093,8 +1090,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         try:
             image_queryset = OCRImage.objects.get(slug=data['slug'])
             final_json = json.loads(image_queryset.final_result)
-            google_response = json.loads(image_queryset.conf_google_response)
-            google_response2 = json.loads(image_queryset.google_response)
             analysis = json.loads(image_queryset.analysis)
 
             try:
@@ -1119,7 +1114,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
                                          analysis)
             image = base64.decodebytes(gen_image)
             with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
@@ -1172,7 +1167,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             image_queryset = OCRImage.objects.get(slug=data['slug'])
             final_result = json.loads(image_queryset.final_result)
             final_result_user = cleaned_final_json(final_result)
-            final_result_user = sort_json(final_result)
+            final_result_user = sort_json(final_result_user)
             data['google_response'] = json.dumps(final_result_user)
             review_end_time = image_queryset.review_end
             if not review_end_time:
@@ -1229,14 +1224,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = data['slug']
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            google_response = json.loads(image_queryset.conf_google_response)
-            google_response2 = json.loads(image_queryset.google_response)
             analysis = json.loads(image_queryset.analysis)
             final_json = json.loads(image_queryset.final_result)
             mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
                                          analysis, percent=user_input)
 
             image = base64.decodebytes(gen_image)
