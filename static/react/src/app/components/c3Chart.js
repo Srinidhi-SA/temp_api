@@ -1,4 +1,5 @@
 import React from "react";
+import {isEmpty} from "../helpers/helper";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import {chartdate, fetchWordCloudImg, setCloudImageLoader, clearCloudImgResp, clearC3Date} from "../actions/chartActions";
@@ -210,13 +211,19 @@ export class C3Chart extends React.Component {
     }
 
     if (this.props.xdata) {
-      let xdata = this.props.xdata;
+      data.axis.x.tick.multiline=true
+      data.axis.x.height=100
+      data.axis.x.tick.rotate=-53
+      data.axis.x.tick.width=170
+      data.axis.x.tick.outer = false;
+
+      let xdata = this.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''));
       data.axis.x.tick.format = function(x) {
-        if (xdata[x] && xdata[x].length > 13) {
-          return xdata[x].substr(0, 8) + "...";
+        if (xdata[x] && xdata[x].length > 20) {
+          return xdata[x].substr(0,12) + "..."+xdata[x].substr(-4)
         } else {
           return xdata[x];
-        }
+        } 
       }
 
       data.tooltip.format.title = (d) =>{
@@ -325,9 +332,13 @@ export class C3Chart extends React.Component {
   render() {
     window.onmouseover = function(event){
         if(event.target.tagName==="tspan" && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
-          let str = that.props.xdata
+          let str = that.props.xdata!=undefined?that.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, '')):that.props.xdata;
+          let modelSummary=!isEmpty(store.getState().apps.modelSummary)?store.getState().apps.modelSummary.data.model_summary:"";
           let stockData = store.getState().signals.signalAnalysis.listOfNodes;
           switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
+            case "Feature Importance":
+              str=modelSummary.listOfCards[2].cardData[0].data.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''))
+              break;
             case "Articles by Stock": 
               str = stockData[0].listOfCards[0].cardData[1].data.xdata
               break;
@@ -348,7 +359,8 @@ export class C3Chart extends React.Component {
             if(str != undefined){
               let substr = event.target.innerHTML
               for(let i=0;i<str.length;i++){
-                if(str[i].includes(substr.slice(0,substr.length-3))){
+                if(str[i].includes(substr.length>12?substr.slice(0,substr.length-7):substr)){
+                  if(substr.slice(-4)==str[i].slice(-4))
                   tooltip = str[i]
                 }
               }
