@@ -93,13 +93,20 @@ class App extends React.Component {
             break;
           case "/signals/:slug":
             {
+             var list=store.getState().signals.allSignalList
+            if(Object.values(list).map(i=>i.slug).includes(props.match.params.slug)||store.getState().signals.selectedSignal==props.match.params.slug||Object.keys(list).length === 0|| store.getState().signals.signalAnalysis.slug==props.match.params.slug)
               return (<Signal {...props}/>)
+              else
+              return (<DataPreview {...props}/>)
             }
             break;
           case "/signals/:slug/:l1":
-            {
+          {
+          if(props.match.params.l1=="createSignal") 
+              return (<VariableSelection {...props}/>)
+            else
               return (<OverViewPage {...props}/>)
-            }
+          }
             break;
           case "/signals/:slug/:l1/:l2/:l3":
             {
@@ -375,7 +382,7 @@ class App extends React.Component {
             <Route exact path="/data_cleansing/:slug" render={data}/>
             <Route exact path="/feature-engineering/:slug" render={data}/>
             <Route exact path="/apps/:AppId/scores/:slug" render={score}/>
-            <Route exact path="/data/:slug/createSignal" render={data}/>
+            <Route exact path="/data/:slug/createSignal" render={data}/>   
             <Route exact path="/signals?page=:slug" render={signals}/>
             <Route exact path="/signals?search=:slug" render={signals}/>
             <Route exact path="/apps/:AppId/analyst/models/data/:slug" render={data}/>
