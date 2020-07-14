@@ -601,6 +601,19 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             user_group.save()
         except:
             group_object.user_set.add(instance.ocr_user)
+        try:
+            permitted_app_list = request.data.get("app_list")
+            from api.models import CustomAppsUserMapping, CustomApps
+            apps = CustomApps.objects.filter(app_id__in=permitted_app_list)
+            CustomAppsUserMapping.objects.filter(user=instance.ocr_user).delete()
+            for app in apps:
+                caum = CustomAppsUserMapping()
+                caum.user = instance.ocr_user
+                caum.app = app
+                caum.rank = app.rank
+                caum.save()
+        except Exception as err:
+            print(err)
 
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
@@ -1387,9 +1400,10 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
-    def total_reviewers(self):
+    def total_reviewers(self, request):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            supervisor = request.user,
             is_active=True
         ).count()
 
@@ -1418,7 +1432,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         result.data['overall_info'] = {
             "totalProjects": self.total_projects(),
             "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers()
+            "totalReviewers": self.total_reviewers(request)
         }
         return result
 

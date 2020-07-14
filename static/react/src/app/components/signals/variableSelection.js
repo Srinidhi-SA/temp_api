@@ -280,7 +280,10 @@ export class VariableSelection extends React.Component {
     }
     handleBack=()=>{
         const slug = this.props.match.params.slug;
-        this.props.history.replace(`/data/${slug}?from=createSignal`);
+        if(this.props.match.path.includes("data"))
+        this.props.history.replace(`/data/${slug}?from=createSignal`)
+        else if(this.props.match.path.includes("signals"))
+        this.props.history.replace(`/signals/${slug}?from=createSignal`);
       }
     setSignalName(event){
         this.props.dispatch(saveSignalName(event.target.value));

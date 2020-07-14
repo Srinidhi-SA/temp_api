@@ -76,7 +76,7 @@ export class DataPreview extends React.Component {
 		this.props.dispatch(getAllDataList());
     const from = this.getValueOfFromParam();
         if (from === 'createSignal') {
-          if (this.props.match.path.includes("slug")) {
+          if (this.props.match.path.includes("slug")&& this.props.match.path.includes("data")) {
             this.buttons['close'] = {
               url: "/data",
               text: "Close"
@@ -86,6 +86,15 @@ export class DataPreview extends React.Component {
               text: CREATESIGNAL
             };
             this.props.dispatch(fromVariableSelectionPage(true));
+          }else if (this.props.match.path.includes("slug")&& this.props.match.path.includes("signals")){
+            this.buttons['close'] = {
+              url: "/signals",
+              text: "Close"
+            };
+            this.buttons['create'] = {
+              url: "/signals/" + this.props.match.params.slug + "/createSignal",
+              text: CREATESIGNAL
+            };
           }
     }else {
    
@@ -126,7 +135,7 @@ export class DataPreview extends React.Component {
         url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
         text: "Compose Insight"
       };
-    } else if (this.props.match.path.includes("slug")) {
+    } else if (this.props.match.path.includes("slug")&& this.props.match.path.includes("data")){
       this.props.dispatch(resetSelectedTargetVariable());
       this.props.dispatch(fromVariableSelectionPage(false));
       this.buttons['close'] = {
@@ -135,6 +144,18 @@ export class DataPreview extends React.Component {
       };
       this.buttons['create'] = {
         url: "/data/" + this.props.match.params.slug + "/createSignal",
+        text: CREATESIGNAL
+      };
+    }
+    else if (this.props.match.path.includes("slug") && this.props.match.path.includes("signals")) {
+      this.props.dispatch(resetSelectedTargetVariable());
+      this.props.dispatch(fromVariableSelectionPage(false));
+      this.buttons['close'] = {
+        url: "/signals",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/signals/" + this.props.match.params.slug + "/createSignal",
         text: CREATESIGNAL
       };
     }
@@ -161,8 +182,14 @@ export class DataPreview extends React.Component {
     let currentDataset = store.getState().datasets.selectedDataSet
     if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
       if (!this.props.match.path.includes("robo")) {
-        let url = '/data/' + currentDataset;
-        this.props.history.push(url)
+        let url=""
+        if(this.props.match.path.includes("data"))
+        //  if(document.getElementById('dataTab').classList[1]=="active")
+        url= '/data/' + currentDataset;
+          if(this.props.match.path.includes("signals"))
+        // else if(document.getElementById('signalTab').classList[1]=="active")
+         url= '/signals/' + currentDataset;
+          this.props.history.push(url)
       }
     }
     if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
