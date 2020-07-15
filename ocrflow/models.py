@@ -18,7 +18,7 @@ from ocrflow.forms import ApprovalForm
 from ocrflow import process
 from singleton_model import SingletonModel
 
-class OCRRules(SingletonModel):
+class OCRRules(models.Model):
     auto_assignmentL1 = models.BooleanField(default=False)
     auto_assignmentL2 = models.BooleanField(default=False)
     rulesL1 = models.TextField(max_length=3000, default={}, null=True, blank=True)
@@ -28,9 +28,13 @@ class OCRRules(SingletonModel):
         blank=True,
         auto_now_add=True
     )
+    created_by = models.ForeignKey(User,blank=True, null=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in ["OCRRule", self.created_by]])
 
     def save(self, *args, **kwargs):
-        self.pk = 1
+        """Save OCRRules model"""
         super(OCRRules, self).save(*args, **kwargs)
 
 class Task(models.Model):

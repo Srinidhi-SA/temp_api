@@ -56,7 +56,7 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission, \
-    IsOCRAdminUser
+    IsOCRClientUser
 # ------------------------------------------------------------
 
 from ocr.tasks import extract_from_image

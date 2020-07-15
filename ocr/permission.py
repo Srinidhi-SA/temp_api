@@ -74,9 +74,9 @@ class OCRImageRelatedPermission(permissions.BasePermission):
 
             return user.has_perm('ocr.rename_ocrimage')
 
-class IsOCRAdminUser(permissions.BasePermission):
+class IsOCRClientUser(permissions.BasePermission):
     """
     Allows access only to "ocr Admin role" users.
     """
     def has_permission(self, request, view):
-        return request.user and request.user.groups.filter(name='Admin').exists()
+        return request.user and request.user.groups.filter(name='Superuser').exists()
