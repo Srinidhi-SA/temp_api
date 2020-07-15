@@ -21744,7 +21744,7 @@ div.text-center.tbl_th_center th {
 .c3-axis-x text {
   fill: #333333;
   /*font-family: "Times New Roman", Times, serif;;*/
-  font-size: 13px;
+  font-size: 11px;
 }
 .c3-axis-y2 text {
   fill: #333333;
@@ -22574,8 +22574,7 @@ ul.ocrUploadTabs{
   display: inline-block;
 }
 #addUsers {
-  height: 350px;
-  padding:10px;
+  height: auto;
 }
 .userActions{
   margin-right: -12px;
@@ -22606,7 +22605,7 @@ ul.ocrUploadTabs{
   width: 31%;
   padding-left: 15px;
   float: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .ocrUserFormLabel input,.ocrUserFormLabel select{
   border: 1px solid #cdcdcd;
@@ -23012,4 +23011,15 @@ min-width: 102px; }
   white-space: pre;
   overflow: inherit;
   max-width: fit-content;
+}
+.allApplist label{
+  width: 94%;
+  margin-bottom: 0px;
+  float: inherit;
+}
+.allApplist .p-inputtext{
+  margin-bottom: 0;
+}
+.addUserModel .modal-content{
+  overflow: inherit;
 }
