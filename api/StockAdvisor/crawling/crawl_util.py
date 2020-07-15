@@ -262,7 +262,8 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         temp['name'] = case['name'].capitalize() if case['name'] != 'short_desc' else 'Short description'
         temp['slug'] = case['slug']
         headers_UI.append(temp)
-    startDate = start_date.date().strftime('%b %d,%Y')
+    if start_date: startDate = start_date.date().strftime('%b %d,%Y')
+    startDate = start_date.date().strftime('%b %d,%Y') if start_date else '-'
     endDate = created_at.date().strftime('%b %d,%Y')
     for i in columnDataUI:
         i['name'] = i['name'].capitalize() if i['name'] != 'short_desc' else 'Short description'
