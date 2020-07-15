@@ -48,6 +48,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 # -----------------------MODELS-------------------------------
 
 from .ITE.scripts.info_mapping import Final_json
+from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
     cleaned_final_json, sort_json, dynamic_cavas_size
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
@@ -600,6 +601,19 @@ class OCRUserProfileView(viewsets.ModelViewSet):
             user_group.save()
         except:
             group_object.user_set.add(instance.ocr_user)
+        try:
+            permitted_app_list = request.data.get("app_list")
+            from api.models import CustomAppsUserMapping, CustomApps
+            apps = CustomApps.objects.filter(app_id__in=permitted_app_list)
+            CustomAppsUserMapping.objects.filter(user=instance.ocr_user).delete()
+            for app in apps:
+                caum = CustomAppsUserMapping()
+                caum.user = instance.ocr_user
+                caum.app = app
+                caum.rank = app.rank
+                caum.save()
+        except Exception as err:
+            print(err)
 
         instance.save()
         serializer = OCRUserProfileSerializer(instance=instance, context={'request': request})
@@ -733,8 +747,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data['mask'] = File(name='{}_mask.png'.format(slug),
                             file=open('ocr/ITE/database/{}_mask.png'.format(slug), 'rb'))
         gen_image, doc_accuracy, total_words = ui_flag_v2(cv2.imread("ocr/ITE/database/{}_mask.png".format(slug)),
-                                                          response['final_json'], response['google_response'],
-                                                          response['google_response2'],
+                                                          response['final_json'],
                                                           'ocr/ITE/database/{}_gen_image.png'.format(slug),
                                                           response['analysis'])
         image = base64.decodebytes(gen_image)
@@ -744,8 +757,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                        file=open('ocr/ITE/database/{}_gen_image.png'.format(slug), 'rb'))
         data['metadata'] = json.dumps(response['metadata'])
 
-        data['conf_google_response'] = json.dumps(response['google_response'])
-        data['google_response'] = json.dumps(response['google_response2'])
         data['is_recognized'] = True
         data['status'] = "ready_to_assign"
         # data['modified_by'] = self.request.user.id
@@ -1079,8 +1090,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         try:
             image_queryset = OCRImage.objects.get(slug=data['slug'])
             final_json = json.loads(image_queryset.final_result)
-            google_response = json.loads(image_queryset.conf_google_response)
-            google_response2 = json.loads(image_queryset.google_response)
             analysis = json.loads(image_queryset.analysis)
 
             try:
@@ -1105,7 +1114,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
                                          analysis)
             image = base64.decodebytes(gen_image)
             with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
@@ -1158,7 +1167,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             image_queryset = OCRImage.objects.get(slug=data['slug'])
             final_result = json.loads(image_queryset.final_result)
             final_result_user = cleaned_final_json(final_result)
-            final_result_user = sort_json(final_result)
+            final_result_user = sort_json(final_result_user)
             data['google_response'] = json.dumps(final_result_user)
             review_end_time = image_queryset.review_end
             if not review_end_time:
@@ -1179,7 +1188,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = ast.literal_eval(str(data['slug']))[0]
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            # result = image_queryset.final_result
+            final_result = json.loads(image_queryset.final_result)
+            flag = final_result['domain_classification']
+            if flag == 'Time Sheet':
+                data['format'] = 'csv'
+                df = timesheet_main(final_result)
+                result = df.to_csv()
+                response = HttpResponse(result, content_type="application/text")
+                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
+                return response
             result = image_queryset.google_response
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
@@ -1207,14 +1224,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         slug = data['slug']
         try:
             image_queryset = OCRImage.objects.get(slug=slug)
-            google_response = json.loads(image_queryset.conf_google_response)
-            google_response2 = json.loads(image_queryset.google_response)
             analysis = json.loads(image_queryset.analysis)
             final_json = json.loads(image_queryset.final_result)
             mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, google_response, google_response2, image_path,
+            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
                                          analysis, percent=user_input)
 
             image = base64.decodebytes(gen_image)
@@ -1385,9 +1400,10 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
-    def total_reviewers(self):
+    def total_reviewers(self, request):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
+            supervisor = request.user,
             is_active=True
         ).count()
 
@@ -1416,7 +1432,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         result.data['overall_info'] = {
             "totalProjects": self.total_projects(),
             "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers()
+            "totalReviewers": self.total_reviewers(request)
         }
         return result
 

@@ -86,7 +86,7 @@ export class CreateSignal extends React.Component {
 	            title= ACCESSDENIED
 	        }else{
 	            if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreviewFlag){
-	                let _link = "/data/"+this.selectedData.name;
+	                let _link = "/signals/"+this.selectedData.name;
 	                return(<Redirect to={_link}/>);
 	            }
 	            if(dataSets){

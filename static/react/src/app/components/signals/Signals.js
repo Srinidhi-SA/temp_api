@@ -38,6 +38,7 @@ import {SignalCard} from "./SignalCard";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
 import {Share} from "../common/Share";
 import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
+import {clearDataPreview} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -58,6 +59,8 @@ export class Signals extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
+    this.props.dispatch(getAllSignalList());
+    this.props.dispatch(clearDataPreview())
     var pageNo = 1;
     this.props.dispatch(hideDataPreview())
     this.props.dispatch(setEditModelValues("","",false));
