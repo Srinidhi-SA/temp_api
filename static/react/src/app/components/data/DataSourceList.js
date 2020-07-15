@@ -44,6 +44,12 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(getAllDataList());
   }
   onDrop(files) {
+    let empltyFile= [];
+    empltyFile[0] = {
+      "name": "",
+      "size": ""
+    };
+    this.props.dispatch(saveFileToStore(empltyFile))
     var duplicateFlag="";
     var duplicateName="";
     if (files.length > 0) {
@@ -99,6 +105,13 @@ export class DataSourceList extends React.Component {
   }
   deleteFile(item){
     var deletedFiles= store.getState().dataSource.fileUpload.filter(i=>i!=item);
+    if(deletedFiles.length<1){
+      deletedFiles[0] = {
+        "name": "",
+        "size": ""
+      };
+      this.props.dispatch(saveFileToStore(deletedFiles));
+    }
     this.props.dispatch(saveFileToStore(deletedFiles));
   }
   render() {
