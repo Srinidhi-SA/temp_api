@@ -135,7 +135,7 @@ export class DataPreview extends React.Component {
         url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
         text: "Compose Insight"
       };
-    } else if (this.props.match.path.includes("slug")&& this.props.match.path.includes("data")){
+    } else if (this.props.match.path.includes("slug") && !this.props.match.path.includes("signals")){
       this.props.dispatch(resetSelectedTargetVariable());
       this.props.dispatch(fromVariableSelectionPage(false));
       this.buttons['close'] = {

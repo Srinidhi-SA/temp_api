@@ -5,6 +5,7 @@ import {ToggleButton} from "primereact/togglebutton"
 import store from "../../../store";
 import { closeAddUserPopup, saveNewUserDetails, createNewUserAction, saveNewUserProfileDetails , submitNewUserProfileAction, fetchAllOcrUsersAction, setCreateUserLoaderFlag, fetchOcrListByReviewerType} from "../../../actions/ocrActions";
 import { STATIC_URL } from "../../../helpers/env.js";
+import { MultiSelect } from 'primereact/multiselect';
 
 @connect((store) => {
   return {
@@ -17,12 +18,16 @@ import { STATIC_URL } from "../../../helpers/env.js";
     loaderFlag : store.ocr.loaderFlag,
     ocrReviwersList : store.ocr.ocrReviwersList,
     selectedTabId : store.ocr.selectedTabId,
+    appsList: store.ocr.appsList,
   };
 })
 
 export class OcrAddUser extends React.Component{
     constructor(props){
         super(props);
+        this.state={
+			appId:[]
+		}
     }
 
     closeAddUserPopup(e){
@@ -54,7 +59,7 @@ export class OcrAddUser extends React.Component{
             this.props.dispatch(createNewUserAction(this.props.newUserDetails));
         }
     }
-    saveUserStatus(e){
+    saveUserStatus=(e)=>{
         let name=e.target.name;
         let value = e.target.value;
         if(name==="role")
@@ -63,7 +68,7 @@ export class OcrAddUser extends React.Component{
             this.props.dispatch(saveNewUserProfileDetails(name,value));
     }
     submitNewUserStatus(e){
-        if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"){
+        if($("#role")[0].value === "none" || $("#is_active")[0].value === "none" || this.state.appId.length==0){
             $("#resetMsg")[0].innerText = "Please select mandatory fields"
         }else{
             $("#resetMsg")[0].innerText = ""
@@ -71,7 +76,15 @@ export class OcrAddUser extends React.Component{
             this.props.dispatch(submitNewUserProfileAction(this.props.newUserProfileDetails,this.props.curUserSlug));
         }
     }
-    
+    handleAllAppsOptions=() =>{
+        var appList=this.props.appsList.map(i=>i)
+          return appList.map(function (item) {
+            return { "label": item.displayName, "value": item.app_id };
+          });
+        }
+    handleAppList=()=>{
+        this.props.dispatch(saveNewUserProfileDetails("app_list",this.state.appId));
+    }
     render(){
         let disabledValue = this.props.createUserFlag?true:false
         let optionsTemp = [];
@@ -82,14 +95,14 @@ export class OcrAddUser extends React.Component{
                     </option>);
         }
             return(
-                <Modal backdrop="static" show={this.props.addUserPopupFlag} onHide={this.props.createUserFlag?"":this.closeAddUserPopup.bind(this)}>
+                <Modal className="addUserModel" backdrop="static" show={this.props.addUserPopupFlag} onHide={this.props.createUserFlag?"":this.closeAddUserPopup.bind(this)}>
                     <Modal.Header>
                         <button type="button" className="close" data-dismiss="modal" onClick={this.closeAddUserPopup.bind(this)}>&times;</button>
                         <h4 className="modal-title">Add User</h4>
                     </Modal.Header>
                     <Modal.Body id="addUsers">
                         {!this.props.ocrUserProfileFlag &&
-                            <div className="ocrUserFormLabel" style={{position:"absolute"}}>
+                            <div className="ocrUserFormLabel">
                                 <label className={this.props.createUserFlag?"":"mandate"} for="first_name">First Name</label>
                                 <label className={this.props.createUserFlag?"":"mandate"} for="last_name" style={{marginLeft:"100px"}}>Last Name</label>
                                 <input type="text" id="first_name" name="first_name" placeholder="First Name" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
@@ -104,9 +117,14 @@ export class OcrAddUser extends React.Component{
                                 <label className={this.props.createUserFlag?"":"mandate"} for="confirmPassword" style={{marginLeft:"100px"}}>Confirm Password</label>
                                 <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
                                 <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
-                                
                                 {this.props.createUserFlag &&
                                     <div>
+                                        <label className="mandate">Select required App</label>
+                                        <div className="col-sm-12 allApplist">
+                                        <MultiSelect value={this.state.appId} style={{width:"98.3%",marginBottom:15}} name="app_list"
+                                        options={this.handleAllAppsOptions()} onChange={(e)=> this.setState({appId: e.value},this.handleAppList)}
+                                        filter={true} placeholder="Choose Apps" />
+                                        </div>
                                         <label className="mandate" for="userRoles">Roles</label>
                                         <label for="userRoles" className="mandate" style={{marginLeft:"100px"}}>Status</label>
                                         <select name="role" id="role" onChange={this.saveUserStatus.bind(this)}>
@@ -117,19 +135,20 @@ export class OcrAddUser extends React.Component{
                                             <option value="True" id="active">Active</option>
                                             <option value="False" id="inactive">Inactive</option>
                                         </select>
+                                      
                                     </div>
                                 }
                                 {!this.props.ocrUserProfileFlag && !this.props.createUserFlag &&
-                                    <p style={{marginTop: "30px",marginLeft: "15px"}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
+                                    <p style={{marginTop: "15px",marginLeft: "15px",marginBottom:0}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
                                     </p>
                                 }
                             </div>
                         }
-                        {this.props.loaderFlag && !this.props.ocrUserProfileFlag &&
-                            <div style={{ height:"350px", background: 'rgba(0,0,0,0.1)', position: 'relative',margin:"-10px" }}>
+                       {this.props.loaderFlag && !this.props.ocrUserProfileFlag &&
+                            <div style={{ height:"100%",width:"100%", background: 'rgba(0,0,0,0.1)', position: 'absolute',top:0,left:0 }}>
                                 <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                             </div>
-                        }
+                        }   
                         {this.props.ocrUserProfileFlag && 
                             <div className="col-md-12 ocrSuccess">
                                 <img className="wow bounceIn" data-wow-delay=".75s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10" src={STATIC_URL + "assets/images/success_outline.png"} style={{ height: 105, width: 105, marginTop:"75px" }} />

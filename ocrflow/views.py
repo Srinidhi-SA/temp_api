@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from ocr.models import OCRImage, Template
 from ocr.pagination import CustomOCRPagination
-from ocr.permission import IsOCRAdminUser
+from ocr.permission import IsOCRClientUser
 from ocr.query_filtering import get_listed_data, get_specific_assigned_requests
 from ocrflow.forms import feedbackForm
 from ocrflow.models import Task, ReviewRequest, OCRRules
@@ -28,7 +28,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     """
     serializer_class = OCRRulesSerializer
     model = OCRRules
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated, IsOCRClientUser)
 
     defaults = {
         "auto_assignmentL1":True,
@@ -67,23 +67,23 @@ class OCRRulesView(viewsets.ModelViewSet):
 
         if data['autoAssignment'] == "True":
             if data['stage'] == "initial":
-                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+                ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
                 ruleObj.auto_assignmentL1 = True
                 ruleObj.save()
                 return JsonResponse({"message": "Initial Auto-Assignment Active.", "status": True})
             elif data['stage'] == "secondary":
-                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+                ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
                 ruleObj.auto_assignmentL2 = True
                 ruleObj.save()
                 return JsonResponse({"message": "Secondary Auto-Assignment Active.", "status": True})
         else:
             if data['stage'] == "initial":
-                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+                ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
                 ruleObj.auto_assignmentL1 = False
                 ruleObj.save()
                 return JsonResponse({"message": "Initial Auto-Assignment De-active.", "status": True})
             elif data['stage'] == "secondary":
-                ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+                ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
                 ruleObj.auto_assignmentL2 = False
                 ruleObj.save()
                 return JsonResponse({"message": "Secondary Auto-Assignment De-active.", "status": True})
@@ -91,7 +91,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL1(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+        ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
         ruleObj.rulesL1 = json.dumps(modifiedrule)
         ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
@@ -100,7 +100,7 @@ class OCRRulesView(viewsets.ModelViewSet):
     @list_route(methods=['post'])
     def modifyRulesL2(self, request, *args, **kwargs):
         modifiedrule = request.data
-        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+        ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
         ruleObj.rulesL2 = json.dumps(modifiedrule)
         ruleObj.modified_at = datetime.datetime.now()
         ruleObj.save()
@@ -108,7 +108,7 @@ class OCRRulesView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def get_rules(self, request):
-        ruleObj, created = OCRRules.objects.get_or_create(id=1, defaults=self.defaults)
+        ruleObj, created = OCRRules.objects.get_or_create(created_by=request.user, defaults=self.defaults)
         if created:
             ruleObj.rulesL1 = json.dumps(self.defaults['rulesL1'])
             ruleObj.rulesL2 = json.dumps(self.defaults['rulesL2'])

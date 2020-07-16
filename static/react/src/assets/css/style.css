@@ -22574,8 +22574,7 @@ ul.ocrUploadTabs{
   display: inline-block;
 }
 #addUsers {
-  height: 350px;
-  padding:10px;
+  height: auto;
 }
 .userActions{
   margin-right: -12px;
@@ -22606,7 +22605,7 @@ ul.ocrUploadTabs{
   width: 31%;
   padding-left: 15px;
   float: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .ocrUserFormLabel input,.ocrUserFormLabel select{
   border: 1px solid #cdcdcd;
@@ -23027,4 +23026,15 @@ min-width: 102px; }
   font: 16px Roboto Condensed, sans-serif;
   color: #969696;
   padding-top:7px
+}
+.allApplist label{
+  width: 94%;
+  margin-bottom: 0px;
+  float: inherit;
+}
+.allApplist .p-inputtext{
+  margin-bottom: 0;
+}
+.addUserModel .modal-content{
+  overflow: inherit;
 }

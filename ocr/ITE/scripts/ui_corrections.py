@@ -1,25 +1,14 @@
 # -*- coding: utf-8 -*-
 import base64
-import os
 import numpy as np
 from collections import OrderedDict
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
-from google.protobuf.json_format import MessageToJson
-# from ocr.ITE.scripts.apis import fetch_google_response
 import cv2
-import json
 import os
 import matplotlib as mpl
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 if os.environ.get('DISPLAY', '') == '':
-    print('no display found. Using non-interactive Agg backend')
     mpl.use('Agg')
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
-
-# from ocr.ITE.scripts.info_mapping import update_u1
 
 
 class ui_corrections:

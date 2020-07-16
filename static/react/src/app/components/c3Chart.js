@@ -355,6 +355,9 @@ export class C3Chart extends React.Component {
                 str = stockData[1].listOfNodes[0].listOfCards[0].cardData[2].data.xdata
                 break;
           }
+          if(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.firstElementChild.innerText.includes("Influence of Key Features")){
+            str=modelSummary.listOfCards[3].cardData[1].data.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''))
+          }
           let tooltip = event.target.innerHTML
             if(str != undefined){
               let substr = event.target.innerHTML
