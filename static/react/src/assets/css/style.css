@@ -23013,3 +23013,18 @@ min-width: 102px; }
   overflow: inherit;
   max-width: fit-content;
 }
+.stockInfo{
+  height: 60px;
+  width: 40%;
+  margin: -6.1% 0 0 60.5%;
+  padding: 0px;
+  border: 1px solid #ececec;
+  border-bottom: 2px solid #67ca78;
+  border-radius: 2px;
+}
+.stockTopInfo{
+  display: flex;
+  font: 16px Roboto Condensed, sans-serif;
+  color: #969696;
+  padding-top:7px
+}
