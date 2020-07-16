@@ -262,15 +262,14 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         temp['name'] = case['name'].capitalize() if case['name'] != 'short_desc' else 'Short description'
         temp['slug'] = case['slug']
         headers_UI.append(temp)
-    if start_date: startDate = start_date.date().strftime('%b %d,%Y')
     startDate = start_date.date().strftime('%b %d,%Y') if start_date else '-'
     endDate = created_at.date().strftime('%b %d,%Y')
     for i in columnDataUI:
         i['name'] = i['name'].capitalize() if i['name'] != 'short_desc' else 'Short description'
     companyNames = {"displayName": "Company Names", "name": "companyNames", "value": symbols, "display": True}
     timeline = {"displayName": "Timeline", "name": "timeline", "value": str(startDate) + ' to ' + str(endDate), "display": True}
-    metaData_UI.append(companyNames)
     metaData_UI.append(timeline)
+    metaData_UI.append(companyNames)
 
     metadata_json = {
         'scriptMetaData': {
