@@ -1404,7 +1404,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
             supervisor = request.user,
-            is_active=True
+            #is_active=True
         ).count()
 
     def total_documents(self):
