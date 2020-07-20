@@ -1401,16 +1401,17 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
-    def total_reviewers(self, request):
+    def total_reviewers(self):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            supervisor = request.user,
+            supervisor = self.request.user,
             #is_active=True
         ).count()
 
     def total_documents(self):
         return OCRImage.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted = False
         ).count()
 
     def retrieve(self, request, *args, **kwargs):
@@ -1433,7 +1434,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         result.data['overall_info'] = {
             "totalProjects": self.total_projects(),
             "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers(request)
+            "totalReviewers": self.total_reviewers()
         }
         return result
 
