@@ -392,14 +392,32 @@ else{
             </div>
           );
       }else if (dataPrev && !isEmpty(dataPrev) && !this.props.createSigLoaderFlag) {
+        let stockInfo = ""
+        if(this.props.match.path.includes("apps-stock-advisor") || this.props.match.path.includes("apps-stock-advisor-analyze")){
+          stockInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
+            if (item.display && (item.name==="companyNames" || item.name==="timeline")) {
+              return (
+                <div className="stockTopInfo">
+                  <div className="col-md-4"> {item.displayName} </div>
+                  <div className="col-md-8 text-right text-info">
+                  <Scrollbars height="50px">
+                    <div style={{"paddingRight":"10px"}}>
+                        {(item.name==="companyNames")?item.value.join(", "):item.value}
+                    </div>
+                  </Scrollbars>
+                    </div>
+                </div>
+              )}
+          });
+        }
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
-          if (item.display) {
+          if (item.display && item.name!="companyNames" && item.name!="timeline") {
             return (
 
               <div key={i} className="col-md-5ths col-xs-6 data_preview xs-mb-15">
-                <div className="bgStockBox">
-				<div className="row">
-					<div className="col-xs-8 xs-pr-0">
+                <div className="bgStockBox" style={{"height":this.props.match.path.includes("apps-stock-advisor")?"60px":""}}>
+				<div className="row" style={{"paddingTop":this.props.match.path.includes("apps-stock-advisor")?"5px":""}}>
+          <div className="col-xs-8 xs-pr-0">
 							<h4 className="xs-pt-5 xs-pb-5">
 							{item.displayName}
 							</h4>
@@ -541,6 +559,7 @@ else{
 				 {topInfo}
 
 			</div>
+             {(this.props.match.path.includes("apps-stock-advisor") || this.props.match.path.includes("apps-stock-advisor-analyze"))?<div className="col-md-5 stockInfo">{stockInfo}</div>:""}
               <div className="row">
                 <div className="col-md-9 preview_content">
 
