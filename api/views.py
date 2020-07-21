@@ -6823,20 +6823,20 @@ def view_model_summary_detail(request):
         config = json.loads(instance.config)
         data = json.loads(instance.data)
         try:
-            table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
-            FI_dict_keys = table_data[0]
-            FI_dict_values = table_data[1]
-            # import collections
-            import operator
-            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
-            FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
-            FI_dict=FI_dict[1:len(FI_dict):1]
+            # table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
+            # FI_dict_keys = table_data[0]
+            # FI_dict_values = table_data[1]
+            # # import collections
+            # import operator
+            # #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
+            # FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
+            # FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
             model_summary_data['model_summary'] = data['model_summary']
             model_config.update(
-                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data, 'table_data': FI_dict})
+                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data})
         except Exception as err:
             print(err)
             #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
