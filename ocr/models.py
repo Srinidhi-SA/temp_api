@@ -65,6 +65,18 @@ class OCRUserProfile(models.Model):
         }
         return ocr_user_profile
 
+    def permitted_custom_apps(self):
+        appIDmap = []
+        from api.models import CustomApps
+        permitted_Apps = CustomApps.objects.filter(
+            customappsusermapping__user=self.ocr_user).only('app_id', 'displayName')
+        for app in permitted_Apps:
+            appIDmap.append({
+                "app_id": app.app_id,
+                "displayName": app.displayName
+            })
+        return {"app_list":appIDmap}
+
     def reviewer_data(self):
         from ocrflow.models import Task
         total_assignments = Task.objects.filter(assigned_user=self.ocr_user).count()

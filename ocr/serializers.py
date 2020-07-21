@@ -298,6 +298,7 @@ class OCRUserListSerializer(serializers.ModelSerializer):
             serialized_data['ocr_user'] = False
         else:
             serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+            serialized_data['custom_app_perm'] = ocr_profile_obj.permitted_custom_apps()
             if len(serialized_data['ocr_profile']["role"]) == 1:
                 serialized_data['ocr_user'] = True
             else:
