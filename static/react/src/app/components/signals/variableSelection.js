@@ -190,7 +190,7 @@ export class VariableSelection extends React.Component {
     componentDidUpdate(){
         var that = this;
         let dataPrev = this.props.dataPreview;
-        if(this.props.match.path.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
+        if(window.location.href.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
             let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                 return(val.columnType == "measure" && val.selected == true && val.targetColumn == false);
             });
