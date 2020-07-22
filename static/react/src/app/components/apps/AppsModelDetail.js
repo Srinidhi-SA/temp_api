@@ -146,6 +146,13 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
+		if(document.querySelector(".sm-pb-10")!= null ){
+			let FE = document.querySelector(".sm-pb-10")
+			if(FE.innerText==="Feature Importance") {
+			FE.style.display = "none";
+			document.querySelector(".chart-area").style.display = "none";
+			}
+		 }
 		if(this.state.showHyperparameterSummary)
 		return(<AppsModelHyperDetail match={this.props.match}/>)
   	const modelSummary = store.getState().apps.modelSummary;
