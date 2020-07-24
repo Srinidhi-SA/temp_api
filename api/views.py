@@ -1152,6 +1152,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         new_data['stock_symbols'] = json.dumps(stocks)
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
+        new_data['start_date'] = datetime.datetime.today() - datetime.timedelta(days=7)
 
         serializer = StockDatasetSerializer(data=new_data, context={"request": self.request})
         if serializer.is_valid():
@@ -6137,15 +6138,18 @@ def get_algorithm_config_list(request):
 
     return JsonResponse(algorithm_config_list)
 
+@api_view(['GET'])
 def get_appID_appName_map(request):
-    # from django.core import serializers
+
     from api.models import CustomApps
-    appIDmapfromDB = CustomApps.objects.only('app_id', 'name', 'app_type')
-    # appIDmap_serialized = serializers.serialize('json', appIDmap)
+    appIDmapfromDB = CustomApps.objects.filter(
+        customappsusermapping__user=request.user).only('app_id', 'displayName')
+
     appIDmap = []
     for row in appIDmapfromDB:
         appIDmap.append({
-            "app_id": row.app_id, "app_name": row.name, "app_type": row.app_type
+            "app_id": row.app_id,
+            "displayName": row.displayName
         })
 
     return JsonResponse({"appIDMapping": appIDmap})
@@ -6819,20 +6823,20 @@ def view_model_summary_detail(request):
         config = json.loads(instance.config)
         data = json.loads(instance.data)
         try:
-            table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
-            FI_dict_keys = table_data[0]
-            FI_dict_values = table_data[1]
-            # import collections
-            import operator
-            #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
-            FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
-            FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
-            FI_dict=FI_dict[1:len(FI_dict):1]
+            # table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
+            # FI_dict_keys = table_data[0]
+            # FI_dict_values = table_data[1]
+            # # import collections
+            # import operator
+            # #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
+            # FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
+            # FI_dict=FI_dict[1:len(FI_dict):1]
             model_summary_data = dict()
             model_summary_data['model_summary'] = data['model_summary']
             model_config.update(
-                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data, 'table_data': FI_dict})
+                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data})
         except Exception as err:
             print(err)
             #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})

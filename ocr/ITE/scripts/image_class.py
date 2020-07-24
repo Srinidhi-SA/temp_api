@@ -11,7 +11,7 @@ class image_cls:
         self.image_shape = self.image.shape[:2]
         self.all_JSON = {}
         self.page_metadata = {"order": [], "table": {}, "paragraph": {}}
-        self.image_name = image_with_extension.split(".")[0]
+        self.image_name, _ = os.path.splitext(image_with_extension)
 
     def set_microsoft_analysis(self, analysis):
         self.microsoft_analysis = analysis
@@ -54,9 +54,9 @@ class image_cls:
         if not os.path.exists(image_directory):
             os.mkdir(image_directory)
         white_background_mask = cv2.bitwise_not(self.mask)
-        cv2.imwrite(image_directory+"/mask.png", white_background_mask)
-        with open(image_directory+'/final_json.json', 'w') as outfile:
+        cv2.imwrite(image_directory + "/mask.png", white_background_mask)
+        with open(image_directory + '/final_json.json', 'w') as outfile:
             json.dump(self.final_json, outfile)
-        with open(image_directory+'/metadata.json', 'w') as outfile:
+        with open(image_directory + '/metadata.json', 'w') as outfile:
             json.dump(self.metadata, outfile)
-        cv2.imwrite(image_directory+"/"+self.image_name+".png", self.image)
+        cv2.imwrite(image_directory + "/" + self.image_name + ".png", self.image)

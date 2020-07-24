@@ -202,11 +202,11 @@ def write_into_databases(job_type, object_slug, results):
             trainer_object.save()
             #------------------------------------------------------------------#
             #Sending failure mail on autoML model failure
-            if trainer_obj.mode == 'autoML':
+            if trainer_object.mode == 'autoML':
                 outlook_autoML_failure_mail(
-                    trainer_object_id=trainer_obj.id,
+                    trainer_object_id=trainer_object.id,
                     error='ML-failure',
-                    mail_id=trainer_obj.email
+                    mail_id=trainer_object.email
                 )
             #------------------------------------------------------------------#
             return results

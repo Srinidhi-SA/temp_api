@@ -43,6 +43,7 @@ export default function reducer(state = {
   ocrUserProfileFlag : false,
   allOcrUsers : {},
   ocrReviwersList : [],
+  appsList : [],
   selectedOcrUsers : [],
   isAllCheckedFlag : false,
   editOcrUserFlag:false,
@@ -517,6 +518,12 @@ export default function reducer(state = {
         return {
           ...state,
           ocrReviwersList : action.json
+        }
+      }
+      case "SAVE_APPS_LIST":{
+        return {
+          ...state,
+          appsList : action.data
         }
       }
       case "OPEN_EDIT_USER_POPUP":{

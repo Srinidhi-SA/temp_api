@@ -251,8 +251,11 @@ export function getSignalAnalysis(token, errandId) {
 
   return (dispatch) => {
     return fetchPosts_analysis(token, errandId).then(([response, json]) => {
-      if (response.status === 200) {
+      if (response.status === 200){
+        if(json.message != "failed")
         dispatch(fetchPostsSuccess_analysis(json, errandId, dispatch))
+        else
+        window.history.back();
       } else {
         dispatch(fetchPostsError_analysis(json));
         dispatch(closeCsLoaderModal())

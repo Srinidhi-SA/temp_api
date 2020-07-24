@@ -1,50 +1,26 @@
 # -*- coding: utf-8 -*-
 import base64
-import os
 import numpy as np
 from collections import OrderedDict
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
-from google.protobuf.json_format import MessageToJson
-from ocr.ITE.scripts.apis import fetch_google_response
 import cv2
-import json
 import os
 import matplotlib as mpl
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 if os.environ.get('DISPLAY', '') == '':
-    print('no display found. Using non-interactive Agg backend')
     mpl.use('Agg')
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
-
-# from ocr.ITE.scripts.info_mapping import update_u1
 
 
 class ui_corrections:
 
-    def __init__(self, mask, final_json, google_response, google_response2, image_path=None, image_directory_name=None,
+    def __init__(self, mask, final_json, image_path=None, image_directory_name=None,
                  database_path=None):
         self.mask = mask
         self.final_json = final_json
         # self.google_response = self.optimised_fetch_google_response(image_path, image_directory_name, database_path)
-        self.google_response = google_response
-        self.google_response2 = google_response2
+        # self.google_response = google_response
+        # self.google_response2 = google_response2
         self.image_name = image_directory_name
-
-    def optimised_fetch_google_response(self, image_path, image_directory_name, database_path):
-        try:
-            with open(database_path + image_directory_name + "/" + image_directory_name + "_google_response.json") as f:
-                google_response_as_string = json.load(f)
-            return google_response_as_string
-        except:
-            google_response = fetch_google_response(image_path)
-            serialized = json.loads(MessageToJson(google_response))
-            with open(database_path + image_directory_name + "/" + image_directory_name + "_google_response.json",
-                      'w') as outfile:
-                json.dump(serialized, outfile)
-            return serialized
 
     def check_if_centroid_inbetween_p1_p3(self, centroid, p1, p3):
         if p1[0] <= centroid[0] <= p3[0] and p1[1] <= centroid[1] <= p3[1]:
@@ -57,7 +33,7 @@ class ui_corrections:
         loi = []
         for line in analysis['lines']:
             for word in line['words']:
-                if 'confidence' in word.keys():
+                if word['confidence'] < 0.8:
                     try:
                         loi.append({word['text']: [word['boundingBox'][:2], word['boundingBox'][4:6]]})
                     except:
@@ -96,43 +72,16 @@ class ui_corrections:
 
         return p1, p2, p3, p4, p5, p6, p7, p8
 
-    def confidence_filter(self, response, user_input):
+    def confidence_filter(self, analysis, user_input):  # 90
         loi = []
-        for page in response["fullTextAnnotation"]["pages"]:
-            for block in page["blocks"]:
-                for paragraph in block["paragraphs"]:
-                    for word in paragraph["words"]:
-                        word_text = ''.join([symbol["text"] for symbol in word["symbols"]])
-                        #                        print(word["confidence"])
-                        if word["confidence"] < user_input:
-                            loi.append({word_text: [
-                                [word["boundingBox"]["vertices"][0]["x"], word["boundingBox"]["vertices"][0]["y"]],
-                                [word["boundingBox"]["vertices"][2]["x"], word["boundingBox"]["vertices"][2]["y"]]]})
-
+        for line in analysis['lines']:
+            for word in line['words']:
+                if word['confidence'] < user_input:
+                    try:
+                        loi.append({word['text']: [word['boundingBox'][:2], word['boundingBox'][4:6]]})
+                    except:
+                        pass
         return loi
-
-    def final_json_para_corrections(self, final_json):
-        paradata = final_json["paragraphs"]
-        for i in paradata:
-            for j in paradata[i]:
-                for k in range(len(j["words"])):
-                    temp = {j["words"][k]["text"]: {"p1": j["words"][k]["boundingBox"][0:2],
-                                                    "p3": j["words"][k]["boundingBox"][4:6]}}
-                    j["words"][k].clear()
-                    j["words"][k].update(temp)
-        final_json["paragraphs"] = paradata
-        return final_json
-
-    """def default_all_words_flag_to_false(self, final_json):
-        for k in final_json["paragraphs"]:
-            for l in final_json["paragraphs"][k]:
-                for m in l['words']:
-                    m.update({"flag": "False"})
-        for k in final_json["tables"]:
-            for l in final_json["tables"][k]:
-                for m in final_json["tables"][k][l]["words"]:
-                    m.update({"flag": "False"})
-        return final_json"""
 
     def default_all_words_flag_to_false(self, final_json):
         for para in final_json["paragraphs"]:
@@ -285,79 +234,6 @@ class ui_corrections:
         #        fontscale_final = (fontScale_default+fontscale)*0.5
         return fontscale, font
 
-    """def render_flagged_image(self, final_json_to_flag, texted_image, gen_image):
-
-        #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
-        height, width, _ = texted_image.shape
-        area = height * width
-        #        fontScale = 0.6
-        #        print (fontScale)
-
-        if 'paragraphs' in final_json_to_flag:
-            for k in final_json_to_flag["paragraphs"]:
-                for l in final_json_to_flag["paragraphs"][k]:
-                    for m in l:
-                        p1 = m['boundingBox']["p1"]
-                        p3 = m['boundingBox']["p3"]
-                        p2 = [p3[0], p1[1]]
-                        p4 = [p1[0], p3[1]]
-                        text = m['text']
-                        #
-                        print('WORD : ', text, ' BoundingBox Height : ', abs(p3[1] - p1[1]))
-                        print('WORD : ', text, ' BoundingBox Width / len of word : ', abs(p3[0] - p1[0]) / len(text))
-
-                        print('*' * 10)
-
-                        height, ratio = abs(p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                        fontScale, font = self.get_optimal_params(height, ratio, area)
-                        #                        print('FONT : ',font)
-                        if m['flag'] == True:
-                            texted_image = self.highlight_word(texted_image, text,
-                                                               (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
-                        else:
-                            cv2.putText(texted_image, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), font, fontScale,
-                                        (0, 0, 0), 1, cv2.LINE_AA)
-        else:
-            pass
-
-        if 'tables' in final_json_to_flag:
-            for k in final_json_to_flag["tables"]:
-                for l in final_json_to_flag["tables"][k]:
-                    for m in final_json_to_flag["tables"][k][l]["words"]:
-                        p1 = m["boundingBox"]["p1"]
-                        p3 = m["boundingBox"]["p3"]
-                        p2 = [p3[0], p1[1]]
-                        p4 = [p1[0], p3[1]]
-                        text = m["text"]
-                        vertices = [p1, p2, p3, p4]
-
-                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
-                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
-                        #
-                        #                        print('*'*10)
-
-                        height, ratio = abs(p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                        fontScale, font = self.get_optimal_params(height, ratio, area)
-                        #                        print('FONT : ',font)
-                        if m['flag'] == True:
-                            texted_image = self.highlight_word(texted_image, text,
-                                                               (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
-                        else:
-                            cv2.putText(texted_image, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), font, fontScale,
-                                        (0, 0, 0), 1, cv2.LINE_AA)
-        else:
-            pass
-
-        #        int((p4[1]+p1[1])*0.5)
-
-        if area < 1000 * 1000:
-            pass
-
-        else:
-            texted_image = self.adjust_gamma(texted_image, gamma=0.4)
-        cv2.imwrite(gen_image, texted_image)
-        return"""
-
     def render_flagged_image(self, final_json_to_flag, mask, gen_image):  # plain_mask = False
 
         #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
@@ -441,14 +317,14 @@ class ui_corrections:
         cv2.imwrite(gen_image, mask)
         return
 
-    def document_confidence(self, analysis):
+    def document_confidence(self, analysis):  ## TO DO
         word_count, error = 0, 0
         for line in analysis['lines']:
 
             for word in line['words']:
                 word_count = word_count + 1
 
-                if 'confidence' in word.keys():
+                if word['confidence'] < 0.8:
                     error = error + 1
                 else:
                     pass
@@ -457,11 +333,11 @@ class ui_corrections:
         return document_accuracy, word_count
 
 
-def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, analysis, percent=1):
+def ui_flag_v2(mask, final_json, gen_image, analysis, percent=1):
     mask = mask
     final_json = final_json
 
-    uc_obj = ui_corrections(mask, final_json, google_response, google_response2)
+    uc_obj = ui_corrections(mask, final_json)
 
     final_json = uc_obj.default_all_words_flag_to_false(final_json)
     doc_accuracy, total_words = uc_obj.document_confidence(analysis)
@@ -471,7 +347,7 @@ def ui_flag_v2(mask, final_json, google_response, google_response2, gen_image, a
         needed_words = uc_obj.all_words(analysis)
     else:
         mode = None
-        needed_words = uc_obj.confidence_filter(uc_obj.google_response, percent)
+        needed_words = uc_obj.confidence_filter(analysis, percent)
     upd, fj = uc_obj.flag_words_to_plot(final_json, needed_words, mode)
 
     uc_obj.render_flagged_image(fj, uc_obj.mask, gen_image)

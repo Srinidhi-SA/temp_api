@@ -7,7 +7,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 
@@ -70,7 +70,10 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         const from = this.getValueOfFromParam();
         if (from === 'data_cleansing') {
-
+            let dtList = store.getState().datasets.dataSetTimeDimensions
+            if(dtList.length!=0 && dtList.filter(i=>(i.selected===true)).length === 0 && document.getElementById("unselect") != undefined){
+                document.getElementById("unselect").checked =true
+            }
         }else if(this.props.fromVariableSelectionPage){
             
         }
@@ -108,6 +111,16 @@ export class DataVariableSelection extends React.Component {
     this.props.dispatch(makeAllVariablesTrueOrFalse(false));
   }
     componentDidUpdate(){
+        let dtList = store.getState().datasets.dataSetTimeDimensions
+        if(!this.props.editmodelFlag && dtList.length!=0 && document.getElementById("unselect") != undefined){
+            if(dtList.filter(i=>(i.selected===true)).length === 0 && !document.getElementById("unselect").checked){
+                this.props.dispatch(setDefaultTimeDimensionVariable(dtList[0]));
+            }else if(dtList.filter(i=>i.selected).length === 0){
+                document.getElementById("unselect").checked =true
+            }
+        }else if(dtList.length!=0 && dtList.filter(i=>(i.selected===true)).length === 0 && document.getElementById("unselect") != null){
+            document.getElementById("unselect").checked =true
+        }
         var count = getTotalVariablesSelected();
         if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
         }

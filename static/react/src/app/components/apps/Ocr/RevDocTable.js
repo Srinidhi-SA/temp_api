@@ -17,7 +17,8 @@ import { Scrollbars } from 'react-custom-scrollbars';
     OcrRevwrDocsList: store.ocr.OcrRevwrDocsList,
     documentFlag: store.ocr.documentFlag,
     revDocumentFlag:store.ocr.revDocumentFlag,
-    reviewerName: store.ocr.selected_reviewer_name
+    reviewerName: store.ocr.selected_reviewer_name,
+    projectName:store.ocr.selected_project_name
   };
 })
 
@@ -155,12 +156,19 @@ export class RevDocTable extends React.Component {
             </ol>
           )
    }
+   else{
+    breadcrumb= (
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/apps/ocr-mq44ewz7bp/reviewer/"><i class="fa fa-arrow-circle-left"></i> Projects</a></li>
+          <li class="breadcrumb-item active"><a style={{'cursor':'default'}}>{this.props.projectName}</a></li>
+        </ol>
+      )
+   }
     var OcrRevDocTableHtml = (
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
           <tr id={index}>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
-            <td>{item.project}</td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.classification}</td>
             <td>{item.ocrImageData.fields}</td>
@@ -211,7 +219,6 @@ export class RevDocTable extends React.Component {
              <thead>
               <tr>
                 <th>NAME</th>
-                <th>PROJECT</th>
                 <th class="dropdown" >
                   <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                     <span>STATUS</span> <b class="caret"></b>

@@ -19445,12 +19445,13 @@ table.apps_table_style thead th {
   width: inherit !important;
   cursor: pointer;
   text-align: center;
-  height: 130px !important;
+  height: 100px !important;
   display: table-cell;
   vertical-align: middle;
-  padding: 30px;
+  padding: 20px;
   font-size: 16px;
   color: #c1c1c1;
+  top:-5px;
 }
 .dropzone div:hover {
   border-color: rgb(0, 153, 140) !important;
@@ -21743,7 +21744,7 @@ div.text-center.tbl_th_center th {
 .c3-axis-x text {
   fill: #333333;
   /*font-family: "Times New Roman", Times, serif;;*/
-  font-size: 13px;
+  font-size: 11px;
 }
 .c3-axis-y2 text {
   fill: #333333;
@@ -22573,8 +22574,7 @@ ul.ocrUploadTabs{
   display: inline-block;
 }
 #addUsers {
-  height: 350px;
-  padding:10px;
+  height: auto;
 }
 .userActions{
   margin-right: -12px;
@@ -22605,7 +22605,7 @@ ul.ocrUploadTabs{
   width: 31%;
   padding-left: 15px;
   float: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .ocrUserFormLabel input,.ocrUserFormLabel select{
   border: 1px solid #cdcdcd;
@@ -23011,4 +23011,30 @@ min-width: 102px; }
   white-space: pre;
   overflow: inherit;
   max-width: fit-content;
+}
+.stockInfo{
+  height: 60px;
+  width: 40%;
+  margin: -6.1% 0 0 60.5%;
+  padding: 0px;
+  border: 1px solid #ececec;
+  border-bottom: 2px solid #67ca78;
+  border-radius: 2px;
+}
+.stockTopInfo{
+  display: flex;
+  font: 16px Roboto Condensed, sans-serif;
+  color: #969696;
+  padding-top:7px
+}
+.allApplist label{
+  width: 94%;
+  margin-bottom: 0px;
+  float: inherit;
+}
+.allApplist .p-inputtext{
+  margin-bottom: 0;
+}
+.addUserModel .modal-content{
+  overflow: inherit;
 }

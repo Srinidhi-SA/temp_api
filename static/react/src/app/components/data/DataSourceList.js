@@ -1,10 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 import {
-  Modal,
-  Button,
   Tab,
   Row,
   Col,
@@ -19,7 +15,7 @@ import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize,statusMessages} from "..
 
 import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetails} from "../../actions/dataSourceListActions";
 import {getAllDataList} from "../../actions/dataActions";
-
+import { Scrollbars } from 'react-custom-scrollbars';
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -48,35 +44,46 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(getAllDataList());
   }
   onDrop(files) {
+    let empltyFile= [];
+    empltyFile[0] = {
+      "name": "",
+      "size": ""
+    };
+    this.props.dispatch(saveFileToStore(empltyFile))
+    var duplicateFlag="";
     var duplicateName="";
     if (files.length > 0) {
-      if(this.props.datasets.length>0){
-        this.props.datasets.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase().split('.').slice(0, -1).join('.'))?
-      duplicateName=true:"";     
-      }
-    if(this.props.allDataList!=""){
-     this.props.allDataList.data.map(dataset=>dataset.name.toLowerCase()).includes(files[0].name.toLowerCase().split('.').slice(0, -1).join('.'))?
-      duplicateName=true:"";  
+      // if(this.props.datasets.length>0){
+      //   var datasetList = this.props.datasets.map(i=>i.name.toLowerCase());
+      //   duplicateName = files.map(i=> datasetList.includes(i.name.toLowerCase().split('.').slice(0, -1).join('.'))).includes(true);
+      // }
+      if(this.props.allDataList!=""){
+        var alldatasetList = this.props.allDataList.data.map(i=>i.name.toLowerCase());
+        for (var i=0;i<files.length;i++){
+          if(alldatasetList.includes(files[i].name.toLowerCase().split('.').slice(0, -1).join('.'))){
+            duplicateFlag= true;
+            duplicateName= files[i].name;
+          }
+        }
+       }
 
-            }
-
-      if (files[0].size == 0) {
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("The uploaded file is empty, please upload the correct file");
-      }
-      else if(duplicateName){
-        files[0] = {
-          "name": "",
-          "size": ""
-        };
-        this.props.dispatch(saveFileToStore(files))
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Dataset with this name already exists");
-      }
-       else {
-        $("#fileErrorMsg").addClass("visibilityHidden");
-        this.props.dispatch(saveFileToStore(files))
-      }
+          if (files[0].size == 0) {
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("The uploaded file is empty, please upload the correct file");
+          }
+          else if(duplicateFlag){
+            files[0] = {
+              "name": "",
+              "size": ""
+            };
+            // this.props.dispatch(saveFileToStore(files))
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html(`Dataset with ${duplicateName} name already exists`);
+          }
+          else {
+            $("#fileErrorMsg").addClass("visibilityHidden");
+            this.props.dispatch(saveFileToStore(files))
+          }
     } else {
       files[0] = {
         "name": "",
@@ -96,10 +103,20 @@ export class DataSourceList extends React.Component {
   handleInputChange(event) {
     updateDbDetails(event);
   }
-
+  deleteFile(item){
+    var deletedFiles= store.getState().dataSource.fileUpload.filter(i=>i!=item);
+    if(deletedFiles.length<1){
+      deletedFiles[0] = {
+        "name": "",
+        "size": ""
+      };
+      this.props.dispatch(saveFileToStore(deletedFiles));
+    }
+    this.props.dispatch(saveFileToStore(deletedFiles));
+  }
   render() {
     const dataSrcList = store.getState().dataSource.dataSourceList.conf;
-    var fileName = store.getState().dataSource.fileUpload.name;
+    var fileName = store.getState().dataSource.fileUpload;
     val => ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb'][Math.floor(Math.log2(val) / 10)]
 
     var fileSize = store.getState().dataSource.fileUpload.size;
@@ -142,23 +159,33 @@ export class DataSourceList extends React.Component {
                     </div>
                   </h4>
                   <div className="clearfix"></div>
-                  <div className="xs-pt-20"></div>
                   <div className="dropzone ">
-                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={false} onDropRejected={this.popupMsg}>
+                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={true} onDropRejected={this.popupMsg}>
                       <p>Please drag and drop your file here or browse.</p>
                     </Dropzone>
-                    <aside>
-                      <ul className={fileName != ""
+                  </div>
+                      <Scrollbars style={{ height: 100 }}>
+                      <ul className={this.props.fileUpload[0].name != ""
                         ? "list-unstyled bullets_primary"
-                        : "list-unstyled"}>
-                        <li>{fileName}{fileName != ""
-                            ? " - "
-                            : ""}{fileSize}</li>
+                        : "list-unstyled"} style={{marginBottom:0,paddingTop:10}}>
+                          {(this.props.fileUpload[0].name!="")&&
+                          this.props.fileUpload.map(file=>{
+                            return(
+                            <li style={{padding:0}}>
+                              {file.name}
+                              <span> - </span> {bytesToSize(file.size)}
+                              <span style={{ marginLeft: "15px" }} onClick={this.deleteFile.bind(this, file)}>
+                                <i class="fa fa-times" style={{ color: '#555', cursor: 'pointer' }}></i>
+                              </span>  
+                            </li>
+                            )
+                          })
+                        }
                         <li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
                       </ul>
-                    </aside>
+                      </Scrollbars>
+                    
 
-                  </div>
                 </div>
               )
             }

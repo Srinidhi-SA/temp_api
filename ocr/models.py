@@ -40,6 +40,7 @@ class OCRUserProfile(models.Model):
     phone = models.CharField(max_length=20, blank=True, default='', validators=[validators.validate_phone_number])
     user_type = models.CharField(max_length=20, null=True, choices=OCR_USER_TYPE_CHOICES, default='Default')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    supervisor = models.ForeignKey(User, null=True, related_name='client_user')
 
     # def __str__(self):
     #     return " : ".join(["{}".format(x) for x in ["OCRUserProfile", self.ocr_user, self.user_type]])
@@ -63,6 +64,18 @@ class OCRUserProfile(models.Model):
             "role": self.ocr_user.groups.values_list('name', flat=True)
         }
         return ocr_user_profile
+
+    def permitted_custom_apps(self):
+        appIDmap = []
+        from api.models import CustomApps
+        permitted_Apps = CustomApps.objects.filter(
+            customappsusermapping__user=self.ocr_user).only('app_id', 'displayName')
+        for app in permitted_Apps:
+            appIDmap.append({
+                "app_id": app.app_id,
+                "displayName": app.displayName
+            })
+        return {"app_list":appIDmap}
 
     def reviewer_data(self):
         from ocrflow.models import Task

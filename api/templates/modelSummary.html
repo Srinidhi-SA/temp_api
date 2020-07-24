@@ -404,7 +404,7 @@
         summary = response.modelDetail.data.model_summary.listOfCards[1].cardData[0].data.tableData;
         circularChart(summary);
 
-        var featureTabData = response.modelDetail.table_data;
+        // var featureTabData = response.modelDetail.table_data;
 
         var algoList = response.modelDetail.data.model_summary.listOfCards[1].cardData[1].data
         document.getElementById("algoList").innerHTML = algoList;
@@ -529,7 +529,7 @@
         }
 
 
-        featureTable(featureTabData);
+        // featureTable(featureTabData);
 
 
       })
@@ -561,30 +561,30 @@
       $(".progress-bar").loading();
     }
 
-    function featureTable(featureTabData) {
-      var str = "";
+    // function featureTable(featureTabData) {
+    //   var str = "";
 
-      str += "<thead>";
-      str += "<tr>";
-      str += `<th colspan='2' class='text-center'>Feature Importance</th>`;
-      str += "</tr>";
-      str += "</thead>";
-      str += "<tr>";
-      str += `<th>Variable Name</th>`;
-      str += `<th>Relative Importance</th>`;
-      str += "</tr>";
+    //   str += "<thead>";
+    //   str += "<tr>";
+    //   str += `<th colspan='2' class='text-center'>Feature Importance</th>`;
+    //   str += "</tr>";
+    //   str += "</thead>";
+    //   str += "<tr>";
+    //   str += `<th>Variable Name</th>`;
+    //   str += `<th>Relative Importance</th>`;
+    //   str += "</tr>";
 
-      for (var row = 0; row < featureTabData.length; row++) {
-        str += "<tr>"; // open HTML row
-        str += "<td>" + featureTabData[row][0] + "</td>";
-        str += "<td>" + featureTabData[row][1] + "</td>";
-        str += "</tr>"; // close HTML row
-      }
+    //   for (var row = 0; row < featureTabData.length; row++) {
+    //     str += "<tr>"; // open HTML row
+    //     str += "<td>" + featureTabData[row][0] + "</td>";
+    //     str += "<td>" + featureTabData[row][1] + "</td>";
+    //     str += "</tr>"; // close HTML row
+    //   }
 
-      var table = document.getElementById("featureTable");
-      table.innerHTML = str;
-      $(".featureTab ").addClass("scroll");
-    }
+    //   var table = document.getElementById("featureTable");
+    //   table.innerHTML = str;
+    //   $(".featureTab ").addClass("scroll");
+    // }
 
     function confusionMatrix(matrixTable) {
       var str = "";

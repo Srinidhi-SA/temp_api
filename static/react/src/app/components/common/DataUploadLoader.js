@@ -281,8 +281,6 @@ export class DataUploadLoader extends React.Component {
                   </Link>
                 </div>
               </Modal.Footer>
-}
-
         </Modal>
       </div>
     );

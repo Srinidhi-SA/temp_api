@@ -55,6 +55,10 @@ from builtins import object
 from django.contrib.auth.middleware import get_user
 from django.utils.functional import SimpleLazyObject
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework import exceptions
+from rest_framework_jwt.settings import api_settings
+
+jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
 class AuthenticationMiddlewareJWT(object):
@@ -72,6 +76,28 @@ class AuthenticationMiddlewareJWT(object):
             return user
         jwt_authentication = JSONWebTokenAuthentication()
         if jwt_authentication.get_jwt_value(request):
+            jwt_value = jwt_authentication.get_jwt_value(request)
+            import jwt
+            try:
+                payload = jwt_decode_handler(jwt_value)
+            except jwt.ExpiredSignature:
+                print("Siganture expiredddd")
+                msg = {
+                    'jwtResponse': 'Signature has expired.'
+                }
+                return msg
+            except jwt.DecodeError:
+                print('Error decoding signature.')
+                msg = {
+                    'jwtResponse': 'Error decoding signature.'
+                }
+                return msg
+            except jwt.InvalidTokenError:
+                print("invalid token error")
+                return exceptions.AuthenticationFailed()
+
+            user = jwt_authentication.authenticate_credentials(payload)
+
             user, jwt = jwt_authentication.authenticate(request)
         return user
 

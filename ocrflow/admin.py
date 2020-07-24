@@ -27,7 +27,15 @@ class ReviewRequestAdmin(admin.ModelAdmin):
         #queryset = queryset.order_by('-recorded_at')
         return queryset
 
+class OCRRuleAdmin(admin.ModelAdmin):
+    #form = BugForm
+    readonly_fields = ["created_by",]
+
+    def get_queryset(self, request):
+        queryset = super(OCRRuleAdmin, self).get_queryset(request)
+        #queryset = queryset.order_by('-recorded_at')
+        return queryset
 
 admin.site.register(ReviewRequest,ReviewRequestAdmin)
 admin.site.register(Task, TaskAdmin)
-admin.site.register(OCRRules)
+admin.site.register(OCRRules, OCRRuleAdmin)

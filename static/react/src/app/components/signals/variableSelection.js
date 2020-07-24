@@ -190,7 +190,7 @@ export class VariableSelection extends React.Component {
     componentDidUpdate(){
         var that = this;
         let dataPrev = this.props.dataPreview;
-        if(this.props.match.path.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
+        if(window.location.href.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
             let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                 return(val.columnType == "measure" && val.selected == true && val.targetColumn == false);
             });
@@ -280,7 +280,10 @@ export class VariableSelection extends React.Component {
     }
     handleBack=()=>{
         const slug = this.props.match.params.slug;
-        this.props.history.replace(`/data/${slug}?from=createSignal`);
+        if(this.props.match.path.includes("data"))
+        this.props.history.replace(`/data/${slug}?from=createSignal`)
+        else if(this.props.match.path.includes("signals"))
+        this.props.history.replace(`/signals/${slug}?from=createSignal`);
       }
     setSignalName(event){
         this.props.dispatch(saveSignalName(event.target.value));

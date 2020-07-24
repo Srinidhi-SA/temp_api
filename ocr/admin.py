@@ -25,7 +25,7 @@ class OCRImageAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "status", "created_by", "deleted"]
     list_filter = ["status", "deleted", "created_by", 'is_L1assigned', 'is_L2assigned', 'is_recognized']
-    readonly_fields = ["created_at", "deleted", "created_by", "slug", "imageset", 'modified_at']
+    readonly_fields = ["created_at", "created_by", "slug", "imageset", 'modified_at']
 
     def get_queryset(self, request):
         queryset = super(OCRImageAdmin, self).get_queryset(request)
