@@ -1388,14 +1388,21 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
-    def get_reviewer_queryset(self):
+    def get_reviewer_queryset(self, user):
         """
-        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        Returns an ordered queryset object of Project filtered for a particular user.
         """
-        queryset = Project.objects.filter(
-            ocrimage__assignee=self.request.user,
-            deleted=False,
-        ).order_by('-created_at')
+        userGroup = user.groups.all()[0].name
+        if userGroup == 'ReviewerL1':
+            queryset = Project.objects.filter(
+                ocrimage__l1_assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
+        else:
+            queryset = Project.objects.filter(
+                ocrimage__assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
         return queryset
 
     def total_projects(self):

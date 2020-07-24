@@ -224,7 +224,6 @@ class Project(models.Model):
                 deleted = False).count()
             WorkflowCount = OCRImage.objects.filter(
                 project = self.id,
-                is_L2assigned = True,
                 status__in = ["ready_to_export", "bad_scan"]
             ).count()
         return totalImages, WorkflowCount
