@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
+import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview};
@@ -53,7 +54,7 @@ export class DataPreviewRightPanel extends React.Component {
 				<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 				<div className="panel-body" id="side-chart">
 				{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-				<C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+				<C3ChartNew chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
 				<div className="clearfix"></div>
 				</div>
 				</div>

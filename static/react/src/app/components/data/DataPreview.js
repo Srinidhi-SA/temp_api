@@ -27,6 +27,7 @@ import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
+import { C3ChartNew } from "../C3ChartNew";
 
 
 @connect((store) => {
@@ -188,7 +189,7 @@ export class DataPreview extends React.Component {
           let chartInfo = []
           $("#side-chart").empty();
           ReactDOM.render(
-            <Provider store={store}><C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
+            <Provider store={store}><C3ChartNew chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
         }
         const sideTableUpdate = item.columnStats;
         let sideTableUpdatedTemplate = "";
@@ -476,7 +477,7 @@ else{
           this.toggleVisualizationSlug = dataPrev.scriptMetaData.columnData[0].slug;
           if (!$.isEmptyObject(this.firstTimeSideChart)) {
             let chartInfo = [];
-            firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
+            firstChart = <C3ChartNew chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
           }
           if (!isEmpty(dataPrev.scriptMetaData.columnData[0]))
             firstTimeSubSetting = dataPrev.scriptMetaData.columnData[0]

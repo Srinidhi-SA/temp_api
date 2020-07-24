@@ -8,6 +8,7 @@ import renderHTML from 'react-render-html';
 import { Scrollbars } from 'react-custom-scrollbars';
 import {downloadSVGAsPNG} from '../../helpers/helper';
 import {API} from "../../helpers/env";
+import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -31,34 +32,34 @@ export class ViewChart extends React.Component {
 
     componentDidUpdate(){
         var chartData = this.props.chartData;
-        var chartDataDownload = jQuery.extend(true, {}, chartData);
+        // var chartDataDownload = jQuery.extend(true, {}, chartData);
         //View chart code
         if(chartData.subchart != null){
             chartData.subchart.show=true;
 
         }
 
-        var imgDetails = "c3ChartScroll"+this.props.classId;
-        chartData['bindto'] = document.querySelector("."+imgDetails)
-        let chart = c3.generate(chartData);
+        // var imgDetails = "c3ChartScroll"+this.props.classId;
+        // chartData['bindto'] = document.querySelector("."+imgDetails)
+        // let chart = c3.generate(chartData);
         //chart.zoom.enable(true);
 
         //Download Chart
-        if(chartDataDownload.subchart != null){
-            chartDataDownload.subchart.show=false;
-        }
-        if(chartDataDownload.axis&&chartDataDownload.axis.x){
-            chartDataDownload.axis.x.extent = null;
-            if(chartDataDownload.axis.x.tick){
-            chartDataDownload.axis.x.tick.fit=true;
-            //for scatter chart x axis correction
-            if(chartDataDownload.data.type=="scatter")
-            chartDataDownload.axis.x.tick.fit=false;
+        // if(chartDataDownload.subchart != null){
+        //    chartDataDownload.subchart.show=false;
+        //}
+        //if(chartDataDownload.axis&&chartDataDownload.axis.x){
+        //    chartDataDownload.axis.x.extent = null;
+        //    if(chartDataDownload.axis.x.tick){
+        //    chartDataDownload.axis.x.tick.fit=true;
+        //    //for scatter chart x axis correction
+        //    if(chartDataDownload.data.type=="scatter")
+        //    chartDataDownload.axis.x.tick.fit=false;
 
-          }
-        }
-        chartDataDownload['bindto'] = document.querySelector(".c3ChartDownload"+this.props.classId)
-        let chartDownload = c3.generate(chartDataDownload);
+        //   }
+        // }
+        // chartDataDownload['bindto'] = document.querySelector(".c3ChartDownload"+this.props.classId)
+        // let chartDownload = c3.generate(chartDataDownload);
 
         if(this.props.viewChartFlag && this.props.modelSummaryFlag)
             document.getElementsByClassName("modal-title")[0].innerText = "Feature Importance";
@@ -81,7 +82,7 @@ export class ViewChart extends React.Component {
     }
 
         var imgDetails = "c3ChartScroll"+this.props.classId;
-        var downloadDtls="c3ChartDownload"+this.props.classId;
+        // var downloadDtls="c3ChartDownload"+this.props.classId;
 
         return (
                 <div id="viewC3Chart">
@@ -93,11 +94,10 @@ export class ViewChart extends React.Component {
                 <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:380,maxheight:500 }}  >
 
 
-                <div className={imgDetails}>
+                <C3ChartNew classId={imgDetails} data={this.props.chartData} yformat={this.props.yformat} y2format={this.props.y2format} />
 
 
-                </div>
-                <div className = {downloadDtls} style={{display:"none"}}></div>
+               {/* <div className = {downloadDtls} style={{display:"none"}}></div> */}
 
 
 
@@ -105,7 +105,7 @@ export class ViewChart extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                 {this.props.tableDownload?<a href={this.tableDownload} className="btn btn-primary"> Download Data</a>:""}
-                <Button bsStyle="primary" onClick={this.downloadSVGAsPNG.bind(this,downloadDtls)}>Download as PNG</Button>
+                <Button bsStyle="primary" onClick={this.downloadSVGAsPNG.bind(this,imgDetails)}>Download as PNG</Button>
                 </Modal.Footer>
                 </Modal>
                 </div>
