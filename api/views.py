@@ -1272,6 +1272,23 @@ class StockDatasetView(viewsets.ModelViewSet):
     data from bluemix -- natural language understanding
     """
 
+    @list_route(methods=['get'])
+    def get_all_stockssense(self, request, *args, **kwargs):
+        try:
+            queryset = StockDataset.objects.filter(
+                created_by=self.request.user,
+                deleted=False
+            )
+            serializer = StockDatasetSerializer(queryset, many=True, context={"request": self.request})
+            modelList = dict()
+            for index, i in enumerate(serializer.data):
+                modelList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            print(modelList)
+            return JsonResponse({'allStockList': modelList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
+
+
 
 class AudiosetView(viewsets.ModelViewSet):
     def get_queryset(self):
