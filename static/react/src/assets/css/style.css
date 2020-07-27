@@ -22128,6 +22128,9 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   line-height: 0.6em;
   padding: 10px;
 }
+.sigtooltip {
+  right:-25px !important
+}
 .btn-graph-info {
   position: absolute;
   right: 20px;
