@@ -295,7 +295,7 @@ class OCRUserView(viewsets.ModelViewSet):
         if role == 'Admin':
             queryset = User.objects.filter(
                 ~Q(is_active=False),
-                groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+                groups__name__in=['Admin', 'Superuser',]
             ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         else:
             queryset = User.objects.filter(
@@ -661,7 +661,7 @@ class GroupListView(generics.ListCreateAPIView):
     def get_queryset(self, userGroup):
         if userGroup == 'Admin':
             queryset = Group.objects.filter(
-                name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+                name__in=['Admin', 'Superuser']
             )
         else:
             queryset = Group.objects.filter(

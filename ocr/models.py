@@ -196,7 +196,6 @@ class Project(models.Model):
     def get_overview_data(self, user=None):
         userGroup = user.groups.all()[0].name
         if userGroup == 'ReviewerL1':
-            print("in l1")
             totalImages = OCRImage.objects.filter(
                 project=self.id,
                 l1_assignee = user,
@@ -207,7 +206,6 @@ class Project(models.Model):
                 status__in = ["ready_to_export", "ready_to_verify(L2)", "l1_verified", "bad_scan"]
             ).count()
         elif userGroup == 'ReviewerL2':
-            print("in l2")
             totalImages = OCRImage.objects.filter(
                 project=self.id,
                 assignee = user,
@@ -218,7 +216,6 @@ class Project(models.Model):
                 status__in = ["ready_to_export", "bad_scan"]
             ).count()
         else:
-            print("in sup")
             totalImages = OCRImage.objects.filter(
                 project=self.id,
                 deleted = False).count()
