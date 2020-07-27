@@ -522,7 +522,7 @@ def get_filtered_project_list(
     :param list_serializer: pass Listing Serializer
     :return:
     """
-    query_set = viewset.get_reviewer_queryset()
+    query_set = viewset.get_reviewer_queryset(user=request.user)
 
     # common filtering
     qcf = QueryCommonFiltering(

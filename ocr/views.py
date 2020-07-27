@@ -401,7 +401,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L1assigned = False
                 imageObj.status = "ready_to_assign"
-                imageObj.assignee = None
+                imageObj.l1_assignee = None
                 imageObj.save()
                 reviewObj.delete()
         elif userGroup == "ReviewerL2":
@@ -1388,14 +1388,21 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
-    def get_reviewer_queryset(self):
+    def get_reviewer_queryset(self, user):
         """
-        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        Returns an ordered queryset object of Project filtered for a particular user.
         """
-        queryset = Project.objects.filter(
-            ocrimage__assignee=self.request.user,
-            deleted=False,
-        ).order_by('-created_at')
+        userGroup = user.groups.all()[0].name
+        if userGroup == 'ReviewerL1':
+            queryset = Project.objects.filter(
+                ocrimage__l1_assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
+        else:
+            queryset = Project.objects.filter(
+                ocrimage__assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
         return queryset
 
     def total_projects(self):
@@ -1493,9 +1500,4 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             request=request,
             list_serializer=ProjectListSerializer
         )
-        result.data['overall_info'] = {
-            "totalProjects": self.total_projects(),
-            "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers()
-        }
         return result
