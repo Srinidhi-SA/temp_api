@@ -4,6 +4,7 @@ import { Modal, Button} from "react-bootstrap";
 import store from "../../../store";
 import { fetchAllOcrUsersAction, closeEditUserModalAction, enableEditingUserAction, SaveEditedUserDetailsAction, submitEditUserDetailsAction, setCreateUserLoaderFlag, submitEditedUserRolesAction, editDetailsFormAction, editRolesFormAction, fetchOcrListByReviewerType} from "../../../actions/ocrActions";
 import { STATIC_URL } from "../../../helpers/env.js";
+import { MultiSelect } from 'primereact/multiselect';
 
 @connect((store) => {
   return {
@@ -17,12 +18,16 @@ import { STATIC_URL } from "../../../helpers/env.js";
     selUserSlug : store.ocr.selUserSlug,
     ocrReviwersList : store.ocr.ocrReviwersList,
     selectedTabId : store.ocr.selectedTabId,
+    appsList: store.ocr.appsList,
   };
 })
 
 export class OcrEditUser extends React.Component{
     constructor(props){
         super(props);
+        this.state={
+			appId: this.props.selectedAppList
+		}
     }
 
     componentDidUpdate(){
@@ -33,6 +38,7 @@ export class OcrEditUser extends React.Component{
             $("#email")[0].disabled = false;
             $("#role")[0].disabled = false;
             $("#is_active")[0].disabled = false;
+            $("#appList").removeClass("applist-disabled")
 
             $("#fname")[0].classList.add("mandate")
             $("#lname")[0].classList.add("mandate")
@@ -53,6 +59,11 @@ export class OcrEditUser extends React.Component{
     }
     saveuserEditedDetails(e){
         this.props.dispatch(SaveEditedUserDetailsAction(e.target.name,e.target.value));
+    }
+    saveAppList=()=>{
+        $("#resetMsg")[0].innerText = "";
+        this.props.dispatch(editRolesFormAction(true));
+        this.props.dispatch(SaveEditedUserDetailsAction("appList",this.state.appId));
     }
     submitEditedForms(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -93,12 +104,12 @@ export class OcrEditUser extends React.Component{
             this.props.dispatch(submitEditUserDetailsAction(filteredVariables1));
         }
         else if(this.props.roleFormSel){
-            if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"){
+            if($("#role")[0].value === "none" || $("#is_active")[0].value === "none"  || this.props.editedUserDetails.appList.length === 0){
                 $("#resetMsg")[0].innerText = "Please enter mandatory fields"
             }else{
                 $("#resetMsg")[0].innerText = ""
                 this.props.dispatch(setCreateUserLoaderFlag(true))
-                let allowedVariables = ["role","is_active"];
+                let allowedVariables = ["role","is_active","appList"];
                 let filteredVariables = Object.keys(this.props.editedUserDetails).filter(key => allowedVariables.includes(key)).reduce((obj, key) => {
                     obj[key] = this.props.editedUserDetails[key];
                     return obj;
@@ -116,6 +127,12 @@ export class OcrEditUser extends React.Component{
             this.props.dispatch(editRolesFormAction(true));
         }
     }
+    handleAllAppsOptions=() =>{
+        var appList=this.props.appsList.map(i=>i)
+          return appList.map(function (item) {
+            return { "label": item.displayName, "value": item.app_id };
+          });
+        }
 
     render(){
         let optionsTemp = [];
@@ -126,7 +143,7 @@ export class OcrEditUser extends React.Component{
                     </option>);
         }
         return(
-            <Modal backdrop="static" show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
+            <Modal backdrop="static" className="editUser" show={this.props.editOcrUserFlag} onHide={this.closeEditUserModal.bind(this)}>
                 <Modal.Header>
                     <button type="button" className="close" data-dismiss="modal" onClick={this.closeEditUserModal.bind(this)}>&times;</button>
                     <h4 className="modal-title">Edit User</h4>
@@ -146,6 +163,14 @@ export class OcrEditUser extends React.Component{
                                     <input type="email" id="email" name="email" placeholder="Email" defaultValue={this.props.editedUserDetails.email} disabled onInput={this.saveuserEditedDetails.bind(this)} />
                                 </form>
                                 <form role="form" id="userProfileRoles" onChange={this.updateFormSelected.bind(this)}>
+                                    
+                                        <label className="mandate">Select required App</label>
+                                        <div className="col-sm-12 allApplist">
+                                        <MultiSelect id="appList" className="applist-disabled" 
+                                        value={this.state.appId} style={{width:"98.3%",marginBottom:15}} name="app_list"
+                                        options={this.handleAllAppsOptions()} onChange={(e)=>this.setState({appId:e.value},this.saveAppList)}
+                                        filter={true} placeholder="Choose Apps" />
+                                        </div>
                                     <label id="rtype" for="role">Roles</label>
                                     <label id="iactive" for="is_active" style={{marginLeft:"100px"}}>Status</label>
                                     <select name="role" id="role" disabled onChange={this.saveuserEditedDetails.bind(this)} defaultValue={this.props.editedUserDetails.role != undefined?this.props.editedUserDetails.role:"none"}>
@@ -156,11 +181,12 @@ export class OcrEditUser extends React.Component{
                                         <option value="True" id="active">Active</option>
                                         <option value="False" id="inactive">Inactive</option>
                                     </select>
+
                                 </form>
                             </div>
                         }
                         {this.props.loaderFlag && !this.props.editUserSuccessFlag &&
-                            <div style={{ height:"275px", background: 'rgba(0,0,0,0.1)', position: 'relative',margin:"-10px" }}>
+                            <div style={{ height:"315px", background: 'rgba(0,0,0,0.1)', position: 'relative',margin:"-10px" }}>
                                 <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
                             </div>
                         }

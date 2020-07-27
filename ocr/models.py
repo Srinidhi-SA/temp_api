@@ -185,40 +185,49 @@ class Project(models.Model):
         """Create Project model"""
         self.save()
 
-    def get_project_overview(self):
-        totalImages, WorkflowCount = self.get_overview_data()
+    def get_project_overview(self, user=None):
+        totalImages, WorkflowCount = self.get_overview_data(user)
         overview = {
             "workflows": totalImages,
             "completion": self.get_completion_percentage(totalImages, WorkflowCount)
         }
         return overview
 
-    def get_overview_data(self):
-        totalImages = OCRImage.objects.filter(
-            project=self.id,
-            deleted = False).count()
-        WorkflowCount = OCRImage.objects.filter(
-            project = self.id,
-            is_L2assigned = True,
-            status = "ready_to_export"
-        ).count()
+    def get_overview_data(self, user=None):
+        userGroup = user.groups.all()[0].name
+        if userGroup == 'ReviewerL1':
+            print("in l1")
+            totalImages = OCRImage.objects.filter(
+                project=self.id,
+                l1_assignee = user,
+                deleted = False).count()
+            WorkflowCount = OCRImage.objects.filter(
+                project = self.id,
+                l1_assignee = user,
+                status__in = ["ready_to_export", "ready_to_verify(L2)", "l1_verified", "bad_scan"]
+            ).count()
+        elif userGroup == 'ReviewerL2':
+            print("in l2")
+            totalImages = OCRImage.objects.filter(
+                project=self.id,
+                assignee = user,
+                deleted = False).count()
+            WorkflowCount = OCRImage.objects.filter(
+                project = self.id,
+                assignee = user,
+                status__in = ["ready_to_export", "bad_scan"]
+            ).count()
+        else:
+            print("in sup")
+            totalImages = OCRImage.objects.filter(
+                project=self.id,
+                deleted = False).count()
+            WorkflowCount = OCRImage.objects.filter(
+                project = self.id,
+                status__in = ["ready_to_export", "bad_scan"]
+            ).count()
         return totalImages, WorkflowCount
-    # def get_workflow_data(self):
-    #     from ocrflow.models import Task, ReviewRequest
-    #     totalTasks = 0
-    #     closedTasks = 0
-    #     reviewObjQueryset = ReviewRequest.objects.filter(
-    #         ocr_image__project=self.id
-    #     )
-    #     for reviewObj in reviewObjQueryset:
-    #         TaskQueryset = Task.objects.filter(object_id=reviewObj.id)
-    #         for task in TaskQueryset:
-    #             totalTasks += 1
-    #             if task.is_closed:
-    #                 closedTasks += 1
-    #
-    #     return totalTasks, closedTasks
-    #
+
     def get_completion_percentage(self, totalTasks, closedTasks):
         if totalTasks == 0:
             return 0
@@ -312,6 +321,7 @@ class OCRImage(models.Model):
     mask = models.FileField(null=True, upload_to=upload_dir)
     is_L1assigned = models.BooleanField(default=False)
     is_L2assigned = models.BooleanField(default=False)
+    l1_assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='l1_assignee')
     assignee = models.ForeignKey(User, null=True, blank=True, db_index=True, related_name='assignee')
     modified_at = models.DateTimeField(auto_now_add=True, null=True)
     fields = models.IntegerField(null=True)

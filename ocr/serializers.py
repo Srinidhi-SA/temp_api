@@ -348,8 +348,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
     """
 
     def to_representation(self, instance):
+        user =  self.context['request'].user
         serialized_data = super(ProjectListSerializer, self).to_representation(instance)
-        serialized_data['project_overview'] = instance.get_project_overview()
+        serialized_data['project_overview'] = instance.get_project_overview(user)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         return serialized_data
 
