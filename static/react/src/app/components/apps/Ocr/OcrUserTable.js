@@ -19,6 +19,7 @@ import { STATIC_URL } from "../../../helpers/env.js";
     selectedTabId : store.ocr.selectedTabId,
     isAllCheckedFlag : store.ocr.isAllCheckedFlag,
     ocrUserPageNum : store.ocr.ocrUserPageNum,
+    editedUserDetails : store.ocr.editedUserDetails,
   };
 })
 
@@ -213,7 +214,9 @@ export class OcrUserTable extends React.Component{
                         {paginationTag}
                     </div>
                 </div>
-                <OcrEditUser/>
+                {Object.keys(this.props.editedUserDetails).length!=0 &&
+                <OcrEditUser selectedAppList={this.props.editedUserDetails.appList}/>
+                }
             </div>
         );
     }
