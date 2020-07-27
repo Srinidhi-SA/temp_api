@@ -290,9 +290,11 @@ export class OcrTable extends React.Component {
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: JSON.stringify(exportData)
     }).then(response => response.text()).then(json => {
-      var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+      var blob = new Blob([json],{type: 'text/csv;charset=utf-8;'});
+      var url = URL.createObjectURL(blob);
+      // var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
       var dlAnchorElem = document.getElementById('downloadAnchorElem');
-      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("href", url);
       dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
       dlAnchorElem.click();
       this.setState({checkAll:false,checkedList:[]})

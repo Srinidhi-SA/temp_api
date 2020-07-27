@@ -298,6 +298,7 @@ class OCRUserListSerializer(serializers.ModelSerializer):
             serialized_data['ocr_user'] = False
         else:
             serialized_data['ocr_profile'] = ocr_profile_obj.json_serialized()
+            serialized_data['custom_app_perm'] = ocr_profile_obj.permitted_custom_apps()
             if len(serialized_data['ocr_profile']["role"]) == 1:
                 serialized_data['ocr_user'] = True
             else:
@@ -347,8 +348,9 @@ class ProjectListSerializer(serializers.ModelSerializer):
     """
 
     def to_representation(self, instance):
+        user =  self.context['request'].user
         serialized_data = super(ProjectListSerializer, self).to_representation(instance)
-        serialized_data['project_overview'] = instance.get_project_overview()
+        serialized_data['project_overview'] = instance.get_project_overview(user)
         serialized_data['created_by'] = UserSerializer(instance.created_by).data['username']
         return serialized_data
 

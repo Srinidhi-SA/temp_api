@@ -22577,8 +22577,7 @@ ul.ocrUploadTabs{
   display: inline-block;
 }
 #addUsers {
-  height: 350px;
-  padding:10px;
+  height: auto;
 }
 .userActions{
   margin-right: -12px;
@@ -22609,7 +22608,7 @@ ul.ocrUploadTabs{
   width: 31%;
   padding-left: 15px;
   float: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .ocrUserFormLabel input,.ocrUserFormLabel select{
   border: 1px solid #cdcdcd;
@@ -22630,7 +22629,7 @@ ul.ocrUploadTabs{
 }
 #editUsers {
   padding: 10px;
-  height: 275px;
+  height: 315px;
 }
 .manageUserTable{
   background-color: white;
@@ -23015,4 +23014,39 @@ min-width: 102px; }
   white-space: pre;
   overflow: inherit;
   max-width: fit-content;
+}
+.stockInfo{
+  height: 60px;
+  width: 40%;
+  margin: -6.1% 0 0 60.5%;
+  padding: 0px;
+  border: 1px solid #ececec;
+  border-bottom: 2px solid #67ca78;
+  border-radius: 2px;
+}
+.stockTopInfo{
+  display: flex;
+  font: 16px Roboto Condensed, sans-serif;
+  color: #969696;
+  padding-top:7px
+}
+.allApplist label{
+  width: 94%;
+  margin-bottom: 0px;
+  float: inherit;
+}
+.allApplist .p-inputtext{
+  margin-bottom: 0;
+}
+.addUserModel .modal-content{
+  overflow: inherit;
+}
+.applist-disabled{
+  opacity: 0.6;
+  background: #e0dede !important;
+  border: 1px solid #abaaaa !important;
+  pointer-events: none;
+}
+.editUser .modal-content{
+  overflow: inherit !important;
 }

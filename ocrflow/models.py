@@ -18,7 +18,7 @@ from ocrflow.forms import ApprovalForm
 from ocrflow import process
 from singleton_model import SingletonModel
 
-class OCRRules(SingletonModel):
+class OCRRules(models.Model):
     auto_assignmentL1 = models.BooleanField(default=False)
     auto_assignmentL2 = models.BooleanField(default=False)
     rulesL1 = models.TextField(max_length=3000, default={}, null=True, blank=True)
@@ -28,9 +28,13 @@ class OCRRules(SingletonModel):
         blank=True,
         auto_now_add=True
     )
+    created_by = models.ForeignKey(User,blank=True, null=True)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in ["OCRRule", self.created_by]])
 
     def save(self, *args, **kwargs):
-        self.pk = 1
+        """Save OCRRules model"""
         super(OCRRules, self).save(*args, **kwargs)
 
 class Task(models.Model):
@@ -138,6 +142,7 @@ class SimpleFlow(models.Model):
             Reviewers_queryset = User.objects.filter(
                 groups__name=state['group'],
                 is_active=True,
+                ocruserprofile__supervisor=self.rule.created_by,
                 ocruserprofile__is_active=True).order_by('?')
         else:
             Reviewers_queryset = User.objects.filter(
@@ -207,12 +212,14 @@ class SimpleFlow(models.Model):
             if initial == 'initial':
                 imageObject.is_L1assigned = True
                 imageObject.status='ready_to_verify(L1)'
+                imageObject.assignee=reviewer
+                imageObject.l1_assignee=reviewer
                 self.status='submitted_for_review(L1)'
             else:
                 imageObject.is_L2assigned = True
                 imageObject.status='ready_to_verify(L2)'
+                imageObject.assignee=reviewer
                 self.status='submitted_for_review(L2)'
-            imageObject.assignee=reviewer
             imageObject.save()
             self.save()
 

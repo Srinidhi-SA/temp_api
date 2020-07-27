@@ -56,7 +56,7 @@ from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
 from .permission import OCRImageRelatedPermission, \
-    IsOCRAdminUser
+    IsOCRClientUser
 # ------------------------------------------------------------
 
 from ocr.tasks import extract_from_image
@@ -287,22 +287,22 @@ class OCRUserView(viewsets.ModelViewSet):
     """
     serializer_class = OCRUserListSerializer
     model = User
-    #permission_classes = (IsAuthenticated, IsOCRAdminUser)
+    # permission_classes = (IsAuthenticated, IsOCRAdminUser)
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomOCRPagination
 
-    def get_queryset(self,request,role):
+    def get_queryset(self, request, role):
         if role == 'Admin':
             queryset = User.objects.filter(
                 ~Q(is_active=False),
-                groups__name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+                groups__name__in=['Admin', 'Superuser',]
             ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         else:
             queryset = User.objects.filter(
                 ~Q(is_active=False),
                 groups__name__in=['ReviewerL1', 'ReviewerL2'],
-                ocruserprofile__supervisor = request.user
-                ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
+                ocruserprofile__supervisor=request.user
+            ).order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         return queryset
 
     def get_specific_reviewer_qyeryset(self, request, role, user_type):
@@ -311,15 +311,15 @@ class OCRUserView(viewsets.ModelViewSet):
         else:
             queryset = User.objects.filter(
                 groups=role,
-                ocruserprofile__supervisor = request.user
-                ).order_by('-date_joined')
+                ocruserprofile__supervisor=request.user
+            ).order_by('-date_joined')
         return queryset
 
     def get_specific_reviewer_detail_queryset(self, request):
         queryset = User.objects.filter(
             groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            ocruserprofile__supervisor = request.user
-            )
+            ocruserprofile__supervisor=request.user
+        )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -350,8 +350,8 @@ class OCRUserView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        user_group = request.user.groups.values_list('name',flat = True)
-        if 'Superuser'in user_group:
+        user_group = request.user.groups.values_list('name', flat=True)
+        if 'Superuser' in user_group:
             return get_userlisted_data(
                 viewset=self,
                 request=request,
@@ -401,7 +401,7 @@ class OCRUserView(viewsets.ModelViewSet):
                 imageObj = OCRImage.objects.get(id=reviewObj.ocr_image.id)
                 imageObj.is_L1assigned = False
                 imageObj.status = "ready_to_assign"
-                imageObj.assignee = None
+                imageObj.l1_assignee = None
                 imageObj.save()
                 reviewObj.delete()
         elif userGroup == "ReviewerL2":
@@ -454,8 +454,8 @@ class OCRUserView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def reviewer_list(self, request, *args, **kwargs):
         role = request.GET['role']
-        user_group = request.user.groups.values_list('name',flat = True)
-        if 'Superuser'in user_group:
+        user_group = request.user.groups.values_list('name', flat=True)
+        if 'Superuser' in user_group:
             return get_specific_listed_data(
                 viewset=self,
                 request=request,
@@ -658,10 +658,10 @@ class OCRUserProfileView(viewsets.ModelViewSet):
 
 class GroupListView(generics.ListCreateAPIView):
 
-    def get_queryset(self,userGroup):
+    def get_queryset(self, userGroup):
         if userGroup == 'Admin':
             queryset = Group.objects.filter(
-                name__in=['Admin', 'Superuser', 'ReviewerL1', 'ReviewerL2']
+                name__in=['Admin', 'Superuser']
             )
         else:
             queryset = Group.objects.filter(
@@ -670,8 +670,9 @@ class GroupListView(generics.ListCreateAPIView):
         return queryset
 
     serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticated,]
-    #IsOCRAdminUser]
+    permission_classes = [IsAuthenticated, ]
+
+    # IsOCRAdminUser]
 
     def list(self, request):
         userGroup = request.user.groups.all()[0].name
@@ -1387,29 +1388,37 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             deleted=False
         )
 
-    def get_reviewer_queryset(self):
+    def get_reviewer_queryset(self, user):
         """
-        Returns an ordered queryset object of OCRImageset filtered for a particular user.
+        Returns an ordered queryset object of Project filtered for a particular user.
         """
-        queryset = Project.objects.filter(
-            ocrimage__assignee=self.request.user,
-            deleted=False,
-        ).order_by('-created_at')
+        userGroup = user.groups.all()[0].name
+        if userGroup == 'ReviewerL1':
+            queryset = Project.objects.filter(
+                ocrimage__l1_assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
+        else:
+            queryset = Project.objects.filter(
+                ocrimage__assignee=self.request.user,
+                deleted=False,
+            ).order_by('-created_at').distinct()
         return queryset
 
     def total_projects(self):
         return Project.objects.filter(created_by=self.request.user).count()
 
-    def total_reviewers(self, request):
+    def total_reviewers(self):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            supervisor = request.user,
-            is_active=True
+            supervisor = self.request.user,
+            #is_active=True
         ).count()
 
     def total_documents(self):
         return OCRImage.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted = False
         ).count()
 
     def retrieve(self, request, *args, **kwargs):
@@ -1432,7 +1441,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         result.data['overall_info'] = {
             "totalProjects": self.total_projects(),
             "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers(request)
+            "totalReviewers": self.total_reviewers()
         }
         return result
 
@@ -1491,9 +1500,4 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             request=request,
             list_serializer=ProjectListSerializer
         )
-        result.data['overall_info'] = {
-            "totalProjects": self.total_projects(),
-            "totalDocuments": self.total_documents(),
-            "totalReviewers": self.total_reviewers()
-        }
         return result

@@ -552,9 +552,20 @@ export function getReviewersListAction(){
 	return (dispatch) => {
 		return getReviewersListApi(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
 			if(response.status === 200){
-				dispatch(saveReviewersList(json));
+				dispatch(saveReviewersList(json));			
 			}else{
 				bootbox.alert(statusMessages("warning","No roles found","small_mascot"));
+			}
+		})
+	}
+}
+export function getallAppsList(){
+	return (dispatch) => {
+		return getallApps(getUserDetailsOrRestart.get().userToken,dispatch).then(([response,json]) => {
+			if(response.status === 200){
+				dispatch(saveAppsList(json.appIDMapping));
+			}else{
+				bootbox.alert(statusMessages("warning","List of Apps is empty","small_mascot"));
 			}
 		})
 	}
@@ -565,9 +576,21 @@ function getReviewersListApi(token){
 		headers : getHeader(token),
 	}).then(response => Promise.all([response,response.json()]));
 }
+
+function getallApps(token){
+	return fetch(API+"/api/get_app_id_map/",{
+		method : "get",
+		headers : getHeader(token),
+	}).then(response => Promise.all([response,response.json()]));
+}
 export function saveReviewersList(json){
 	return{
 		type:"SAVE_REVIEWERS_LIST",json
+	}
+}
+export function saveAppsList(data){
+	return{
+		type:"SAVE_APPS_LIST",data
 	}
 }
 
@@ -742,6 +765,7 @@ export function openEditUserModalAction(flag,userSlug,userDt){
 	edtDet.email = userDt.email;
 	edtDet.role = userDt.ocr_profile.role[0];
 	edtDet.is_active = userDt.ocr_profile.active?"True":"False";
+	edtDet.appList= userDt.custom_app_perm.app_list.map(i=>i.app_id);
 
 	return {
 		type:"OPEN_EDIT_USER_POPUP",flag,userSlug,userDt,edtDet
@@ -809,7 +833,7 @@ export function submitEditedUserRolesAction(editedUserDt,reviewersList,slug){
 	}
 }
 function submitEditedUserRolesAPI(data,slug,token){
-	let curDt ={"is_active":data.is_active,"role":parseFloat(data.role)}
+	let curDt ={"is_active":data.is_active,"role":parseFloat(data.role),"app_list":data.appList}
 	return fetch(API+"/ocr/userprofile/"+ slug+"/",{
 		method : "put",
 		headers : getHeaderForJson(token),
