@@ -103,7 +103,7 @@ export default function reducer(state = {
           current_page: action.current_page
         }
       }
-      break;
+      break;  
       case "MODEL_EDIT_CONFIG":
       {
         return {
@@ -142,6 +142,19 @@ export default function reducer(state = {
           ...state,
           dataPreview: action.dataPreview,
           dataPreviewFlag: true,
+          selectedDataSet: action.slug,
+          subsettedSlug: "",
+          subsettingDone: false,
+          dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
+        }
+      }
+      break; 
+      case "DATA_PREVIEW_ONLOAD":
+      {
+        return {
+          ...state,
+          dataPreview: action.dataPreview,
+          dataPreviewFlag: false,
           selectedDataSet: action.slug,
           subsettedSlug: "",
           subsettingDone: false,

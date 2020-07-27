@@ -66,6 +66,14 @@ export default function reducer(state = {
       }
       break;
 
+      case "SIGNAL_ANALYSIS_ONLOAD":
+      {
+        return {
+          ...state,
+          signalAnalysis:"",
+        }
+      }
+      break;
       case "ALGO_LIST_ERROR":
       {
         throw new Error("Unable to fetch algo list!!");

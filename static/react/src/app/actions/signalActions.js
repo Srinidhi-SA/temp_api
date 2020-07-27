@@ -333,10 +333,14 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg())
-    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
   } else if (signalAnalysis.status == "INPROGRESS") {
     dispatch(dispatchSignalLoadingMsg(signalAnalysis));
-    dispatch(updateSignalAnalysis(signalAnalysis, errandId))
+  }
+  if(signalAnalysis.status == SUCCESS && store.getState().signals.createSignalLoaderModal){
+   return { type: "SIGNAL_ANALYSIS_ONLOAD"}
+  }
+  else{
+   return {type: "SIGNAL_ANALYSIS", signalAnalysis, errandId}
   }
 }
 
