@@ -4,6 +4,7 @@ import datetime
 import requests
 from google.cloud import vision
 import io
+import numpy as np
 import simplejson as json
 from google.protobuf.json_format import MessageToJson
 
@@ -16,7 +17,7 @@ class Api_Call:
     def text_from_Azure_API(self):
 
         # For Azure OCR API.
-
+        print('#' * 50, '\n', datetime.datetime.now(), '\nAPI called\n', '#' * 50)
         subscription_key = "8f6ad67b6c4344779e6148ddc48d96c0"
         vision_base_url = "https://madvisor.cognitiveservices.azure.com/vision/v3.0/"
         #        vision_base_url = \
