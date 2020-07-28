@@ -387,6 +387,9 @@ export class OcrTable extends React.Component {
               <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
+            {store.getState().ocr.tabActive=='active'&&
+              <td>{item.role}</td>
+             }
             <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
@@ -502,6 +505,9 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
+                        {store.getState().ocr.tabActive=='active'&&
+                        <th>ROLE</th>
+                        } 
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
                             <span>TEMPLATE</span> <b class="caret"></b>
