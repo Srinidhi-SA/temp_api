@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
-  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails,storeOcrFilterTemplate } from '../../../actions/ocrActions';
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails,storeOcrFilterTemplate,docTablePage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -53,6 +53,7 @@ export class OcrTable extends React.Component {
   };
   handlePagination = (pageNo) => {
     this.setState({checkAll:false,checkedList:[]})
+    this.props.dispatch(docTablePage(pageNo))
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
@@ -190,16 +191,6 @@ export class OcrTable extends React.Component {
   proceedClick() {
     this.closePopup();
     this.setState({checkAll:false,checkedList:[]})
-    var refreshList=setInterval(() =>{
-    this.props.dispatch(getOcrUploadedFiles());
-    if(store.getState().ocr.tabActive=='active'){
-    clearInterval( refreshList )
-    return false
-    }
-    }, 5000);
-    refreshList;
-    setTimeout(function( ) { clearInterval( refreshList );}, 180000);
-    this.props.dispatch(getOcrUploadedFiles());
   }
   
   handleSearchBox() {

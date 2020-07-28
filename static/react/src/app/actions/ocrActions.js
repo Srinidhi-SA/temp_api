@@ -136,7 +136,7 @@ export function getOcrUploadedFiles(pageNo){
 	}
 }
 
-function fetchUploadedFiles(pageNo=1,token){
+function fetchUploadedFiles(pageNo=store.getState().ocr.docTablePage,token){
 	let filter_assignee=store.getState().ocr.filter_assignee
 	let filter_status=store.getState().ocr.filter_status
 	let filter_confidence=store.getState().ocr.filter_confidence
@@ -171,6 +171,12 @@ export function fetchUploadsFail(data){
 	return {
 		type: "OCR_UPLOADS_LIST_FAIL",
 		data,
+	}
+}
+export function docTablePage(page){
+	return {
+		type: "DOC_TABLE_PAGE",
+		page,
 	}
 }
 ////
