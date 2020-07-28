@@ -1013,7 +1013,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
                     template = json.loads(Template.objects.first().template_classification)
-                    response = extract_from_image.delay(image_queryset.imagefile.path, slug, template)
+                    response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template), countdown=2)
                     result = response.task_id
                     res = AsyncResult(result)
                     res = res.get()

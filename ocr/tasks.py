@@ -5,6 +5,8 @@ import json
 import os
 
 from celery.decorators import task
+from requests import HTTPError
+
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 
 from ocr.ITE.scripts.data_ingestion import ingestion_1
@@ -86,6 +88,7 @@ def send_my_messages(access_token, return_mail_id, subject, username):
         return "{0}: {1}".format(r.status_code, r.text)
 
 
+# @task(name='extract_from_image', queue=CONFIG_FILE_NAME, auto_retry=[HTTPError], max_retries=3)
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug, template):
     path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
