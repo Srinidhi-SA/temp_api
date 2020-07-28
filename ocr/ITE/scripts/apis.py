@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-
+import time
 import requests
 from google.cloud import vision
 import io
@@ -20,8 +20,6 @@ class Api_Call:
         print('#' * 50, '\n', datetime.datetime.now(), '\nAPI called\n', '#' * 50)
         subscription_key = "8f6ad67b6c4344779e6148ddc48d96c0"
         vision_base_url = "https://madvisor.cognitiveservices.azure.com/vision/v3.0/"
-        #        vision_base_url = \
-        #            "https://westcentralus.api.cognitive.microsoft.com/vision/v3.0/"
         text_recognition_url = vision_base_url + "read/analyze"
 
         data = open(self.doc_path, "rb").read()
@@ -48,15 +46,16 @@ class Api_Call:
                 time.sleep(wait_time)
                 if wait >= 3: raise
 
-        while (poll):
+        while poll:
             response_final = requests.get(
                 response.headers["Operation-Location"], headers=headers)
             analysis = response_final.json()
 
-            if ("status" in analysis and analysis['status'] == 'succeeded'):
+            if "status" in analysis and analysis['status'] == 'succeeded':
                 poll = False
 
         self.doc_analysis = analysis
+
     def page_wise_response(self, page_number):
         return [i for i in self.doc_analysis["analyzeResult"]["readResults"]
                 if (i["page"] == page_number)][0]
@@ -74,7 +73,3 @@ def fetch_google_response2(path):
     response = json.loads(MessageToJson(response))
 
     return response
-
-
-
-
