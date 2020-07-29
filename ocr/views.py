@@ -1031,7 +1031,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         results.append({'slug': slug, 'status': 'recognition failed', 'message': 'FAILED'})
                     try:
                         for response in res.values():
-                            if response['status'] == 'failed':
+                            if 'status' in response and response['status'] == 'failed':
                                 data['slug'] = response['image_slug']
                                 original_image = base64.decodebytes(response['original_image'].encode('utf-8'))
                                 with open('ocr/ITE/database/{}_original_image.png'.format(slug), 'wb') as f:
@@ -1068,7 +1068,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                 else:
                                     image_list.append(response['image_slug'])
                                     results.append(serializer.errors)
-                    except Exception:
+                    except Exception as e:
+                        print(str(e))
                         pass
                 if image_list:
                     for slug in image_list:
