@@ -31,20 +31,20 @@ class Api_Call:
         poll = True
         wait = 0
 
-        while wait < 3:
+        while wait <= 10:
             try:
                 response = requests.post(
                     text_recognition_url,
                     headers=headers,
                     data=data)
                 response.raise_for_status()
-                wait = 4
+                wait = 11
             except:
                 wait = wait + 1
                 wait_time = int(np.random.uniform(1, 4))
                 print('Waiting')
                 time.sleep(wait_time)
-                if wait >= 3: raise
+                if wait >= 10: raise
 
         while poll:
             response_final = requests.get(
