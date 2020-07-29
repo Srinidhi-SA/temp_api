@@ -1031,6 +1031,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         if serializer.is_valid():
                             serializer.save()
                         res = {}
+                        results.append({'slug': slug, 'status': 'recognition failed', 'message': 'FAILED'})
                     try:
                         for response in res.values():
                             slug = response['image_slug']
