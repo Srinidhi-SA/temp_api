@@ -1026,10 +1026,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         res = res.get()
                     except Exception:
                         image_queryset.status = 'failed'
-                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                         context={"request": self.request})
-                        if serializer.is_valid():
-                            serializer.save()
+                        image_queryset.save()
                         res = {}
                         results.append({'slug': slug, 'status': 'recognition failed', 'message': 'FAILED'})
                     try:
@@ -1056,20 +1053,14 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     for slug in image_list:
                         image_queryset = OCRImage.objects.get(slug=slug)
                         image_queryset.status = 'failed'
-                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                         context={"request": self.request})
-                        if serializer.is_valid():
-                            serializer.save()
+                        image_queryset.save()
                 return Response(results)
         except Exception as e:
             if image_list:
                 for slug in image_list:
                     image_queryset = OCRImage.objects.get(slug=slug)
                     image_queryset.status = 'failed'
-                    serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                                     context={"request": self.request})
-                    if serializer.is_valid():
-                        serializer.save()
+                    image_queryset.save()
             category = e.__class__.__name__
             return JsonResponse(
                 {'message': error_message(category), 'error': str(e)})
