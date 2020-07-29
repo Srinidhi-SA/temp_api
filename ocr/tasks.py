@@ -5,6 +5,7 @@ import json
 import os
 
 from celery.decorators import task
+# from celery_progress.backend import ProgressRecorder
 from requests import HTTPError
 
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
@@ -89,15 +90,20 @@ def send_my_messages(access_token, return_mail_id, subject, username):
 
 
 # @task(name='extract_from_image', queue=CONFIG_FILE_NAME, auto_retry=[HTTPError], max_retries=3)
-@task(name='extract_from_image', queue=CONFIG_FILE_NAME)
+@task(name='extract_from_image', queue=CONFIG_FILE_NAME, bind=True)
 def extract_from_image(image, slug, template):
+    # progress_recorder = ProgressRecorder(self)
+    # progress_recorder.set_progress(1, 3, 'iteration 1')
     path, extension = ingestion_1(image, os.getcwd() + "/ocr/ITE/pdf_to_images_folder")
+    # progress_recorder.set_progress(2, 3, 'iteration 2')
     response = dict()
     if os.path.isdir(path):
         for index, image in enumerate(os.listdir(path)):
             response[index] = main(os.path.join(path, image), template)
             response[index]['extension'] = extension
+        # progress_recorder.set_progress(3, 3, 'iteration 3')
         return response
     else:
         response[0] = main(path, template, slug)
+        # progress_recorder.set_progress(3, 3, 'iteration 3')
         return response
