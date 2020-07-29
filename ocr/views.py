@@ -295,7 +295,7 @@ class OCRUserView(viewsets.ModelViewSet):
         if role == 'Admin':
             queryset = User.objects.filter(
                 ~Q(is_active=False),
-                groups__name__in=['Admin', 'Superuser',]
+                groups__name__in=['Admin', 'Superuser', ]
             ).exclude(id='1').order_by('-date_joined')  # Excluding "ANONYMOUS_USER_ID"
         else:
             queryset = User.objects.filter(
@@ -1013,27 +1013,44 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
                     template = json.loads(Template.objects.first().template_classification)
-                    response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template), countdown=2)
-                    result = response.task_id
-                    res = AsyncResult(result)
-                    res = res.get()
-                    for response in res.values():
-                        slug = response['image_slug']
-                        data = {}
-                        serializer = self.process_image(data, response, slug, image_queryset)
+                    try:
+                        response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template),
+                                                                  retry=True, retry_policy={
+                                'max_retries': 3,
+                                'interval_start': 1,
+                                'interval_step': 1,
+                                'interval_max': 3,
+                            })
+                        result = response.task_id
+                        res = AsyncResult(result)
+                        res = res.get()
+                    except Exception:
+                        image_queryset.status = 'failed'
+                        serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                         context={"request": self.request})
                         if serializer.is_valid():
                             serializer.save()
-                            results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
-                            temp_obj = Template.objects.first()
-                            temp_obj.template_classification = json.dumps(response['template'])
-                            temp_obj.save()
-                            if image_queryset.imagefile.path[-4:] == '.pdf':
-                                image_queryset.status = 'ready_to_assign'
-                                image_queryset.deleted = True
-                                image_queryset.save()
-                        else:
-                            image_list.append(response['image_slug'])
-                            results.append(serializer.errors)
+                        res = {}
+                    try:
+                        for response in res.values():
+                            slug = response['image_slug']
+                            data = {}
+                            serializer = self.process_image(data, response, slug, image_queryset)
+                            if serializer.is_valid():
+                                serializer.save()
+                                results.append({'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                                temp_obj = Template.objects.first()
+                                temp_obj.template_classification = json.dumps(response['template'])
+                                temp_obj.save()
+                                if image_queryset.imagefile.path[-4:] == '.pdf':
+                                    image_queryset.status = 'ready_to_assign'
+                                    image_queryset.deleted = True
+                                    image_queryset.save()
+                            else:
+                                image_list.append(response['image_slug'])
+                                results.append(serializer.errors)
+                    except Exception:
+                        pass
                 if image_list:
                     for slug in image_list:
                         image_queryset = OCRImage.objects.get(slug=slug)
@@ -1411,14 +1428,14 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def total_reviewers(self):
         return OCRUserProfile.objects.filter(
             ocr_user__groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            supervisor = self.request.user,
-            #is_active=True
+            supervisor=self.request.user,
+            # is_active=True
         ).count()
 
     def total_documents(self):
         return OCRImage.objects.filter(
             created_by=self.request.user,
-            deleted = False
+            deleted=False
         ).count()
 
     def retrieve(self, request, *args, **kwargs):
