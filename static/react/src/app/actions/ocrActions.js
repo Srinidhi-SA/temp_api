@@ -173,6 +173,12 @@ export function fetchUploadsFail(data){
 		data,
 	}
 }
+export function docTablePage(page){
+	return {
+		type: "DOC_TABLE_PAGE",
+		page,
+	}
+}
 ////
 export function setProjectTabLoaderFlag(flag){
 	return {

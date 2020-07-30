@@ -89,6 +89,7 @@ export default function reducer(state = {
   classification: "",
   ocrImgHeight: "",
   ocrImgWidth: "",
+  docTablePage: 1,
 
 }, action) {
   switch (action.type) {
@@ -861,6 +862,14 @@ export default function reducer(state = {
           return {
             ...state,
             dashboardMetrics : action.data
+          }
+        }
+        break;
+      case "DOC_TABLE_PAGE" :
+        {
+          return {
+            ...state,
+            docTablePage : action.page
           }
         }
         break;

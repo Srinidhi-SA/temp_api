@@ -200,7 +200,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
      var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
-    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("apps-stock-advisor-analyze")){
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("stock")){
         var node = document.createElement("I");
         dispatch(openAppsLoaderValue(100, ''))
         document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
@@ -223,23 +223,23 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
                 dispatch(hideDULoaderPopup());
                 dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
                 dispatch(closeAppsLoaderValue());
+                dispatch(clearLoadingMsg())
+                dispatch(setDataLoadedText(''));
+                dispatch(clearMetaDataLoaderValues())
                  }, 2000);
             
         } else{
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
-        setTimeout(()=>{
-            dispatch(clearLoadingMsg())
-            dispatch(setDataLoadedText(''));
-            dispatch(clearMetaDataLoaderValues())
-        },2000); 
-        setTimeout(() => {
+        if(store.getState().datasets.dataUploadLoaderModal||store.getState().apps.appsLoaderModal){
+            return { type: "DATA_PREVIEW_ONLOAD", dataPreview,slug,}
+        }else{
             return {
                 type: "DATA_PREVIEW",
                 dataPreview,
                 slug,
             }
-             }, 2000);       
+        }
     }else if(getStatus == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());

@@ -122,6 +122,7 @@ HADOOP_CONF_DIR=False
 HADOOP_USER_NAME="hduser"
 
 CELERY_BROKER_URL = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
+# CELERY_RESULT_BACKEND = "django-db"
 CELERY_RESULT_BACKEND = "redis://"+env('REDIS_IP')+":"+env('REDIS_PORT')+"/"
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'

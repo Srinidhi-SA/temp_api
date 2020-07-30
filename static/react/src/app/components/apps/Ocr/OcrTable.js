@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus,setProjectTabLoaderFlag, 
-  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails,storeOcrFilterTemplate } from '../../../actions/ocrActions';
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields,clearImageDetails,storeOcrFilterTemplate,docTablePage } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Modal, Pagination, Button } from "react-bootstrap";
@@ -53,6 +53,7 @@ export class OcrTable extends React.Component {
   };
   handlePagination = (pageNo) => {
     this.setState({checkAll:false,checkedList:[]})
+    this.props.dispatch(docTablePage(pageNo))
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
 
@@ -191,15 +192,15 @@ export class OcrTable extends React.Component {
     this.closePopup();
     this.setState({checkAll:false,checkedList:[]})
     var refreshList=setInterval(() =>{
-    this.props.dispatch(getOcrUploadedFiles());
-    if(store.getState().ocr.tabActive=='active'){
-    clearInterval( refreshList )
-    return false
-    }
-    }, 5000);
-    refreshList;
-    setTimeout(function( ) { clearInterval( refreshList );}, 180000);
-    this.props.dispatch(getOcrUploadedFiles());
+      this.props.dispatch(getOcrUploadedFiles());
+      if(store.getState().ocr.tabActive=='active'){
+      clearInterval( refreshList )
+      return false
+      }
+      }, 5000);
+      refreshList;
+      setTimeout(function( ) { clearInterval( refreshList );}, 180000);
+      this.props.dispatch(getOcrUploadedFiles());
   }
   
   handleSearchBox() {
@@ -387,6 +388,9 @@ export class OcrTable extends React.Component {
               <Link title={item.name} style={status.includes(item.status) ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }} to={`/apps/ocr-mq44ewz7bp/project/${item.name}`} onClick={() => { this.handleImagePageFlag(item.slug,item.name) }}>{item.name}</Link>
             </td>
             <td>{item.status}</td>
+            {store.getState().ocr.tabActive=='active'&&
+              <td>{item.role}</td>
+             }
             <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
@@ -502,6 +506,9 @@ export class OcrTable extends React.Component {
                             <li><a class="cursor" onClick={this.filterOcrList.bind(this, 'E', 'status')} name="ready to export">Ready to Export</a></li>
                           </ul>
                         </th>
+                        {store.getState().ocr.tabActive=='active'&&
+                        <th>ROLE</th>
+                        } 
                         <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
                             <span>TEMPLATE</span> <b class="caret"></b>
