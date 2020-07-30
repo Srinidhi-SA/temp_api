@@ -167,7 +167,7 @@ export class RevDocTable extends React.Component {
     var OcrRevDocTableHtml = (
       this.props.OcrRevwrDocsList != '' ? (this.props.OcrRevwrDocsList.data.length != 0 ? this.props.OcrRevwrDocsList.data.map((item, index) => {
         return (
-          <tr id={index}>
+          <tr key={index} id={index}>
             <td><Link to={`/apps/ocr-mq44ewz7bp/reviewer/${item.ocrImageData.name}`}onClick={() => { this.handleImagePageFlag(item.ocrImageData.slug,item.ocrImageData.name) }} title={item.ocrImageData.name}>{item.ocrImageData.name}</Link></td>
             <td>{item.status}</td>
             <td>{item.ocrImageData.classification}</td>

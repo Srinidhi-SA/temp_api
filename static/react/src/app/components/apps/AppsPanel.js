@@ -221,8 +221,8 @@ export class AppsPanel extends React.Component {
           )
         });
         return (
-          <div class="col-md-4 xs-mb-20">
-           <div key={index}>
+          <div key={index} class="col-md-4 xs-mb-20">
+           <div>
              <div className="app-block">
                <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
                {(data.app_id == 2 || data.app_id == 13) ? 

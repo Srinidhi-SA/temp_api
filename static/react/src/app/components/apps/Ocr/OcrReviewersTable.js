@@ -100,7 +100,7 @@ filterRevList(filtertBy, filterOn,reset) {
     var reviewersTable = (
       this.props.OcrReviewerList != '' ? (this.props.OcrReviewerList.data.length != 0 ? this.props.OcrReviewerList.data.map((item, index) => {
         return (
-          <tr id={index}>
+          <tr key={index} id={index}>
             {/* <td>
               <Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocr_profile.slug)}></Checkbox>
             </td> */}
@@ -121,7 +121,7 @@ filterRevList(filtertBy, filterOn,reset) {
         )
       }
       )
-        : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
+        : (<tr id={index}><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
         : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )

@@ -125,7 +125,7 @@ export class DataSourceList extends React.Component {
     if (dataSrcList) {
       const navTabs = dataSrcList.map((data, i) => {
         return (
-          <NavItem eventKey={data.dataSourceType} onSelect={this.handleSelect}>
+          <NavItem eventKey={data.dataSourceType} key={i} onSelect={this.handleSelect}>
             {data.dataSourceName}
           </NavItem>
         )
@@ -142,7 +142,7 @@ export class DataSourceList extends React.Component {
           if (field.fieldType == "file") {
             if (this.props.renderDatasets) {
               return (
-                <div>
+                <div key={j}>
                   <div class="form-group col-md-12 pt-10">
                     {msg}
                   </div>
@@ -151,7 +151,7 @@ export class DataSourceList extends React.Component {
               );
             } else {
               return (
-                <div class="tab-pane active cont fade in">
+                <div  key={j} class="tab-pane active cont fade in">
                   <h4>
                     File Upload
                     <div class="pull-right">
@@ -193,7 +193,7 @@ export class DataSourceList extends React.Component {
             //to put default port
             let placeHolder = field.placeHolder
             return (
-              <div className="form-group" id={j}>
+              <div className="form-group" key={j} id={j}>
                 <label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
                 <div className="col-sm-9">
                   <input id={dataSrcType + field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required} title={"Please Enter " + field.labelName} name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxLength={field.maxLength}/>
@@ -211,7 +211,7 @@ export class DataSourceList extends React.Component {
           formList = <div id={divId}>{fieldsList}</div>
         }
         return (
-          <Tab.Pane eventKey={data.dataSourceType}>
+          <Tab.Pane key={i} eventKey={data.dataSourceType}>
             {formList}
           </Tab.Pane>
         )

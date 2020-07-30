@@ -317,13 +317,13 @@ export class OcrTable extends React.Component {
       )
     }
 
-    var getAssigneeOptions = (this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0 ? [...new Set(this.props.OcrDataList.data.map(i => i.assignee).filter(j => j != null))].map(item => {
-      return <li><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'assignee')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+    var getAssigneeOptions = (this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0 ? [...new Set(this.props.OcrDataList.data.map(i => i.assignee).filter(j => j != null))].map((item,index) => {
+      return <li key={index}><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'assignee')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
     }
     ) : '' : '')
 
-    var getTemplateOptions = (this.props.OcrDataList != '' ?this.props.OcrDataList.values.map(item => {
-      return <li><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'template')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+    var getTemplateOptions = (this.props.OcrDataList != '' ?this.props.OcrDataList.values.map((item,index) => {
+      return <li key={index}><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'template')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
     }
     ) : '')
 
@@ -376,7 +376,7 @@ export class OcrTable extends React.Component {
       this.props.OcrDataList != '' ? (this.props.OcrDataList.data.length != 0 ? this.props.OcrDataList.data.map((item, index) => {
        var status=["Ready to Recognize","Recognizing","Uploading"]
         return (
-          <tr id={index}>
+          <tr key={index} id={index}>
             <td>
               <Checkbox id={item.slug} name={item.name} value={item.slug} onChange={this.handleCheck.bind(this,this.props)} checked={this.state.checkedList.includes(item.slug)}></Checkbox>
             </td>
@@ -398,7 +398,7 @@ export class OcrTable extends React.Component {
         )
       }
       )
-        : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
+        : (<tr key={index}><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
         : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
