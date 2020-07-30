@@ -22,12 +22,30 @@ from ocr.ITE.scripts.transcripts import Transcript
 def main(input_path, template, slug=None):
     print("Loading File")
     print("Waiting For API Response")
-    api_response = Api_Call(input_path)
-    # google_response2 = fetch_google_response2(input_path)
 
     if slug is None:
         slug = slugify("img-" + ''.join(
             random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    try:
+        api_response = Api_Call(input_path)
+    except Exception:
+        image = cv2.imread(input_path)
+        original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
+        cv2.imwrite(original_image, image)
+
+        with open(original_image, mode='rb') as file:
+            img = file.read()
+
+        og = base64.encodebytes(img)
+        response = {
+            'image_slug': slug,
+            'original_image': og,
+            'image_name': input_path.split('/')[-1].split('.')[0],
+            'status': 'failed'
+        }
+        return response
+    # google_response2 = fetch_google_response2(input_path)
 
     flag = Domain().process_domain(api_response.page_wise_response(1), cv2.imread(input_path))
     if flag == "Time Sheet":
