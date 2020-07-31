@@ -216,11 +216,12 @@ export class C3Chart extends React.Component {
       data.axis.x.tick.rotate=-53
       data.axis.x.tick.width=170
       data.axis.x.tick.outer = false;
+      data.subchart?data.padding={bottom:50}:null
 
-      let xdata = this.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''));
+      let xdata = this.props.xdata;
       data.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 20) {
-          return xdata[x].substr(0,12) + "..."+xdata[x].substr(-4)
+          return xdata[x].substr(0,13) + "..."+xdata[x].substr(-4)
         } else {
           return xdata[x];
         } 
@@ -332,12 +333,12 @@ export class C3Chart extends React.Component {
   render() {
     window.onmouseover = function(event){
         if(event.target.tagName==="tspan" && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
-          let str = that.props.xdata!=undefined?that.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, '')):that.props.xdata;
+          let str = that.props.xdata;
           let modelSummary=!isEmpty(store.getState().apps.modelSummary)?store.getState().apps.modelSummary.data.model_summary:"";
           let stockData = store.getState().signals.signalAnalysis.listOfNodes;
           switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
             case "Feature Importance":
-              str=modelSummary.listOfCards[2].cardData[0].data.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''))
+              str=modelSummary.listOfCards[2].cardData[0].data.xdata
               break;
             case "Articles by Stock": 
               str = stockData[0].listOfCards[0].cardData[1].data.xdata
@@ -356,13 +357,13 @@ export class C3Chart extends React.Component {
                 break;
           }
           if(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.firstElementChild.innerText.includes("Influence of Key Features")){
-            str=modelSummary.listOfCards[3].cardData[1].data.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''))
+            str=modelSummary.listOfCards[3].cardData[1].data.xdata
           }
           let tooltip = event.target.innerHTML
             if(str != undefined){
               let substr = event.target.innerHTML
               for(let i=0;i<str.length;i++){
-                if(str[i].includes(substr.length>12?substr.slice(0,substr.length-7):substr)){
+                if(str[i].includes(substr.length>13?substr.slice(0,substr.length-7):substr)){
                   if(substr.slice(-4)==str[i].slice(-4))
                   tooltip = str[i]
                 }
@@ -416,7 +417,7 @@ export class C3Chart extends React.Component {
           {(this.props.data.subchart!=null)?
             <span>
               <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
-              <i class="btn btn-default btn-graph-info fa fa-info" data-tip="Move grey section to zoom and view different part of the chart"/>
+              <i className={!window.location.pathname.includes('signals')?"btn btn-default btn-graph-info fa fa-info":"btn btn-default btn-graph-info fa fa-info sigtooltip"}  data-tip="Move grey section to zoom and view different part of the chart"/>
             </span>
             :""
           }

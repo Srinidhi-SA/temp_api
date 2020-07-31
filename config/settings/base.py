@@ -55,7 +55,9 @@ INSTALLED_APPS = [
     'guardian',
     'django_celery_beat',
     'ocr',
-    'ocrflow'
+    'ocrflow',
+    # 'django_celery_results',
+    # 'celery_progress',
 ]
 
 MIDDLEWARE = [

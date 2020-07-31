@@ -142,6 +142,7 @@ class SimpleFlow(models.Model):
             Reviewers_queryset = User.objects.filter(
                 groups__name=state['group'],
                 is_active=True,
+                ocruserprofile__supervisor=self.rule.created_by,
                 ocruserprofile__is_active=True).order_by('?')
         else:
             Reviewers_queryset = User.objects.filter(
