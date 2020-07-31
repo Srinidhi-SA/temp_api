@@ -40,5 +40,3 @@ ibm_watson==4.2.1
 Pillow
 tensorflow-hub==0.7.0
 wordcloud
-django-celery-results==1.2.1
-celery-progress==0.0.10
