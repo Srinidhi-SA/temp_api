@@ -20,7 +20,7 @@ class Api_Call:
         print('#' * 50, '\n', datetime.datetime.now(), '\nAPI called\n', '#' * 50)
         subscription_key = "8f6ad67b6c4344779e6148ddc48d96c0"
         vision_base_url = "https://madvisor.cognitiveservices.azure.com/vision/v3.0/"
-        text_recognition_url = vision_base_url + "read/analyzer"
+        text_recognition_url = vision_base_url + "read/analyze"
 
         data = open(self.doc_path, "rb").read()
 
