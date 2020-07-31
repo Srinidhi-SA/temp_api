@@ -133,21 +133,25 @@ def write_to_ocrimage(self, image, slug, template):
 
     for response in res.values():
         if 'status' in response and response['status'] == 'failed':
-            data['slug'] = response['image_slug']
-            data['imagefile'] = File(name='{}_original_image.png'.format(slug),
-                                     file=open(
-                                         'ocr/ITE/database/{}_original_image.png'.format(slug),
-                                         'rb'))
-            data['imageset'] = image_queryset.imageset.id
-            data['project'] = image_queryset.project.id
-            data['created_by'] = image_queryset.created_by.id
-            data['name'] = response['image_name']
-            data['status'] = 'failed'
-            serializer = OCRImageSerializer(data=data, context={"request": self.request})
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                print(serializer.errors)
+            try:
+                image_queryset.status = 'failed'
+                image_queryset.save()
+            except Exception:
+                data['slug'] = response['image_slug']
+                data['imagefile'] = File(name='{}_original_image.png'.format(slug),
+                                         file=open(
+                                             'ocr/ITE/database/{}_original_image.png'.format(slug),
+                                             'rb'))
+                data['imageset'] = image_queryset.imageset.id
+                data['project'] = image_queryset.project.id
+                data['created_by'] = image_queryset.created_by.id
+                data['name'] = response['image_name']
+                data['status'] = 'failed'
+                serializer = OCRImageSerializer(data=data, context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    print(serializer.errors)
             results.append(
                 {'slug': response['image_slug'], 'error': response['error'], 'message': 'FAILED'})
         else:

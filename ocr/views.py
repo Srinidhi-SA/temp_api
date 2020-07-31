@@ -1096,20 +1096,23 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         try:
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
-                    image_queryset = OCRImage.objects.get(slug=slug)
-                    image_queryset.status = 'recognizing'
-                    image_queryset.save()
-                    template = json.loads(Template.objects.first().template_classification)
-                    response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template),
-                                                             retry=True, retry_policy={
-                            'max_retries': 3,
-                            'interval_start': 1,
-                            'interval_step': 1,
-                            'interval_max': 3,
-                        })
+                    try:
+                        image_queryset = OCRImage.objects.get(slug=slug)
+                        image_queryset.status = 'recognizing'
+                        image_queryset.save()
+                        template = json.loads(Template.objects.first().template_classification)
+                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template),
+                                                                 retry=True, retry_policy={
+                                'max_retries': 3,
+                                'interval_start': 1,
+                                'interval_step': 1,
+                                'interval_max': 3,
+                            })
 
-                    result = response.task_id
-                    results.append(result)
+                        result = response.task_id
+                        results.append({slug: result})
+                    except Exception as e:
+                        results.append({slug: str(e)})
             return JsonResponse({'tasks': results})
         except Exception as e:
             return JsonResponse({'failed': str(e)})
