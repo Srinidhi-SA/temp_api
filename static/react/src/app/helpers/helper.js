@@ -515,8 +515,7 @@ export function downloadSVGAsPNG(chartClassId) {
     element.style.fontSize = "12px"
   })
   saveSvgAsPng(document.querySelector("." + chartClassId + ">svg"), "chart.png", {
-    backgroundColor: "white",
-    height: "500"
+    backgroundColor: "white"
   });
 
 }

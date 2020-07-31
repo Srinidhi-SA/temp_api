@@ -23047,3 +23047,10 @@ min-width: 102px; }
 .editUser .modal-content{
   overflow: inherit !important;
 }
+.wordCloud {
+    float: left;
+    width: 98%;
+    box-shadow: rgba(219, 219, 219, 0.42) 0px 0px 10px 3px;
+    margin: 20px 10px;
+    text-align: center;
+}

@@ -432,7 +432,7 @@ export class OverViewPage extends React.Component {
                                 <div className="tab-content">
                                 { varList!=null &&
                                   <div className="sb_navigation">
-                                    <div id="subTab">
+                                    <div id="subTab" style={{paddingTop:"15px"}}>
                                       <Slider ref='slider' {...settings}>{varList}</Slider>
                                     </div>
                                     <div className="clearfix"></div>

@@ -28,17 +28,13 @@ export class ViewChart extends React.Component {
     openCloseZoomChart(flag){
         this.props.dispatch(showZoomChart(flag,""));
     }
-
-
     componentDidUpdate(){
         var chartData = this.props.chartData;
         // var chartDataDownload = jQuery.extend(true, {}, chartData);
         //View chart code
         if(chartData.subchart != null){
             chartData.subchart.show=true;
-
         }
-
         // var imgDetails = "c3ChartScroll"+this.props.classId;
         // chartData['bindto'] = document.querySelector("."+imgDetails)
         // let chart = c3.generate(chartData);
@@ -65,7 +61,6 @@ export class ViewChart extends React.Component {
             document.getElementsByClassName("modal-title")[0].innerText = "Feature Importance";
     }
     shouldComponentUpdate(){
-
         if(store.getState().signals.chartClassId == this.props.classId)
             return true;
         else if(store.getState().signals.chartClassId == "")return true;
@@ -78,37 +73,27 @@ export class ViewChart extends React.Component {
     }
     render() {
         if (this.props.tableDownload) {
-      this.tableDownload = API + this.props.tableDownload;
-    }
-
+            this.tableDownload = API + this.props.tableDownload;
+        }
         var imgDetails = "c3ChartScroll"+this.props.classId;
         // var downloadDtls="c3ChartDownload"+this.props.classId;
-
         return (
-                <div id="viewC3Chart">
+            <div id="viewC3Chart">
                 <Modal show={store.getState().signals.viewChartFlag} backdrop="static" onHide={this.openCloseZoomChart.bind(this,false)} dialogClassName="modal-colored-header modal-lg">
-                <Modal.Header closeButton>
-                <h3 className="modal-title">View Chart</h3>
-                </Modal.Header>
-                <Modal.Body>
-                <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:380,maxheight:500 }}  >
-
-
-                <C3ChartNew classId={imgDetails} data={this.props.chartData} yformat={this.props.yformat} y2format={this.props.y2format} />
-
-
-               {/* <div className = {downloadDtls} style={{display:"none"}}></div> */}
-
-
-
-                </Scrollbars>
-                </Modal.Body>
-                <Modal.Footer>
-                {this.props.tableDownload?<a href={this.tableDownload} className="btn btn-primary"> Download Data</a>:""}
-                <Button bsStyle="primary" onClick={this.downloadSVGAsPNG.bind(this,imgDetails)}>Download as PNG</Button>
-                </Modal.Footer>
+                    <Modal.Header closeButton>
+                        <h3 className="modal-title">View Chart</h3>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Scrollbars className="thumb-horizontal" autoHeight autoHeightMin={100} autoHeightMax={500}  >
+                           <C3ChartNew classId={imgDetails} data={this.props.chartData} xdata={this.props.xdata} yformat={this.props.yformat} y2format={this.props.y2format} tabledata={this.props.tabledata}/>
+                        </Scrollbars>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        {this.props.tableDownload?<a href={this.tableDownload} className="btn btn-primary"> Download Data</a>:""}
+                        <Button bsStyle="primary" onClick={this.downloadSVGAsPNG.bind(this,imgDetails)}>Download as PNG</Button>
+                    </Modal.Footer>
                 </Modal>
-                </div>
+            </div>
         );
     }
 

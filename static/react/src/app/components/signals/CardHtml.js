@@ -43,7 +43,7 @@ export class CardHtml extends React.Component {
    }
    else {
        return(
-               <div>
+               <div style={{display:(this.props.htmlElement === "<h3>Top Entities</h3>")?"none":""}}>
                 {renderHTML(element)}
                 </div>
            );   

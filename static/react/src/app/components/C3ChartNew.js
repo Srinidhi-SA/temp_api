@@ -113,7 +113,7 @@ export class C3ChartNew extends React.Component{
                       },
                       "tick": {
                         "multiline": chartData.axis.y.tick.multiline,
-                        "format": d3.format(this.props.yformat),
+                        "format": (this.props.yformat!=undefined || this.props.yformat!=null)?d3.format(this.props.yformat):d3.format(".2f"),
                         "outer": false
                       }
                     },
@@ -156,7 +156,9 @@ export class C3ChartNew extends React.Component{
                   "title": {
                     "text": (chartData.title.text!=null)?chartData.title.text:null
                   },
-                  "subchart": (chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart:null,
+                  "subchart":{
+                    show:(chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart.show:false,
+                  },
                   "tooltip":{
                     "format": {
                       "title": (chartData.tooltip!=undefined && chartData.tooltip.format!=undefined)?d3.format(chartData.tooltip.format.title):""
@@ -166,10 +168,20 @@ export class C3ChartNew extends React.Component{
                 }
                 break;
       case "donut":
+        var col = chartData.data.columns
+          var total = col.reduce(function(sum, item) {
+              return sum + parseFloat(item[1])
+          }, 0);
+          col = col.map(function(item) {
+              return [
+                  item[0] + ' : ' + d3.format('.1%')(item[1] / total),
+                  item[1]
+              ]
+          });
         myData = {
           "color": chartData.color,
           "data": {
-            "columns": chartData.data.columns,
+            "columns": col,
             "type": chartData.data.type,
             "x":chartData.data.x
           },
@@ -200,6 +212,16 @@ export class C3ChartNew extends React.Component{
       }
         break;
       case "pie": 
+          var col = chartData.data.columns
+          var total = col.reduce(function(sum, item) {
+              return sum + item[1]
+          }, 0);
+          col = col.map(function(item) {
+              return [
+                  item[0] + ' : ' + d3.format('.1%')(item[1] / total),
+                  item[1]
+              ]
+          });
          myData = {
           "size": { 
             "height": chartData.size.height 
@@ -210,7 +232,7 @@ export class C3ChartNew extends React.Component{
           "color": chartData.color,
           "pie": {
             "label": {
-              "format" : d3.format(chartData.pie.label.format),
+              "format" : (chartData.pie.label.format!=undefined || chartData.pie.label.format!=null)?d3.format(chartData.pie.label.format):d3.format(".2f"),
               "show": chartData.pie.label.show
             },
             "title":""
@@ -222,7 +244,7 @@ export class C3ChartNew extends React.Component{
             "show":chartData.legend.show
           },
           "data": {
-            "columns": chartData.data.columns,
+            "columns": col,
             "type": chartData.data.type
           },
           "tooltip":{
@@ -256,7 +278,7 @@ export class C3ChartNew extends React.Component{
             },
             "tick": {
                 "multiline": chartData.axis.y.tick.multiline,
-                "format": d3.format(this.props.yformat),
+                "format": (this.props.yformat!=undefined || this.props.yformat!=null)?d3.format(this.props.yformat):d3.format(".2f"),
                 "outer": false
             },
           },
@@ -268,7 +290,7 @@ export class C3ChartNew extends React.Component{
             "show": chartData.axis.y2.show,
             "tick": {
                 "multiline": chartData.axis.y2!=undefined?chartData.axis.y2.tick.multiline:"",
-                "format": chartData.axis.y2!=undefined?d3.format(this.props.y2format):"",
+                "format": chartData.axis.y2!=undefined?d3.format(this.props.y2format):d3.format(".2f"),
                 "count": chartData.axis.y2!=undefined?chartData.axis.y2.tick.count:0
             },
           },
@@ -310,7 +332,9 @@ export class C3ChartNew extends React.Component{
         "size": { 
           "height": chartData.size.height 
         },
-        "subchart": (chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart:null,
+        "subchart":{
+          show:(chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart.show:false,
+        },
         "title": {
           "text": (chartData.title.text!=null)?chartData.title.text:""
         },
@@ -343,7 +367,7 @@ export class C3ChartNew extends React.Component{
                 "text": chartData.axis.y.label.text
             },
             "tick": {
-                "format": d3.format(this.props.yformat),
+                "format": (this.props.yformat!=undefined || this.props.yformat!=null)?d3.format(this.props.yformat):d3.format(".2f"),
                 "multiline": chartData.axis.y.tick.multiline,
                 "outer": false
             },
@@ -356,7 +380,7 @@ export class C3ChartNew extends React.Component{
             "show": chartData.axis.y2!=undefined?chartData.axis.y2.show:"",
             "tick": {
                 "multiline": chartData.axis.y2!=undefined?chartData.axis.y2.tick.multiline:"",
-                "format": chartData.axis.y2!=undefined?d3.format(this.props.y2format):"",
+                "format": (chartData.axis.y2!=undefined)?d3.format(this.props.y2format):"",
                 "count": chartData.axis.y2!=undefined?chartData.axis.y2.tick.count:""
             },
           },
@@ -423,7 +447,9 @@ export class C3ChartNew extends React.Component{
         "size": { 
           "height": chartData.size.height 
         },
-        "subchart": (chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart:null,
+        "subchart":{
+          show:(chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart.show:false,
+        },
         "title": {
           "text": (chartData.title.text!=null)?chartData.title.text:""
         },
@@ -456,7 +482,7 @@ export class C3ChartNew extends React.Component{
                   "text": chartData.axis.y.label.text
               },
               "tick": {
-                  "format": d3.format(this.props.yformat),
+                  "format": (this.props.yformat!=null||this.props.yformat!=undefined)?d3.format(this.props.yformat):d3.format(".2f"),
                   "multiline": chartData.axis.y.tick.multiline,
                   "outer": false
               },
@@ -497,7 +523,9 @@ export class C3ChartNew extends React.Component{
           "size": { 
             "height": chartData.size.height 
           },
-          "subchart": (chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart:null,
+          "subchart":{
+            show:(chartData.subchart != undefined && chartData.subchart != null)?chartData.subchart.show:false,
+          },
           "title": {
             "text": (chartData.title.text!=null)?chartData.title.text:""
           },
@@ -506,11 +534,13 @@ export class C3ChartNew extends React.Component{
         break;
     }
 
+    myData.subchart = store.getState().signals.viewChartFlag?false:myData.subchart
+
     if (this.props.xdata) {
       myData.axis.x.tick.multiline=true
       myData.axis.x.height=100
       myData.axis.x.tick.rotate=-53
-      myData.axis.x.tick.width=170
+      myData.axis.x.tick.width=100
       myData.axis.x.tick.outer = false;
 
       let xdata = this.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''));
@@ -529,7 +559,7 @@ export class C3ChartNew extends React.Component{
 
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
-    
+    (myData.subchart !=undefined && myData.subchart.show=== true)?chart.zoom([0,this.props.xdata.length-1]):""
   }
 
   render(){
@@ -657,7 +687,7 @@ export class C3ChartNew extends React.Component{
           <div className={this.modalCls} role="dialog">
             <div className="modal-colored-header uploadData modal-dialog ">
               <ViewChartData tabledata={this.props.tabledata} tableCls={this.tableCls} classId={this.props.classId} tableDownload={this.tableDownload}/>
-              <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} yformat={this.props.yformat} y2format={this.props.y2format}/>
+              <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} xdata={this.props.xdata} yformat={this.props.yformat} y2format={this.props.y2format} tabledata={this.props.tabledata}/>
             </div>
           </div>
           {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
