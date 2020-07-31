@@ -89,7 +89,7 @@ def send_my_messages(access_token, return_mail_id, subject, username):
         return "{0}: {1}".format(r.status_code, r.text)
 
 
-# @task(name='extract_from_image', queue=CONFIG_FILE_NAME, auto_retry=[HTTPError], max_retries=3)
+# @task(name='extract_from_image', queue=CONFIG_FILE_NAME, retry_limit=3, default_retry_delay=30, max_retries=3)
 @task(name='extract_from_image', queue=CONFIG_FILE_NAME)
 def extract_from_image(image, slug, template):
     # progress_recorder = ProgressRecorder(self)

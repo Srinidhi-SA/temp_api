@@ -1024,11 +1024,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         result = response.task_id
                         res = AsyncResult(result)
                         res = res.get()
-                    except Exception:
+                    except Exception as e:
                         image_queryset.status = 'failed'
                         image_queryset.save()
                         res = {}
-                        results.append({'slug': slug, 'status': 'recognition failed', 'message': 'FAILED'})
+                        results.append({'slug': slug, 'status': str(e), 'message': 'FAILED'})
                     try:
                         for response in res.values():
                             if 'status' in response and response['status'] == 'failed':
@@ -1050,7 +1050,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                                     serializer.save()
                                 else:
                                     print(serializer.errors)
-                                results.append({'slug': response['image_slug'], 'status': 'recognition failed', 'message': 'FAILED'})
+                                results.append({'slug': response['image_slug'], 'status': response['error'], 'message': 'FAILED'})
                             else:
                                 slug = response['image_slug']
                                 data = {}

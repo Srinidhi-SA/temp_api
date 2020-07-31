@@ -20,7 +20,7 @@ class Api_Call:
         print('#' * 50, '\n', datetime.datetime.now(), '\nAPI called\n', '#' * 50)
         subscription_key = "8f6ad67b6c4344779e6148ddc48d96c0"
         vision_base_url = "https://madvisor.cognitiveservices.azure.com/vision/v3.0/"
-        text_recognition_url = vision_base_url + "read/analyze"
+        text_recognition_url = vision_base_url + "read/analyzer"
 
         data = open(self.doc_path, "rb").read()
 
@@ -39,12 +39,13 @@ class Api_Call:
                     data=data)
                 response.raise_for_status()
                 wait = 11
-            except:
+            except Exception:
                 wait = wait + 1
                 wait_time = int(np.random.uniform(1, 4))
-                print('Waiting')
+                print('Waiting iteration {}'.format(wait))
                 time.sleep(wait_time)
-                if wait >= 10: raise
+                if wait >= 10:
+                    raise
 
         while poll:
             response_final = requests.get(

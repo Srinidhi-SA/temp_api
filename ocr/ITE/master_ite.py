@@ -29,7 +29,7 @@ def main(input_path, template, slug=None):
 
     try:
         api_response = Api_Call(input_path)
-    except Exception:
+    except Exception as e:
         image = cv2.imread(input_path)
         original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
         cv2.imwrite(original_image, image)
@@ -42,7 +42,8 @@ def main(input_path, template, slug=None):
             'image_slug': slug,
             'original_image': og,
             'image_name': input_path.split('/')[-1].split('.')[0],
-            'status': 'failed'
+            'status': 'failed',
+            'error': str(e)
         }
         return response
     # google_response2 = fetch_google_response2(input_path)
