@@ -1119,8 +1119,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     @list_route(methods=['post'])
     def poll_recognize(self, request, *args, **kwargs):
-        res = AsyncResult(request.data['id'])
-        return JsonResponse({'state': res.status, 'result': res.result})
+        result = []
+        for task in ast.literal_eval(str(request.data['id'])):
+            res = AsyncResult(task)
+            result.append({'state': res.status, 'result': res.result})
+        return Response(result)
 
     @list_route(methods=['post'])
     def get_word(self, request, *args, **kwargs):
