@@ -313,7 +313,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                         if(param.display){
                                             return(
 
-                                                    <div class="form-group">
+                                                    <div key={index} class="form-group">
                                                         <label class="col-md-3 control-label read">{param.displayName}</label>
                                                         <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
                                                     <div class="clearfix"></div>
@@ -332,7 +332,7 @@ export class ModelAlgorithmSelection extends React.Component {
                             if(params.hyperpatameterTuningCandidate && params.display){
                                 return(
 
-                                        <div class="form-group">
+                                        <div key={Index} class="form-group">
                                             <label class="col-md-2 control-label read">{params.displayName}</label>
                                             <label class="col-md-4 control-label read">{params.description}</label>
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
@@ -349,7 +349,7 @@ export class ModelAlgorithmSelection extends React.Component {
                             if(params.display){
                                 return(
 
-                                    <div class="form-group">
+                                    <div key={Index} class="form-group">
                                         <label class="col-md-2 control-label read">{params.displayName}</label>
                                         <label class="col-md-4 control-label read">{params.description}</label>
                                         <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
@@ -363,7 +363,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     if(data.selected == true)
                     {
                         return(
-                            <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
+                            <Tab  key={Index}eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <FormGroup role="form">
                                 {data.algorithmName === "Neural Network (TensorFlow)"?
                                 <TensorFlow data/>

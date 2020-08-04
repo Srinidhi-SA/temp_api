@@ -49,7 +49,7 @@ export default class Layer extends Component {
     }
     var optionsHtml = arr.map(k => {
       var sel = (k === selectedValue)?true:false
-        return <option value={k} selected={sel}> {k}</option>
+        return <option key={k} value={k} selected={sel}> {k}</option>
     })
     return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
@@ -73,9 +73,9 @@ export default class Layer extends Component {
   render() { 
     var mandateField= ["Activation","Units","Rate","Batch Normalization","use_bias"]
     var rendercontent = this.props.parameters.map((item,index)=>{
-             if(item.paramType=="list"){
+      if(item.paramType=="list"){
               return (
-                <div className ="row mb-20">
+                <div key={item.displayName} className ="row mb-20">
                 <div className="form-group">
                 <label className={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>
@@ -97,7 +97,7 @@ export default class Layer extends Component {
               }
               return (
    
-                <div className ="row mb-20">
+                <div key={item.name} className ="row mb-20">
                 <div className="form-group">
                 <label className={mandateField.includes(item.displayName)? "col-md-2 mandate" : "col-md-2"}>{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>

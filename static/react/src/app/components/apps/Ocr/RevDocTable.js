@@ -185,9 +185,9 @@ export class RevDocTable extends React.Component {
         : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
     )
     let templateOptions= (this.props.OcrRevwrDocsList!=""?
-    this.props.OcrRevwrDocsList.values.map(item=>{
+    this.props.OcrRevwrDocsList.values.map((item,index)=>{
       return(
-          <li><a class="cursor" onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+          <li key={index}><a class="cursor" onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
       )}):
       "")
     return (
