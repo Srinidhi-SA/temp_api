@@ -78,13 +78,11 @@ class ProcessUrls(object):
                     cur_dictionary["sentiment"] = nl_understanding.get("sentiment", [])
                     cur_dictionary["keywords"] = nl_understanding.get("keywords", [])
 
-                # cur_dictionary["content"] = content
-
                 cur_json_array = self.get_json_array_for_stock_symbol(myutils.clean_key(row[0]))
                 cur_json_array.append(cur_dictionary)
 
         return self.json_arrays
-        self.write_data()
+        # self.write_data()
 
 
 class TestProcessUrls(unittest.TestCase):

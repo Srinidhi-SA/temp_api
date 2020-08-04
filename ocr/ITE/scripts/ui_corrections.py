@@ -358,6 +358,27 @@ def ui_flag_v2(mask, final_json, gen_image, analysis, percent=1):
     return gen_image, doc_accuracy, total_words
 
 
+def ui_flag_v3(mask, final_json, gen_image, analysis, percent=1):
+    mask = mask
+    final_json = final_json
+
+    uc_obj = ui_corrections(mask, final_json)
+
+    final_json = uc_obj.default_all_words_flag_to_false(final_json)
+    doc_accuracy, total_words = uc_obj.document_confidence(analysis)
+
+    if percent == 1:
+        mode = "default"
+        needed_words = uc_obj.all_words(analysis)
+    else:
+        mode = None
+        needed_words = uc_obj.confidence_filter(analysis, percent)
+    upd, fj = uc_obj.flag_words_to_plot(final_json, needed_words, mode)
+
+    uc_obj.render_flagged_image(fj, uc_obj.mask, gen_image)
+    return gen_image, doc_accuracy, total_words
+
+
 def check_if_centroid_inbetween_p1_p3(centroid, p1, p3):
     if p1[0] <= centroid[0] <= p3[0] and p1[1] <= centroid[1] <= p3[1]:
         return True

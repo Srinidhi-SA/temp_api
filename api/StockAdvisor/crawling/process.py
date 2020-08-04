@@ -200,7 +200,6 @@ def fetch_news_articles(cur_stock, domains):
         all_news = newsapi.get_everything(q=str(cur_stock),
                                           language='en',
                                           domains=domains,
-                                          # sort_by='publishedAt',
                                           sort_by='relevancy',
                                           from_param=from_date,
                                           to=today,

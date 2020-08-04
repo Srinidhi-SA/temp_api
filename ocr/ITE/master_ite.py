@@ -29,7 +29,7 @@ def main(input_path, template, slug=None):
 
     try:
         api_response = Api_Call(input_path)
-    except Exception:
+    except Exception as e:
         image = cv2.imread(input_path)
         original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
         cv2.imwrite(original_image, image)
@@ -42,7 +42,8 @@ def main(input_path, template, slug=None):
             'image_slug': slug,
             'original_image': og,
             'image_name': input_path.split('/')[-1].split('.')[0],
-            'status': 'failed'
+            'status': 'failed',
+            'error': str(e)
         }
         return response
     # google_response2 = fetch_google_response2(input_path)
@@ -105,6 +106,82 @@ def main(input_path, template, slug=None):
             'flag': flag,
             'image_slug': slug,
             'original_image': og,
+            'image_name': input_path.split('/')[-1].split('.')[0],
+            'template': template
+        }
+        return response
+
+
+def main2(input_path, template, slug=None):
+    print("Loading File")
+    print("Waiting For API Response")
+
+    if slug is None:
+        slug = slugify("img-" + ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    try:
+        api_response = Api_Call(input_path)
+    except Exception as e:
+        image = cv2.imread(input_path)
+        original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
+        cv2.imwrite(original_image, image)
+
+        response = {
+            'image_slug': slug,
+            'original_image': original_image,
+            'image_name': input_path.split('/')[-1].split('.')[0],
+            'status': 'failed',
+            'error': str(e)
+        }
+        return response
+    # google_response2 = fetch_google_response2(input_path)
+
+    flag = Domain().process_domain(api_response.page_wise_response(1), cv2.imread(input_path))
+    if flag == "Time Sheet":
+        Preprocessing(input_path).crop_and_save(input_path)
+        api_response = Api_Call(input_path)
+    image_obj = image_cls(input_path, input_path.split('/')[-1])
+    image_obj.set_microsoft_analysis(api_response.page_wise_response(1))
+
+    analysis = image_obj.microsoft_analysis
+    image_obj.set_domain_flag(flag)
+    print('\n FLAG : ', flag)
+
+    de_skewed_img, de_noised_img, blurred_img = Preprocess().pre_process(
+        image_obj.image, image_obj.image_shape)
+
+    image_obj.set_deskewed_denoised_blurred_image(
+        de_skewed_img, de_noised_img, blurred_img)
+
+    if flag == 'Transcript':
+
+        trobj = Transcript()
+
+        x, y = trobj.intermediate_1(image_obj.microsoft_analysis, image_obj.image_path, return_sem_info=False)
+
+        print('\n SEM INFO  : \n', x)
+    else:
+
+        base_obj = BaseModule(image_obj, input_path.split('/')[-1])
+        final_json, mask, metadata, template = base_obj.extract_info(template, base_obj.bwimage, flag, image_obj.image_shape)
+        image_obj.set_final_json_mask_metadata(final_json, mask, metadata)
+        white_background_mask = cv2.bitwise_not(mask)
+        if not os.path.exists("ocr/ITE/database/{}_mask.png".format(slug)):
+            cv2.imwrite("ocr/ITE/database/{}_mask.png".format(slug), white_background_mask)
+
+        image = cv2.imread(input_path)
+        original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
+        cv2.imwrite(original_image, image)
+
+        response = {
+            'final_json': final_json,
+            'mask': "ocr/ITE/database/{}_mask.png".format(slug),
+            'metadata': metadata,
+            'analysis': analysis,
+            'flag': flag,
+            'image_slug': slug,
+            'original_image': original_image,
             'image_name': input_path.split('/')[-1].split('.')[0],
             'template': template
         }

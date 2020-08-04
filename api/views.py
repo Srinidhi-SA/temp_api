@@ -5857,7 +5857,7 @@ def set_job_reporting(request, slug=None, report_name=None):
     new_error = request.body
     error_log = json.loads(job.error_report)
     json_formatted_new_error = None
-    if isinstance(new_error, str) or isinstance(new_error, str):
+    if isinstance(new_error, str):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
