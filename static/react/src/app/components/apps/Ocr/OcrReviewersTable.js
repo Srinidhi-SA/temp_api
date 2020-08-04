@@ -114,7 +114,7 @@ filterRevList(filtertBy, filterOn,reset) {
             <td>{item.ocr_data.assignments}</td>
             <td>{item.ocr_data.completionPercentage}%</td>
             {/* <td>{item.ocr_data.avgTimeperWord}</td> */}
-            <td>{item.ocr_data.accuracyModel}</td>
+            <td>{item.ocr_data.accuracyModel}%</td>
             <td>{new Date(item.last_login).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
             <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
           </tr>
@@ -176,7 +176,7 @@ filterRevList(filtertBy, filterOn,reset) {
                     </th> */}
                     <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                            <span>ACCURACY of Model</span> <b class="caret"></b>
+                            <span>Model Accuracy</span> <b class="caret"></b>
                           </a>
                           <ul class="dropdown-menu scrollable-menu">
                             <li><a className="cursor" onClick={this.filterRevList.bind(this, '', 'accuracy','reset')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
