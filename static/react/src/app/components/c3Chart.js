@@ -216,7 +216,7 @@ export class C3Chart extends React.Component {
       data.axis.x.tick.rotate=-53
       data.axis.x.tick.width=170
       data.axis.x.tick.outer = false;
-      data.padding={bottom:50}
+      data.subchart?data.padding={bottom:50}:null
 
       let xdata = this.props.xdata;
       data.axis.x.tick.format = function(x) {
