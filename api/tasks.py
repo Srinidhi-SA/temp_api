@@ -446,7 +446,7 @@ def save_results_to_job(slug, results):
                         model_slug=slug
                         )
 
-    if isinstance(results, str) or isinstance(results, str):
+    if isinstance(results, str):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
@@ -463,7 +463,7 @@ def save_job_messages(slug, messages):
                             model_slug=slug
                             )
 
-        if isinstance(messages, str) or isinstance(messages, str):
+        if isinstance(messages, str):
             job.messages = messages
         elif isinstance(messages, dict):
             results = json.dumps(messages)
@@ -482,7 +482,7 @@ def save_results_to_job1(slug, results):
                         model_slug=slug
                         )
 
-    if isinstance(results, str) or isinstance(results, str):
+    if isinstance(results, str):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
