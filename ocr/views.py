@@ -1110,7 +1110,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                             })
 
                         result = response.task_id
-                        results.append({slug: result})
+                        results.append({'slug': slug, 'id': result})
                     except Exception as e:
                         results.append({slug: str(e)})
             return JsonResponse({'tasks': results})
