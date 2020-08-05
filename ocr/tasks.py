@@ -153,7 +153,7 @@ def write_to_ocrimage(self, image, slug, template):
                 else:
                     print(serializer.errors)
             results.append(
-                {'slug': response['image_slug'], 'error': response['error'], 'message': 'FAILED'})
+                {'slug': response['image_slug'], 'name': data['name'], 'error': response['error'], 'message': 'FAILED'})
         else:
             slug = response['image_slug']
             progress_recorder.set_progress(5, 6, 'Starting db operations')
@@ -161,7 +161,7 @@ def write_to_ocrimage(self, image, slug, template):
             if serializer.is_valid():
                 serializer.save()
                 results.append(
-                    {'slug': slug, 'status': serializer.data['status'], 'message': 'SUCCESS'})
+                    {'slug': slug, 'status': serializer.data['status'], 'name': serializer.data['name'], 'message': 'SUCCESS'})
 
                 my_model = apps.get_model('ocr', Template.__name__)
                 temp_obj = my_model.objects.first()
