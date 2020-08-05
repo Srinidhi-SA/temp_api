@@ -45,7 +45,9 @@ class GenericCrawler(object):
     REQUEST_READ_TIMEOUT = 10
     REQUEST_RETRY_LIMIT = 10
 
-    def __init__(self, crawl_options={}):
+    def __init__(self, crawl_options=None):
+        if crawl_options is None:
+            crawl_options = {}
         self.fdir = os.environ["HOME"] + "/html/" + crawl_options.get("source", "misc")
         self.crawl_options = crawl_options
         if hasattr(settings, "REQUEST_CONNECTION_TIMEOUT"):
