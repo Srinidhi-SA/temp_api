@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.core.management.base import BaseCommand
 from api.models import CustomApps
 from api.utils import AppSerializer

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
+from builtins import object
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from api.user_helper import UserSerializer
@@ -8,10 +10,10 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from api.models import Dataset
-from helper import convert_to_json, convert_time_to_human
+from .helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
-import json
+import simplejson as json
 
 from api.utils import get_permissions
 
@@ -46,9 +48,19 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(instance.created_by).data
 
         try:
-            ret['message'] = get_message(instance.job)
+            # ret['message'] = get_message(instance.job)
+            message_list = json.loads(instance.job.message_log)
+            if message_list[-1]['globalCompletionPercentage'] == -1:
+                ret['message'] = get_message(instance.job)
+            else:
+                ret['message'] = json.loads(instance.job.message_log)
         except:
             ret['message'] = None
+        try:
+            initial_messages = instance.job.messages
+            ret['initial_messages'] = json.loads(initial_messages)
+        except:
+            ret['initial_messages'] = None
 
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
@@ -67,7 +79,10 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
 
-        ret['job_status'] = instance.job.status
+        try:
+            ret['job_status'] = instance.job.status
+        except:
+            ret['job_status'] = None
 
         if 'request' in self.context:
             # permission details
@@ -79,9 +94,9 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
-        exclude = ( 'id', 'updated_at')
+        exclude = ( 'id', 'updated_at',)
 
 
 class DataListSerializer(serializers.ModelSerializer):
@@ -97,8 +112,10 @@ class DataListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
-
-        ret['job_status'] = instance.job.status
+        try:
+            ret['job_status'] = instance.job.status
+        except:
+            ret['job_status'] = None
 
         # permission details
         permission_details = get_permissions(
@@ -108,7 +125,7 @@ class DataListSerializer(serializers.ModelSerializer):
         ret['permission_details'] = permission_details
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
         fields = (
             "slug",
@@ -129,9 +146,11 @@ class DataNameListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(DataNameListSerializer, self).to_representation(instance)
+        #metadata=json.loads(instance.meta_data)
+        #ret['Target']=metadata['headers']
         return ret
 
-    class Meta:
+    class Meta(object):
         model = Dataset
         fields = (
             "slug",

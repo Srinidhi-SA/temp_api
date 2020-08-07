@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
 import renderHTML from 'react-render-html';
-import Dialog from 'react-bootstrap-dialog'
+import Dialog from 'react-bootstrap-dialog';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
@@ -48,7 +48,6 @@ export function getDataList(pageNo) {
 
 function fetchDataList(pageNo,token,dispatch) {
 
-	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
 	let data_sorton =  store.getState().datasets.data_sorton;
 	let data_sorttype = store.getState().datasets.data_sorttype;
@@ -56,12 +55,7 @@ function fetchDataList(pageNo,token,dispatch) {
 		data_sorttype = ""
 			else if(data_sorttype=='desc')
 				data_sorttype="-"
-
-					console.log(data_sorton+" "+data_sorttype)
-
-					console.log(search_element)
 					if(search_element!=""&&search_element!=null){
-						//console.log("calling for search element!!")
 						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
 						{
 							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -106,13 +100,39 @@ export function fetchDataSuccess(doc){
 		current_page,
 	}
 }
+
+export function fetchModelEdit(slug,interval) {
+	return (dispatch) => {
+		return fetchModelEditAPI(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				dispatch(fetchModelEditAPISuccess(json))
+			}
+			else{
+			bootbox.alert("some thing went wrong")
+			}
+		})
+	}
+}
+
+export function fetchModelEditAPISuccess(doc){
+	return {
+        type: "MODEL_EDIT_CONFIG",
+        doc
+	}
+}
+export function fetchModelEditAPI(slug) {
+	return fetch(API+'/api/trainer/'+slug+'/edit/',{
+		method: 'get',
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
+	}).then( response => Promise.all([response, response.json()]));
+}
 //fetch stock dataset Preview
 export function getStockDataSetPreview(slug,interval) {
 	return (dispatch) => {
 		return fetchStockDataPreview(slug).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
 				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                dispatch(setDataLoadedText(''));           
 			}
 			else{
 				dispatch(hideDULoaderPopup());
@@ -132,7 +152,6 @@ export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
         return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
-                console.log(json)
                 if(json.message && json.message == "failed"){
                     let myColor = { background: '#00998c', text: "#FFFFFF" };
                     notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
@@ -140,8 +159,10 @@ export function getDataSetPreview(slug,interval) {
                     window.location.pathname="/signals";
                     },2000);
                 }
-                else
+                else{
+                dispatch(setCreateSignalLoaderFlag(false))
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+                }
             }
             else{
                 dispatch(hideDULoaderPopup());
@@ -167,30 +188,57 @@ function fetchDataPreview(slug,dispatch,interval) {
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
-    console.log("data preview from api to store")
-    console.log(dataPreview)
+    if(window.location.pathname != "/apps-stock-advisor/"){
+        dataPreview.meta_data.scriptMetaData.columnData != undefined && dataPreview.meta_data.scriptMetaData.columnData.forEach(column => {
+            column.checked = true;
+        });
+    }
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
-    var getStatus = dataPreview.meta_data_status;
+    // if(window.location.pathname == "/apps-stock-advisor/" || window.location.pathname.includes("apps-stock-advisor-analyze") )
+    if(window.location.pathname.includes("apps-stock-advisor-analyze") )
+     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
+    if(getStatus == SUCCESS && store.getState().apps.appsLoaderModal==true && window.location.pathname.includes("stock")){
+        var node = document.createElement("I");
+        dispatch(openAppsLoaderValue(100, ''))
+        document.getElementById("loadingMsgs").appendChild(node).classList.add('tickmark');
+        var x = document.getElementById("loadingMsgs");
+		x.innerHTML = 'Completed Succesfully';
+    }
     if(getStatus == SUCCESS){
-
+        if(store.getState().datasets.dataUploadLoaderModal && dataPreview.initial_messages!=null && Object.keys(dataPreview.initial_messages).length != 0){
+            document.getElementsByClassName("dataPercent")[0].innerHTML = (document.getElementsByClassName("dataPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (dataPreview.message.length-3) + ": " + dataPreview.message[dataPreview.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (dataPreview.message.length-2) + ": " + dataPreview.message[dataPreview.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (dataPreview.message.length-1) + ": " + dataPreview.message[dataPreview.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+        }
+        clearInterval(interval);
         if(interval != undefined){
-            clearInterval(interval);
-            dispatch(dispatchDataPreview(dataPreview,slug));
-            dispatch(hideDULoaderPopup());
-            dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-            dispatch(closeAppsLoaderValue());
+            setTimeout(() => {
+                dispatch(dispatchDataPreview(dataPreview,slug));
+                dispatch(hideDULoaderPopup());
+                dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+                dispatch(closeAppsLoaderValue());
+                dispatch(clearLoadingMsg())
+                dispatch(setDataLoadedText(''));
+                dispatch(clearMetaDataLoaderValues())
+                 }, 2000);
+            
         } else{
             dispatch(dispatchDataPreview(dataPreview,slug));
         }
-        dispatch(clearLoadingMsg())
-        return {
-            type: "DATA_PREVIEW",
-            dataPreview,
-            slug,
+        if(store.getState().datasets.dataUploadLoaderModal||store.getState().apps.appsLoaderModal){
+            return { type: "DATA_PREVIEW_ONLOAD", dataPreview,slug,}
+        }else{
+            return {
+                type: "DATA_PREVIEW",
+                dataPreview,
+                slug,
+            }
         }
     }else if(getStatus == FAILED){
         clearInterval(interval);
@@ -203,7 +251,6 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(closeAppsLoaderValue());
         //clearDatasetPreview()
         //dispatch(hideDataPreview())
-columns
         return {
             type: "DATA_PREVIEW_FOR_LOADER",
             dataPreview,
@@ -211,16 +258,48 @@ columns
         }
     }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
-        if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
-            dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
+        if(Object.keys(dataPreview.initial_messages).length != 0){
+            dispatch(setDataLoadedText(dataPreview.initial_messages));
+            if(dataPreview.message[0].globalCompletionPercentage !=-1 && store.getState().datasets.metaDataLoaderidxVal!=0){
+                dispatch(updateMetaDataIndex(store.getState().datasets.metaDataLoaderidxVal))
+            }
+            dispatch(updateMetaDataIndexValue(dataPreview.message.length));
         }
+        if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
+            var msgLength=dataPreview.message.length-1
+            dispatch(openAppsLoaderValue(dataPreview.message[msgLength].stageCompletionPercentage, dataPreview.message[msgLength].shortExplanation));
+        }
+        // setTimeout(function() {
+        //    if(dataPreview.message[0].globalCompletionPercentage<=0){
+        //        return fetch(API + '/api/kill_timeout_job_from_ui/?slug='+slug, {
+        //            method: 'get',
+        //            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+        //        }).then(response => Promise.all([response, response.json()])).catch(function(error){
+        //        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+        //          });
+        //         }
+        //    },420000);
         return {
             type: "SELECTED_DATASET",
             dataset,
         }
     }
 }
-
+function updateMetaDataIndexValue(idxVal) {
+    return {
+      type: "METADATA_LOADER_IDX_VAL",idxVal
+    }  
+  }
+function updateMetaDataIndex(idx) {
+    return {
+        type: "METADATA_LOADER_IDX",idx
+    }  
+}
+export function clearMetaDataLoaderValues() {
+    return {
+        type: "CLEAR_METADATA_LOADER_VALUES"
+    }
+}
 function dispatchDataPreview(dataPreview,slug){
     return {
         type: "DATA_PREVIEW",
@@ -228,29 +307,105 @@ function dispatchDataPreview(dataPreview,slug){
         slug,
     }
 }
+export function dispatchDataPreviewAutoML(dataPreview,slug){
+    return {
+        type: "DATA_PREVIEW_AUTOML",
+        dataPreview,
+        slug,
+    }
+}
+export function setDataLoadedText(text){
+    return {
+        type: "DATA_LOADED_TEXT",
+        text
+    }
+  }
 
 function dispatchDataPreviewLoadingMsg(dataPreview){
     let message = dataPreview.message
-    console.log("loading message########")
-    console.log(message)
     return {
         type: "CHANGE_LOADING_MSG",
         message
     }
 }
 function fetchDataPreviewError(json) {
-    console.log("fetching list error!!",json)
     return {
         type: "DATA_PREVIEW_ERROR",
         json
     }
 }
+//Fetch userList start 
+export function getAllUsersList() {
+    return (dispatch) => {
+        return fetchAllUsersList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+            if(response.status === 200){
+                dispatch(fetchAllUsersSuccess(json))
+            }
+            else{
+                dispatch(fetchAllUsersError(json))
+            }
+        })
+    }
+}
+function fetchAllUsersList(token) {
+    return fetch(API+'/api/users/get_all_users/',{
+        method: 'get',
+        headers: getHeader(token)
+    }).then( response => Promise.all([response, response.json()]));
+}
+function fetchAllUsersError(json) {
+    return {
+        type: "USERS_ALL_LIST_ERROR",
+        json
+    }
+}
+export function fetchAllUsersSuccess(json){
+    return {
+        type: "USERS_ALL_LIST",
+        json,
+    }
+}
+//End of fetch userList
 
+export function setEditModelValues(dataSlug,modelSlug,flag) {
+    return {
+      type: "SET_EDIT_MODEL",
+      dataSlug,
+      modelSlug,
+      flag
+      
+    }
+  }
+  export function openShareModalAction(shareItem,slug,itemType) {
+    return {
+      type: "SHARE_MODAL_SHOW",
+      shareItem,
+      slug,
+      itemType
+    }
+  }
+  export function openDTModalAction(rule,path) {
+    return {
+      type: "DT_MODAL_SHOW",
+      rule,
+      path,
+    }
+  }
+
+  export function closeShareModalAction() {
+     return {
+       type: "SHARE_MODAL_HIDE",
+     }
+  }
+  export function closeDtModalAction() {
+    return {
+      type: "DT_MODAL_HIDE",
+    }
+ }
 export function getAllDataList(pageNo) {
     return (dispatch) => {
         return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
             if(response.status === 200){
-                console.log(json)
                 dispatch(fetchAllDataSuccess(json))
             }
             else{
@@ -276,17 +431,54 @@ function fetchAllDataError(json) {
 }
 export function fetchAllDataSuccess(doc){
     var data = ""
-        var slug = "";
     if(doc.data[0] != undefined){
-        slug  = doc.data[0].slug;
         data = doc;
     }
     return {
         type: "DATA_ALL_LIST",
         data,
-        slug
     }
 }
+
+export function handleShareItem(userIds,slug,shareItemType,shareItemName,dispatch){
+    return shareItemApi(userIds,slug,shareItemType).then(([response, json]) =>{
+        if(response.status === 200 && json.status=="true"){
+            bootbox.alert(`${ shareItemType} "${shareItemName}" is shared successfully with ${json.sharedTo}.`)
+        }
+        else{
+            bootbox.alert(`${ shareItemType} "${shareItemName}" sharing failed. Please try again later.`)
+        }
+    })
+}
+
+function shareItemApi(userIds,slug,shareItemType) {
+    if(shareItemType == "Data"){
+     return fetch(API+'/api/datasets/'+slug+'/share/?shared_id='+userIds,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()]));
+    }
+    else if(shareItemType == "Model"){
+     return fetch(API+'/api/trainer/'+slug+'/share/?shared_id='+userIds,{
+        method: 'get',
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()]));
+    }
+    else if(shareItemType == "Signal"){
+        return fetch(API+'/api/signals/'+slug+'/share/?shared_id='+userIds,{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken)
+       }).then( response => Promise.all([response, response.json()]));
+    }
+    else{
+        return fetch(API+'/api/score/'+slug+'/share/?shared_id='+userIds,{
+            method: 'get',
+            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+         }).then( response => Promise.all([response, response.json()]));   
+     }
+}
+
+
 export function saveAdvanceSettings(){
     var savedAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetAnalysisList);
     return {
@@ -392,7 +584,20 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 if(analysisList[i].name == evt.name){
                     for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                         if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-                            analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                            if($("#"+evt.id).val() != ""){
+                                let cusNum =  parseFloat($("#"+evt.id).val());
+                                if((cusNum^0) != cusNum){
+                                    let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
+                                    bootbox.alert(errormsg);
+                                    return;
+                                }else if(cusNum <= 0){
+                                    let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
+                                    bootbox.alert(errormsg);
+                                    return;
+                                }else{
+                                    analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+                                }
+                            }
                         }
                     }
                     break;
@@ -410,7 +615,20 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                     analysisList[i].status = false;
                 for(var j=0;j<analysisList[i].binSetting.length;j++){
                     if(evt.id == j){
-                        analysisList[i].binSetting[j].value = parseInt(evt.value);
+                        if(evt.value != ""){
+                            let binNum =  parseFloat(evt.value);
+                            if((binNum^0) != binNum){
+                                let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else if(binNum <= 0){
+                                let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
+                                bootbox.alert(errormsg);
+                                return;
+                            }else{
+                                analysisList[i].binSetting[j].value = parseInt(evt.value);                                
+                            }
+                        }
                     }
                 }
                 break;
@@ -423,7 +641,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
         if(evt.target.className == "possibleAnalysis"){
             for(var i=0;i<analysisList.length;i++){
                 if(analysisList[i].name == evt.target.value){
-                    analysisList[i].status = evt.target.checked;
+                        analysisList[i].status = evt.target.checked;                 
                     if(analysisList[i].noOfColumnsToUse != null){
                         if(!evt.target.checked){
                             for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
@@ -498,7 +716,10 @@ export function selectAllAnalysisList(flag){
         trendSettings = totalAnalysisList.dimensions.trendSettings;
     }
     for(var i=0;i<analysisList.length;i++){
-        analysisList[i].status = flag;
+        if((store.getState().datasets.CopyTimeDimension.filter(i=>(i.selected==true)).length == 0) && analysisList[i].name == "trend")
+            analysisList[i].status = false;
+        else
+            analysisList[i].status = flag;
         if(analysisList[i].noOfColumnsToUse != null){
             for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                 //when select all is unchecked
@@ -579,6 +800,14 @@ function updateTimeDimList(slug,array,evt){
 return array;
 }
 
+function defaultTimeDimList(slug,array){
+    for(var i=0;i<array.length;i++){
+        if(array[i].slug == slug){
+            array[i].selected = true;
+        }
+    }
+    return array;
+}
 function getIsAllSelected(array){
     var isAllSelected = true;
 
@@ -631,6 +860,22 @@ function applyFilterOnVaraibles(){
         }
     }
 }
+export function setDefaultTimeDimensionVariable(item){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        if(item.columnType == "datetime"){
+            dataSetTimeDimensions  = defaultTimeDimList(item.slug,dataSetTimeDimensions);
+        }
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
+    }
+}
 export function updateSelectedVariables(evt){
     return (dispatch) => {
         var varSlug = evt.target.id;
@@ -656,7 +901,7 @@ export function updateSelectedVariables(evt){
             dimFlag = getIsAllSelected(dataSetDimensions);
         }
         else if(evt.target.className == "timeDimension"){
-            dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
+                dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
         }
 
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
@@ -692,7 +937,12 @@ export function updateSelectedVariables(evt){
 
 }
 
-
+export function updateSelectedVariablesAction(value, dispatch){
+    return {
+        type: "CLEAR_SELECTED_VARIABLES",
+        value
+      }
+  }
 
 export function showDataPreview() {
     return {
@@ -743,12 +993,15 @@ export function hideDULoaderPopup(){
     }
 }
 export function showDialogBox(slug,dialog,dispatch,evt){
-    var labelTxt = evt.target.text;
+    var labelTxt = (evt.target.text).trim();
     Dialog.setOptions({
         defaultOkLabel: 'Yes',
         defaultCancelLabel: 'No',
     })
-	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
+    if(labelTxt == "Stop")
+        var body_msg=renderHTML(statusMessages("warning","Are you sure you want to stop uploading the selected data set?","small_mascot"))
+    else
+	    var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
     dialog.show({
         title: 'Delete Dataset',
         body: body_msg,
@@ -762,7 +1015,6 @@ export function showDialogBox(slug,dialog,dispatch,evt){
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      console.log('closed by clicking background.')
                   }
     });
 }
@@ -799,12 +1051,12 @@ function deleteDatasetAPI(slug){
 
 
 
-export function handleRename(slug,dialog,name){
+export function handleRename(slug,dialog,name,allDataList,dataList){
     return (dispatch) => {
-        showRenameDialogBox(slug,dialog,dispatch,name)
+        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)
     }
 }
-function showRenameDialogBox(slug,dialog,dispatch,name){
+function showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList){
     const customBody = (
 			<div className="row">
 			<div className="col-md-4">
@@ -814,6 +1066,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+            <div className="text-danger" id="ErrorMsg"></div>
             </div>
 			</div>
 		</div>
@@ -825,18 +1078,38 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
-                      renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+                    let letters = /^[0-9a-zA-Z\-_\s]+$/;
+                    var datalist=store.getState().datasets.dataList.data;
+                    var alldataSets=store.getState().datasets.allDataSets.data;
+                    if($("#idRenameDataset").val()==""){
+                        document.getElementById("ErrorMsg").innerHTML = "Please enter a name to proceed..";
+                        showRenameDialogBox(slug, dialog, dispatch, name)
+                  }
+                  else if (!letters.test($("#idRenameDataset").val())){
+                    document.getElementById("ErrorMsg").innerHTML = "Please enter name in a correct format. It should not contain special characters @,#,$,%,!,&.";
+                    showRenameDialogBox(slug, dialog, dispatch, name)
+                   }
+                     else if(datalist!="" && datalist.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)                      
+                      }
+                      else if(alldataSets!=undefined && alldataSets.map(dataset=>dataset.name.toLowerCase()).includes($("#idRenameDataset").val().toLowerCase())){
+                        document.getElementById("ErrorMsg").innerHTML = "Dataset with same name already exists.";
+                        showRenameDialogBox(slug,dialog,dispatch,name,allDataList,dataList)  
+                      }
+                      else{
+                      renameDataset(slug,dialog,$("#idRenameDataset").val(),allDataList,dataList,dispatch)
+                      }
                   })
                   ],
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      console.log('closed by clicking background.')
                   }
     });
 }
 
-function renameDataset(slug,dialog,newName,dispatch){
+function renameDataset(slug,dialog,newName,allDataList,dataList,dispatch){
     dispatch(showLoading());
     Dialog.resetOptions();
     return renameDatasetAPI(slug,newName).then(([response, json]) =>{
@@ -1098,7 +1371,6 @@ export function updateSubSetting(updatedSubSetting){
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
     let headers = store.getState().datasets.dataPreview.meta_data.uiMetaData.headersUI;
-    console.log(headers);
     const customBody = (
 		<div className="row">
 			<div className="col-md-4">
@@ -1138,7 +1410,6 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
                   bsSize: 'medium',
                   onHide: (dialogBox) => {
                       dialogBox.hide()
-                      //console.log('closed by clicking background.')
                   }
     });
 }
@@ -1435,12 +1706,12 @@ export function addComponents(colSlug){
         }
 
         if(dataColumnRemoveValues.length == 0){
-            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
         }if(dataColumnReplaceValues.length == 0){
-            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+            dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
+            // dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"equals"});
         }
 
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
@@ -1477,10 +1748,10 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.id+1;
-                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
 
             }else{
-                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
@@ -1492,9 +1763,9 @@ export function addMoreComponentsToReplace(editType){
 
                 });
                 let length = max.replaceId+1;
-                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }else{
-                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+                dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"equals"});
             }
 
             dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
@@ -1743,7 +2014,7 @@ export function resetSubsetting(slug){
             slug,
     }
 }
-export function updateVariableSelectionArray(summary){
+export function updateVariableSelectionArray(summary,eidt){
     if(!$.isEmptyObject(summary))
     {
         var newVariableSelectionArray = store.getState().apps.modelSummary.config.config.COLUMN_SETTINGS.variableSelection;
@@ -1757,6 +2028,19 @@ export function updateVariableSelectionArray(summary){
 
         }
     }
+    else if(eidt=="edit"){
+        var newVariableSelectionArray = store.getState().datasets.modelEditconfig.config.config.COLUMN_SETTINGS.variableSelection;
+        var newDataPreview = store.getState().datasets.dataPreview;
+        newDataPreview.meta_data.uiMetaData.varibaleSelectionArray = newVariableSelectionArray;
+        var flag = false;
+        return {
+            type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
+            newDataPreview,
+            flag,
+
+        }
+    }
+
     else{
         var newDataPreview = store.getState().datasets.dataPreview;
         var flag = false;
@@ -1773,4 +2057,10 @@ export function clearDataCleansing(){
 }
 export function clearFeatureEngineering(){
     return {type:"CLEAR_FEATUREENGINEERING"}
+}
+
+export function setCreateSignalLoaderFlag(flag){
+    return {
+        type : "SET_CREATE_SIG_LOADER_FLAG",flag
+    }
 }

@@ -1,10 +1,10 @@
+from builtins import object
 from rest_framework.response import Response
 from api.exceptions import creation_failed_exception, update_failed_exception
 from django.db.models import Q
 
 
 class QueryCommonFiltering(object):
-
     query_set = None
     request = None
     top_3 = None
@@ -12,10 +12,11 @@ class QueryCommonFiltering(object):
     sorted_by = None
     ordering = ""
 
-    app_name=None
-    filter_fields=None
+    app_name = None
+    filter_fields = None
     name = None
     app_id = None
+    mode = None
 
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
@@ -35,6 +36,13 @@ class QueryCommonFiltering(object):
                 self.app_id = self.app_id
             else:
                 self.app_id = int(temp_app_id)
+
+        if 'mode' in request.query_params:
+            temp_mode = self.request.query_params.get('mode')
+            if temp_mode is None or temp_mode is "":
+                self.mode = self.mode
+            else:
+                self.mode = temp_mode
 
         if 'sorted_by' in self.request.query_params:
             temp_name = self.request.query_params.get('sorted_by')
@@ -69,7 +77,8 @@ class QueryCommonFiltering(object):
     def execute_common_filtering_and_sorting_and_ordering(self):
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
-
+        if self.mode is not None:
+            self.query_set = self.query_set.filter(mode=self.mode)
         if self.app_id is not None:
             self.top_3 = self.top_3.filter(app_id=self.app_id)
             self.query_set = self.query_set.filter(app_id=self.app_id)
@@ -78,17 +87,17 @@ class QueryCommonFiltering(object):
             self.top_3 = self.top_3[0:3]
 
         if self.app_name is not None:
-            self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))
+            self.query_set = self.query_set.filter(Q(name__icontains=self.app_name) | Q(tags__icontains=self.app_name))
         if self.filter_fields is not None:
-            self.filter_fields=self.filter_fields.replace(',','\",\"').replace('[','[\"').replace(']','\"]')
-            self.filter_fields=eval(self.filter_fields)
+            self.filter_fields = self.filter_fields.replace(',', '\",\"').replace('[', '[\"').replace(']', '\"]')
+            self.filter_fields = eval(self.filter_fields)
             from itertools import chain
-            final_query_set=self.query_set.none()
+            final_query_set = self.query_set.none()
 
             for tag in self.filter_fields:
-                query_set_temp=self.query_set.filter(tags__icontains=tag).distinct()
-                final_query_set=(final_query_set | query_set_temp).distinct()
-            self.query_set=final_query_set
+                query_set_temp = self.query_set.filter(tags__icontains=tag).distinct()
+                final_query_set = (final_query_set | query_set_temp).distinct()
+            self.query_set = final_query_set
         if self.sorted_by is not None:
             query_args = "{0}{1}".format(self.ordering, self.sorted_by)
             self.query_set = self.query_set.order_by(query_args)
@@ -135,6 +144,7 @@ def get_listed_data(
     page_class.add_top_3(query_set=top_3_query_set)
     resp = page_class.modified_get_paginate_response(page)
     return resp
+
 
 def get_specific_listed_data(
         viewset=None,

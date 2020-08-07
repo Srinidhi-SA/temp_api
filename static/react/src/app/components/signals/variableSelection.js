@@ -6,12 +6,13 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable, saveSignalName} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
-
+import {getAllSignalList} from "../../actions/signalActions";
+import ReactTooltip from 'react-tooltip'
 import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
 
 
@@ -32,12 +33,14 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
-        //selectedTrendSub:store.datasets.selectedTrendSub,
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
         dimensionSubLevel:store.datasets.dimensionSubLevel,
         dataSetSelectAllAnalysis:store.datasets.dataSetSelectAllAnalysis,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
-
+        allSignalList:store.signals.allSignalList,
+        CopyTimeDimension : store.datasets.CopyTimeDimension,
+        fromVariableSelectionPage : store.signals.fromVariableSelectionPage,
+        setSigName : store.signals.setSigName
     };
 })
 
@@ -46,15 +49,11 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 export class VariableSelection extends React.Component {
     constructor(props) {
         super(props);
-
-        console.log("preview data check");
         this.signalFlag =true;
         this.possibleTrend = null;
         this.prevSelectedVar = null;
         this.props.dispatch(emptySignalAnalysis());
-
-
-    }
+ }
 
     handleAnlysisList(e){
         this.props.dispatch(selectedAnalysisList(e));
@@ -64,7 +63,6 @@ export class VariableSelection extends React.Component {
     handleAllAnlysis(evt){
         this.props.dispatch(updateSelectAllAnlysis(evt.target.checked));
         this.props.dispatch(selectAllAnalysisList(evt.target.checked));
-
     }
     openAdvanceSettingsModal(){
         this.props.dispatch(advanceSettingsModal(true));
@@ -73,7 +71,6 @@ export class VariableSelection extends React.Component {
         event.preventDefault();
         let letters = /^[0-9a-zA-Z\d-_\s]+$/;
         var isAnalysisChecked = checkAnalysisIsChecked();
-        //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
             return false;
@@ -90,10 +87,15 @@ export class VariableSelection extends React.Component {
             return false;
 
         }
+    else if(Object.values(this.props.allSignalList).map(i=>i.name.toLowerCase()).includes($('#createSname').val().toLowerCase())){
+        bootbox.alert(statusMessages("warning", "Signal with same name alrady exists, Please try changing name!", "small_mascot"));
+        $('#createSname').val("").focus();
+        return false;
+    }
+    
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
-              //let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
-                  bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
+              bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
         }
@@ -113,17 +115,14 @@ export class VariableSelection extends React.Component {
 
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
-        if(dateTimeIsSelected == undefined && trendIsChecked == true){
-            bootbox.alert("Please select one of the date dimensions.");
-            return false;
-        }
+            if(dateTimeIsSelected == undefined && trendIsChecked == true){
+                bootbox.alert("Please select one of the date dimensions.");
+                return false;
+            }
 
-        console.log("while creating signal")
-        console.log(this.props);
         this.signalFlag = false;
         this.props.dispatch(updateCsLoaderValue(-1))
         this.props.dispatch(openCsLoaderModal());
-        //let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
 
 
@@ -141,7 +140,6 @@ export class VariableSelection extends React.Component {
         postData["config"]=config;
         postData["dataset"]=this.props.dataPreview.slug;
         postData["name"]=$("#createSname").val().trim();
-        console.log(postData);
        this.props.dispatch(createSignal(postData));
     }
 
@@ -150,23 +148,36 @@ export class VariableSelection extends React.Component {
     }
 
     componentWillMount(){
-        if (this.props.dataPreview == null) {
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        if(this.props.fromVariableSelectionPage){
+
+      }else{
+            if (this.props.dataPreview == null) {
+                this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+            }
+            this.props.dispatch(closeCsLoaderModal());
+            this.props.dispatch(resetSelectedTargetVariable());
+            this.props.dispatch(updateSelectAllAnlysis(false));
+            if(this.props.dataPreview != null)
+            this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
         }
-        this.props.dispatch(closeCsLoaderModal());
-        this.props.dispatch(resetSelectedTargetVariable());
-        this.props.dispatch(updateSelectAllAnlysis(false));
-        if(this.props.dataPreview != null)
-        this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
     }
 
     componentDidMount(){
+        if(this.props.fromVariableSelectionPage){
+            if(this.props.selVarSlug != null)
+                document.getElementsByName(this.props.selVarSlug)[0].selected = true;
+            var hel = store.getState().datasets.CopyOfMeasures.filter(i=>i.slug==this.props.selVarSlug)[0];
+            if(hel.targetColumn === true && hel.actualColumnType === "measure")
+                $("#idCategoricalVar")[0].parentNode.classList.remove("hidden")
+                if(hel.columnType === "dimension")
+                    $("#idCategoricalVar")[0].checked = true
+            $("#createSname")[0].value = this.props.setSigName;
+        }
         var that = this;
-
+        this.props.dispatch(getAllSignalList());
     }
 
     componentWillUpdate(){
-        console.log("Advancesettings disbale check:::: ");
 
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
@@ -179,7 +190,7 @@ export class VariableSelection extends React.Component {
     componentDidUpdate(){
         var that = this;
         let dataPrev = this.props.dataPreview;
-        if(this.props.match.path.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
+        if(window.location.href.includes("/createSignal") && !$.isEmptyObject(dataPrev)){
             let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                 return(val.columnType == "measure" && val.selected == true && val.targetColumn == false);
             });
@@ -234,12 +245,21 @@ export class VariableSelection extends React.Component {
             let disableSelectAll = false;
             $('.possibleAnalysis[type="checkbox"]').each(function() {
                 if($(this).prop('disabled') == true)
-                disableSelectAll = true;
+                    disableSelectAll = true;
             });
-            if(disableSelectAll == true)
-            $("#allAnalysis").prop("disabled",true);
-            else
-            $("#allAnalysis").prop("disabled",false);
+            if(disableSelectAll == true){
+                $("#allAnalysis").prop("disabled",true);
+                $("#allAnalysis")[0].checked = true;
+            }else{
+                if(this.props.CopyTimeDimension.filter(i=>(i.selected == true)).length == 0 && this.props.CopyTimeDimension.length !=0){
+                    $("#unselect")[0].checked = true;
+                    $("#allAnalysis").prop("disabled",true);
+                    $("#chk_analysis_trend").prop("disabled",true);
+                }else{
+                    $("#allAnalysis").prop("disabled",false);
+                
+                }
+            }
         }
     }
     handleCategoricalChk(event){
@@ -258,13 +278,19 @@ export class VariableSelection extends React.Component {
         if(analysisList.length==countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",true);  }, 0);  }
         return list;
     }
+    handleBack=()=>{
+        const slug = this.props.match.params.slug;
+        if(this.props.match.path.includes("data"))
+        this.props.history.replace(`/data/${slug}?from=createSignal`)
+        else if(this.props.match.path.includes("signals"))
+        this.props.history.replace(`/signals/${slug}?from=createSignal`);
+      }
+    setSignalName(event){
+        this.props.dispatch(saveSignalName(event.target.value));
+    }
     render(){
         var that= this;
-
-
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
-            console.log("move from variable selection page");
-            console.log(this.props.selectedSignal)
             $('body').pleaseWait('stop');
             let _link = "/signals/"+this.props.selectedSignal;
             return(<Redirect to={_link}/>)
@@ -288,26 +314,20 @@ export class VariableSelection extends React.Component {
                 renderSelectBox = <option>No Variables</option>
             }
 
-
-
-            //AnalysisList
             let possibleAnalysis = store.getState().datasets.dataSetAnalysisList;
             if(!$.isEmptyObject(possibleAnalysis)){
                 if(that.props.getVarType == "dimension"){
                     possibleAnalysis = possibleAnalysis.dimensions.analysis;
-                    console.log("dimensions possible analysis list");
                     renderSubList = this.renderAnalysisList(possibleAnalysis);
                 }else if(that.props.getVarType == "measure"){
                     possibleAnalysis = possibleAnalysis.measures.analysis;
-                    console.log("measures possible analysis list");
-                    console.log(possibleAnalysis);
                     renderSubList = this.renderAnalysisList(possibleAnalysis);
                 }
 
 
             }
         }
-
+        
         return (
                 <div className="side-body">
                 <div className="main-content">
@@ -331,19 +351,38 @@ export class VariableSelection extends React.Component {
 				</FormGroup>
 				
 				<FormGroup role="form">
-				{/*  adding selection component */}
                 <DataVariableSelection match={this.props.match}/>
 				</FormGroup>
                 <FormGroup role="form"> 
                 
                 
-                <AdvanceSettings   />
-                {/*---------end of selection component----------------------*/}
+                <AdvanceSettings />
                 
 				 
                 <div className="col-md-12">
                 <div className="panel panel-alt4 panel-alt4 cst-panel-shadow">
-                <div className="panel-heading text-center">Type of Signals</div>
+                <div className="panel-heading text-center">Type of Signals&nbsp;&nbsp; 
+               {
+                this.props.getVarType?
+                <span>
+                    <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
+                    <i class="btn btn-default fa fa-info btn-sig-info" data-html="true" data-tip={(this.props.getVarType == "measure") ?
+                        "<b>Overview:</b> Contains Distribution Analysis consisting of Mean, Average, Median, Quartiles for numerical variables."+
+                        "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
+                        "<br/><b>Performance:</b> ANOVA test assesses whether the averages of more than two groups are statistically different from each other."+
+                        "<br/><b>Influencers:</b> Model the relationship between two or more explanatory variables and a response variable by fitting <br/>a linear equation to observed data."+
+                        "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
+                        :
+                        "<b>Overview:</b> Univariate Freq. Distribution shows a summarized grouping of data divided into mutually exclusive classes <br/>and the number of occurrences in a class."+
+                        "<br/><b>Trend:</b> Extracting an underlying pattern of behavior in a time series."+
+                        "<br/><b>Association:</b> The chi-square test can be used to determine the association between categorical variables."+
+                        "<br/><b>Prediction:</b> A graph that uses a branching method to illustrate every possible outcome of a decision."
+                        }>
+                    </i>
+                </span>
+               :""}
+                 
+                </div>
                 <div className="panel-body text-center" id="analysisList" >
                 <div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" checked={store.getState().datasets.dataSetSelectAllAnalysis} onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
                 {renderSubList}
@@ -357,10 +396,14 @@ export class VariableSelection extends React.Component {
                  
 				
 				<div class="clearfix xs-m-10"></div>
-                <div className="col-lg-5 col-lg-offset-7">
+               <div className="col-lg-2">
+                <Button id="signalBack" onClick={this.handleBack} bsStyle="primary"><i className="fa fa-angle-double-left"></i> Back</Button>
+
+               </div>
+                <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
-                        <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
-                          <button type="submit" class="btn btn-primary">Create Signal</button></span>
+                    <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                    <button id="signalCreate" type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>
                

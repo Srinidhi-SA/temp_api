@@ -7,7 +7,12 @@ Usage:
     import C3Chart
     C3Chart.generate(config)
 '''
+from __future__ import print_function
+from __future__ import division
 
+from builtins import str
+from builtins import object
+from past.utils import old_div
 __author__ = 'Ankush Patel'
 
 import json
@@ -64,7 +69,7 @@ class C3Chart(object):
         type = 'bar'
         if isinstance(self._type, tuple) or isinstance(self._type, list):
             type = self._type[0]
-        elif isinstance(self._type, str) or isinstance(self._type, unicode):
+        elif isinstance(self._type, str):
             type = self._type
         self._data = {
             self._data_type: self._data_data,
@@ -85,7 +90,7 @@ class C3Chart(object):
     def set_keys_in_data_field(self):
         keys = []
         for data in self._data_data:
-            keys = list(set(keys + data.keys()))
+            keys = list(set(keys + list(data.keys())))
 
         keys.remove(self._x_column_name)
         self._data['keys'] = {'value': keys, 'x':self._x_column_name}
@@ -272,7 +277,7 @@ class C3Chart(object):
         if self._number_of_x_ticks < X_EXTENT_DEFAULT:
             return [0,5]
         else:
-            return [0, self._number_of_x_ticks/10]
+            return [0, old_div(self._number_of_x_ticks,10)]
 
     def find_x_index_in_column_data(self):
         for index, data in enumerate(self._data_data):
@@ -288,11 +293,11 @@ class C3Chart(object):
         if self._axis:
             self._axis['rotated'] = True
             self._axis['x']['label']['position'] = Y_LABEL_DEFAULT_POSITION
-            self._axis['x']['label']['text'] = Y_LABEL_DEFAULT_TEXT
+            # self._axis['x']['label']['text'] = Y_LABEL_DEFAULT_TEXT
             self._axis['x']['tick']['rotate'] = 0
             self._axis['x']['tick']['fit'] = True
-            self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
-            self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
+            # self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
+            # self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
             self.set_multiline_x()
 
     def set_y_axis(self, y_name='y'):
@@ -339,7 +344,7 @@ class C3Chart(object):
         if self._axis:
             self._axis['x']['label']['text'] = x_label
             self._axis['y']['label']['text'] = y_label
-            if 'y2' in self._axis.keys():
+            if 'y2' in list(self._axis.keys()):
                 self._axis['y2']['label']['text'] = y2_label
 
     def set_axis_label_simple(self, label_text):
@@ -404,7 +409,7 @@ class C3Chart(object):
 
     def set_multiline_x(self):
         if self._axis['x']:
-            if 'tick' in self._axis.keys():
+            if 'tick' in list(self._axis.keys()):
                 self._axis['x']['tick']['multiline'] = True
             else:
                 self._axis['x']['tick'] = {
@@ -593,12 +598,12 @@ class C3Chart(object):
         }
 
     def get_some_related_info_printed(self):
-        print "x max string length", self._x_max_string_length
-        print "x length", self._x_height
-        print "chart", self._size
-        print "legend", self._legend
-        print "y_count", self._number_of_y_data
-        print "total", self._total_data_count
+        print("x max string length", self._x_max_string_length)
+        print("x length", self._x_height)
+        print("chart", self._size)
+        print("legend", self._legend)
+        print("y_count", self._number_of_y_data)
+        print("total", self._total_data_count)
 
     def set_all_basics(self):
         self.set_height_between_legend_and_x_axis()
@@ -706,7 +711,7 @@ class PieChart(C3Chart):
             'legend': self._legend,
             'color': self._color,
             'padding': self._padding,
-            # 'title': self._title,
+            'title': self._title,
             'size': self._size,
             'pie': self._pie,
             'tooltip':self._tooltip,

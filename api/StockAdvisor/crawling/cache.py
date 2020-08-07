@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 import hashlib
 import os
 
@@ -13,7 +15,7 @@ __email__ = "vivekananda.tadala@marlabs.com"
 __status__ = "Development"
 
 
-class Cache:
+class Cache(object):
     """
     Class to manage cache
     """
@@ -30,7 +32,7 @@ class Cache:
         private method to generate md5 or sha1 hash of the key
         :return:
         """
-        return hashlib.sha1(key).hexdigest()
+        return hashlib.sha1(key.encode('utf-8')).hexdigest()
 
     def __get_file_path(self, key):
         return os.path.join(self.base_dir, self.namespace, self.__get_hash(key))
@@ -47,11 +49,11 @@ class Cache:
             if not os.path.exists(os.path.dirname(file_path)):
                 os.makedirs(os.path.dirname(file_path))
 
-            file_obj = open(file_path, "w")
+            file_obj = open(file_path, "wb")
             file_obj.write(content)
             file_obj.close()
         except IOError:
-            print "CACHE: not able to cache the content"
+            print("CACHE: not able to cache the content")
         pass
 
     def get(self, key):
@@ -63,8 +65,10 @@ class Cache:
         try:
             file_path = self.__get_file_path(key)
             if os.path.exists(file_path):
-                print "CACHE HIT: " + key
-                return open(file_path).read()
+                print("CACHE HIT: " + key)
+                # return open(file_path).read()
+                with open(file_path, 'rb') as f:
+                    return f.read()
         except IOError:
             pass
         return None

@@ -32,6 +32,8 @@ import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 import {ScoreCard}  from "./ScoreCard";
 import {LatestScores} from "./LatestScores";
+import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
+
 
 
 var dateFormat = require('dateformat');
@@ -46,7 +48,12 @@ export class AppsScoreList extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
     componentWillMount() {
-        console.log(this.props.history)
+     if(this.props.match.path.includes("analyst")) {
+    this.props.dispatch(updateAnalystModeSelectedFlag(true));
+      }
+    else{
+    this.props.dispatch(updateAnalystModeSelectedFlag(false));
+    } 
         var pageNo = 1;
         if(this.props.history.location.search.indexOf("page") != -1){
             pageNo = this.props.history.location.search.split("page=")[1];
@@ -71,11 +78,11 @@ export class AppsScoreList extends React.Component {
     }
     
     _handleKeyPress = (e) => {
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+
         if (e.key === 'Enter') {
-            //console.log('searching in data list');
-            
             if (e.target.value != "" && e.target.value != null)
-                this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/scores?search=' + e.target.value + '')
                 
                 this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
@@ -83,13 +90,15 @@ export class AppsScoreList extends React.Component {
         }
     }
     onChangeOfSearchBox(e) {
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+
         if (e.target.value == "" || e.target.value == null) {
             this.props.dispatch(storeScoreSearchElement(""));
             this.props.dispatch(getAppsScoreList(1));
-            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores'+ '')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores'+ '')
             
         } else if (e.target.value.length > SEARCHCHARLIMIT) {
-            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores?search=' + e.target.value+'')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores?search=' + e.target.value+'')
             this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
         }
@@ -99,7 +108,9 @@ export class AppsScoreList extends React.Component {
     }
     
     doSorting(sortOn, type){
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?sort=' + sortOn + '&type='+type);
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+
+        this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?sort=' + sortOn + '&type='+type);
         
         this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
         this.props.dispatch(getAppsScoreList(1));
@@ -107,25 +118,6 @@ export class AppsScoreList extends React.Component {
     
     
     render() {
-        console.log("apps score list is called##########3");
-        //empty search element
-       /* let search_element = document.getElementById('score_insights');
-        if (this.props.score_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
-            console.log("search is empty");
-            this.props.dispatch(storeScoreSearchElement(""));
-            if (search_element)
-                document.getElementById('score_insights').value = "";
-        }
-        if (this.props.score_search_element == "" && this.props.history.location.search != "") {
-            if (search_element)
-                document.getElementById('score_insights').value = "";
-        }
-        //search element ends..*/
-        /*
-        if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
-            this.props.dispatch(storeAppsScoreSortElements("",null));
-        }
-        */
         const scoreList = store.getState().apps.scoreList.data;
         var appsScoreList = null;
         if (scoreList) {
@@ -220,22 +212,26 @@ export class AppsScoreList extends React.Component {
         }
     }
     handleSelect(eventKey) {
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+
         if (this.props.score_search_element) {
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
         }  else if(this.props.apps_score_sorton){
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
         }else
-            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/scores?page=' + eventKey + '')
             
           //  this.props.dispatch(activateModelScoreTabs(2));
         this.props.dispatch(getAppsScoreList(eventKey));
     }
     clearSearchElement(e){
+        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+
         this.props.dispatch(storeScoreSearchElement(""));
         if(this.props.apps_score_sorton)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
+        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected +'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
         else
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores');
+        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected +'/scores');
         this.props.dispatch(getAppsScoreList(1));
     }
 }

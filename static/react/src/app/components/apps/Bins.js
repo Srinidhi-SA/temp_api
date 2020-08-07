@@ -10,6 +10,7 @@ import {
   selectedBinsOrLevelsTabAction,
   binningOptionsOnChangeAction,
   saveBinValuesAction,
+  saveBinLevelTransformationValuesAction,
 } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
@@ -19,7 +20,9 @@ import {
     dataPreview: store.datasets.dataPreview,
     isNoOfBinsEnabled: store.datasets.isNoOfBinsEnabled,
     isSpecifyIntervalsEnabled: store.datasets.isSpecifyIntervalsEnabled,
-    featureEngineering: store.datasets.featureEngineering
+    featureEngineering: store.datasets.featureEngineering,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -31,6 +34,13 @@ export class Bins extends React.Component {
 
 
   componentWillMount() {
+    if(this.props.editmodelFlag){
+      if(this.props.featureEngineering[this.props.selectedItem.slug]!=undefined && this.props.featureEngineering[this.props.selectedItem.slug].binData.selectBinType == "create_equal_sized_bins"){
+        this.props.dispatch(binningOptionsOnChangeAction(false,true));
+      }else{
+        this.props.dispatch(binningOptionsOnChangeAction(true,false));
+      }
+    }
   }
 
   getBindata() {
@@ -80,8 +90,6 @@ export class Bins extends React.Component {
   }
 
   render() {
-
-    console.log("Bins render method is called...");
     var bins = "";
     var binData = this.getBindata();
 
@@ -92,7 +100,7 @@ export class Bins extends React.Component {
             <div className="row form-group">
               <label for="sel_tobg" className="col-sm-4 control-label">{"Column name"}</label>
               <div className="col-sm-8">
-                <input type="text" title="Column name " placeholder="Column name" name="name" value={this.props.selectedItem.name} disabled className="form-control" />
+                <input id="colName" type="text" title="Column name " placeholder="Column name" name="name" value={this.props.selectedItem.name} disabled className="form-control" />
               </div>
             </div>
             <div className="row form-group">
@@ -104,19 +112,19 @@ export class Bins extends React.Component {
             <div className="row form-group">
               <label for="sel_tobg" className="col-sm-4 control-label">{"Number of bins"} <span className="text-danger">*</span></label>
               <div className="col-sm-8">
-                <input type="number" min="0" title="Number of bins " placeholder="Number of bins" id="numberofbins" name="numberofbins" defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} className="form-control" />
+                <input id="binNo" type="number" min="0" title="Number of bins " placeholder="Number of bins" id="numberofbins" name="numberofbins" defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue} onChange={this.onchangeInput.bind(this)} className="form-control" />
               </div>
             </div>
             <div className="row form-group">
               <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"} <span className="text-danger">*</span></label>
               <div className="col-sm-8">
-                <input type="text" title="Specify intervals" placeholder="Specify intervals" id="specifyintervals" name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+                <input id="SpecifyInt" type="text" title="Specify intervals" placeholder="Specify intervals" id="specifyintervals" name="specifyintervals" defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
               </div>
             </div>
             <div className="row form-group">
               <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"} <span className="text-danger">*</span></label>
               <div className="col-sm-8">
-                <input type="text" title="New column name " placeholder="New column name" name="newcolumnname" defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+                <input id="newColName" type="text" title="New column name " placeholder="New column name" name="newcolumnname" defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
               </div>
             </div>
             <div className="row form-group">

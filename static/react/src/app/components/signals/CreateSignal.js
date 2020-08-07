@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview, setCreateSignalLoaderFlag} from "../../actions/dataActions";
 import {isEmpty,ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
@@ -37,7 +37,6 @@ export class CreateSignal extends React.Component {
 		this.props.dispatch(getAllDataList());
 	}
 	openSignalModal(){
-		//console.log(getUserDetailsOrRestart.get().view_data_permission)
 		if(getUserDetailsOrRestart.get().view_data_permission=="false"){
 			bootbox.alert("You don't have access to view datasets,Please contact admin for permissions!");
 		}else if($.isEmptyObject(store.getState().datasets.allDataSets)){
@@ -51,7 +50,6 @@ export class CreateSignal extends React.Component {
 	}
 
 	getPreviewData(e){
-		//this.selectedData = e.target.id;
 		var that = this;
 		if(!this.flag){
 			that.selectedData['name']= $('#signal_Dataset option:selected').val();
@@ -65,10 +63,9 @@ export class CreateSignal extends React.Component {
 		$("#errorMsgs").html("Please select a data set to create signal from")
 		return false
 		}
+		this.props.dispatch(setCreateSignalLoaderFlag(true));
 		this.props.dispatch(showDataPreview());
 		this.props.dispatch(getDataSetPreview(this.selectedData.name));
-
-
 	}
 
 	checkSelection(e){
@@ -89,7 +86,7 @@ export class CreateSignal extends React.Component {
 	            title= ACCESSDENIED
 	        }else{
 	            if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreviewFlag){
-	                let _link = "/data/"+this.selectedData.name;
+	                let _link = "/signals/"+this.selectedData.name;
 	                return(<Redirect to={_link}/>);
 	            }
 	            if(dataSets){
@@ -127,7 +124,7 @@ export class CreateSignal extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 				<div class="form-group">
-				<label>Select an existing dataset</label>
+				<label className="pb-2">Select an existing dataset</label>
 				<select id="signal_Dataset" name="selectbasic" class="form-control" onChange={this.checkSelection.bind(this)}>
 				{renderSelectBox}
 				</select>
@@ -136,8 +133,8 @@ export class CreateSignal extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 
-				<Button  onClick={this.closeSignalModal.bind(this)}>Close</Button>
-				<Button bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
+				<Button id="createSignalClose"  onClick={this.closeSignalModal.bind(this)}>Close</Button>
+				<Button id="createSignalCreate" bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
 
 				</Modal.Footer>
 				</Modal>

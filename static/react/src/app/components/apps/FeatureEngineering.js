@@ -11,7 +11,7 @@ import {
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 import { getRemovedVariableNames } from "../../helpers/helper.js"
-import { getDataSetPreview } from "../../actions/dataActions";
+import { getDataSetPreview, checkAllAnalysisSelected } from "../../actions/dataActions";
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -31,6 +31,11 @@ import { statusMessages } from "../../helpers/helper";
     currentAppDetails: store.apps.currentAppDetails,
     featureEngineering: store.datasets.featureEngineering,
     selectedVariables: store.datasets.selectedVariables,
+    convertUsingBin: store.datasets.convertUsingBin,
+    numberOfBins: store.datasets.topLevelData.numberOfBins,
+    editmodelFlag:store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
+    datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
   };
 })
 
@@ -38,8 +43,6 @@ import { statusMessages } from "../../helpers/helper";
 export class FeatureEngineering extends React.Component {
   constructor(props) {
     super(props);
-    console.log("FeatureEngineering constructor method is called...");
-    console.log(props);
     this.buttons = {};
     this.state = {
     };
@@ -51,15 +54,219 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({ featureEngineering: this.props.featureEngineering });
-    if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
-      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+    if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+      let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+    }else{
+      this.setState({ featureEngineering: this.props.featureEngineering });
+      if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      }
     }
-    console.log("FeatureEngineering componentWillMount method is called...");
     this.buttons['proceed'] = {
       url: "/data_cleansing/" + this.props.match.params.slug,
       text: "Proceed"
     };
+    if(this.props.editmodelFlag){
+      if(this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0].selected){
+          let binningData = this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.overall_settings[0];
+          this.state.topLevelRadioButton = "true";
+          this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, binningData.number_of_bins));
+        }
+        this.setBinsOnEdit();
+        this.setLevelOnEdit();
+        this.setTransformOnEdit();
+    }
+    
+  }
+  setBinsOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let binsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
+    
+    if(binsList.filter(i=>i.name === "create_custom_bins" && i.selected).length != 0) {
+      let customBinData = binsList.filter(i=>i.name === "create_custom_bins" && i.selected)[0].columns;
+      for(var i=0; i<customBinData.length; i++){
+        let list = colList.filter(j=>j.name===customBinData[i].name)
+        let dataToSave = [];
+        dataToSave.push({newcolumnname:customBinData[i].actual_col_name, selectBinType:"create_custom_bins",specifyintervals:customBinData[i].list_of_intervals})
+        this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"binData",dataToSave[0]))
+      }
+    }
+    if(binsList.filter(i=>i.name === "create_equal_sized_bins" && i.selected).length != 0) {
+      let equalBinData = binsList.filter(i=>i.name === "create_equal_sized_bins" && i.selected)[0].columns;
+      for(var i=0; i<equalBinData.length; i++){
+        let list = colList.filter(j=>j.name===equalBinData[i].name)
+        let dataToSave = [];
+        dataToSave.push({newcolumnname:equalBinData[i].actual_col_name, selectBinType:"create_equal_sized_bins",numberofbins:equalBinData[i].number_of_bins})
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"binData",dataToSave[0]))
+      }
+    }
+  }
+  setLevelOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let levelsList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.level_creation_settings.operations;
+    
+    if(levelsList.filter(i=>i.name === "create_new_levels" && i.selected).length != 0) {
+      let dLevelData = levelsList.filter(i=>i.name === "create_new_levels" && i.selected)[0].columns;
+      for(var i=0; i<dLevelData.length; i++){
+        let list = colList.filter(j=>j.name===dLevelData[i].name)
+        let levelsValue = Object.entries(dLevelData[i].mapping_dict);
+        let levelLen = levelsValue.length;
+        let dataToSave = [];
+        for(let i=0;i<levelLen;i++){
+          dataToSave.push({inputValue:levelsValue[i][0],multiselectValue:levelsValue[i][1]})
+        }
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"levelData",dataToSave))
+      }
+    }
+
+    if(levelsList.filter(i=>i.name === "create_new_datetime_levels" && i.selected).length != 0) {
+      let dtLevelData = levelsList.filter(i=>i.name === "create_new_datetime_levels" && i.selected)[0].columns;
+      for(var i=0; i<dtLevelData.length; i++){
+        let list = colList.filter(j=>j.name===dtLevelData[i].name)
+        let levelsValue = Object.entries(dtLevelData[i].mapping_dict);
+        let levelLen = levelsValue.length;
+        let dataToSave = [];
+
+        for(let i=0;i<levelLen;i++){
+          let sDate = levelsValue[i][1][0].split("/").reverse().join("-");
+          let eDate = levelsValue[i][1][1].split("/").reverse().join("-")
+          dataToSave.push({inputValue:levelsValue[i][0],startDate:sDate,endDate:eDate})
+        }
+        if(list[0].slug != "")
+          this.props.dispatch(saveBinLevelTransformationValuesAction(list[0].slug,"levelData",dataToSave))
+      }
+    }
+  }
+
+  setTransformOnEdit(){
+    let colList = this.props.dataPreview.meta_data.uiMetaData.headersUI;
+    let transList= this.props.modelEditconfig.config.config.FEATURE_SETTINGS.FEATURE_ENGINEERING.column_wise_settings.transformation_settings.operations;
+  //for measure
+      let dataToSave = [];
+      let mTransData1 ={replace_values_with:false,replace_values_with_input:"",replace_values_with_selected:""};
+      let mTransData2 ={feature_scaling:false,perform_standardization_select:""};
+      let mTransData3 ={variable_transformation:false,variable_transformation_select:""};
+      let transSlug = "";
+
+      if(transList.filter(i=>i.name === "replace_values_with" && i.selected).length != 0){
+        let transData = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData1 = transList.filter(i=>i.name === "replace_values_with" && i.selected)[0].columns[0];
+          mTransData1.replace_values_with=true;
+          transSlug = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "perform_standardization" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData2 = transList.filter(i=>i.name === "perform_standardization" && i.selected)[0].columns[0];
+          mTransData2.feature_scaling=true;
+          transSlug = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "variable_transformation" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          mTransData3 = transList.filter(i=>i.name === "variable_transformation" && i.selected)[0].columns[0];
+          mTransData3.variable_transformation=true;
+          transSlug = list[0].slug;
+        } 
+      }
+      dataToSave.push({replace_values_with:mTransData1.replace_values_with,replace_values_with_input:mTransData1.replace_value,replace_values_with_selected:mTransData1.replace_by,
+          feature_scaling:mTransData2.feature_scaling,perform_standardization_select:mTransData2.standardization_type,
+          variable_transformation:mTransData3.variable_transformation,variable_transformation_select:mTransData3.transformation_type})
+      
+      if(transSlug != "") 
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug,"transformationData",dataToSave[0]));
+    
+      //for dimension
+      let dataToSave1 = [];
+      let dimData1 ={encoding_dimensions:false,encoding_type:""};
+        let dimData2 ={return_character_count:false};
+        let dimData3 ={is_custom_string_in:false,is_custom_string_in_input:""};
+      let transSlug1 = "";
+
+      if(transList.filter(i=>i.name === "encoding_dimensions" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData1 = transList.filter(i=>i.name === "encoding_dimensions" && i.selected)[0].columns[0];
+          dimData1.encoding_dimensions=true;
+          transSlug1 = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "return_character_count" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData2 = transList.filter(i=>i.name === "return_character_count" && i.selected)[0].columns[0];
+          dimData2.return_character_count=true;
+          transSlug1 = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "is_custom_string_in" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dimData3 = transList.filter(i=>i.name === "is_custom_string_in" && i.selected)[0].columns[0];
+          dimData3.is_custom_string_in=true;
+          transSlug1 = list[0].slug;
+        } 
+      }
+      dataToSave1.push({encoding_dimensions:dimData1.encoding_dimensions,encoding_type:dimData1.encoding_type,
+        return_character_count:dimData2.return_character_count,
+        is_custom_string_in:dimData3.is_custom_string_in,is_custom_string_in_input:dimData3.user_given_string})
+        
+      if(transSlug1 != "")
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug1,"transformationData",dataToSave1[0]));
+    
+      //For datetime
+      let dataToSave2 = [];
+        let dtData1 ={is_date_weekend:false};
+        let dtData2 ={extract_time_feature:false,extract_time_feature_select:""};
+        let dtData3 ={time_since:false,time_since_input:""};
+        let transSlug2 = "";
+
+      if(transList.filter(i=>i.name === "is_date_weekend" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData1 = transList.filter(i=>i.name === "is_date_weekend" && i.selected)[0].columns[0];
+          dtData1.is_date_weekend=true;
+          transSlug2 = list[0].slug;
+        }
+      }
+      if(transList.filter(i=>i.name === "extract_time_feature" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData2 = transList.filter(i=>i.name === "extract_time_feature" && i.selected)[0].columns[0];
+          dtData2.extract_time_feature=true;
+          transSlug2 = list[0].slug;
+        } 
+      }
+      if(transList.filter(i=>i.name === "time_since" && i.selected).length != 0) {
+        let transData = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns;
+        for(var i=0; i<transData.length; i++){
+          let list = colList.filter(j=>j.name===transData[i].name)
+          dtData3 = transList.filter(i=>i.name === "time_since" && i.selected)[0].columns[0];
+          dtData3.time_since_is_true=true;
+          transSlug2 = list[0].slug;
+          dtData3.time_since_input = transData[0].time_since.split("/").reverse().join("-")
+        } 
+      }
+      dataToSave2.push({is_date_weekend:dtData1.is_date_weekend,
+        extract_time_feature:dtData2.extract_time_feature, extract_time_feature_select:dtData2.time_feature_to_extract,
+        time_since:dtData3.time_since_is_true, time_since_input:dtData3.time_since_input})
+      
+      if(transSlug2 != "")
+        this.props.dispatch(saveBinLevelTransformationValuesAction(transSlug2,"transformationData",dataToSave2[0]));
   }
 
   componentDidMount() {
@@ -80,8 +287,21 @@ export class FeatureEngineering extends React.Component {
         }
       });
     });
-    this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton,0));
+    const from = this.getValueOfFromParam();
+    if (from === 'algorithm_selection') {
+    }
+    else if(!this.props.editmodelFlag){
+    this.props.dispatch(saveTopLevelValuesAction(this.props.convertUsingBin,0));
   }
+}
+
+  getValueOfFromParam() {
+    if(this.props.location === undefined){
+    }
+   else{
+    const params = new URLSearchParams(this.props.location.search);
+    return params.get('from');
+}}
 
   clearBinsAndIntervals(event) {
     if (this.state[this.props.selectedItem.slug] != undefined && this.state[this.props.selectedItem.slug]["binData"] != undefined) {
@@ -123,7 +343,6 @@ export class FeatureEngineering extends React.Component {
   }
 
   handleCreateClicked(actionType, event) {
-    
     if (actionType == "binData") {
       this.validateBinData(actionType);
     } else if (actionType == "levelData") {
@@ -136,13 +355,6 @@ export class FeatureEngineering extends React.Component {
       this.closeBinsOrLevelsModal();
       this.closeTransformColumnModal();
     }
-
-    if ($('.levelrequired').val() == "") {
-      bootbox.alert(statusMessages("warning", "Please enter level name", "small_mascot"));
-      return false;
-
-            
-  }
   }
 
   validateBinData(actionType) {
@@ -152,7 +364,6 @@ export class FeatureEngineering extends React.Component {
       if (binData.selectBinType == undefined || binData.selectBinType == "none") {
         $("#fileErrorMsg").removeClass("visibilityHidden");
         $("#fileErrorMsg").html("Please select type of binning");
-        $("select[name='selectBinType']").css("border-color", "red");
         $("select[name='selectBinType']").focus();
         return;
       } else {
@@ -160,14 +371,12 @@ export class FeatureEngineering extends React.Component {
           if (binData.numberofbins == undefined || binData.numberofbins == null || binData.numberofbins == "") {
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please enter number of bins");
-            $("input[name='numberofbins']").css("border-color", "red");
             $("input[name='numberofbins']").focus();
             return;
           }
           else if (parseInt(binData.numberofbins) <= 0) {
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please enter number greater than zero");
-            $("input[name='numberofbins']").css("border-color", "red");
             $("input[name='numberofbins']").focus();
             return;
           }
@@ -175,7 +384,6 @@ export class FeatureEngineering extends React.Component {
           if (binData.specifyintervals == undefined || binData.specifyintervals == null || binData.specifyintervals == "") {
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please enter 'Specify Intervals' field");
-            $("input[name='specifyintervals']").css("border-color", "red");
             $("input[name='specifyintervals']").focus();
             return;
           }
@@ -193,9 +401,6 @@ export class FeatureEngineering extends React.Component {
       this.closeTransformColumnModal();
     } else {
       $("#fileErrorMsg").removeClass("visibilityHidden");
-      $("select[name='selectBinType']").css("border-color", "red");
-      $("input[name='numberofbins']").css("border-color", "red");
-      $("input[name='newcolumnname']").css("border-color", "red");
       $("#fileErrorMsg").html("Please enter Mandatory fields * ");
     }
   }
@@ -205,17 +410,23 @@ export class FeatureEngineering extends React.Component {
     if(this.props.selectedItem.columnType == "dimension"){
       let totalOptions=0;
       lvlar = this.state[this.props.selectedItem.slug];
+      if(lvlar === undefined){
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please enter some values");
+        return false;
+      }
       var lvl = lvlar.levelData;
       let lvllen=lvl.length;
       for(i in lvl){ 
         if(lvl[i].inputValue == "" || undefined){
-          console.log('Col nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Please enter the new column name");
+          $("input[name='newcolumnname']").focus();
           return;
         }else if(lvl[i].multiselectValue == "" || undefined){
           $("#fileErrorMsg").removeClass("visibilityHidden");
           $("#fileErrorMsg").html("Please Select Options");
+          $("input[name='multiselect-demo']").focus();
           return;
         }
         totalOptions+=lvl.map(j=>j)[i].multiselectValue.length
@@ -231,7 +442,6 @@ export class FeatureEngineering extends React.Component {
       }
     }
     
-    console.log('level validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var levelData = this.state[this.props.selectedItem.slug][actionType];
@@ -247,15 +457,14 @@ export class FeatureEngineering extends React.Component {
             return;
           }
           else if ((Date.parse(startDate) > Date.parse(endDate))) {
-            console.log('start date is greater');
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Start Date should be before End Date");
             return;
           }
           else if (inputValue == undefined || inputValue == null || inputValue == "") {
             $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please enter the new column name");
-            $("input[name='inputValue']").focus();
+            $("#fileErrorMsg").html("Please enter level name");
+            $("input[name='newcolumnname']").focus();
             return;
           }
         }
@@ -271,82 +480,124 @@ export class FeatureEngineering extends React.Component {
   }
 
   validateTransformdata(actionType) {
-    console.log('transform validation starts');
     var slugData = this.state[this.props.selectedItem.slug];
     if (slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined) {
       var transformationData = this.state[this.props.selectedItem.slug][actionType];
-      if (transformationData.replace_values_with == true) {
-        if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "") {
+
+      if(this.props.selectedItem.columnType == "measure"){
+        if(!$('#replace_values_with').prop('checked') && !$('#feature_scaling').prop('checked') && !$('#variable_transformation').prop('checked')){
           $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value");
-          $("input[name='replace_values_with_input']").focus();
-          return;
-        }
-        else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value to replace with");
-          $("select[name='replace_values_with_selected']").focus();
-          return;
-        }
-      }
-      else if (transformationData.feature_scaling == true) {
-        if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for feature scaling");
-          $("select[name='perform_standardization_select']").focus();
-          return;
-        }
-      }
-      else if (transformationData.variable_transformation == true) {
-        if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for variable transformation");
-          $("select[name='variable_transformation_select']").focus();
-          return;
-        }
-      }
-      else if (transformationData.encoding_dimensions == true) {
-        if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select Encoding Type");
-          $("select[name='encoding_type']").focus();
-          return;
-        }
-      }
-      else if (transformationData.is_custom_string_in == true) {
-        if (transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null || transformationData.is_custom_string_in_input == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for custom String");
-          $("input[name='is_custom_string_in_input']").focus();
-          return;
-        }
-      }
-      else if (transformationData.extract_time_feature == true) {
-        if (transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null || transformationData.extract_time_feature_select == "") {
-          $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Select value for time feature");
-          $("select[name='extract_time_feature_select']").focus();
-          return;
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.replace_values_with == true || $('#replace_values_with').prop('checked') ) {
+            if (transformationData.replace_values_with_input == undefined || transformationData.replace_values_with_input == null || transformationData.replace_values_with_input == "" || $('#replace_values_with_input').val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value");
+              $("input[name='replace_values_with_input']").focus();
+              return;
+            }
+            else if (transformationData.replace_values_with_selected == undefined || transformationData.replace_values_with_selected == null || transformationData.replace_values_with_selected == "" || $('#replace_values_with_selected').val() == "" || $('#replace_values_with_selected').val() == "None") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value to replace with");
+              $("select[name='replace_values_with_selected']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+            if((transformationData.feature_scaling == true) || $('#feature_scaling').prop('checked')){
+              if (transformationData.perform_standardization_select == undefined || transformationData.perform_standardization_select == null || transformationData.perform_standardization_select == "" || $('#perform_standardization_select').val() == "" || $('#perform_standardization_select').val() == "None") {
+                $("#fileErrorMsg").removeClass("visibilityHidden");
+                $("#fileErrorMsg").html("Select value for feature scaling");
+                $("select[name='perform_standardization_select']").focus();
+                return;
+              }else{
+                $("#fileErrorMsg").addClass("visibilityHidden");
+              }
+            }
+
+          if (transformationData.variable_transformation == true || $('#variable_transformation').prop('checked')) {
+            if (transformationData.variable_transformation_select == undefined || transformationData.variable_transformation_select == null || transformationData.variable_transformation_select == ""|| $('#variable_transformation_select').val() == "" || $('#variable_transformation_select').val() == "None") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value for variable transformation");
+              $("select[name='variable_transformation_select']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
         }
       }
-      else if (transformationData.time_since == true) {
-        if (transformationData.time_since_input == undefined || transformationData.time_since_input == null || transformationData.time_since_input == "") {
+      else if(this.props.selectedItem.columnType == "dimension"){
+        if(!document.getElementById("encoding_dimensions").checked && !document.getElementById("return_character_count").checked && !document.getElementById("is_custom_string_in").checked){
           $("#fileErrorMsg").removeClass("visibilityHidden");
-          $("#fileErrorMsg").html("Enter value for Time Since");
-          $("input[name='time_since_input']").focus();
-          return;
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.encoding_dimensions == true || document.getElementById("encoding_dimensions").checked) {
+            if (transformationData.encoding_type == undefined || transformationData.encoding_type == null || transformationData.encoding_type == "" || $("#encoding_type").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select Encoding Type");
+              $("select[name='encoding_type']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.is_custom_string_in == true || document.getElementById("is_custom_string_in").checked) {
+            if (transformationData.is_custom_string_in_input == undefined || transformationData.is_custom_string_in_input == null || transformationData.is_custom_string_in_input == "" || $("input[name='is_custom_string_in_input']").val() == "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value for custom String");
+              $("input[name='is_custom_string_in_input']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
+        }
+      }else if(this.props.selectedItem.columnType == "datetime"){
+        if(!document.getElementById("extract_time_feature").checked && !document.getElementById("time_since").checked && !document.getElementById("is_date_weekend").checked ){
+          $("#fileErrorMsg").removeClass("visibilityHidden");
+          $("#fileErrorMsg").html("No fields Selected");
+        }else{
+          if (transformationData.extract_time_feature == true || document.getElementById("extract_time_feature").checked) {
+            if (transformationData.extract_time_feature_select == undefined || transformationData.extract_time_feature_select == null || transformationData.extract_time_feature_select == "" || $("select[name='extract_time_feature_select']").val() == "" ){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Select value for time feature");
+              $("select[name='extract_time_feature_select']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+
+          if (transformationData.time_since == true || document.getElementById("time_since").checked) {
+            if (transformationData.time_since_input == undefined || transformationData.time_since_input == null || transformationData.time_since_input == "" || $("input[name='time_since_input']").val()== "") {
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Enter value for Time Since");
+              $("input[name='time_since_input']").focus();
+              return;
+            }else
+              $("#fileErrorMsg").addClass("visibilityHidden");
+          }
+          var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+          this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+          dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
+          this.closeBinsOrLevelsModal();
+          this.closeTransformColumnModal();
         }
       }
-      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-      dataToSave.encoding_dimensions?dataToSave.encoding_type=dataToSave.encoding_type:dataToSave.encoding_type="";
-      this.closeBinsOrLevelsModal();
-      this.closeTransformColumnModal();
-    }
-    else {
+    }else{
       $("#fileErrorMsg").removeClass("visibilityHidden");
-      $("#fileErrorMsg").html("No fields Selected");
+      $("#fileErrorMsg").html("Please enter some values");
+      return false;
     }
   }
 
@@ -355,16 +606,44 @@ export class FeatureEngineering extends React.Component {
     this.saveTopLevelValues();
   }
   handleTopLevelInputOnchange(event) {
-    this.state.topLevelInput = event.target.value;
-    this.saveTopLevelValues();
+    if(this.props.convertUsingBin === "true" && document.getElementById("flight_number").value === ""){
+      $("#binErrorMsg").removeClass("visibilityHidden");
+      $("#binErrorMsg").html("Please enter number of bins");
+      return false;
+    }
+    else if(0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= this.props.datasetRow){
+      $("#binErrorMsg").removeClass("visibilityHidden");
+      $("#binErrorMsg").html("Value should be greater than 0 and less than "+ this.props.datasetRow +"");
+      return false;
+    }
+    else if(!Number.isInteger(parseFloat(event.target.value))){
+      $("#binErrorMsg").removeClass("visibilityHidden");
+      $("#binErrorMsg").html("Value should be a positive interger");
+      return false;
+    }
+    else{
+      $("#binErrorMsg").addClass("visibilityHidden");
+      $("#binErrorMsg").html("");
+      this.state.topLevelInput = event.target.value;
+      this.saveTopLevelValues();
+    }
   }
   saveTopLevelValues() {
     this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, this.state.topLevelInput));
     this.setState({ state: this.state });
   }
   handleProcedClicked(event) {
-    var proccedUrl = this.props.match.url.replace('featureEngineering', 'Proceed');
-    this.props.history.push(proccedUrl);
+    if(this.props.convertUsingBin === "true" && document.getElementById("flight_number").value === "" ){
+      bootbox.alert(statusMessages("warning", "Please resolve errors", "small_mascot"));
+      return false;
+    }else if( this.props.convertUsingBin === "true" && (0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= this.props.datasetRow) ){
+      bootbox.alert(statusMessages("warning", "Please resolve errors", "small_mascot"));
+      return false;
+    }
+    else{
+      var proccedUrl = this.props.match.url.replace('featureEngineering', 'algorithmSelection');
+      this.props.history.push(proccedUrl);
+    }
   }
   isBinningOrLevelsDisabled(item) {
     return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType != item.actualColumnType))
@@ -382,8 +661,13 @@ export class FeatureEngineering extends React.Component {
     });
   }
 
+  handleBack=()=>{
+    const appId = this.props.match.params.AppId;
+    const slug = this.props.match.params.slug;
+    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/dataCleansing?from=feature_Engineering`);
+  }
+
   render() {
-    console.log("FeatureEngineering render method is called...");
     this.feTableSorter();
     var feHtml = "";
     var SV = "";
@@ -398,7 +682,8 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
     var data = this.props.datasets.selectedVariables;
 
-    var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
+    if(this.props.dataPreview != null)
+      var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
 
     var unselectedvar = [];
     for (var key in this.props.datasets.selectedVariables) {
@@ -426,11 +711,11 @@ export class FeatureEngineering extends React.Component {
         else
           numberOfSelectedDimensions += 1;
         return (
-          <tr className={('all ' + item.columnType)}>
+          <tr key={key} className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase() + item.columnType.slice(1)}</td>
-            <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
-            <td> <Button onClick={this.openTransformColumnModal.bind(this, item)} bsStyle="cst_button">Transform</Button></td>
+            <td> <Button id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
+            <td> <Button id={`tranform_${item.name}`} onClick={this.openTransformColumnModal.bind(this, item)} bsStyle="cst_button">Transform</Button></td>
           </tr>
         );
       })
@@ -460,8 +745,8 @@ export class FeatureEngineering extends React.Component {
             <div id="errorMsgs" className="text-danger"></div>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-            <Button bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
+            <Button id="binsCancel" onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
+            <Button id="binsCreate" bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -471,14 +756,14 @@ export class FeatureEngineering extends React.Component {
         <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
-              <h3 className="modal-title">Transform column</h3>
+              <h3 className="modal-title">Transform {this.props.selectedItem.columnType} column</h3>
             </Modal.Header>
             <Modal.Body>
               <Transform parentPickValue={this.pickValue} />
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "transformationData")}>Create</Button>
+              <Button id="transformCancel"  onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
+              <Button id="transformCreate"  bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "transformationData")}>Create</Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -508,15 +793,23 @@ export class FeatureEngineering extends React.Component {
                   </p>
                     <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.state.topLevelRadioButton === "true"} />
+                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.props.convertUsingBin === "true"} />
                         <label for="mTod-binning1">Yes</label>
                       </div>
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.state.topLevelRadioButton === "false"} />
+                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.props.convertUsingBin === "false"} />
                         <label for="mTod-binning2">No </label>
                       </div>
                     </span>
-                    {(this.state.topLevelRadioButton == "true") ? <div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number" /></span></div> : ""}
+                    {(this.props.convertUsingBin === "true") ?
+                        <div id="box-binning" class="xs-ml-20 block-inline">
+                          <div class="inline-block"> Number of bins : 
+                            <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" id="flight_number" name="number" defaultValue={this.props.numberOfBins} />
+                          </div>
+                          <div class="row form-group">
+                            <div className="text-danger visibilityHidden" id="binErrorMsg">ha</div>     
+                          </div>
+                      </div> : ""}
                   </div>
                 </div>
                 <div className="panel box-shadow ">
@@ -562,8 +855,9 @@ export class FeatureEngineering extends React.Component {
                     </div>
                   </div>
                   <div className="panel-body box-shadow">
-                    <div className="buttonRow text-right" id="dataPreviewButton">
-                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                  <Button id="FeBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                    <div className="buttonRow" id="dataPreviewButton" style={{float:"right",display:"inline-block"}}>
+                      <Button id="FeProceed" onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
                     <div class="xs-p-10"></div>
                   </div>
@@ -582,27 +876,21 @@ export class FeatureEngineering extends React.Component {
   }
 
   openBinsOrLevelsModal(item) {
-    console.log("open ---openBinsOrLevelsModal");
     this.props.dispatch(openBinsOrLevelsModalAction(item));
-    //this.setState({NoModal: this.state.NoModal + 1});
    }
 
   closeBinsOrLevelsModal(event) {
-    console.log("closeddddd ---closeBinsOrLevelsModal");
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
   openTransformColumnModal(item) {
-    console.log("open ---openTransformColumnModal");
     this.props.dispatch(openTransformColumnModalAction(item));
   }
 
   closeTransformColumnModal() {
-    console.log("closeddddd ---closeTransformColumnModal");
     this.props.dispatch(closeTransformColumnModalAction());
   }
 
   handleSelect(selectedKey) {
-    console.log(`selected ${selectedKey}`);
     this.props.dispatch(selectedBinsOrLevelsTabAction(selectedKey));
   }
 

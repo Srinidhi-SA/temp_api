@@ -12,6 +12,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import { saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -24,6 +25,8 @@ import {
     selectedItem: store.datasets.selectedItem,
     featureEngineering: store.datasets.featureEngineering,
     datasets: store.datasets,
+    editmodelFlag: store.datasets.editmodelFlag,
+    modelEditconfig: store.datasets.modelEditconfig,
   };
 })
 
@@ -66,30 +69,27 @@ export class Levels extends React.Component {
         allSelectedItems = new Set([...allSelectedItems, ...elem.multiselectValue])
       }
     });
-  if(this.getAllOptions().length == this.state.levelsArray.flatMap(i=>i.multiselectValue).length){
-   
-    $(".addn").addClass("noDisplay");
-
-    // if((($('ul').last().find('li')).length == 0 ) ){
-    // $(".form_withrowlabels").last().css("display","none");
-    // }
-  }
-  else{
-    $(".addn").removeClass("noDisplay");
-  }
+    var storeValue = this.state.levelsArray.map(i=>i.multiselectValue);
+    var reducestoreValue = storeValue.reduce((acc, val) => acc.concat(val), []);
+    if(this.getAllOptions().length == reducestoreValue.length){
+        $(".addn").addClass("noDisplay");
+        
+      // if((($('ul').last().find('li')).length == 0 ) ){
+      // $(".form_withrowlabels").last().css("display","none");
+      // }
+    }
+    else{
+      $(".addn").removeClass("noDisplay");
+    }
     return allSelectedItems;
   }
 
   componentWillMount() {
-    this.addNewLevel();
-    console.log("Levels componentWillMount method is called...");
-    
-
+    this.addNewLevel();  
   }
+
   componentWillUpdate() {
-    
-    this.props.parentUpdateLevelsData(this.state.levelsArray);
-    
+   this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
 
   componentDidMount() {
@@ -145,7 +145,6 @@ export class Levels extends React.Component {
   onClickCheckBox(event) {
     var checkedValue = event.target.checked;
     var checkedAttr = event.target.name;
-    console.log("checkedval:", checkedValue, "checkedAttr:", checkedAttr);
     if (checkedValue) {
       this.state.statesArray.filter(item => item.name == checkedAttr);
     } else {
@@ -173,9 +172,6 @@ export class Levels extends React.Component {
   }
 
   render() {
-    console.log("Levels render method is called...");
-
-
     if (this.props.selectedItem.columnType == "dimension") {
       var levelData = this.getLevelData();
       var levels = "";
@@ -187,14 +183,14 @@ export class Levels extends React.Component {
               <div className="form_withrowlabels form-inline" key={idx} >
                 <div className="form-group">
                   <label for="txt_lName1">{`${idx + 1}`}&nbsp;&nbsp;&nbsp;</label>
-                 <input type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
+                 <input id={`Level#${idx + 1}`} type="text" value={level.inputValue} name={`name #${idx + 1}`} name="newcolumnname" className="form-control levelrequired" placeholder={`Level #${idx + 1} name`} defaultValue={levelData.inputValue}  onInput={this.inputOnChangeHandler.bind(this, idx, "inputValue")} required/>
                </div>
                 <div className="form-group">
                   <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
                 </div>
                 <div className="form-group">
                   <div className="content-section implementation multiselect-demo">
-                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
+                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} defaultValue={levelData.multiselectValue} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
                       style={{ minWidth: '12em' }}  filter={true} placeholder="choose" />
                   </div>
                 </div>
@@ -210,7 +206,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
             </div>
           </div>
 
@@ -262,7 +258,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg"></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
             </div>
           </div>
         </Tab.Pane>
@@ -274,7 +270,6 @@ export class Levels extends React.Component {
         <Tab.Container id="left-tabs-example">
           <Row className="clearfix">
             <Col sm={15}>
-              {/* <Tab.Content animation>{levels}</Tab.Content> */}
               <Tab.Content animation>{(this.props.selectedItem.columnType == "dimension") ? levels : dtlevels}</Tab.Content>
             </Col>
           </Row>

@@ -12,6 +12,7 @@ import {API} from "../../helpers/env";
 @connect((store) => {
     return {login_response: store.login.login_response,
         signal: store.signals.signalAnalysis,
+        modelSummaryFlag:store.apps.modelSummaryFlag,
         viewChartFlag:store.signals.viewChartFlag,
         viewChartClassId:store.signals.chartClassId,
     };
@@ -59,9 +60,8 @@ export class ViewChart extends React.Component {
         chartDataDownload['bindto'] = document.querySelector(".c3ChartDownload"+this.props.classId)
         let chartDownload = c3.generate(chartDataDownload);
 
-
-
-
+        if(this.props.viewChartFlag && this.props.modelSummaryFlag)
+            document.getElementsByClassName("modal-title")[0].innerText = "Feature Importance";
     }
     shouldComponentUpdate(){
 

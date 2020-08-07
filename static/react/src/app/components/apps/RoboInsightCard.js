@@ -124,7 +124,7 @@ export class RoboInsightCard extends React.Component {
 						
 					<span onClick={this.handleInsightRename.bind(this, data.slug, data.name)}>
                       <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
+                        <i className="fa fa-pencil"></i>
                         &nbsp;&nbsp;Rename</a>
                     </span>
                     <span onClick={this.handleInsightDelete.bind(this, data.slug)}>

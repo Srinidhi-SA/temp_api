@@ -1,8 +1,10 @@
 import { displayName } from "react-bootstrap-dialog";
 
 export default function reducer(state = {
+        analystModeSelectedFlag:false,
         appsModelShowModal:false,
         modelList: {},
+        allModelList: {},
         algoList:{},
         deploymentData:{},
         viewDeploymentFlag:false,
@@ -27,12 +29,16 @@ export default function reducer(state = {
         selectedAlg:"",
         scoreSummary:{},
         scoreSlug:"",
+        scoreSlugShared:"",
         currentAppId:"",
         currentAppName:"",
         appsLoaderModal:false,
         appsLoaderPerValue:-1,
         appsLoaderText :"",
+        appsLoadedText :["Loading..."],
+        setAppsLoaderValues:{},
         modelSummaryFlag:false,
+        parameterTuningFlag:false,
         scoreSummaryFlag:false,
         modelTargetVariable:"",
         roboList:{},
@@ -53,7 +59,7 @@ export default function reducer(state = {
         appsSelectedTabId:"model",
         audioFileUploadShowFlag:false,
         audioFileUpload:{},
-        appsLoaderImage:"assets/images/Processing.gif",
+        appsLoaderImage:"assets/images/Processing_mAdvisor.gif",
         audioFileSummary:{},
         audioFileSlug :"",
         audioFileSummaryFlag:false,
@@ -63,11 +69,13 @@ export default function reducer(state = {
         robo_sorttype:null,
         apps_model_sorton:null,
         apps_model_sorttype:null,
+        filter_models_by_mode:"",
         apps_score_sorton:null,
         apps_score_sorttype:null,
         appsCreateStockModal:false,
         appsStockSymbolsInputs:[],
         stockAnalysisList:{},
+        tensorFlowInputs:[],
         stockUploadDomainModal:false,
         stockUploadDomainFiles:[],
         stockSlug:"",
@@ -87,9 +95,8 @@ export default function reducer(state = {
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
-        targetLevelCounts:null,
+        targetLevelCounts:"",
         currentAppDetails:null,
-        updateCreateModelHideShow:false,
         apps_regression_modelName:"",
         apps_regression_targetType:"",
         apps_regression_levelCount:"",
@@ -105,12 +112,26 @@ export default function reducer(state = {
         stock_apps_model_sorttype:null,
         unselectedModelsCount:0,
         metricSelected:{},
+        pyTorchLayer:{},
+        pyTorchSubParams:{},
+        idLayer:[],
+        layerType:"Dense",
+        panels:[],
+        modelLoaderidxVal:0,
+        modelLoaderidx:0,
+        allStockAnalysisList:{},
 
 }, action) {
-    // console.log("In APPs reducer!!");
-    // console.log(action);
 
     switch (action.type) {
+        case "UPDATE_MODE_SELECTION":
+    {
+        return {
+            ...state,
+            analystModeSelectedFlag:action.flag,
+        }
+    }
+    break;
     case "APPS_MODEL_SHOW_POPUP":
     {
         return {
@@ -145,8 +166,19 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model list!!");
     }
     break;
-
-
+    case "MODEL_ALL_LIST":
+      {
+        return {
+          ...state,
+          allModelList: action.data,
+        }
+      }
+      break;
+      case "MODEL_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch model list!!");
+      }
+      break;
     case "DEPLOY_PREVIEW":
     {
         return {
@@ -171,6 +203,14 @@ export default function reducer(state = {
             algoList: action.data,
             latestAlgos:action.latestAlgos,
             current_page:action.current_page,
+        }
+    }
+    break;
+    case "CLEAR_APPS_ALGO_LIST":
+    {
+        return {
+            ...state,
+            algoList:{}
         }
     }
     break;
@@ -225,17 +265,6 @@ export default function reducer(state = {
                 "data":{}
             }
         }
-    //     var curDepData = state.deployData
-    //     var curColSlug = curDepData[action.colSlug];
-    //     if(curColSlug == undefined){
-    //         curColSlug = { }
-    //       }
-    //       curDepData[action.colSlug] = action.dataToSave;
-    //       console.log(curColSlug);
-    //   return{
-    //     ...state,
-    //     deployData : curDepData
-    //   }
     }
     break;
 
@@ -294,7 +323,6 @@ export default function reducer(state = {
         deployShowModal: true,
         deployItem:action.selectedItem
       }
-      console.log(deployShowModal)
     }
     break;
 
@@ -429,6 +457,7 @@ export default function reducer(state = {
             ...state,
             scoreSummary: action.data,
             scoreSlug:action.data.slug,
+            scoreSlugShared:action.data.shared_slug,
         }
     }
     break;
@@ -469,6 +498,35 @@ export default function reducer(state = {
         }
     }
     break;
+    case "APPS_LOADED_TEXT":{
+        return {
+            ...state,
+            appsLoadedText : action.text,
+        }
+    }
+    break;
+    case "MODEL_LOADER_IDX_VAL": {
+        return {
+          ...state,
+          modelLoaderidxVal : action.idxVal
+        }
+      }
+      break;
+    case "MODEL_LOADER_IDX": {
+      return {
+        ...state,
+        modelLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_MODEL_LOADER_VALUES":{
+      return {
+        ...state,
+        modelLoaderidxVal:0,
+        modelLoaderidx:0,
+      }
+    }
+    break;
     case "HIDE_APPS_LOADER_MODAL":
     {
 
@@ -477,7 +535,18 @@ export default function reducer(state = {
             appsLoaderModal:false,
             appsLoaderPerValue:-1,
             appsLoaderText :"",
-            updateCreateModelHideShow:false,
+        }
+    }
+    break;
+    case "SET_APPS_LOADER_MODAL":{
+        var allLoaderValues = state.setAppsLoaderValues;
+        allLoaderValues[action.slug] = {
+            "value" : action.value,
+            "status" : action.status,
+        }
+        return {
+          ...state,
+          setAppsLoaderValues : allLoaderValues,
         }
     }
     break;
@@ -495,7 +564,6 @@ export default function reducer(state = {
         return {
             ...state,
             modelSlug:action.slug,
-            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -513,12 +581,20 @@ export default function reducer(state = {
         }
     }
     break;
+    case "UPDATE_PARAMETER_TUNING_FLAG":
+    {
+        return {
+            ...state,
+            parameterTuningFlag:action.flag,
+        }
+    }
+    break;
     case "CREATE_SCORE_SUCCESS":
     {
         return {
             ...state,
             scoreSlug:action.slug,
-            updateCreateModelHideShow:true,
+            scoreSlugShared:action.sharedSlug,
         }
     }
     break;
@@ -600,7 +676,6 @@ export default function reducer(state = {
         return {
             ...state,
             roboDatasetSlug:action.slug,
-            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -720,7 +795,6 @@ export default function reducer(state = {
     break;
     case "AUDIO_UPLOAD_FILE":
     {
-        console.log(action.files[0])
         return{
             ...state,
             audioFileUpload:action.files[0],
@@ -813,6 +887,14 @@ export default function reducer(state = {
         }
     }
     break;
+    break;	case "FILTER_APPS_MODEL":
+    {
+        return{
+            ...state,
+            filter_models_by_mode:action.filter_by_mode,
+        }
+    }
+    break;
     case "SORT_APPS_SCORE":
     {
         return{
@@ -841,7 +923,81 @@ export default function reducer(state = {
         }
     }
     break;
+    case "EDIT_TENSORFLOW_INPUT":{
+        return{
+            ...state,
+            tensorFlowInputs : action.editTfInput
+        }
+    }
+    break;
 
+    case "ADD_LAYERS":
+    {
+        var curTfData = state.tensorFlowInputs
+        curTfData[action.id-1] =  action.tensorFlowArray;
+        return{
+            ...state,
+            tensorFlowInputs : curTfData.filter(i=>i!=null)
+        }
+    }
+
+    break;    
+    case "UPDATE_LAYERS":
+    { 
+        var stateval =state.tensorFlowInputs
+        action.tensorFlowInputs[action.name] = action.val;
+        stateval[action.arrayIndxToUpdate]=action.tensorFlowInputs        
+        return{
+          ...state,
+          tensorFlowInputs : stateval
+        }
+    }
+
+    break;
+    
+    case "DELETE_LAYER_TENSORFLOW":
+    { 
+        // var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
+        var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
+
+        // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
+        var delPanel = state.panels;
+        delPanel.pop(action.deleteId)
+        return{
+          ...state,
+          tensorFlowInputs :curTfData,
+          panels : delPanel
+        }
+      }
+
+    break;
+    
+    case "CLEAR_LAYERS":
+    {
+        return{
+          ...state,
+          tensorFlowInputs :[],
+          panels : [],
+          layerType:"Dense",
+        }
+      }
+
+    break;
+
+    case "CHANGE_LAYER_TYPE":{
+        return{
+            ...state,
+            layerType:action.layerTyp,
+        }
+    }
+    break;
+    case "PANELS_TENSOR":{
+        return{
+            ...state,
+            panels:action.newPanel
+        }
+    }
+    break;
 
     case "STOCK_LIST":
     {
@@ -890,7 +1046,6 @@ export default function reducer(state = {
         return{
             ...state,
             stockSlug:action.slug,
-            updateCreateModelHideShow:action.displayHideCancel,
         }
     }
     break;
@@ -1008,6 +1163,54 @@ export default function reducer(state = {
         }
     }
     break;
+    case "ID_LAYER_ARRAY":{
+        let curIdArray = state.idLayer.concat([action.newLayer])
+        return{
+            ...state,
+            idLayer:curIdArray,
+        }
+    }
+    break;
+    case "SET_PYTORCH_LAYER":{
+        var layerData = state.pyTorchLayer
+        var curLayer = layerData[parseInt(action.layerNum)];
+        if(curLayer === undefined){
+            curLayer = {}
+        }
+        curLayer = action.lyrDt
+        layerData[action.layerNum] = curLayer
+        return {
+            ...state,
+            pyTorchLayer : layerData
+        }
+    }
+    break;
+    case "SET_PYTORCH_SUBPARAMS":{
+        return {
+            ...state,
+            pyTorchSubParams : action.subParamDt
+        }
+    }
+    break;
+    case "DELETE_LAYER_PYTORCH":{
+        var newPyTorchLayer = state.pyTorchLayer
+        delete newPyTorchLayer[action.layerNum];
+        return {
+            ...state,
+            pyTorchLayer : newPyTorchLayer,
+            idLayer : action.newIdArray
+        }
+    }
+    break;
+    case "CLEAR_PYTORCH_VALUES":{
+        return {
+            ...state,
+            pyTorchLayer : {},
+            pyTorchSubParams : {},
+            idLayer : [],
+        }
+    }
+    break;
     case "UPDATE_REGRESSION_ALGORITHM_DATA":
     {
         return{
@@ -1114,6 +1317,20 @@ export default function reducer(state = {
             }
         }
     }
+    break;
+    case "ALL_STOCK_ANALYSIS_LIST":
+      {
+        return {
+          ...state,
+          allStockAnalysisList: action.data,
+        }
+      }
+      break;
+      case "ALL_STOCK_ANALYSIS_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch stock analysis list!!");
+      }
+      break;
     }
     return state
 }

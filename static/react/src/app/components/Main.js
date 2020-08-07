@@ -8,6 +8,8 @@ import store from "../store";
 import {isEmpty,setUserDetails,getUserDetailsOrRestart,enableChatbot,checkChatbotPresent,hidechatbot} from "../helpers/helper";
 import {cookieObj} from '../helpers/cookiesHandler';
 import Notifications, {notify} from 'react-notify-toast';
+import {STATIC_URL} from "../helpers/env.js";
+import {LexClass} from "./apps/lex";
 
 @connect((store) => {
   return {
@@ -17,11 +19,9 @@ import Notifications, {notify} from 'react-notify-toast';
 export class Main extends React.Component {
   constructor(props){
     super(props);
-	console.log("props in main:::");
-	console.log(props);
   }
+  
   addChatbotScript() {
-    //for chatbot
       if(!checkChatbotPresent()){
         if(window.location.pathname.indexOf("datamgmt")==-1){
        const script = document.createElement("script");
@@ -30,17 +30,11 @@ export class Main extends React.Component {
        script.async = true;
 
        document.body.appendChild(script);
-       //enableChatbot();
 }
    }
  }
   render() {
-
-    console.log("Main is called!!");
-    console.log(this.props);
-    // console.log(this.props.login_response);
     if (document.cookie.indexOf("JWT ") > 0 ) {
-      // this.addChatbotScript()
       return (
         <div className="main_wrapper">
           <LeftPanel/>
@@ -52,8 +46,6 @@ export class Main extends React.Component {
     } else {
         sessionStorage.clear();
         cookieObj.clearCookies();
-      console.log("Session ended!!");
-      //bootbox.alert("Session Timeout. Please login again to continue.")
       return(<Redirect to={"/login"} />);
     }
 

@@ -59,7 +59,7 @@ export class SubSetting extends React.Component {
       if(selectAllChecked == true)
       $('#dim[type="checkbox"]').prop('checked', true);
 
-      $("#dim").click(function() { // select all dimension clicked
+      $("#dim").click(function() { 
         let count = 0;
         if ($(this).is(":checked")) {
           $('.dimension[type="checkbox"]').prop('checked', true);
@@ -76,13 +76,10 @@ export class SubSetting extends React.Component {
           }
         });
         that.state.curdimention = that.state.selectedDimention
-        console.log(that.state.selectedDimention);
         $("#saveButton").removeClass('btn-alt4')
         $("#saveButton").addClass('btn-primary')
         $("#saveButton").removeAttr('disabled')
       });
-
-      //Note:following will be called when we need to persist checklist on click of checkbox
 
       $('.dimension[type="checkbox"]').click(function() {
         let count = 0;
@@ -99,8 +96,6 @@ export class SubSetting extends React.Component {
         });
         if(checkSelectAll == true)
         $('#dim[type="checkbox"]').prop('checked', true);
-
-        console.log(that.state.selectedDimention);
         $("#saveButton").removeClass('btn-alt4')
         $("#saveButton").addClass('btn-primary')
         $("#saveButton").removeAttr('disabled')
@@ -119,7 +114,6 @@ export class SubSetting extends React.Component {
           }
         });
         that.state.curdimention = that.state.selectedDimention
-        console.log(that.state.selectedDimention);
         $('#saveButton').removeClass('btn-primary')
         $('#saveButton').addClass('btn-alt4')
         $('#saveButton').attr('disabled', true);
@@ -143,11 +137,9 @@ export class SubSetting extends React.Component {
       alert("please enter a valid number")
     else {
       this.setState({
-        curmin: e.target.value,
+        curmin: parseInt(e.target.value),
         textboxUpdated: true
       })
-      //this.state.curmin = Number(e.target.value)
-      console.log(e.target.value)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
       $("#saveButton").removeAttr('disabled')
@@ -158,11 +150,9 @@ export class SubSetting extends React.Component {
       alert("please enter a valid number")
     else {
       this.setState({
-        curmax: e.target.value,
+        curmax: parseInt(e.target.value),
         textboxUpdated: true
       })
-      //this.state.curmin = Number(e.target.value)
-      console.log(e.target.value)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
       $("#saveButton").removeAttr('disabled')
@@ -436,23 +426,49 @@ export class SubSetting extends React.Component {
         break;
 
     }
-    if ((this.state.curmin <= this.state.min) || (this.state.curmin >= this.state.max)) {
-      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
-    }else if((this.state.curmax <= this.state.curmin) || (this.state.curmax > this.state.max)){
-      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
-    }else{
-    $('#saveButton').removeClass('btn-primary')
-    $('#saveButton').addClass('btn-alt4')
-    $('#saveButton').attr('disabled', true);
-    this.props.dispatch(updateSubSetting(this.state.subSettingRs));
-  }
-
+    if(this.props.item.columnType == "measure"){
+      if ((this.state.curmin < this.state.min) || (this.state.curmin > this.state.max)) {
+        bootbox.alert("Please select a range between " + this.state.min + " and " + this.state.max)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }else if((this.state.curmax <= this.state.curmin) || (this.state.curmax > this.state.max)){
+        bootbox.alert("Please select a range between " + this.state.min + " and " + this.state.max)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }else{
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled', true);
+        this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+      }
+    }else if(this.props.item.columnType == "datetime"){
+      if( Date.parse(this.state.curstartDate) < Date.parse(this.state.startDate) || Date.parse(this.state.curstartDate) > Date.parse(this.state.endDate) ){
+        bootbox.alert("Please select a range between " + this.state.startDate + " and " + this.state.endDate)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }
+      else if(Date.parse(this.state.curendDate) < Date.parse(this.state.curstartDate) || Date.parse(this.state.curendDate) > Date.parse(this.state.endDate)){
+        bootbox.alert("Please select a range between " + this.state.startDate + " and " + this.state.endDate)
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      }
+      else{
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled', true);
+        this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+      }
+    }
+    else if(this.props.item.columnType == "dimension"){
+      $('#saveButton').removeClass('btn-primary')
+      $('#saveButton').addClass('btn-alt4')
+      $('#saveButton').attr('disabled', true);
+      this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+    }
   }
   callSubsetTableSorter() {
     $(function() {
@@ -464,14 +480,9 @@ export class SubSetting extends React.Component {
           }
         }
       });
-      // $("#dim").click();
     });
   }
   render() {
-    console.log("subsetting is called####$$$$!!");
-    console.log(this.props)
-    console.log("state is")
-    console.log(this.state)
     this.callSubsetTableSorter()
     let subsettingsTemplate = "";
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
@@ -479,7 +490,6 @@ export class SubSetting extends React.Component {
     }
     if (this.props.item.columnStats != undefined) {
       this.props.item.columnStats.map((stats) => {
-        //  console.log(stats)
         if (stats.name == "min")
           this.state.min = stats.value
         else if (stats.name == "max") {
@@ -503,17 +513,11 @@ export class SubSetting extends React.Component {
         if (this.state.dimentionList)
           this.state.curdimention = Object.keys(this.state.dimentionList);
         }
-      console.log("after assign")
-      console.log(this.state)
-
       subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
     }
 
-    //console.log(subsettingsTemplate)
-
     return (
       <div>
-        {/*Start Tab Subsettings*/}
         <div id="tab_subsettings" className="panel-group accordion accordion-semi">
           <div className="panel panel-default box-shadow">
             <div className="panel-heading">
@@ -539,7 +543,6 @@ export class SubSetting extends React.Component {
           </div>
         </div>
 
-        {/* End Tab Subsettings */}
       </div>
 
     )

@@ -21,15 +21,13 @@ export class DetailOverlay extends React.Component {
   }
   getAnalysisValues(displayName,value,name){
 	  value = value.map((key,index) =>{
-		  return( <li><i class="fa fa-check"></i>&nbsp;&nbsp;{key}</li>);
+		  return( <li key={index}><i class="fa fa-check"></i>&nbsp;&nbsp;{key}</li>);
 	  })
 	 let  analysisList = <ul class="list-unstyled">{value}</ul>;
 	   return  <p className="overlayTooltip"><h5 class="text-primary">List Of Signals</h5>{analysisList}</p>
   }
   render() {
    var details = this.props.details.brief_info;
-   console.log("In overlay element");
-   console.log(this.props.details)
    let templateList = "";
    let template = {};
    if(typeof details!="undefined")
@@ -45,9 +43,9 @@ export class DetailOverlay extends React.Component {
 	  }
 
 	 if(index == 1 || index == 3 )
-	  return(<div>{templateList}<hr className="hr-popover"/></div>);
+	  return(<div key={index}>{templateList}<hr className="hr-popover"/></div>);
 	   else
-	  return( <div>{templateList}</div>);
+	  return( <div key={index}>{templateList}</div>);
    })
   }
    return (

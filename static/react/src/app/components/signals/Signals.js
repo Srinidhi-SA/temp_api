@@ -13,7 +13,7 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
-  updateHide
+  getAllSignalList
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -30,12 +30,15 @@ import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList, hideDataPreview} from "../../actions/dataActions";
+import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEdit} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
-import {showLoading, hideLoading} from 'react-redux-loading-bar'
+import {showLoading, hideLoading} from 'react-redux-loading-bar';
+import {Share} from "../common/Share";
+import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
+import {clearDataPreview} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -45,7 +48,8 @@ import {showLoading, hideLoading} from 'react-redux-loading-bar'
     signal_search_element: store.signals.signal_search_element,
     signal_sorton: store.signals.signal_sorton,
     signal_sorttype: store.signals.signal_sorttype,
-    signalAnalysis: store.signals.signalAnalysis
+    signalAnalysis: store.signals.signalAnalysis,
+    userList:store.datasets.allUserList
   };
 })
 
@@ -55,14 +59,16 @@ export class Signals extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
+    this.props.dispatch(getAllSignalList());
+    this.props.dispatch(clearDataPreview())
     var pageNo = 1;
-    //this.props.dispatch(storeSearchElement(""));
     this.props.dispatch(hideDataPreview())
-    //console.log(getUserDetailsOrRestart.get().view_data_permission)
+    this.props.dispatch(setEditModelValues("","",false));
+    this.props.dispatch(fetchModelEdit(""))
+    this.props.dispatch(saveTopLevelValuesAction("false",""))
     if(getUserDetailsOrRestart.get().view_data_permission=="true")
     this.props.dispatch(getAllDataList());
     this.props.dispatch(emptySignalData());
-    // thvar dateFormat = require('dateformat');is.props.dispatch(emptySignalAnalysis());
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
@@ -73,11 +79,10 @@ export class Signals extends React.Component {
     }
 
   componentDidMount() {
-    console.log("/checking anchor html");
-    console.log($('a[rel="popover"]'));
     this.props.dispatch(refreshSignals(this.props));
-
-  }
+    this.props.dispatch(getAllSignalList());
+    this.props.dispatch(getAllUsersList(this.props));
+}
 
   handleSelect(eventKey) {
     if (this.props.signal_search_element) {
@@ -95,7 +100,6 @@ export class Signals extends React.Component {
 
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      console.log('searching');
       if (e.target.value != "" && e.target.value != null){
         if(this.props.signal_sorton)
         this.props.history.push('/signals?search='+e.target.value+'&sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
@@ -120,11 +124,9 @@ export class Signals extends React.Component {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
-    this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
 
-    //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
@@ -155,24 +157,12 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
   render() {
-    console.log("signals is called##########3");
     document.body.className = "";
-
-    //empty search element
-    /*if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
-      console.log("search is empty");
-      this.props.dispatch(storeSearchElement(""));
-      let search_element = document.getElementById('search_signals');
-      if (search_element)
-        document.getElementById('search_signals').value = "";
-      }*/
-
-    if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
+   if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
       return (<Redirect to={_link}/>);
     }
 
-    console.log(this.props);
     var data = this.props.signalList;
     const pages = store.getState().signals.signalList.total_number_of_pages;
     const current_page = store.getState().signals.signalList.current_page;
@@ -183,9 +173,7 @@ export class Signals extends React.Component {
     }
 
     if (data) {
-      console.log("under if data condition!!")
-
-      storyList = <SignalCard data={data}/>;
+    storyList = <SignalCard data={data}/>;
 
       return (
         <div className="side-body">
@@ -249,6 +237,8 @@ export class Signals extends React.Component {
               </div>
             </div>
           <CreateSignalLoader history={this.props.history}/>
+          <Share usersList={this.props.userList}/>
+
         </div>
                 </div>
       );

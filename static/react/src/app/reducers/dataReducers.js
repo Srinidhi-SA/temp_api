@@ -9,11 +9,15 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
+  allUserList:{},
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
   signalMeta: {},
   curUrl: "",
+  editmodelModelSlug:"",
+  editmodelDataSlug:"",
+  editmodelFlag:false,
   dataUploadLoaderModal: false,
   dULoaderValue: -1,
   data_search_element: "",
@@ -38,6 +42,7 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
+  dataLoadedText:[],
   dataTransformSettings:[],
   variableTypeListModal:false,
   selectedColSlug:"",
@@ -58,19 +63,35 @@ export default function reducer(state = {
   featureEngineering:{},
   selectedVariables : {},
   checkedAll:true,
+  checked:true,
   removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
+  duplicateAttributes: false,
+  duplicateObservations: false,
   olUpperRange : {},
   binsOrLevelsShowModal:false,
   transferColumnShowModal:false,
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
+  shareItem:{},
+  shareItemSlug:"",
+  shareItemType:"",
   isNoOfBinsEnabled:false,
+  shareModelShow:false,
+  dtModelShow:false,
+  dtRule: "",
+  dtData: {},
+  dtPath:[],
   isSpecifyIntervalsEnabled:true,
-  
+  convertUsingBin: "false",
+  modelEditconfig:"",
+  topLevelData:{},
+  tensorValidateFlag: false,
+  pytorchValidateFlag: false,
+  createSigLoaderFlag: false,
+  metaDataLoaderidxVal:0,
+  metaDataLoaderidx:0,
 }, action) {
-  console.log("In DATA reducer!!");
-  console.log(action);
 
   switch (action.type) {
     case "DATA_LIST":
@@ -82,7 +103,33 @@ export default function reducer(state = {
           current_page: action.current_page
         }
       }
+      break;  
+      case "MODEL_EDIT_CONFIG":
+      {
+        return {
+          ...state,
+          modelEditconfig: action.doc,
+          
+         
+        }
+      }
       break;
+      case "TENSOR_VALIDATE_FLAG":
+          {
+            return {
+              ...state,
+              tensorValidateFlag: action.flag,
+            }
+          }
+          break;
+          case "PYTORCH_VALIDATE_FLAG":
+            {
+              return {
+                ...state,
+                pytorchValidateFlag: action.flag,
+              }
+            }
+            break;
 
     case "DATA_LIST_ERROR":
       {
@@ -101,7 +148,32 @@ export default function reducer(state = {
           dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
       }
+      break; 
+      case "DATA_PREVIEW_ONLOAD":
+      {
+        return {
+          ...state,
+          dataPreview: action.dataPreview,
+          dataPreviewFlag: false,
+          selectedDataSet: action.slug,
+          subsettedSlug: "",
+          subsettingDone: false,
+          dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
+        }
+      }
       break;
+      case "DATA_PREVIEW_AUTOML":
+      {
+        return {
+          ...state,
+          dataPreview: action.dataPreview,
+          dataPreviewFlag: true,
+          selectedDataSet: action.slug,
+        }
+      }
+      break;
+
+
     case "DATA_PREVIEW_FOR_LOADER":
       {
         return {
@@ -123,7 +195,6 @@ export default function reducer(state = {
         return {
           ...state,
           allDataSets: action.data,
-          selectedDataSet: action.slug
         }
       }
       break;
@@ -132,6 +203,67 @@ export default function reducer(state = {
         throw new Error("Unable to fetch data list!!");
       }
       break;
+      case "USERS_ALL_LIST":
+      {
+        return {
+          ...state,
+          allUserList: action.json,
+        }
+      }
+      break;
+    case "USERS_ALL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch data list!!");
+      }
+      break;
+      case "SHARE_MODAL_SHOW":
+      {
+        return {
+          ...state,
+          shareModelShow: true,
+          shareItem:action.shareItem,
+          shareItemSlug:action.slug,
+          shareItemType:action.itemType,
+        }
+      }
+      break;
+      case "DT_MODAL_SHOW":
+        {
+          return {
+            ...state,
+            dtModelShow: true,
+            dtRule: action.rule,
+            dtPath: action.path,
+          }
+        }
+        break;
+      case "SET_EDIT_MODEL":
+      {
+        return {
+          ...state,
+          editmodelDataSlug:action.dataSlug,
+          editmodelModelSlug:action.modelSlug,
+          editmodelFlag:action.flag
+        }
+      }
+      break;
+  
+      case "SHARE_MODAL_HIDE":
+      {
+        return {
+          ...state,
+          shareModelShow: false
+        }
+      }
+      break;
+      case "DT_MODAL_HIDE":
+        {
+          return {
+            ...state,
+            dtModelShow: false
+          }
+        }
+        break;
     case "SELECTED_ANALYSIS_TYPE":
       {
         return {
@@ -462,6 +594,13 @@ export default function reducer(state = {
       loading_message:action.message}
     }
     break;
+    case "DATA_LOADED_TEXT":{
+      return {
+      ...state,
+      dataLoadedText : action.text
+      }
+    }
+    break;
     case "CLEAR_LOADING_MSG":
     {
       return{
@@ -665,22 +804,53 @@ export default function reducer(state = {
 
     }
     break;
+    case "CLEAR_SELECTED_VARIABLES":
+      {
+        return{
+          ...state,
+          selectedVariables : {}
+        }
+      }
+      break;
 
     case "CHECKED_ALL_SELECTED":
     {
+      var check = action.selecteOrNot;
       return {
         ...state,
-        checkedAll : action.selecteOrNot
+        checkedAll : check
       }
 
     }
     break;
+    case "DATA_CLEANSING_CHECK_UPDATE":
+      {
+        return {
+          ...state,
+          dataPreview: {
+            ...state.dataPreview,
+            meta_data: {
+              ...state.dataPreview.meta_data,
+              scriptMetaData: {
+                ...state.dataPreview.meta_data.scriptMetaData,
+                columnData: state.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => ({
+                  ...item,
+                  checked: index === Number(action.index) ? action.checkedOrNot : item.checked, 
+                }))
+              }
+            }
+          },
+        };
+  
+      }
+      break;
 
     case "REMOVE_DUPLICATE_ATTRIBUTES":
     {
       return {
         ...state,
-        removeDuplicateAttributes : action.yesOrNo
+        removeDuplicateAttributes : action.yesOrNo,
+        duplicateAttributes: action.yesOrNo,
       }
     }
     break;
@@ -689,7 +859,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        removeDuplicateObservations : action.yesOrNo
+        removeDuplicateObservations : action.yesOrNo,
+        duplicateObservations : action.yesOrNo,
       }
     }
     break;
@@ -800,7 +971,8 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
+        topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins},
+        convertUsingBin: action.yesNoValue
       }
     }
     break;
@@ -813,7 +985,11 @@ export default function reducer(state = {
         outlierRemoval:{},
         removeDuplicateAttributes :{},
         removeDuplicateObservations :{},
+        duplicateAttributes : false,
+        duplicateObservations : false,
+
       }
+      
     }
     break;
 
@@ -848,6 +1024,35 @@ export default function reducer(state = {
       return {
         ...state,
         isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+      }
+    }
+    break;
+    case "SET_CREATE_SIG_LOADER_FLAG":{
+      return {
+        ...state,
+        createSigLoaderFlag : action.flag
+      }
+    }
+    break;
+    case "METADATA_LOADER_IDX_VAL":{
+      return{
+        ...state,
+        metaDataLoaderidxVal : action.idxVal
+      }
+    }
+    break;
+    case "METADATA_LOADER_IDX":{
+      return{
+        ...state,
+        metaDataLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_METADATA_LOADER_VALUES":{
+      return {
+        ...state,
+        metaDataLoaderidxVal:0,
+        metaDataLoaderidx:0,
       }
     }
     break;

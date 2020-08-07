@@ -8,22 +8,22 @@ import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
 import {Card} from "./Card";
 import {STATIC_URL} from "../../helpers/env.js"
+import {clearToggleValue} from "../../actions/signalActions";
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis, toggleValues: store.signals.toggleValues };
 })
 
 export class MasterSummary extends React.Component {
   constructor() {
     super();
   }
+
+  componentDidMount(){
+    this.props.dispatch(clearToggleValue());    
+  }
   render() {
-
-    console.log("MasterSummary is called!!");
-    //console.log(this.props);
-    //console.log(this.props.signal);
     let heading = this.props.signal.name;
-
     var noOfDimention;
     var noOfMeasures;
     var noOfTimeDimention;
@@ -64,24 +64,17 @@ export class MasterSummary extends React.Component {
         <div className="page-head">
           <div class="row">
             <div class="col-md-12">
-              <Breadcrumb path={[
-                {
-                  path: '/signals',
-                  label: 'Signals'
-                }, {
-                  path: '/signals/' + this.props.signalId,
-                  label: heading
-                }
-              ]}/>
             </div>
-            <div class="col-md-8">
-              <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> {heading}</h3>
-            </div>
+            
           </div>
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-		
+		<div class="row">
+			<div class="col-md-12">
+              <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> {heading}</h3>
+            </div>
+		</div>
 		<div class="row xs-pt-50" >
 		<div class="col-md-3 wow bounceIn" data-wow-offset="10"  data-wow-iteration="10">
 			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
@@ -151,91 +144,10 @@ export class MasterSummary extends React.Component {
 							</div>
 						</div>
 					</div>
-		
-		
+	</div>
 		</div>
-		</div>
-				
-					
-					
-					{/*
-				<div className="panel panel-default">
-					<div className="panel-body no-border">
-					
-					
-                  <div className="row">
-
-                      <div className="col-md-9">
-                        <div className="md-p-50">
-                          <div className="row">
-                            <div className="col-md-4 col-md-offset-2 col-sm-6 data-info">
-                              <table>
-                              <tbody>
-                                <tr>
-                                  <td></td>
-                                  <td class="text-center">
-                                      <h1>{noOfDimention}</h1>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td ><img src={STATIC_URL + "assets/images/s_d_carIcon.png"}/>
-                                  </td>
-                                  <td class="text-center">
-                                    <h3>
-                                      {dText}</h3>
-                                  </td>
-                                </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                            <div className="col-md-4 col-md-offset-1 col-sm-6 data-info">
-                              <table>
-                              <tbody>
-                                <tr>
-                                  <td></td>
-                                  <td class="text-center">
-                                    <h1>{noOfMeasures}</h1>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td ><img src={STATIC_URL + "assets/images/s_m_carIcon.png"}/></td>
-                                  <td class="text-center">
-                                    <h3>
-                                      {mText}</h3>
-                                  </td>
-                                </tr>
-                                </tbody>
-                              </table>
-
-                            </div>
-                            <div className="clearfix"></div>
-                            <div className="col-md-12 xs-pt-30">
-                              <div className="lead txt-justify"><Card cardData={summary}/>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-3">
-						<div className="v_smry ex_bg">
-                        <h3>
-                          <em>{quotes}</em>
-                        </h3>
-                        <Link to={overViewLink}>
-                          <img src={STATIC_URL + "assets/images/icon_proceedformore.png"} className="img-responsive" alt="Proceed for More"/>
-                          View Summary
-                        </Link>
-						</div>
-                      </div>
-                      <div class="clearfix"></div>
-
-                  </div>
-
-             </div>
-				</div> */}
-
-
-        </div>
+		
+ </div>
       </div>
     );
 

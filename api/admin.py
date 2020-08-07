@@ -1,7 +1,10 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 from django.contrib import admin
 from django.conf import settings
-from utils import json_prettify_for_admin
-import json
+from .utils import json_prettify_for_admin
+import simplejson as json
 
 # Register your models here.
 
@@ -16,10 +19,10 @@ admin.site.disable_action('delete_selected')
 class DatasetAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["name", "slug"]
-    list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
+    list_display = ["name", "slug", "shared", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
-    list_filter = ["status", "deleted", "created_by"]
-    readonly_fields = ["created_at", "deleted", "created_by", "job", "slug"]
+    list_filter = ["status", "shared", "deleted", "created_by","shared_by"]
+    readonly_fields = ["created_at", "deleted", "created_by", "job", "slug", "shared_slug"]
 
 
 class InsightAdmin(admin.ModelAdmin):
@@ -36,7 +39,7 @@ class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by',
-                    "msg_count", "time_difference", "script_time_difference", 'created_at'
+                    "msg_count", "time_difference", 'created_at'
                     ]
     list_filter = ["job_type", "status", "submitted_by"]
     # readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
@@ -109,7 +112,7 @@ class JobAdmin(admin.ModelAdmin):
                 # if instance.status is 'KILLED' or instance.status is 'FAILED':
                 instance.start()
             except Exception as exc:
-                print exc
+                print(exc)
         return 'good grace'
 
     def refresh_status(self, request, queryset):
@@ -122,7 +125,7 @@ class JobAdmin(admin.ModelAdmin):
         message_count = len(message_log_json)
 
         error_report_json = json.loads(instance.error_report)
-        msgKeys = error_report_json.keys()
+        msgKeys = list(error_report_json.keys())
         msgKeys = list(set(msgKeys))
         errorKeys = [x for x in msgKeys if x != "jobRuntime"]
         timeMsg = "No"
@@ -152,9 +155,9 @@ class ScoreAdmin(admin.ModelAdmin):
 class TrainerAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">tune</i>'
     search_fields = ["name", "slug"]
-    list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
+    list_display = ["name", "slug", "mode", "app_id", "analysis_done", "created_at",
                     "created_by", "deleted", "status"]
-    list_filter = ["deleted", "created_by", "status"]
+    list_filter = ["deleted", "created_by", "status", "mode"]
     readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
@@ -267,6 +270,3 @@ if settings.KEEP_OTHERS_IN_ADMIN:
     admin.site.register(Robo, RoboAdmin)
     admin.site.register(Profile, ProfileAdmin)
     admin.site.register(Permission, PermissionAdmin)
-
-
-

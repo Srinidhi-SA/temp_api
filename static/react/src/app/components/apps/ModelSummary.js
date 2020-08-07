@@ -34,15 +34,12 @@ export class ModelSummary extends React.Component {
   }
   
   componentWillMount() {
-  console.log("api call start");
   this.props.dispatch(getAlgoAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
   this.props.dispatch(getDeploymentList(this.props.match.params.slug));
-  console.log("api call end");
   setInterval(function() {
     var evt = document.createEvent('UIEvents');
     evt.initUIEvent('resize', true, false,window,0);
     window.dispatchEvent(evt);
-    console.log("I");
   }, 500);
   }
 
@@ -65,14 +62,12 @@ export class ModelSummary extends React.Component {
             return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
             break;
       case "c3Chart":
-            //console.log("checking chart data:::::");
             let chartInfo=[]
             if(!$.isEmptyObject(story.data)){
             if(story.chartInfo){
               chartInfo=story.chartInfo
             }
             if(story.widthPercent &&  story.widthPercent != 100){
-              //  let width  = story.widthPercent+"%";
               let width  = parseInt((story.widthPercent/100)*12)
               let divClass="col-md-"+width;
               let sideChart=false;
@@ -86,10 +81,10 @@ export class ModelSummary extends React.Component {
               else
               divClass = "col-md-12";
               let sideChart=false;
-              return (<div className={parentDivClass}><div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+              return (<div key={randomNum} className={parentDivClass}><div class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
             }else{
               let parentDivClass = "col-md-12";
-              return (<div className={parentDivClass}><div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+              return (<div key={randomNum} className={parentDivClass}><div ><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
             }
             }
             break;
@@ -110,7 +105,7 @@ export class ModelSummary extends React.Component {
             }else{
               return( 
                 story.data.map((data,index)=>{
-                return (<div className="col-md-5ths col-sm-8 col-xs-12 bgStockBox">
+                return (<div className="col-md-5ths col-sm-6 col-xs-12 bgStockBox">
                 <h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
                 <p>{data.description}</p>
                 </div>);
@@ -235,11 +230,11 @@ export class ModelSummary extends React.Component {
       overviewCard=(
         <div class="row">
           <div class="col-md-6">
-            {tableHeading[0]}
+            <div className="sm-ml-15 sm-pb-10">{tableHeading[0]}</div>
             {tableData[0]}
           </div>
           <div class="col-md-6">
-            {tableHeading[1]}
+            <div className="sm-ml-15 sm-pb-10">{tableHeading[1]}</div>
             {tableData[1]}
           </div>
         </div>
@@ -317,12 +312,10 @@ export class ModelSummary extends React.Component {
     );
   }
   openDeployModal(item) {
-    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(item));
   }
 
   closeDeployModal() {
-    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
   }
 }

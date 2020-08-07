@@ -4,12 +4,14 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType} from "../../actions/appActions";
+import {updateAnalystModeSelectedFlag} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages} from "../../helpers/helper";
+import {clearDataPreview} from "../../actions/dataUploadActions"
+
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -29,6 +31,7 @@ import {statusMessages} from "../../helpers/helper";
 
 export class ModelBuildingModeSelection extends React.Component {
     componentWillMount() {
+    this.props.dispatch(clearDataPreview());
         //It will trigger when refresh happens on url
         // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
         //     window.history.go(-1);
@@ -41,6 +44,7 @@ export class ModelBuildingModeSelection extends React.Component {
       var proccedUrl = this.props.match.url.replace('modeSelection','autoML/models');
       if(selectedMode != "automl"){
         proccedUrl = this.props.match.url.replace('modeSelection','analyst/models');
+       this.props.dispatch(updateAnalystModeSelectedFlag(true));
       }
       this.props.history.push(proccedUrl);
 
@@ -61,7 +65,7 @@ export class ModelBuildingModeSelection extends React.Component {
                       <p className="mProcess">
         			           Automatic ML modeling process that executes recommended set of data cleansing and transformation operations.
                 </p>
-                  <a href="javascript:;" className="btn btn-primary pull-right" onClick={this.handleModeSelected.bind(this,"automl")}>AUTO ML MODE</a></div>
+                  <a href="javascript:;" className="btn btn-primary pull-right" id="auto" onClick={this.handleModeSelected.bind(this,"automl")}>AUTO ML MODE</a></div>
                   </div>
                   <div className="col-md-4">
                     <div className="mod-process mod-process-table-primary">
@@ -70,7 +74,7 @@ export class ModelBuildingModeSelection extends React.Component {
                           <img src={ STATIC_URL + "assets/images/mProcess_automode.png" } className="img-responsive" />
                        </div>
                       <p className="mProcess">Robust set of data cleansing and feature transformation and generation options are provided.<br/></p>
-        			           <a href="javascript:;" className="btn btn-primary pull-right" onClick={this.handleModeSelected.bind(this,"analystmode")}>ANALYST MODE</a>
+        			           <a href="javascript:;" className="btn btn-primary pull-right" id="analyst" onClick={this.handleModeSelected.bind(this,"analystmode")}>ANALYST MODE</a>
                     </div>
                   </div>
                 </div>

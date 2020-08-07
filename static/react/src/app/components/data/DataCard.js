@@ -15,9 +15,9 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
-import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName,openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
+import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD, FAILED, statusMessages} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -30,6 +30,7 @@ var dateFormat = require('dateformat');
     return {
         login_response: store.login.login_response,
         dataList: store.datasets.dataList,
+        shareModelShow:store.datasets.shareModelShow,
         dataPreview: store.datasets.dataPreview,
         signalMeta: store.datasets.signalMeta,
         selectedDataSet: store.datasets.selectedDataSet,
@@ -39,6 +40,8 @@ var dateFormat = require('dateformat');
         data_sorton:store.datasets.data_sorton,
         data_sorttype:store.datasets.data_sorttype,
         dialogBox:store.datasets.dataDialogBox,
+        allDataList:store.datasets.allDataSets,
+
     };
 })
 
@@ -46,10 +49,14 @@ export class DataCard extends React.Component {
     constructor(props) {
         super(props);
     }
+    componentWillMount() {
+        this.props.dispatch(getAllDataList());
+        this.props.dispatch(getAllUsersList())
+      }
     
     getPreviewData(status,e) {
         if(status==FAILED){
-            bootbox.alert(statusMessages("error","The uploaded file does not contain data in readable format. Please check the source file and try uploading again.","small_mascot"));            
+            bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));            
         }else{
             var that = this;
             this.selectedData = e.target.id;
@@ -64,22 +71,27 @@ export class DataCard extends React.Component {
     handleDelete(slug,evt) {
         this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
-    handleRename(slug, name) {
-        this.props.dispatch(handleRename(slug, this.dialog, name));
+    handleRename(slug, name,dataList) {
+        var allDataList=this.props.allDataList
+        this.props.dispatch(handleRename(slug, this.dialog, name,allDataList,dataList));
     }
+    openShareModal(shareItem,slug,itemType) {
+        this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+       }
+    closeShareModal(event) {
+        this.props.dispatch(closeShareModalAction());
+      }
     openDataLoaderScreen(slug, percentage, message, e){
         var dataUpload = {};
         dataUpload.slug = slug
         this.props.dispatch(openDULoaderPopup());
         this.props.dispatch(updateDatasetName(slug));
-        this.props.dispatch(updateHideData(true));
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
     
-    render() {
-        
-        
+    render() { 
         const dataSets = this.props.data;
+        const dataList=this.props.dataList;
 
         const dataSetList = dataSets.map((data, i) => { 
             var iconDetails = "";
@@ -96,7 +108,7 @@ export class DataCard extends React.Component {
             if(data.status == INPROGRESS){
                 percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>
                 dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
-            }else if(data.status == SUCCESS && !data.viewed){
+            }else if(data.status == SUCCESS){
                 data.completed_percentage = 100;
                 percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
             }else if(data.status == FAILED){
@@ -119,12 +131,13 @@ export class DataCard extends React.Component {
             iconDetails = <img src={src} alt="LOADING"/>;
             var permissionDetails = data.permission_details;
             var isDropDown = permissionDetails.remove_dataset || permissionDetails.rename_dataset;
+
            
             
             
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                    <div className="rep_block newCardStyle" name={data.name}>
+                    <div id={data.name} className="rep_block newCardStyle" name={data.name}>
                     <div className="card-header"></div>
                     <div className="card-center-tile">
                     <div className="row">
@@ -137,16 +150,7 @@ export class DataCard extends React.Component {
                     
 					<div className="clearfix"></div>
                                 {percentageDetails}
-                                
-                             {/*   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                                <a  className="pover cursor">
-                                <div class="card_icon">
-                                {iconDetails}
-                                </div>
-                                </a>
-                                </OverlayTrigger> */}
-                                
-                                </div>
+                            </div>
                                 
                                 </div>
                                 </div>
@@ -156,16 +160,15 @@ export class DataCard extends React.Component {
                                 <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                                 </div>
 								
-                                {/*<!-- Rename and Delete BLock  -->*/}
                     {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                             <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                             </a>
                             <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
 							<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
 							<li className="xs-pl-20 xs-pr-20 xs-pb-10">
-								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name)}>
+								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name,dataList.data)}>
 								<a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-								<i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+								<i className="fa fa-pencil"></i>&nbsp;&nbsp;Rename</a>
 								</span>:""}
 
 
@@ -174,13 +177,15 @@ export class DataCard extends React.Component {
 								<i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
 								? "Stop"
 								: "Delete"}</a>
+                                </span>: ""}
+                                {data.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,data.name,data.slug,"Data")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
 								</span>: ""}
-								<div className="clearfix"></div>
+                                <div className="clearfix"></div>
 							</li>
 							</ul></div>:<div class="btn-toolbar pull-right"></div>}
-                                
-                                {/*popover*/}
-                                
+                            
                                 </div>
                                 </div>
                                   <Dialog ref={(el) => { this.dialog = el }}/>

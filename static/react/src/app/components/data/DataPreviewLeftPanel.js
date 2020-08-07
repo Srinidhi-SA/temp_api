@@ -30,14 +30,16 @@ export class DataPreviewLeftPanel extends React.Component {
 	     this.props.dispatch(emptyScoreCSVData())
 	 }
 	render() {
-		console.log("score data preview is called##########3");
-		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + this.props.match.params.slug;
-		const scoreData = this.props.scoreCSVData;
+         var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+         var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+		var scoreSlug=(store.getState().apps.scoreSlug!=null||store.getState().apps.scoreSlug!=undefined)?store.getState().apps.scoreSlug:this.props.match.params.slug; 		
+
+		 var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected+"/scores/" + scoreSlug;
+        
+         const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
 		if(scoreData.length > 0){
-		    console.log(scoreData)
 		    tableThTemplate = scoreData.map(function(row,id){
                 let colData = "";
                 if(id == 0){
@@ -55,9 +57,9 @@ export class DataPreviewLeftPanel extends React.Component {
                 if(id > 0){
                         colData =  row.map((colData,index) =>{
                             if(row.length-1==index || row.length-2==index)
-                            return(<td class="activeColumn">{colData}</td>)
+                            return(<td  key={index} class="activeColumn">{colData}</td>)
                             else
-                            return(<td>{colData}</td>)
+                            return(<td key={index} >{colData}</td>)
                         })
                     }
                 return <tr key = {colIndex}>{colData}</tr>;

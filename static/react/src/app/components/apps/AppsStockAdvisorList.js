@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SEARCHCHARLIMIT} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList,clearDataPreview,getAllStockAnalysisList} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -35,13 +35,14 @@ var dateFormat = require('dateformat');
 export class AppsStockAdvisorList extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(this.props);
 		this.state={
 			showLoader : false
 		}
 		 this.callShowloader = this.callShowloader.bind(this);
 	}
 	componentWillMount(){
+		this.props.dispatch(clearDataPreview());
+		this.props.dispatch(getAllStockAnalysisList());
 		var pageNo = 1;
 		if(this.props.history.location.search.indexOf("page") != -1){
 			pageNo = this.props.history.location.search.split("page=")[1];
@@ -86,7 +87,7 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 
 	render() {
-		 if (this.props.dataPreviewFlag) {
+		 if (store.getState().datasets.dataPreviewFlag){
 		    	let _link = "/apps-stock-advisor-analyze/data/" + store.getState().datasets.selectedDataSet;
 		    	return (<Redirect to={_link}/>);
 		    }
@@ -94,21 +95,7 @@ export class AppsStockAdvisorList extends React.Component {
 				let _linkAnalysis = "/apps-stock-advisor/"+this.props.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
 		    	return (<Redirect to={_linkAnalysis}/>);
 		 }
-		/*let search_element = document.getElementById('search_stock');
-		if (this.props.stock_model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
-			console.log("search is empty");
-			this.props.dispatch(storeStockModelSearchElement(""));
-			if (search_element)
-			document.getElementById('search_stock').value = "";
-		}
-		if(this.props.stock_model_search_element==""&&this.props.history.location.search!=""){
-			if(search_element)
-			document.getElementById('search_stock').value = "";
-		}
-		//search element ends..
-		if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
-			this.props.dispatch(storeStockAppsModelSortElements("",null));
-		}*/
+	
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
@@ -119,7 +106,7 @@ export class AppsStockAdvisorList extends React.Component {
 			}
 			var stockList = <StocksCard data={stockAnalysisList} loadfunc={this.callShowloader}/>;
 			const {showLoader} = this.state;
-			if(showLoader) { // if your component doesn't have to wait for an async action, remove this block 
+			if(showLoader) {
 				return (
 					<img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
 				);

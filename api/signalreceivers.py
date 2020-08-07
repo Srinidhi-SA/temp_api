@@ -1,10 +1,13 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from api.models import Dataset, Insight
-from utils import submit_job
-from models import Job
-from helper import JobserverDetails
+from .utils import submit_job
+from .models import Job
+from .helper import JobserverDetails
 
 
 @receiver(post_save, sender=Dataset)

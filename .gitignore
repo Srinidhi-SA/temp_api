@@ -35,3 +35,16 @@ config/media
 config/settings/config_file_name_to_run.py
 static/react/dist_*
 scripts/data/
+.env
+api/migrations/
+ocr/migrations/
+ocrflow/migrations/
+*.egg
+ocr/ITE/ir/
+ocr/ITE/database/
+ocr/ITE/pdf_to_images_folder/
+ocr/ITE/demo_images/
+ocr/ITE/classified_templates.json
+Updated_Analysis.json
+ocr/ITE/demo_analysis/
+

@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {getSignalAnalysis,handleDecisionTreeTable} from "../../actions/signalActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {openDTModalAction} from "../../actions/dataActions"
 import {MAXTEXTLENGTH} from "../../helpers/helper";
+import {DecisionTree} from "../common/DecisionTree";
 
 
 @connect((store) => {
@@ -20,10 +18,13 @@ export class PopupDecisionTreeTable extends React.Component {
     super(props);
 
   }
-  showDecisionTreePopup(rule){
-     bootbox.alert({title: "Prediction Rule",
-             message: rule});
-  }
+  // showDecisionTreePopup(rule){
+  //    bootbox.alert({title: "Prediction Rule",
+  //            message: rule});
+  // }
+  showDecisionTreePopup =(rule,path)=>{
+  this.props.dispatch(openDTModalAction(rule,path));
+ }
   componentDidMount(){
       handleDecisionTreeTable();
   }
@@ -60,6 +61,7 @@ generateDecisionTreeRows(table) {
           var colLength = rowData.length;
           if(i != 0){
               var rule = rowData[rowData.length-1]
+              var path = rowData[rowData.length-2]
               var rows = rowData.map(function(colData,j) {
 
                    if(j == 0){
@@ -69,7 +71,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>
 
               });
-              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule,path)}><a data-toggle="modal" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -92,22 +94,19 @@ generateDecisionTreeRows(table) {
   render() {
    var data = this.props.tableData;
    var className = "table table-bordered popupDecisionTreeTable"
-   console.log("checking popup decision tree tabletable element");
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
 
    this.callTableSorter()
    return (
            <div class="table-style_2">
-           {/* <Scrollbars style={{ height: 200 }}
-               className="thumb-horizontal" > */}
+             <DecisionTree/>
            <table id="sorter" className={className}>
                <thead><tr>{headerComponents}<th className="sorter-false" width="2%">Details</th></tr></thead>
 
                <tbody>{rowComponents}</tbody>
 
            </table>
-             {/* </Scrollbars>*/}
            </div>
        );
   }

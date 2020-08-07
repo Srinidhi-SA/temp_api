@@ -2,8 +2,9 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis, pickToggleValue} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
+import {HighChart} from "../HighChart"
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
@@ -25,8 +26,12 @@ yformat = null,
 cardData = {};
 
 @connect((store) => {
-    return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
-        chartObject: store.chartObject.chartObj,currentAppDetails: store.apps.currentAppDetails};
+    return {login_response: store.login.login_response,
+        signal: store.signals.signalAnalysis,
+        chartObject: store.chartObject.chartObj,
+        currentAppDetails: store.apps.currentAppDetails,
+        toggleValues: store.signals.toggleValues,
+    };
 })
 
 export class Card extends React.Component {
@@ -39,7 +44,15 @@ export class Card extends React.Component {
       $('#box0').parent('div').addClass('text-center');
     }
     handleCheckBoxEvent(event){
-        handleSignalToggleButton();
+        this.props.dispatch(pickToggleValue(event.target.id, event.target.checked));
+        if (this.props.toggleValues[event.target.id] == true) {
+            $(".toggleOff").removeClass("hidden");
+            $(".toggleOn").addClass("hidden")
+          } else {
+            $(".toggleOn").removeClass("hidden");
+            $(".toggleOff").addClass("hidden")
+          }
+        // handleSignalToggleButton();
     }
     calculateWidth(width){
         let colWidth  = parseInt((width/100)*12)
@@ -55,14 +68,12 @@ export class Card extends React.Component {
                 return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
                 break;
             case "c3Chart":
-                //console.log("checking chart data:::::");
                 let chartInfo=[]
                 if(!$.isEmptyObject(story.data)){
                    if(story.chartInfo){
                      chartInfo=story.chartInfo
                    }
                     if(story.widthPercent &&  story.widthPercent != 100){
-                      //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
                         let divClass="col-md-"+width;
                         let sideChart=false;
@@ -76,15 +87,18 @@ export class Card extends React.Component {
                         else
                         divClass = "col-md-12";
                         let sideChart=false;
-                        return (<div className={parentDivClass}><div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+                        let stylePadding = story.data.chart_c3.subchart?{display:"inline-block",paddingLeft:"30px",paddingTop:"52px"}:{display:"inline-block",paddingLeft:"30px"} 
+                        if(story.data.chart_c3.title.text === "Stock Performance Analysis")
+                            return (<div key={randomNum} className={parentDivClass}><div  class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><HighChart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+                        else
+                            return (<div key={randomNum} className={parentDivClass}><div  class={divClass} style={stylePadding}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }else{
                         let parentDivClass = "col-md-12";
-                        return (<div className={parentDivClass}><div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
+                        return (<div key={randomNum} className={parentDivClass}><div ><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }
                 }
                 break;
             case "tree":
-                //console.log("checking tree data");
                 return ( <DecisionTree key={randomNum} treeData={story.data}/>);
                 break;
             case "table":
@@ -106,34 +120,49 @@ export class Card extends React.Component {
                 return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
             case "toggle":
-            var tableData = [];
-            tableData.push(story.data.toggleon);
-            var toggleData =  this.renderCardData(tableData,"toggleOn");
-            tableData = [];
-            tableData.push(story.data.toggleoff);
-             var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
-             var randomChk = randomNum+"_chk"
-            var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-            <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)}/><span>
-            <label for={randomChk}></label></span>
-            </div>
-            return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);
-            break;
+                var varId = story.data.toggleon.data.tableData[0][0];
+                if(this.props.toggleValues[varId] == true){
+                    var toggleClass = "toggleOn hidden"
+                    var toggleClass1 = "toggleOff"
+                }
+                else{
+                    var toggleClass = "toggleOn"
+                    var toggleClass1 = "toggleOff hidden"
+                }
+                var tableData = [];
+                tableData.push(story.data.toggleon);
+                var toggleData =  this.renderCardData(tableData,toggleClass);
+                tableData = [];
+                tableData.push(story.data.toggleoff);
+                 var toggleData1 = this.renderCardData(tableData,toggleClass1);
+                var randomChk = randomNum+"_chk"
+                
+                if(this.props.toggleValues[varId] == true)
+                    var idchecked = true
+                else if(this.props.toggleValues[varId] == false)
+                    var idchecked = false
+                else
+                    var idchecked = false
+                var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
+                                    <input type="checkbox" id={varId} name={varId} value={varId} defaultChecked={idchecked} onChange={this.handleCheckBoxEvent.bind(this)} />
+                                    <span><label for={varId}></label></span>
+                                </div>
+                return (<div key={varId}>{inputChk}{toggleData}{toggleData1}</div>);                    
+                break;
             case "kpi":
             let boxData = story.data;
             let divClass = "text-center";
-              if(story.widthPercent &&  story.widthPercent != 100){
-                        //let width  = parseInt((story.widthPercent/100)*20);
+            if(story.widthPercent &&  story.widthPercent != 100){
                         divClass="col-md-4 bgStockBox";
-              }
-			 return(
-			<div className={divClass}>
-               
-			    <h3 className="text-center xs-m-0">{boxData.value}
-				<br/>
-				<small>{boxData.text}</small>
-				</h3>
-			    
+            }
+            return(
+            <div key={i}className={divClass}>
+            
+                <h3 className="text-center xs-m-0">{boxData.value}
+                <br/>
+                <small>{boxData.text}</small>
+                </h3>
+                
                 
             </div>
 			);
@@ -150,7 +179,6 @@ export class Card extends React.Component {
         return htmlData;
     }
     render() {
-        console.log("card is called!!!! with data:----");
         cardData = this.props.cardData;
 		let stockClassName = "";
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)

@@ -27,6 +27,8 @@
     "bootstrap-multiselect": "^0.9.13-1",
     "dateformat": "^2.0.0",
     "faker": "^4.1.0",
+    "highcharts": "^8.0.4",
+    "highcharts-react-official": "^3.0.0",
     "moment": "^2.24.0",
     "primeicons": "^1.0.0",
     "primereact": "^3.0.0",
@@ -41,12 +43,14 @@
     "react-bootstrap-table-next": "^3.0.0",
     "react-bootstrap-toggle": "^2.2.3",
     "react-breadcrumb": "^1.0.0",
+    "react-browser-notifications": "^1.0.14",
     "react-circular-progressbar": "^0.1.5",
     "react-custom-scrollbars": "^4.1.2",
     "react-d3-cloud": "^0.5.0",
     "react-d3-speedometer": "^0.1.11",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.2.7",
+    "react-highcharts": "^16.1.0",
     "react-iframe": "^1.1.0",
     "react-notify-toast": "^0.5.0",
     "react-redux": "^5.0.5",
@@ -56,6 +60,7 @@
     "react-router-redux": "^4.0.8",
     "react-slick": "^0.15.4",
     "react-smart-data-table": "^0.7.0",
+    "react-tooltip": "^3.11.1",
     "react-validation": "^3.0.7",
     "react-with-addons": "0.0.1",
     "redux": "^3.7.2",
@@ -105,9 +110,9 @@
     "d3-transition": "1.1.0",
     "d3-voronoi": "1.1.2",
     "d3-zoom": "1.5.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "redux-logger": "^3.0.6",
     "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1"
+    "webpack-dev-server": "^2.11.5"
   }
 }

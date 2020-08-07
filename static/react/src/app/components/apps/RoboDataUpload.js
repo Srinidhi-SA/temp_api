@@ -34,15 +34,12 @@ export class RoboDataUpload extends React.Component {
     	this.props.dispatch(closeRoboDataPopup())
     }
     onDropCustomerData(files) {
-		console.log(files);
 		this.props.dispatch(saveFilesToStore(files,CUSTOMERDATA))
 	}
     onDropHistorialData(files) {
-		console.log(files);
 		this.props.dispatch(saveFilesToStore(files,HISTORIALDATA))
 	}
     onDropExternalData(files) {
-		console.log(files);
 		this.props.dispatch(saveFilesToStore(files,EXTERNALDATA))
 	}
 	popupMsg(){
@@ -52,7 +49,6 @@ export class RoboDataUpload extends React.Component {
 		this.props.dispatch(uploadFiles(this.refs.dialog,$("#roboInsightName").val()));
 	}
 	render() {
-		 console.log("apps robo data Upload is called##########3");
 		  var fileName = store.getState().apps.customerDataUpload.name;
 	        var fileSize = store.getState().apps.customerDataUpload.size;
 	

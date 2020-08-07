@@ -164,13 +164,13 @@ export class ModelManagement extends React.Component {
   }
 
   getAlgoAnalysis(item,e) {
-    console.log("Link Onclick is called")
     this.props.dispatch(emptyAlgoAnalysis());
   }
 
   _handleKeyPress = (e) => {
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
       if (e.target.value != "" && e.target.value != null)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + e.target.value + '')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/modelManagement?search=' + e.target.value + '')
         this.props.dispatch(storeAlgoSearchElement(e.target.value));
         this.selectedData = $("#project_all").val();
         var pageNo =1;
@@ -180,17 +180,20 @@ export class ModelManagement extends React.Component {
 
 
   handleSelect(eventKey) {
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+
     if (this.props.algo_search_element) {
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/modelManagement?search=' + this.props.model_search_element+'?page='+eventKey+'')
     }else
-        this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement?page='+eventKey+'')
+        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/modelManagement?page='+eventKey+'')
          this.selectedData = $("#project_all").val();
         this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
 
   clearSearchElement(eventKey){
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
     this.props.dispatch(storeAlgoSearchElement(""));
-    this.props.history.push('/apps/'+this.props.match.params.AppId+'/modelManagement');
+    this.props.history.push('/apps/'+this.props.match.params.AppId + modeSelected+'/modelManagement');
     this.selectedData = $("#project_all").val();
     this.props.dispatch(getDeployPreview(eventKey,this.selectedData));
   }
@@ -206,7 +209,6 @@ export class ModelManagement extends React.Component {
         </div>
       );
     }else{
-      console.log(this.props.allProjects,"ppppppppppppppppppppppppppppp")
       var mmTable = "";
       var deployPopup = "";
       var deployData = "";
@@ -239,6 +241,7 @@ export class ModelManagement extends React.Component {
           <option value="GB_">GBTree Regression</option>
           <option value="RFR_">Random Forest Regression</option>
           <option value="LR_">Linear Regression</option>
+          <option value="TF_">Neural Network (TensorFlow)</option>
           </select>)
           :renderSelectBoxAlgorithms=(
             <select className="select_filter" id="Algorithm_all" title="Filter By Algorithm" onChange={this._handleKeyPress.bind(this)}>
@@ -247,14 +250,21 @@ export class ModelManagement extends React.Component {
             <option value="XG_">XG Boost</option>
             <option value="LG_">Linear Regression</option>
             <option value="NB_">Naive Bayes</option>
+            <option value="NN_">Neural Network (Sklearn)</option>
+            <option value="TF_">Neural Network (TensorFlow)</option>
+            <option value="PT_">Neural Network (PyTorch)</option>
+            <option value="EN_">Ensemble</option>
+            <option value="ADAB_">Adaboost</option>
           </select>);
 
     // mapping of list items into table
    mmTable = this.props.algoList.data.map((item,key )=> {
-        var AlgoLink = '/apps/' + this.props.match.params.AppId + '/modelManagement/'+  item.slug
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+
+        var AlgoLink = '/apps/' + this.props.match.params.AppId + modeSelected+'/modelManagement/'+  item.slug
         return (
           <tr key={key} className={('all ' + item.name)}>
-          <td><label for="txt_lName1">{`${key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>
+          <td><label for="txt_lName1">{`${((this.props.algoList.current_page-1)*12)+key + 1}`}&nbsp;&nbsp;&nbsp;</label></td>
           <td className="text-left"> {item.model_id}</td>
           <td class="text-left"><div class="ellipse-text" title={item.project_name}> {item.project_name}</div></td>
           <td className="text-left"> {item.algorithm}</td>
@@ -409,12 +419,10 @@ export class ModelManagement extends React.Component {
   }
 
   openDeployModal(slug) {
-    console.log("open ---openDeployModal");
     this.props.dispatch(openDeployModalAction(slug));
   }
 
   closeDeployModal() {
-    console.log("closeddddd ---closeDeployModal");
     this.props.dispatch(closeDeployModalAction());
   }
 }

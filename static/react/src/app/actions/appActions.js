@@ -35,15 +35,19 @@ import React from "react";
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { createcustomAnalysisDetails } from './signalActions';
 import { browserHistory } from 'react-router'
+import { AppsLoader } from "../components/common/AppsLoader";
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
 export var refreshAppsScoresInterval = null;
 
-function getHeader(token) {
+export function getHeader(token) {
   return { 'Authorization': token, 'Content-Type': 'application/json' };
 }
 
+export function onModeSelection() {
+  return { type: "MODE_SELECTION" }
+}
 export function openModelPopup() {
   return { type: "APPS_MODEL_SHOW_POPUP" }
 }
@@ -68,11 +72,49 @@ export function refreshAppsModelList(props) {
 }
 
 
+export function getAllModelList() {
+  return (dispatch) => {
+    return fetchAllModelList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            dispatch(fetchAllModelSuccess(json))
+        }else{
+          dispatch(fetchAllModelError(json))
+        }
+    })
+  }
+}
+function fetchAllModelList(token) {
+  return fetch(API + '/api/trainer/get_all_models/?app_id=' + store.getState().apps.currentAppId + '', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchAllModelError(json) {
+  return {
+      type: "MODEL_ALL_LIST_ERROR",
+      json
+  }
+}
+export function fetchAllModelSuccess(doc){
+  var data = ""
+  if(doc.allModelList !=undefined && doc.allModelList[0]!= undefined){
+      data = doc.allModelList;
+  }
+  return {
+      type: "MODEL_ALL_LIST",
+      data,
+  }
+}
+
+
+
+
+
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchModelListSuccess(json))
       } else {
         dispatch(fetchModelListError(json))
@@ -85,23 +127,43 @@ function fetchModelList(pageNo, token) {
   let search_element = store.getState().apps.model_search_element;
   let apps_model_sorton = store.getState().apps.apps_model_sorton;
   let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
+  let filter_by_mode= store.getState().apps.filter_models_by_mode;
   if (apps_model_sorttype == 'asc')
     apps_model_sorttype = ""
   else if (apps_model_sorttype == 'desc')
     apps_model_sorttype = "-"
 
-  if (search_element != "" && search_element != null) {
-    console.log("calling for model search element!!")
+    if (search_element != "" && search_element != null && filter_by_mode!=""&& filter_by_mode!=null) {
+     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+        method: 'get',
+        headers: getHeader(token)
+      }).then(response => Promise.all([response, response.json()]));
+    }
+    else if (search_element != "" && search_element != null) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
+    } 
+    else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)&& filter_by_mode!=""&& filter_by_mode != null) {
+      return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+        method: 'get',
+        headers: getHeader(token)
+      }).then(response => Promise.all([response, response.json()]));
+      }else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else {
+    } else if(filter_by_mode!=""&& filter_by_mode!=null){
+    return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&mode=' + filter_by_mode + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+   
+    // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }
+  else{
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -134,7 +196,6 @@ export function getAppsAlgoList(pageNo) {
   return (dispatch) => {
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAlgoListSuccess(json))
       } else {
         dispatch(fetchAlgoListError(json))
@@ -142,12 +203,15 @@ export function getAppsAlgoList(pageNo) {
     })
   }
 }
-
+export function clearAppsAlgoList(){
+  return {
+    type: "CLEAR_APPS_ALGO_LIST"
+  }
+}
 export function createDeploy(slug) {
   return (dispatch) => {
     return triggerCreateDeploy(getUserDetailsOrRestart.get().userToken, slug, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(createDeploySuccess(json, slug, dispatch))
         dispatch(getDeploymentList(slug, store.getState().apps.current_page));
       }
@@ -160,7 +224,6 @@ export function createDeploy(slug) {
 
 function triggerCreateDeploy(token, slug, dispatch) {
   let deploy_details = store.getState().apps.deployData;
-  console.log(deploy_details);
   var slug = slug;
   var details = deploy_details;
   return fetch(API + '/api/deploymodel/', {
@@ -182,7 +245,6 @@ function createDeployError() {
 function fetchAlgoList(pageNo, token, filtername) {
   let search_element = store.getState().apps.algo_search_element;
   if ((search_element != "" && search_element != null) || (filtername)) {
-    console.log(filtername, "calling for algo search element!!")
     return fetch(API + '/api/trainalgomapping/search/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + ' &trainer=' + filtername + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -262,7 +324,6 @@ export function getAllProjectList(pageNo,appId) {
   return (dispatch) => {
     return fetchAllProjectList(appId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAllProjectSuccess(json))
       }
       else {
@@ -327,7 +388,6 @@ export function viewDeployment(slug) {
   return (dispatch) => {
     return viewDeploymentAPI(slug, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json);
         dispatch(viewDeploySuccess(json));
       }
       else {
@@ -394,7 +454,6 @@ export function getDeploymentList(errandId) {
   return (dispatch) => {
     return fetchDeploymentList(errandId, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchDeploymentListSuccess(json))
       } else {
         dispatch(fetchDeploymentListError(json))
@@ -405,25 +464,12 @@ export function getDeploymentList(errandId) {
 
 
 function fetchDeploymentList(errandId, token) {
-  // let search_element = store.getState().apps.algo_search_element;
-  // if (search_element != "" && search_element != null) {
-  //   console.log("calling for algo search element!!")
-  //   return fetch(API + '/api/deploymodel/?app_id=' + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-  //     method: 'get',
-  //     headers: getHeader(token)
-  //   }).then(response => Promise.all([response, response.json()]));
-  // }else 
-  // {
-  // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
-  return fetch(
-    //  API + '/api/deploymodel/?'+ '&page_number=' + pageNo + '&page_size=' + PERPAGE + slug +'', {
-    API + '/api/deploymodel/search/?deploytrainer=' + errandId, {
-      // deploymodel/search/?deploytrainer
-
+ return fetch(
+       API + '/api/deploymodel/search/?deploytrainer=' + errandId, {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  // }
+
 }
 
 
@@ -440,26 +486,25 @@ export function fetchDeploymentListSuccess(doc) {
 }
 
 export function updateTrainAndTest(trainValue) {
-  //var trainValue = e.target.value;
   var testValue = 100 - trainValue;
   return { type: "UPDATE_MODEL_RANGE", trainValue, testValue }
 }
 
-export function createModel(modelName, targetVariable, targetLevel) {
-  console.log(modelName);
-  console.log(targetVariable);
-  /*if($('#createModelAnalysisList option:selected').val() == ""){
-            let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
-              bootbox.alert(msg);
-            return false;
-        }*/
-
+export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {//add a mode in analyst mode
+ 
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
-    return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel, dispatch).then(([response, json]) => {
+
+    return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
-        dispatch(createModelSuccess(json, dispatch))
+        if(json.status === false){
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          var modelErrorMsg = statusMessages("warning", json.errors + "," + json.exception, "small_mascot");
+          bootbox.alert(modelErrorMsg);
+        }else{
+          dispatch(createModelSuccess(json, dispatch))
+        }
       }
       else {
         dispatch(closeAppsLoaderValue());
@@ -470,10 +515,12 @@ export function createModel(modelName, targetVariable, targetLevel) {
   }
 }
 
-function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
+function triggerCreateModel(token, modelName, targetVariable, targetLevel, datasetSlug,mode,dispatch) {
+  // let modeType = window.location.pathname.includes("analyst")? "analyst":"autoML";
   var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
+  if(mode!="autoML"){
   if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
     if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
       var validationTechnique = {
@@ -500,11 +547,25 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
         "remove_duplicate_observations": store.getState().datasets.removeDuplicateObservations,
       },
     }
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={"hidden_layer_info":tensorFlow}
+
+    if(store.getState().apps.currentAppId === 2){
+      var pyLyr = {"hidden_layer_info":store.getState().apps.pyTorchLayer}
+      var pySub = store.getState().apps.pyTorchSubParams
+      var pyTorchmerged = {};
+      Object.assign(pyTorchmerged, pyLyr, pySub);
+      let algorithmChanges = AlgorithmSettings.filter(i=>i.algorithmName === "Neural Network (PyTorch)")[0];
+      let nnptc = {"nnptc_parameters":[pyTorchmerged]}
+      Object.assign(algorithmChanges,nnptc);
+    }
+
     var details = {
       "metric": store.getState().apps.metricSelected,
       "selectedVariables": store.getState().datasets.selectedVariables,
       "newDataType": store.getState().datasets.dataTypeChangedTo,
       "ALGORITHM_SETTING": AlgorithmSettings,
+      "TENSORFLOW":hidden_layer_info,
       "validationTechnique": validationTechnique,
       "targetLevel": targetLevel,
       "dataCleansing": dataCleansing,
@@ -522,6 +583,7 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
       "trainValue": store.getState().apps.trainValue,
       "testValue": store.getState().apps.testValue,
       "targetLevel": targetLevel,
+      "targetColumn":targetVariable,
       "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
       /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
@@ -532,19 +594,70 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispa
   return fetch(API + '/api/trainer/', {
     method: 'post',
     headers: getHeader(token),
-    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "config": details })
+    body: JSON.stringify({ "name": modelName, "dataset": datasetSlug, "app_id": app_id, "mode": mode, "config": details })
   }).then(response => Promise.all([response, response.json()])).catch(function (error) {
     dispatch(closeAppsLoaderValue());
     dispatch(updateModelSummaryFlag(false));
     bootbox.alert("Unable to connect to server. Check your connection please try again.")
   });
+}else{
+    if (store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION") {
+    if (store.getState().apps.regression_selectedTechnique == "crossValidation") {
+      var validationTechnique = {
+        "name": "kFold",
+        "displayName": "K Fold Validation",
+        "value": 2
+      }
+    }
+    else {
+      var validationTechnique = {
+        "name": "trainAndtest",
+        "displayName": "Train and Test",
+        "value": (50/100)
+      }
+    }
+    var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+    var tensorFlow = Object.assign({},store.getState().apps.tensorFlowInputs);
+    var hidden_layer_info={
+      "hidden_layer_info":tensorFlow
+      }
+  
+    var details = {
+      "ALGORITHM_SETTING": AlgorithmSettings,
+      "TENSORFLOW":hidden_layer_info,
+      "validationTechnique": validationTechnique,
+			"targetLevel": targetLevel,
+			"targetColumn":targetVariable,
+      "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+    }
+  }
+  else {
+    var details = {
+      "trainValue":50,
+      "testValue": 50,
+			"targetColumn":targetVariable,
+      "targetLevel": targetLevel,
+      "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+    }
+  }
+  
+		return fetch(API+'/api/trainer/',{
+			method: 'POST',
+			headers: getHeader(token),
+			body: JSON.stringify({ "name":modelName, "dataset": datasetSlug, "app_id":app_id, "config": details,"mode":mode })
+  }).then(response => Promise.all([response, response.json()])).catch(function (error) {
+      dispatch(closeAppsLoaderValue());
+      dispatch(updateModelSummaryFlag(false));
+      bootbox.alert("Unable to connect to server. Check your connection please try again.")
+    });
+
+}
 }
 function createModelSuccess(data, dispatch) {
   var slug = data.slug;
+  dispatch(setAppsLoaderValues(slug,data.completed_percentage,data.status));
   appsInterval = setInterval(function () {
-    /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-                dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }*/
+
     dispatch(getAppsModelSummary(data.slug, true));
     return { type: "CREATE_MODEL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
@@ -566,7 +679,7 @@ export function refreshAppsScoreList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -576,7 +689,6 @@ export function getAppsScoreList(pageNo) {
   return (dispatch) => {
     return fetchScoreList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchScoreListSuccess(json));
       } else {
         dispatch(fetchScoreListError(json))
@@ -595,7 +707,6 @@ function fetchScoreList(pageNo, token) {
     apps_score_sorttype = "-"
 
   if (search_element != "" && search_element != null) {
-    console.log("calling for score search element!!")
     return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -648,13 +759,24 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
+          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
+          if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
+            document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+          }
           clearInterval(appsInterval);
-          dispatch(fetchModelSummarySuccess(json));
-          dispatch(closeAppsLoaderValue());
-          dispatch(hideDataPreview());
-          dispatch(updateModelSummaryFlag(true));
-          //if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
-          dispatch(reSetRegressionVariables());
+          setTimeout(()=>{
+              dispatch(clearModelLoaderValues())
+              dispatch(fetchModelSummarySuccess(json));
+              dispatch(closeAppsLoaderValue());
+              dispatch(hideDataPreview());
+              dispatch(updateModelSummaryFlag(true));
+              dispatch(reSetRegressionVariables());
+            },2000);
         }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function () {
@@ -667,8 +789,17 @@ export function getAppsModelSummary(slug, fromCreateModel) {
             dispatch(reSetRegressionVariables());
         }
         else if (json.status == INPROGRESS) {
+          if(Object.keys(json.initial_messages).length != 0){
+            dispatch(setAppsLoaderText(json.initial_messages));
+          }
           if (json.message !== null && json.message.length > 0) {
-            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
+            dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
+            dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
+            dispatch(getAppsModelList("1"));
           }
         }
       } else {
@@ -680,8 +811,22 @@ export function getAppsModelSummary(slug, fromCreateModel) {
     })
   }
 }
-
-function fetchModelSummary(token, slug) {
+function updateModelIndexValue(idxVal) {
+  return {
+    type: "MODEL_LOADER_IDX_VAL",idxVal
+  }  
+}
+function updateModelIndex(idx) {
+  return {
+    type: "MODEL_LOADER_IDX",idx
+  }  
+}
+export function clearModelLoaderValues() {
+  return {
+    type: "CLEAR_MODEL_LOADER_VALUES"
+  }
+}
+export function fetchModelSummary(token, slug) {
   return fetch(API + '/api/trainer/' + slug + '/', {
     method: 'get',
     headers: getHeader(token)
@@ -699,12 +844,10 @@ export function clearModelSummary() {
   return { type: "CLEAR_MODEL_SUMMARY" }
 }
 export function getListOfCards(totalCardList) {
-  console.log("In Apps Model Detail");
   let cardList = new Array();
   for (var i = 0; i < totalCardList.length; i++) {
     cardList.push(totalCardList[i].cardData)
   }
-  console.log(cardList)
   return cardList;
 }
 
@@ -713,8 +856,6 @@ export function updateSelectedAlg(name) {
 }
 
 export function createScore(scoreName, targetVariable) {
-  console.log(scoreName);
-  console.log(targetVariable);
   return (dispatch) => {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is scoring your model... "));
     return triggerCreateScore(getUserDetailsOrRestart.get().userToken, scoreName, targetVariable).then(([response, json]) => {
@@ -777,12 +918,23 @@ export function getAppsScoreSummary(slug) {
         }
 
         else if (json.status == SUCCESS) {
+          if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
+            document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
+            $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
+            $("#loadingMsgs1")[0].innerHTML ="Step " + (json.message.length-2) + ": " + json.message[json.message.length-2].shortExplanation;
+            $("#loadingMsgs2")[0].innerHTML ="Step " + (json.message.length-1) + ": " + json.message[json.message.length-1].shortExplanation;
+            $("#loadingMsgs1")[0].className = "modal-steps"
+            $("#loadingMsgs2")[0].className = "modal-steps active"
+          }
           clearInterval(appsInterval);
-          dispatch(fetchScoreSummarySuccess(json));
-          dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
-          dispatch(closeAppsLoaderValue());
-          dispatch(hideDataPreview());
-          dispatch(updateScoreSummaryFlag(true));
+          setTimeout(()=>{
+            dispatch(clearModelLoaderValues())
+            dispatch(fetchScoreSummarySuccess(json));
+            dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
+            dispatch(closeAppsLoaderValue());
+            dispatch(hideDataPreview());
+            dispatch(updateScoreSummaryFlag(true));
+            },2000);
         } else if (json.status == FAILED) {
           bootbox.alert("Your score could not created.Please try later.", function (result) {
             window.history.go(-2);
@@ -791,7 +943,14 @@ export function getAppsScoreSummary(slug) {
           dispatch(closeAppsLoaderValue());
           dispatch(hideDataPreview());
         } else if (json.status == INPROGRESS) {
+          if(Object.keys(json.initial_messages).length != 0){
+            dispatch(setAppsLoaderText(json.initial_messages));
+          }
           if (json.message !== null && json.message.length > 0) {
+            if(json.message[0].stageCompletionPercentage!=-1 && store.getState().apps.modelLoaderidxVal!=0){
+              dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
+            }
+            dispatch(updateModelIndexValue(json.message.length));
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }
@@ -853,6 +1012,13 @@ export function updateSelectedApp(appId, appName, appDetails) {
 export function openAppsLoaderValue(value, text) {
   return { type: "OPEN_APPS_LOADER_MODAL", value, text }
 }
+export function setAppsLoaderText(text){
+  return { type: "APPS_LOADED_TEXT",text}
+}
+export function setAppsLoaderValues(slug,value,status){
+  return { type: "SET_APPS_LOADER_MODAL", slug,value,status }
+
+}
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
 }
@@ -869,6 +1035,9 @@ export function openAppsLoader(value, text) {
 export function updateModelSummaryFlag(flag) {
   return { type: "UPDATE_MODEL_FLAG", flag }
 }
+export function updateAnalystModeSelectedFlag(flag) {
+  return { type: "UPDATE_MODE_SELECTION", flag }
+}
 export function updateScoreSummaryFlag(flag) {
   return { type: "UPDATE_SCORE_FLAG", flag }
 }
@@ -876,15 +1045,77 @@ export function updateScoreSummaryFlag(flag) {
 export function updateModelSlug(slug) {
   return { type: "CREATE_MODEL_SUCCESS", slug }
 }
-export function updateScoreSlug(slug) {
-  return { type: "CREATE_SCORE_SUCCESS", slug }
+export function updateScoreSlug(slug,sharedSlug) {
+  return { type: "CREATE_SCORE_SUCCESS", slug,sharedSlug  }
 }
+
+export function changeLayerType(layerTyp){
+  return { type: "CHANGE_LAYER_TYPE",layerTyp}
+}
+
+export function addPanels(nextId){
+  let newPanel = store.getState().apps.panels.concat([nextId]);
+  return { type: "PANELS_TENSOR",newPanel}
+}
+
+export function saveEditTfInput(editTfInput){
+  return { type:"EDIT_TENSORFLOW_INPUT",editTfInput}
+}
+
+export function addTensorFlowArray(id,layerType,name,val) {
+    if(layerType==="Dense"){
+     var  tensorFlowArray={
+        "layer":"Dense",
+        "activation": null,
+        "activity_regularizer": null,
+        "bias_constraint": null,
+        "bias_initializer": null,
+        "bias_regularizer": null,
+        "kernel_constraint": null,
+        "kernel_initializer": null,
+        "kernel_regularizer": null,
+        "units": null,
+        "use_bias": null,
+        "batch_normalization":"false",
+        "layerId":id
+      }    
+  }
+  else if(layerType==="Dropout"){
+      var  tensorFlowArray={
+        "layer":"Dropout",
+        "rate":null,
+        "layerId":id
+      }
+    }
+    else{
+      var  tensorFlowArray={
+        "layer":"Lambda",
+        "lambda":null,
+        "units":null,
+        "layerId":id
+      }
+    }
+  return { type: "ADD_LAYERS", id,layerType,tensorFlowArray }
+}
+
+export function updateTensorFlowArray(layerId,name,val) {
+  var arrayIndxToUpdate=store.getState().apps.tensorFlowInputs.filter(i=>i!==null).findIndex(p => p.layerId ==layerId)
+  var tensorFlowInputs=store.getState().apps.tensorFlowInputs[arrayIndxToUpdate];
+  return { type: "UPDATE_LAYERS", arrayIndxToUpdate,layerId,tensorFlowInputs,name,val }
+}
+
+export function deleteTensorFlowArray(deleteId) {
+  return { type: "DELETE_LAYER_TENSORFLOW", deleteId}
+}
+export function clearTensorFlowArray() {
+  return { type: "CLEAR_LAYERS"}
+}
+
 
 export function getAppsRoboList(pageNo) {
   return (dispatch) => {
     return fetchRoboList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchRoboListSuccess(json))
       } else {
         dispatch(fetchRoboListError(json))
@@ -902,7 +1133,6 @@ function fetchRoboList(pageNo, token) {
   else if (robo_sorttype == 'desc')
     robo_sorttype = "-"
   if (search_element != "" && search_element != null) {
-    //console.log("calling for robo search element!!")
     return fetch(API + '/api/robo/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -939,7 +1169,6 @@ export function openRoboDataPopup() {
 }
 
 export function saveFilesToStore(files, uploadData) {
-  console.log(files)
   var file = files[0]
   if (uploadData == CUSTOMERDATA) {
     return { type: "CUSTOMER_DATA_UPLOAD_FILE", files }
@@ -1096,7 +1325,6 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText, algoSlug) 
     bsSize: 'medium',
     onHide: (dialogBox) => {
       dialogBox.hide()
-      console.log('closed by clicking background.')
     }
   });
 }
@@ -1140,6 +1368,7 @@ export function handleModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -1155,14 +1384,52 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
     body: customBody,
     actions: [
       Dialog.CancelAction(), Dialog.OKAction(() => {
-        if (title == RENAMEMODEL)
-          renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
+        if (title == RENAMEMODEL){
+          getAllModelList(store.getState().apps.currentAppId,dispatch)
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allModlLst = Object.values(store.getState().apps.allModelList);
+
+          if ($("#idRenameModel").val() === "") {
+            document.getElementById("ErrorMsg").innerHTML = "Please enter a model name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)          
+          }else if ($("#idRenameModel").val() != "" && $("#idRenameModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid model name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if (letters.test($("#idRenameModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter model name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else if(!(allModlLst.filter(i=>(i.name).toLowerCase() == $("#idRenameModel").val().toLowerCase()) == "") ){
+            document.getElementById("ErrorMsg").innerHTML = "Model by name \""+ $("#idRenameModel").val() +"\" already exists. Please enter a new name.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
+          }else{
+            renameModel(slug, dialog, $("#idRenameModel").val(), dispatch)
+            }
+        }
         else if (title == RENAMEINSIGHT)
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
           renameAudio(slug, dialog, $("#idRenameAudio").val(), dispatch)
-        else if (title == RENAMESTOCKMODEL)
+        else if (title == RENAMESTOCKMODEL){
+          dispatch(getAllStockAnalysisList())
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allStockList = Object.values(store.getState().apps.allStockAnalysisList);
+          let recentStocks = store.getState().apps.stockAnalysisList.data;
+          if ($("#idRenameStockModel").val() === "") {
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else if ($("#idRenameStockModel").val() != "" && $("#idRenameStockModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid analysis name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if (letters.test($("#idRenameStockModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if(Object.values(allStockList.concat(recentStocks)).map(i=>i.name.toLowerCase()).includes($("#idRenameStockModel").val().toLowerCase())){
+            document.getElementById("ErrorMsg").innerHTML = "Stock analysis with same name already exists.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else{
           renameStockModel(slug, dialog, $("#idRenameStockModel").val(), dispatch)
+            }
+          }  
         else
           renameScore(slug, dialog, $("#idRenameScore").val(), dispatch)
       })
@@ -1170,7 +1437,6 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
     bsSize: 'medium',
     onHide: (dialogBox) => {
       dialogBox.hide()
-      console.log('closed by clicking background.')
     }
   });
 }
@@ -1476,12 +1742,8 @@ export function getAudioFileList(pageNo) {
 }
 
 function fetchAudioList(pageNo, token) {
-
-  console.log(token)
   let search_element = store.getState().apps.audio_search_element
-  console.log(search_element)
   if (search_element != "" && search_element != null) {
-    console.log("calling for search element!!")
     return fetch(API + '/api/audioset/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -1618,6 +1880,10 @@ export function storeRoboSortElements(roboSorton, roboSorttype) {
 export function storeAppsModelSortElements(appsModelSorton, appsModelSorttype) {
   return { type: "SORT_APPS_MODEL", appsModelSorton, appsModelSorttype }
 }
+
+export function storeAppsModelFilterElement(filter_by_mode) {
+  return { type: "FILTER_APPS_MODEL", filter_by_mode }
+}
 export function storeAppsScoreSortElements(appsScoreSorton, appsScoreSorttype) {
   return { type: "SORT_APPS_SCORE", appsScoreSorton, appsScoreSorttype }
 }
@@ -1692,7 +1958,6 @@ export function getAppsStockList(pageNo) {
   return (dispatch) => {
     return fetchStockList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchStockListSuccess(json))
       } else {
         dispatch(fetchStockListError(json))
@@ -1739,67 +2004,46 @@ export function fetchStockListSuccess(doc) {
   return { type: "STOCK_LIST", data, current_page, latestStocks }
 }
 
-export function crawlDataForAnalysis(url, analysisName, urlForNews) {
-  var found = false;
-  var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
-  for (var i = 0; i < stockSymbolsArray.length; i++) {
-    if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
-      found = true;
-      break;
-    }
-  }
-  if (analysisName == "") {
-    var body_msg = statusMessages("warning", "Please enter stock analysis name.", "small_mascot");
-    bootbox.alert(body_msg);
-    return;
-  } else if (analysisName != "" && analysisName.trim() == "") {
-    var body_msg = statusMessages("warning", "Please enter valid stock analysis name.", "small_mascot");
-    bootbox.alert(body_msg);
-    return;
-  }
-  /*else if(url == ""){
-    bootbox.alert("Please enter stock analysis url.");
-  }*/
-  if (found) {
+export function crawlDataForAnalysis(domains, companies,analysisName,list) {
     return (dispatch) => {
-      dispatch(updateCreateStockPopup(false))
-      dispatch(openAppsLoader(APPSLOADERPERVALUE, "Extracting historic stock prices.... "));
-      return triggerCrawlingAPI(url, urlForNews, analysisName).then(([response, json]) => {
-        if (response.status === 200) {
-          console.log(json.slug)
+      return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
+        if (response.status === 200 && json.status!=false) {
+          dispatch(updateCreateStockPopup(false))
+          dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
           dispatch(crawlSuccess(json, dispatch))
         } else {
-          dispatch(crawlError(json))
-          dispatch(closeAppsLoaderValue());
+          dispatch(closeAppsLoaderValue()); 
+          $('#extractData').prop('disabled', false);          
+          if(json.exception=='Analysis name already exists')
+           document.getElementById("resetMsg").innerText=json.exception
+           else{
+           document.getElementById("resetMsg").innerText='No articles found for selected company and domain'
+           }
         }
       });
     }
-  } else {
-    var body_msg = statusMessages("warning", "Please enter text/symbols to analyze stocks.", "small_mascot");
-    bootbox.alert(body_msg);
-  }
 }
+
 export function updateAppsLoaderText(text) {
   return { type: "UPDATE_LOADER_TEXT", text }
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
-  var displayHideCancel = false;
   // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
   appsInterval = setInterval(function () {
     dispatch(getStockDataSetPreview(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
-function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
+function triggerCrawlingAPI(domains, companies,analysisName,list) {
 
   var details = {
-    "url1": urlForPrices,
-    "url2": urlForNews,
-    "name": analysisName,
-    "stock_symbols": store.getState().apps.appsStockSymbolsInputs
+    "domains": domains,
+    "stock_symbols": list,
+    "analysis_name": analysisName,
+    // "stock_symbols": store.getState().apps.appsStockSymbolsInputs
 
   }
   return fetch(API + '/api/stockdataset/', {
@@ -1847,12 +2091,11 @@ function triggerStockUpload(token, slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 export function triggerStockAnalysis(slug, dispatch) {
-  var displayHideCancel = true;
   appsInterval = setInterval(function () {
     dispatch(getStockAnalysis(slug, appsInterval));
-    return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+    return { type: "STOCK_CRAWL_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 
 }
 export function getStockAnalysis(slug, appsInterval) {
@@ -1895,15 +2138,13 @@ function fetchStockAnalysisAPI(token, slug) {
 }
 
 export function updateStockSlug(slug) {
-  var displayHideCancel = false;
-  return { type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel }
+  return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 
 export function getConceptsList() {
   return (dispatch) => {
     return fetchConceptList().then(([response, json]) => {
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchConceptListSuccess(json))
       } else {
         dispatch(fetchConceptListError(json))
@@ -1935,10 +2176,7 @@ export function getAppsList(token, pageNo) {
   return (dispatch) => {
     return fetchApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(fetchAppsSuccess(json))
-        // if(json.data)
-        // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
 
       } else {
         dispatch(fetchAppsError(json))
@@ -1977,7 +2215,6 @@ function fetchAppsSuccess(json) {
 }
 
 function fetchAppsError(json) {
-  //console.log("fetching list error!!",json)
   return { type: "APPS_LIST_ERROR", json }
 }
 export function appsStoreSearchEle(search_element) {
@@ -1989,10 +2226,6 @@ export function appsStoreSortElements(sort_by, sort_type) {
 
 export function updateAppsFilterList(filter_list) {
   let appList = store.getState().apps.appsList
-  //console.log(appList)
-
-  // if(filter_list.length==0 && appList.data )
-  // filter_list=[]
   return { type: "UPDATE_FILTER_LIST", filter_list }
 }
 
@@ -2001,7 +2234,6 @@ export function getAppsFilteredList(token, pageNo) {
   return (dispatch) => {
     return fetchFilteredApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
-        //console.log(json)
         dispatch(fetchAppsSuccess(json))
 
       } else {
@@ -2035,11 +2267,7 @@ export function updateSelectedVariable(event) {
   return { type: "SET_POSSIBLE_LIST", varType, varText, varSlug };
 }
 
-export function selectMetricAction(event, selectedOrNot) {
-  var evalMet = event.target.childNodes[event.target.selectedIndex];
-  var displayName = evalMet.getAttribute("name");
-  var name = evalMet.getAttribute("value");
-  var selected = selectedOrNot
+export function selectMetricAction(name,displayName,selected) {
   return { type: "SET_EVALUATION_METRIC", name, displayName, selected };
 }
 
@@ -2069,11 +2297,11 @@ function scoreToProceed(flag) {
 export function showLevelCountsForTarget(event) {
   debugger;
   var selOption = event.target.childNodes[event.target.selectedIndex];
-  var varType = selOption.value;
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");
-  var levelCounts = null;
-  var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+  var levelCounts = "";
+  var colData = store.getState().datasets.dataPreview.meta_data.uiMetaData.columnDataUI;
+  var varType = colData.filter(i=>i.name==varText)[0].columnType;
   var colStats = [];
   if (varType == "dimension") {
     for (var i = 0; i < colData.length; i++) {
@@ -2090,8 +2318,8 @@ export function showLevelCountsForTarget(event) {
   }
   return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
-export function updateTargetLevel(value) {
-  return { type: "SET_TARGET_LEVEL_COUNTS", value }
+export function updateTargetLevel(levelCounts) {
+  return { type: "SET_TARGET_LEVEL_COUNTS", levelCounts }
 }
 export function clearAppsIntervel() {
   clearInterval(appsInterval)
@@ -2132,9 +2360,9 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
   return { type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName, targetType, levelCount }
 }
 
-export function getRegressionAppAlgorithmData(slug, appType) {
+export function getRegressionAppAlgorithmData(slug, appType,mode) {
   return (dispatch) => {
-    return triggerRegressionAppAlgorithmAPI(appType).then(([response, json]) => {
+    return triggerRegressionAppAlgorithmAPI(appType,mode).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(saveRegressionAppAlgorithmData(json));
       }
@@ -2143,18 +2371,22 @@ export function getRegressionAppAlgorithmData(slug, appType) {
 }
 
 function triggerRegressionAppAlgorithmAPI(appType) {
+  let modeType = window.location.href.includes("analyst")? "analyst" : "autoML"
   let metricVal = store.getState().apps.metricSelected.name;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));*/
-  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal, {
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal +'&mode=' +modeType, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
 }
 export function saveRegressionAppAlgorithmData(data) {
   return { type: "SAVE_REGRESSION_ALGORITHM_DATA", data }
+}
+export function parameterTuningVisited(flag) {
+  return { type: "UPDATE_PARAMETER_TUNING_FLAG", flag }
 }
 export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
@@ -2177,17 +2409,43 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
               val1.acceptedValue = parVal;
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
-              $.each(allValues, function (i, dat) {
-                if (dat.name == parVal) {
-                  if (type == "TuningParameter")
-                    dat.selected = !dat.selected;
-                  else
-                    dat.selected = true;
-                }
-                else if (type == "NonTuningParameter" || type == "TuningOption")
-                  dat.selected = false;
+
+              if(type == "TuningParameter"){
+                if(parVal.length == 0)
+                  $.each(allValues, function (i, dat) {
+                        dat.selected = false;
+                  });
+                else
+                  for(let j=0; j<parVal.length; j++){
+                    $.each(allValues, function (i, dat) {
+                      if (dat.name == parVal[j])
+                          dat.selected = true;
+                      else if(!parVal.includes(dat.name))
+                        dat.selected = false;
+                    });
+                  }
+              }else if (type == "NonTuningParameter" || type == "TuningOption"){
+                  $.each(allValues, function (i, dat) {
+                    if (dat.name == parVal) {
+                        dat.selected = true;
+                    }
+                    else
+                      dat.selected = false;
+                  });
               }
-              );
+                
+              // $.each(allValues, function (i, dat) {
+              //   if (dat.name == parVal) {
+              //     if (type == "TuningParameter")
+              //       dat.selected = !dat.selected;
+              //     else
+              //       dat.selected = true;
+              //   }
+              //   else if (type == "NonTuningParameter" || type == "TuningOption")
+              //     dat.selected = false;
+              // }
+              // );
+              
             } else {
               val1.acceptedValue = parVal;
             }
@@ -2198,6 +2456,38 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   });
   return { type: "UPDATE_REGRESSION_ALGORITHM_DATA", newAlgorithm }
 
+}
+export function setIdLayer(newLayer){
+  return {
+    type: "ID_LAYER_ARRAY",
+    newLayer,
+  }
+}
+export function setPyTorchLayer(layerNum,lyrDt,parameterName){
+  return {
+    type: "SET_PYTORCH_LAYER",
+    layerNum,
+    lyrDt,
+    parameterName,
+  }
+}
+export function setPyTorchSubParams(subParamDt){
+  return {
+    type: "SET_PYTORCH_SUBPARAMS",
+    subParamDt,
+  }
+}
+export function deletePyTorchLayer(layerNum,newIdArray){
+  return {
+    type: "DELETE_LAYER_PYTORCH",
+    layerNum,
+    newIdArray,
+  }
+}
+export function clearPyTorchValues(){
+  return {
+    type : "CLEAR_PYTORCH_VALUES"
+  }
 }
 export function setDefaultAutomatic(data) {
   return { type: "SET_REGRESSION_DEFAULT_AUTOMATIC", data }
@@ -2210,6 +2500,12 @@ export function updateCrossValidationValue(val) {
 }
 export function reSetRegressionVariables() {
   return { type: "RESET_REGRESSION_VARIABLES" }
+}
+export function tensorValidateFlag(flag) {
+  return { type: "TENSOR_VALIDATE_FLAG",flag }
+}
+export function pytorchValidateFlag(flag) {
+  return { type: "PYTORCH_VALIDATE_FLAG",flag }
 }
 export function checkAtleastOneSelected() {
   let isSelected = false;
@@ -2327,6 +2623,41 @@ export function clearSelectedModelsCount() {
   var count = 0;
   return { type: "CLEAR_SELECT_MODEL_COUNT", count }
 }
+
+export function getAllStockAnalysisList() {
+  return (dispatch) => {
+    return fetchAllStockAnalysisList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            dispatch(fetchAllStockAnalysisSuccess(json))
+        }else{
+          dispatch(fetchAllStockAnalysisError(json))
+        }
+    })
+  }
+}
+function fetchAllStockAnalysisList(token) {
+  return fetch(API + '/api/stockdataset/get_all_stockssense/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllStockAnalysisSuccess(doc){
+  var data = ""
+  if(doc.allStockList[0]!= undefined){
+      data = doc.allStockList;
+  }
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST",
+      data,
+  }
+}
+function fetchAllStockAnalysisError(json) {
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST_ERROR",
+      json
+  }
+}
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning", "Are you sure, you want to delete analysis?", "small_mascot")))
@@ -2367,6 +2698,7 @@ export function handleStockModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameStockModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameStockModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -2374,6 +2706,7 @@ export function handleStockModelRename(slug, dialog, name) {
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+    dispatch(getAllStockAnalysisList())
   }
 }
 function renameStockModel(slug, dialog, newName, dispatch) {
@@ -2381,6 +2714,7 @@ function renameStockModel(slug, dialog, newName, dispatch) {
   Dialog.resetOptions();
   return renameStockModelAPI(slug, newName).then(([response, json]) => {
     if (response.status === 200) {
+      dispatch(getAllStockAnalysisList())
       dispatch(getAppsStockList(store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
@@ -2421,7 +2755,7 @@ export function refreshStockAppsList(props) {
       if (store.getState().apps.currentAppDetails == null)
         stockAppLocation = "/apps-stock-advisor";
       else
-        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url;
+        stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url+"/";
       if (window.location.pathname == stockAppLocation)
         dispatch(getAppsStockList(parseInt(pageNo)));
     }
@@ -2458,9 +2792,7 @@ export function getDeployPreview(pageNo, filtername) {
 
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken, filtername).then(([response, json]) => {
 
-      // return fetchAlgoList(pageNo,filtername,dispatch).then(([response, json]) =>{
       if (response.status === 200) {
-        console.log(json)
         dispatch(fetchAlgoListSuccess(json, dispatch))
       }
       else {
@@ -2471,7 +2803,6 @@ export function getDeployPreview(pageNo, filtername) {
 }
 
 function fetchDeployPreview(filtername, dispatch) {
-  // return fetch(API+'/api/datasets/'+slug+'/',{
 
   return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {
 

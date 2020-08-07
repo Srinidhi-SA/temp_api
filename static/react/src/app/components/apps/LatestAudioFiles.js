@@ -27,13 +27,11 @@ var dateFormat = require('dateformat');
 export class LatestAudioFile extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
   }
 
 
   render() {
       var data = store.getState().apps.latestAudioList;
-      console.log(data)
       let addButton =  <AudioFileUpload match={this.props.match}/>;
 
       let latestAudioFiles = "";

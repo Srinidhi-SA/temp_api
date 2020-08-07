@@ -17,7 +17,7 @@ export function dataUpload() {
     var dbDetails = {};
     return (dispatch) => {
     if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
-        if(store.getState().dataSource.fileUpload.name){
+        if(store.getState().dataSource.fileUpload[0].name!=""){
             $("#fileErrorMsg").addClass("visibilityHidden");
             dispatch(uploadFileOrDB());
         }else{
@@ -51,7 +51,6 @@ export function dataUpload() {
 }
 function uploadFileOrDB(dbDetails){
     return (dispatch) => {
-        dispatch(updateHideData(false));
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
@@ -64,14 +63,12 @@ function uploadFileOrDB(dbDetails){
           // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
           // dispatch()
           if (response.status === 200) {
-            dispatch(updateHideData(true));
-            dispatch(updateDatasetName(json.slug))
-            dispatch(dataUploadSuccess(json, dispatch))
+              dispatch(updateDatasetName(json[0].slug))
+              dispatch(dataUploadSuccess(json[0], dispatch))
           } else {
             dispatch(dataUploadError(json))
           }
         }).catch(function(error) {
-              console.log(error);
               bootbox.alert("Connection lost. Please try again later.")
               dispatch(hideDULoaderPopup());
               dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
@@ -83,8 +80,9 @@ function triggerDataUpload(token,dbDetails) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
 
     var data = new FormData();
-    data.append("input_file", store.getState().dataSource.fileUpload);
-    console.log(data)
+    for (var x = 0; x < store.getState().dataSource.fileUpload.length; x++) {
+      data.append("input_file", store.getState().dataSource.fileUpload[x]);
+    }
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeaderWithoutContent(token),
@@ -202,13 +200,9 @@ export function dataSubsetting(subsetRq, slug) {
    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
    dispatch(close());
-   dispatch(updateHideData(false));
  dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
-      //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
-      if (response.status === 200) {
-        console.log(json.slug)
-        dispatch(updateHideData(true));
+    if (response.status === 200) {
         dispatch(updateDatasetName(json.slug))
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))
@@ -221,18 +215,14 @@ export function dataSubsetting(subsetRq, slug) {
 }
 
 function triggerDataSubsetting(subsetRq, slug) {
-  console.log("subsetRq is-----------")
-  console.log(subsetRq)
   return fetch(API + '/api/datasets/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify(subsetRq)
   }).then(response => Promise.all([response, response.json()]));
-
 }
+
 function updateSubsetSuccess(subsetRs) {
-  console.log("data subset from api to store")
-  //console.log(subsetRs)
   return {type: "SUBSETTED_DATASET", subsetRs}
 }
 export function clearDataPreview() {
@@ -241,9 +231,6 @@ export function clearDataPreview() {
 
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
-}
-export function updateHideData(flag) {
-  return {type: "UPDATE_HIDE_DATA", flag}
 }
 export function clearDatasetPreview(){
     clearInterval(dataPreviewInterval)

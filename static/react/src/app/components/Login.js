@@ -1,10 +1,11 @@
 import React from "react";
+import ReactTooltip from 'react-tooltip'
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import {STATIC_URL} from "../helpers/env";
+import {STATIC_URL, API} from "../helpers/env";
 import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
@@ -31,16 +32,13 @@ export class Login extends React.Component {
     const password = e.target.value;
     this.setState({pwd: password});
   }
+
   componentDidMount(){
     hidechatbot()
   }
 
   doAuth() {
-
-    //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
-    console.log("checking login form fields");
-    // console.log(this.state.uId);
-    if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
+  if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
     this.state.errmsg = "Please enter the username!"
     $("#errormsg").text(this.state.errmsg);
   }else if(this.state.pwd==""||this.state.pwd==null){
@@ -52,13 +50,10 @@ export class Login extends React.Component {
   }
   }
   render() {
-    console.log("login is called!!")
-    console.log(this.props)
+    const forgotLink = API + "/reset-password/"; 
     this.state.errmsg = this.props.errmsg;
     if (document.cookie.indexOf("JWT ") > 0 ) {
-      console.log("authorized!!!");
       document.body.className = "";
-
       return (<Redirect to={"/"} />);
     } else {
     	document.body.className = "ma-splash-screen";
@@ -80,43 +75,32 @@ export class Login extends React.Component {
                     <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="mAdvisor" className="img-responsive logo-img"/></div>
                     <div className="panel-body no-border">
 
-                     {/* <h3>SIGN IN</h3> */}
                       <div className="login-form">
                         <div className="form-group">
                           <div className="input-group">
-                            <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autocomplete="off" className="form-control"/>
-                            {/*  <span className="input-group-addon">
-                              <i className="fa fa-user"></i>
-                            </span>*/}
+                            <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autoComplete="off" className="form-control"/>
+                            
                           </div>
                         </div>
                         <div className="form-group">
                           <div className="input-group">
                             <input id="password" type="password" value={this.state.pwd} onChange={this.onChangePwd.bind(this)} placeholder="Password" className="form-control"/>
-                            {/*  <span className="input-group-addon">
-                              <i className="fa fa-key"></i>
-                            </span>*/}
+                          
                           </div>
                         </div>
                         <div className="form-group footer row">
-                          {/*<div className="col-xs-6 remember text-left">
-                            <div className="ma-checkbox">
-                              <input type="checkbox" id="remember" className="needsclick"/>
-                              <label htmlFor="remember"></label>
-                            </div>
-                            <label htmlFor="remember">Remember Me</label>
-
-                          </div>*/}
+                         
                           <div className="col-xs-6 text-right">
                             
                           </div>
 
                         </div>
-						<a href="#" className="xs-mt-20 pull-left">Forgot Password?</a>
+						            <a href = {forgotLink} className="xs-mt-20 pull-left">Forgot Password?</a>                      
+                      
                         <div className="form-group login-submit pull-right">
-                          <button onClick={this.doAuth.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
+                          <button onClick={this.doAuth.bind(this)} id="login" className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
                         </div>
-						<div className="clearfix"></div>
+						            <div className="clearfix"></div>
                         <div className = "text-danger text-center" id="errormsg">{this.state.errmsg}</div>
 
                       </div>

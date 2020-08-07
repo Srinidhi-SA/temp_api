@@ -1,10 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 import {
-  Modal,
-  Button,
   Tab,
   Row,
   Col,
@@ -15,10 +11,11 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize} from "../../helpers/helper";
+import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize,statusMessages} from "../../helpers/helper";
 
 import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetails} from "../../actions/dataSourceListActions";
-
+import {getAllDataList} from "../../actions/dataActions";
+import { Scrollbars } from 'react-custom-scrollbars';
 @connect((store) => {
   return {
     login_response: store.login.login_response,
@@ -29,7 +26,9 @@ import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetai
     db_username: store.dataSource.db_host,
     db_port: store.dataSource.db_port,
     db_password: store.dataSource.db_host,
-    selectedDataset: store.datasets.selectedDataSet
+    selectedDataset: store.datasets.selectedDataSet,
+    allDataList:store.datasets.allDataSets,
+    datasets:store.datasets.dataList.data,
   };
 })
 
@@ -42,16 +41,49 @@ export class DataSourceList extends React.Component {
   }
   componentWillMount() {
     this.props.dispatch(getDataSourceList());
+    this.props.dispatch(getAllDataList());
   }
   onDrop(files) {
+    let empltyFile= [];
+    empltyFile[0] = {
+      "name": "",
+      "size": ""
+    };
+    this.props.dispatch(saveFileToStore(empltyFile))
+    var duplicateFlag="";
+    var duplicateName="";
     if (files.length > 0) {
-      if (files[0].size == 0) {
-        $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
-      } else {
-        $("#fileErrorMsg").addClass("visibilityHidden");
-        this.props.dispatch(saveFileToStore(files))
-      }
+      // if(this.props.datasets.length>0){
+      //   var datasetList = this.props.datasets.map(i=>i.name.toLowerCase());
+      //   duplicateName = files.map(i=> datasetList.includes(i.name.toLowerCase().split('.').slice(0, -1).join('.'))).includes(true);
+      // }
+      if(this.props.allDataList!=""){
+        var alldatasetList = this.props.allDataList.data.map(i=>i.name.toLowerCase());
+        for (var i=0;i<files.length;i++){
+          if(alldatasetList.includes(files[i].name.toLowerCase().split('.').slice(0, -1).join('.'))){
+            duplicateFlag= true;
+            duplicateName= files[i].name;
+          }
+        }
+       }
+
+          if (files[0].size == 0) {
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("The uploaded file is empty, please upload the correct file");
+          }
+          else if(duplicateFlag){
+            files[0] = {
+              "name": "",
+              "size": ""
+            };
+            // this.props.dispatch(saveFileToStore(files))
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html(`Dataset with ${duplicateName} name already exists`);
+          }
+          else {
+            $("#fileErrorMsg").addClass("visibilityHidden");
+            this.props.dispatch(saveFileToStore(files))
+          }
     } else {
       files[0] = {
         "name": "",
@@ -59,10 +91,8 @@ export class DataSourceList extends React.Component {
       };
       this.props.dispatch(saveFileToStore(files))
     }
-
   }
   popupMsg() {
-  //  console.log(e.taget.value)
     $("#fileErrorMsg").removeClass("visibilityHidden");
     $("#fileErrorMsg").html("The file format is not supported. Please try again with a csv file.");
 
@@ -73,10 +103,20 @@ export class DataSourceList extends React.Component {
   handleInputChange(event) {
     updateDbDetails(event);
   }
-
+  deleteFile(item){
+    var deletedFiles= store.getState().dataSource.fileUpload.filter(i=>i!=item);
+    if(deletedFiles.length<1){
+      deletedFiles[0] = {
+        "name": "",
+        "size": ""
+      };
+      this.props.dispatch(saveFileToStore(deletedFiles));
+    }
+    this.props.dispatch(saveFileToStore(deletedFiles));
+  }
   render() {
     const dataSrcList = store.getState().dataSource.dataSourceList.conf;
-    var fileName = store.getState().dataSource.fileUpload.name;
+    var fileName = store.getState().dataSource.fileUpload;
     val => ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb'][Math.floor(Math.log2(val) / 10)]
 
     var fileSize = store.getState().dataSource.fileUpload.size;
@@ -85,7 +125,7 @@ export class DataSourceList extends React.Component {
     if (dataSrcList) {
       const navTabs = dataSrcList.map((data, i) => {
         return (
-          <NavItem eventKey={data.dataSourceType} onSelect={this.handleSelect}>
+          <NavItem eventKey={data.dataSourceType} key={i} onSelect={this.handleSelect}>
             {data.dataSourceName}
           </NavItem>
         )
@@ -95,15 +135,15 @@ export class DataSourceList extends React.Component {
         let formList = null;
         var divId = "data_upload_" + i;
         var dataSrcType = data.dataSourceType
-				let msg=<div><label>Select an existing dataset</label>{this.props.renderDatasets}</div>
+				let msg=<div><label className="pb-2">Select an existing dataset</label>{this.props.renderDatasets}</div>
 				if(this.props.renderDatasets == "No Datasets")
 				msg=<div><label>No datasets available.Please upload some data or connect to a database</label></div>
         const fieldsList = fields.map((field, j) => {
           if (field.fieldType == "file") {
             if (this.props.renderDatasets) {
               return (
-                <div>
-                  <div class="form-group col-md-10 xs-pt-50 xs-pl-30">
+                <div key={j}>
+                  <div class="form-group col-md-12 pt-10">
                     {msg}
                   </div>
                   <div className="clearfix"></div>
@@ -111,7 +151,7 @@ export class DataSourceList extends React.Component {
               );
             } else {
               return (
-                <div class="tab-pane active cont fade in">
+                <div  key={j} class="tab-pane active cont fade in">
                   <h4>
                     File Upload
                     <div class="pull-right">
@@ -119,23 +159,33 @@ export class DataSourceList extends React.Component {
                     </div>
                   </h4>
                   <div className="clearfix"></div>
-                  <div className="xs-pt-20"></div>
                   <div className="dropzone ">
-                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={false} onDropRejected={this.popupMsg}>
+                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={true} onDropRejected={this.popupMsg}>
                       <p>Please drag and drop your file here or browse.</p>
                     </Dropzone>
-                    <aside>
-                      <ul className={fileName != ""
+                  </div>
+                      <Scrollbars style={{ height: 100 }}>
+                      <ul className={this.props.fileUpload[0].name != ""
                         ? "list-unstyled bullets_primary"
-                        : "list-unstyled"}>
-                        <li>{fileName}{fileName != ""
-                            ? " - "
-                            : ""}{fileSize}</li>
+                        : "list-unstyled"} style={{marginBottom:0,paddingTop:10}}>
+                          {(this.props.fileUpload[0].name!="")&&
+                          this.props.fileUpload.map(file=>{
+                            return(
+                            <li style={{padding:0}}>
+                              {file.name}
+                              <span> - </span> {bytesToSize(file.size)}
+                              <span style={{ marginLeft: "15px" }} onClick={this.deleteFile.bind(this, file)}>
+                                <i class="fa fa-times" style={{ color: '#555', cursor: 'pointer' }}></i>
+                              </span>  
+                            </li>
+                            )
+                          })
+                        }
                         <li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
                       </ul>
-                    </aside>
+                      </Scrollbars>
+                    
 
-                  </div>
                 </div>
               )
             }
@@ -143,7 +193,7 @@ export class DataSourceList extends React.Component {
             //to put default port
             let placeHolder = field.placeHolder
             return (
-              <div className="form-group" id={j}>
+              <div className="form-group" key={j} id={j}>
                 <label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
                 <div className="col-sm-9">
                   <input id={dataSrcType + field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required} title={"Please Enter " + field.labelName} name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxLength={field.maxLength}/>
@@ -161,7 +211,7 @@ export class DataSourceList extends React.Component {
           formList = <div id={divId}>{fieldsList}</div>
         }
         return (
-          <Tab.Pane eventKey={data.dataSourceType}>
+          <Tab.Pane key={i} eventKey={data.dataSourceType}>
             {formList}
           </Tab.Pane>
         )
@@ -170,19 +220,29 @@ export class DataSourceList extends React.Component {
         <div>
           <Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
 		  <div className="container-fluid">
-            <Row className="clearfix">
-              <Col sm={3}>
-                <Nav bsStyle="pills" stacked>
-                  {navTabs}
-                </Nav>
-              </Col>
-
+      <Row className="clearfix">
+        {(window.location.href.includes("autoML"))?
+          ""
+          :
+          <Col sm={3}>
+            <Nav bsStyle="pills" stacked>
+              {navTabs}
+            </Nav>
+          </Col>
+        }
+        {(window.location.href.includes("autoML"))?
+            <Col sm={12}>
+            <Tab.Content animation>
+              {navTabContent}
+            </Tab.Content>
+          </Col>
+            :
               <Col sm={9}>
                 <Tab.Content animation>
                   {navTabContent}
                 </Tab.Content>
               </Col>
-
+        }
             </Row>
 			</div>
           </Tab.Container>

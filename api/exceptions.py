@@ -1,3 +1,4 @@
+from builtins import str
 from rest_framework.views import exception_handler
 from  rest_framework.response import Response
 
@@ -9,7 +10,7 @@ def custom_exception_handler(exc, context):
     if response is not None:
         response.data = {}
         errors = []
-        for field, value in response.data.items():
+        for field, value in list(response.data.items()):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = errors
@@ -26,7 +27,7 @@ def creation_failed_exception(err):
     if response is not None:
         response.data = {}
         errors = []
-        for field, value in response.data.items():
+        for field, value in list(response.data.items()):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = "Creation failed"
@@ -42,7 +43,7 @@ def retrieve_failed_exception(err):
     if response is not None:
         response.data = {}
         errors = []
-        for field, value in response.data.items():
+        for field, value in list(response.data.items()):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = "Retrieve failed"
@@ -59,7 +60,7 @@ def update_failed_exception(err):
     if response is not None:
         response.data = {}
         errors = []
-        for field, value in response.data.items():
+        for field, value in list(response.data.items()):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = "Update failed"
@@ -75,7 +76,7 @@ def deleted_failed_exception(err):
     if response is not None:
         response.data = {}
         errors = []
-        for field, value in response.data.items():
+        for field, value in list(response.data.items()):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = "Deleted failed"
@@ -86,4 +87,18 @@ def deleted_failed_exception(err):
 
     return response
 
+def sharing_failed_exception(err):
+    response = Response()
+    if response is not None:
+        response.data = {}
+        errors = []
+        for field, value in list(response.data.items()):
+            errors.append("{} : {}".format(field, " ".join(value)))
 
+        response.data['errors'] = "Sharing failed"
+        response.data['status'] = False
+        response.data['message'] = 'failed'
+
+        response.data['exception'] = err
+
+    return response

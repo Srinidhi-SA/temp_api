@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
+from builtins import object
 import csv
-import json
+import simplejson as json
 import os
 import random
 import string
@@ -12,9 +17,10 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from api.helper import update_stock_sense_message
 
-from StockAdvisor.crawling.common_utils import get_regex
-from StockAdvisor.crawling.crawl_util import crawl_extract, \
+from .StockAdvisor.crawling.common_utils import get_regex
+from .StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_crawl_news, \
     convert_crawled_data_to_metadata_format, \
     generate_urls_for_historic_data, \
@@ -27,7 +33,7 @@ from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
 from django.conf import settings
-from helper import convert_fe_date_format
+from .helper import convert_fe_date_format
 from django_celery_beat.models import PeriodicTask
 
 from guardian.shortcuts import assign_perm
@@ -63,6 +69,7 @@ class Job(models.Model):
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
     error_report = models.TextField(default="{}")
+    messages =  models.TextField(default="{}")
     message_log = models.TextField(default="{}")
 
     def generate_slug(self):
@@ -96,12 +103,12 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from tasks import submit_job_separate_task1, submit_job_separate_task
+        from .tasks import submit_job_separate_task1, submit_job_separate_task
 
         if settings.SUBMIT_JOB_THROUGH_CELERY:
-            submit_job_separate_task.delay(command_array, self.object_id)
+            submit_job_separate_task.delay(command_array, self.slug)
         else:
-            submit_job_separate_task1(command_array, self.object_id)
+            submit_job_separate_task1(command_array, self.slug)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -120,7 +127,7 @@ class Job(models.Model):
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
-            print err
+            print(err)
 
     def get_original_object(self):
         original_object = None
@@ -137,7 +144,7 @@ class Job(models.Model):
         elif self.job_type == 'stockAdvisor':
             original_object = StockDataset.objects.get(slug=self.object_id)
         else:
-            print "No where to write"
+            print("No where to write")
 
         return original_object
 
@@ -162,7 +169,7 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False, db_index=True)
+    created_by = models.ForeignKey(User, null=True, db_index=True)
     deleted = models.BooleanField(default=False)
     subsetting = models.BooleanField(default=False, blank=True)
 
@@ -173,11 +180,13 @@ class Dataset(models.Model):
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_DATASET
-
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -208,6 +217,10 @@ class Dataset(models.Model):
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
+
+    def get_upload_to(self, field_attname):
+        """Get upload_to path specific to this photo."""
+        return 'photos/%d' % self.id
 
     def create_for_subsetting(
             self,
@@ -245,7 +258,6 @@ class Dataset(models.Model):
 
         if job is None:
             self.status = "FAILED"
-            # self.status = "INPROGRESS"
         else:
             self.status = "INPROGRESS"
 
@@ -304,8 +316,13 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
         datasource_details = ""
+        try:
+            inputFileSize = os.stat(self.input_file.path).st_size
+        except:
+            inputFileSize = ""
         if self.datasource_type in ['file', 'fileUpload']:
             inputFile = self.get_input_file()
+
         else:
             datasource_details = json.loads(self.datasource_details)
 
@@ -313,6 +330,7 @@ class Dataset(models.Model):
             "config": {
                 "FILE_SETTINGS": {
                     "inputfile": [inputFile],
+                    "inputfilesize": inputFileSize,
                 },
                 "COLUMN_SETTINGS": {
                     "analysis_type": ["metaData"],
@@ -330,6 +348,7 @@ class Dataset(models.Model):
     def csv_header_clean(self):
         CLEAN_DATA = []
         cleaned_header = []
+        os.chmod(self.input_file.path, 0o777)
         with open(self.input_file.path) as file:
             rows = csv.reader(file)
             for (i, row) in enumerate(rows):
@@ -375,8 +394,10 @@ class Dataset(models.Model):
                 pass
 
     def copy_file_to_hdfs(self):
+        file_size = os.stat(self.input_file.path).st_size
         try:
-            hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+            if file_size > 128000000:
+                hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
         except:
             raise Exception("Failed to copy file to HDFS.")
 
@@ -393,6 +414,8 @@ class Dataset(models.Model):
 
     def get_hdfs_relative_file_path(self):
 
+        if self.shared is True:
+            return os.path.join(settings.HDFS.get('base_path'), self.shared_slug)
         if self.subsetting is True:
             return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
@@ -408,12 +431,25 @@ class Dataset(models.Model):
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
             elif type == 'hdfs':
-                dir_path = "hdfs://{}:{}".format(
-                    settings.HDFS.get("host"),
-                    settings.HDFS.get("hdfs_port")
-                )
-                file_name = self.get_hdfs_relative_file_path()
+                file_size = os.stat(self.input_file.path).st_size
+                if file_size < 128000000:
+                    if settings.USE_HTTPS:
+                        protocol = 'https'
+                    else:
+                        protocol = 'http'
+                    dir_path = "{0}://{1}".format(protocol, THIS_SERVER_DETAILS.get('host'))
 
+                    path = str(self.input_file)
+                    if '/home/' in path:
+                        file_name=path.split("/config")[-1]
+                    else:
+                        file_name = os.path.join('/media/', str(self.input_file))
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        settings.HDFS.get("host"),
+                        settings.HDFS.get("hdfs_port")
+                    )
+                    file_name = self.get_hdfs_relative_file_path()
                 return dir_path + file_name
 
             elif type == 'fake':
@@ -486,7 +522,7 @@ class Dataset(models.Model):
                 if variable['name'] == 'dateTimeSuggestions':
                     dateTimeSuggestions += [variable['value']]
         else:
-            print "How the hell reached here!. Metadata is still not there. Please Wait."
+            print("How the hell reached here!. Metadata is still not there. Please Wait.")
 
         return {
             'ignore_column_suggestion': ignore_column_suggestion,
@@ -535,14 +571,23 @@ class Dataset(models.Model):
                             sample[data['displayName']]: data['value']
                         }
                     )
+        if self.shared is True:
 
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.name
-            }
-        )
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.name
+                }
+            )
         return convert_json_object_into_list_of_object(brief_info, 'dataset')
 
     def get_metadata_url_config(self):
@@ -589,13 +634,15 @@ class Insight(models.Model):
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         verbose_name = "Signal"
         verbose_name_plural = "Signals"
         permissions = settings.PERMISSIONS_RELATED_TO_SIGNAL
-
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.status, self.created_at]])
@@ -791,16 +838,38 @@ class Insight(models.Model):
                     brief_info.update({
                         'analysis list': []
                     })
-
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name
-            }
-        )
+        if self.shared is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'signal')
+
+
+def convert2native(dict_input):
+    for k, v in dict_input.items():
+        if isinstance(v, dict):
+            v = convert2native(v)
+        else:
+            if v in ['true', 'True']:
+                dict_input[k] = True
+            if v in ['false', 'False']:
+                dict_input[k] = False
+            if v in ['none', 'None']:
+                dict_input[k] = None
+    return dict_input
 
 
 class Trainer(models.Model):
@@ -810,8 +879,10 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
+    mode = models.CharField(max_length=10, null=True, blank=True)
 
     data = models.TextField(default="{}")
+    fe_config = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -825,10 +896,12 @@ class Trainer(models.Model):
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
+    email = models.EmailField(null=True, blank=True)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True, blank=True)
+    shared_slug = models.SlugField(null=True, max_length=300, blank=True)
 
-
-
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
@@ -849,14 +922,25 @@ class Trainer(models.Model):
 
     def generate_config(self, *args, **kwargs):
 
+        # changes in UI given config
 
-        #changes in UI given config
-        self.apply_changes_of_selectedVariables_into_variable_selection()
+        if self.mode == 'analyst':
+            self.apply_changes_of_selectedVariables_into_variable_selection()
 
         config = {
             "config": {}
         }
-        #creating new config for ML/API using UI given config
+
+        if self.mode == 'autoML':
+            config['config']["TRAINER_MODE"] = "autoML"
+            dataset_slug = self.dataset.slug
+            # print "#############################"
+            # print dataset_slug
+            # print "#############################"
+            self.get_targetColumn_for_variableSelection_autoML()
+        else:
+            config['config']["TRAINER_MODE"] = "analyst"
+        # creating new config for ML/API using UI given config
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
         try:
@@ -868,26 +952,43 @@ class Trainer(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         if (self.app_id in settings.REGRESSION_APP_ID):
-            config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         # this part is related to FS
-        config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
+        if self.mode == 'autoML':
+            from config.settings import feature_engineering_settings
+            fe_default_settings = copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
+            dc_default_settings = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+            config['config']['FEATURE_SETTINGS'] = {"DATA_CLEANSING": dc_default_settings,
+                                                    "FEATURE_ENGINEERING": fe_default_settings}
+        else:
+            config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
         # we are updating ColumnsSetting using add_newly_generated_column_names calculated in create_configuration_fe_settings
         try:
             configUI = self.get_config()
             configAPI = self.dataset.get_config()
-
+            try:
+                if 'TENSORFLOW' in configUI:
+                    if (self.app_id in settings.REGRESSION_APP_ID):
+                        config['config']["ALGORITHM_SETTING"][4].update({'tensorflow_params': configUI['TENSORFLOW']})
+                    elif self.app_id in settings.CLASSIFICATION_APP_ID:
+                        config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
+                if 'nnptc_parameters' in config['config']["ALGORITHM_SETTING"][6]:
+                    config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
+            except Exception as err:
+                print("Error adding Tesorflow Selection to Algorithm")
+                print(err)
             # Unselect original
             if 'featureEngineering' in configUI:
                 for colSlug in self.collect_column_slugs_which_all_got_transformations:
-                        for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                if i['slug'] == colSlug:
-                                    print(colSlug)
-                                    i['selected'] = False
-                                    break
+                    for i in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                        if i['slug'] == colSlug:
+                            print(colSlug)
+                            i['selected'] = False
+                            break
                 config['config']['COLUMN_SETTINGS']['variableSelection'] += self.add_newly_generated_column_names
 
             # Updating datatypes
@@ -912,39 +1013,40 @@ class Trainer(models.Model):
                             break
             # Selected value to be True/False on basis of ignoreSuggestionFlag & ignoreSuggestionPreviewFlag
             if 'featureEngineering' in configUI:
-                if len(configUI['selectedVariables'])>0:
+                if len(configUI['selectedVariables']) > 0:
                     for SV_slug in configUI['selectedVariables']:
-                        #if user perform featureEngineering actions
-                        if len(configUI['featureEngineering']['columnsSettings'])>0:
+                        # if user perform featureEngineering actions
+                        if len(configUI['featureEngineering']['columnsSettings']) > 0:
                             for fe_slug in configUI['featureEngineering']['columnsSettings']:
                                 if SV_slug == fe_slug:
                                     pass
                                 else:
                                     for i in configAPI['columnData']:
                                         if SV_slug == i['slug']:
-                                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                            if i['ignoreSuggestionFlag'] == True and i[
+                                                'ignoreSuggestionPreviewFlag'] == False:
                                                 for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
                                                     if colSlug['slug'] == i['slug']:
-                                                        colSlug['selected']=False
+                                                        colSlug['selected'] = False
                                             else:
                                                 pass
                         # if featureEngineering config is empty
                         else:
                             for i in configAPI['columnData']:
                                 if SV_slug == i['slug']:
-                                    if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
+                                    if i['ignoreSuggestionFlag'] == True and i['ignoreSuggestionPreviewFlag'] == False:
                                         for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
                                             if colSlug['slug'] == i['slug']:
-                                                colSlug['selected']=False
-                #For AutoML mode when there will be no Selected Variables
+                                                colSlug['selected'] = False
+                # For AutoML mode when there will be no Selected Variables
                 else:
                     for i in configAPI['columnData']:
-                            if i['ignoreSuggestionFlag']==True and i['ignoreSuggestionPreviewFlag']== False:
-                                for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
-                                    if colSlug['slug'] == i['slug']:
-                                        colSlug['selected']=False
-                            else:
-                                pass
+                        if i['ignoreSuggestionFlag'] == True and i['ignoreSuggestionPreviewFlag'] == False:
+                            for colSlug in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                                if colSlug['slug'] == i['slug']:
+                                    colSlug['selected'] = False
+                        else:
+                            pass
             else:
                 print("Feature featureEngineering config Not found !")
         except Exception as err:
@@ -958,6 +1060,17 @@ class Trainer(models.Model):
 
     # Changes to be done on variable_selection of UI given config before using it for ML/API config
     # In selectedVariables key of UI config, we selected/unselected columns
+    def get_targetColumn_for_variableSelection_autoML(self):
+        config = self.get_config()
+        targetColumn = config['targetColumn']
+        variablesSelection = config['variablesSelection']
+        for variable in variablesSelection:
+            if variable['name'] == targetColumn:
+                variable['targetColumn'] = True
+                break
+        self.config = json.dumps(config)
+        self.save()
+
     def apply_changes_of_selectedVariables_into_variable_selection(self):
         config = self.get_config()
         selectedVariables = config['selectedVariables']
@@ -1006,8 +1119,8 @@ class Trainer(models.Model):
         targetLevel = None
         if 'targetLevel' in config:
             targetLevel = config.get('targetLevel')
-        if(self.app_id in settings.REGRESSION_APP_ID):
-            validationTechnique=config.get('validationTechnique')
+        if (self.app_id in settings.REGRESSION_APP_ID):
+            validationTechnique = config.get('validationTechnique')
             return {
                 'inputfile': [self.dataset.get_input_file()],
                 'modelpath': [self.slug],
@@ -1015,19 +1128,19 @@ class Trainer(models.Model):
                 'analysis_type': ['training'],
                 'metadata': self.dataset.get_metadata_url_config(),
                 'targetLevel': targetLevel,
-                'app_type':'regression'
+                'app_type': 'regression'
             }
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
 
             validationTechnique = config.get('validationTechnique')
             return {
-            'inputfile': [self.dataset.get_input_file()],
-            'modelpath': [self.slug],
-            'validationTechnique': [validationTechnique],
-            'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config(),
-            'targetLevel': targetLevel,
-            'app_type':'classification'
+                'inputfile': [self.dataset.get_input_file()],
+                'modelpath': [self.slug],
+                'validationTechnique': [validationTechnique],
+                'analysis_type': ['training'],
+                'metadata': self.dataset.get_metadata_url_config(),
+                'targetLevel': targetLevel,
+                'app_type': 'classification'
             }
 
     def create_configuration_column_settings(self):
@@ -1118,15 +1231,22 @@ class Trainer(models.Model):
                     brief_info.update({
                         'train_test_split': 0
                     })
-
-
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name
-            }
-        )
+        if self.shared is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
@@ -1261,7 +1381,6 @@ class Trainer(models.Model):
                             default_values['selected'] = True
                             break
 
-
                 # checking for shuffle
                 if params['name'] == 'shuffle':
                     make_some_one_false = True
@@ -1334,14 +1453,15 @@ class Trainer(models.Model):
         if 'dataCleansing' in config:
             data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'featureEngineering' in config:
-            feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
+            feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'],
+                                                                                column_data)
 
-        self.collect_column_slugs_which_all_got_transformations = list(set(self.collect_column_slugs_which_all_got_transformations ))
+        self.collect_column_slugs_which_all_got_transformations = list(
+            set(self.collect_column_slugs_which_all_got_transformations))
         return {
             'DATA_CLEANSING': data_cleansing_config,
             'FEATURE_ENGINEERING': feature_engineering_config
         }
-
 
     def data_cleansing_adaptor_for_ml(self, data_cleansing_config_ui, column_data):
         '''
@@ -1483,7 +1603,7 @@ class Trainer(models.Model):
                         try:
                             overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
                             for col in column_data:
-                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True:
+                                if column_data[col]['columnType'] == 'measure' and column_data[col]['selected'] == True and column_data[col]['targetColumn'] == False:
                                     self.collect_column_slugs_which_all_got_transformations.append(col)
                                     self.generate_new_column_name_based_on_transformation(
                                         column_data[col],
@@ -1492,7 +1612,7 @@ class Trainer(models.Model):
                                     )
                         except Exception as err:
                             print(err)
-        self.collect_column_slugs_which_all_got_transformations += columns_wise_data.keys()
+        self.collect_column_slugs_which_all_got_transformations += list(columns_wise_data.keys())
 
         for slug in columns_wise_data:
             feature_engineering_ml_config['selected'] = True
@@ -1504,7 +1624,7 @@ class Trainer(models.Model):
                 if fkey == 'transformationData':
                     mlJson = self.transformationUiJsonToMLJsonAdapter(uiJson=uiJson,
                                                                       variable_selection_column_data=column_data[slug]
-                                                             )
+                                                                      )
                     self.add_to_feature_engineering_transformation_settings(transformation_settings, mlJson)
 
                 if fkey == 'binData':
@@ -1514,14 +1634,14 @@ class Trainer(models.Model):
                     self.add_to_feature_engineering_bin_creation_settings(level_creation_settings, mlJson)
                 elif fkey == 'levelData':
                     mlJson, is_datetime_level = self.levelsAdapter(uiJson=uiJson,
-                                                variable_selection_column_data=column_data[slug]
-                                                )
-                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson, is_datetime_level)
+                                                                   variable_selection_column_data=column_data[slug]
+                                                                   )
+                    self.add_to_feature_engineering_level_creation_settings(level_creation_settings, mlJson,
+                                                                            is_datetime_level)
 
         return feature_engineering_ml_config
 
     def add_to_feature_engineering_transformation_settings(self, transformation_settings, mlJson):
-
 
         for transformation_function_names in mlJson:
 
@@ -1530,7 +1650,6 @@ class Trainer(models.Model):
                     op['selected'] = True
                     op['columns'].append(mlJson[transformation_function_names])
                     transformation_settings['selected'] = True
-
 
     def add_to_feature_engineering_bin_creation_settings(self, level_creation_settings, mlJson):
         try:
@@ -1622,52 +1741,51 @@ class Trainer(models.Model):
                     "replace_value": uiJson.get("replace_values_with_input", 0)
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("replace_values_with_input", 0)),
-                                                        uiJson.get("replace_values_with_selected", "mean")
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("replace_values_with_input", 0)),
+                    uiJson.get("replace_values_with_selected", "mean")
+                )
             if key == "add_specific_value":
                 colStructure = {
                     "value_to_be_added": uiJson.get("add_specific_value_input", 0),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("add_specific_value_input", 0))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("add_specific_value_input", 0))
+                )
             if key == "subtract_specific_value":
                 colStructure = {
                     "value_to_be_subtracted": uiJson.get("subtract_specific_value_input", 0),
                 }
 
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("subtract_specific_value_input", 0))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("subtract_specific_value_input", 0))
+                )
             if key == "multiply_specific_value":
                 colStructure = {
                     "value_to_be_multiplied": uiJson.get("multiply_specific_value_input", 1),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("multiply_specific_value_input", 1))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("multiply_specific_value_input", 1))
+                )
 
             if key == "divide_specific_value":
                 colStructure = {
                     "value_to_be_divided": uiJson.get("divide_specific_value_input", 1),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                                        variable_selection_column_data,
-                                                        key,
-                                                        str(uiJson.get("divide_specific_value_input", 1))
-                                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("divide_specific_value_input", 1))
+                )
 
             if key == "perform_standardization":
-
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
@@ -1677,10 +1795,10 @@ class Trainer(models.Model):
                     'normalization': 'normalized'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                )
             if key == "feature_scaling":
                 key = "perform_standardization"
                 colStructure = {
@@ -1692,10 +1810,10 @@ class Trainer(models.Model):
                     'normalization': 'normalized'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("perform_standardization_select", "min_max_scaling"))]
+                )
             if key == "variable_transformation":
                 colStructure = {
                     "transformation_type": uiJson.get("variable_transformation_select", "log_transformation"),
@@ -1707,17 +1825,17 @@ class Trainer(models.Model):
                     'square_root_transform': 'squareroot_transformed'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("variable_transformation_select", "log_transform"))]
+                )
             # Dimensioins Transformations
             if key == "return_character_count":
                 colStructure = {}
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key
-                                    )
+                    variable_selection_column_data,
+                    key
+                )
             if key == "encoding_dimensions":
                 colStructure = {
                     "encoding_type": uiJson.get("encoding_type", "one_hot_encoding"),
@@ -1727,19 +1845,19 @@ class Trainer(models.Model):
                     'label_encoding': 'label_encoded'
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    name_mapping[str(uiJson.get("encoding_type", "one_hot_encoding"))]
+                )
             if key == "is_custom_string_in":
                 colStructure = {
                     "user_given_string": uiJson.get("is_custom_string_in_input", "error"),
                 }
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        key,
-                                        str(uiJson.get("is_custom_string_in_input", "error"))
-                                    )
+                    variable_selection_column_data,
+                    key,
+                    str(uiJson.get("is_custom_string_in_input", "error"))
+                )
 
             colStructure["name"] = variable_selection_column_data['name']
             colStructure["user_given_name"] = user_given_name
@@ -1768,24 +1886,27 @@ class Trainer(models.Model):
             # Measures Transformations
             if uiJson["selectBinType"] == "create_equal_sized_bins":
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        uiJson["selectBinType"]
-                                    )
+                    variable_selection_column_data,
+                    uiJson["selectBinType"]
+                )
                 colStructure.update({
-                    "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
-                    "user_given_name": user_given_name
+                    # "number_of_bins": int(uiJson.get("numberofbins", "10").strip()),
+                    "number_of_bins": int(str(uiJson.get("numberofbins", "10")).strip()),
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 
             if uiJson["selectBinType"] == "create_custom_bins":
                 user_given_name = self.generate_new_column_name_based_on_transformation(
-                                        variable_selection_column_data,
-                                        uiJson["selectBinType"]
-                                    )
+                    variable_selection_column_data,
+                    uiJson["selectBinType"]
+                )
                 colStructure.update({
                     "list_of_intervals": [int(token.strip()) for token in
                                           uiJson.get("specifyintervals", "").split(",")],
-                    "user_given_name": user_given_name
+                    "user_given_name": user_given_name,
+                    "actual_col_name": uiJson["newcolumnname"]
                 })
                 mlJson["colStructure"] = colStructure
 
@@ -1918,30 +2039,34 @@ class Trainer(models.Model):
         else:
             new_name = "_".join([original_col_nam, function_name] + list(args))
         self.add_newly_generated_column_names_into_column_settings(
-                    newly_generated_column_name=new_name,
-                    columnType=name_mapping[function_name]['type'],
-                    variable_selection_column_data=variable_selection_column_data
-                    )
+            newly_generated_column_name=new_name,
+            columnType=name_mapping[function_name]['type'],
+            variable_selection_column_data=variable_selection_column_data,
+            original_column_name=original_col_nam
+        )
 
         return new_name
 
     def add_newly_generated_column_names_into_column_settings(self,
                                                               newly_generated_column_name,
                                                               columnType,
-                                                              variable_selection_column_data
+                                                              variable_selection_column_data,
+                                                              original_column_name
                                                               ):
         remove_these = ['name', 'columnType', 'actualColumnType', 'selected']
         temp = copy.deepcopy(variable_selection_column_data)
         for i in remove_these:
             del temp[i]
         slug = slugify(self.name + "-" + ''.join(
-                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
         custom_dict = {
             'columnType': columnType,
             'actualColumnType': columnType,
+            'originalColumnName': original_column_name,
             'name': newly_generated_column_name,
             'selected': True,
-            'slug': slug
+            'slug': slug,
+            'isFeatureColumn': True
         }
         custom_dict.update(temp)
         custom_dict['dateSuggestionFlag'] = False
@@ -1949,7 +2074,7 @@ class Trainer(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.save()
             train_algo_instance = TrainAlgorithmMapping.objects.filter(trainer_id=self.id)
             for iter in train_algo_instance:
@@ -1984,8 +2109,11 @@ class Score(models.Model):
     status = models.CharField(max_length=100, null=True, default="Not Registered")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    shared_by = models.CharField(max_length=100, null=True)
+    shared_slug = models.SlugField(null=True, max_length=300)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_SCORE
 
@@ -2005,15 +2133,12 @@ class Score(models.Model):
         self.add_to_job()
 
     def add_to_job(self, *args, **kwargs):
-
         jobConfig = self.generate_config(*args, **kwargs)
-
         job = job_submission(
-            instance=self,
-            jobConfig=jobConfig,
-            job_type='score'
-        )
-
+                instance=self,
+                jobConfig=jobConfig,
+                job_type='score'
+            )
         self.job = job
         if job is None:
             self.status = "FAILED"
@@ -2035,6 +2160,15 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
         config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
+        try:
+            config['config']['one_click'] = json.loads(self.trainer.fe_config)
+        except Exception as e:
+            print('Could not add one click config as {}'.format(e))
+
+        if self.trainer.mode == "autoML":
+            config['config']["TRAINER_MODE"] = "autoML"
+        else:
+            config['config']["TRAINER_MODE"] = "analyst"
 
         self.config = json.dumps(config)
         self.save()
@@ -2053,7 +2187,7 @@ class Score(models.Model):
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
-        labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        labelMappingDictAll = model_config_from_results.get('labelMappingDict', None)
         modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
@@ -2065,14 +2199,14 @@ class Score(models.Model):
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
-            'selectedModel' : [selectedModel],
+            'selectedModel': [selectedModel],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict],
+            'labelMappingDict': [labelMappingDict],
             'targetLevel': modelTargetLevel
         }
 
@@ -2086,6 +2220,7 @@ class Score(models.Model):
 
         # Score related variable selection
         main_config = json.loads(self.config)
+
         score_variable_selection_config = main_config.get('variablesSelection')
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
@@ -2156,12 +2291,11 @@ class Score(models.Model):
         model_config_feature_settings = model_config['config']['FEATURE_SETTINGS']
         return model_config_feature_settings
 
-
     def get_local_file_path(self):
         return '/tmp/' + self.slug
 
     def get_config(self):
-        import json
+
         return json.loads(self.config)
 
     def get_variable_details_from_variable_selection(self):
@@ -2187,7 +2321,10 @@ class Score(models.Model):
         config = config.get('config')
 
         model_data = json.loads(self.trainer.data)
-        model_config_from_results = model_data['model_dropdown']
+        if 'model_dropdown' in model_data:
+            model_config_from_results = model_data['model_dropdown']
+        else:
+            model_config_from_results = []
 
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
@@ -2212,14 +2349,24 @@ class Score(models.Model):
                     'algorithm name': algorithm_name,
                 })
 
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-                'updated_at': self.updated_at,
-                'dataset': self.dataset.name,
-                'model': self.trainer.name
-            }
-        )
+        if self.shared is True:
+            brief_info.update(
+                {
+                    'shared_by': self.shared_by,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name,
+                    'model': self.trainer.name
+                }
+            )
+        else:
+            brief_info.update(
+                {
+                    'created_by': self.created_by.username,
+                    'updated_at': self.updated_at,
+                    'dataset': self.dataset.name,
+                    'model': self.trainer.name
+                }
+            )
 
         return convert_json_object_into_list_of_object(brief_info, 'score')
 
@@ -2250,7 +2397,7 @@ class Robo(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # permissions = settings.NEW_PERMISSIONS
 
@@ -2343,7 +2490,7 @@ class CustomApps(models.Model):
     app_type = models.CharField(max_length=300, null=True, default="")
     rank = models.IntegerField(unique=True, null=True)
 
-    class Meta:
+    class Meta(object):
         ordering = ['rank']
 
     def __str__(self):
@@ -2391,7 +2538,6 @@ class CustomApps(models.Model):
         #         })
         #     return convert_json_object_into_list_of_object(brief_info, 'apps')
 
-
     def adjust_rank(self, index):
         self.rank = index
         self.save()
@@ -2407,7 +2553,7 @@ class CustomAppsUserMapping(models.Model):
     active = models.BooleanField(default=True)
     rank = models.IntegerField(null=True)
 
-    class Meta:
+    class Meta(object):
         unique_together = (('user', 'app'),)
 
 
@@ -2431,6 +2577,9 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if jobConfig is None:
         jobConfig = json.loads(instance.config)
     job.config = json.dumps(jobConfig)
+    if 'stockAdvisor' == job_type:
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(instance.stock_symbols)
     job.save()
     queue_name = None
     try:
@@ -2444,7 +2593,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
-        print e
+        print(e)
 
     if not queue_name:
         queue_name = "default"
@@ -2470,7 +2619,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         }
     '''
     # Submitting JobServer
-    from utils import submit_job
+    from .utils import submit_job
     try:
         job_return_data = submit_job(
             slug=job.slug,
@@ -2547,6 +2696,8 @@ def get_slug_from_message_url(url):
 class StockDataset(models.Model):
     name = models.CharField(max_length=100, null=True)
     stock_symbols = models.CharField(max_length=500, null=True, blank=True)
+    domains = models.CharField(max_length=500, null=True, blank=True, default='')
+    start_date = models.DateTimeField(auto_now_add=False, null=True)
     slug = models.SlugField(null=True, max_length=300)
     auto_update = models.BooleanField(default=False)
 
@@ -2569,7 +2720,7 @@ class StockDataset(models.Model):
 
     crawled_data = models.TextField(default="{}")
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_STOCK
 
@@ -2585,31 +2736,35 @@ class StockDataset(models.Model):
         self.generate_slug()
         super(StockDataset, self).save(*args, **kwargs)
 
-    # def create(self):
-    #     from api.tasks import stock_sense_crawl
-    #     self.status = "INPROGRESS"
-    #     self.generate_meta_data()
-    #     self.save()
-    #     self.call_mlscripts()
-    #     # stock_sense_crawl.delay(object_slug=self.slug)
-    #     # self.meta_data = self.generate_meta_data()
-    #     # self.fake_call_mlscripts()
-    #     # self.save()
-
     def create(self):
         from api.tasks import stock_sense_crawl
-        stock_sense_crawl.delay(object_slug=self.slug)
+        self.create_folder_in_scripts_data()
+        self.crawl_for_historic_data()
+        self.add_to_job()
+        stock_sense_crawl.delay(self.slug)
+
+    def stock_sense_crawl(self):
+        self.generate_meta_data()
+        self.save()
 
     def crawl_news_data(self):
-
-        stock_symbols = self.get_stock_symbol_names()
-
+        from api.StockAdvisor.crawling.news_parser import NewJsonParse
         extracted_data = []
-        for stock in stock_symbols:
-            stock_data = fetch_news_sentiments_from_newsapi(stock)
+        stock_symbols = json.loads(self.stock_symbols)
+        for key in stock_symbols:
+            company_name = stock_symbols[key]
+            self.job.messages = update_stock_sense_message(self.job, company_name)
+            self.job.save()
+            stock_data = fetch_news_sentiments_from_newsapi(company_name, self.domains)
+            try:
+                obj = NewJsonParse(stock_data)
+                stock_data = obj.remove_attributes()
+            except:
+                print("Issue while removing unwanted IBM watson attributes")
+
             self.write_to_concepts_folder(
                 stockDataType="news",
-                stockName=stock,
+                stockName=key,
                 data=stock_data,
                 type='json'
             )
@@ -2617,13 +2772,16 @@ class StockDataset(models.Model):
 
         if len(extracted_data) < 1:
             return {}
-        print "Total News Article are {0}".format(len(extracted_data))
+        print("Total News Article are {0}".format(len(extracted_data)))
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
                 'type': 'news_data'
             },
-            slug=self.slug
+            slug=self.slug,
+            symbols=self.get_stock_company_names(),
+            created_at=self.created_at,
+            start_date=self.start_date
         )
 
         meta_data['extracted_data'] = extracted_data
@@ -2648,7 +2806,7 @@ class StockDataset(models.Model):
         for stock_symbol in self.get_stock_symbol_names():
             stock_data = None
             cache_key = "historic_{}".format(stock_symbol)
-            print PRINTPREFIX, cache_key
+            print(PRINTPREFIX, cache_key)
 
             from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
             try:
@@ -2657,7 +2815,7 @@ class StockDataset(models.Model):
                 pass
 
             if not stock_data:
-                print PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol)
+                print(PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol))
                 NASDAQ_REGEX_FILE = "nasdaq_stock.json"
                 url = generate_url_for_historic_data(stock_symbol)
 
@@ -2667,24 +2825,24 @@ class StockDataset(models.Model):
                         url=url,
                         regex_dict=get_regex(NASDAQ_REGEX_FILE),
                         slug=self.slug
-                        )
+                    )
 
                     if len(stock_data) == 0 and i == 0:
                         try:
                             cached_data = historic_cache.get(cache_key)
                             stock_data = pickle.loads(cached_data)
-                            print PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol)
+                            print(PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol))
                         except:
 
                             pass
 
-                    if len(stock_data) >0 :
+                    if len(stock_data) > 0:
                         break
 
             if stock_data is not None:
                 if len(stock_data) > 0:
-                    print PRINTPREFIX, "caching for{}".format(stock_symbol)
-                    historic_cache.put(cache_key,pickle.dumps(stock_data))
+                    print(PRINTPREFIX, "caching for{}".format(stock_symbol))
+                    historic_cache.put(cache_key, pickle.dumps(stock_data))
 
                 self.write_to_concepts_folder(
                     stockDataType="historic",
@@ -2719,7 +2877,7 @@ class StockDataset(models.Model):
     #             )
 
     def get_bluemix_natural_language_understanding(self, name=None):
-        from StockAdvisor.bluemix.process_urls import ProcessUrls
+        from .StockAdvisor.bluemix.process_urls import ProcessUrls
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + "stock_info.csv"
         pu = ProcessUrls(path)
         datas = pu.process()
@@ -2750,12 +2908,10 @@ class StockDataset(models.Model):
         return hadoop_path
 
     def generate_meta_data(self):
-        self.create_folder_in_scripts_data()
-        # self.paste_essential_files_in_scripts_folder()
-        self.crawl_for_historic_data()
-        # self.get_bluemix_natural_language_understanding()
-        print "generate_meta_data "*3
         self.meta_data = self.crawl_news_data()
+        self.job.messages = update_stock_sense_message(self.job, "ml-work")
+        self.job.save()
+        self.stock_sense_job_submission()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -2780,7 +2936,7 @@ class StockDataset(models.Model):
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         self.sanitize(path + "/concepts.json")
         for name in file_names:
-            path1 = path + "/"+ name
+            path1 = path + "/" + name
             path2 = path_slug + name
             shutil.copyfile(path1, path2)
 
@@ -2797,7 +2953,7 @@ class StockDataset(models.Model):
         text = re.sub('<.*?>', ' ', content)
         if text:
             text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\\u", " ").replace("\r",
-                                                                                                              " ").strip()
+                                                                                                               " ").strip()
         text = text.encode('utf-8')
 
         f = open(path, 'w')
@@ -2811,7 +2967,7 @@ class StockDataset(models.Model):
         from os import listdir
         from os.path import isfile, join
         file_names = listdir(path_slug)
-        print file_names
+        print(file_names)
         # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
 
         from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
@@ -2822,7 +2978,7 @@ class StockDataset(models.Model):
         for name in file_names:
             dest_path = remote_path + "/" + name
             src_path = path_slug + name
-            print src_path, dest_path
+            print(src_path, dest_path)
             put_file(src_path, dest_path)
 
     def create_folder_in_remote(self):
@@ -2850,8 +3006,14 @@ class StockDataset(models.Model):
         return self.crawl_stats()
 
     def get_stock_symbol_names(self):
-        list_of_stock = self.stock_symbols.split(', ')
-        return [stock_name.lower() for stock_name in list_of_stock]
+        stock_symbols = json.loads(self.stock_symbols)
+        return [key.lower() for key in stock_symbols.keys()]
+
+    def get_stock_company_names(self):
+        # list_of_stock = self.stock_symbols.split(', ')
+        # return [stock_name.lower() for stock_name in list_of_stock]
+        stock_symbols = json.loads(self.stock_symbols)
+        return [value for value in stock_symbols.values()]
 
     def get_brief_info(self):
         brief_info = dict()
@@ -2885,10 +3047,16 @@ class StockDataset(models.Model):
         datasource_type = ""
         stockSymbolList = self.get_stock_symbol_names()
 
+        if settings.USE_HTTPS:
+            protocol = 'https'
+        else:
+            protocol = 'http'
+
         THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
-        data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                      THIS_SERVER_DETAILS.get('port'),
-                                                                      self.get_data_api())
+
+        data_api = "{3}://{0}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                        THIS_SERVER_DETAILS.get('port'),
+                                                                        self.get_data_api(), protocol)
 
         hdfs_path = self.get_hdfs_relative_path()
 
@@ -2919,13 +3087,16 @@ class StockDataset(models.Model):
         return str(self.slug)
 
     def add_to_job(self, *args, **kwargs):
-        jobConfig = self.generate_config(*args, **kwargs)
+        job_type='stockAdvisor'
+        job = Job()
+        job.name = "-".join([job_type, self.slug])
+        job.job_type = job_type
+        job.object_id = str(self.slug)
+        job.submitted_by = self.created_by
 
-        job = job_submission(
-            instance=self,
-            jobConfig=jobConfig,
-            job_type='stockAdvisor'
-        )
+        from api.helper import create_message_log_and_message_for_stocksense
+        job.message_log, job.messages = create_message_log_and_message_for_stocksense(self.stock_symbols)
+        job.save()
 
         self.job = job
         if job is None:
@@ -2934,18 +3105,72 @@ class StockDataset(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
+    def stock_sense_job_submission(self):
+        job = self.job
+        jobConfig = self.generate_config()
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        queue_name = None
+        try:
+            data_size = 3000
+            queue_name = get_queue_to_use(job_type='stockAdvisor', data_size=data_size)
+        except Exception as e:
+            print(e)
+
+        if not queue_name:
+            queue_name = "default"
+
+        from api.redis_access import AccessFeedbackMessage
+        ac = AccessFeedbackMessage()
+        message_slug = get_message_slug(job)
+        ac.delete_this_key(message_slug)
+
+        # Submitting JobServer
+        from .utils import submit_job
+        try:
+            job_return_data = submit_job(
+                slug=job.slug,
+                class_name='stockAdvisor',
+                job_config=jobConfig,
+                job_name=self.name,
+                message_slug=message_slug,
+                queue_name=queue_name,
+                app_id=None
+            )
+
+            job.url = job_return_data.get('application_id')
+            job.command_array = json.dumps(job_return_data.get('command_array'))
+
+            readable_job_config = {
+                'job_config': job_return_data.get('config')['job_config']['job_config'],
+                'config': job_return_data.get('config')['job_config']['config']
+            }
+            job.config = json.dumps(readable_job_config)
+            job.save()
+        except Exception as exc:
+            return None
+
+        return job
+
     def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
-        print stockDataType
+        print(stockDataType)
         if stockDataType == "historic":
             name = stockName + "_" + stockDataType
         else:
             name = stockName
-        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        path1 = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         # file_path = path + stockName + "." + type
-        file_path = path + name + "." + type
-        print "Writing {1} for {0}".format(stockName, stockDataType)
-        print file_path
-        with open(file_path, "wb") as file_to_write_on:
+        semi_path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
+        from os import path
+        if path.exists(semi_path) is False:
+            os.mkdir(semi_path)
+            os.chmod(semi_path, 0o777)
+        file_path = path1 + name + "." + type
+        # file_path = path + stockName + "." + type
+        print("Writing {1} for {0}".format(stockName, stockDataType))
+        print(file_path)
+        with open(file_path, "w") as file_to_write_on:
             if 'csv' == type:
                 writer = csv.writer(file_to_write_on)
                 writer.writerow(data)
@@ -2988,14 +3213,13 @@ class StockDataset(models.Model):
         self.crawled_data = json.dumps(crawled_data)
         self.save()
 
-
     def write_bluemix_data_into_concepts(self, name, data, type='json'):
 
-        for key in data.keys():
+        for key in list(data.keys()):
             name = name + "_" + key
             path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
             file_path = path + name + "." + type
-            print file_path
+            print(file_path)
             out_file = open(file_path, "wb")
             json.dump(data[key], out_file)
             out_file.close()
@@ -3028,7 +3252,7 @@ class Audioset(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
         # permissions = settings.NEW_PERMISSIONS
 
@@ -4640,15 +4864,15 @@ import copy
 def make_combochart(data, chart, x=None, axes=None, widthPercent=None, title=None):
     t_chart = set_axis_and_data(axes, chart, data, x)
     set_label_and_title(axes, t_chart, title, widthPercent, x)
-    if len(axes.keys()) > 1:
-        t_chart["data"]["chart_c3"]["data"]["types"] = {axes.keys()[1]: "line"}
+    if len(list(axes.keys())) > 1:
+        t_chart["data"]["chart_c3"]["data"]["types"] = {list(axes.keys())[1]: "line"}
 
     make_y2axis(axes, t_chart)
     return t_chart
 
 
 def make_y2axis(axes, t_chart):
-    if len(axes.keys()) > 1:
+    if len(list(axes.keys())) > 1:
         t_chart["data"]["chart_c3"]["axis"]["y2"] = {
             "show": True,
             "tick": {
@@ -4657,7 +4881,7 @@ def make_y2axis(axes, t_chart):
                 "format": ".2s"
             },
             "label": {
-                "text": axes.keys()[1],
+                "text": list(axes.keys())[1],
                 "position": "outer-middle"
             }
         }
@@ -4710,7 +4934,7 @@ def set_label_and_title(axes, chart, title, widthPercent, x):
     if x:
         chart["data"]["chart_c3"]["axis"]["x"]["label"]["text"] = x
     if axes:
-        chart["data"]["chart_c3"]["axis"]["y"]["label"]["text"] = axes.keys()[0]
+        chart["data"]["chart_c3"]["axis"]["y"]["label"]["text"] = list(axes.keys())[0]
     if widthPercent is not None:
         chart["widthPercent"] = widthPercent
 
@@ -4993,7 +5217,7 @@ article_by_source = [
      2, 2][:7]
 ]
 
-from sample_stock_data import stock_performace_card1, \
+from .sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
@@ -5128,7 +5352,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Role(Group):
-    class Meta:
+    class Meta(object):
         proxy = True
         app_label = 'auth'
         verbose_name = _('Role')
@@ -5154,10 +5378,9 @@ class TrainAlgorithmMapping(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
@@ -5174,13 +5397,14 @@ class TrainAlgorithmMapping(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.save()
             deploy_instance = ModelDeployment.objects.filter(deploytrainer_id=self.id)
             for iter in deploy_instance:
                 iter.terminate_periodic_task()
         except Exception as err:
-            raise(err)
+            raise (err)
+
 
 # Deployment for Model management
 class ModelDeployment(models.Model):
@@ -5193,7 +5417,6 @@ class ModelDeployment(models.Model):
     data = models.TextField(default="{}")
     status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
-
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
@@ -5202,10 +5425,9 @@ class ModelDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
@@ -5293,12 +5515,11 @@ class ModelDeployment(models.Model):
 
     def delete(self):
         try:
-            self.deleted=True
+            self.deleted = True
             self.disable_periodic_task()
 
         except Exception as err:
             print(err)
-
 
     def disable_periodic_task(self):
         from django_celery_beat.models import PeriodicTask
@@ -5375,9 +5596,7 @@ class ModelDeployment(models.Model):
         return score_details
 
 
-
 class DatasetScoreDeployment(models.Model):
-
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True, max_length=300
                             )
@@ -5390,7 +5609,6 @@ class DatasetScoreDeployment(models.Model):
     data = models.TextField(default="{}")
     status = models.CharField(max_length=100, null=True, default="NOT STARTED")
 
-
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
@@ -5399,10 +5617,9 @@ class DatasetScoreDeployment(models.Model):
     bookmarked = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
 
-
-    class Meta:
+    class Meta(object):
         ordering = ['-created_at', '-updated_at']
-        #Uncomment line below for permission details
+        # Uncomment line below for permission details
         permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):

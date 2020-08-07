@@ -1,3 +1,8 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 import os
 import random
 from datetime import datetime
@@ -6,11 +11,11 @@ import requests
 from deprecation import deprecated
 from django.conf import settings
 
-import common_utils
-from cache import Cache
+from . import common_utils
+from .cache import Cache
 
 
-class GenericCrawler:
+class GenericCrawler(object):
     PREFIX = "GENERIC CRAWLER"
     PROXY_LIST = [
         {'http': u'http://46.225.241.6:8080'},
@@ -40,7 +45,9 @@ class GenericCrawler:
     REQUEST_READ_TIMEOUT = 10
     REQUEST_RETRY_LIMIT = 10
 
-    def __init__(self, crawl_options={}):
+    def __init__(self, crawl_options=None):
+        if crawl_options is None:
+            crawl_options = {}
         self.fdir = os.environ["HOME"] + "/html/" + crawl_options.get("source", "misc")
         self.crawl_options = crawl_options
         if hasattr(settings, "REQUEST_CONNECTION_TIMEOUT"):
@@ -69,13 +76,13 @@ class GenericCrawler:
 
     def download_using_proxy(self, url):
         temp_proxy = self.get_proxy()
-        print self.PREFIX, "Requesting New Page using proxy -->", temp_proxy, url
+        print(self.PREFIX, "Requesting New Page using proxy -->", temp_proxy, url)
         return requests.get(url, headers=self.USER_AGENT, proxies=temp_proxy, timeout=(
             self.REQUEST_CONNECTION_TIMEOUT,
             self.REQUEST_READ_TIMEOUT))
 
     def download_without_using_proxy(self, url):
-        print self.PREFIX, "Requesting New Page without proxy -->", url
+        print(self.PREFIX, "Requesting New Page without proxy -->", url)
         return requests.get(url)
 
     def fetch_content(self, url, use_cache=False):
@@ -102,7 +109,7 @@ class GenericCrawler:
         :return:
         """
         for i in range(self.REQUEST_RETRY_LIMIT):
-            print self.PREFIX, "Trying for {0} time.".format(i), url
+            print(self.PREFIX, "Trying for {0} time.".format(i), url)
 
             try:
                 if 0 == i:
@@ -114,7 +121,7 @@ class GenericCrawler:
                 if resp.status_code == 200:
                     break
             except Exception as err:
-                print self.PREFIX, err
+                print(self.PREFIX, err)
         return content
 
     @deprecated(details="use fetch content instead")
@@ -126,31 +133,31 @@ class GenericCrawler:
 
         if 'date_of_crawl' in crawl_options:
             if crawl_options['date_of_crawl'] == True:
-                print "Asked today's Fresh Page?"
+                print("Asked today's Fresh Page?")
                 fname = self.fdir + "/" + common_utils.get_sha(url + str(datetime.now().date()))
         elif "fresh" in crawl_options:
             if crawl_options['fresh'] == True:
-                print "Asked Fresh Page?"
+                print("Asked Fresh Page?")
                 fname = self.fdir + "/" + common_utils.get_sha(url + str(random.randint(99999999, 100000000000)))
         else:
-            print "Asked for Archieved Page?"
+            print("Asked for Archieved Page?")
             fname = self.fdir + "/" + common_utils.get_sha(url)
 
         content = ""
         if os.path.exists(fname):
-            print "Cache hit"
+            print("Cache hit")
             obj = open(fname)
             content = obj.read()
         else:
             for i in range(settings.REQUEST_RETRY_LIMIT):
-                print "Trying for {0} time.".format(i)
+                print("Trying for {0} time.".format(i))
 
                 if 0 == i:
                     resp = self.download_without_using_proxy(url)
                 else:
                     resp = self.download_using_proxy(url)
                 try:
-                    print "Got Response"
+                    print("Got Response")
                     content = resp.content
                     html_dir = os.path.dirname(fname)
                     if not os.path.exists(html_dir):
@@ -160,5 +167,5 @@ class GenericCrawler:
                     obj.close()
                     break
                 except Exception as err:
-                    print err
+                    print(err)
         return content

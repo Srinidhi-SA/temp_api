@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
-import json
+from builtins import map, enumerate
+from builtins import zip
+from builtins import str
+from builtins import range
+import simplejson as json
 import random
 import copy
+import datetime
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -16,13 +23,15 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.decorators import method_decorator
-from rest_framework.renderers import JSONRenderer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
-from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception, sharing_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data, get_specific_listed_data
+from django.contrib.auth.models import User
+from django.db.models import Q
 from api.utils import \
     convert_to_string, \
     name_check, \
@@ -44,18 +53,16 @@ from api.utils import \
     DeploymentListSerializer, \
     DatasetScoreDeploymentSerializer, \
     DatasetScoreDeploymentListSerializer, \
-    TrainerNameListSerializer
-    # RegressionSerlializer, \
-    # RegressionListSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
-from api.tasks import clean_up_on_delete
+    TrainerNameListSerializer, \
+    ChangePasswordSerializer, UserListSerializer
+# RegressionSerlializer,
+# RegressionListSerializer
+from .models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
+    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment, convert2native
+from api.tasks import clean_up_on_delete, create_model_autoML
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
-    SignalsRelatedPermission, StocksRelatedPermission ,DatasetRelatedPermission
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+    SignalsRelatedPermission, StocksRelatedPermission, DatasetRelatedPermission
 
 # from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
@@ -66,7 +73,7 @@ class SignalView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             # analysis_done=True
-            status__in=['SUCCESS','INPROGRESS','FAILED']
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         ).select_related('created_by', 'job', 'dataset')
         return queryset
 
@@ -75,8 +82,8 @@ class SignalView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                   created_by=self.request.user
+                                   )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -85,7 +92,7 @@ class SignalView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
     pagination_class = CustomPagination
-    permission_classes = (SignalsRelatedPermission, )
+    permission_classes = (SignalsRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
 
@@ -94,6 +101,12 @@ class SignalView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            signalname_list = []
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(signal_query):
+                signalname_list.append(i.name)
+            if data['name'] in signalname_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -128,8 +141,13 @@ class SignalView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-
         if 'name' in data:
+            signalname_list = []
+            signal_query = Insight.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(signal_query):
+                signalname_list.append(i.name)
+            if data['name'] in signalname_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -148,7 +166,7 @@ class SignalView(viewsets.ModelViewSet):
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Insight.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return update_failed_exception("File Doesn't exist.")
 
@@ -179,14 +197,103 @@ class SignalView(viewsets.ModelViewSet):
         serializer = InsightSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            shared_id = request.query_params.get('shared_id', None).split(',')
+            signal_obj = Insight.objects.get(slug=kwargs['slug'], created_by_id=request.user.id)
+            signal_name = signal_obj.name
+            shared_by = User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+            if request.user.id in [int(i) for i in shared_id]:
+                return sharing_failed_exception('Signals should not be shared to itself.')
+            sharedTo=list()
+            for i in shared_id:
+                sharedTo.append(User.objects.get(pk=i).username)
+                import random, string
+                if signal_obj.shared is True:
+                    signal_details = {
+                        'name': signal_name + str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': signal_obj.shared_slug
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+                else:
+                    signal_details = {
+                        'name': signal_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': signal_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'type': signal_obj.type,
+                        'target_column': signal_obj.target_column,
+                        'config': signal_obj.config,
+                        'data': signal_obj.data,
+                        'analysis_done': True,
+                        'status': signal_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    signal_details = convert_to_string(signal_details)
+                    signal_serializer = InsightSerializer(data=signal_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
+            return JsonResponse({'message': 'Signals shared.','status': 'true','sharedTo':sharedTo})
+
+        except Exception as err:
+            print(err)
+            return sharing_failed_exception('Signal sharing failed.')
+
+    @detail_route(methods=['get'])
+    def edit(self, request, *args, **kwargs):
+        try:
+            signal_obj = Insight.objects.get(slug=self.kwargs.get('slug'))
+            config = json.loads(signal_obj.config)
+            return JsonResponse({'name': signal_obj.name, 'config': config,'status':'true'})
+        except Exception as err:
+            print(err)
+            return retrieve_failed_exception('Config not found.')
+
+    @list_route(methods=['get'])
+    def get_all_signals(self, request,  *args, **kwargs):
+        try:
+            queryset = Insight.objects.filter(
+                created_by=self.request.user,
+                deleted=False
+            )
+            serializer = InsightListSerializers(queryset, many=True, context={"request": self.request})
+            signalList = dict()
+            for index, i in enumerate(serializer.data):
+                signalList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            return JsonResponse({'allSignalList': signalList})
+        except Exception as err:
+            return JsonResponse({'message': str(e)})
+
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            #analysis_done=True,
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            # analysis_done=True,
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
 
         ).select_related('created_by', 'job', 'dataset')
         return queryset
@@ -196,8 +303,8 @@ class TrainerView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                   created_by=self.request.user
+                                   )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -206,7 +313,7 @@ class TrainerView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
     pagination_class = CustomPagination
-    permission_classes = (TrainerRelatedPermission, )
+    permission_classes = (TrainerRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -214,6 +321,12 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            trainername_list = []
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(trainer_query):
+                trainername_list.append(i.name)
+            if data['name'] in trainername_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -240,6 +353,12 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            trainername_list = []
+            trainer_query = Trainer.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(trainer_query):
+                trainername_list.append(i.name)
+            if data['name'] in trainername_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -256,7 +375,7 @@ class TrainerView(viewsets.ModelViewSet):
                     print('let us deleted')
                     instance.delete()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -303,9 +422,7 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         trainer_data = serializer.data
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
-        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
-
-
+        uidColArray = [x["name"] for x in t_d_c if x["uidCol"] == True]
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -340,13 +457,21 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+        t_d_c_s = set(
+            [item['name'] for item in t_d_c if not item['targetColumn'] and 'isFeatureColumn' not in list(item.keys())])
         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         # proceedFlag = d_d_c_s.issuperset(t_d_c_s)
-        proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        # proceedFlag = t_d_c_s.issuperset(d_d_c_s)
+        diff = t_d_c_s.difference(d_d_c_s)
+        proceedFlag = True
+        message = 'Good to go!'
+        if diff:
+            proceedFlag = False
+            message = 'There are missing or new columns in test data!'
 
-        if proceedFlag != True:
+        """
+        if not proceedFlag:
             missing = t_d_c_s.difference(d_d_c_s)
             extra = d_d_c_s.difference(t_d_c_s)
             message = "These are the missing Columns {0}".format(missing)
@@ -358,7 +483,7 @@ class TrainerView(viewsets.ModelViewSet):
                 message = "These are the new columns {0}".format(extra)
             else:
                 message = ""
-
+        """
         # proceedFlag = True
         return JsonResponse({
             'proceed': proceedFlag,
@@ -368,7 +493,7 @@ class TrainerView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def get_pmml(self, request, *args, **kwargs):
         from api.redis_access import AccessFeedbackMessage
-        from helper import generate_pmml_name
+        from .helper import generate_pmml_name
         jobslug = request.query_params.get('jobslug', None)
         algoname = request.query_params.get('algoname', None)
         ac = AccessFeedbackMessage()
@@ -400,7 +525,6 @@ class TrainerView(viewsets.ModelViewSet):
             """
             data --> list of indexes to be true
             """
-
 
             hyper_paramter_data = trainer_data['model_hyperparameter']
 
@@ -452,13 +576,161 @@ class TrainerView(viewsets.ModelViewSet):
             "data": serializer.data
         })
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            shared_id = request.query_params.get('shared_id', None).split(',')
+            trainer_obj = Trainer.objects.get(slug=kwargs['slug'], created_by_id=request.user.id)
+            model_name = trainer_obj.name
+            shared_by = User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+
+            if request.user.id in [int(i) for i in shared_id]:
+                return sharing_failed_exception('Models should not be shared to itself.')
+            sharedTo=list()
+            for i in shared_id:
+                sharedTo.append(User.objects.get(pk=i).username)
+                import random, string
+                if trainer_obj.shared is True:
+                    trainer_details = {
+                        'name': model_name + str(random.randint(1, 100)),
+                        'dataset': trainer_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'config': trainer_obj.config,
+                        'job': trainer_obj.job,
+                        'data': trainer_obj.data,
+                        'analysis_done': True,
+                        'status': trainer_obj.status,
+                        'mode': trainer_obj.mode,
+                        'app_id': trainer_obj.app_id,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': trainer_obj.shared_slug
+                    }
+                    trainer_details = convert_to_string(trainer_details)
+                    trainer_serializer = TrainerSerlializer(data=trainer_details)
+                    if trainer_serializer.is_valid():
+                        shared_trainer_object = trainer_serializer.save()
+                    else:
+                        print(trainer_serializer.errors)
+                    #trainer_obj.update(
+                    #    {'name': model_name + str(random.randint(1, 100)), 'id': None, 'created_by_id': i, 'slug': slug,
+                    #     'shared': True, 'shared_by': shared_by, 'shared_slug': obj.shared_slug})
+                else:
+                    trainer_details = {
+                        'name': model_name + '_shared' + str(random.randint(1, 100)),
+                        'dataset': trainer_obj.dataset.id,
+                        'created_by': User.objects.get(pk=i).id,
+                        'config': trainer_obj.config,
+                        'data': trainer_obj.data,
+                        'analysis_done': True,
+                        'status': trainer_obj.status,
+                        'mode': trainer_obj.mode,
+                        'app_id': trainer_obj.app_id,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    trainer_details = convert_to_string(trainer_details)
+                    trainer_serializer = TrainerSerlializer(data=trainer_details)
+                    if trainer_serializer.is_valid():
+                        shared_trainer_object = trainer_serializer.save()
+                    else:
+                        print(trainer_serializer.errors)
+                    #trainer_obj.update(
+                    #    {'name': model_name + '_shared' + str(random.randint(1, 100)), 'id': None, 'created_by_id': i,
+                    #     'slug': slug, 'shared': True, 'shared_by': shared_by, 'shared_slug': self.kwargs.get('slug')})
+                #shared_trainer_object.create()
+            return JsonResponse({'message': 'Models shared.','status': 'true','sharedTo':sharedTo})
+
+        except Exception as err:
+            print(err)
+            return sharing_failed_exception('Models sharing failed.')
+
+    @detail_route(methods=['get'])
+    def edit(self, request, *args, **kwargs):
+        try:
+            trainer_obj = Trainer.objects.get(slug=self.kwargs.get('slug'))
+            config = json.loads(trainer_obj.config)
+            unmodified_column_list = list()
+            for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                if 'isFeatureColumn' in list(variable.keys()):
+                    variable['selected'] = False
+                    unmodified_column_list.append(variable['originalColumnName'])
+            for variable in config['config']['COLUMN_SETTINGS']['variableSelection']:
+                if variable['name'] in set(unmodified_column_list):
+                    variable['selected'] = True
+
+            tf_data = list()
+            outlier_removal = dict()
+            missing_value_treatment = dict()
+            try:
+                data = config['config']['FEATURE_SETTINGS']['DATA_CLEANSING']['columns_wise_settings']
+                if data['outlier_removal']['selected']:
+                    index = 0
+                    for operation in data['outlier_removal']['operations']:
+                        if operation['columns']:
+                            for i in operation['columns']:
+                                data_items = dict()
+                                data_items['treatment'] = operation['name']
+                                data_items['name'] = i['name']
+                                data_items['type'] = i['datatype']
+                                outlier_removal[index] = data_items
+                                index += 1
+
+                if data['missing_value_treatment']['selected']:
+                    index = 0
+                    for operation in data['missing_value_treatment']['operations']:
+                        if operation['columns']:
+                            for i in operation['columns']:
+                                data_items = dict()
+                                data_items['treatment'] = operation['name']
+                                data_items['name'] = i['name']
+                                data_items['type'] = i['datatype']
+                                missing_value_treatment[index] = data_items
+                                index += 1
+                config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in list(x.keys())]
+                config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
+                tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
+
+            except Exception as err:
+                print(err)
+            return JsonResponse({'name': trainer_obj.name, 'outlier_config': outlier_removal, 'missing_value_config': missing_value_treatment, 'config': config, 'TENSORFLOW': tf_data})
+            #                     operation_items[index] = data_items
+            #                     print(operation_items)
+            #                 data_cleansing[op_index] = operation_items
+            # except Exception as err:
+            #     print(err)
+            # return JsonResponse({'name':trainer_obj.name,'outlier_config': data_cleansing,'config':config})
+        except Exception as err:
+            print(err)
+            return JsonResponse({'message': 'Config not found.'})
+
+    @list_route(methods=['get'])
+    def get_all_models(self, request, *args, **kwargs):
+        try:
+            queryset = Trainer.objects.filter(
+                created_by=self.request.user,
+                app_id=request.GET['app_id'],
+                deleted=False
+            )
+            serializer = TrainerListSerializer(queryset, many=True, context={"request": self.request})
+            modelList = dict()
+            for index, i in enumerate(serializer.data):
+                modelList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            return JsonResponse({'allModelList': modelList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
+
+
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         ).select_related('created_by', 'job', 'dataset', 'trainer')
         return queryset
 
@@ -467,8 +739,8 @@ class ScoreView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Score.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                 created_by=self.request.user
+                                 )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -477,7 +749,7 @@ class ScoreView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    permission_classes = (ScoreRelatedPermission, )
+    permission_classes = (ScoreRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -485,6 +757,12 @@ class ScoreView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         if 'name' in data:
+            scorename_list = []
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(score_query):
+                scorename_list.append(i.name)
+            if data['name'] in scorename_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -514,6 +792,12 @@ class ScoreView(viewsets.ModelViewSet):
         # instance = self.get_object()
 
         if 'name' in data:
+            scorename_list = []
+            score_query = Score.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(score_query):
+                scorename_list.append(i.name)
+            if data['name'] in scorename_list:
+                return creation_failed_exception("Name already exists!.")
             should_proceed = name_check(data['name'])
             if should_proceed < 0:
                 if should_proceed == -1:
@@ -531,7 +815,7 @@ class ScoreView(viewsets.ModelViewSet):
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Score.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -569,7 +853,11 @@ class ScoreView(viewsets.ModelViewSet):
         instance = self.get_object()
         from django.conf import settings
         base_file_path = settings.SCORES_SCRIPTS_FOLDER
-        download_path = base_file_path + instance.slug + '/data.csv'
+
+        if self.shared is True:
+            download_path = base_file_path + instance.shared_slug + '/data.csv'
+        else:
+            download_path = base_file_path + instance.slug + '/data.csv'
         # save_file_to = instance.get_local_file_path()
         #
         # from api.lib.fab_helper import get_file
@@ -609,14 +897,81 @@ class ScoreView(viewsets.ModelViewSet):
         else:
             return JsonResponse({'result': 'failed to download'})
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            score_obj = Score.objects.get(created_by_id=request.user.id,
+                                             slug=self.kwargs.get('slug'))
+            score_name = score_obj.name
+            shared_id = request.GET['shared_id'].split(",")
+            shared_by = User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+
+            if request.user.id in [int(i) for i in shared_id]:
+                return sharing_failed_exception('Score should not be shared to itself.')
+            sharedTo=list()
+            for id in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
+                import random, string
+                if score_obj.shared is True:
+                    score_details = {
+                        'name': score_name + str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=id).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': score_obj.shared_slug
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+                else:
+                    score_details = {
+                        'name': score_name + '_shared' +str(random.randint(1, 100)),
+                        'dataset': score_obj.dataset.id,
+                        'trainer': score_obj.trainer.id,
+                        'created_by': User.objects.get(pk=id).id,
+                        'model_data': score_obj.model_data,
+                        'app_id': score_obj.app_id,
+                        'config': score_obj.config,
+                        'data': score_obj.data,
+                        'analysis_done': True,
+                        'status': score_obj.status,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug')
+                    }
+                    score_details = convert_to_string(score_details)
+                    signal_serializer = ScoreSerlializer(data=score_details)
+                    if signal_serializer.is_valid():
+                        shared_signal_object = signal_serializer.save()
+                    else:
+                        print(signal_serializer.errors)
+
+            return JsonResponse({'message': 'Score Shared.','status': 'true','sharedTo':sharedTo})
+        except Exception as err:
+            print(err)
+            return sharing_failed_exception('Score sharing failed.')
+
 
 class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
         query_set = Robo.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         )
         return query_set
 
@@ -625,8 +980,8 @@ class RoboView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Robo.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                created_by=self.request.user
+                                )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -697,7 +1052,7 @@ class RoboView(viewsets.ModelViewSet):
                     instance.deleted = True
                     instance.save()
                     # clean_up_on_delete.delay(instance.slug, Robo.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -738,15 +1093,15 @@ class StockDatasetView(viewsets.ModelViewSet):
         queryset = StockDataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         )
         return queryset
 
     def get_object_from_all(self):
         return StockDataset.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                        created_by=self.request.user
+                                        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -756,19 +1111,48 @@ class StockDatasetView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('deleted', 'name')
     pagination_class = CustomPagination
-    permission_classes = (StocksRelatedPermission, )
+    permission_classes = (StocksRelatedPermission,)
+
+    @staticmethod
+    def validate_inputs(stocks, data, user_id):
+        stock_query = StockDataset.objects.filter(deleted=False, created_by_id=user_id, name=data['name'])
+        if len(stock_query) > 0:
+            # return creation_failed_exception("Analysis name already exists")
+            return "Analysis name already exists"
+        from api.StockAdvisor.crawling.process import fetch_news_articles
+        companies = []
+        no_articles_flag = False
+        for key in stocks:
+            articles = fetch_news_articles(stocks[key], data['domains'])
+            if articles is None or len(articles) <= 0:
+                no_articles_flag = True
+                companies.append(stocks[key])
+        if no_articles_flag:
+            if len(companies) > 1:
+                company_str = "{} and {}".format(", ".join(companies[:-1]), companies[-1])
+            else:
+                company_str = companies[0]
+            # return creation_failed_exception("No news articles found for "+company_str)
+            return "No news articles found for "+company_str
 
     def create(self, request, *args, **kwargs):
 
         data = request.data
         config = data.get('config')
+        new_data = {'name': config.get('analysis_name')}
+        domains = config.get('domains')
+        new_data['domains'] = (", ").join(list(set(domains)))
         stock_symbol = config.get('stock_symbols')
-        stock_values = [item.get('value').lower() for item in stock_symbol if item.get('value') != ""]
-        new_data = {}
-        new_data['stock_symbols'] = (", ").join(list(set(stock_values)))
-        new_data['name'] = config.get('name')
+
+        stocks = {item['ticker'].lower(): item['name'] for item in stock_symbol}
+        error_str = self.validate_inputs(stocks, new_data, request.user.id)
+        if error_str is not None:
+            return creation_failed_exception(error_str)
+
+        new_data['stock_symbols'] = json.dumps(stocks)
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
+        new_data['start_date'] = datetime.datetime.today() - datetime.timedelta(days=7)
 
         serializer = StockDatasetSerializer(data=new_data, context={"request": self.request})
         if serializer.is_valid():
@@ -809,7 +1193,7 @@ class StockDatasetView(viewsets.ModelViewSet):
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Insight.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return update_failed_exception("File Doesn't exist.")
 
@@ -845,7 +1229,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            stock_instance.call_mlscripts()
+            # stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
@@ -867,10 +1251,43 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def fetch_word_cloud(self, request, slug=None, *args, **kwargs):
+        stock_obj = StockDataset.objects.get(slug=slug)
+        crawled_data = json.loads(stock_obj.crawled_data)
+        symbol = request.GET.get('symbol')
+        articles = crawled_data[symbol.lower()][symbol.lower()]
+        date = request.GET.get('date')
+        from .helper import generate_word_cloud_image
+        image_path = generate_word_cloud_image(slug, articles, date)
+        if image_path is None:
+            path = None
+        else:
+            path = "/media/" + slug + "/wordcloud.png"
+        response = {"slug": slug, "symbol": symbol, "date": date, "image_url": path}
+        return Response(response)
+
     """
     historic data
     data from bluemix -- natural language understanding
     """
+
+    @list_route(methods=['get'])
+    def get_all_stockssense(self, request, *args, **kwargs):
+        try:
+            queryset = StockDataset.objects.filter(
+                created_by=self.request.user,
+                deleted=False
+            )
+            serializer = StockDatasetSerializer(queryset, many=True, context={"request": self.request})
+            modelList = dict()
+            for index, i in enumerate(serializer.data):
+                modelList.update({index: {'name': i.get('name'), 'slug': i.get('slug'), 'status': i.get('status')}})
+            print(modelList)
+            return JsonResponse({'allStockList': modelList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})
+
 
 
 class AudiosetView(viewsets.ModelViewSet):
@@ -878,15 +1295,15 @@ class AudiosetView(viewsets.ModelViewSet):
         queryset = Audioset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         )
         return queryset
 
     def get_object_from_all(self):
         return Audioset.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                    created_by=self.request.user
+                                    )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -1064,8 +1481,6 @@ class AppView(viewsets.ModelViewSet):
     @list_route(methods=['put'])
     def rank(self, request, *args, **kwargs):
 
-
-
         data = request.data
         if data is None or data == dict():
             APPORDERLIST = settings.APPORDERLIST
@@ -1090,7 +1505,6 @@ class AppView(viewsets.ModelViewSet):
 
 
 def get_datasource_config_list(request):
-
     user = request.user
     data_source_config = copy.deepcopy(settings.DATA_SOURCES_CONFIG)
     upload_permission_map = {
@@ -1113,7 +1527,7 @@ def get_datasource_config_list(request):
         "conf": []
     }
 
-    print data_source_config.keys()
+    print(list(data_source_config.keys()))
     for data in data_source_config['conf']:
         if data['dataSourceType'] in upload_permitted_list:
             permitted_source_config['conf'].append(data)
@@ -1146,29 +1560,29 @@ def end_of_this_world(request, slug=None):
     object_id = job.object_id
     if job_type in ["metadata", "subSetting"]:
         dataset_object = get_db_object(model_name=Dataset.__name__,
-                                           model_slug=object_id
-                                           )
+                                       model_slug=object_id
+                                       )
 
         dataset_object.status = "FAILED"
         dataset_object.save()
     elif job_type == "master":
         insight_object = get_db_object(model_name=Insight.__name__,
-                                           model_slug=object_id
-                                           )
+                                       model_slug=object_id
+                                       )
 
         insight_object.status = "FAILED"
         insight_object.save()
     elif job_type == "model":
         trainer_object = get_db_object(model_name=Trainer.__name__,
-                                           model_slug=object_id
-                                           )
+                                       model_slug=object_id
+                                       )
 
         trainer_object.status = "FAILED"
         trainer_object.save()
     elif job_type == 'score':
         score_object = get_db_object(model_name=Score.__name__,
-                                           model_slug=object_id
-                                           )
+                                     model_slug=object_id
+                                     )
 
         score_object.status = "FAILED"
         score_object.save()
@@ -1181,12 +1595,135 @@ def end_of_this_world(request, slug=None):
         robo_object.save()
     elif job_type == 'stockAdvisor':
         stock_objects = get_db_object(model_name=StockDataset.__name__,
-                                           model_slug=object_id
-                                           )
+                                      model_slug=object_id
+                                      )
         stock_objects.status = 'FAILED'
         stock_objects.save()
 
     return JsonResponse({'result': "success"})
+
+
+def kill_timeout_job_from_ui(request):
+    slug = request.GET["slug"]
+    try:
+        dataset1_object = Dataset.objects.get(slug=slug)
+        job = dataset1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        dataset_object = get_db_object(model_name=Dataset.__name__,
+                                       model_slug=object_id
+                                       )
+
+        dataset_object.status = "FAILED"
+        dataset_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        signal_object = Insight.objects.get(slug=slug)
+        job = signal_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        insight_object = get_db_object(model_name=Insight.__name__,
+                                       model_slug=object_id
+                                       )
+
+        insight_object.status = "FAILED"
+        insight_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        trainer1_object = Trainer.objects.get(slug=slug)
+        job = trainer1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        trainer_object = get_db_object(model_name=Trainer.__name__,
+                                       model_slug=object_id
+                                       )
+
+        trainer_object.status = "FAILED"
+        trainer_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        score1_object = Score.objects.get(slug=slug)
+        job = score1_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        score_object = get_db_object(model_name=Score.__name__,
+                                     model_slug=object_id
+                                     )
+
+        score_object.status = "FAILED"
+        score_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        robo_advisor_object = Robo.objects.get(slug=slug)
+        job = robo_advisor_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        robo_object = get_db_object(model_name=Robo.__name__,
+                                    model_slug=object_id
+                                    )
+
+        robo_object.status = "FAILED"
+        robo_object.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
+    try:
+        stocksense_object = StockDataset.objects.get(slug=slug)
+        job = stocksense_object.job
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        from api.tasks import kill_application_using_fabric
+        kill_application_using_fabric.delay(job.url)
+        job.status = 'FAILED'
+        job.save()
+        from api.helper import get_db_object
+        object_id = job.object_id
+        stock_objects = get_db_object(model_name=StockDataset.__name__,
+                                      model_slug=object_id
+                                      )
+        stock_objects.status = 'FAILED'
+        stock_objects.save()
+        return JsonResponse({'result': "success"})
+    except:
+        pass
 
 
 @csrf_exempt
@@ -1195,12 +1732,12 @@ def set_result(request, slug=None):
 
     if not job:
         return JsonResponse({'result': 'Failed'})
-    results = request.body
+    results = request.body.decode('utf-8')
     tasks.save_results_to_job.delay(
         slug,
         results
     )
-    if "status=failed" in request.body:
+    if "status=failed" in request.body.decode('utf-8'):
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
@@ -1373,7 +1910,7 @@ def add_slugs(results, object_slug=""):
     from api import helper
     if settings.DEBUG == True:
         print(results)
-        print results.keys()
+        print(list(results.keys()))
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -1404,7 +1941,7 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
             try:
                 card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
             except Exception as e:
-                print e
+                print(e)
                 card["data"] = {}
         if card["dataType"] == "button":
             button_card = card["data"]
@@ -1412,26 +1949,30 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
                 chart_raw_data = button_card["data"]
                 # function
                 try:
-                    button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
+                    button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data,
+                                                                                   object_slug=object_slug)
                     card["data"] = button_card["data"]
                 except Exception as e:
-                    print e
+                    print(e)
                     button_card["data"] = {}
-
 
 
 def home(request):
     host = request.get_host()
 
     APP_BASE_URL = ""
-    protocol = "https"
-    if request.is_secure():
+    protocol = "http"
+    if settings.USE_HTTPS:
         protocol = "https"
+    else:
+        protocol = "http"
 
     SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
-    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL,"ENABLE_KYLO": settings.ENABLE_KYLO,"KYLO_UI_URL":settings.KYLO_UI_URL}
+    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL,
+               "STATIC_URL": settings.STATIC_URL, "ENABLE_KYLO": settings.ENABLE_KYLO,
+               "KYLO_UI_URL": settings.KYLO_UI_URL}
 
     return render(request, 'home.html', context)
 
@@ -1535,28 +2076,31 @@ def get_info(request):
         recent_activity = []
         for obj in logs:
             log_user = str(obj.actor)
-            log_changed_message = obj.changes.replace("\"", "").replace("{", "").replace("}", "").replace(": [","->[").replace(":", "").replace("\\","")
+            log_changed_message = obj.changes.replace("\"", "").replace("{", "").replace("}", "").replace(": [",
+                                                                                                          "->[").replace(
+                ":", "").replace("\\", "")
             log_content_type = obj.content_type.model
             if log_content_type == "insight":
                 log_content_type = "signal"
             if log_content_type == "trainer":
                 log_content_type = "model"
-            if user.username==log_user:
-                 # if obj.content_type.model!='user' and obj.content_type.model!='permission':
+            if user.username == log_user:
+                # if obj.content_type.model!='user' and obj.content_type.model!='permission':
                 changes_json = json.loads(obj.changes)
                 choicesDict = dict(LogEntry.Action.choices)
-                #check for status success to reduce update count
-                if obj.action==1:
+                # check for status success to reduce update count
+                if obj.action == 1:
                     if "status" in changes_json:
-                        if changes_json["status"][1]=="SUCCESS":
-                            message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
+                        if changes_json["status"][1] == "SUCCESS":
+                            message_in_ui = log_content_type + " " + obj.object_repr.split(":")[0] + str(
+                                choicesDict[obj.action]) + "d"
                             recent_activity.append(
-                                        {"changes": str(log_changed_message),
-                                         "action_time": obj.timestamp,
-                                         "message_on_ui": message_in_ui,
-                                         "action":choicesDict[obj.action],
-                                         "content_type":log_content_type,
-                                         "user": log_user})
+                                {"changes": str(log_changed_message),
+                                 "action_time": obj.timestamp,
+                                 "message_on_ui": message_in_ui,
+                                 "action": choicesDict[obj.action],
+                                 "content_type": log_content_type,
+                                 "user": log_user})
                 else:
                     message_in_ui = log_content_type + " " + obj.object_repr.split(":")[0] + str(
                         choicesDict[obj.action]) + "d"
@@ -5131,7 +5675,7 @@ def get_chart_or_small_data(request, slug=None):
         return Response({'Message': 'Failed'})
 
     csv_data = data_object.get_data()
-    csv_data = map(list, zip(*csv_data))
+    csv_data = list(map(list, list(zip(*csv_data))))
     from django.http import HttpResponse
     import csv
     response = HttpResponse(content_type='text/csv')
@@ -5147,7 +5691,6 @@ def get_chart_or_small_data(request, slug=None):
 
 @api_view(['GET'])
 def get_job_kill(request, slug=None):
-
     job_object = Job.objects.filter(object_id=slug).first()
 
     if not job_object:
@@ -5190,9 +5733,9 @@ def killing_for_robo(slug):
     except:
         return False
 
+
 @api_view(['GET'])
 def get_job_refreshed(request, slug=None):
-
     job_object = Job.objects.filter(object_id=slug).first()
     job_object.update_status()
     return JsonResponse({
@@ -5201,7 +5744,6 @@ def get_job_refreshed(request, slug=None):
 
 @api_view(['GET'])
 def get_job_restarted(request, slug=None):
-
     job_object = Job.objects.filter(object_id=slug).first()
     job_object.start()
     return JsonResponse({
@@ -5211,7 +5753,6 @@ def get_job_restarted(request, slug=None):
 
 @csrf_exempt
 def set_messages(request, slug=None):
-
     if slug is None:
         return JsonResponse({"message": "Failed"})
 
@@ -5228,7 +5769,7 @@ def set_messages(request, slug=None):
 
     return_data = request.GET.get('data', None)
     data = request.body
-    data = json.loads(data)
+    data = json.loads(data.decode('utf-8'))
     if 'stageName' not in data:
         return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
@@ -5259,7 +5800,7 @@ def set_pmml(request, slug=None):
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
-    from helper import generate_pmml_name
+    from .helper import generate_pmml_name
     ac = AccessFeedbackMessage()
     key_pmml_name = generate_pmml_name(slug)
     data = ac.append_using_key(key_pmml_name, data)
@@ -5269,7 +5810,6 @@ def set_pmml(request, slug=None):
 
 @csrf_exempt
 def get_pmml(request, slug=None, algoname='algo'):
-
     from api.user_helper import return_user_using_token
     from api.exceptions import retrieve_failed_exception
     token = request.GET.get('token')
@@ -5279,7 +5819,6 @@ def get_pmml(request, slug=None, algoname='algo'):
 
     try:
         if not user.has_perm('api.downlad_pmml'):
-
             return JsonResponse(
                 {
                     "message": "failed.",
@@ -5288,25 +5827,25 @@ def get_pmml(request, slug=None, algoname='algo'):
                 }
             )
         from api.redis_access import AccessFeedbackMessage
-        from helper import generate_pmml_name
+        from .helper import generate_pmml_name
         ac = AccessFeedbackMessage()
         job_object = Job.objects.filter(object_id=slug).first()
         job_slug = job_object.slug
         key_pmml_name = generate_pmml_name(job_slug)
         data = ac.get_using_key(key_pmml_name)
         if data is None:
-            sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+            sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
             return return_xml_data(sample_xml, algoname)
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
     except:
         return JsonResponse(
-                {
-                    "message": "failed.",
-                    "errors": "permission_denied",
-                    "status": False
-                }
-            )
+            {
+                "message": "failed.",
+                "errors": "permission_denied",
+                "status": False
+            }
+        )
 
 
 @csrf_exempt
@@ -5318,7 +5857,7 @@ def set_job_reporting(request, slug=None, report_name=None):
     new_error = request.body
     error_log = json.loads(job.error_report)
     json_formatted_new_error = None
-    if isinstance(new_error, str) or isinstance(new_error, unicode):
+    if isinstance(new_error, str):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
@@ -5334,7 +5873,8 @@ def set_job_reporting(request, slug=None, report_name=None):
         job.error_report = json.dumps(error_log)
         job.save()
 
-    return JsonResponse({'messgae':'error reported.'})
+    return JsonResponse({'messgae': 'error reported.'})
+
 
 @csrf_exempt
 def get_job_report(request, slug=None):
@@ -5348,11 +5888,11 @@ def get_job_report(request, slug=None):
     return JsonResponse({'report': error_log})
 
 
-
 @csrf_exempt
 def get_stockdatasetfiles(request, slug=None):
     # if slug is None:
     #     return JsonResponse({"message": "Failed"})
+
     stockDataType = request.GET.get('stockDataType')
     stockName = request.GET.get('stockName')
 
@@ -5366,7 +5906,7 @@ def return_json_data(stockDataType, stockName, slug):
     matching = {
         # "bluemix": stockDataType + "_" + stockName + ".json",
         "bluemix": stockName + ".json",
-        "historical":  stockName + "_" + "historic" + ".json",
+        "historical": stockName + "_" + "historic" + ".json",
         "concepts": "concepts.json"
     }
 
@@ -5389,7 +5929,7 @@ def return_crawled_json_data(stockDataType, stockName, slug):
     sdd = StockDataset.objects.get(slug=slug)
     matching = {
         "bluemix": stockName,
-        "historical":  stockName + "_" + "historic",
+        "historical": stockName + "_" + "historic",
         "concepts": "concepts"
     }
     crawled_data = json.loads(sdd.crawled_data)
@@ -5400,14 +5940,12 @@ def return_crawled_json_data(stockDataType, stockName, slug):
         file_content = json.dumps(crawled_data[matching[stockDataType]])
 
     response = HttpResponse(file_content, content_type='application/json')
-    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType] )
+    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType])
 
     return response
 
 
-
 def return_xml_data(xml_data_str, algoname):
-
     from django.http import HttpResponse
 
     file_content = xml_data_str
@@ -5428,7 +5966,6 @@ from api.helper import auth_for_ml
 @csrf_exempt
 @auth_for_ml
 def get_metadata_for_mlscripts(request, slug=None):
-
     ds = Dataset.objects.filter(slug=slug).first()
     if ds == None:
         return JsonResponse({'Message': 'Failed. No such dataset.'})
@@ -5479,13 +6016,13 @@ def get_score_data_and_return_top_n(request):
 
             import csv
             csv_text_list = []
-            with open(download_path, 'rb') as f:
+            with open(download_path, 'r') as f:
                 reader = csv.reader(f)
                 for index, row in enumerate(reader):
                     csv_text_list.append(row)
                     if index > count:
                         break
-                    print row
+                    print(row)
 
             # csv_text = fp.read()
             # csv_list = csv_text.split('\n')
@@ -5508,7 +6045,9 @@ def get_recent_activity(request):
     for obj in logs:
         log_user = str(obj.user)
         recent_activity.append(
-            {"message": obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
+            {"message": obj.change_message, "action_time": obj.action_time, "repr": obj.object_repr,
+             "content_type": obj.content_type.model, "content_type_app_label": obj.content_type.app_label,
+             "user": log_user})
 
     return JsonResponse({
         "recent_activity": recent_activity
@@ -5532,12 +6071,13 @@ def delete_and_keep_only_ten_from_all_models(request):
     })
 
 
-#for regression modal algorithm config
+# for regression modal algorithm config
 def get_algorithm_config_list(request):
     try:
-        app_type=request.GET['app_type']
+        app_type = request.GET['app_type']
+        mode = request.GET['mode']
     except:
-        app_type="CLASSIFICATION"
+        app_type = "CLASSIFICATION"
     try:
         levels = int(request.GET['levels'])
     except:
@@ -5545,41 +6085,64 @@ def get_algorithm_config_list(request):
 
     user = request.user
 
-    # changes for app_type
-    if app_type =="CLASSIFICATION":
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-        if levels > 2:
-            tempArray.append(settings.SKLEARN_ROC_OBJ)
+    try:
+        if app_type == "CLASSIFICATION" and mode == 'autoML':
+            algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
 
-        for obj in algoArray:
-            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
-    elif app_type =="REGRESSION":
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
-        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-        if levels > 2:
-            tempArray.append(settings.SKLEARN_ROC_OBJ)
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        elif app_type == "REGRESSION" and mode == 'autoML':
+            algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
 
-        for obj in algoArray:
-            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
-    else:
-        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        # else:
+        #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+
+        elif app_type == "CLASSIFICATION" and mode == 'analyst':
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        elif app_type == "REGRESSION" and mode == 'analyst':
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+            if levels > 2:
+                tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+            for obj in algoArray:
+                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+        else:
+            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+    except Exception as e:
+        print(e)
 
     # changes for metrics
     metric_obj = None
     try:
         metric = request.GET['metric']
-        if app_type =="CLASSIFICATION":
+        if app_type == "CLASSIFICATION":
             metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
-        elif app_type =="REGRESSION":
+        elif app_type == "REGRESSION":
             metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     except:
-        if app_type =="CLASSIFICATION":
+        if app_type == "CLASSIFICATION":
             metric = "accuracy"
             metrics_list = copy.deepcopy(settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS)
-        elif app_type =="REGRESSION":
+        elif app_type == "REGRESSION":
             metric = "r2"
             metrics_list = copy.deepcopy(settings.SKLEARN_REGRESSION_EVALUATION_METRICS)
     for i in metrics_list:
@@ -5592,18 +6155,21 @@ def get_algorithm_config_list(request):
 
     return JsonResponse(algorithm_config_list)
 
+@api_view(['GET'])
 def get_appID_appName_map(request):
-    #from django.core import serializers
+
     from api.models import CustomApps
-    appIDmapfromDB=CustomApps.objects.only('app_id','name','app_type')
-    #appIDmap_serialized = serializers.serialize('json', appIDmap)
-    appIDmap=[]
+    appIDmapfromDB = CustomApps.objects.filter(
+        customappsusermapping__user=request.user).only('app_id', 'displayName')
+
+    appIDmap = []
     for row in appIDmapfromDB:
         appIDmap.append({
-            "app_id":row.app_id,"app_name":row.name,"app_type":row.app_type
+            "app_id": row.app_id,
+            "displayName": row.displayName
         })
 
-    return JsonResponse({"appIDMapping":appIDmap})
+    return JsonResponse({"appIDMapping": appIDmap})
 
 
 # @api_view(['POST'])
@@ -5612,40 +6178,39 @@ def updateFromNifi(request):
     # from pprint import pprint
     # pprint( request )
 
-
     # print request.GET.get("username",None)
     request.data = json.loads(request.body)
     username = request.data['username']
 
-    print "request from nifi====================>"
-    print request.data
+    print("request from nifi====================>")
+    print(request.data)
     from django.contrib.auth.models import User
     request.user = User.objects.filter(username=username).first()
 
-    hive_info=copy.deepcopy(settings.DATASET_HIVE)
-    host=request.data['host']
-    port=request.data['port']
-    hive_username=hive_info['username']
-    hive_password=hive_info['password']
-    schema=request.data["category"]
-    table_name=request.data["feed"]+'_valid'
-    feed=request.data['feed']
+    hive_info = copy.deepcopy(settings.DATASET_HIVE)
+    host = request.data['host']
+    port = request.data['port']
+    hive_username = hive_info['username']
+    hive_password = hive_info['password']
+    schema = request.data["category"]
+    table_name = request.data["feed"] + '_valid'
+    feed = request.data['feed']
 
     dataSourceDetails = {
-        'datasetname':feed,
+        'datasetname': feed,
         "host": host,
         "port": port,
-        "databasename":schema,
+        "databasename": schema,
         "username": hive_username,
         "tablename": table_name,
         "password": hive_password,
         "datasourceType": 'Hive'
     }
-    data_modified={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
+    data_modified = {'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
 
-    datasetView=DatasetView()
-    datasetView.create(request,data=data_modified)
-    return JsonResponse({"status":True})
+    datasetView = DatasetView()
+    datasetView.create(request, data=data_modified)
+    return JsonResponse({"status": True})
 
 
 # def some_random_things(request):
@@ -5697,7 +6262,7 @@ def all_apps_for_users(request):
         return JsonResponse({'message': 'done'})
 
 
-#model management changes
+# model management changes
 class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
     def get_queryset(self):
@@ -5714,8 +6279,8 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return TrainAlgorithmMapping.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                                 created_by=self.request.user
+                                                 )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -5727,17 +6292,16 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #Uncommented for trainer related permissions
-    permission_classes = (TrainerRelatedPermission, )
+    # Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission,)
 
-    #adding clone method
+    # adding clone method
     @detail_route(methods=['get'])
     def clone(self, request, *args, **kwargs):
         try:
             instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
-
 
         cuurent_instance_serializer = TrainAlgorithmMappingSerializer(instance, context={"request": self.request})
         current_instance_data = cuurent_instance_serializer.data
@@ -5754,7 +6318,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             train_algo_object = serializer.save()
-            #train_algo_object.create()
+            # train_algo_object.create()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
@@ -5769,7 +6333,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
 
         if serializer.is_valid():
             train_algo_object = serializer.save()
-            #train_algo_object.create()
+            # train_algo_object.create()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
@@ -5785,7 +6349,7 @@ class TrainAlgorithmMappingView(viewsets.ModelViewSet):
                 if data['deleted'] == True:
                     print('let us delete')
                     instance.delete()
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -5859,21 +6423,21 @@ class ModelDeployementView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return ModelDeployment.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                           created_by=self.request.user
+                                           )
 
     def get_serializer_context(self):
         return {'request': self.request}
 
-    def get_queryset_specific(self,xxx):
+    def get_queryset_specific(self, xxx):
         return self.get_queryset().filter(deploytrainer=xxx.id)
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #Uncommented for trainer related permissions
-    permission_classes = (TrainerRelatedPermission, )
+    # Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
 
@@ -5903,7 +6467,7 @@ class ModelDeployementView(viewsets.ModelViewSet):
                     print('let us deleted')
                     ## Modification for periodic task delete
                     instance.delete()
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -5953,7 +6517,6 @@ class ModelDeployementView(viewsets.ModelViewSet):
         except Exception as err:
             return JsonResponse({'message': err})
 
-
     @detail_route(methods=['get'])
     def stop_periodic_run(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
@@ -5988,8 +6551,6 @@ class ModelDeployementView(viewsets.ModelViewSet):
         except Exception as err:
             return JsonResponse({'message': err})
 
-
-
     @list_route(methods=['get'])
     def search(self, request, *args, **kwargs):
         deploytrainer_slug = request.GET['deploytrainer']
@@ -6002,7 +6563,8 @@ class ModelDeployementView(viewsets.ModelViewSet):
             xxx=deploytrainer_object)
         return response
 
-#view for deployment + Dataset +Score
+
+# view for deployment + Dataset +Score
 class DatasetScoreDeployementView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = DatasetScoreDeployment.objects.filter(
@@ -6017,21 +6579,21 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return DatasetScoreDeployment.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+                                                  created_by=self.request.user
+                                                  )
 
     def get_serializer_context(self):
         return {'request': self.request}
 
-    def get_queryset_specific(self,xxx):
+    def get_queryset_specific(self, xxx):
         return self.get_queryset().filter(deployment=xxx.id)
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
-    #Uncommented for trainer related permissions
-    permission_classes = (TrainerRelatedPermission,DatasetRelatedPermission,ScoreRelatedPermission )
+    # Uncommented for trainer related permissions
+    permission_classes = (TrainerRelatedPermission, DatasetRelatedPermission, ScoreRelatedPermission)
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -6039,13 +6601,13 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
         data = convert_to_string(data)
 
         data['deployment'] = ModelDeployment.objects.filter(slug=data['deployment'])
-        #data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-        #data['score'] = Score.objects.filter(slug=data['score'])
+        # data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        # data['score'] = Score.objects.filter(slug=data['score'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = DatasetScoreDeploymentSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             dataset_score_object = serializer.save()
-            #train_algo_object.create()
+            # train_algo_object.create()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
@@ -6065,7 +6627,7 @@ class DatasetScoreDeployementView(viewsets.ModelViewSet):
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
-                    return JsonResponse({'message':'Deleted'})
+                    return JsonResponse({'message': 'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -6128,7 +6690,255 @@ def disable_all_periodic_tasks(request):
                 periodic_task.enabled = False
                 periodic_task.save()
 
-    return JsonResponse({'message':'Done',
-                         'count_already_diabled':count_already_diabled,
-                         'count_just_disabled':count_just_disabled
+    return JsonResponse({'message': 'Done',
+                         'count_already_diabled': count_already_diabled,
+                         'count_just_disabled': count_just_disabled
                          })
+@csrf_exempt
+def request_from_alexa(request):
+    response = {}
+    if request.method == 'GET':
+        print("####  Got GET Request from Alexa ####")
+        if request.GET['data'] == 'dataset':
+            # user_id = request.user.id
+            user_id = User.objects.get(username="alexa")
+            dataset_obj = Dataset.objects.filter(created_by=user_id, deleted=False)
+            for index, obj in enumerate(dataset_obj):
+                response[index] = {"name": obj.name, "slug": obj.slug}
+            return JsonResponse(response)
+
+    if request.method == 'POST':
+        print("####  Got POST Request from Alexa ####")
+        request.data = json.loads(request.body.decode('utf-8'))
+        dataset_obj = Dataset.objects.get(slug=request.data['slug'])
+        meta_data = json.loads(dataset_obj.meta_data)
+        if request.data['attribute'] == 'target':
+            print("####  Fetching list of Dimension Columns ####")
+            dimension_column_list = []
+            for meta_info in meta_data['metaData']:
+                if meta_info["name"] == "dimensionColumns":
+                    dimension_column_list = meta_info["value"]
+            response.update(enumerate(dimension_column_list))
+            return JsonResponse(response)
+        if request.data['attribute'] == 'subtarget':
+            print("####  Fetching the list of subtarget values ####")
+            subtarget_column_list = []
+            for meta_info in meta_data['columnData']:
+                if meta_info['name'] == request.data['target']:
+                    col_list = meta_info['chartData']['chart_c3']['data']['columns']
+                    subtarget_column_list = [filtered_data[1:] for filtered_data in col_list if 'name' in filtered_data]
+            response.update(enumerate(*subtarget_column_list))
+            return JsonResponse(response)
+        if request.data['attribute'] == 'createmodel':
+            print("####  Trying to create AutoML model ####")
+            email = request.data['email']
+            from api.helper import check_email_id
+            email_check = check_email_id(email)
+            if email_check:
+                model_name = request.data['model_name']
+                from api.utils import name_check
+                model_name_check = name_check(model_name)
+                if model_name_check < 0:
+                    if model_name_check == -1:
+                        return JsonResponse({'message': 'Model name is empty.'})
+                    elif model_name_check == -2:
+                        return JsonResponse({'message': 'Model name is very large.'})
+                    elif model_name_check == -3:
+                        return JsonResponse({'message': 'Model name with special_characters not allowed.'})
+                else:
+                    # Done with all validations. Proceed to trigger AutoML Job for Alexa
+                    config = json.dumps(request.data)
+                    print(config)
+                    # Trigger autoML job
+                    create_model_autoML.delay(config=config)
+                    return JsonResponse({'message': 'Done'})
+            else:
+                return JsonResponse({'message': 'Invalid Email-id.'})
+
+"""
+def get_all_models(request):
+    if request.method == 'GET':
+        user_id = request.user.id
+        modelList = dict()
+        job_obj = Trainer.objects.filter(created_by_id=user_id, app_id=request.GET['app_id'], deleted=False)
+        for index, i in enumerate(job_obj):
+            modelList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
+        return JsonResponse({'allModelList': modelList})
+
+
+def get_all_signals(request):
+    if request.method == 'GET':
+        user_id = request.user.id
+        signalList = dict()
+        job_obj = Insight.objects.filter(created_by_id=user_id, deleted=False)
+        for index, i in enumerate(job_obj):
+            signalList.update({index: {'name': i.name, 'slug': i.slug, 'status': i.status}})
+        return JsonResponse({'allSignalList': signalList})
+
+
+# Return list of all users
+def get_all_users(request):
+    if request.method == 'GET':
+        UsersList = dict()
+        users_obj = User.objects.filter(~Q(is_active=False))
+        users_obj = users_obj.exclude(id=request.user.id)
+        for index, i in enumerate(users_obj):
+            UsersList.update({index: {'name': i.username, 'Uid': i.id}})
+        return JsonResponse({'allUsersList': UsersList})
+"""
+
+def check_for_target_and_subtarget_variable_in_dataset(dataset_object=None, Target=None, Subtarget=None):
+    meta_data = json.loads(dataset_object.meta_data)
+    if 'columnData' in meta_data:
+        for obj in meta_data['columnData']:
+            # Check if Target exists
+            if obj['actualColumnType'] == "dimension" and obj['name'] == Target:
+                # Check if Sub-Target exists
+                for data in obj['chartData']['chart_c3']['data']['columns'][0]:
+                    if data == Subtarget:
+                        return True
+                    break
+            else:
+                pass
+    else:
+        return False
+
+
+@csrf_exempt
+def view_model_summary_autoML(request):
+    model_slug = request.GET['slug']
+    instance = Trainer.objects.get(slug=model_slug)
+
+    # if instance.viewed is False:
+    from django.shortcuts import render
+    protocol = 'http'
+    if settings.USE_HTTPS:
+        protocol = 'https'
+
+    response_url = '{}://{}/api/view_model_summary_detail/?slug={}'.format(protocol,
+                                                                           settings.THIS_SERVER_DETAILS['host'],
+                                                                           instance.slug)
+
+    try:
+        context = {"Response": response_url}
+        # instance.viewed=True
+        # instance.save()
+        return render(request, 'modelSummary.html', context)
+
+    except Exception as err:
+        print(err)
+
+
+@csrf_exempt
+def view_model_summary_detail(request):
+    try:
+        model_config = dict()
+        model_slug = request.GET['slug']
+        instance = Trainer.objects.get(slug=model_slug)
+        # from django.forms import model_to_dict
+        # model_dict=model_to_dict(instance, fields=[field.name for field in instance._meta.fields])
+        config = json.loads(instance.config)
+        data = json.loads(instance.data)
+        try:
+            # table_data = data['model_summary']['listOfCards'][2]['cardData'][1]['data']['table_c3']
+            # FI_dict_keys = table_data[0]
+            # FI_dict_values = table_data[1]
+            # # import collections
+            # import operator
+            # #FI_dict = collections.OrderedDict(dict(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = dict(list(zip(FI_dict_keys,FI_dict_values)))
+            # FI_dict = {str(k): str(v) for k, v in FI_dict.items()}
+            # FI_dict= sorted(list(FI_dict.items()), key=operator.itemgetter(1),reverse=True)
+            # FI_dict=FI_dict[1:len(FI_dict):1]
+            model_summary_data = dict()
+            model_summary_data['model_summary'] = data['model_summary']
+            model_config.update(
+                {'name': instance.name, 'slug': instance.slug, 'data': model_summary_data})
+        except Exception as err:
+            print(err)
+            #model_config.update({'name':instance.name,'slug':instance.slug,'data':data.model_summary})
+        return JsonResponse({'modelDetail': model_config})
+
+    except Exception as err:
+        print(err)
+
+@csrf_exempt
+def dump_complete_messages(request, slug=None):
+    try:
+        job = Job.objects.get(slug=slug)
+
+        if not job:
+            return JsonResponse({'result': 'Failed'})
+        messages = request.body
+        tasks.save_job_messages.delay(
+            slug,
+            messages
+        )
+        return JsonResponse({'result': "Success"})
+    except Exception as e:
+        return JsonResponse({'result': "Failed"})
+
+
+"""
+Custom View to change password for requested user
+"""
+from rest_framework import status
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+
+
+class ChangePasswordView(UpdateAPIView):
+        """
+        An endpoint for changing password.
+        """
+        serializer_class = ChangePasswordSerializer
+        model = User
+        permission_classes = (IsAuthenticated,)
+
+        def get_object(self, queryset=None):
+            obj = self.request.user
+            return obj
+
+        def update(self, request, *args, **kwargs):
+            self.object = self.get_object()
+            serializer = self.get_serializer(data=request.data)
+
+            if serializer.is_valid():
+                # Check old password
+                if not self.object.check_password(serializer.data.get("old_password")):
+                    return Response({"message": ["Invalid old password."]}, status=status.HTTP_400_BAD_REQUEST)
+                # set_password also hashes the password that the user will get
+                self.object.set_password(serializer.data.get("new_password"))
+                self.object.save()
+                response = {
+                    'status': 'success',
+                    'code': status.HTTP_200_OK,
+                    'message': 'Password updated successfully',
+                    'data': {
+                        "Username": self.object.username,
+                        "Email": self.object.email
+                        }
+                }
+
+                return Response(response)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserView(viewsets.ModelViewSet):
+    serializer_class = UserListSerializer
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    @list_route(methods=['get'])
+    def get_all_users(self, request):
+        try:
+            queryset = User.objects.filter(~Q(is_active=False))
+            queryset = queryset.exclude(id=request.user.id)
+            serializer = UserListSerializer(queryset, many=True, context={"request": self.request})
+            UsersList = dict()
+            for index, i in enumerate(serializer.data):
+                UsersList.update({index: {'name': i.get('username'), 'Uid': i.get('id')}})
+            return JsonResponse({'allUsersList': UsersList})
+        except Exception as err:
+            return JsonResponse({'message': str(err)})

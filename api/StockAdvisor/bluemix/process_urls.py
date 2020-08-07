@@ -1,6 +1,11 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import object
 import csv
 import unittest
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 import api.StockAdvisor.utils as myutils
 
@@ -16,7 +21,7 @@ from bs4 import BeautifulSoup
 DEBUG = True
 
 
-class ProcessUrls:
+class ProcessUrls(object):
     url_file_name = ""
     content = ""
     nl_understanding = None  # will store the understanding
@@ -30,12 +35,12 @@ class ProcessUrls:
     pass
 
     def get_json_array_for_stock_symbol(self, stock_symbol):
-        if stock_symbol not in self.json_arrays.keys():
+        if stock_symbol not in list(self.json_arrays.keys()):
             self.json_arrays[stock_symbol] = []
         return self.json_arrays[stock_symbol]
 
     def write_data(self):
-        for key in self.json_arrays.keys():
+        for key in list(self.json_arrays.keys()):
             out_file = open("data/{}.json".format(key), "wb")
             json.dump(self.json_arrays[key], out_file)
             out_file.close()
@@ -52,11 +57,11 @@ class ProcessUrls:
                 self.csv_header = row
 
             else:
-                print i, row
+                print(i, row)
                 nl_understanding = ""
-                cur_dictionary = dict(zip(self.csv_header, row))
+                cur_dictionary = dict(list(zip(self.csv_header, row)))
                 date_key = "time"
-                if date_key in cur_dictionary.keys():
+                if date_key in list(cur_dictionary.keys()):
                     cur_dictionary[date_key] = myutils.normalize_date_time(cur_dictionary.get(date_key)).strftime("%Y%m%d")
 
                 self.target_url = row[2]
@@ -73,13 +78,11 @@ class ProcessUrls:
                     cur_dictionary["sentiment"] = nl_understanding.get("sentiment", [])
                     cur_dictionary["keywords"] = nl_understanding.get("keywords", [])
 
-                # cur_dictionary["content"] = content
-
                 cur_json_array = self.get_json_array_for_stock_symbol(myutils.clean_key(row[0]))
                 cur_json_array.append(cur_dictionary)
 
         return self.json_arrays
-        self.write_data()
+        # self.write_data()
 
 
 class TestProcessUrls(unittest.TestCase):

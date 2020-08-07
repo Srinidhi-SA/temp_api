@@ -9,9 +9,13 @@ export default function reducer(state = {
 		db_tablename:null,
 		db_password:null,
 }, action) {
-	console.log("In DATA Source reducer!!");
-	console.log(action.files);
-
+	if(window.location.href.includes("autoML")){
+	$("#left-tabs-example-tab-MySQL").css("cursor", "not-allowed");
+	$("#left-tabs-example-tab-mssql").css("cursor", "not-allowed");
+	$("#left-tabs-example-tab-Hana").css("cursor", "not-allowed");
+	$("#left-tabs-example-tab-Hdfs").css("cursor", "not-allowed");
+	$("#left-tabs-example-tab-S3").css("cursor", "not-allowed");
+	}
 	switch (action.type) {
 	case "DATA_SOURCE_LIST":
 	{
@@ -38,7 +42,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			fileUpload:action.files[0],
+			fileUpload:action.files,
 		}
 	}
 	break;

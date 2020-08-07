@@ -29,10 +29,8 @@ export class AppsCreateScore extends React.Component {
 		this.selectedData="";
 	}
 	componentWillMount() {
-		console.log("In model summary");
-		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());
-		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/scores"));
+		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/analyst/scores"));
 		this.props.dispatch(hideCreateScorePopup());
 		this.props.dispatch(updateModelSummaryFlag(false));
 	}
@@ -65,7 +63,8 @@ export class AppsCreateScore extends React.Component {
     }
 	render() {
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
+			var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+modeSelected+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		const dataSets = store.getState().datasets.allDataSets.data;
@@ -104,7 +103,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 				  <div class="form-group">
-				  <label>Select an existing dataset</label>
+				  <label className="pb-2">Select an existing dataset</label>
 	              {renderSelectBox}
 	              <br/>
 	              <label>Select a Model</label>

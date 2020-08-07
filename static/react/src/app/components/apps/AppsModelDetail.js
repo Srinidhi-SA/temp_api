@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag, getAppsAlgoList, clearAppsAlgoList} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -20,7 +20,9 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
-		};
+		setAppsLoaderValues: store.apps.setAppsLoaderValues,
+		algoList: store.apps.algoList
+	};
 })
 
 
@@ -37,23 +39,85 @@ export class AppsModelDetail extends React.Component {
 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
-		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
-		    this.props.dispatch(updateModelSlug(this.props.match.params.slug));
+			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
+			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
+		this.props.dispatch(clearAppsAlgoList());
+	}
+	
+	print() {
+		window.print();
+	}
+
+	componentDidMount() {
+		let currentModel= this.props.modelSlug;
+		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
+			$(".notifyBtn").trigger('click');
+		}
+		window.scrollTo(0, 0);
+		if(!isEmpty(store.getState().apps.modelSummary)){
+			if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
+			this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+		}
+		this.props.dispatch(getAppsAlgoList(1));
+		
+		let algoDt = this.props.modelSummary.TrainAlgorithmMapping;
+		let selAlgoList = Object.values(algoDt)
+		let noOfHeads = $(".sm-mb-20").length;
+			for(var i=0;i<noOfHeads;i++){
+				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
+				let regAlgoName=$(".sm-mb-20")[i].textContent
+				let algorithmName = ""
+				if(algoNam === "LOGISTICREGRESSION")
+					algorithmName = "LG"
+				else if(algoNam === "XGBOOST")
+					algorithmName = "XG"
+				else if(algoNam === "RANDOMFOREST")
+					algorithmName = "RF"
+				else if(algoNam === "NAIVEBAYES")
+					algorithmName = "NB"
+				else if(algoNam === "NEURALNETWORK(PYTORCH)")
+					algorithmName = "PT"
+				else if(algoNam === "NEURALNETWORK(TENSORFLOW)")
+				  algorithmName = "TF"
+				else if(algoNam === "NEURALNETWORK(SKLEARN)")
+				  algorithmName = "NN"
+				else if(algoNam === "ENSEMBLE")
+				  algorithmName = "EN"
+				else if(algoNam === "ADABOOST")
+					algorithmName = "ADAB"
+				else if(regAlgoName ==="Gradient Boosted Tree RegressionSummary")
+		      algorithmName = "GB"
+				else if(regAlgoName==="Random Forest RegressionSummary")
+			   	algorithmName = "RFR"
+				else if(regAlgoName==="Decision Tree RegressionSummary")
+			  	algorithmName = "DT"
+				else if(regAlgoName==="Linear RegressionSummary")
+				  algorithmName = "LR"
+				else if(regAlgoName==="Neural Network (TensorFlow)Summary")
+				  algorithmName = "TF"
+				else 
+					algorithmName = ""
+				
+				if(algorithmName != ""){
+					let info = document.createElement('a');
+					var att = document.createAttribute("class");
+					this.props.currentAppId==13?att.value = "summaryLinkReg":att.value = "summaryLink";
+					info.setAttributeNode(att);
+					var modelName= store.getState().apps.modelSummary.name;
+					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName+"_"))
+					this.props.currentAppId==13? document.getElementsByTagName('small')[i].hidden=true:"";
+					if( (sel.length!=0) && (!modelName.includes("shared")) ){
+						info.innerText = "(For More Info Click Here)";
+						info.href = this.props.match.url.replace("models/"+this.props.modelSlug,"modelManagement/"+sel[0].slug);
+						this.props.currentAppId==13?$(".sm-mb-20")[i].parentNode.appendChild(info):$(".sm-mb-20")[i].parentNode.parentNode.appendChild(info);
+					}
+				}
+			}
+
 
 	}
 
-  print() {
-    window.print();
-  }
-  componentDidMount() {
-		window.scrollTo(0, 0);
-	  if(!isEmpty(store.getState().apps.modelSummary)){
-		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
-		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
-	  }
-
-  }
   componentDidUpdate(){
       $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
@@ -82,21 +146,27 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
+		if(document.querySelector(".sm-pb-10")!= null ){
+			let FE = document.querySelector(".sm-pb-10")
+			if(FE.innerText==="Feature Importance") {
+			FE.style.display = "none";
+			document.querySelector(".chart-area").style.display = "none";
+			}
+		 }
 		if(this.state.showHyperparameterSummary)
 		return(<AppsModelHyperDetail match={this.props.match}/>)
-    console.log("apps Model Detail View is called##########3");
   	const modelSummary = store.getState().apps.modelSummary;
 	 	var showExportPmml = true;
 		var showCreateScore = true;
 		var hyperParameterData;
-    const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
+	let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
+	const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
 	if (!$.isEmptyObject(modelSummary)) {
-		console.log(this.props)
 		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
-				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
+				var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
+	      var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
 				var cardDataList = listOfCardList.map((data, i) => {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
@@ -106,15 +176,15 @@ export class AppsModelDetail extends React.Component {
 				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
+					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+									return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
 		/*}
@@ -163,11 +233,13 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-							 
+												<div>
+											  {failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
+										  	</div>
 		                    <div className="col-md-12 text-right xs-mt-30">
 												{!$.isEmptyObject(hyperParameterData)?
 												<span>
-												<Button bsStyle="warning" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+												<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
 												<span className="xs-pl-10"></span></span>:""}
 												{showExportPmml?
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}

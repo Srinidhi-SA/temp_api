@@ -6,7 +6,7 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED} from "../../helpers/helper.js"
 import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
@@ -30,7 +30,6 @@ var dateFormat = require('dateformat');
 export class StocksCard extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
     }
     getPreviewData(e) {
         this.props.dispatch(updateStockSlug(e.target.id))
@@ -58,9 +57,11 @@ export class StocksCard extends React.Component {
                 if(data.status == INPROGRESS){
                     percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
                     stockLink = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
-                }else if(data.status == SUCCESS && !data.viewed){
+                }else if(data.status == SUCCESS){
                     data.completed_percentage = 100;
                     percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                }else if(data.status == FAILED){
+                    percentageDetails =  <div class=""><font color="#ff6600">Failed</font></div>
                 }
                 var permissionDetails = data.permission_details;
                 var isDropDown = permissionDetails.remove_stock || permissionDetails.rename_stock; 
@@ -70,38 +71,16 @@ export class StocksCard extends React.Component {
                         <div className="card-header"></div>
                         <div className="card-center-tile">
                         <div className="row">
-                        
                         <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
                         {stockLink}
                         </h5>
 						<div className="pull-right"><img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/></div>
 						<div className="clearfix"></div>
-					
-						
-                        
                         <div className="clearfix"></div>
                         {percentageDetails}
-
-                        {/* <div class="inProgressIcon">
-                            <i class="fa fa-circle"></i>
-                            <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-                            </div> */}
-                            
-                        {/*<!-- Popover Content link -->
-                        <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                        <a  className="pover cursor">
-                        <div class="card_icon">
-                        <img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>
-                        </div>
-                        </a>
-                        </OverlayTrigger>   */}
-                            
-                        
-                        </div>
-                         
-                        
-                        </div>
+                           </div>
+                          </div>
                         </div>
                         <div className="card-footer">
                         <div className="left_div">
@@ -111,7 +90,6 @@ export class StocksCard extends React.Component {
 
 						{
                                 isDropDown == true ? <div class="btn-toolbar pull-right">
-                        {/*<!-- Rename and Delete BLock  -->*/}
                         <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                         </a>
@@ -122,7 +100,7 @@ export class StocksCard extends React.Component {
 						{permissionDetails.rename_stock == true ?
                         <span onClick={this.handleRename.bind(this, data.slug, data.name)}>
                         <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
+                        <i className="fa fa-pencil"></i>
                         &nbsp;&nbsp;Rename</a>
                         </span>:""}
                         {permissionDetails.remove_stock == true ?
@@ -135,12 +113,7 @@ export class StocksCard extends React.Component {
 						<div className="clearfix"></div>
 						</li>
 						
-						
-                        
-						
-						
-                        </ul>
-                        {/*<!-- End Rename and Delete BLock  -->*/}
+						</ul>
                         </div>
                         :""}
                          

@@ -7,6 +7,7 @@ var ASSETS_DIR = path.resolve(__dirname,"assets");
 //const webpack = require('webpack')
 //var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+const env = process.env.npm_lifecycle_event;
 var config = {
     entry: SRC_DIR + "/app/index.js",
     output: {
@@ -14,7 +15,7 @@ var config = {
         filename: "bundle.js",
         publicPath: "/app/"
     },
-    devtool: "eval-source-map",
+    devtool: env === "buildDev" ? "eval" : "eval-source-map",
     module: {
         loaders: [
           {

@@ -16,15 +16,12 @@ import {hideDataPreview} from "../../actions/dataActions";
 export class AppsStockDocumentMode extends React.Component {
   constructor() {
     super();
-    //this.docFlag = true;
   }
   componentWillMount() {
-    // alert("in will mount!!!")
-    // console.log("in will mount!!!")
     if (isEmpty(this.props.signal)) {
       this.props.dispatch(getStockAnalysis(this.props.match.params.slug))
     }
-    // console.log(this.props.signal)
+   
   }
 
   print() {
@@ -33,9 +30,7 @@ export class AppsStockDocumentMode extends React.Component {
 
   searchTree(_Node, cardLists, lastVar) {
 		if (_Node.listOfCards.length!=0&&_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
-      console.log("cardlist if no cards in node:");
-      console.log(cardLists);
-      cardLists.push(_Node.listOfCards);
+     cardLists.push(_Node.listOfCards);
       return cardLists;
     } else {
       var i;
@@ -44,39 +39,27 @@ export class AppsStockDocumentMode extends React.Component {
       for (i = 0; i < _Node.listOfNodes.length; i++) {
         result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
       }
-      //console.log("cardLists is:");
-      //console.log(cardLists);
       return result;
     }
   }
 
   closeDocumentMode(){
-    console.log("closing document mode")
     this.props.dispatch(hideDataPreview());
     this.props.history.push("/apps-stock-advisor");
   }
   render() {
 
-    console.log("document mode is called$$$$$$$$$$$$$$!!");
-    console.log(this.props);
-
     let cardList = [];
     if (!isEmpty(this.props.signal)) {
       let lastCard = this.props.history.location.state.lastVar;
       cardList = this.searchTree(this.props.signal, cardList, lastCard);
-      console.log("card list is...");
-      console.log(cardList);
       let docObj = [];
       for (let card of cardList) {
-        console.log("card is:")
-        console.log(card);
         for (let _card of card) {
-          console.log("_card is :" + _card);
           docObj.push(_card);
         }
       }
-      console.log(docObj);
-      docObj.splice(0, 1);
+     docObj.splice(0, 1);
 
       let objs = [];
       docObj.map(function(item, i) {
@@ -88,7 +71,6 @@ export class AppsStockDocumentMode extends React.Component {
         }
 
       })
-      console.log(objs);
       let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
       let cardModeLink = "/apps-stock-advisor/" + this.props.match.params.slug + "/" + firstOverviewSlug;
 
@@ -96,25 +78,7 @@ export class AppsStockDocumentMode extends React.Component {
         return (
           <div>
             <div className="side-body" id="side-body">
-              {/* Page Title and Breadcrumbs */}
-              {/*<div className="page-head">
-                <div class="row">
-                  <div class="col-md-12">
-                    <Breadcrumb path={[
-                      {
-                        path: '/apps-stock-advisor',
-                        label: 'Apps-Stock'
-                      }, {
-                        path: '/apps-stock-document-mode/' + this.props.match.params.slug,
-                        label: this.props.signal.name
-                      }
-                    ]}/>
-                  </div>
-                </div>
-                <div class="clearfix"></div>
-              </div>*/}
-              {/* Page Content Area */}
-              <div className="main-content">
+             <div className="main-content">
                 <div className="row">
                   <div className="col-md-12">
 
@@ -132,11 +96,9 @@ export class AppsStockDocumentMode extends React.Component {
                             <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
                             </button>
-                            {/*<Link className="tabs-control right grp_legends_green continue" to="/signals">*/}
-                              <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
+                           <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
                                 <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                               </button>
-                            {/*</Link>*/}
                           </div>
                         </div>
 
@@ -163,13 +125,6 @@ export class AppsStockDocumentMode extends React.Component {
         <div className="side-body">
           <div className="page-head">
             <div class="row">
-              {/*<div class="col-md-12">
-                <Breadcrumb path={[{
-                    path: '/apps-stock-advisor',
-                    label: 'Apps-Stock'
-                  }
-                ]}/>
-              </div>*/}
               <div class="col-md-8">
                 <h2>{this.props.signal.name}</h2>
               </div>

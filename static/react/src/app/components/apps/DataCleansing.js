@@ -31,6 +31,7 @@ import {
   outlierRemovalSelectedAction,
   variableSelectedAction,
   checkedAllAction,
+  dataCleansingCheckUpdate,
   removeDuplicateAttributesAction,
   removeDuplicateObservationsAction,
   dataCleansingDataTypeChange
@@ -54,7 +55,11 @@ import {
     apps_regression_modelName: store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets: store.datasets,
-    checkedAll: store.datasets.checkedAll
+    checkedAll: store.datasets.checkedAll,
+    editmodelFlag:store.datasets.editmodelFlag,
+    modelEditconfig:store.datasets.modelEditconfig,
+
+
   };
 })
 
@@ -71,6 +76,14 @@ export class DataCleansing extends React.Component {
   }
 
   componentWillMount() {
+    const from = this.getValueOfFromParam();
+    if (from === 'feature_Engineering') {
+    }
+    else if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
+      let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+    }
+    else {
     if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
       window.history.go(-1);
     }
@@ -78,7 +91,6 @@ export class DataCleansing extends React.Component {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 
     } else {
-      console.log("not updating dataPreview data from server");
     }
 
     var proccedUrl = this.props.match.url.replace('dataCleansing', 'featureEngineering');
@@ -97,11 +109,72 @@ export class DataCleansing extends React.Component {
         return "";
       this.props.dispatch(variableSelectedAction(item.name, item.slug, true));
     });
+    if(this.props.editmodelFlag){
+     this.setOutliersOnEdit()
+     this.setMissingValuesOnEdit()
+    }
   }
+  }
+
+  getValueOfFromParam() {
+    if(this.props.location === undefined){
+    }
+   else{
+    const params = new URLSearchParams(this.props.location.search);
+    return params.get('from');
+   }
+  }
+  setOutliersOnEdit(){
+    var outliers=Object.values(this.props.modelEditconfig.outlier_config)
+    for(var i=0;i<outliers.length;i++){//colName,colType,colSlug, treatment
+    this.props.dispatch(outlierRemovalSelectedAction(outliers[i].name,outliers[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==outliers[i].name)[0].slug
+    ,outliers[i].treatment))
+   }
+}
+  setMissingValuesOnEdit(){
+    var missingValues =Object.values(this.props.modelEditconfig.missing_value_config)
+    for(var i=0;i<missingValues.length;i++){//colName,colType,colSlug, treatment
+    this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug
+    ,missingValues[i].treatment))
+  }
+  }
+
+setMissingValuesOnEdit(){
+  var missingValues =Object.values(this.props.modelEditconfig.missing_value_config)
+  for(var i=0;i<missingValues.length;i++){//colName,colType,colSlug, treatment
+  this.props.dispatch(missingValueTreatmentSelectedAction(missingValues[i].name,missingValues[i].type,this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(j=>j.name==missingValues[i].name)[0].slug
+  ,missingValues[i].treatment))
+ }
+}
+
+componentDidUpdate(){
+  var selectElements = document.getElementsByTagName("select");
+  var i,j;
+  for (i = 1; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+      if(selectElements[i].options.length>=4){ 
+      if( selectElements[i].selectedOptions[0].value==selectElements[i].options[j].value)
+       selectElements[i].options[j].style.display = 'none';
+       else
+       selectElements[i].options[j].style.display = 'inline';
+      }
+  }
+  }
+}
 
   componentDidMount() {
 
 
+var selectElements = document.getElementsByTagName("select");
+  var i,j;
+  for (i = 0; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+      if(selectElements[i].options[j].selected)
+       selectElements[i].options[j].style.display = 'none';
+      else
+       selectElements[i].options[j].style.display = 'inline';
+  }
+  }
     var table = document.getElementById('dctable'),
     tableHead = table.querySelector('thead'),
     tableHeaders = tableHead.querySelectorAll('th'),
@@ -109,7 +182,6 @@ export class DataCleansing extends React.Component {
 
 
 tableHead.addEventListener('click', function (e) {
-  console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
     var tableHeader = e.target,
         textContent = tableHeader.textContent,
         tableHeaderIndex, isAscending, order;
@@ -138,9 +210,9 @@ tableHead.addEventListener('click', function (e) {
     } else {
         sortOrder = "Descending order";
     }
-    
+
     /* end accessibility */
-    
+
     // call tinysort
     tinysort(
     tableBody.querySelectorAll('tr'), {
@@ -187,16 +259,20 @@ tableHead.addEventListener('click', function (e) {
   onchangeMissingValueTreatment(event, variable_name) {
   }
 
-  missingValueTreatmentOnChange(event) {
+  missingValueTreatmentOnChange(colSlug,event) {
     this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
+    this.handleDropdownOptions(colSlug, event,'missingValue')
   }
 
-  outlierRemovalOnChange(event) {
+  outlierRemovalOnChange(colSlug,event) {
     this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"], event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
+    this.handleDropdownOptions(colSlug, event,'outlier')
   }
 
 
   variableCheckboxOnChange(event, item) {
+    const checkBoxIndex = event.target.dataset["index"];
+    this.props.dispatch(dataCleansingCheckUpdate(checkBoxIndex, event.target.checked));
     this.props.dispatch(variableSelectedAction(event.target.dataset["colname"], event.target.dataset["colslug"], event.target.checked));
     if (Object.values(this.props.datasets.selectedVariables).includes(false)) {
       this.props.dispatch(checkedAllAction(false));
@@ -228,7 +304,7 @@ tableHead.addEventListener('click', function (e) {
 
   handleDuplicateAttributesOnChange(event) {
     this.setState({ value1: event.target.value })
-    this.props.dispatch(removeDuplicateAttributesAction(event.target.name, event.target.value));
+    this.props.dispatch(removeDuplicateAttributesAction(event.target.name, event.target.value)); 
   }
 
   handleDuplicateObservationsOnChange(event) {
@@ -236,23 +312,57 @@ tableHead.addEventListener('click', function (e) {
     this.props.dispatch(removeDuplicateObservationsAction(event.target.name, event.target.value));
   }
 
+  handlefilterOptions(e){
+    var select = document.getElementById('sdataType');
+    var selectedOption = e.target.value
+     
+     for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==selectedOption)
+        select.options[i].style.display='none'
+        else
+        select.options[i].style.display='inline'
+    }
+  }
+
+  handleDropdownOptions(colSlug,event,type){
+    var select
+    if(type=='dataType')
+     select = document.getElementById(`${colSlug}dataType`);
+    else if(type=='missingValue')
+     select = document.getElementById(`${colSlug}missingValue`);
+    else if(type=='outlier')
+     select = document.getElementById(`${colSlug}outlier`);
+
+    var selectedOption = event.target.value
+
+    for(var i=0;i<select.options.length;i++){
+      if(select.options[i].value==selectedOption)
+        select.options[i].style.display='none'
+      else
+        select.options[i].style.display='inline'
+    }
+  }
+  
   handleDataTypeChange(colSlug, event) {
     this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
+    this.handleDropdownOptions(colSlug, event,'dataType')
   }
 
   getUpdatedDataType(colSlug) {
     let actualColType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].actualColumnType
-    let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-
+    if(!this.props.editmodelFlag)
+    var colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+    else
+    colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
-    var optionsHtml = arr.map(item => {
+    var optionsHtml = arr.map((item ,index)=> {
       if (item.toLowerCase() == colType.toLowerCase()) {
-        return <option value={item.toLowerCase()} selected> {item}</option>
+        return <option key={index} value={item.toLowerCase()} selected> {item}</option>
       } else {
-        return <option value={item.toLowerCase()} > {item}</option>
+        return <option key={index} value={item.toLowerCase()} > {item}</option>
       }
     })
-    return <select className="form-control" onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
+    return <select className="form-control" id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} >{colType}{optionsHtml}</select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -262,13 +372,13 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map((item,index)=><option key={index} value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.outlierRemoval) {
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+        <select className="form-control"  id={colSlug+'outlier'} data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this,colSlug)} value={selectedValue} >{dcHTML}</select>
       );
     }
     else return ""
@@ -281,6 +391,11 @@ tableHead.addEventListener('click', function (e) {
   handelSort(variableType, sortOrder) {
     this.props.dispatch(handelSort(variableType, sortOrder))
   }
+  handleBack=()=>{
+    const appId = this.props.match.params.AppId;
+    const slug = this.props.match.params.slug;
+    this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel?from=data_cleansing`);
+  }
 
   getMissingValueTreatmentOptions(dataType, colName, colSlug,outnum,missingnum) {
     let disble = false;
@@ -289,13 +404,13 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map((item,index) => <option key={index} value={item.name} selected >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.missingValueTreatment) {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (
-        <select className="form-control" data-coltype={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>
+       <select className="form-control" data-coltype={dataType} id={colSlug+'missingValue'} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this,colSlug)} value={selectedValue}>{dcHTML}</select>
       );
     }
     else { return ""; }
@@ -324,63 +439,62 @@ tableHead.addEventListener('click', function (e) {
     });
   }
 
-    
+
 
   render() {
     this.dcTableSorter();
     var cleansingHtml = <span>"Loading..."</span>;
+
+    if (this.props.dataPreview != null) {
     var removedVariables = getRemovedVariableNames(this.props.datasets);
     var considerItems = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => ((i.consider === false) && (i.ignoreSuggestionFlag === false)) || ((i.consider === false) && (i.ignoreSuggestionFlag === true) && (i.ignoreSuggestionPreviewFlag === true))).map(j => j.name);
     // var ignoreSuggestionFlag = this.props.datasets.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i => i.ignoreSuggestionFlag===true).map(j=>j.name);
-    if (this.props.dataPreview != null) {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
       var removedVariables = getRemovedVariableNames(this.props.datasets);
-      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, index) => {
         let outnum = 1;
         let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
-          return "";
+          return null;
         else {
           return (
-            <tr className={('all ' + item.columnType)} id="mssg">
+            <tr className={('all ' + item.columnType)} key={index} id="mssg">
               <td class="filter-false sorter-false">
                 <div class="ma-checkbox inline">
-                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={this.state.checked} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)} />
-                  <label for={item.slug}> </label>
+                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={item.checked} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                  <label for={item.slug}></label>
                 </div>
               </td>
               <td className="text-left">{item.name}</td>
-              <td>  {this.getUpdatedDataType(item.slug)} </td>
+              <td>{this.getUpdatedDataType(item.slug)}</td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "numberOfUniqueValues"
-                }).map((option) => {
-                  return (<span>{option.value}</span>);
+                }).map((option, index) => {
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "numberOfNulls"
-                }).map((option) => {
+                }).map((option, index) => {
                   missingnum = option.value;
-                  console.log(missingnum);
-                  return (<span>{option.value}</span>);
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "Outliers"
-                }).map((option) => {
+                }).map((option,index) => {
                   outnum = option.value;
-                  console.log(outnum);
-                  return (<span>{option.value}</span>);
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
-              <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
-              <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
+              <td>{this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug,outnum,missingnum)}</td>
+              <td>{this.getOutlierRemovalOptions(item.columnType, item.name, item.slug,outnum,missingnum)}</td>
             </tr>
           );
         }
@@ -401,20 +515,12 @@ tableHead.addEventListener('click', function (e) {
             <div class="col-md-12">
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
-                  <div class="form-group">
-                    <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate columns/attributes in the dataset?</label>
-                    <div class="col-sm-7">
-                      <div className="content-section implementation">
-                        <InputSwitch id="rd1" onLabel="Yes" offLabel="No" checked={this.state.value1} name="remove_duplicate_attributes" onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
-                      </div>
-                    </div>
-                  </div>
                   <div class="clearfix xs-mb-5"></div>
                   <div class="form-group">
                     <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate rows/observations  in the dataset?</label>
                     <div class="col-sm-7">
                       <div className="content-section implementation">
-                        <InputSwitch id="rd2" checked={this.state.value2} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+                        <InputSwitch id="rd2" checked={store.getState().datasets.duplicateObservations} name="remove_duplicate_observations" onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
                       </div>
                     </div>
                   </div>
@@ -423,12 +529,12 @@ tableHead.addEventListener('click', function (e) {
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div class="row xs-mb-10">
-                    <div className="col-md-3">
+                    <div className="col-md-6">
                       <div class="form-inline" >
                         <div class="form-group">
-                          <label for="sdataType">Filter By: </label>
-                          <select id="sdataType" className="form-control cst-width">
-                            <option value="all">Data Type</option>
+                          <label for="sdataType">Filter Data Type: </label>
+                          <select id="sdataType" onChange={this.handlefilterOptions.bind(this)}className="form-control cst-width">
+                            <option value="all">All</option>
                             <option value="measure">Measure</option>
                             <option value="dimension">Dimension</option>
                             <option value="datetime">Datetime</option>
@@ -437,7 +543,7 @@ tableHead.addEventListener('click', function (e) {
                       </div>
 
                     </div>
-                    <div class="col-md-3 col-md-offset-6">
+                    <div class="col-md-6">
                       <div class="form-inline" >
                         <div class="form-group pull-right">
                           <input type="text" id="search" className="form-control" placeholder="Search variables..."></input>
@@ -478,9 +584,10 @@ tableHead.addEventListener('click', function (e) {
                   </div>
                 </div>
                 <div className="panel-body box-shadow">
-                  <div class="buttonRow text-right">
-                    <Button onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
-                  </div>
+                <div class="buttonRow">
+                    <Button id="dataCleanBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                    <Button id="dataCleanProceed" onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary" style={{float:"right"}}>Proceed <i class="fa fa-angle-double-right"></i></Button>
+                </div>
                   <div class="xs-p-10"></div>
                 </div>
               </div>

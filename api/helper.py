@@ -1,11 +1,29 @@
-import md5
+from __future__ import print_function
+from __future__ import division
+
+import hashlib
+
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import map
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import time
 from math import floor, log10
 import datetime
 import random
+import requests
+import base64
+import simplejson as json
+import re
+import datetime
 
 from django.conf import settings
 import yarn_api_client
+# from api.tasks import *
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 from django_celery_beat.models import CrontabSchedule, PeriodicTask, IntervalSchedule
 import pytz
@@ -46,7 +64,7 @@ class JobserverDetails(object):
         job_type = {
             "metadata": "metaData",
             "master": "story",
-            "model":"training",
+            "model": "training",
             "score": "prediction",
             "robo": "robo",
             "subSetting": "subSetting",
@@ -62,35 +80,39 @@ class JobserverDetails(object):
             "job_config": {
                 "job_type": job_type[class_name],
                 "config_url": "{3}://{0}/api/job/{2}/get_config".format(THIS_SERVER_DETAILS.get('host'),
-                                                             THIS_SERVER_DETAILS.get('port'),
-                                                             slug, protocol),
-                "job_url" : "{3}://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                    THIS_SERVER_DETAILS.get('port'),
-                                                                    slug, protocol),
+                                                                        THIS_SERVER_DETAILS.get('port'),
+                                                                        slug, protocol),
+                "job_url": "{3}://{0}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                           THIS_SERVER_DETAILS.get('port'),
+                                                           slug, protocol),
                 "kill_url": "{3}://{0}/api/job/{2}/rest_in_peace/".format(THIS_SERVER_DETAILS.get('host'),
-                                                             THIS_SERVER_DETAILS.get('port'),
-                                                             slug, protocol),
+                                                                          THIS_SERVER_DETAILS.get('port'),
+                                                                          slug, protocol),
+                "initial_messages": "{3}://{0}/api/job/{2}/dump_complete_messages/".format(
+                    THIS_SERVER_DETAILS.get('host'),
+                    THIS_SERVER_DETAILS.get('port'),
+                    slug, protocol),
                 "message_url": "{3}://{0}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                THIS_SERVER_DETAILS.get('port'),
-                                                                message_slug, protocol),
+                                                                    THIS_SERVER_DETAILS.get('port'),
+                                                                    message_slug, protocol),
                 "xml_url": "{3}://{0}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                THIS_SERVER_DETAILS.get('port'),
-                                                                slug, protocol),
+                                                           THIS_SERVER_DETAILS.get('port'),
+                                                           slug, protocol),
                 "error_reporting_url": "{3}://{0}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                THIS_SERVER_DETAILS.get('port'),
-                                                                slug, protocol),
+                                                                                  THIS_SERVER_DETAILS.get('port'),
+                                                                                  slug, protocol),
                 "job_name": job_name,
-                "app_id":app_id,
-                "get_config" :
+                "app_id": app_id,
+                "get_config":
                     {
-                        "action" : "get_config" ,
-                        "method" : "GET"
+                        "action": "get_config",
+                        "method": "GET"
                     },
-                "set_result" :
+                "set_result":
 
                     {
-                        "action" : "result",
-                        "method"  : "PUT"
+                        "action": "result",
+                        "method": "PUT"
                     }
             }
         }
@@ -98,28 +120,28 @@ class JobserverDetails(object):
     @classmethod
     def print_job_details(cls, job):
         job_url = "{0}/jobs/{1}".format(cls.get_jobserver_url(), job.jobId)
-        print "job_url: {0}".format(job_url)
+        print("job_url: {0}".format(job_url))
         return job_url
 
 
 def metadata_chart_conversion(data):
     output = {
-      "data": {
-          "columns": [
-              [],
-          ],
-          "type": "bar",
-      },
-      "bar": {
-          "width": {
-              "ratio": 0.5
-          }
-      },
-      "legend": {
-          "show": False
-      },
-        "color":{
-            "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
+        "data": {
+            "columns": [
+                [],
+            ],
+            "type": "bar",
+        },
+        "bar": {
+            "width": {
+                "ratio": 0.5
+            }
+        },
+        "legend": {
+            "show": False
+        },
+        "color": {
+            "pattern": ['#0fc4b5', '#005662', '#148071', '#6cba86', '#bcf3a2']
         }
     }
     values = ["data1"]
@@ -134,37 +156,39 @@ def find_chart_data_and_replace_with_chart_data(data):
     output = metadata_chart_conversion(data)
     return output
 
+
 chartData = {
-        "data": {
-            "columns": [
+    "data": {
+        "columns": [
             ["data1", 30, 200, 100, 400, 150, 250],
             ["data2", 130, 100, 140, 200, 150, 50]
-            ],
-            "type": "bar",
-        },
-        "bar": {
-            "width": {
+        ],
+        "type": "bar",
+    },
+    "bar": {
+        "width": {
             "ratio": 0.5
         },
-        "color":{
-            "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
+        "color": {
+            "pattern": ['#0fc4b5', '#005662', '#148071', '#6cba86', '#bcf3a2']
         }
     },
 }
 
 
 def remove_tooltip_format_from_chart_data(chart_data):
-
     if 'chart_c3' in chart_data:
         if 'tooltip' in chart_data['chart_c3']:
             del chart_data['chart_c3']['tooltip']
     return chart_data
+
 
 def remove_chart_height_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "size" in chart_data['chart_c3']:
             del chart_data['chart_c3']['size']
     return chart_data
+
 
 def remove_chart_height_from_x_chart_data(chart_data):
     if 'chart_c3' in chart_data:
@@ -173,6 +197,7 @@ def remove_chart_height_from_x_chart_data(chart_data):
                 if "height" in chart_data['chart_c3']["axis"]["x"]:
                     del chart_data['chart_c3']["axis"]["x"]["height"]
     return chart_data
+
 
 def keep_bar_width_in_ratio(chart_data):
     count_x = 0
@@ -187,18 +212,20 @@ def keep_bar_width_in_ratio(chart_data):
                     'width': 20
                 }
             else:
-                chart_data['chart_c3']['bar'] =  {
-                                "width": {
-                                    "ratio": 0.5
-                                }
-                            }
+                chart_data['chart_c3']['bar'] = {
+                    "width": {
+                        "ratio": 0.5
+                    }
+                }
     return chart_data
+
 
 def remove_padding_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "padding" in chart_data['chart_c3']:
             del chart_data['chart_c3']['padding']
     return chart_data
+
 
 def add_side_padding_to_chart_data(chart_data):
     if 'chart_c3' in chart_data:
@@ -208,11 +235,13 @@ def add_side_padding_to_chart_data(chart_data):
 
     return chart_data
 
+
 def remove_subchart_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "subchart" in chart_data['chart_c3']:
             del chart_data['chart_c3']['subchart']
     return chart_data
+
 
 def remove_legend_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
@@ -220,16 +249,19 @@ def remove_legend_from_chart_data(chart_data):
             del chart_data['chart_c3']['legend']
     return chart_data
 
+
 def remove_grid_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "grid" in chart_data['chart_c3']:
             del chart_data['chart_c3']['grid']
     return chart_data
 
+
 def remove_xdata_from_chart_data(chart_data):
     if 'xdata' in chart_data:
         del chart_data['xdata']
     return chart_data
+
 
 def limit_chart_data_length(chart_data, limit=None):
     if limit != None:
@@ -237,7 +269,7 @@ def limit_chart_data_length(chart_data, limit=None):
             tempData = []
             if "columns" in chart_data["chart_c3"]["data"]:
                 for row in chart_data["chart_c3"]["data"]["columns"]:
-                    tempData.append(row[:limit+1])
+                    tempData.append(row[:limit + 1])
                     chart_data["chart_c3"]["data"]["columns"] = tempData
 
     return chart_data
@@ -245,7 +277,7 @@ def limit_chart_data_length(chart_data, limit=None):
 
 def decode_and_convert_chart_raw_data(data, object_slug=None):
     if not check_chart_data_format(data):
-        print "chart data format not matched"
+        print("chart data format not matched")
         return {}
     from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
     chart_type = data['chart_type']
@@ -268,7 +300,7 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
     from api.models import SaveData
     sd = SaveData()
     if object_slug is not None:
-        sd.object_slug=object_slug
+        sd.object_slug = object_slug
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
@@ -308,7 +340,7 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         )
 
         c3.add_additional_grid_line_at_zero()
-        if chart_type=="bar":
+        if chart_type == "bar":
             c3.remove_vertical_grid_from_chart_data()
 
         if subchart is False:
@@ -462,7 +494,7 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
-        c3_chart_details['table_c3'] =  chart_data
+        c3_chart_details['table_c3'] = chart_data
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
         if 'point' in data:
@@ -587,13 +619,13 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         # pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
         pie_chart_data = chart_data
-        c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
+        c3 = DonutChart(data=pie_chart_data, title=title, yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
 
-        #c3.show_basic_legends()
+        # c3.show_basic_legends()
         c3.show_legends_at_right()
 
-        #c3.hide_basic_legends()
+        # c3.hide_basic_legends()
 
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
@@ -614,7 +646,7 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
             from api.C3Chart.config import PATTERN1
             color_list = PATTERN1
             length = len(name_list)
-            c3_chart_details["legend_data"] = [{'name':name_list[i], 'color':color_list[i]} for i in range(length)]
+            c3_chart_details["legend_data"] = [{'name': name_list[i], 'color': color_list[i]} for i in range(length)]
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
@@ -623,11 +655,11 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
 
     elif chart_type in ['pie']:
         chart_data = replace_chart_data(data['data'])
-        #pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        # pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
         pie_chart_data = chart_data
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
-        c3 = PieChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
+        c3 = PieChart(data=pie_chart_data, title=title, yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
         c3.show_basic_legends()
         if yAxisNumberFormat is not None:
@@ -653,9 +685,10 @@ def replace_chart_data(data, axes=None):
 
 
 def convert_chart_data_to_pie_chart(chart_data):
-    pie_chart_data = zip(*chart_data)
-    pie_chart_data = map(list, pie_chart_data)
+    pie_chart_data = list(zip(*chart_data))
+    pie_chart_data = list(map(list, pie_chart_data))
     return pie_chart_data[1:]
+
 
 def put_x_axis_first_chart_data(chart_data, x_column=None):
     import copy
@@ -680,23 +713,19 @@ def put_x_axis_first_chart_data(chart_data, x_column=None):
     return chart_data
 
 
-
-
-
 def get_slug(name):
-
     from django.template.defaultfilters import slugify
     import string
     import random
     slug = slugify(str(name) + "-" + ''.join(
-                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
     return slug
 
 
 def check_chart_data_format(data):
     keys = ['data', 'axes', 'label_text', 'legend', 'chart_type', 'types', 'axisRotation']
 
-    data_keys = data.keys()
+    data_keys = list(data.keys())
 
     if len(set(keys) - set(data_keys)) < 1:
         return True
@@ -704,7 +733,6 @@ def check_chart_data_format(data):
 
 
 def convert_according_to_legend_simple(chart_data, legend):
-
     for data in chart_data:
         name = legend.get(data[0], None)
         if name is not None:
@@ -740,7 +768,7 @@ def convert_listed_dict_objects(json_data):
     """
     if not json_data or not json_data[0]:
         return []
-    keys = json_data[0].keys()
+    keys = list(json_data[0].keys())
     column_data = [[] for _ in range(len(keys))]
     item_index_dictionary = dict()
     for index, item in enumerate(keys):
@@ -748,7 +776,7 @@ def convert_listed_dict_objects(json_data):
         item_index_dictionary[item] = index
 
     for data in json_data:
-        for item in data.keys():
+        for item in list(data.keys()):
             column_data[item_index_dictionary[item]].append(data[item])
     return column_data
 
@@ -785,7 +813,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
 
     """
 
-    all_key = data.keys()
+    all_key = list(data.keys())
 
     final_data = []
     xs = {}
@@ -802,7 +830,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
         mapp[d] = i
         i += 1
 
-    for d in data.keys():
+    for d in list(data.keys()):
         array_of_json = data[d]
         x_index = mapp[d + '_x']
         y_index = mapp[d]
@@ -905,12 +933,12 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
     elif isinstance(color_naming_scheme, list) or color_naming_scheme is None:
 
         color_naming_scheme = {
-                        'red': 'Cluster0',
-                        'blue': 'Cluster1',
-                        'green': 'Cluster2',
-                        'orange': 'Cluster3',
-                        'yellow': 'Cluster4'
-                    }
+            'red': 'Cluster0',
+            'blue': 'Cluster1',
+            'green': 'Cluster2',
+            'orange': 'Cluster3',
+            'yellow': 'Cluster4'
+        }
 
     unique_category_name = get_all_unique(category_data_list)
 
@@ -972,6 +1000,7 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 from celery.decorators import task
 from celery_once import QueueOnce, AlreadyQueued
 
+
 def get_db_object(model_name, model_slug):
     from django.apps import apps
     mymodel = apps.get_model('api', model_name)
@@ -979,9 +1008,8 @@ def get_db_object(model_name, model_slug):
     return obj
 
 
-@task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME+'_yarn')
+@task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME + '_yarn')
 def get_job_from_yarn(model_name=None, model_slug=None):
-
     try:
         model_instance = get_db_object(model_name=model_name,
                                        model_slug=model_slug
@@ -1017,11 +1045,11 @@ def get_job_from_yarn(model_name=None, model_slug=None):
 
 
 def get_job_status_from_yarn(instance=None):
-
     try:
-        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                              port=settings.YARN.get("port"),
+                                                              timeout=settings.YARN.get("timeout"))
         app_status = ym.cluster_application(instance.job.url)
-
 
         # YarnApplicationState = (
         # (ACCEPTED, 'Application has been accepted by the scheduler.'),
@@ -1068,7 +1096,6 @@ def get_job_status_from_yarn(instance=None):
 
 def get_job_status_from_jobserver(instance=None):
     if instance is None:
-
         return "no instance ---!!"
 
     if instance.job is None:
@@ -1084,8 +1111,8 @@ def get_job_status_from_jobserver(instance=None):
     except Exception as err:
         return err
 
-def get_job_status(instance=None):
 
+def get_job_status(instance=None):
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
     else:
@@ -1101,19 +1128,19 @@ def get_job_status(instance=None):
                 type(instance).__name__,
                 instance.slug
             )
-            print "JobStatusCheck QUEUED ---> {0} | {1}".format(type(instance).__name__, instance.slug)
+            print("JobStatusCheck QUEUED ---> {0} | {1}".format(type(instance).__name__, instance.slug))
         except AlreadyQueued:
-            print "JobStatusCheck ALREADY EXISTING ---> {0} | {1}".format(type(instance).__name__, instance.slug)
+            print("JobStatusCheck ALREADY EXISTING ---> {0} | {1}".format(type(instance).__name__, instance.slug))
             pass
         except Exception as err:
-            print "JobStatusCheck.."
-            print err
+            print("JobStatusCheck..")
+            print(err)
     else:
         get_job_status_from_jobserver(instance)
 
 
 def normalize_job_status_for_yarn(status):
-    if "RUNNING" == status :
+    if "RUNNING" == status:
         return settings.job_status.RUNNING
     elif "ERROR" == status:
         return settings.job_status.ERROR
@@ -1124,13 +1151,13 @@ def normalize_job_status_for_yarn(status):
 
 
 def return_status_of_job_log(job_url):
-    import urllib, json
+    import urllib.request, urllib.parse, urllib.error, json
     final_status = "RUNNING"
-    check_status = urllib.urlopen(job_url)
+    check_status = urllib.request.urlopen(job_url)
     data = json.loads(check_status.read())
     if data.get("status") == "FINISHED":
         final_status = data.get("status")
-    elif data.get("status") == "ERROR" and "startTime" in data.keys():
+    elif data.get("status") == "ERROR" and "startTime" in list(data.keys()):
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")
@@ -1177,26 +1204,24 @@ def convert_to_humanize(size):
         5: 'TB'
     }
     i = 1
-    while size/1024 > 0:
+    while old_div(size, 1024) > 0:
         i += 1
-        size = size/1024
+        size = old_div(size, 1024)
 
     return str(size) + " " + size_name[i]
 
 
 def convert_to_GB(size):
-
     count = 3
 
     while count > 0:
-        size = float(size)/1024
+        size = float(size) / 1024
         count -= 1
 
     return size
 
 
 def format_tooltip_data(datas):
-
     for data in datas:
         for index, value in enumerate(data):
             if type(value) in ['int', 'float']:
@@ -1207,20 +1232,103 @@ def format_tooltip_data(datas):
 
 def round_sig(x, sig=3):
     try:
-        if abs(x)>=1:
-            x = round(x,sig)
+        if abs(x) >= 1:
+            x = round(x, sig)
         else:
-            x = round(x, sig-int(floor(log10(abs(x))))-1)
+            x = round(x, sig - int(floor(log10(abs(x)))) - 1)
     except:
         pass
     return x
+
+
+def calculate_percentage(message_log, stock, messages):
+    percentage = 0
+    msg_log = json.loads(message_log)
+    # index = None
+    # for d in msg_log:
+    #     msg = msg_log[d]
+    #     print(msg_log[d])
+    #     if stock in msg:
+    #         index = d
+    #         break
+    # index = int(index) -1
+    # number_of_stocks = len(msg_log) - 2
+    # if index == 0:
+    #     percentage = 10
+    # else:
+    #     percentage = 80/number_of_stocks
+    # actual_percentage = messages[-1]['globalCompletionPercentage'] + percentage
+
+    if messages[-1]['globalCompletionPercentage'] == 0:
+        percentage = 10
+    else:
+        number_of_stocks = len(msg_log) - 2
+        percentage = 80/number_of_stocks
+    actual_percentage = messages[-1]['globalCompletionPercentage'] + percentage
+    return actual_percentage
+
+
+def update_stock_sense_message(job_instance, stock):
+    message = json.loads(job_instance.messages)
+    percentage = None
+    if stock == "ml-work":
+        info = "Performing analysis"
+        percentage = 80
+    else:
+        info = "Fetching news articles and NLU for {0}".format(stock)
+        percentage = calculate_percentage(job_instance.message_log, stock, message)
+        import math
+        percentage = math.floor(percentage)
+
+    print("!!!!!!!!!!! @@@@@@@@@@ PERCENTAGE {0}".format(percentage))
+    time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    latest_message = {
+        "analysisName": "stockAdvisor",
+        "display": True,
+        "stageName": "custom",
+        "shortExplanation": info,
+        "messageType": "info",
+        "globalCompletionPercentage": percentage,
+        "gmtDateTime": time_stamp,
+        "stageCompletionPercentage": percentage
+    }
+    message.append(latest_message)
+    return json.dumps(message)
+
+
+def create_message_log_and_message_for_stocksense(stock_symbols):
+    message_log = dict()
+    message_log[0] = "Fetching stock data"
+    stock_symbols = json.loads(stock_symbols)
+    for index, (key, value) in enumerate(stock_symbols.items()):
+        print(index, key, value)
+        message_log[index+1] = "Fetching news articles and NLU for "+value
+
+    message_log[len(stock_symbols) + 1] = "Performing analysis"
+    time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    message = [
+        {
+            "analysisName": "stockAdvisor",
+            "display": True,
+            "stageName": "custom",
+            "shortExplanation": message_log[0],
+            "messageType": "info",
+            "globalCompletionPercentage": 0,
+            # "gmtDateTime": "2020-04-07 11:55:15",
+            "gmtDateTime": time_stamp,
+            "stageCompletionPercentage": 0
+        },
+    ]
+    message_log = json.dumps(message_log)
+    message = json.dumps(message)
+    return message_log, message
 
 
 def get_message(instance):
     if instance is None:
         return None
     from api.redis_access import AccessFeedbackMessage
-    import json
+    import simplejson as json
     ac = AccessFeedbackMessage()
     message_log = json.loads(instance.message_log)
     data = None
@@ -1275,7 +1383,6 @@ from django.http import JsonResponse
 
 
 def auth_for_ml(func):
-
     def another_function(*args, **kwargs):
         request = args[0]
         key1 = request.GET['key1']
@@ -1283,7 +1390,7 @@ def auth_for_ml(func):
         signature = request.GET['signature']
         generationTime = float(request.GET['generated_at'])
         currentTime = time.time()
-        timeDiff = currentTime-generationTime
+        timeDiff = currentTime - generationTime
         if timeDiff < settings.SIGNATURE_LIFETIME:
             json_obj = {
                 "key1": key1,
@@ -1306,14 +1413,20 @@ def generate_signature(json_obj):
     secretKey = secret key kknown to ML and API Codebase
     """
     secretKey = settings.ML_SECRET_KEY
-    existing_key = json_obj["key1"]+"|"+json_obj["key2"]+"|"+secretKey
-    newhash = md5.new()
+    existing_key = json_obj["key1"] + "|" + json_obj["key2"] + "|" + secretKey
+    # newhash = md5.new() # python2.7
+    # newhash.update(existing_key) # python2.7
+    # value = newhash.hexdigest() # python2.7
+
+    newhash = hashlib.md5()
     newhash.update(existing_key)
-    value = newhash.hexdigest()
+    value = newhash.hexdigest()  # python3
     return value
+
 
 def generate_pmml_name(slug):
     return slug + "_" + 'pmml'
+
 
 def encrypt_url(url):
     from cryptography.fernet import Fernet
@@ -1326,32 +1439,42 @@ def encrypt_url(url):
     cipher_text = cipher_suite.encrypt(bytes_url)
     return cipher_text
 
+
 def encrypt_for_kylo(username, password_encrypted):
-    newhash = md5.new()
+    # newhash = md5.new() # python2.7
     existing_key = username + password_encrypted
-    newhash.update(existing_key)
-    value = newhash.hexdigest()
+    # newhash.update(existing_key) # python2.7
+    # value = newhash.hexdigest() # python2.7
+
+    # newhash = hashlib.md5()
+    # newhash.update(existing_key)
+    # value = newhash.hexdigest()  # python3
+    value = hashlib.sha256(existing_key.encode('utf-8')).hexdigest()  # python3
     return value
+    # return value
+
+
 
 def convert_fe_date_format(date_string):
     return datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%d/%m/%Y')
 
+
 def get_timing_details(timing_type=None):
     timing_details = {
-                        "type": "crontab",
-                        "crontab": {
-                            "minute": "*",
-                            "hour": "*",
-                            "day_of_week": "*",
-                            "day_of_month": "*",
-                            "month_of_year": "*",
-                            "timezone": "Asia/Calcutta"
-                        },
-                        "interval": {
-                            "every": 60,
-                            "period": "seconds"
-                        }
-                    }
+        "type": "crontab",
+        "crontab": {
+            "minute": "*",
+            "hour": "*",
+            "day_of_week": "*",
+            "day_of_month": "*",
+            "month_of_year": "*",
+            "timezone": "Asia/Calcutta"
+        },
+        "interval": {
+            "every": 60,
+            "period": "seconds"
+        }
+    }
     if timing_type == 'daily':
         timing_details['crontab']['hour'] = 24
     if timing_type == 'weekly':
@@ -1362,10 +1485,10 @@ def get_timing_details(timing_type=None):
         timing_details['crontab']['hour'] = 1
     elif timing_type == 'every 15 minutes':
         timing_details['type'] = "interval"
-        timing_details['interval']['every'] = 60*15 # 15 minutes in seconds
+        timing_details['interval']['every'] = 60 * 15  # 15 minutes in seconds
     elif timing_type == 'every 10 minutes':
         timing_details['type'] = "interval"
-        timing_details['interval']['every'] = 60*10 # 15 minutes in seconds
+        timing_details['interval']['every'] = 60 * 10  # 15 minutes in seconds
     else:
         timing_details['type'] = "interval"
 
@@ -1396,7 +1519,7 @@ def get_schedule(timing_type=None):
 def get_a_random_slug(num=5):
     import string
     return ''.join(
-                random.choice(string.ascii_uppercase + string.digits) for _ in range(num))
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(num))
 
 
 def get_random_model_id(algo_name):
@@ -1411,7 +1534,346 @@ def get_random_model_id(algo_name):
         "GBTree Regression": "GB",
         "Random Forest Regression": "RFR",
         "Linear Regression": "LR",
-        "Neural Network": "NN",
+        "Neural Network (Sklearn)": "NN",
+        "Neural Network (TensorFlow)": "TF",
+        "Neural Network (PyTorch)": "PT"
     }
     get_a_random_number = get_a_random_slug()
-    return ''.join([algo_map[algo_name], '_', get_a_random_number ])
+    return ''.join([algo_map[algo_name], '_', get_a_random_number])
+
+
+def check_email_id(email=None):
+    try:
+        import re
+        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+        if (re.search(regex, email)):
+            print("Valid Email")
+            return True
+        else:
+            print("Invalid Email")
+            return False
+    except Exception as e:
+        print(e)
+
+
+def get_mails_from_outlook():
+    ###############################################################################################################
+    r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN, settings.OUTLOOK_DETAILS)
+    ###############################################################################################################
+    try:
+        result = r.json()
+        refresh_token = result['refresh_token']
+        access_token = result['access_token']
+
+        print("Access token received.")
+        ### Trigger mail receive action  ###
+        result_message = get_outlook_mails(access_token)
+        if 'status' in result_message:
+            print("result message not found.")
+            return {'status': 'FAILED', 'err': result_message['err']}
+        else:
+            print("got result message")
+            return result_message
+    except Exception:
+        err = "Error retrieving token: {0} - {1}".format(r.status_code, r.text)
+        return {'status': 'FAILED', 'err': err}
+
+def get_outlook_auth(auth_code, refresh_token, outlook_data):
+    token_url = 'https://login.microsoftonline.com/' + outlook_data['tenant_id'] + '/oauth2/v2.0/token'
+
+    print(token_url)
+
+    post_data_auth_code = {
+        'grant_type': 'authorization_code',
+        # 'Content-Type': 'application/x-www-form-urlencoded',
+        'code': auth_code,
+        'redirect_uri': outlook_data['redirect_uri'],
+        'scope': settings.OUTLOOK_SCOPES,
+        'client_id': outlook_data['client_id'],
+        'client_secret': outlook_data['client_secret']
+    }
+    post_data_refresh_token = {'grant_type': 'refresh_token',
+                               # 'code': auth_code,
+                               'redirect_uri': outlook_data['redirect_uri'],
+                               'scope': 'https://graph.microsoft.com/.default',
+                               'refresh_token': refresh_token,
+                               'client_id': outlook_data['client_id'],
+                               'client_secret': outlook_data['client_secret']
+                               }
+    if refresh_token is not None:
+        r = requests.post(token_url, data=post_data_refresh_token)
+    else:
+        r = requests.post(token_url, data=post_data_auth_code)
+
+    return r
+
+
+def get_outlook_mails(access_token):
+    # access_token = access_token
+    # If there is no token in the session, redirect to home
+    try:
+        if not access_token:
+            print("Access token not found")
+            return None
+        else:
+            info_dict = {}
+            from datetime import datetime, timedelta
+            import time
+            t1 = time.time()
+            last_seen = time_conversion(t1)
+            info_dict = get_my_messages(access_token, info_dict, last_seen)
+            return info_dict
+    except Exception as err:
+        print(err)
+        return {'status': 'FAILED', 'err': err}
+
+def time_conversion(t1):
+    from datetime import datetime, timedelta
+    import time
+    dt_object = datetime.fromtimestamp(t1)
+    print(dt_object)
+    dt_object = dt_object - timedelta(hours=0, minutes=10)
+    dt_object = str(dt_object)
+    dt_object = dt_object.replace(' ', 'T')
+    dt_object = dt_object[:-7]
+    dt_object = dt_object + 'Z'
+    return dt_object
+
+
+def get_my_messages(access_token, info_dict, last_seen=None, message_id=None, id_element=None):
+    # get_messages_url = graph_endpoint.format('/me/messages?$select=sender,subject')
+    graph_endpoint = 'https://graph.microsoft.com/v1.0'
+    if message_id is None and id_element is None:
+        get_messages_url = graph_endpoint + '/me/messages/'
+    else:
+        get_messages_url = graph_endpoint + '/me/messages/' + str(message_id) + '/attachments'
+
+    # get_messages_url = graph_endpoint+'/me/messages/AAMkADI5ODU5MDllLTM5ZmQtNDk1Zi1iNzcxLTRmN2JlZjk2Zjc4NQBGAAAAAADGdZQ1rmo2RYpnFmn4OfBhBwAMw_MOyTI_RbDqXK9C1L0dAAAA4WFOAAB_HCNKDCWjR5dEFB9ADyJdAAEafcuCAAA=/attachments'
+    # Use OData query parameters to control the results
+    #  - Only first 10 results returned
+    #  - Only return the ReceivedDateTime, Subject, and From fields
+    #  - Sort the results by the ReceivedDateTime field in descending order
+    '''
+    it is taking Only top 10 or all since given time
+    '''
+    if last_seen is None:
+        query_parameters = {
+            # '$top': '1',
+            # '$filter': 'isRead eq false',
+            # '$select': 'receivedDateTime,subject,from',
+            # '$orderby': 'receivedDateTime DESC'
+        }
+        # '$select': 'receivedDateTime,subject,from',
+        # '$orderby': 'receivedDateTime DESC'}
+    else:
+        query_parameters = {
+            # '$top': '1',
+            '$filter': 'isRead eq false and  receivedDateTime gt ' + last_seen,
+            # '$select': 'receivedDateTime,subject,from',
+            # '$orderby': 'receivedDateTime DESC'
+        }
+        # '$select': 'receivedDateTime,subject,from',
+        # '$orderby': 'receivedDateTime DESC'}
+
+    r = make_api_call('GET', get_messages_url, access_token, parameters=query_parameters)
+    # settings.OUTLOOK_LAST_SEEN=str(datetime.datetime.now())
+    # print r.text
+    try:
+        if r.status_code == requests.codes.ok:
+            if message_id is None and id_element is None:
+                jsondata = r.json()
+                for i in range(len(jsondata['value'])):
+                    if jsondata['value'][i]['hasAttachments']:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id] = {}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        info_dict[u_id]['mail'] = info_dict[u_id]['mail'].replace('\r', '').replace('\n', '||')
+                        info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        id = jsondata['value'][i]['id']
+
+                        if ('sub-label')or('Sub-label') and ('target')or('Target') in info_dict[u_id]['mail']:
+                            # check = re.search(r'sub-label: (\S+)',info_dict[u_id]['mail'].lower())
+                            # if check:
+                            # info_dict[u_id]['sub_target'] = check.group(1).replace('"','')
+                            # info_dict[u_id]['sub_target'] = check.group(1).replace("'","")
+                            for info in info_dict[u_id]['mail'].split('||'):
+                                if 'sub-label' in info:
+                                    info_dict[u_id]['sub_target'] = info.replace('sub-label', '').replace(':', '').strip()
+                                elif 'Sub-label' in info:
+                                    info_dict[u_id]['sub_target'] = info.replace('Sub-label', '').replace(':', '').strip()
+                                elif 'target' in info:
+                                    info_dict[u_id]['target'] = info.replace('target', '').replace(':', '').strip()
+                                elif 'Target' in info:
+                                    info_dict[u_id]['target'] = info.replace('Target', '').replace(':', '').strip()
+                        '''if 'target' in info_dict[u_id]['mail'].lower():
+                            # check = re.search(r'target: (\S+)',info_dict[u_id]['mail'].lower())
+                            # if check:
+                            # info_dict[u_id]['target'] = check.group(1).replace('"','')
+                            # info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'","")
+                            info_dict[u_id]['target'] = info_dict[u_id]['mail'].split('||')[0].replace('target: ',
+                                                                                                     '').strip()'''
+                        '''
+                        if 'sub-label' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'sub-label: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['sub_target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['sub_target'] = check.group(1).replace("'", "")
+
+                        if 'target' in info_dict[u_id]['mail'].lower():
+                            check = re.search(r'target: (\S+)', info_dict[u_id]['mail'].lower())
+                            if check:
+                                info_dict[u_id]['target'] = check.group(1).replace('"', '')
+                                info_dict[u_id]['target'] = info_dict[u_id]['target'].replace("'", "")
+                        '''
+                        get_my_messages(access_token, info_dict, message_id=id, id_element=u_id)
+                    else:
+                        u_id = str(datetime.datetime.now())
+                        info_dict[u_id] = {}
+                        info_dict[u_id]['subject'] = jsondata['value'][i]['subject']
+                        info_dict[u_id]['mail'] = jsondata['value'][i]['bodyPreview']
+                        if 'from' in list(jsondata['value'][i].keys()):
+                            info_dict[u_id]['emailAddress'] = jsondata['value'][i]['from']
+                        else:
+                            info_dict[u_id]['emailAddress'] = 'External Sender'
+            else:
+                print("Downloading Attachments .")
+                jsondata = r.json()
+                try:
+                    for i in range(len(jsondata['value'])):
+
+                        # subject = jsondata['value'][i]['subject']
+                        # mail = jsondata['value'][i]['bodyPreview']
+                        # emailAddress = jsondata['value'][i]['emailAddress']
+                        # print subject, mail, emailAddress
+                        if jsondata['value'][i]["name"][-3:] == 'csv':
+                            f = open('config/media/datasets/' + id_element + '_' + jsondata['value'][i]["name"], 'w+b')
+                            f.write(base64.b64decode(jsondata['value'][i]['contentBytes']))
+                            f.close()
+                            if 'train' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['train_dataset'] = id_element + '_' + jsondata['value'][i]["name"]
+                            if 'test' in jsondata['value'][i]["name"].lower():
+                                info_dict[id_element]['test_dataset'] = id_element + '_' + jsondata['value'][i]["name"]
+
+                except Exception as e:
+                    print(e)
+            return info_dict
+        else:
+            return None
+            # return "{0}: {1}".format(r.status_code, r.text)
+    except Exception as err:
+        print(err)
+        return {'status': 'FAILED', 'err': err}
+
+
+# Generic API Sending
+def make_api_call(method, url, token, payload=None, parameters=None):
+    '''
+    establishes connection with the API
+  '''
+    # Send these headers with all API calls
+    headers = {'Authorization': 'Bearer %s' % (token)}
+    # Use these headers to instrument calls. Makes it easier
+    # to correlate requests and responses in case of problems
+    # and is a recommended best practice.
+    # request_id = str(uuid.uuid4())
+    # instrumentation = { 'client-request-id' : request_id,
+    #                   'return-client-request-id' : 'true' }
+
+    # headers.update(instrumentation)
+    response = None
+
+    if (method.upper() == 'GET'):
+        response = requests.get(url, headers=headers, params=parameters)
+    elif (method.upper() == 'DELETE'):
+        response = requests.delete(url, headers=headers, params=parameters)
+    elif (method.upper() == 'PATCH'):
+        headers.update({'Content-Type': 'application/json'})
+        response = requests.patch(url, headers=headers, data=json.dumps(payload), params=parameters)
+    elif (method.upper() == 'POST'):
+        headers.update({'Content-Type': 'application/json'})
+        response = requests.post(url, headers=headers, data=json.dumps(payload), params=parameters)
+
+    return response
+
+
+def generate_word_cloud_image(slug, temp_articles_list, date):
+    import pandas as pd
+    import collections
+    from wordcloud import WordCloud, STOPWORDS
+    import os
+    articles_df = pd.DataFrame(temp_articles_list)
+    articles_df = articles_df.sort_values(by='date', ascending=False)
+
+    articles_df['date'] = articles_df.date.apply(lambda x: x[0:4] + "-" + x[4:6] + "-" + x[6:8])
+    temp_date_list = articles_df['date'].tolist()
+    temp_date_list = list(dict.fromkeys(temp_date_list))
+    temp_date_list.sort(reverse=True)
+
+    enddate = str(date)
+    index_of_end_date = temp_date_list.index(enddate)
+    start_date = temp_date_list[index_of_end_date + 1]
+    pandasDf1 = articles_df[(articles_df.date >= start_date) & (articles_df.date <= enddate)]
+    pandasDf1.reset_index(drop=True, inplace=True)
+
+    words_freq_positive = []
+    words_freq_negative = []
+    words_freq_neutral = []
+
+    if pandasDf1 is not None and len(pandasDf1) > 0:
+        for index, datarow in pandasDf1.iterrows():
+            for textrow in datarow["keywords"]:
+                if textrow["sentiment"]["label"] == 'positive':
+                    words_freq_positive.append(textrow['text'])
+                elif textrow["sentiment"]["label"] == 'negative':
+                    words_freq_negative.append(textrow['text'])
+                elif textrow["sentiment"]["label"] == 'neutral':
+                    words_freq_neutral.append(textrow['text'])
+                else:
+                    pass
+
+        words_freq_positive = collections.Counter(words_freq_positive)
+        words_freq_positive = sorted(words_freq_positive.items(), key=lambda x: x[1], reverse=True)
+        words_freq_positive = dict(words_freq_positive)
+
+        words_freq_negative = collections.Counter(words_freq_negative)
+        words_freq_negative = sorted(words_freq_negative.items(), key=lambda x: x[1], reverse=True)
+        words_freq_negative = dict(words_freq_negative)
+
+        words_freq_neutral = collections.Counter(words_freq_neutral)
+        words_freq_neutral = sorted(words_freq_neutral.items(), key=lambda x: x[1], reverse=True)
+        words_freq_neutral = dict(words_freq_neutral)
+
+        final_dict = words_freq_positive.copy()
+        final_dict.update(words_freq_negative.items())
+        words_freq = sorted(final_dict.items(), key=lambda x: x[1], reverse=True)
+        words_freq = dict(words_freq[:25])
+        word_to_color = dict()
+
+        pos_words = list(words_freq_positive.keys())
+        for word in pos_words:
+            word_to_color[word] = '#00ff00'  # green
+
+        neg_words = list(words_freq_negative.keys())
+        for word in neg_words:
+            word_to_color[word] = '#ff0000'  # red
+
+        def color_func(word, *args, **kwargs):
+            try:
+                color = word_to_color[word]
+            except KeyError:
+                color = '#000000'
+            return color
+
+        wc = WordCloud(width=500, height=500, background_color='white', min_font_size=10, color_func=color_func)
+        wc.generate_from_frequencies(words_freq)
+        # path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + slug + "/wordcloud.png"
+        try:
+            os.mkdir(settings.MEDIA_ROOT + "/" + slug)
+        except FileExistsError:
+            pass
+        path = settings.MEDIA_ROOT + "/" + slug + "/wordcloud.png"
+        wc.to_file(path)
+        return path
+    else:
+        return None

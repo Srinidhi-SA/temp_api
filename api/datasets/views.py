@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import range
 import random
 import json
 
@@ -10,24 +14,26 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404, JsonResponse
-
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception, sharing_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from api.utils import name_check
-from helper import convert_to_string
-from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
+from .helper import convert_to_string
+from .serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
-from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-from helper import convert_metadata_according_to_transformation_setting
-from helper import get_advanced_setting
+from .helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+from .helper import convert_metadata_according_to_transformation_setting
+from .helper import get_advanced_setting
 from api.tasks import clean_up_on_delete
 
 from api.permission import DatasetRelatedPermission
 from guardian.shortcuts import assign_perm
 from django.conf import settings
+
+
 # Create your views here.
 
 class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -36,7 +42,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            status__in=['SUCCESS', 'INPROGRESS','FAILED']
+            status__in=['SUCCESS', 'INPROGRESS', 'FAILED']
         )
 
         return queryset
@@ -55,7 +61,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
-    permission_classes = (DatasetRelatedPermission, )
+    permission_classes = (DatasetRelatedPermission,)
 
     def create(self, request, *args, **kwargs):
 
@@ -66,6 +72,23 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         else:
             data = request.data
         data = convert_to_string(data)
+        response = []
+        try:
+            if data['mode'] == 'autoML':
+                self.mode = 'autoML'
+            elif data['mode'] == 'analyst':
+                self.mode = 'analyst'
+            else:
+                self.mode = 'analyst'
+            self.save()
+        except:
+            pass
+
+        try:
+            data['created_by'] = request.user.id
+        except:
+            # data['created_by'] = None
+            pass
 
         if 'name' in data:
             should_proceed = name_check(data['name'])
@@ -78,23 +101,44 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     return creation_failed_exception("Name have special_characters.")
 
         if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
-            data['datasource_type'] = 'fileUpload'
-            if data['input_file'] is None:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-            else:
-                data['name'] = data.get('name', data['input_file'].name)
+            # data['input_file'] = request.FILES.get('input_file')
+            files = request.FILES.getlist('input_file')
+            for file in files:
+                data['input_file'] = file
+                data['datasource_type'] = 'fileUpload'
+                if data['input_file'] is None:
+                    data['name'] = data.get('name',
+                                            data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                else:
+                    data['name'] = data['input_file'].name[:-4].replace('.', '_')
+
+                datasetname_list = []
+                dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+                for index, i in enumerate(dataset_query):
+                    datasetname_list.append(i.name)
+                if data['name'] in datasetname_list:
+                    return creation_failed_exception("Dataset file name already exists!.")
+
+                serializer = DatasetSerializer(data=data, context={"request": self.request})
+                if serializer.is_valid():
+                    dataset_object = serializer.save()
+                    dataset_object.create()
+                    response.append(serializer.data)
+                else:
+                    return creation_failed_exception(serializer.errors)
+            return Response(response)
+
         elif 'datasource_details' in data:
             data['input_file'] = None
             if "datasetname" in data['datasource_details']:
                 datasource_details = json.loads(data['datasource_details'])
                 data['name'] = datasource_details['datasetname']
             else:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                data['name'] = data.get('name',
+                                        data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        data['created_by'] = request.user.id
 
         serializer = DatasetSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
@@ -110,13 +154,22 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
 
         if 'name' in data and not name_check(data['name']):
-            return creation_failed_exception("Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+            return creation_failed_exception(
+                "Name not correct. Only digits, letter, undescore and hypen allowed. No empty. Less then 100 characters.")
+
+        if 'name' in data:
+            datasetname_list = []
+            dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+            for index, i in enumerate(dataset_query):
+                datasetname_list.append(i.name)
+            if data['name'] in datasetname_list:
+                return creation_failed_exception("Dataset file name already exists!.")
 
         try:
             instance = self.get_object_from_all()
             if 'deleted' in data:
                 if data['deleted'] == True:
-                    print 'let us delete'
+                    print('let us delete')
                     instance.deleted = True
                     instance.save()
                     clean_up_on_delete.delay(instance.slug, Dataset.__name__)
@@ -126,6 +179,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'subsetting' in data:
             if data['subsetting'] == True:
+                subset_dataset_list = []
+                dataset_query = Dataset.objects.filter(deleted=False, created_by_id=request.user.id)
+                for index, i in enumerate(dataset_query):
+                    subset_dataset_list.append(i.name)
+                if data['name'] in subset_dataset_list:
+                    return creation_failed_exception("Dataset file name already exists!.")
                 return self.subsetting(request, instance)
 
         # question: do we need update method in views/ as well as in serializers?
@@ -184,6 +243,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
+
         try:
             instance = self.get_object_from_all()
         except:
@@ -220,7 +280,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 else:
                     from config.settings import feature_engineering_settings
                     object_details['meta_data']["uiMetaData"].update({
-                        "fe_config" : {
+                        "fe_config": {
                             "data_cleansing": feature_engineering_settings.data_cleansing_static,
                             "column_format": feature_engineering_settings.column_format,
                             "fe": feature_engineering_settings.feture_engineering_static
@@ -232,9 +292,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if object_details['meta_data']["uiMetaData"] is None:
                     pass
                 else:
-                    object_details['meta_data']["uiMetaData"]['SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
-                    object_details['meta_data']["uiMetaData"]['SKLEARN_REGRESSION_EVALUATION_METRICS'] = settings.SKLEARN_REGRESSION_EVALUATION_METRICS
-
+                    object_details['meta_data']["uiMetaData"][
+                        'SKLEARN_CLASSIFICATION_EVALUATION_METRICS'] = settings.SKLEARN_CLASSIFICATION_EVALUATION_METRICS
+                    object_details['meta_data']["uiMetaData"][
+                        'SKLEARN_REGRESSION_EVALUATION_METRICS'] = settings.SKLEARN_REGRESSION_EVALUATION_METRICS
 
         return Response(object_details)
 
@@ -280,6 +341,71 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         #     return creation_failed_exception(err)
         # return creation_failed_exception(serializer.errors)
 
+    @detail_route(methods=['get'])
+    def share(self, request, *args, **kwargs):
+        try:
+            shared_id = request.GET['shared_id'].split(",")
+            dataset_obj = Dataset.objects.get(slug=self.kwargs.get('slug'), created_by_id=request.user.id)
+            dataset_name = dataset_obj.name
+            shared_by=User.objects.get(id=request.user.id)
+            import ast
+            shared_by = ast.literal_eval(json.dumps(shared_by.username))
+
+            if request.user.id in [int(i) for i in shared_id]:
+                return sharing_failed_exception('Dataset should not be shared to itself.')
+            sharedTo=list()
+            for id in shared_id:
+                sharedTo.append(User.objects.get(pk=id).username)
+                import random,string
+                if dataset_obj.shared is True:
+                    dataset_details = {
+                        'name': dataset_name + str(random.randint(1, 100)),
+                        'input_file': dataset_obj.input_file,
+                        'created_by': User.objects.get(pk=id).id,
+                        'datasource_type': dataset_obj.datasource_type,
+                        'datasource_details': dataset_obj.datasource_details,
+                        'analysis_done': True,
+                        'status': dataset_obj.status,
+                        'subsetting': dataset_obj.subsetting,
+                        'file_remote': dataset_obj.file_remote,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': dataset_obj.shared_slug,
+                        'meta_data': dataset_obj.meta_data
+                    }
+                    dataset_details = convert_to_string(dataset_details)
+                    dataset_serializer = DatasetSerializer(data=dataset_details)
+                    if dataset_serializer.is_valid():
+                        shared_dataset_object = dataset_serializer.save()
+                    else:
+                        print(dataset_serializer.errors)
+                else:
+                    dataset_details = {
+                        'name': dataset_name +'_shared'+ str(random.randint(1, 100)),
+                        'input_file': dataset_obj.input_file,
+                        'created_by': User.objects.get(pk=id).id,
+                        'datasource_type': dataset_obj.datasource_type,
+                        'datasource_details': dataset_obj.datasource_details,
+                        'analysis_done': True,
+                        'status': dataset_obj.status,
+                        'subsetting': dataset_obj.subsetting,
+                        'file_remote': dataset_obj.file_remote,
+                        'shared': True,
+                        'shared_by': shared_by,
+                        'shared_slug': self.kwargs.get('slug'),
+                        'meta_data': dataset_obj.meta_data
+                    }
+                    dataset_details = convert_to_string(dataset_details)
+                    dataset_serializer = DatasetSerializer(data=dataset_details)
+                    if dataset_serializer.is_valid():
+                        shared_dataset_object = dataset_serializer.save()
+                    else:
+                        print(dataset_serializer.errors)
+            return JsonResponse({'message': 'Dataset shared.','status': 'true','sharedTo':sharedTo})
+        except Exception as err:
+            print (err)
+            return sharing_failed_exception('Dataset sharing failed.')
+
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
         data = request.data
@@ -289,10 +415,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         ts = data.get('config')
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
-                uiMetaData,
-                transformation_setting=ts,
-                user=request.user
-            )
+            uiMetaData,
+            transformation_setting=ts,
+            user=request.user
+        )
 
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
         return Response(uiMetaData)
@@ -302,7 +428,6 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         data = data.get('variableSelection')
         return Response(get_advanced_setting(data))
-
 
     @list_route(methods=['get'])
     def dummy_permission(self, request):
@@ -319,7 +444,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def createFromKylo(self, request, *args, **kwargs):
         try:
-            data=kwargs.get('data')
+            data = kwargs.get('data')
             data = convert_to_string(data)
 
             if 'datasource_details' in data:
@@ -328,11 +453,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     datasource_details = json.loads(data['datasource_details'])
                     data['name'] = datasource_details['datasetname']
                 else:
-                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(
+                        random.randint(1000000, 10000000)))
 
-            # question: why to use user.id when it can take, id, pk, object.
-            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-                data['created_by']=request['user']
+                # question: why to use user.id when it can take, id, pk, object.
+                # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+                data['created_by'] = request['user']
 
             serializer = DatasetSerializer(data=data, context={"request": request})
             if serializer.is_valid():

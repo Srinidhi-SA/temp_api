@@ -9,13 +9,17 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
+from __future__ import absolute_import
+import environ
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env()
 
 import os
 
 import datetime
-import config_file_name_to_run
-from mlsettings import *
-from logger_config import *
+from . import config_file_name_to_run
+from .mlsettings import *
+#from .logger_config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,12 +28,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&j=7xx+szuncx4&!94sjx5p49yjc^drcptwmw#64#z39t(@^65'
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ["192.168.33.128"]
+ALLOWED_HOSTS_BASE = tuple(env.list('ALLOWED_HOSTS_BASE', default=[]))
 
 # Application definition
 
@@ -49,7 +53,11 @@ INSTALLED_APPS = [
     'django_filters',
     'auditlog',
     'guardian',
-    'django_celery_beat'
+    'django_celery_beat',
+    'ocr',
+    'ocrflow',
+    # 'django_celery_results',
+    # 'celery_progress',
 ]
 
 MIDDLEWARE = [
@@ -580,14 +588,14 @@ DATA_SOURCES_CONFIG = {"conf": [{
 }
 # dev api http://34.196.204.54:9092
 THIS_SERVER_DETAILS = {
-    "host": "madvisordev.marlabsai.com",  # shoudn't start with http://
-    "port": "80",
+    "host": env('THIS_SERVER_HOST'),"madvisordev.marlabsai.com" # shoudn't start with http://
+    "port": env('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
 
 PAGESIZE = 10
 PAGENUMBER = 1
-
+'''
 HDFS = {
 
     # Give host name without http
@@ -598,10 +606,10 @@ HDFS = {
     'hdfs_port': '8020',  # hdfs port
     'base_path': '/dev/dataset/'
 }
-
+'''
 JOBSERVER = {
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
-    'port': '8090',
+    'host': env('JOBSERVER_HOST'),
+    'port': env('JOBSERVER_PORT'),
     'app-name': 'test_api_1',
     'context': 'pysql-context',
     'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
@@ -611,11 +619,10 @@ JOBSERVER = {
 }
 
 DATASET_HIVE = {
-    'host':'192.168.57.51',
-    'port':'10000',
-    'username':'root',
-    'password':'hadoop'
-
+    'host':env('HIVE_HOST'),
+    'port':env('HIVE_PORT'),
+    'username':env('HIVE_USERNAME'),
+    'password':env('HIVE_PASSWORD'),
 }
 
 ANALYSIS_FOR_TARGET_VARIABLE = {
@@ -715,6 +722,7 @@ BRIEF_INFO_CONFIG = {
     'number of measures': 'Number of Measures',
     'number of dimensions': 'Number of Dimensions',
     'number of time dimension': 'Number of Date',
+    'shared_by': 'Shared By',
     'created_by': 'Created By',
     'updated_at': 'Updated On',
     'variable selected': 'Variable Selected',
@@ -736,6 +744,7 @@ BRIEF_INFO_CONFIG = {
 }
 
 FIRST_ORDER = [
+    'shared_by',
     'created_by',
     'updated_at',
 ]
@@ -794,15 +803,15 @@ ORDER_DICT = {
 }
 
 NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
-    "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
-    "username": "77961f39-ccaa-4cd7-b6cb-68d544f91ffb",
-    "password": "hDbkLtb8rWgh"
+    "url": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_URL'),
+    "username": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_USERNAME'),
+    "password": env('NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS_PASSWORD')
 }
 
 VOICE_TO_TEXT_SETTINGS = {
-    "url": "https://stream.watsonplatform.net/speech-to-text/api",
-    "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
-    "password": "UXiMa7qNp68f"
+    "url": env('VOICE_TO_TEXT_SETTINGS_URL'),
+    "username": env('VOICE_TO_TEXT_SETTINGS_USERNAME'),
+    "password": env('VOICE_TO_TEXT_SETTINGS_PASSWORD')
 }
 
 ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
@@ -1308,7 +1317,7 @@ ANALYSIS_LIST_SEQUENCE = [
     "Prediction"
 ]
 
-ML_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
+ML_SECRET_KEY = env('ML_SECRET_KEY')
 
 SIGNATURE_LIFETIME = 30
 
@@ -1416,7 +1425,9 @@ CUSTOM_WORD1_APPS = {
     'SPEECH_ANALYTICS': 'speech',
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
-    'REGRESSION_APP': 'regression'
+    'REGRESSION_APP': 'regression',
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1450,12 +1461,13 @@ CUSTOM_WORD2_APPS = {
     'SPEECH_ANALYTICS': 'speech',
     'STOCK_SENSE': 'stock',
     'STOCK_SENSE': 'stock',
-    'REGRESSION_APP': 'regression'
+    'REGRESSION_APP': 'regression',
+    'LEX': 'lex',
+    'OCR': 'ocr'
 }
 
 ############# YARN related items
 
-DEPLOYMENT_ENV = "dev"
 # job type to queue name mapping
 METADATA_QUEUE = "meta"
 SIGNALS_QUEUE = "signals"
@@ -1489,30 +1501,23 @@ YARN_QUEUE_NAMES = {
 
 
 SUBMIT_JOB_THROUGH_YARN = True
-LIST_OF_ADMIN_EMAILS = [
-            'ankush.patel@marlabs.com',
-            # 'sabretooth.rog@gmail.com',
-            'vivekananda.tadala@marlabs.com',
-            # 'mitali.sodhi@marlabs.com',
-            # 'gulshan.gaurav@marlabs.com'
-        ]
+LIST_OF_ADMIN_EMAILS = tuple(env.list('LIST_OF_ADMIN_EMAILS', default=[]))
 
-import config_file_name_to_run
+from . import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
 from datetime import timedelta
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
 
-HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
+HDFS_SECRET_KEY = os.environ.get('HDFS_SECRET_KEY')
 
 PERMISSIONS_RELATED_TO_DATASET = (
     ('view_dataset', 'View dataset'),
@@ -1527,6 +1532,7 @@ PERMISSIONS_RELATED_TO_DATASET = (
     ('upload_from_s3', 'Upload from s3'),
     ('data_validation', 'Data Validation'),
     ('subsetting_dataset', 'Subsetting dataset'),
+    ('share_dataset', 'Share Dataset')
 )
 
 
@@ -1535,6 +1541,7 @@ PERMISSIONS_RELATED_TO_SIGNAL = (
     ('create_signal', 'Create signal'),
     ('rename_signal', 'Rename signal'),
     ('remove_signal', 'remove signal'),
+    ('share_signal', 'Share Signal')
 )
 
 PERMISSIONS_RELATED_TO_TRAINER = (
@@ -1542,7 +1549,9 @@ PERMISSIONS_RELATED_TO_TRAINER = (
     ('create_trainer', 'Create trainer'),
     ('rename_trainer', 'Rename trainer'),
     ('remove_trainer', 'remove trainer'),
-    ('downlad_pmml', 'Download PMML')
+    ('downlad_pmml', 'Download PMML'),
+    ('share_trainer', 'Share Trainer'),
+    ('edit_trainer', 'Edit Trainer')
 )
 
 PERMISSIONS_RELATED_TO_SCORE = (
@@ -1550,7 +1559,8 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('create_score', 'Create score'),
     ('rename_score', 'Rename score'),
     ('remove_score', 'remove score'),
-    ('download_score', 'Download Score')
+    ('download_score', 'Download Score'),
+    ('share_score', 'Share Score')
 )
 
 PERMISSIONS_RELATED_TO_REGRESSION = (
@@ -1567,6 +1577,16 @@ PERMISSIONS_RELATED_TO_STOCK = (
     ('create_stock', 'Create stock'),
     ('rename_stock', 'Rename stock'),
     ('remove_stock', 'remove stock'),
+)
+
+PERMISSIONS_RELATED_TO_OCRIMAGE = (
+    ('view_ocrimage', 'View OCRImage'),
+    ('create_ocrimage', 'Create OCRImage'),
+    ('rename_ocrimage', 'Rename OCRImage'),
+    ('remove_ocrimage', 'remove OCRImage'),
+    ('upload_from_file', 'Upload from file'),
+    ('upload_from_sftp', 'Upload from sftp'),
+    ('upload_from_s3', 'Upload from s3'),
 )
 
 JOB_STATUS_MESSAGE = {
@@ -1623,7 +1643,6 @@ APPORDERLIST=[
 
 USE_YARN_DEFAULT_QUEUE=False
 
-CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"
 
 REQUEST_CONNECTION_TIMEOUT=30
 REQUEST_READ_TIMEOUT=50
@@ -1635,15 +1654,8 @@ CACHE_BASE_DIR="/tmp"
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
-CELERY_ONCE_CONFIG = {
-  'backend': 'celery_once.backends.Redis',
-  'settings': {
-    'url': 'redis://localhost:6379/0',
-    'default_timeout': 60 * 60
-  }
-}
 
-FILE_UPLOAD_PERMISSIONS = 0644
+FILE_UPLOAD_PERMISSIONS = env.int('FILE_UPLOAD_PERMISSIONS')
 
 # if DEBUG == False:
 #     from logger_config import *
@@ -1660,7 +1672,145 @@ MAX_LENGTH_OF_NAME = 100
 
 # admin page hiding-settings
 HIDE_FROM_CELERY_FROM_ADMIN = True
-KEEP_OTHERS_IN_ADMIN = False
+KEEP_OTHERS_IN_ADMIN = True
 HIDE_AUDIT_LOGS = True
 
 USE_HTTPS = True
+
+LOGIN_EXEMPT_URLS = (
+      r'^reset-password/$',
+      r'^reset-password/done$',
+      r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$',
+      r'^reset-password/complete'
+ )
+
+ #### OCR RELATED CONFIGS
+
+OCR_DATA_SOURCES_CONFIG = {"conf": [{
+         "dataSourceType": "fileUpload",
+         "dataSourceName": "File",
+         "formFields": [
+             {
+                 "fieldType": "file",
+                 "name": "File"
+             }
+         ]
+     },
+     {
+         "dataSourceType": "SFTP",
+         "dataSourceName": "SFTP",
+         "formFields": [
+             {
+                 "fieldType": "text",
+                 "fieldName" : "datasetname",
+                 "placeHolder": "Dataset Name",
+                 "labelName": "Name",
+                 "required" : "true"
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName" : "host",
+                 "placeHolder": "Host",
+                 "labelName": "host",
+                 "required" : "true"
+             },
+             {
+
+                 "fieldType": "number",
+                 "fieldName": "port",
+                 "placeHolder": "Port",
+                 "labelName": "Port",
+                 "required": "true",
+                 "defaultValue" : 3306,
+                 "maxLength":5
+
+
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "databasename",
+                 "placeHolder": "DataBase Name",
+                 "labelName": "DBName",
+                 "required": "true"
+
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "tablename",
+                 "placeHolder": "tablename",
+                 "labelName": "Table Name",
+                 "required": "true"
+             },
+             {
+
+                 "fieldType": "text",
+                 "fieldName": "username",
+                 "placeHolder": "username",
+                 "labelName": "Username",
+                  "required": "true"
+             },
+             {
+
+
+                 "fieldType": "Password",
+                 "fieldName": "password",
+                 "placeHolder": "password",
+                 "labelName": "Password",
+                  "required": "true"
+             }
+
+         ]
+     },
+    {
+        "dataSourceType": "S3",
+        "dataSourceName": "S3",
+        "formFields": [
+            {
+                "fieldType": "text",
+                "fieldName": "datasetname",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "bucket_name",
+                "placeHolder": "bucket",
+                "labelName": "Bucket",
+                "required": "true"
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "file_name",
+                "placeHolder": "data.csv",
+                "labelName": "File Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "password",
+                "fieldName": "access_key_id",
+                "placeHolder": "AccessKey",
+                "labelName": "Access Key",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "secret_key",
+                "placeHolder": "SecretKey",
+                "labelName": "Secret Key",
+                "required": "true"
+            }
+
+        ]
+    }
+
+]
+}

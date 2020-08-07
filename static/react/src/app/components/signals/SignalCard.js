@@ -11,7 +11,7 @@ import {
     Button
   } from "react-bootstrap";
 import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview,openShareModalAction} from "../../actions/dataActions";
 import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
 import {
     getList,
@@ -24,7 +24,6 @@ import {
     triggerSignalAnalysis,
     emptySignalData,
     refreshSignals,
-    updateHide,
     updateTargetTypForSelSignal
   } from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
@@ -45,14 +44,11 @@ export class SignalCard extends React.Component {
         super(props);
         this.props=props;
     }
-    getSignalAnalysis(status) {
+    getSignalAnalysis(status,e) {
       if(status==FAILED){
-        bootbox.alert(statusMessages("error","We are unable to process the request. Please check your connection and try again.","small_mascot"));
+        bootbox.alert(statusMessages("error",this.props.signalList.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));
       }else{
-        console.log("Link Onclick is called")
-        //console.log(e.target.id);
         this.props.dispatch(emptySignalAnalysis());
-        //this.props.dispatch(updateTargetTypForSelSignal(signalType));
       }
       }
     handleDelete(slug,evt) {
@@ -66,17 +62,14 @@ export class SignalCard extends React.Component {
           var signalData = {};
           signalData.slug = slug
           this.props.dispatch(openCsLoaderModal());
-          this.props.dispatch(updateHide(true))
           this.props.dispatch(emptySignalAnalysis());
           this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
-
-          //this.props.history.push('/signals/'+slug);
-        }
+    }
+        openShareModal(shareItem,slug,itemType) {
+          this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+         }
     render() {
-
-        var listData = this.props.data;
-        console.log(listData)
-
+       var listData = this.props.data;
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
@@ -95,7 +88,8 @@ export class SignalCard extends React.Component {
               if(story.status == INPROGRESS){
                   percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
-              }else if(story.status == SUCCESS && !story.viewed){
+             
+              }else if(story.status == SUCCESS){
                   story.completed_percentage = 100;
                   percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
               }else if(story.status == FAILED){
@@ -113,7 +107,7 @@ export class SignalCard extends React.Component {
 
             return (
               <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                <div className="rep_block newCardStyle" name={story.name}>
+                <div id={story.name} className="rep_block newCardStyle" name={story.name}>
                   <div className="card-header"></div>
                   <div className="card-center-tile">
                     <div className="row">
@@ -123,24 +117,8 @@ export class SignalCard extends React.Component {
                         </h5>
 						<div className="pull-right">{iconDetails}</div>
                     <div className="clearfix"></div>
-					
-                        
-
-                          <div className="clearfix"></div>
-
-                          {percentageDetails}
-                        {/* <div class="inProgressIcon">
-                               <i class="fa fa-circle"></i>
-                               <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-                        </div>*/}
-
-                     {/* <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
-                        <a className="pover cursor">
-                        <div class="card_icon">
-                        {iconDetails}
-                        </div></a>
-                        </OverlayTrigger>*/}
-
+					            <div className="clearfix"></div>
+                           {percentageDetails}
                       </div>
 
                     </div>
@@ -154,7 +132,6 @@ export class SignalCard extends React.Component {
 					{
 
                             isDropDown == true ? <div class="btn-toolbar pull-right">
-                             {/*<!-- Rename and Delete BLock  -->*/}
                       <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                       </a>
@@ -165,7 +142,7 @@ export class SignalCard extends React.Component {
 							{permissionDetails.rename_signal == true ?
                         <span onClick={this.handleRename.bind(this, story.slug, story.name)}>
                           <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                            <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+                            <i className="fa fa-pencil"></i>&nbsp;&nbsp;Rename</a>
                         </span>:""}
 						
 					{permissionDetails.remove_signal == true ?
@@ -175,19 +152,18 @@ export class SignalCard extends React.Component {
                               ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
+            {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"Signal")}>
+            <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+            <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+            </span>: ""}
 						<div className="clearfix"></div>
 						</li>
 					 
-						
-						
-                      </ul>
-                      {/*<!-- End Rename and Delete BLock  -->*/}
+						 </ul>
                           </div>:<div class="btn-toolbar pull-right"></div>
                         }
 
-                    {/*popover*/}
-
-                  </div>
+                      </div>
                 </div>
                    <Dialog ref={(el) => { this.dialog = el }}/>
               </div>

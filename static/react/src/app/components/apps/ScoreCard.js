@@ -30,6 +30,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
+import {openShareModalAction} from "../../actions/dataActions";
 
 var dateFormat = require('dateformat');
 
@@ -48,31 +49,36 @@ export class ScoreCard extends React.Component {
     handleScoreRename(slug, name) {
         this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
-    getScoreSummary(slug,status) {
+    getScoreSummary(slug,status,sharedSlug) {
         if(status==FAILED){
             bootbox.alert(statusMessages("error","Unable to create Score. Please check your connection and try again.","small_mascot"));            
         }else{
-            this.props.dispatch(updateScoreSlug(slug));
+            this.props.dispatch(updateScoreSlug(slug,sharedSlug));
         }
     }
     openDataLoaderScreen(data){
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createScoreSuccessAnalysis(data));
     }
+    openShareModal(shareItem,slug,itemType) {
+        this.props.dispatch(openShareModalAction(shareItem,slug,itemType));
+       }
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
+            var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+           
             if(data.status==FAILED){
-                var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/";
+                var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/";
             }else{
-            var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
+            var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
-            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status)}>{data.name}</Link>;
+            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;
                             scoreLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
-                        }else if(data.status == SUCCESS && !data.viewed){
+                        }else if(data.status == SUCCESS){
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }else if(data.status == FAILED){
@@ -97,16 +103,7 @@ export class ScoreCard extends React.Component {
                     
                     <div className="clearfix"></div>
                     {percentageDetails}
-                    
-                    {/*<!-- Popover Content link --> 
-                    <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a className="pover cursor">
-                    <div class="card_icon">
-                    <img src={STATIC_URL + "assets/images/apps_score_icon.png"} alt="LOADING"/>
-                        </div>
-                    </a>
-                    </OverlayTrigger> */}
-                    
+                  
                     </div>
                     </div>
                     </div>
@@ -118,7 +115,6 @@ export class ScoreCard extends React.Component {
 					
 					{
                         isDropDown == true ? <div class="btn-toolbar pull-right">
-                    {/*<!-- Rename and Delete BLock  -->*/}
                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                     <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                     </a>
@@ -129,7 +125,7 @@ export class ScoreCard extends React.Component {
 						{permissionDetails.rename_score == true ?
                     <span onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
                     <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>
+                    <i className="fa fa-pencil"></i>
                     &nbsp;&nbsp;Rename</a>
                     </span>:""}
                     {permissionDetails.remove_score == true ?
@@ -139,11 +135,14 @@ export class ScoreCard extends React.Component {
                                 ? "Stop"
                                 : "Delete"}</a>
                     </span>:""}
+                    {data.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,data.name,data.slug,"Score")}>
+								<a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+								<i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+								</span>: ""}
 					<div className="clearfix"></div>
 					</li>
                     
                     </ul>
-                    {/*<!-- End Rename and Delete BLock  -->*/}
                     </div>
                     :""}
 					

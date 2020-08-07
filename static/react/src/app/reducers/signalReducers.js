@@ -1,5 +1,6 @@
 export default function reducer(state = {
   signalList: {},
+  allSignalList:{},
   signalAnalysis:{},
   algoAnalysis:{},
   selectedAlgo:{},
@@ -15,22 +16,25 @@ export default function reducer(state = {
   signal_sorttype:null,
   sideCardListFlag:null,
   loaderText:"Submitting for analysis",
+  signalLoadedText:[],
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
   selVarSlug:null,
+  setSigName:"",
   loading_message:[],
   viewChartFlag:false,
   chartClassId :"",
-  showHide:false,
   viewChartDataFlag:false,
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
-  selected_signal_type:""
+  selected_signal_type:"",
+  toggleValues:{},
+  fromVariableSelectionPage:false,
+  sigLoaderidxVal:0,
+  sigLoaderidx:0,
 }, action) {
-  // console.log("in SIGNAL reducer!!");
-  // console.log(action);
 
   switch (action.type) {
     case "SIGNAL_LIST":
@@ -57,10 +61,19 @@ export default function reducer(state = {
           signalAnalysis: action.signalAnalysis.data,
           selectedSignal: action.errandId,
           urlPrefix:"/signals",
+          signalLoadedText:action.signalAnalysis.initial_messages,
         }
       }
       break;
 
+      case "SIGNAL_ANALYSIS_ONLOAD":
+      {
+        return {
+          ...state,
+          signalAnalysis:"",
+        }
+      }
+      break;
       case "ALGO_LIST_ERROR":
       {
         throw new Error("Unable to fetch algo list!!");
@@ -109,13 +122,35 @@ export default function reducer(state = {
         }
       }
       break;
-
+    case "SIGNAL_LOADER_IDX_VAL": {
+        return {
+          ...state,
+          sigLoaderidxVal : action.idxVal
+        }
+      }
+      break;
+    case "SIGNAL_LOADER_IDX": {
+      return {
+        ...state,
+        sigLoaderidx : action.idx
+      }
+    }
+    break;
+    case "CLEAR_SIGNAL_LOADER_VALUES":{
+      return {
+        ...state,
+        sigLoaderidxVal:0,
+        sigLoaderidx:0,
+      }
+    }
+    break;
     case "CREATE_SUCCESS":
       {
         return {
           ...state,
           signalData: action.signalData,
-          loading_message:[]
+          loading_message:[],
+          signalLoadedText:[]
         }
       }
       break;
@@ -134,6 +169,13 @@ export default function reducer(state = {
         }
       }
       break;
+    case "SET_SIGNAL_NAME":{
+      return{
+        ...state,
+        setSigName: action.sigName
+      }
+    }
+    break;
     case "SEL_PREDICTION":
       {
         return {
@@ -247,6 +289,24 @@ export default function reducer(state = {
       }
     }
     break;
+    case "TOGGLE_VALUES":
+      {
+        var allToggleValues = state.toggleValues;
+        allToggleValues[action.id] = action.flag;
+        return {
+          ...state,
+          toggleValues : allToggleValues
+        }      
+      }
+      break;
+      case "CLEAR_TOGGLE_VALUES":
+      {
+        return {
+          ...state,
+          toggleValues : {}
+        }      
+      }
+      break;
     case "CREATE_SIGNAL_LOADER_MSG":
       {
         return {
@@ -255,7 +315,6 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "ZOOM_CHART":
     {
         return {
@@ -265,16 +324,6 @@ export default function reducer(state = {
           }
     }
     break;
-
-    case "UPDATE_HIDE":
-    {
-      return{
-        ...state,
-        showHide:action.flag
-      }
-    }
-    break;
-
   case "CHART_DATA":
   {
       return {
@@ -307,6 +356,25 @@ export default function reducer(state = {
       signalAnalysis:{}
     }
   }
+  break;
+  case "FROM_VARIABLE_SELECTION_PAGE":{
+    return{
+      ...state,
+      fromVariableSelectionPage:action.flag
+    }
+  }break;
+  case "ALL_SIGNAL_LIST":
+      {
+        return {
+          ...state,
+          allSignalList: action.data,
+        }
+      }
+      break;
+      case "ALL_SIGNAL_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch signal list!!");
+      }
   }
   return state
 }
