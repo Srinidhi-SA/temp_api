@@ -86,7 +86,7 @@ export class OcrInitialReview extends React.Component {
             this.saveIRConfig.bind(this)
         }
         iReviewerTable = 
-        <Scrollbars style={{height:250}} >
+        <Scrollbars autoHeight autoHeightMin={100} autoHeightMax={300}>
             <table className = "table table-bordered table-hover" id="iRtable" style={{background:"#FFF"}}>
                 <thead><tr id="iRtHead">
                     <th className="text-center xs-pr-5" style={{width:"80px"}}>

@@ -210,3 +210,6 @@ STOCK_SENSE_CREDS = {
         "service_url": env("IBM_WATSON_SERVICE_URL")
     }
 }
+
+API_KEY = env('API_KEY')
+SUBSCRIPTION_KEY = env('SUBSCRIPTION_KEY')

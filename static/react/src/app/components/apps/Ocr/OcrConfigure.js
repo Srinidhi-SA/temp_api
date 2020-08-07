@@ -24,6 +24,11 @@ export class OcrConfigure extends React.Component {
     super(props);
   }
 
+  componentWillMount(){
+    this.props.dispatch(clearReviewerConfigStatesAction());
+    this.props.dispatch(storeSelectedConfigureTabAction("initialReview"));
+  }
+  
   componentDidMount(){
     this.props.dispatch(setIRLoaderFlagAction(true));
     this.props.dispatch(fetchReviewersRules());

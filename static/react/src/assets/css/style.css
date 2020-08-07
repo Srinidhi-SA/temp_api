@@ -23013,7 +23013,7 @@ min-width: 102px; }
   text-overflow: inherit;
   white-space: pre;
   overflow: inherit;
-  max-width: fit-content;
+  max-width: initial;
 }
 .stockInfo{
   height: 60px;
