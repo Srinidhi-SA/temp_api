@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import datetime
-import time
+import io
 
 import backoff
 import requests
-from google.cloud import vision
-import io
 import simplejson as json
+from django.conf import settings
+from google.cloud import vision
 from google.protobuf.json_format import MessageToJson
 from requests import HTTPError
 
@@ -20,15 +20,13 @@ class Api_Call:
     def text_from_Azure_API(self):
 
         print('#' * 50, '\n', datetime.datetime.now(), '\nAPI called\n', '#' * 50)
-        subscription_key = "8f6ad67b6c4344779e6148ddc48d96c0"
         api_gateway_url = 'https://74psiiujd1.execute-api.us-east-2.amazonaws.com/dev'
-        api_key = 'cxKOAtuMXwazGWTLOI0Ks21dttO2Y9CX68XeHnoJ'
 
         data = open(self.doc_path, "rb").read()
 
-        headers = {'Ocp-Apim-Subscription-Key': subscription_key,
+        headers = {'Ocp-Apim-Subscription-Key': settings.SUBSCRIPTION_KEY,
                    'Content-Type': 'application/octet-stream',
-                   'x-api-key': api_key}
+                   'x-api-key': settings.API_KEY}
 
         analysis = {}
         poll = True

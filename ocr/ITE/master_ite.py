@@ -132,7 +132,8 @@ def main2(input_path, template, slug=None):
             'original_image': original_image,
             'image_name': input_path.split('/')[-1].split('.')[0],
             'status': 'failed',
-            'error': str(e)
+            'error': str(e),
+            'category': e.__class__.__name__
         }
         return response
     # google_response2 = fetch_google_response2(input_path)
