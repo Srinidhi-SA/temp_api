@@ -242,7 +242,7 @@ export class PyLayer extends React.Component {
                         var disableField = false;
                     }
                     arr1.push(
-                        <div class="row mb-20">
+                        <div key={item[i].name} class="row mb-20">
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className ="col-md-4">{item[i].description}</label>
                             <div className="col-md-1">
@@ -259,15 +259,15 @@ export class PyLayer extends React.Component {
                         var sel = ""
                         sel = this.props.pyTorchLayer[this.props.idNum][defaultParamName][item[i].name];
                         var optionsTemp = []
-                        optionsTemp.push(<option value="None">--select--</option>)
-                        options.map(k => {
+                        optionsTemp.push(<option key={'None'} value="None">--select--</option>)
+                        options.map((k,index) => {
                             if(k.name === sel)
                                 selectedValue = true;
                             else selectedValue = false;
-                            optionsTemp.push(<option value={k.name} selected={selectedValue}> {k.name}</option>)
+                            optionsTemp.push(<option key={k.name}value={k.name} selected={selectedValue}> {k.name}</option>)
                         })
                         arr1.push(
-                            <div class="row mb-20">
+                            <div key={item[i].name} class="row mb-20">
                                 <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                 <label className="col-md-4">{item[i].description}</label>
                                 <div className = "col-md-3">
@@ -282,7 +282,7 @@ export class PyLayer extends React.Component {
                 case "slider":
                     var mandateField =["p"]
                     arr1.push(
-                        <div class="row mb-20">
+                        <div key={item[i].name}  class="row mb-20">
                             <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                             <label className="col-md-4">{item[i].description}</label>
                                 <div className="col-md-1">
@@ -294,7 +294,7 @@ export class PyLayer extends React.Component {
                     break;
                 default:
                     arr1.push(
-                        <div className="row mb-20">
+                        <div key={item[i].displayName} className="row mb-20">
                             <label className="col-md-2">{item[i].displayName}</label>
                             <label className="col-md-4">{item[i].description}</label>
                         </div>
@@ -315,7 +315,7 @@ export class PyLayer extends React.Component {
                 var selectedValue = ""
                 var optionsTemp =[];
                 var sel = ";"
-                optionsTemp.push(<option value="None">--Select--</option>)
+                optionsTemp.push(<option key={'None'} value="None">--Select--</option>)
                 for (var prop in options) {
                     if(parameterData.name === "activation"){
                         selectedValue = this.props.pyTorchLayer[lyr].activation.name
@@ -342,7 +342,7 @@ export class PyLayer extends React.Component {
                 }
                 
                 return(
-                    <div>
+                    <div key={parameterData.name}>
                         <div className = "row mb-20">
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
@@ -390,7 +390,7 @@ export class PyLayer extends React.Component {
                             break;
                     }
                     return (
-                        <div className="row mb-20">
+                        <div  key={parameterData.name} className="row mb-20">
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-1">
@@ -404,7 +404,7 @@ export class PyLayer extends React.Component {
                 break;
             default:
                 return (
-                    <div className = "row mb-20">
+                    <div key={parameterData.name} className = "row mb-20">
                         <label className="col-md-4">{parameterData.displayName}</label>
                         <label className="col-md-4">{parameterData.description}</label>
                         <div className="error_pt"></div>

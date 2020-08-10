@@ -119,6 +119,7 @@ export default function reducer(state = {
         panels:[],
         modelLoaderidxVal:0,
         modelLoaderidx:0,
+        allStockAnalysisList:{},
 
 }, action) {
 
@@ -1317,6 +1318,19 @@ export default function reducer(state = {
         }
     }
     break;
+    case "ALL_STOCK_ANALYSIS_LIST":
+      {
+        return {
+          ...state,
+          allStockAnalysisList: action.data,
+        }
+      }
+      break;
+      case "ALL_STOCK_ANALYSIS_LIST_ERROR":
+      {
+        throw new Error("Unable to fetch stock analysis list!!");
+      }
+      break;
     }
     return state
 }

@@ -397,7 +397,7 @@ else{
           stockInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
             if (item.display && (item.name==="companyNames" || item.name==="timeline")) {
               return (
-                <div className="stockTopInfo">
+                <div key={i} className="stockTopInfo">
                   <div className="col-md-4"> {item.displayName} </div>
                   <div className="col-md-8 text-right text-info">
                   <Scrollbars height="50px">

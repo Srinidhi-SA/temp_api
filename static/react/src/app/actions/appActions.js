@@ -1409,8 +1409,27 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
           renameAudio(slug, dialog, $("#idRenameAudio").val(), dispatch)
-        else if (title == RENAMESTOCKMODEL)
+        else if (title == RENAMESTOCKMODEL){
+          dispatch(getAllStockAnalysisList())
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allStockList = Object.values(store.getState().apps.allStockAnalysisList);
+          let recentStocks = store.getState().apps.stockAnalysisList.data;
+          if ($("#idRenameStockModel").val() === "") {
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else if ($("#idRenameStockModel").val() != "" && $("#idRenameStockModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid analysis name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if (letters.test($("#idRenameStockModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if(Object.values(allStockList.concat(recentStocks)).map(i=>i.name.toLowerCase()).includes($("#idRenameStockModel").val().toLowerCase())){
+            document.getElementById("ErrorMsg").innerHTML = "Stock analysis with same name already exists.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else{
           renameStockModel(slug, dialog, $("#idRenameStockModel").val(), dispatch)
+            }
+          }  
         else
           renameScore(slug, dialog, $("#idRenameScore").val(), dispatch)
       })
@@ -2603,6 +2622,41 @@ export function clearSelectedModelsCount() {
   var count = 0;
   return { type: "CLEAR_SELECT_MODEL_COUNT", count }
 }
+
+export function getAllStockAnalysisList() {
+  return (dispatch) => {
+    return fetchAllStockAnalysisList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            dispatch(fetchAllStockAnalysisSuccess(json))
+        }else{
+          dispatch(fetchAllStockAnalysisError(json))
+        }
+    })
+  }
+}
+function fetchAllStockAnalysisList(token) {
+  return fetch(API + '/api/stockdataset/get_all_stockssense/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllStockAnalysisSuccess(doc){
+  var data = ""
+  if(doc.allStockList[0]!= undefined){
+      data = doc.allStockList;
+  }
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST",
+      data,
+  }
+}
+function fetchAllStockAnalysisError(json) {
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST_ERROR",
+      json
+  }
+}
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning", "Are you sure, you want to delete analysis?", "small_mascot")))
@@ -2643,6 +2697,7 @@ export function handleStockModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameStockModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameStockModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -2650,6 +2705,7 @@ export function handleStockModelRename(slug, dialog, name) {
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+    dispatch(getAllStockAnalysisList())
   }
 }
 function renameStockModel(slug, dialog, newName, dispatch) {
@@ -2657,6 +2713,7 @@ function renameStockModel(slug, dialog, newName, dispatch) {
   Dialog.resetOptions();
   return renameStockModelAPI(slug, newName).then(([response, json]) => {
     if (response.status === 200) {
+      dispatch(getAllStockAnalysisList())
       dispatch(getAppsStockList(store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
