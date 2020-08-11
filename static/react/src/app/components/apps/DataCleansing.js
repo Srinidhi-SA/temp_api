@@ -1,31 +1,16 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import tinysort from 'tinysort';
-import { Provider } from "react-redux";
-import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
 import store from "../../store"
 import { InputSwitch } from 'primereact/inputswitch';
-import { C3Chart } from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {
-  hideDataPreview,
   getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
-  hideDataPreviewDropDown,
-  popupAlertBox
 } from "../../actions/dataActions";
-import { dataSubsetting, clearDataPreview, clearLoadingMsg } from "../../actions/dataUploadActions"
-import { Button, Dropdown, Menu, MenuItem } from "react-bootstrap";
-import { STATIC_URL } from "../../helpers/env.js"
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables, updateDatasetVariables, handleDVSearch, handelSort, handleSelectAll, checkColumnIsIgnored, deselectAllVariablesDataPrev, makeAllVariablesTrueOrFalse, DisableSelectAllCheckbox, updateVariableSelectionArray, getTotalVariablesSelected } from "../../actions/dataActions";
-import { showHideSideChart, showHideSideTable, MINROWINDATASET, toggleVisualization, getRemovedVariableNames } from "../../helpers/helper.js"
-import { isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL } from "../../helpers/helper";
-import { DataUploadLoader } from "../common/DataUploadLoader";
-import Dialog from 'react-bootstrap-dialog';
-import { checkCreateScoreToProceed, getAppDetails } from "../../actions/appActions";
+import { Button } from "react-bootstrap";
+import { handelSort } from "../../actions/dataActions";
+import { getRemovedVariableNames } from "../../helpers/helper.js"
+import { isEmpty } from "../../helpers/helper";
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -58,7 +43,6 @@ import {
     checkedAll: store.datasets.checkedAll,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig:store.datasets.modelEditconfig,
-
 
   };
 })

@@ -81,10 +81,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
                     if(data.status == INPROGRESS){
-                        if(this.props.setAppsLoaderValues[data.slug] != undefined)
-                            var setAppLoaderVal = this.props.setAppsLoaderValues[data.slug].value;
-                        else
-                            var setAppLoaderVal = 0;
+                        var setAppLoaderVal = data.completed_percentage;
                         percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setAppLoaderVal >= 0 ? setAppLoaderVal +' %':"In Progress"}</span></div>;
                         modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                     }else if(data.status == SUCCESS){
