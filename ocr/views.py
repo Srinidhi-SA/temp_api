@@ -706,7 +706,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         ).order_by('-created_at').select_related('imageset')
         return queryset
 
-    def get_all_queryset(self):
+    @staticmethod
+    def get_all_queryset():
         return OCRImage.objects.all()
 
     def get_active_queryset(self, projectslug):
@@ -895,7 +896,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
-
+                else:
+                    serializer_error.append(serializer.errors)
+                    return JsonResponse(response)
             if data['dataSourceType'] == 'SFTP':
                 pass
 
@@ -1101,14 +1104,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         image_queryset.status = 'recognizing'
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
-                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template),
-                                                                 retry=True, retry_policy={
-                                'max_retries': 3,
-                                'interval_start': 1,
-                                'interval_step': 1,
-                                'interval_max': 3,
-                            })
-
+                        response = write_to_ocrimage.apply_async(image_queryset.imagefile.path, slug, template)
                         result = response.task_id
                         results.append({'slug': slug, 'id': result})
                     except Exception as e:
