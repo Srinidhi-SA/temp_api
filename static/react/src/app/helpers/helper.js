@@ -496,13 +496,16 @@ export function downloadSVGAsPNG(chartClassId) {
   var nodeList = []
   var nodeList2 = []
   var nodeList3 = []
+  var nodeList4 = []
   nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
   nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
   nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
+  nodeList4 = document.querySelector("." + chartClassId + ">svg").querySelectorAll(".c3-title");
 
   var line_graph = Array.from(nodeList);
   var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
-  var labels = Array.from(nodeList3)
+  var labels = Array.from(nodeList3);
+  var titles = Array.from(nodeList4);
 
   line_graph.forEach(function(element) {
     element.style.fill = "none";
@@ -511,8 +514,8 @@ export function downloadSVGAsPNG(chartClassId) {
     element.style.fill = "none";
     element.style.stroke = "black";
   });
-  labels.forEach(function(element) {
-    element.style.fontSize = "12px"
+  titles.forEach(function(element){
+    element.setAttribute("x",parseFloat(element.getAttribute("x"))+25)
   })
   saveSvgAsPng(document.querySelector("." + chartClassId + ">svg"), "chart.png", {
     backgroundColor: "white"

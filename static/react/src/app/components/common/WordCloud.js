@@ -25,7 +25,7 @@ export class WordCloud extends React.Component {
           rotate={rotate}
           width="900"
           font="Roboto Condensed"
-          height="400"
+          height="300"
           />
         	</div>
        );

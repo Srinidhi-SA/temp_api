@@ -172,7 +172,8 @@ export class OverViewPage extends React.Component {
       infinite: false,
       speed: 5,
       slidesToShow: 6,
-      slidesToScroll: 1
+      slidesToScroll: 1,
+      className:"overViewSlider",
     };
     const { loading } = this.state;
     if(loading && isEmpty(this.props.signal)) { // if your component doesn't have to wait for an async action, remove this block 
@@ -371,57 +372,52 @@ export class OverViewPage extends React.Component {
             <AppsStockDataPreview  history={this.props.history} match={this.props.match} showPreview={true} updatePreviewState={this.showStockSenceDataPreview.bind(this)}/>
           :
             <div className="side-body">		 
-              <div class="sticky-container hidden-xs hidden" id="sticky-container">			 
-                <div class="btn-group">
-                  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
-                    <ul role="menu" class="dropdown-menu">
-                      {cardList}
-                    </ul>
-                </div>
-              </div>
-              <div className="page-head ">
-                <div class="row">
+              <div className="page-head overViewHead">
                   <div class="col-md-12">
-                 
-                  </div>
-                
+                  <h3 className="xs-mt-0 xs-mb-0"> {storyName}
+                  <div className="btn-toolbar pull-right">
+                    <div className="btn-group summaryIcons">
+                      <div className="btn btn-default sticky-container hidden-xs hidden" id="sticky-container">
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round btn-xs" title="List of Analysis">
+                          <i class="fa fa-list-ul"></i>
+                        </button>
+                        <ul role="menu" class="dropdown-menu">
+                          {cardList}
+                        </ul>
+                      </div>
+                      {/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
+                      {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) ?
+                        <button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
+                          <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
+                        </button>:""}
+                        <button type="button" className="btn btn-default" disabled="true" title="Card mode">
+                          <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
+                        </button>
+                        <Link className="btn btn-default continue" to={{
+                          pathname: documentModeLink,
+                            state: {
+                              lastVar: lastcard.slug
+                            }
+                          }} title="Document mode">
+                          <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+                        </Link>
+                        {/*<Link className="continue" to={that.urlPrefix}>*/}
+                        <button type="button" className="btn btn-default" onClick={this.closeDocumentMode.bind(this)}>
+                          <i class="zmdi zmdi-hc-lg zmdi-close"></i>
+                        </button>
+                        {/*</Link>*/}
+                      </div>
+                    </div>
+                  </h3>
                   </div>
                   <div class="clearfix"></div>
                   </div>
                 
                   <div className="main-content">
-                
                     <div className="row">
                       <div className="col-md-12">
-					              <h3 className="xs-mt-0 xs-mb-0"> {storyName}
-                          <div className="btn-toolbar pull-right">
-                            <div className="btn-group">
-                              {/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
-                              {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) ?
-                                <button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
-                                  <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
-                                </button>:""}
-                                <button type="button" className="btn btn-default" disabled="true" title="Card mode">
-                                  <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
-                                </button>
-                                <Link className="btn btn-default continue" to={{
-                                  pathname: documentModeLink,
-                                    state: {
-                                      lastVar: lastcard.slug
-                                    }
-                                  }} title="Document mode">
-                                  <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
-                                </Link>
-                                {/*<Link className="continue" to={that.urlPrefix}>*/}
-                                <button type="button" className="btn btn-default" onClick={this.closeDocumentMode.bind(this)}>
-                                  <i class="zmdi zmdi-hc-lg zmdi-close"></i>
-                                </button>
-                                {/*</Link>*/}
-                              </div>
-                            </div>
-                          </h3>
                         <div className="clearfix"></div>
-                          <div className="panel panel-mAd box-shadow" data-wow-duration="1s" data-wow-delay="1s">
+                          <div className="panel panel-mAd box-shadow" data-wow-duration="1s" data-wow-delay="1s" style={{marginTop:"55px"}}>
                             <div className="panel-heading"></div>
                             <div className="panel-body no-border">
                               <div className="card full-width-tabs">

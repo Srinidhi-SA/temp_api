@@ -66,7 +66,7 @@ export class C3ChartNew extends React.Component{
     $(".chart-modal" + this.props.classId).modal({keyboard: true, show: true});
   }
   downloadSVG(){
-    downloadSVGAsPNG("chart"+this.props.classId)
+    downloadSVGAsPNG("chartDownload"+this.props.classId)
   }
   getChartElement() {
     if (this.props.classId == '_side') {
@@ -84,7 +84,6 @@ export class C3ChartNew extends React.Component{
     let chartData = this.props.data;
     var that = this;
     if (this.props.sideChart) { chartData['size'] = { height: 230 } }
-    if (chartData.data.type == "donut"){ chartData.padding.top=35 }
     let myData = {}
      switch(chartData.data.type){
       case "bar": 
@@ -194,7 +193,8 @@ export class C3ChartNew extends React.Component{
             "width":chartData.donut.width
           },
           "padding": {
-            "top": chartData.padding.top
+            "top": chartData.padding.top,
+            "bottom":40
           },
           "legend": {
             "show":chartData.legend.show,
@@ -534,19 +534,21 @@ export class C3ChartNew extends React.Component{
         break;
     }
 
-    myData.subchart = store.getState().signals.viewChartFlag?false:myData.subchart
+    if(store.getState().signals.viewChartFlag && myData.subchart !=undefined){
+      myData.subchart.show = false
+    }
 
     if (this.props.xdata) {
-      myData.axis.x.tick.multiline=true
-      myData.axis.x.height=100
+      myData.axis.x.height=120
       myData.axis.x.tick.rotate=-53
-      myData.axis.x.tick.width=100
+      myData.axis.x.tick.multiline=true
+      myData.axis.x.tick.width=90
       myData.axis.x.tick.outer = false;
 
-      let xdata = this.props.xdata.map(i=>i.split('_').join('').replace(/\s+/g, ''));
+      let xdata = this.props.xdata;
       myData.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 20) {
-          return xdata[x].substr(0,12) + "..."+xdata[x].substr(-4)
+          return xdata[x].substr(0,12) + "..."
         } else {
           return xdata[x];
         } 
@@ -559,7 +561,19 @@ export class C3ChartNew extends React.Component{
 
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
-    (myData.subchart !=undefined && myData.subchart.show=== true)?chart.zoom([0,this.props.xdata.length-1]):""
+    if(myData.subchart !=undefined && myData.subchart.show=== true){
+      chart.zoom([0,this.props.xdata.length-1])
+      chart.element.getElementsByClassName("extent")[0].innerHTML = "<title id="+"c3BrushTip"+">Move grey section to zoom and view different part of the chart<title/>"
+    }
+
+    //Modify Chart Data for Download
+    var chartDownloadData = jQuery.extend(true, {}, myData);
+    if(chartDownloadData.subchart != null){
+        chartDownloadData.subchart.show=false;
+    }
+    chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
+    let chartDownload = c3.generate(chartDownloadData);
+    
   }
 
   render(){
@@ -585,19 +599,22 @@ export class C3ChartNew extends React.Component{
               str = stockData[1].listOfNodes[0].listOfCards[0].cardData[2].data.xdata
               break;
         }
-        let tooltip = event.target.innerHTML
-          if(str != undefined){
-            let substr = event.target.innerHTML
-            for(let i=0;i<str.length;i++){
-              if(str[i].includes(substr.slice(0,substr.length-3))){
-                tooltip = str[i]
-              }
+        let tooltip= "";
+        if(str != undefined){
+          str = str.map(i=>i.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
+          for(let i=0;i<event.target.parentElement.children.length;i++){
+            tooltip = tooltip.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
+          }
+          for(let i=0;i<str.length;i++){
+            if(str[i].includes(tooltip)){
+              tooltip = str[i]
             }
+          }
         }else{
           if(event.target.parentElement.children.length>1){
             let ar=[]
             for(let i=0;i<(event.target.parentElement.children).length;i++){
-              ar.push((event.target.parentElement.children)[i].innerHTML)
+              ar.push((event.target.parentElement.children)[i].innerHTML.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
             }
             tooltip = ar.join(" ")
           }
@@ -607,7 +624,7 @@ export class C3ChartNew extends React.Component{
         divi.transition().duration(200).style("opacity", .9);
         divi.html(tooltip)
           .style("left",(window.event.pageX) + "px")
-          .style("top", (window.event.pageY - 28) + "px");	
+          .style("top", (window.event.pageY - 28) + "px"); 
       }
     }
     window.onmouseout = function(){
@@ -637,16 +654,11 @@ export class C3ChartNew extends React.Component{
       if (that.props.tabledownload) {
         that.tableDownload = API + that.props.tabledownload;
       }
+     var chartDownloadCls = "chartDownload"+this.props.classId;
       return (
         <div className="chart-area">
-        {(this.props.data.subchart!=null)?
-          <span>
-            <ReactTooltip place="bottom" className='customeTheme' effect="solid"/>
-            <i class="btn btn-default btn-graph-info fa fa-info" data-tip="Move grey section to zoom and view different part of the chart"/>
-          </span>
-          :""
-        }
-          <div className={this.classId}></div>
+          <div className={this.classId} style={{margin:"10px 10px 0px 0px"}}></div>
+         <div className={chartDownloadCls} style={{display:"none"}}></div>
           <div className="chart-data-icon">
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -690,7 +702,7 @@ export class C3ChartNew extends React.Component{
               <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} xdata={this.props.xdata} yformat={this.props.yformat} y2format={this.props.y2format} tabledata={this.props.tabledata}/>
             </div>
           </div>
-          {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
+          {/*this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" &&
             <div style={{padding:"10px"}} >Note: Hover on the graph points to view Cloud Image of respective dates</div>
           }
           {this.props.data.title != null && this.props.data.title.text === "Stock Performance Vs Sentiment Score" && !this.props.cloudImgFlag && Object.keys(this.props.cloudImgResp).length !=0 && this.props.cloudImgResp.image_url != null &&
@@ -703,7 +715,7 @@ export class C3ChartNew extends React.Component{
             <div style={{ height: "150px", background: "#ffffff", position: 'relative' }}>
                 <img className="ocrLoader" src={STATIC_URL + "assets/images/Preloader_2.gif"} />
             </div>
-          }
+        */}
         </div>
       );
     }

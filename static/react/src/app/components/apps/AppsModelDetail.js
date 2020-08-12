@@ -210,7 +210,7 @@ export class AppsModelDetail extends React.Component {
 		                <div className="col-md-12">
 							<h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
 		                      <div className="btn-toolbar pull-right">
-		                        <div className="btn-group">
+		                        <div className="btn-group summaryIcons">
 		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
