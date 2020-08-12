@@ -100,7 +100,7 @@ filterRevList(filtertBy, filterOn,reset) {
     var reviewersTable = (
       this.props.OcrReviewerList != '' ? (this.props.OcrReviewerList.data.length != 0 ? this.props.OcrReviewerList.data.map((item, index) => {
         return (
-          <tr id={index}>
+          <tr key={index} id={index}>
             {/* <td>
               <Checkbox id={item.ocr_profile.slug} value={item.ocr_profile.slug} onChange={this.handleCheck} checked={this.state.checkedList.includes(item.ocr_profile.slug)}></Checkbox>
             </td> */}

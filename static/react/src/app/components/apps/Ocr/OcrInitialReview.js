@@ -98,9 +98,9 @@ export class OcrInitialReview extends React.Component {
                 <tbody>
                         { 
                         listForIRTable.length != 0?
-                            listForIRTable.map((item) => {
+                            listForIRTable.map((item,index) => {
                                 return (
-                                    <tr>
+                                    <tr key={index}>
                                         <td className="text-center">
                                             <Checkbox name="selectedIR" id={item.name} value={item.name} onChange={this.saveIRConfig.bind(this)} checked={ (this.props.activeiR==="all")?true:(this.props.selectedIRList !=undefined && this.props.selectedIRList.includes(item.name))} disabled={getDisabledVal}/>
                                         </td>

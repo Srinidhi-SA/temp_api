@@ -59,7 +59,7 @@ export class RevProjectTable extends React.Component {
       var OcrProjectTable = (
          this.props.OcrProjectList != '' ? (this.props.OcrProjectList.data.length != 0 ? this.props.OcrProjectList.data.map((item, index) => {
             return (
-               <tr id={index}>
+               <tr key ={index} id={index}>
             <td><Link to='/apps/ocr-mq44ewz7bp/reviewer/' onClick={() => { this.handleDocumentPageFlag(item.slug,item.name) }} title={item.name}>{item.name}</Link></td>
 
                   <td>{item.project_overview.workflows}</td>

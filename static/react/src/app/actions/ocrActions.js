@@ -136,7 +136,7 @@ export function getOcrUploadedFiles(pageNo){
 	}
 }
 
-function fetchUploadedFiles(pageNo=1,token){
+function fetchUploadedFiles(pageNo=store.getState().ocr.docTablePage,token){
 	let filter_assignee=store.getState().ocr.filter_assignee
 	let filter_status=store.getState().ocr.filter_status
 	let filter_confidence=store.getState().ocr.filter_confidence

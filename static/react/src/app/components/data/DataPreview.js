@@ -8,24 +8,22 @@ import ReactDOM from 'react-dom';
 import {
   hideDataPreview,
   getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
   hideDataPreviewDropDown,
   popupAlertBox,
   getAllDataList,
   getDataList,
 } from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
+import {showHideSideChart, showHideSideTable, MINROWINDATASET} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import { getAppDetails } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 
 
@@ -48,8 +46,6 @@ import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../ac
     allDataList:store.datasets.allDataSets,
     datasets:store.datasets.dataList.data,
 		createSigLoaderFlag : store.datasets.createSigLoaderFlag,
-
-
   };
 })
 
@@ -65,7 +61,6 @@ export class DataPreview extends React.Component {
     this.firstTimeColTypeForChart = null;
     this.isSubsetted = false;
     this.new_subset = "";
-    this.toggleVisualizationSlug="";
   }
 
   hideDataPreview() {
@@ -174,8 +169,6 @@ export class DataPreview extends React.Component {
     showHideSideTable(this.firstTimeSideTable);
     showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
     hideDataPreviewDropDown(this.props.curUrl);
-    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
-
   }
 
   componentWillUpdate() {
@@ -207,7 +200,6 @@ export class DataPreview extends React.Component {
       if (chkClass.indexOf(item.slug) !== -1) {
         $("#side-chart").empty();
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
-        toggleVisualization(item.slug,this.props.dataTransformSettings);
         if (!$.isEmptyObject(item.chartData)) {
           const sideChartUpdate = item.chartData.chart_c3;
           let yformat = item.chartData.yformat;
@@ -324,11 +316,7 @@ else{
     }
   }
 };
-  shouldComponentUpdate(nextProps) {
-    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
-    return true;
-  }
-
+ 
   render() {
     var that = this;
     $(function() {
@@ -397,7 +385,7 @@ else{
           stockInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
             if (item.display && (item.name==="companyNames" || item.name==="timeline")) {
               return (
-                <div className="stockTopInfo">
+                <div key={i} className="stockTopInfo">
                   <div className="col-md-4"> {item.displayName} </div>
                   <div className="col-md-8 text-right text-info">
                   <Scrollbars height="50px">
@@ -518,7 +506,6 @@ else{
           this.firstTimeSideTable = sideTable; //show hide side table
           this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
           this.firstTimeColTypeForChart = dataPrev.scriptMetaData.columnData[0].columnType;
-          this.toggleVisualizationSlug = dataPrev.scriptMetaData.columnData[0].slug;
           if (!$.isEmptyObject(this.firstTimeSideChart)) {
             let chartInfo = [];
             firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;

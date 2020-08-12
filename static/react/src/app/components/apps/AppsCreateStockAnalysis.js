@@ -57,6 +57,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 		var domains = this.state.domain;
 		var companies=this.state.company
 		var list=[];
+		let letters = /^[0-9a-zA-Z\-_\s]+$/;
 		document.getElementById("resetMsg").innerText=''
 
 		if(domains.length==0||companies.length==0){
@@ -67,7 +68,10 @@ export class AppsCreateStockAnalysis extends React.Component {
 			document.getElementById("resetMsg").innerText="Please enter stock analysis name."
 			return false;
 		} 
-
+		if (letters.test(analysisName) == false){
+			document.getElementById("resetMsg").innerText = "Please enter analysis name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+      return false
+    }     
 		for(var i=0;i<companies.length;i++){
 			window['value'+i] = new this.companyDetails(companyList.filter(j=>j.value==companies[i])[0].label, companies[i]);
 			list.push((window['value'+i]))

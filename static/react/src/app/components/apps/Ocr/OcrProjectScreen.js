@@ -47,7 +47,7 @@ export class OcrProjectScreen extends React.Component {
       var OcrProjectTable = (
          this.props.OcrProjectList != '' ? (this.props.OcrProjectList.data.length != 0 ? this.props.OcrProjectList.data.map((item, index) => {
             return (
-               <tr id={index}>
+               <tr  key={index} id={index}>
                   <td>
                      <Link to='/apps/ocr-mq44ewz7bp/project/' onClick={this.handleDocumentPageFlag.bind(this,item.slug,item.name)}>{item.name}</Link>
                   </td>
