@@ -1104,7 +1104,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         image_queryset.status = 'recognizing'
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
-                        response = write_to_ocrimage.apply_async(image_queryset.imagefile.path, slug, template)
+                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template))
                         result = response.task_id
                         results.append({'slug': slug, 'id': result})
                     except Exception as e:
