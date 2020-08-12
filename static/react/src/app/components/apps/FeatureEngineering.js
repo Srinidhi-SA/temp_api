@@ -711,7 +711,7 @@ export class FeatureEngineering extends React.Component {
         else
           numberOfSelectedDimensions += 1;
         return (
-          <tr className={('all ' + item.columnType)}>
+          <tr key={key} className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase() + item.columnType.slice(1)}</td>
             <td> <Button id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>

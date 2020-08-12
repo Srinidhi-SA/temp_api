@@ -299,7 +299,7 @@ export class OverViewPage extends React.Component {
           cardList = selectedNode.listOfCards.map((card, i) => {
             let selectedLink = selectedURL + "/" + card.slug;
             return (
-              <li><NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
+              <li key={i}><NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
                 <i className="fa fa-bar-chart"></i>
                 <span>{card.name}</span>
               </NavLink></li>

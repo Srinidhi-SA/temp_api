@@ -1451,7 +1451,7 @@ def encrypt_for_kylo(username, password_encrypted):
     # value = newhash.hexdigest()  # python3
     value = hashlib.sha256(existing_key.encode('utf-8')).hexdigest()  # python3
     return value
-    return value
+    # return value
 
 
 

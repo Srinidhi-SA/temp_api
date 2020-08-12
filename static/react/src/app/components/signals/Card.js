@@ -156,7 +156,7 @@ export class Card extends React.Component {
                         divClass="col-md-4 bgStockBox";
             }
             return(
-            <div className={divClass}>
+            <div key={i}className={divClass}>
             
                 <h3 className="text-center xs-m-0">{boxData.value}
                 <br/>

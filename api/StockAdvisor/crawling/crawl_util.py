@@ -125,7 +125,6 @@ def fetch_news_sentiments_from_newsapi(stock, domains):
                 url=news['final_url'], content_of_the_url=short_desc)
 
         if nl_understanding:
-            # nl_understanding = json.loads(nl_understanding.decode("utf-8"))
             keywords = nl_understanding.result.get('keywords', [])
             for keyword in keywords:
                 keyword['text'] = preprocess_keyword(keyword['text'])
@@ -164,12 +163,8 @@ def fetch_news_article_from_nasdaq(stock):
                 }
             )
 
-    # from multiprocessing import Pool
-    # p = Pool(5)
-    # content_array = p.map(crawl_obj.fetch_content, urls)
 
     for content in content_array:
-        # content = crawl_obj.get_data(url)
         if content:
             json_list = process.process_nasdaq_news_article(
                 content['url'],
@@ -198,10 +193,6 @@ def fetch_news_article_from_nasdaq(stock):
             news['sentiment'] = nl_understanding.get('sentiment', [])
             stock_news_with_sentiments.append(news)
 
-    # from api.models import StockDataset
-    # sdd = StockDataset.objects.get(slug='asd23-yzce2di0zg')
-    # stock_news_with_sentiments = json.loads(sdd.crawled_data)[stock][stock]
-
     return stock_news_with_sentiments
 
 
@@ -210,7 +201,6 @@ def write_to_news_data_in_folder(stockName, data):
     import csv
     path = os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/" + self.slug + "/"
-    # file_path = path + stockName + "." + type
     file_path = path + stockName + "." + type
     with open(file_path, "wb") as file_to_write_on:
         if 'csv' == type:

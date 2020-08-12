@@ -317,7 +317,7 @@ class ui_corrections:
         cv2.imwrite(gen_image, mask)
         return
 
-    def document_confidence(self, analysis):  ## TO DO
+    def document_confidence(self, analysis):
         word_count, error = 0, 0
         for line in analysis['lines']:
 
@@ -328,8 +328,10 @@ class ui_corrections:
                     error = error + 1
                 else:
                     pass
-
-        document_accuracy = round((word_count - error) / word_count, 2)
+        try:
+            document_accuracy = round((word_count - error) / word_count, 2)
+        except ZeroDivisionError:
+            document_accuracy = 0
         return document_accuracy, word_count
 
 
