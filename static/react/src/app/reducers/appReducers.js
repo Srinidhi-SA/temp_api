@@ -470,9 +470,10 @@ export default function reducer(state = {
     break;
     case "SCORE_SUMMARY_CSV_DATA":
     {
+       var scoreCsvData=action.data.length!=0?action.data.csv_data:[]
         return {
             ...state,
-            scoreSummaryCSVData: action.data.csv_data,
+            scoreSummaryCSVData: scoreCsvData,
         }
     }
     break;

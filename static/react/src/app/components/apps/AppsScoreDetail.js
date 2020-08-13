@@ -41,9 +41,6 @@ export class AppsScoreDetail extends React.Component {
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
 	  }
   }
-  gotoScoreData(){
-      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
-  }
   updateScoreSummaryFlag(){
       this.props.dispatch(updateScoreSummaryFlag(false));
   }
@@ -133,7 +130,7 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    <div className="row">
 		                    <div className="col-md-12 text-right">
-		                   	{showViewButton?<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>:""}
+		                   	{showViewButton?<Link to={scoreDataLink} className="btn btn-primary xs-pr-10"> View </Link>:""}
 		                    {showDownloadButton?<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>:""}
 		                   </div>
 
