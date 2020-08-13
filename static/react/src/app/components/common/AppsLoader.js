@@ -101,38 +101,15 @@ export class AppsLoader extends React.Component {
 		}
 	openModelPopup(){
   		this.props.dispatch(openAppsLoaderValue())
-  	}
-	valueStore = () =>{
-		let timer = setInterval(() => {
-			if(this.props.setAppsLoaderValues[this.props.modelSlug].status === "INPROGRESS"){
-			return fetch(API + '/api/trainer/' + this.props.modelSlug + '/', {
-				method: 'get',
-				headers: getHeader(getUserDetailsOrRestart.get().userToken)
-				}).then(response => response.json())
-				.then(responsejson => {
-					if(responsejson.message[responsejson.message.length-1].globalCompletionPercentage <= 100){
-						if(this.props.setAppsLoaderValues[this.props.modelSlug].value != responsejson.message[responsejson.message.length-1].globalCompletionPercentage){
-							this.props.dispatch(setAppsLoaderValues(this.props.modelSlug,responsejson.message[responsejson.message.length-1].globalCompletionPercentage,responsejson.status))
-							this.props.dispatch(getAppsModelList(1));
-						}
-					}
-				})
-			}
-		if (this.props.setAppsLoaderValues[this.props.modelSlug].value === 100){
-			$(".notifyBtn").trigger('click');
-		clearInterval(timer);
-			this.props.dispatch(updateModelSummaryFlag(true));
 		}
-		},10000);
-	}
+		
   closeModelPopup(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());
 	  this.props.dispatch(closeAppsLoaderValue());
-	  this.valueStore();
-
 		clearAppsIntervel();
-  }
+	}
+	
   cancelCreateModel(){
 		this.props.dispatch(updateModelSummaryFlag(false));
 		this.props.dispatch(hideDataPreview());

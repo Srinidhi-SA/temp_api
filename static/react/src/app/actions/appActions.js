@@ -64,8 +64,10 @@ export function refreshAppsModelList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/" + store.getState().apps.currentAppDetails.app_url)
+        if(store.getState().apps.modelList.data!=undefined && store.getState().apps.modelList.data.filter(i=> (i.status!="SUCCESS" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
+        else
+        clearInterval(refreshAppsModelInterval)
     }
       , APPSDEFAULTINTERVAL);
   }
