@@ -495,6 +495,7 @@ export function updateTrainAndTest(trainValue) {
 export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {//add a mode in analyst mode
  
   return (dispatch) => {
+    dispatch(showCreateModalPopup());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
 
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
@@ -657,7 +658,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
 }
 function createModelSuccess(data, dispatch) {
   var slug = data.slug;
-  dispatch(setAppsLoaderValues(slug,data.completed_percentage,data.status));
   appsInterval = setInterval(function () {
 
     dispatch(getAppsModelSummary(data.slug, true));
@@ -761,7 +761,6 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
           if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
             document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
             $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
@@ -799,7 +798,6 @@ export function getAppsModelSummary(slug, fromCreateModel) {
               dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
             }
             dispatch(updateModelIndexValue(json.message.length));
-            dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
             dispatch(getAppsModelList("1"));
           }
@@ -859,6 +857,7 @@ export function updateSelectedAlg(name) {
 
 export function createScore(scoreName, targetVariable) {
   return (dispatch) => {
+    dispatch(showCreateModalPopup());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is scoring your model... "));
     return triggerCreateScore(getUserDetailsOrRestart.get().userToken, scoreName, targetVariable).then(([response, json]) => {
       if (response.status === 200) {
@@ -1016,10 +1015,6 @@ export function openAppsLoaderValue(value, text) {
 }
 export function setAppsLoaderText(text){
   return { type: "APPS_LOADED_TEXT",text}
-}
-export function setAppsLoaderValues(slug,value,status){
-  return { type: "SET_APPS_LOADER_MODAL", slug,value,status }
-
 }
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
@@ -2011,6 +2006,7 @@ export function crawlDataForAnalysis(domains, companies,analysisName,list) {
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200 && json.status!=false) {
           dispatch(updateCreateStockPopup(false))
+          dispatch(showCreateModalPopup());
           dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
           dispatch(crawlSuccess(json, dispatch))
         } else {
@@ -2823,4 +2819,7 @@ function fetchDeployPreviewError(json) {
 export function fetchDeployPreviewSuccess(doc) {
   var data = doc;
   return { type: "DEPLOY_PREVIEW", data }
+}
+export function showCreateModalPopup() {
+  return { type: "SHOW_CREATE_MODAL_LOADER" }
 }

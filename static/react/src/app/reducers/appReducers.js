@@ -36,7 +36,6 @@ export default function reducer(state = {
         appsLoaderPerValue:-1,
         appsLoaderText :"",
         appsLoadedText :["Loading..."],
-        setAppsLoaderValues:{},
         modelSummaryFlag:false,
         parameterTuningFlag:false,
         scoreSummaryFlag:false,
@@ -488,12 +487,19 @@ export default function reducer(state = {
         }
     }
     break;
+    case "SHOW_CREATE_MODAL_LOADER":
+      {
+        return {
+          ...state,
+          appsLoaderModal: true
+        }
+      }
+      break;
     case "OPEN_APPS_LOADER_MODAL":
     {
 
         return {
             ...state,
-            appsLoaderModal:true,
             appsLoaderPerValue:action.value,
             appsLoaderText :action.text,
         }
@@ -536,18 +542,6 @@ export default function reducer(state = {
             appsLoaderModal:false,
             appsLoaderPerValue:-1,
             appsLoaderText :"",
-        }
-    }
-    break;
-    case "SET_APPS_LOADER_MODAL":{
-        var allLoaderValues = state.setAppsLoaderValues;
-        allLoaderValues[action.slug] = {
-            "value" : action.value,
-            "status" : action.status,
-        }
-        return {
-          ...state,
-          setAppsLoaderValues : allLoaderValues,
         }
     }
     break;

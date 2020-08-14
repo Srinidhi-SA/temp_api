@@ -20,7 +20,6 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
-		setAppsLoaderValues: store.apps.setAppsLoaderValues,
 		algoList: store.apps.algoList
 	};
 })

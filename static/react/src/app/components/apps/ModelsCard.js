@@ -9,7 +9,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -28,8 +28,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             currentAppId:store.apps.currentAppId,
             model_search_element: store.apps.model_search_element,
             apps_model_sorton:store.apps.apps_model_sorton,
-            apps_model_sorttype:store.apps.apps_model_sorttype,
-            setAppsLoaderValues:store.apps.setAppsLoaderValues
+            apps_model_sorttype:store.apps.apps_model_sorttype
         };
     })
     
@@ -49,6 +48,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(handleModelRename(slug,this.dialog,name));
         }
         openDataLoaderScreen(data){
+            this.props.dispatch(showCreateModalPopup())
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
