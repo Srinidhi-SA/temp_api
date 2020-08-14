@@ -41,7 +41,7 @@ export class ViewChart extends React.Component {
                 <Modal.Header closeButton>
                     <h3 className="modal-title">View Chart</h3>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body className="viewChartPopup">
                     <Scrollbars className="thumb-horizontal" autoHeight autoHeightMin={200} autoHeightMax={500}  >
                         <C3ChartNew classId={imgDetails} data={this.props.chartData} xdata={this.props.xdata} yformat={this.props.yformat} y2format={this.props.y2format} tabledata={this.props.tabledata}/>
                     </Scrollbars>

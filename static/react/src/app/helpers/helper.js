@@ -518,7 +518,8 @@ export function downloadSVGAsPNG(chartClassId) {
     element.setAttribute("x",parseFloat(element.getAttribute("x"))+25)
   })
   saveSvgAsPng(document.querySelector("." + chartClassId + ">svg"), "chart.png", {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    height: parseFloat(document.querySelector("." + chartClassId + ">svg").getAttribute("height"))+20
   });
 
 }
