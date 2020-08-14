@@ -30,7 +30,7 @@ import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEdit} from "../../actions/dataActions";
+import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
@@ -64,7 +64,7 @@ export class Signals extends React.Component {
     var pageNo = 1;
     this.props.dispatch(hideDataPreview())
     this.props.dispatch(setEditModelValues("","",false));
-    this.props.dispatch(fetchModelEdit(""))
+    this.props.dispatch(fetchModelEditAPISuccess(""))
     this.props.dispatch(saveTopLevelValuesAction("false",""))
     if(getUserDetailsOrRestart.get().view_data_permission=="true")
     this.props.dispatch(getAllDataList());
