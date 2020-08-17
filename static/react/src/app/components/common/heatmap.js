@@ -34,7 +34,7 @@ export class HeatMapTable extends React.Component {
    var rowComponents = generateHeatMapRows(data);
    return (
           <div className={this.props.classId}>
-         <Scrollbars style={{height:400}} >
+         <Scrollbars autoHeight autoHeightMin={100} autoHeightMax={400} style={{width:"100%"}}>
            <table className={className}>
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>

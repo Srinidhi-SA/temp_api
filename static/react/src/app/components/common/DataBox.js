@@ -25,7 +25,7 @@ export class DataBox extends React.Component {
 			</div>);
 		});
 		return (
-				<div>
+				<div className="documentDataBox">
 				{columnsTemplates}
 				</div>
 		);
