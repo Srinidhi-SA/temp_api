@@ -89,10 +89,11 @@ export class TensorFlow extends React.Component {
 
   getOptions(item) {
       var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
+      var selectedOption=arr.filter(i=>i.sel)[0].name
       var options = arr.map(k => {
-          return <option key={k.name} value={k.name} selected={k.sel}> {k.name}</option>
+          return <option key={k.name} value={k.name}> {k.name}</option>
       })
-      return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
+      return <select onChange={this.handleSelectBox.bind(this,item)} defaultValue={selectedOption} className={`form-control ${item.name}_tf`}> {options} </select>
   }
     
     
