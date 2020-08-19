@@ -16,8 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {Share} from "../common/Share"
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,setEditModelValues,fetchModelEdit} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList} from "../../actions/dataActions";
+import {getDataList,refreshDatasets,setEditModelValues,storeSignalMeta, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList,fetchModelEditAPISuccess} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -55,7 +54,7 @@ export class Data extends React.Component {
   componentWillMount() {
     var pageNo = 1;
     this.props.dispatch(setEditModelValues("","",false));
-    this.props.dispatch(fetchModelEdit(""))
+    this.props.dispatch(fetchModelEditAPISuccess(""))
     this.props.dispatch(storeSignalMeta(null, this.props.match.url));
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];

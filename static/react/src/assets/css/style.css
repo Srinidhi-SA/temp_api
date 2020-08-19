@@ -542,7 +542,7 @@ h1,
 h2,
 h3 {
   margin-top: 18px;
-  margin-bottom: 9px;
+  margin-bottom: 10px;
 }
 .h1 .small,
 .h1 small,
@@ -719,6 +719,7 @@ a.bg-danger:hover {
   border: 1px solid #f6f6f6;
   text-align: left;
   border-radius: 2px;
+  margin-bottom: 10px;
 }
 .bg-highlight {
   background: url(../images/bg_highlight.png) no-repeat center left;
@@ -4561,6 +4562,9 @@ button.list-group-item-danger.active:hover {
 .panel-danger > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #00998c;
 }
+.panel-body h2.text-center {
+  padding-bottom: 40px;
+}
 .embed-responsive {
   position: relative;
   display: block;
@@ -4786,6 +4790,11 @@ button.close {
 @media (min-width: 992px) {
   .modal-lg {
     width: 900px;
+  }
+}
+@media (min-width: 992px) {
+  .modal-lg-chart {
+    width: 600px;
   }
 }
 .tooltip {
@@ -19042,8 +19051,10 @@ a.tabs-control.right span {
 }
 .content_scroll {
   min-height: 360px;
-  /* max-height: 500px;*/
   margin: 0;
+}
+.content_scroll.container-fluid h3 {
+  text-align: center;
 }
 .col-xs-12.content {
   padding: 15px 4%;
@@ -19668,10 +19679,6 @@ a.disabled {
   vertical-align: middle;
 }
 
-.slick-track {
-  top: 0;
-  left: 40px;
-}
 .sb_navigation {
   background: #ffffff;
   /* border-bottom: 1px solid #e8e8e8;*/
@@ -19713,11 +19720,11 @@ a.disabled {
 }
 
 .slick-next {
-  right: 5px;
+  right: -45px;
   border: 1px solid #00bfb2;
 }
 .slick-prev {
-  left: 5px;
+  left: -45px;
   border: 1px solid #00bfb2;
 }
 .slick-next:hover,
@@ -20026,7 +20033,7 @@ div.pred_disp_block p,
 }
 .toggleOn,
 .toggleOff {
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
 .panel-mAd .col-md-4 .list-unstyled li {
@@ -20349,10 +20356,17 @@ blockquote p:after {
   border-radius: 2px;
   /*background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px; */
 }
+.stockClassName{
+  margin: 15px 0px;
+}
+.stockClassName h3{
+  text-align: center;
+}
 .stockClassName .col-md-6,
 .stockClassName .col-md-12 {
   padding-left: 12px !important;
-  margin-top: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 .stockClassName .col-md-12 .col-md-7 {
   padding: 0 !important;
@@ -20367,7 +20381,7 @@ blockquote p:after {
 .stockClassName .col-md-6 .chart-area,
 .stockClassName .col-md-12 .chart-area {
   box-shadow: 0px 0px 10px 3px rgba(219, 219, 219, 0.4196078431372549);
-  padding: 20px 10px;
+  padding: 10px 10px;
 }
 .form_withrowlabels .control-label {
   margin-top: 10px;
@@ -20604,10 +20618,6 @@ th .ma-checkbox.inline, td .ma-checkbox.inline { margin-left: 5px; }
   }
 }
 
-/* After Clicking on ViewSummary, List Of Analysis button alignment issues - resolved */
-.sticky-container {
-  top: 42% !important;
-}
 
 /* Login Page - Responsive */
 .ma-login .ma-content-left {
@@ -21007,7 +21017,8 @@ svg {
 }
 
 .table-style {
-  margin-top: 1.8%;
+  margin-top: 0.5%;
+  margin-bottom: 3.5%;
   padding-left: 10%;
   padding-right: 10%;
   max-width: 100%;
@@ -21037,7 +21048,16 @@ svg {
 }
 
 .documentModeSpacing {
-  padding: 15px 40px !important;
+  padding: 15px 40px 30px 40px !important;
+}
+.documentModeSpacing h3{
+  text-align: center;
+}
+.documentModeSpacing .col-md-6 .col-md-12{
+  margin-bottom: 20px;
+}
+.documentModeSpacing .chart-area{
+  margin-bottom: 25px;
 }
 
 .loadingBar {
@@ -21326,7 +21346,9 @@ svg[class^="chart"] {
   }
 }
  
-
+.ov_card_boxes .chart-area{
+  margin-bottom: 20px;
+}
 .ov_card_boxes .row {
   text-align: center;
 }
@@ -21744,7 +21766,7 @@ div.text-center.tbl_th_center th {
 .c3-axis-x text {
   fill: #333333;
   /*font-family: "Times New Roman", Times, serif;;*/
-  font-size: 11px;
+  font-size: 12px;
 }
 .c3-axis-y2 text {
   fill: #333333;
@@ -21802,12 +21824,8 @@ body div#welcome-body-frame p#message {
 /************************** 8888888888 *******************************/
 
 .sticky-container {
-  /*background-color: #333;*/
-  padding: 0px;
-  margin: 0px;
+  padding: 2px 10px;
   position: fixed;
-  right: 75px;
-  top: 235px;
   z-index: 11;
 }
 .sticky {
@@ -22133,8 +22151,8 @@ body .p-inputtext:enabled:focus:not(.p-error) {
 }
 .btn-graph-info {
   position: absolute;
-  right: 20px;
-  bottom: 134px;
+  left: 60px;
+  bottom: 120px;
   z-index: 100;
 }
 
@@ -22721,7 +22739,7 @@ button[disabled], html .filter_input[disabled] {
   background-repeat: no-repeat;
   height: 830px;
   position: absolute;
-  z-index: 9;
+  z-index: 99;
   left: 0px;
   background-position: center center;
   background-color: rgba(0,0,0,0.2);
@@ -23049,4 +23067,54 @@ min-width: 102px; }
 }
 .editUser .modal-content{
   overflow: inherit !important;
+}
+.wordCloud {
+    float: left;
+    width: 98%;
+    box-shadow: rgba(219, 219, 219, 0.42) 0px 0px 10px 3px;
+    margin: 20px 10px;
+    text-align: center;
+}
+.overViewSlider {
+	margin-left: auto;
+	margin-right: auto;
+	width: 89%;
+}
+.overViewHead{
+  position: fixed;
+  z-index: 12;
+  background: white;
+  margin-left: 5px;
+  width: 95%;
+}
+.sticky-container button {
+  box-shadow: none;
+  background: #29998c;
+  border: none;
+  font-size: 14px;
+}
+.sticky-container i.fa {
+  font-size: 1em !important;
+  color:white !important
+}
+.summaryIcons .btn .zmdi{
+  font-size: 1.7em;
+  color: #29998c;
+}
+.summaryIcons .btn .zmdi:hover,
+.summaryIcons i.fa:hover{
+  color: #4cb7ae;
+}
+.summaryIcons i.fa {
+  font-size: 1.4em;
+  color: #29998c;
+}
+.documentDataBox{
+  margin: 10px 0px;
+}
+.modelTitle{
+  text-align: left !important;
+}
+.viewChartPopup.modal-body{
+  padding: 10px 20px 20px 20px;
 }

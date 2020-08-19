@@ -48,10 +48,9 @@ export default class Layer extends Component {
       selectedValue = this.props.tensorFlowInputs[this.props.id-1][item.name]
     }
     var optionsHtml = arr.map(k => {
-      var sel = (k === selectedValue)?true:false
-        return <option key={k} value={k} selected={sel}> {k}</option>
+        return <option key={k} value={k}> {k}</option>
     })
-    return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
+    return <div className= {`${item.name}_tf`}><select className= {`form-control ${item.name}_tf`} defaultValue={selectedValue!=""?selectedValue:""} onChange={this.myChangeHandler.bind(this,item)}>{optionsHtml} </select>  <div className="error"></div></div>
   }
 
   deleteLayer=(id)=>{

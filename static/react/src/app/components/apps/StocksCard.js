@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi, showCreateModalPopup} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -44,6 +44,7 @@ export class StocksCard extends React.Component {
     }
 
     openDataLoaderScreen(data){
+        this.props.dispatch(showCreateModalPopup());
         this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
         this.props.dispatch(callStockAnalysisApi(data.slug));
     }

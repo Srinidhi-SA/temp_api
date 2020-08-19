@@ -20,6 +20,7 @@ import {
   NavItem
 } from "react-bootstrap";
 import {openImg, closeImg, uploadImg, getUserProfile, saveProfileImage} from "../../actions/loginActions";
+import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
   return {login_response: store.login.login_response, profileInfo: store.login.profileInfo, fileUpload: store.dataSource.fileUpload, showModal: store.dataUpload.imgUploadShowModal, profileImgURL: store.login.profileImgURL};
@@ -384,7 +385,7 @@ resetAPI=(oldPassword,newPassword) =>{
                   <div className="panel-body no-border box-shadow">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
-                      <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
+                      <C3ChartNew chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
                       <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>
                   </div>
