@@ -397,10 +397,6 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
                     p1 = word['boundingBox']['p1']
                     p3 = word['boundingBox']['p3']
                     print(p1, p3)
-                    '''for val in list(m.values()):
-                        if isinstance(val, list):
-                            p1 = val[0:2]
-                            p3 = val[4:6]'''
                     if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
                         return True, word['text']
     if "tables" in final_json.keys():
