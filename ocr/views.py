@@ -1589,7 +1589,8 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
-            serializer.data['edited'] = True
-            return Response(serializer.data)
+            response = serializer.data
+            response['edited'] = True
+            return Response(response)
         data1 = {'edited': False, 'error': str(serializer.errors)}
         return Response(data1)
