@@ -59,7 +59,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, write_to_ocrimage
+from ocr.tasks import extract_from_image, write_to_ocrimage, write_to_ocrimage2
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -1016,6 +1016,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
                     template = json.loads(Template.objects.first().template_classification)
+
+                    if request.user == '':
+                        pass
+
                     try:
                         response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template),
                                                                   retry=True, retry_policy={
@@ -1100,13 +1104,30 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     try:
-                        image_queryset = OCRImage.objects.get(slug=slug)
-                        image_queryset.status = 'recognizing'
-                        image_queryset.save()
-                        template = json.loads(Template.objects.first().template_classification)
-                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template))
-                        result = response.task_id
-                        results.append({'slug': slug, 'id': result})
+                        foreign_user_mapping = {
+                            'sdas': 'Chinese-1',
+                            'Devc': 'Chinese-1',
+                            'Devj': 'Korean',
+                            'Devk': 'Japanese'
+                        }
+                        if request.user.username in foreign_user_mapping:
+                            print('foreign language')
+                            image_queryset = OCRImage.objects.get(slug=slug)
+                            image_queryset.status = 'recognizing'
+                            image_queryset.save()
+                            template = json.loads(Template.objects.first().template_classification)
+                            response = write_to_ocrimage2.apply_async(
+                                args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
+                            result = response.task_id
+                            results.append({'slug': slug, 'id': result})
+                        else:
+                            image_queryset = OCRImage.objects.get(slug=slug)
+                            image_queryset.status = 'recognizing'
+                            image_queryset.save()
+                            template = json.loads(Template.objects.first().template_classification)
+                            response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template))
+                            result = response.task_id
+                            results.append({'slug': slug, 'id': result})
                     except Exception as e:
                         results.append({slug: str(e)})
             return JsonResponse({'tasks': results})
