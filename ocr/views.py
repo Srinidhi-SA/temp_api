@@ -989,12 +989,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         try:
             instance = self.get_object_from_all()
-            if 'deleted' in data:
-                if data['deleted']:
-                    print('let us deleted')
-                    instance.delete()
-                    # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
-                    return JsonResponse({'message': 'Deleted'})
+            # if 'deleted' in data:
+            #     if data['deleted']:
+            #         print('let us deleted')
+            #         instance.delete()
+            #         # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
+            #         return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -1357,12 +1357,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             "data": set(item['name'] for item in serializer.data)
         })
 
-    def delete(self, request, *args, **kwargs):
-        """
-        TODO
-        """
-        pass
-
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
@@ -1566,3 +1560,37 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             list_serializer=ProjectListSerializer
         )
         return result
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        if 'name' in data:
+            projectname_list = []
+            project_query = Project.objects.filter(deleted=False, created_by=request.user)
+            for _, i in enumerate(project_query):
+                projectname_list.append(i.name)
+            if data['name'] in projectname_list:
+                return creation_failed_exception("Name already exists!.")
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                if should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                if should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
+
+        try:
+            instance = self.get_object_from_all()
+        except FileNotFoundError:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            response = serializer.data
+            response['edited'] = True
+            return Response(response)
+        data1 = {'edited': False, 'error': str(serializer.errors)}
+        return Response(data1)
