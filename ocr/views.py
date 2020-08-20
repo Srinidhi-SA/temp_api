@@ -1357,12 +1357,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             "data": set(item['name'] for item in serializer.data)
         })
 
-    def delete(self, request, *args, **kwargs):
-        """
-        TODO
-        """
-        pass
-
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     """
@@ -1595,5 +1589,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
+            serializer.data['edited'] = True
             return Response(serializer.data)
-        return Response(serializer.errors)
+        data1 = {'edited': False, 'error': str(serializer.errors)}
+        return Response(data1)
