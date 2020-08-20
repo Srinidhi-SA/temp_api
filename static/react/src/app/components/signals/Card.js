@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {Redirect} from "react-router";
 import store from "../../store";
 import {getSignalAnalysis, pickToggleValue} from "../../actions/signalActions";
-import {C3Chart} from "../c3Chart";
 import {HighChart} from "../HighChart"
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";

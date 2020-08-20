@@ -23118,3 +23118,8 @@ min-width: 102px; }
 .viewChartPopup.modal-body{
   padding: 10px 20px 20px 20px;
 }
+.chart_profile{
+  padding: 0 !important;
+  margin: 7.5px 0 !important;
+  width: 100%;
+}

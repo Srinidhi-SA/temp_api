@@ -2,9 +2,7 @@ import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from "react-redux";
 import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } from "react-bootstrap";
-
 import store from "../../store";
-import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
 import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable} from "../../actions/dataActions";

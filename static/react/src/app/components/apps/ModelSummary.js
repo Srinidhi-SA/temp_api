@@ -5,7 +5,6 @@ import {refreshAppsAlgoList,getDeploymentList,getListOfCards} from "../../action
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
-import {C3Chart} from "../c3Chart";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
 import {getAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import {DecisionTree} from "../decisionTree";
