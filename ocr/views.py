@@ -1107,15 +1107,15 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         foreign_user_mapping = {
                             'sdas': 'Chinese-1',
                             'Devc': 'Chinese-1',
-                            'Devj': 'Korean',
-                            'Devk': 'Japanese'
+                            'Devj': 'Japanese',
+                            'Devk': 'Korean'
                         }
                         if request.user.username in foreign_user_mapping:
-                            print('foreign language')
                             image_queryset = OCRImage.objects.get(slug=slug)
                             image_queryset.status = 'recognizing'
                             image_queryset.save()
                             template = json.loads(Template.objects.first().template_classification)
+                            print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
                             response = write_to_ocrimage2.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
                             result = response.task_id

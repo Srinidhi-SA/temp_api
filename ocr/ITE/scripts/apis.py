@@ -58,7 +58,7 @@ class Api_Call:
 
 
 class Api_Call2:
-    def __init__(self, doc_path, language_input="Chinese-1"):
+    def __init__(self, doc_path, language_input):
 
         self.language_input = language_input
         self.doc_path = doc_path
