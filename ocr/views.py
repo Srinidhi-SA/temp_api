@@ -1203,7 +1203,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 'Devj': 'Japanese',
                 'Devk': 'Korean'
             }
-            if request.user.username not in foreign_user_mapping:
+            if request.user.username in foreign_user_mapping:
                 gen_image, _ = ui_flag_v4(cv2.imread(mask), final_json, image_path,
                                              analysis, foreign_user_mapping[request.user.username])
             else:
