@@ -123,9 +123,9 @@ class BaseModule:
                     cells[i], 0.02 * cells_peri[i], True))
                     for i in range(len(cells))]
 
-                if (area > 0.8 * parent_area):  # BORDERS CONSIDERED AS TABLE
+                if (area > 0.9 * parent_area):  # BORDERS CONSIDERED AS TABLE
 
-                    print('IM COMIN HERE')
+                    print('BORDERS DETECTED')
                     mask = mask[y + 10:y + height - 10, x + 10:x + width - 10]
                     break
 
