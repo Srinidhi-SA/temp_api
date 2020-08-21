@@ -50,7 +50,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json, dynamic_cavas_size
+    cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 
 # ------------------------------------------------------------
@@ -59,7 +59,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, write_to_ocrimage
+from ocr.tasks import extract_from_image, write_to_ocrimage, write_to_ocrimage2
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -1016,6 +1016,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
                     template = json.loads(Template.objects.first().template_classification)
+
+                    if request.user == '':
+                        pass
+
                     try:
                         response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template),
                                                                   retry=True, retry_policy={
@@ -1100,11 +1104,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     try:
+                        foreign_user_mapping = {
+                            'sdas': 'Japanese',
+                            'Devc': 'Chinese-1',
+                            'Devj': 'Japanese',
+                            'Devk': 'Korean'
+                        }
+
                         image_queryset = OCRImage.objects.get(slug=slug)
                         image_queryset.status = 'recognizing'
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
-                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template))
+                        if request.user.username in foreign_user_mapping:
+                            # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
+                            response = write_to_ocrimage2.apply_async(
+                                args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
+                        else:
+                            response = write_to_ocrimage.apply_async(
+                                args=(image_queryset.imagefile.path, slug, template))
                         result = response.task_id
                         results.append({'slug': slug, 'id': result})
                     except Exception as e:
@@ -1180,11 +1197,21 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
-                                         analysis)
-            image = base64.decodebytes(gen_image)
-            with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
-                f.write(image)
+            foreign_user_mapping = {
+                'sdas': 'Japanese',
+                'Devc': 'Chinese-1',
+                'Devj': 'Japanese',
+                'Devk': 'Korean'
+            }
+            if request.user.username in foreign_user_mapping:
+                gen_image, _ = ui_flag_v4(cv2.imread(mask), final_json, image_path,
+                                             analysis, foreign_user_mapping[request.user.username])
+            else:
+                gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
+                                             analysis)
+            # image = base64.decodebytes(gen_image)
+            # with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+            #    f.write(image)
             data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
                                            file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
 
