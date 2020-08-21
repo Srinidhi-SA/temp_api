@@ -1116,7 +1116,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
-                            print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
+                            # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
                             response = write_to_ocrimage2.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
                         else:
