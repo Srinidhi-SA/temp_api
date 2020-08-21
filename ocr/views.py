@@ -1105,29 +1105,25 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 for slug in ast.literal_eval(str(data['slug'])):
                     try:
                         foreign_user_mapping = {
-                            'sdas': 'Chinese-1',
+                            'sdas': 'Japanese',
                             'Devc': 'Chinese-1',
                             'Devj': 'Japanese',
                             'Devk': 'Korean'
                         }
+
+                        image_queryset = OCRImage.objects.get(slug=slug)
+                        image_queryset.status = 'recognizing'
+                        image_queryset.save()
+                        template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
-                            image_queryset = OCRImage.objects.get(slug=slug)
-                            image_queryset.status = 'recognizing'
-                            image_queryset.save()
-                            template = json.loads(Template.objects.first().template_classification)
                             print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
                             response = write_to_ocrimage2.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
-                            result = response.task_id
-                            results.append({'slug': slug, 'id': result})
                         else:
-                            image_queryset = OCRImage.objects.get(slug=slug)
-                            image_queryset.status = 'recognizing'
-                            image_queryset.save()
-                            template = json.loads(Template.objects.first().template_classification)
-                            response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template))
-                            result = response.task_id
-                            results.append({'slug': slug, 'id': result})
+                            response = write_to_ocrimage.apply_async(
+                                args=(image_queryset.imagefile.path, slug, template))
+                        result = response.task_id
+                        results.append({'slug': slug, 'id': result})
                     except Exception as e:
                         results.append({slug: str(e)})
             return JsonResponse({'tasks': results})
