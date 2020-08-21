@@ -50,7 +50,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json, dynamic_cavas_size
+    cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 
 # ------------------------------------------------------------
@@ -1197,8 +1197,18 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
-                                         analysis)
+            foreign_user_mapping = {
+                'sdas': 'Japanese',
+                'Devc': 'Chinese-1',
+                'Devj': 'Japanese',
+                'Devk': 'Korean'
+            }
+            if request.user.username in foreign_user_mapping:
+                gen_image, _, _ = ui_flag_v4(cv2.imread(mask), final_json, image_path,
+                                             analysis, foreign_user_mapping[request.user.username])
+            else:
+                gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
+                                             analysis)
             image = base64.decodebytes(gen_image)
             with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
                 f.write(image)
