@@ -64,8 +64,10 @@ export function refreshAppsModelList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/" + store.getState().apps.currentAppDetails.app_url)
+        if(store.getState().apps.modelList.data!=undefined && store.getState().apps.modelList.data.filter(i=> (i.status!="SUCCESS" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
+        else
+        clearInterval(refreshAppsModelInterval)
     }
       , APPSDEFAULTINTERVAL);
   }
@@ -493,6 +495,7 @@ export function updateTrainAndTest(trainValue) {
 export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {//add a mode in analyst mode
  
   return (dispatch) => {
+    dispatch(showCreateModalPopup());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
 
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
@@ -655,7 +658,6 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
 }
 function createModelSuccess(data, dispatch) {
   var slug = data.slug;
-  dispatch(setAppsLoaderValues(slug,data.completed_percentage,data.status));
   appsInterval = setInterval(function () {
 
     dispatch(getAppsModelSummary(data.slug, true));
@@ -759,7 +761,6 @@ export function getAppsModelSummary(slug, fromCreateModel) {
         }
 
         else if (json.status == SUCCESS) {
-          (!json.shared) && dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
           if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
             document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
             $("#loadingMsgs")[0].innerHTML = "Step " + (json.message.length-3) + ": " + json.message[json.message.length-3].shortExplanation;
@@ -797,7 +798,6 @@ export function getAppsModelSummary(slug, fromCreateModel) {
               dispatch(updateModelIndex(store.getState().apps.modelLoaderidxVal))
             }
             dispatch(updateModelIndexValue(json.message.length));
-            dispatch(setAppsLoaderValues(json.slug,json.message[json.message.length-1].globalCompletionPercentage,json.status));
             dispatch(openAppsLoaderValue( json.message[json.message.length-1].stageCompletionPercentage, json.message[json.message.length-1].shortExplanation));
             dispatch(getAppsModelList("1"));
           }
@@ -857,6 +857,7 @@ export function updateSelectedAlg(name) {
 
 export function createScore(scoreName, targetVariable) {
   return (dispatch) => {
+    dispatch(showCreateModalPopup());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is scoring your model... "));
     return triggerCreateScore(getUserDetailsOrRestart.get().userToken, scoreName, targetVariable).then(([response, json]) => {
       if (response.status === 200) {
@@ -1014,10 +1015,6 @@ export function openAppsLoaderValue(value, text) {
 }
 export function setAppsLoaderText(text){
   return { type: "APPS_LOADED_TEXT",text}
-}
-export function setAppsLoaderValues(slug,value,status){
-  return { type: "SET_APPS_LOADER_MODAL", slug,value,status }
-
 }
 export function closeAppsLoaderValue() {
   return { type: "HIDE_APPS_LOADER_MODAL" }
@@ -1409,8 +1406,27 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
           renameAudio(slug, dialog, $("#idRenameAudio").val(), dispatch)
-        else if (title == RENAMESTOCKMODEL)
+        else if (title == RENAMESTOCKMODEL){
+          dispatch(getAllStockAnalysisList())
+          let letters = /^[0-9a-zA-Z\-_\s]+$/;
+          let allStockList = Object.values(store.getState().apps.allStockAnalysisList);
+          let recentStocks = store.getState().apps.stockAnalysisList.data;
+          if ($("#idRenameStockModel").val() === "") {
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else if ($("#idRenameStockModel").val() != "" && $("#idRenameStockModel").val().trim() == "") {
+              document.getElementById("ErrorMsg").innerHTML = "Please enter a valid analysis name";
+              showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if (letters.test($("#idRenameStockModel").val()) == false){
+            document.getElementById("ErrorMsg").innerHTML = "Please enter analysis name in a correct format. It should not contain special characters .,@,#,$,%,!,&.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+          }else if(Object.values(allStockList.concat(recentStocks)).map(i=>i.name.toLowerCase()).includes($("#idRenameStockModel").val().toLowerCase())){
+            document.getElementById("ErrorMsg").innerHTML = "Stock analysis with same name already exists.";
+            showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)          
+          }else{
           renameStockModel(slug, dialog, $("#idRenameStockModel").val(), dispatch)
+            }
+          }  
         else
           renameScore(slug, dialog, $("#idRenameScore").val(), dispatch)
       })
@@ -1990,6 +2006,7 @@ export function crawlDataForAnalysis(domains, companies,analysisName,list) {
       return triggerCrawlingAPI(domains, companies,analysisName,list).then(([response, json]) => {
         if (response.status === 200 && json.status!=false) {
           dispatch(updateCreateStockPopup(false))
+          dispatch(showCreateModalPopup());
           dispatch(openAppsLoader(APPSLOADERPERVALUE, "Fetching stock data"));
           dispatch(crawlSuccess(json, dispatch))
         } else {
@@ -2603,6 +2620,41 @@ export function clearSelectedModelsCount() {
   var count = 0;
   return { type: "CLEAR_SELECT_MODEL_COUNT", count }
 }
+
+export function getAllStockAnalysisList() {
+  return (dispatch) => {
+    return fetchAllStockAnalysisList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+        if(response.status === 200){
+            dispatch(fetchAllStockAnalysisSuccess(json))
+        }else{
+          dispatch(fetchAllStockAnalysisError(json))
+        }
+    })
+  }
+}
+function fetchAllStockAnalysisList(token) {
+  return fetch(API + '/api/stockdataset/get_all_stockssense/', {
+      method: 'get',
+      headers: getHeader(token)
+  }).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchAllStockAnalysisSuccess(doc){
+  var data = ""
+  if(doc.allStockList[0]!= undefined){
+      data = doc.allStockList;
+  }
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST",
+      data,
+  }
+}
+function fetchAllStockAnalysisError(json) {
+  return {
+      type: "ALL_STOCK_ANALYSIS_LIST_ERROR",
+      json
+  }
+}
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning", "Are you sure, you want to delete analysis?", "small_mascot")))
@@ -2643,6 +2695,7 @@ export function handleStockModelRename(slug, dialog, name) {
         <div className="form-group">
           <label for="idRenameStockModel" className="control-label">Enter a new Name</label>
           <input className="form-control" id="idRenameStockModel" type="text" defaultValue={name} />
+          <div className="text-danger" id="ErrorMsg"></div>
         </div>
       </div>
     </div>
@@ -2650,6 +2703,7 @@ export function handleStockModelRename(slug, dialog, name) {
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+    dispatch(getAllStockAnalysisList())
   }
 }
 function renameStockModel(slug, dialog, newName, dispatch) {
@@ -2657,6 +2711,7 @@ function renameStockModel(slug, dialog, newName, dispatch) {
   Dialog.resetOptions();
   return renameStockModelAPI(slug, newName).then(([response, json]) => {
     if (response.status === 200) {
+      dispatch(getAllStockAnalysisList())
       dispatch(getAppsStockList(store.getState().apps.current_page));
       dispatch(hideLoading());
     } else {
@@ -2764,4 +2819,7 @@ function fetchDeployPreviewError(json) {
 export function fetchDeployPreviewSuccess(doc) {
   var data = doc;
   return { type: "DEPLOY_PREVIEW", data }
+}
+export function showCreateModalPopup() {
+  return { type: "SHOW_CREATE_MODAL_LOADER" }
 }

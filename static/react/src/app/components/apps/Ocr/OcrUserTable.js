@@ -150,7 +150,7 @@ export class OcrUserTable extends React.Component{
                         {this.props.allOcrUsers.data.map((item, index) => {
                             if(item.ocr_user){
                                 return (
-                                    <tr>
+                                    <tr key={index}>
                                         <td><Checkbox id={item.ocr_profile.slug} value={item.username} onChange={this.saveSelectedUser.bind(this)} checked={this.props.selectedOcrUsers.includes(item.username)}></Checkbox></td>
                                         <td onClick={this.openEditUserModal.bind(this,item)} style={{color: "#29998c",cursor:"pointer"}}>{item.first_name}</td>
                                         <td>{item.last_name}</td>
@@ -161,16 +161,16 @@ export class OcrUserTable extends React.Component{
                                         <td><label className={item.ocr_profile.active?"label-success":"label-warning"}>{item.ocr_profile.active?"Active":"Inactive"}</label></td>
                                     </tr>
                                 )}
-                                else{ return "" }
+                                else{ return null }
                             })
                         }
                     </tbody>
                 </table>
         }
         let tabOptions=[];
-        tabOptions.push(<li className ="active"><a data-toggle="tab" id="none" name="none">All</a></li>);
+        tabOptions.push(<li key={0}className ="active"><a data-toggle="tab" id="none" name="none">All</a></li>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
-            tabOptions.push(<li><a data-toggle="tab" id={this.props.ocrReviwersList[i].id} name={this.props.ocrReviwersList[i].name}>{this.props.ocrReviwersList[i].name}</a></li>);
+            tabOptions.push(<li key={i+1} ><a data-toggle="tab" id={this.props.ocrReviwersList[i].id} name={this.props.ocrReviwersList[i].name}>{this.props.ocrReviwersList[i].name}</a></li>);
         }
         return(
             <div>

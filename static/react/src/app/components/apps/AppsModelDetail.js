@@ -20,7 +20,6 @@ import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
 		currentAppDetails:store.apps.currentAppDetails,
-		setAppsLoaderValues: store.apps.setAppsLoaderValues,
 		algoList: store.apps.algoList
 	};
 })
@@ -176,15 +175,15 @@ export class AppsModelDetail extends React.Component {
 				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
+					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+									return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
 		/*}
@@ -210,7 +209,7 @@ export class AppsModelDetail extends React.Component {
 		                <div className="col-md-12">
 							<h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
 		                      <div className="btn-toolbar pull-right">
-		                        <div className="btn-group">
+		                        <div className="btn-group summaryIcons">
 		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>

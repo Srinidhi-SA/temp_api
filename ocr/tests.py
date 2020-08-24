@@ -61,13 +61,16 @@ class TestOCRImageUpload(TestCase):
             TestCase1: "Delete image uploaded with particular slug."
         """
 
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
+
         image = Image.new('RGB', (100, 100))
 
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
         response = self.client.post('http://localhost:8000/ocr/ocrimage/',
-                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
 
         # self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.json()['imageset_message'], response.json()['message'])
@@ -78,6 +81,8 @@ class TestOCRImageUpload(TestCase):
         TestCase2: "Test multiple image upload."
         TestCase3: "Test valid/Invalid file extensions."
         """
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
 
         img_list = list()
         for _ in range(3):
@@ -88,7 +93,7 @@ class TestOCRImageUpload(TestCase):
             img_list.append(tmp_file)
 
         response = self.client.post('http://localhost:8000/ocr/ocrimage/',
-                                    {'imagefile': img_list, 'dataSourceType': 'fileUpload'}, format='multipart')
+                                    {'imagefile': img_list, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
 
         # self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(response.json()['imageset_message'], response.json()['message'])
@@ -100,11 +105,14 @@ class TestOCRImageUpload(TestCase):
         TestCase3: "Test valid/Invalid file extensions."
         """
 
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
+
         tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
         tmp_file.write(b'test')
         tmp_file.seek(0)
         response = self.client.post('http://localhost:8000/ocr/ocrimage/',
-                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
         res = response.json()
         self.assertEqual('Unsupported file extension.' in res['serializer_error'], True)
 
@@ -112,6 +120,9 @@ class TestOCRImageUpload(TestCase):
         """
         Unit test cases concerning OCRImage list view.
         """
+
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
 
         img_list = list()
         for _ in range(3):
@@ -121,7 +132,7 @@ class TestOCRImageUpload(TestCase):
             tmp_file.seek(0)
             img_list.append(tmp_file)
 
-        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': img_list, 'dataSourceType': 'fileUpload'}, format='multipart')
+        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': img_list, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
         response = self.client.get('http://localhost:8000/ocr/ocrimage/', format='json')
 
         self.assertEqual(response.json()['current_item_count'], 3)
@@ -132,12 +143,15 @@ class TestOCRImageUpload(TestCase):
         Unit test cases concerning OCRImage update view.
         """
 
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
+
         image = Image.new('RGB', (100, 100))
 
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
-        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'},
+        self.client.post('http://localhost:8000/ocr/ocrimage/', {'imagefile': tmp_file, 'dataSourceType': 'fileUpload', 'projectslug': projectslug},
                          format='multipart')
         imagequery = OCRImage.objects.all().first()
         slug = imagequery.slug
@@ -150,18 +164,40 @@ class TestOCRImageUpload(TestCase):
         Unit test cases concerning OCRImage retrieve view.
         """
 
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
+
         image = Image.new('RGB', (100, 100))
 
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file, format='jpeg')
         tmp_file.seek(0)
         response = self.client.post('http://localhost:8000/ocr/ocrimage/',
-                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload'}, format='multipart')
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
 
         data = response.json()['serializer_data'][0]
         slug = data['slug']
         response = self.client.get('http://localhost:8000/ocr/ocrimage/{}/'.format(slug))
 
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_OCRImage_extract2(self):
+        """
+        Unit test cases concerning OCRImage extract async view.
+        """
+        response = self.client.post('http://localhost:8000/ocr/project/', {'name': 'new'})
+        projectslug = response.json()['project_serializer_data']['slug']
+        image = Image.new('RGB', (100, 100))
+
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image.save(tmp_file, format='jpeg')
+        tmp_file.seek(0)
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/',
+                                    {'imagefile': tmp_file, 'dataSourceType': 'fileUpload', 'projectslug': projectslug}, format='multipart')
+
+        data = response.json()['serializer_data'][0]
+        slug = data['slug']
+        response = self.client.post('http://localhost:8000/ocr/ocrimage/extract2/', {'slug': [slug]})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
 

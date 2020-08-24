@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import ReactDOM from 'react-dom';
-import {c3Functions} from "../helpers/c3.functions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
 import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";

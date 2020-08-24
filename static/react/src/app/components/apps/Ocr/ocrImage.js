@@ -302,6 +302,7 @@ export class OcrImage extends React.Component {
     this.props.dispatch(setProjectTabLoaderFlag(true));
   }
   render() {
+    let username=["Devk","Devc","Devj"];
     if (this.state.img1Load && this.state.img2Load){
       document.getElementById("imgLoader").style.display = "none";
       document.getElementById("imgSection").style.display = "block";
@@ -333,6 +334,7 @@ export class OcrImage extends React.Component {
             }
           </div>
           <div className="col-sm-6">
+          {!username.includes(getUserDetailsOrRestart.get().userName)&&
             <ul className="export" style={{ float: 'right' }} >
               <li className="dropdown">
                 <a className="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -353,12 +355,13 @@ export class OcrImage extends React.Component {
                 </ul>
               </li>
             </ul>
+  }
            {(this.props.classification!="" && this.props.template.length !=0) &&
             <div class="form-group pull-right ocr_highlightblock" style={{ cursor: 'pointer' }}>
               <label class="control-label xs-mb-0">Template</label>
               <select class="form-control inline-block 1-100 template" id="subTemplate" defaultValue={ this.props.classification} onChange={(e)=> this.setState({template: e.target.value},this.saveTemplate)}>
-                {this.props.template.map(i =>(
-                  <option value={i}>{i}</option>
+                {this.props.template.map((i,index) =>(
+                  <option key={index} value={i}>{i}</option>
                 ))
                 }
               </select>

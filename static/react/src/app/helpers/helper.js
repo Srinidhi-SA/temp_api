@@ -496,13 +496,16 @@ export function downloadSVGAsPNG(chartClassId) {
   var nodeList = []
   var nodeList2 = []
   var nodeList3 = []
+  var nodeList4 = []
   nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
   nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
   nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
+  nodeList4 = document.querySelector("." + chartClassId + ">svg").querySelectorAll(".c3-title");
 
   var line_graph = Array.from(nodeList);
-  var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
-  var labels = Array.from(nodeList3)
+  var x_and_y = Array.from(nodeList2);
+  var labels = Array.from(nodeList3);
+  var titles = Array.from(nodeList4);
 
   line_graph.forEach(function(element) {
     element.style.fill = "none";
@@ -511,12 +514,12 @@ export function downloadSVGAsPNG(chartClassId) {
     element.style.fill = "none";
     element.style.stroke = "black";
   });
-  labels.forEach(function(element) {
-    element.style.fontSize = "12px"
+  titles.forEach(function(element){
+    element.setAttribute("x",parseFloat(element.getAttribute("x"))+25)
   })
   saveSvgAsPng(document.querySelector("." + chartClassId + ">svg"), "chart.png", {
     backgroundColor: "white",
-    height: "500"
+    height: parseFloat(document.querySelector("." + chartClassId + ">svg").getAttribute("height"))+20
   });
 
 }
@@ -557,32 +560,32 @@ export function statusMessages(msg_type, msg, mascot_type) {
   }
   return htmlString
 }
-export function toggleVisualization(slug, actionsData) {
-  let flag = true;
-  let transformationSettings = actionsData;
-  $.each(transformationSettings, function(key, val) {
-    if (val.slug == slug) {
-      $.each(val.columnSetting, function(key1, val1) {
-        if (val1.actionName == IGNORE_SUGGESTION && val1.status == true)
-          flag = false;
-        }
-      );
-    }
-  });
-  if (flag == false) {
-    $(function() {
-      $("#tab_visualizations #pnl_visl").removeClass("in");
-      $("#tab_visualizations a").addClass("collapsed");
-    });
-  } else {
-    $(function() {
-      $("#tab_visualizations #pnl_visl").addClass("in");
-      $("#tab_visualizations a").removeClass("collapsed");
-      $("#tab_visualizations #pnl_visl").removeAttr("style");
-    });
-  }
+// export function toggleVisualization(slug, actionsData) {
+//   let flag = true;
+//   let transformationSettings = actionsData;
+//   $.each(transformationSettings, function(key, val) {
+//     if (val.slug == slug) {
+//       $.each(val.columnSetting, function(key1, val1) {
+//         if (val1.actionName == IGNORE_SUGGESTION && val1.status == true)
+//           flag = false;
+//         }
+//       );
+//     }
+//   });
+//   if (flag == false) {
+//     $(function() {
+//       $("#tab_visualizations #pnl_visl").removeClass("in");
+//       $("#tab_visualizations a").addClass("collapsed");
+//     });
+//   } else {
+//     $(function() {
+//       $("#tab_visualizations #pnl_visl").addClass("in");
+//       $("#tab_visualizations a").removeClass("collapsed");
+//       $("#tab_visualizations #pnl_visl").removeAttr("style");
+//     });
+//   }
 
-}
+// }
 
 export function removeChatbotOnLogout() {
   var tags = document.getElementsByTagName('script');

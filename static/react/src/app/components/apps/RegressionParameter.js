@@ -462,10 +462,11 @@ export class RegressionParameter extends React.Component {
             }
             else{
                 var selectedValue="";
+                var selectedOption=options.filter(i=>i.selected).length>0?options.filter(i=>i.selected)[0].name:""
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
-                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected?"selected":""}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
                 }
             }
             return(
@@ -475,7 +476,7 @@ export class RegressionParameter extends React.Component {
                         <MultiSelect value={this.state.dropValues} className={cls} options={optionsTemp1} onChange={this.selecthandleChange.bind(this)} placeholder="None Selected"/>
                     </div>:
                     <div className="col-md-6 for_multiselect">
-                        <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={false}>
+                        <select ref={(el) => { this.eleSel = el }} defaultValue={selectedOption} className={cls} onChange={this.selecthandleChange.bind(this)} multiple={false}>
                             {optionsTemp}
                         </select>
                     </div>

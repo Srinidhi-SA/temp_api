@@ -71,6 +71,7 @@ export class OcrAddUser extends React.Component{
         if($("#role")[0].value === "none" || $("#is_active")[0].value === "none" || this.state.appId.length==0){
             $("#resetMsg")[0].innerText = "Please select mandatory fields"
         }else{
+            this.setState({appId:[]});
             $("#resetMsg")[0].innerText = ""
             this.props.dispatch(setCreateUserLoaderFlag(true));
             this.props.dispatch(submitNewUserProfileAction(this.props.newUserProfileDetails,this.props.curUserSlug));

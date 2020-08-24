@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {C3Chart} from "../c3Chart";
 import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
 import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"

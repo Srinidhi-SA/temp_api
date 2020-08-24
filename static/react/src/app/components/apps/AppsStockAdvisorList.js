@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SEARCHCHARLIMIT} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList,clearDataPreview} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList,clearDataPreview,getAllStockAnalysisList} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -42,6 +42,7 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 	componentWillMount(){
 		this.props.dispatch(clearDataPreview());
+		this.props.dispatch(getAllStockAnalysisList());
 		var pageNo = 1;
 		if(this.props.history.location.search.indexOf("page") != -1){
 			pageNo = this.props.history.location.search.split("page=")[1];

@@ -1,31 +1,16 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import tinysort from 'tinysort';
-import { Provider } from "react-redux";
-import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
 import store from "../../store"
 import { InputSwitch } from 'primereact/inputswitch';
-import { C3Chart } from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {
-  hideDataPreview,
   getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
-  hideDataPreviewDropDown,
-  popupAlertBox
 } from "../../actions/dataActions";
-import { dataSubsetting, clearDataPreview, clearLoadingMsg } from "../../actions/dataUploadActions"
-import { Button, Dropdown, Menu, MenuItem } from "react-bootstrap";
-import { STATIC_URL } from "../../helpers/env.js"
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables, updateDatasetVariables, handleDVSearch, handelSort, handleSelectAll, checkColumnIsIgnored, deselectAllVariablesDataPrev, makeAllVariablesTrueOrFalse, DisableSelectAllCheckbox, updateVariableSelectionArray, getTotalVariablesSelected } from "../../actions/dataActions";
-import { showHideSideChart, showHideSideTable, MINROWINDATASET, toggleVisualization, getRemovedVariableNames } from "../../helpers/helper.js"
-import { isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL } from "../../helpers/helper";
-import { DataUploadLoader } from "../common/DataUploadLoader";
-import Dialog from 'react-bootstrap-dialog';
-import { checkCreateScoreToProceed, getAppDetails } from "../../actions/appActions";
+import { Button } from "react-bootstrap";
+import { handelSort } from "../../actions/dataActions";
+import { getRemovedVariableNames } from "../../helpers/helper.js"
+import { isEmpty } from "../../helpers/helper";
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -58,7 +43,6 @@ import {
     checkedAll: store.datasets.checkedAll,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig:store.datasets.modelEditconfig,
-
 
   };
 })
@@ -355,14 +339,11 @@ tableHead.addEventListener('click', function (e) {
     else
     colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
-    var optionsHtml = arr.map(item => {
-      if (item.toLowerCase() == colType.toLowerCase()) {
-        return <option value={item.toLowerCase()} selected> {item}</option>
-      } else {
-        return <option value={item.toLowerCase()} > {item}</option>
-      }
+    var selectedOption = arr.filter((i)=>i.toLowerCase() == colType.toLowerCase())[0]
+    var optionsHtml = arr.map((item ,index)=> {
+        return <option key={index} value={item.toLowerCase()} > {item}</option>
     })
-    return <select className="form-control" id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} > {colType} {optionsHtml} </select>
+    return <select className="form-control" defaultValue={selectedOption.toLowerCase()} id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} >{colType}{optionsHtml}</select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -372,7 +353,7 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map((item,index)=><option key={index} value={item.name} >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.outlierRemoval) {
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
@@ -404,13 +385,13 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map((item,index) => <option key={index} value={item.name} >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.missingValueTreatment) {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
       }
       return (
-       <select className="form-control" data-coltype={dataType} id={colSlug+'missingValue'} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this,colSlug)} value={selectedValue} >{dcHTML}</select>
+       <select className="form-control" data-coltype={dataType} id={colSlug+'missingValue'} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this,colSlug)} value={selectedValue}>{dcHTML}</select>
       );
     }
     else { return ""; }
@@ -455,46 +436,46 @@ tableHead.addEventListener('click', function (e) {
         let outnum = 1;
         let missingnum = 1;
         if (removedVariables.indexOf(item.name) != -1 || considerItems.indexOf(item.name) != -1)
-          return "";
+          return null;
         else {
           return (
-            <tr className={('all ' + item.columnType)} id="mssg">
+            <tr className={('all ' + item.columnType)} key={index} id="mssg">
               <td class="filter-false sorter-false">
                 <div class="ma-checkbox inline">
-                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={item.checked} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)} />
-                  <label for={item.slug}> </label>
+                  <input id={item.slug} type="checkbox" className="needsclick variableToBeSelected" value={item} defaultChecked={item.checked} data-index={index} data-colname={item.name} data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                  <label for={item.slug}></label>
                 </div>
               </td>
               <td className="text-left">{item.name}</td>
-              <td>  {this.getUpdatedDataType(item.slug)} </td>
+              <td>{this.getUpdatedDataType(item.slug)}</td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "numberOfUniqueValues"
-                }).map((option) => {
-                  return (<span>{option.value}</span>);
+                }).map((option, index) => {
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "numberOfNulls"
-                }).map((option) => {
+                }).map((option, index) => {
                   missingnum = option.value;
-                  return (<span>{option.value}</span>);
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
               <td>
                 {item.columnStats.filter(function (items) {
                   return items.name == "Outliers"
-                }).map((option) => {
+                }).map((option,index) => {
                   outnum = option.value;
-                  return (<span>{option.value}</span>);
+                  return (<span key={index}>{option.value}</span>);
                 }
                 )}
               </td>
-              <td> {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
-              <td> {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug,outnum,missingnum)} </td>
+              <td>{this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug,outnum,missingnum)}</td>
+              <td>{this.getOutlierRemovalOptions(item.columnType, item.name, item.slug,outnum,missingnum)}</td>
             </tr>
           );
         }

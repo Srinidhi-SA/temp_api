@@ -82,11 +82,10 @@ export class AppsCreateScore extends React.Component {
 		}
 		if(algorithms){
 			let max_evaluationMetricValue=this.findMaxEvaluationMetricValue(algorithms)
-
-			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
+			
+			var selectedValue=algorithms.filter(algorithm =>(algorithm.evaluationMetricValue==max_evaluationMetricValue))[0].slug
+			algorithmNames = <select id="algorithms" defaultValue={selectedValue} name="selectbasic" class="form-control">
 			{algorithms.map(algorithm =>
-			(algorithm.evaluationMetricValue==max_evaluationMetricValue)?
-			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug} selected="selected">{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>:
 			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug}>{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>
 		)}
 			</select>
