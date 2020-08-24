@@ -6076,8 +6076,12 @@ def get_algorithm_config_list(request):
     try:
         app_type = request.GET['app_type']
         mode = request.GET['mode']
+        slug = request.GET['slug']
     except:
         app_type = "CLASSIFICATION"
+    dataset_object = Dataset.objects.get(slug=slug)
+    import os
+    dataset_filesize = os.stat(dataset_object.input_file.path).st_size
     try:
         levels = int(request.GET['levels'])
     except:
@@ -6108,7 +6112,10 @@ def get_algorithm_config_list(request):
         #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
         elif app_type == "CLASSIFICATION" and mode == 'analyst':
-            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            if dataset_filesize < 150000:
+                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+            else:
+                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION_PYSPARK)
             algoArray = algorithm_config_list["ALGORITHM_SETTING"]
             tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
             if levels > 2:
