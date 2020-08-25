@@ -692,7 +692,10 @@ class TrainerView(viewsets.ModelViewSet):
                                 index += 1
                 config['config']['COLUMN_SETTINGS']['variableSelection'][:] = [x for x in config['config']['COLUMN_SETTINGS']['variableSelection'] if 'isFeatureColumn' not in list(x.keys())]
                 config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
-                tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
+                if config['config']["ALGORITHM_SETTING"][4]["algorithmName"] == "Neural Network (TensorFlow)":
+                    tf_data = config['config']['ALGORITHM_SETTING'][4]['tensorflow_params']
+                else:
+                    tf_data = config['config']['ALGORITHM_SETTING'][5]['tensorflow_params']
 
             except Exception as err:
                 print(err)
@@ -6112,7 +6115,7 @@ def get_algorithm_config_list(request):
         #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
         elif app_type == "CLASSIFICATION" and mode == 'analyst':
-            if dataset_filesize < 150000:
+            if dataset_filesize < 128000000:
                 algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
             else:
                 algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION_PYSPARK)

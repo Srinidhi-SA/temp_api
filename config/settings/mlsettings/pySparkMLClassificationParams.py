@@ -41,7 +41,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -56,7 +56,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     },
@@ -70,7 +70,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": False,
+        "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     },
@@ -85,7 +85,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
-        "hyperparameterTuningCandidate": False,
+        "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -108,7 +108,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
@@ -131,7 +131,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
@@ -146,7 +146,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float", "int"],
         "allowedDataType": ["float", "int"]
     },
@@ -159,7 +159,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
@@ -173,7 +173,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": False,
+        "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     }
@@ -190,7 +190,7 @@ PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int", None],
         "allowedDataType": ["int", None]
     },
@@ -204,7 +204,7 @@ PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     }
@@ -221,7 +221,7 @@ PYSPARK_ML_RF_CLASSIFICATION_PARAMS = PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMO
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -233,7 +233,7 @@ PYSPARK_ML_RF_CLASSIFICATION_PARAMS = PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMO
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
@@ -247,7 +247,7 @@ PYSPARK_ML_RF_CLASSIFICATION_PARAMS = PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMO
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -262,7 +262,7 @@ PYSPARK_ML_RF_CLASSIFICATION_PARAMS = PYSPARK_ML_TREE_BASED_CLASSIFICATION_COMMO
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
-        "hyperparameterTuningCandidate": False,
+        "hyperpatameterTuningCandidate": False,
         "expectedDataType": ["int", None],
         "allowedDataType": ["int", None]
     }
@@ -279,7 +279,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int", None],
         "allowedDataType": ["int", None]
     },
@@ -291,7 +291,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     },
@@ -305,7 +305,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -319,7 +319,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["int"],
         "allowedDataType": ["int"]
     },
@@ -334,7 +334,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     }
@@ -352,7 +352,7 @@ PYSPARK_ML_NAIVE_BAYES_CLASSIFICATION_PARAMS = [
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
     },
@@ -365,7 +365,7 @@ PYSPARK_ML_NAIVE_BAYES_CLASSIFICATION_PARAMS = [
         "paramType": "list",
         "uiElemType": "checkbox",
         "display": True,
-        "hyperparameterTuningCandidate": True,
+        "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["string"],
         "allowedDataType": ["string"]
     }
