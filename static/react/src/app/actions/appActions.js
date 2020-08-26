@@ -2368,13 +2368,14 @@ export function getRegressionAppAlgorithmData(slug, appType,mode) {
 }
 
 function triggerRegressionAppAlgorithmAPI(appType) {
+  let selDatasetSlug = store.getState().datasets.selectedDataSet;
   let modeType = window.location.href.includes("analyst")? "analyst" : "autoML"
   let metricVal = store.getState().apps.metricSelected.name;
   /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));*/
-  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal +'&mode=' +modeType, {
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal +'&mode=' +modeType+'&slug='+selDatasetSlug, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
