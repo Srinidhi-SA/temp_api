@@ -216,16 +216,6 @@ export class RegressionParameter extends React.Component {
             defaultVal: e.target.value
         });
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
-        var numbers = /^[0-9\s]*$/;
-        if(($(".hiddenLayerCls").val()) < 0){
-            document.getElementById("error").innerHTML="negative value not allowed";
-        }
-        else if(!numbers.test($(".hiddenLayerCls").val())){
-            document.getElementById("error").innerHTML="only number allowed";
-         }
-        else if($(".hiddenLayerCls").val() == ""){
-            document.getElementById("error").innerHTML="mandatory field";
-        }
     }
 
     handleCheckboxEvents(e){
@@ -519,7 +509,7 @@ export class RegressionParameter extends React.Component {
                         break;
                         case"Hidden Layer Size":
                         var type= "text";
-                        classN= "form-control hiddenCls";
+                        classN= "form-control hiddenCls";                       
                         break;
                         case "Number of Epochs":
                             classN = "form-control epochsCls"
@@ -532,7 +522,7 @@ export class RegressionParameter extends React.Component {
                     return (
                          <div className="row">
                         <div className="col-md-2">
-                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <input type={type} className={classN} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault() } value={this.state.defaultVal?this.state.defaultVal:""} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                         </div>
@@ -686,19 +676,12 @@ export class RegressionParameter extends React.Component {
             
             break;
             default:
-                switch(parameterData.name){
-                    case"hidden_layer_sizes":
-                    var defaultCls= "form-control single hiddenLayerCls"
-                    break;
-                    default:
-                    defaultCls= "form-control"
-
-
-                }
+            
+               
                 return (
                     <div className="row">
                     <div className="col-md-6">
-                    <input type="text" className={defaultCls} value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
                     <div className="text-danger range-validate" id="error"></div>
                     </div>
                     </div>
