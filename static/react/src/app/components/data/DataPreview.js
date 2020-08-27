@@ -3,7 +3,6 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {connect} from "react-redux";
 import store from "../../store";
-import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
   hideDataPreview,

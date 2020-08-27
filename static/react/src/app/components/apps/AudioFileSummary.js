@@ -4,7 +4,6 @@ import { Redirect } from "react-router";
 import store from "../../store";
 import {Button} from "react-bootstrap";
 import {} from "../../actions/appActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env.js"

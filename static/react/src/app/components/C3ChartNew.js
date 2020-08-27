@@ -6,16 +6,11 @@ import {renderC3ChartInfo,downloadSVGAsPNG, getUserDetailsOrRestart} from "../he
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
 import {ViewChartData} from "./common/ViewChartData";
-import ReactTooltip from 'react-tooltip'
 import {showZoomChart, showChartData} from "../actions/signalActions";
-import { Modal } from "react-bootstrap";
-
 
 @connect((store) => {
   return {
-    sideCardListFlag: store.signals.sideCardListFlag,
     selectedL1:store.signals.selectedL1,
-    selected_signal_type:store.signals.selected_signal_type,
     selectedDate : store.chartObject.date,
     cloudImgResp : store.chartObject.cloudImgResp,
     cloudImgFlag : store.chartObject.cloudImgFlag
@@ -49,6 +44,13 @@ export class C3ChartNew extends React.Component{
     $(".chart" + this.props.classId).empty();
     $('.chart-data-icon').css('visibility', 'hidden');
   }
+
+  // componentWillUnmount(){
+  //   if(Object.keys(this.props.data).length != 0)
+  //     this.props.dispatch(clearC3Date())
+  //   if(Object.keys(this.props.cloudImgResp).length !=0)
+  //     this.props.dispatch(clearCloudImgResp())
+  // }
 
   openZoomChart(flag) {
     this.props.dispatch(showZoomChart(flag, this.props.classId));
@@ -222,26 +224,28 @@ export class C3ChartNew extends React.Component{
                   item[1]
               ]
           });
-         myData = {
+        myData = {
           "size": { 
-            "height": chartData.size.height 
+            "height": (chartData.size !=undefined)?chartData.size.height :null
           },
           "title": {
-            "text": (chartData.title.text!=null)?chartData.title.text:""
+            "text": (chartData.title!=undefined && chartData.title.text!=null)?chartData.title.text:""
           },
           "color": chartData.color,
           "pie": {
             "label": {
-              "format" : (chartData.pie.label.format!=undefined || chartData.pie.label.format!=null)?d3.format(chartData.pie.label.format):d3.format(".2f"),
-              "show": chartData.pie.label.show
+              "format" : (chartData.pie !=undefined)?(
+                chartData.pie.label.format!=undefined || chartData.pie.label.format!=null)
+                ?d3.format(chartData.pie.label.format):d3.format(".2f"):null,
+              "show": (chartData.pie!=undefined && chartData.pie.label !=undefined)? chartData.pie.label.show:true
             },
             "title":""
           },
           "padding": {
-            "top": chartData.padding.top
+            "top": (chartData.padding!=undefined)?chartData.padding.top:null
           },
           "legend": {
-            "show":chartData.legend.show
+            "show":(chartData.legend!=undefined)?chartData.legend.show:true
           },
           "data": {
             "columns": col,
@@ -397,30 +401,25 @@ export class C3ChartNew extends React.Component{
           "names":chartData.data.names,
           "type": chartData.data.type,
           "x": chartData.data.x,
-          onclick: function(d){
-            let data={
-              date: this.internal.config.axis_x_categories[d.x],
-              slug: store.getState().chartObject.date.slug,
-              symbol: $(".sb_navigation li>a.active")[0].title
-            }
-            let myheader = { 'Authorization': getUserDetailsOrRestart.get().userToken, 'Content-Type': 'application/json'}
+          // onclick: function(d){
+          //   let data={
+          //     date: this.internal.config.axis_x_categories[d.x],
+          //     slug: store.getState().chartObject.date.slug,
+          //     symbol: $(".sb_navigation li>a.active")[0].title
+          //   }
+          //   let myheader = { 'Authorization': getUserDetailsOrRestart.get().userToken, 'Content-Type': 'application/json'}
 
-            return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&date="+data.date,{
-              method: "get",
-              headers: myheader,
-            }).then(response => Promise.all([response,response.json()])).then( ([response,json]) => {
-              if (response.status === 200){
-                alert("fetched");
-                <Modal>
-                  <Modal.Header closeButton></Modal.Header>
-                  <Modal.Body>heloo</Modal.Body>
-                  <Modal.Footer></Modal.Footer>
-                </Modal>
-              }
-              else
-                alert("Failed to fetch");
-            })
-          }
+          //   return fetch(API+"/api/stockdataset/"+data.slug+"/fetch_word_cloud/?symbol="+data.symbol+"&date="+data.date,{
+          //     method: "get",
+          //     headers: myheader,
+          //   }).then(response => Promise.all([response,response.json()])).then( ([response,json]) => {
+          //     if (response.status === 200){
+          //       alert("fetched");
+          //     }
+          //     else
+          //       alert("Failed to fetch");
+          //   })
+          // }
         },
         "grid": {
           "x":{

@@ -3,7 +3,6 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
-import {C3Chart} from "../c3Chart";
 import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {

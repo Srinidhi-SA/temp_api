@@ -71,7 +71,7 @@ export function getOcrProjectsList(pageNo){
 	}
 }
 
-function fetchProjects(pageNo=1,token){
+function fetchProjects(pageNo=store.getState().ocr.projectPage,token){
 	let search_project=store.getState().ocr.search_project
 	var userRole=getUserDetailsOrRestart.get().userRole
 	if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){
@@ -176,6 +176,12 @@ export function fetchUploadsFail(data){
 export function docTablePage(page){
 	return {
 		type: "DOC_TABLE_PAGE",
+		page,
+	}
+}
+export function projectPage(page){
+	return {
+		type: "PROJECT_PAGE",
 		page,
 	}
 }

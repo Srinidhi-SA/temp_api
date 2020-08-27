@@ -3,7 +3,6 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
-import {C3Chart} from "../c3Chart";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails,fetchScoreSummaryCSVSuccess} from "../../actions/appActions";

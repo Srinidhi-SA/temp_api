@@ -4,8 +4,6 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-
-import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";

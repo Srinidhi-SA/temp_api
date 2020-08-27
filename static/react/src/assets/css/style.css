@@ -20821,7 +20821,7 @@ h4.inline-block { background: white; padding: 8px 20px; }
 .cst_table .fa-briefcase { color:#607D8B; }
 .ocr_section .cst_table thead th.text-center { padding-right: 7px; }
 .ocr_highlightblock	{background:white; border:1px solid #00998c; padding:0 10px 0 10px; display:inline-block; margin-right:10px;}
-.ocr_highlightblock select { width:70px; border:0;height: 30px;columns: #333333;}
+.ocr_highlightblock select { width:72px; border:0;height: 30px;columns: #333333;}
 
 .checkbox.checbox-switch {
     padding-left: 0;
@@ -23117,4 +23117,9 @@ min-width: 102px; }
 }
 .viewChartPopup.modal-body{
   padding: 10px 20px 20px 20px;
+}
+.chart_profile{
+  padding: 0 !important;
+  margin: 7.5px 0 !important;
+  width: 100%;
 }

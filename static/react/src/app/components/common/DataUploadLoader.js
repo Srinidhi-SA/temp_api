@@ -5,7 +5,6 @@ import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
 import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview, clearMetaDataLoaderValues} from "../../actions/dataActions";
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env";

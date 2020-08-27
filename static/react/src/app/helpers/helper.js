@@ -503,7 +503,7 @@ export function downloadSVGAsPNG(chartClassId) {
   nodeList4 = document.querySelector("." + chartClassId + ">svg").querySelectorAll(".c3-title");
 
   var line_graph = Array.from(nodeList);
-  var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
+  var x_and_y = Array.from(nodeList2);
   var labels = Array.from(nodeList3);
   var titles = Array.from(nodeList4);
 

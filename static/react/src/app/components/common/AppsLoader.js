@@ -6,7 +6,6 @@ import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
 import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, clearModelLoaderValues, showCreateModalPopup,} from "../../actions/appActions";
 import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL, API} from "../../helpers/env";
