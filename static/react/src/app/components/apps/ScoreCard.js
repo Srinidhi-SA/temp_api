@@ -24,7 +24,8 @@ import {
     storeScoreSearchElement,
     storeAppsScoreSortElements,
     openAppsLoader,
-    createScoreSuccessAnalysis
+    createScoreSuccessAnalysis,
+    showCreateModalPopup
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -57,8 +58,9 @@ export class ScoreCard extends React.Component {
         }
     }
     openDataLoaderScreen(data){
-            this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
-            this.props.dispatch(createScoreSuccessAnalysis(data));
+        this.props.dispatch(showCreateModalPopup())
+        this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
+        this.props.dispatch(createScoreSuccessAnalysis(data));
     }
     openShareModal(shareItem,slug,itemType) {
         this.props.dispatch(openShareModalAction(shareItem,slug,itemType));

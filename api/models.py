@@ -18,7 +18,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 from api.helper import update_stock_sense_message
-# from api.helper import CustomImageField
 
 from .StockAdvisor.crawling.common_utils import get_regex
 from .StockAdvisor.crawling.crawl_util import crawl_extract, \
@@ -162,7 +161,6 @@ class Dataset(models.Model):
     auto_update_duration = models.IntegerField(default=99999)
 
     input_file = models.FileField(upload_to='datasets', null=True)
-    # image = CustomImageField(upload_to='photos', null=True)
     datasource_type = models.CharField(max_length=100, null=True)
     datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
@@ -260,7 +258,6 @@ class Dataset(models.Model):
 
         if job is None:
             self.status = "FAILED"
-            # self.status = "INPROGRESS"
         else:
             self.status = "INPROGRESS"
 
@@ -978,7 +975,10 @@ class Trainer(models.Model):
                     if (self.app_id in settings.REGRESSION_APP_ID):
                         config['config']["ALGORITHM_SETTING"][4].update({'tensorflow_params': configUI['TENSORFLOW']})
                     elif self.app_id in settings.CLASSIFICATION_APP_ID:
-                        config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
+                        if config['config']["ALGORITHM_SETTING"][4]["algorithmName"] == "Neural Network (TensorFlow)":
+                            config['config']["ALGORITHM_SETTING"][4].update({'tensorflow_params': configUI['TENSORFLOW']})
+                        else:
+                            config['config']["ALGORITHM_SETTING"][5].update({'tensorflow_params': configUI['TENSORFLOW']})
                 if 'nnptc_parameters' in config['config']["ALGORITHM_SETTING"][6]:
                     config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'] = convert2native(config['config']["ALGORITHM_SETTING"][6]['nnptc_parameters'])
             except Exception as err:

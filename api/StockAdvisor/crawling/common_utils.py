@@ -11,7 +11,6 @@ def get_regex(regex_file):
     file_path = os.path.dirname(__file__) + "/" + regex_file
     regex_dict = {}
     try:
-        # content=open(regex_file).read()
         content = open(file_path).read()
         regex_dict = get_json_obj(content)
     except Exception as e:

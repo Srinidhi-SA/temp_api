@@ -1451,7 +1451,7 @@ def encrypt_for_kylo(username, password_encrypted):
     # value = newhash.hexdigest()  # python3
     value = hashlib.sha256(existing_key.encode('utf-8')).hexdigest()  # python3
     return value
-    return value
+    # return value
 
 
 
@@ -1536,7 +1536,10 @@ def get_random_model_id(algo_name):
         "Linear Regression": "LR",
         "Neural Network (Sklearn)": "NN",
         "Neural Network (TensorFlow)": "TF",
-        "Neural Network (PyTorch)": "PT"
+        "Neural Network (PyTorch)": "PT",
+        "LightGBM": "LGBM",
+        "Ensemble": "EN",
+        "Adaboost": "ADAB"
     }
     get_a_random_number = get_a_random_slug()
     return ''.join([algo_map[algo_name], '_', get_a_random_number])

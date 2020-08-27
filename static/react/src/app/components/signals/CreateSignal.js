@@ -78,6 +78,7 @@ export class CreateSignal extends React.Component {
 	render() {
 		let dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
+		var defaultOption=null
 		  let title = "";
 		 var isDataUpload = this.props.signalList.permission_details.create_signal;
 	        let cls = "newCardStyle firstCard wow fadeInLeft"
@@ -90,12 +91,9 @@ export class CreateSignal extends React.Component {
 	                return(<Redirect to={_link}/>);
 	            }
 	            if(dataSets){
-	                renderSelectBox =dataSets.map((dataSet, i) => {
-	                    if(i==0){
-	                        return(<option key={dataSet.slug}  value={dataSet.slug} selected>{dataSet.name}</option>);
-	                    }else{
+				        	defaultOption=dataSets.map(item=>item.slug)[0]
+	                renderSelectBox =dataSets.map((dataSet, i) => { 
 	                        return(<option key={dataSet.slug}  value={dataSet.slug}>{dataSet.name}</option>);
-	                    }
 	                });
 
 	            }else if (getUserDetailsOrRestart.get().view_data_permission=="false") {
@@ -125,7 +123,7 @@ export class CreateSignal extends React.Component {
 				<Modal.Body>
 				<div class="form-group">
 				<label className="pb-2">Select an existing dataset</label>
-				<select id="signal_Dataset" name="selectbasic" class="form-control" onChange={this.checkSelection.bind(this)}>
+				<select id="signal_Dataset" name="selectbasic" defaultValue={defaultOption} class="form-control" onChange={this.checkSelection.bind(this)}>
 				{renderSelectBox}
 				</select>
 				</div>

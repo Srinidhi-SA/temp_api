@@ -90,6 +90,7 @@ export default function reducer(state = {
   ocrImgHeight: "",
   ocrImgWidth: "",
   docTablePage: 1,
+  projectPage:1,
 
 }, action) {
   switch (action.type) {
@@ -790,38 +791,20 @@ export default function reducer(state = {
         }
       }
       break;
+
       case "CLEAR_REVIEWER_CONFIG":
       {
-        let data1 = state.configRules.iRRule
-        let irRul = {}
-        let iFlag = state.iRFlag
-        if(Object.keys(data1).length === 0){
-          irRul = {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""}
-        }else if(data1.auto.active === "True"){
-          irRul = {"active":"all","max_docs_per_reviewer":data1.auto.max_docs_per_reviewer,"selectedIRList":[],"test":data1.auto.remainaingDocsDistributionRule}
-        }else if(data1.custom.active === "True"){
-          irRul = {"active":"select","max_docs_per_reviewer":data1.custom.max_docs_per_reviewer,"selectedIRList":data1.custom.selected_reviewers,"test":data1.custom.remainaingDocsDistributionRule}
-        }
-        let data2 = state.configRules.sRRule
-        let srRul = {}
-        let sFlag = state.sRFlag
-        if(Object.keys(data2).length === 0){
-          srRul = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
-        }else if(data2.auto.active === "True"){
-          srRul = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedSRList":[],"test":data2.auto.remainaingDocsDistributionRule}
-        }else if(data1.custom.active === "True"){
-          srRul = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedSRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
-        }
         return {
           ...state,
-          iRToggleFlag : iFlag,
-          iRConfigureDetails : irRul,
-          sRToggleFlag : sFlag,
-          sRConfigureDetails : srRul,
+          iRToggleFlag : state.iRFlag,
+          sRToggleFlag : state.sRFlag,
+          configRules : {},
+          iRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedIRList":[],"test":""},
+          sRConfigureDetails : {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""},
           iRSearchElem : "",
           sRSearchElem : ""
         }
-      }
+      } 
       break;
       case "SAVE_RULES_FOR_CONFIGURE":
       {
@@ -842,7 +825,7 @@ export default function reducer(state = {
           srRules = {"active":"","max_docs_per_reviewer":"","selectedSRList":[],"test":""}
         }else if(data2.auto.active === "True"){
           srRules = {"active":"all","max_docs_per_reviewer":data2.auto.max_docs_per_reviewer,"selectedSRList":[],"test":data2.auto.remainaingDocsDistributionRule}
-        }else if(data1.custom.active === "True"){
+        }else if(data2.custom.active === "True"){
           srRules = {"active":"select","max_docs_per_reviewer":data2.custom.max_docs_per_reviewer,"selectedSRList":data2.custom.selected_reviewers,"test":data2.custom.remainaingDocsDistributionRule}
         }
         return {
@@ -873,6 +856,14 @@ export default function reducer(state = {
           }
         }
         break;
+        case "PROJECT_PAGE" :
+          {
+            return {
+              ...state,
+              projectPage : action.page
+            }
+          }
+          break;
 }
   return state
 }

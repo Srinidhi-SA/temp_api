@@ -11,7 +11,7 @@ def convert_to_string(data):
     for key in keys:
         if key in data:
             value = data[key]
-            if isinstance(value, str or str):
+            if isinstance(value, str):
                 pass
             elif isinstance(value, dict):
                 data[key] = json.dumps(value)

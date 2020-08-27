@@ -34,7 +34,7 @@ export class OcrReviewer extends React.Component {
     var userRole=getUserDetailsOrRestart.get().userRole
     if(userRole == "ReviewerL1" || userRole == "ReviewerL2"){ 
     renderComponents=(
-      store.getState().ocr.revDocumentFlag?<RevDocTable/>:
+      (store.getState().ocr.revDocumentFlag && store.getState().ocr.selected_project_name)?<RevDocTable/>:
       <RevProjectTable/>)
     }
     else{

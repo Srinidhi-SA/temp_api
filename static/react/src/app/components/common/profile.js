@@ -6,7 +6,6 @@ import {isEmpty, getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL, API} from "../../helpers/env";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import {saveFileToStore,clearDataUploadFile} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
@@ -20,6 +19,7 @@ import {
   NavItem
 } from "react-bootstrap";
 import {openImg, closeImg, uploadImg, getUserProfile, saveProfileImage} from "../../actions/loginActions";
+import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
   return {login_response: store.login.login_response, profileInfo: store.login.profileInfo, fileUpload: store.dataSource.fileUpload, showModal: store.dataUpload.imgUploadShowModal, profileImgURL: store.login.profileImgURL};
@@ -162,7 +162,7 @@ resetAPI=(oldPassword,newPassword) =>{
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         return (
           <div key={i} className="col-md-2 co-sm-4 col-xs-6">
-            <h2 className="text-center text-primary">{analysis.count}<br/>
+            <h2 className="text-center text-primary" style={{paddingBottom:"0px"}}>{analysis.count}<br/>
               <small>{analysis.displayName}
               </small>
             </h2>
@@ -384,7 +384,7 @@ resetAPI=(oldPassword,newPassword) =>{
                   <div className="panel-body no-border box-shadow">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
-                      <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
+                      <C3ChartNew chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
                       <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>
                   </div>

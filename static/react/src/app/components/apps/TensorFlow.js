@@ -89,10 +89,11 @@ export class TensorFlow extends React.Component {
 
   getOptions(item) {
       var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
+      var selectedOption=arr.filter(i=>i.sel)[0].name
       var options = arr.map(k => {
-          return <option value={k.name} selected={k.sel}> {k.name}</option>
+          return <option key={k.name} value={k.name}> {k.name}</option>
       })
-      return <select onChange={this.handleSelectBox.bind(this,item)} className={`form-control ${item.name}_tf`}> {options} </select>
+      return <select onChange={this.handleSelectBox.bind(this,item)} defaultValue={selectedOption} className={`form-control ${item.name}_tf`}> {options} </select>
   }
     
     
@@ -183,9 +184,9 @@ export class TensorFlow extends React.Component {
      data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters
      var algorithmData=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters.filter(i=>i.name!="layer")
       var rendercontent = algorithmData.map((item,index)=>{
-           if(item.paramType=="list"){
+        if(item.paramType=="list"){
               return (
-                <div className ="row mb-20">
+                <div key={item.name} className ="row mb-20">
                 <div className="form-group">
                 <label className="col-md-2">{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>
@@ -203,7 +204,7 @@ export class TensorFlow extends React.Component {
            }
            else
             return (
-              <div className ="row mb-20">
+              <div  key={item.name} className ="row mb-20">
                 <div class="form-group">
                 <label class="col-md-2 control-label read">{item.displayName}</label>
                 <label className="col-md-4">{item.description}</label>

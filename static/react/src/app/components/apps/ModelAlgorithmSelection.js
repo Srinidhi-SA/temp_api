@@ -59,60 +59,60 @@ export class ModelAlgorithmSelection extends React.Component {
             var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected
             
         if(!isContinueRange || !isContinueMulticheck){
-             if(document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
+             if(document.getElementsByClassName("InterceptGrid")[0] !=undefined && document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Fit Intercept...","small_mascot");
                     bootbox.alert(msg);
                     $(".InterceptGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                }else if(document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("solverGrid")[0]!=undefined && document.getElementsByClassName("solverGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Solver Used...","small_mascot");
                     bootbox.alert(msg);
                     $(".solverGrid .multiselect").addClass("regParamFocus");
 
                     return false;   
-                }else if(document.getElementsByClassName("criterionGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("criterionGrid")[0]!=undefined && document.getElementsByClassName("criterionGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Criterion...","small_mascot");
                     bootbox.alert(msg);
                     $(".criterionGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                }else if(document.getElementsByClassName("bootstrapGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("bootstrapGrid")[0]!=undefined && document.getElementsByClassName("bootstrapGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Bootstrap Sampling...","small_mascot");
                     bootbox.alert(msg);
                     $(".bootstrapGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                }else if(document.getElementsByClassName("boosterGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("boosterGrid")[0]!=undefined && document.getElementsByClassName("boosterGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Booster Function...","small_mascot");
                     bootbox.alert(msg);
                     $(".boosterGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                }else if(document.getElementsByClassName("treeGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("treeGrid")[0]!=undefined && document.getElementsByClassName("treeGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Tree Construction Algorithm...","small_mascot");
                     bootbox.alert(msg);
                     $(".treeGrid .multiselect").addClass("regParamFocus");
                     
                     return false;
-                } else if(document.getElementsByClassName("activation")[0].innerHTML.includes("None selected")){
+                } else if(document.getElementsByClassName("activation")[0]!=undefined && document.getElementsByClassName("activation")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Activation...","small_mascot");
                     bootbox.alert(msg);
                     $(".activation .multiselect").addClass("regParamFocus");
                     return false;
-                }else if(document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected") && (document.getElementsByClassName("solverGrid")[0].innerText.includes("adam") || document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd") ) ){
+                }else if(document.getElementsByClassName("shuffleGrid")[0]!=undefined && document.getElementsByClassName("shuffleGrid")[0].innerHTML.includes("None selected") && (document.getElementsByClassName("solverGrid")[0].innerText.includes("adam") || document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd") ) ){
                     let msg= statusMessages("warning","Please select Shuffle...","small_mascot");
                     bootbox.alert(msg);
                     $(".shuffleGrid .multiselect").addClass("regParamFocus");
 
                     return false;
-                }else if((document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
+                }else if((document.getElementsByClassName("learningGrid")[0]!=undefined && document.getElementsByClassName("learningGrid")[0].innerHTML.includes("None selected")) && (document.getElementsByClassName("solverGrid")[0]!=undefined && document.getElementsByClassName("solverGrid")[0].innerText.includes("sgd"))){
                     let msg= statusMessages("warning","Please select Learning Rate...","small_mascot");
                     bootbox.alert(msg);
                     $(".learningGrid .multiselect").addClass("regParamFocus");
 
                     return false;
-                }else if(document.getElementsByClassName("batchGrid")[0].innerHTML.includes("None selected")){
+                }else if(document.getElementsByClassName("batchGrid")[0]!=undefined && document.getElementsByClassName("batchGrid")[0].innerHTML.includes("None selected")){
                     let msg= statusMessages("warning","Please select Batch Size...","small_mascot");
                     bootbox.alert(msg);
                     $(".batchGrid .multiselect").addClass("regParamFocus");
@@ -313,7 +313,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                         if(param.display){
                                             return(
 
-                                                    <div class="form-group">
+                                                    <div key={index} class="form-group">
                                                         <label class="col-md-3 control-label read">{param.displayName}</label>
                                                         <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
                                                     <div class="clearfix"></div>
@@ -331,14 +331,12 @@ export class ModelAlgorithmSelection extends React.Component {
                         var parametersData = algorithmParameters.map((params,Index) =>{
                             if(params.hyperpatameterTuningCandidate && params.display){
                                 return(
-
-                                        <div class="form-group">
-                                            <label class="col-md-2 control-label read">{params.displayName}</label>
-                                            <label class="col-md-4 control-label read">{params.description}</label>
-                                            <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
+                                    <div key={Index} class="form-group">
+                                        <label class="col-md-2 control-label read">{params.displayName}</label>
+                                        <label class="col-md-4 control-label read">{params.description}</label>
+                                        <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
                                         <div class="clearfix"></div>
-                                        </div>
-
+                                    </div>
                                 );
                             }
                         });
@@ -349,7 +347,7 @@ export class ModelAlgorithmSelection extends React.Component {
                             if(params.display){
                                 return(
 
-                                    <div class="form-group">
+                                    <div key={Index} class="form-group">
                                         <label class="col-md-2 control-label read">{params.displayName}</label>
                                         <label class="col-md-4 control-label read">{params.description}</label>
                                         <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
@@ -363,7 +361,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     if(data.selected == true)
                     {
                         return(
-                            <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
+                            <Tab  key={Index}eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <FormGroup role="form">
                                 {data.algorithmName === "Neural Network (TensorFlow)"?
                                 <TensorFlow data/>

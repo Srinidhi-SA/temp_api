@@ -86,7 +86,7 @@ export class AlgorithmSelection extends React.Component {
                 pageData = algorithmData.map((data,Index) =>{
                     var checkboxId = "check"+Index;
                     return(                       
-                        <div className= {algoClass}>
+                        <div key={Index} className= {algoClass}>
 						<div className="bg-highlight-parent xs-mb-10 cst-panel-shadow">
                         <div className="checkbox">
                             <div className="ma-checkbox">

@@ -146,7 +146,7 @@ var dateFormat = require('dateformat');
             }
             this.props.dispatch(getAppsModelList(1));    
         }
-        
+       
         render() {
            const modelList = store.getState().apps.modelList.data;
             const algoList = store.getState().apps.algoList;
@@ -168,8 +168,8 @@ var dateFormat = require('dateformat');
                         <div className="row">
                         <div className="col-md-6">
 
-                        <select className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Mode" onChange={this.filterByMode.bind(this)}>
-                        <option disabled selected value="">Filter By Mode</option>
+                        <select defaultValue="filterByMode" className="mode_filter form-control" style={{"width":"35%"}} id="filterby" title="Filter By Mode" onChange={this.filterByMode.bind(this)}>
+                        <option value="filterByMode" disabled>Filter By Mode</option>
                         <option value="">All</option>
                         <option value="analyst">Analyst</option>
                         <option value="autoML">Auto ML</option>

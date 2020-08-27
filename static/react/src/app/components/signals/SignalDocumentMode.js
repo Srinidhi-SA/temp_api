@@ -110,7 +110,7 @@ export class SignalDocumentMode extends React.Component {
 					
 					<h3 className="xs-mt-0">{this.props.signal.name}
 							<div className="btn-toolbar pull-right">
-								<div className="btn-group">
+								<div className="btn-group summaryIcons">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 								<Link className="btn btn-default continue" to={cardModeLink} title="Card mode">
 								<i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>

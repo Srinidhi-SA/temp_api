@@ -84,7 +84,7 @@ export class AppsStockDocumentMode extends React.Component {
 
 					<h3 class="xs-mt-0">{this.props.signal.name}
                         <div className="btn-toolbar pull-right">
-                          <div className="btn-group btn-space">
+                          <div className="btn-group btn-space summaryIcons">
                             <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
                             <i class="fa fa-print" aria-hidden="true"></i>
                           </button>

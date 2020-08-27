@@ -624,7 +624,7 @@ export class PyTorch extends React.Component {
                         case "eta":
                         case "step_sizes":
                             arr1.push(
-                                <div className = "row mb-20">
+                                <div key={item[i].name} className = "row mb-20">
                                     <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                     <label className = "col-md-4">{item[i].description}</label>
                                     <div className ="col-md-1">
@@ -642,7 +642,7 @@ export class PyTorch extends React.Component {
                         break;
                         case "weight":
                                 arr1.push(
-                                    <div className = "row mb-20">
+                                    <div key={item[i].name} className = "row mb-20">
                                         <label className = "col-md-2">{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
@@ -666,7 +666,7 @@ export class PyTorch extends React.Component {
                             }
                             var mandateField = ["alpha","momentum","blank","eps","rho","lr","weight_decay","lr_decay","lambd","t0","max_iter","max_eval","tolerance_grad","tolerance_change","dampening","l1_decay","l2_decay"]
                                 arr1.push(
-                                    <div className = "row mb-20">
+                                    <div  key={item[i].name} className = "row mb-20">
                                         <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-1">
@@ -685,19 +685,20 @@ export class PyTorch extends React.Component {
                                 var options = item[i].valueRange
                                 var selectedValue = ""
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="None">--Select--</option>)
-                                options.map(k => {
+                                var selectedOption = store.getState().apps.pyTorchSubParams[parameterData][item[i].name]
+                                optionsTemp.push(<option key={'None'} value="None">--Select--</option>)
+                                options.map((k,index) => {
                                     if(k === store.getState().apps.pyTorchSubParams[parameterData][item[i].name])
                                         selectedValue = true;
                                     else selectedValue = false;
-                                    optionsTemp.push(<option value={k} selected={selectedValue}> {k}</option>)
+                                    optionsTemp.push(<option key={k} value={k} > {k}</option>)
                                 })
                                 arr1.push(
-                                        <div className = "row mb-20">
+                                        <div key={item[i].name} className = "row mb-20">
                                             <label className = {mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                             <label className = "col-md-4">{item[i].description}</label>
                                             <div className = "col-md-3">
-                                                <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}>
+                                                <select key = {`form-control ${item[i].name}_pt`} defaultValue={selectedOption} className = {`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}>
                                                     {optionsTemp}
                                                 </select>
                                                 <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
@@ -709,7 +710,7 @@ export class PyTorch extends React.Component {
                                 var options = item[i].defaultValue.map(i=> {return{name:i.displayName,selected:i.selected}} )
                                 var mandateField = ["log_input","full","amsgrad","line_search_fn","zero_infinity","centered","nesterov"];
                                 var optionsTemp = []
-                                optionsTemp.push(<option value="None">--Select--</option>)
+                                optionsTemp.push(<option key={'None'} value="None">--Select--</option>)
                                 var selectedValue = ""
                                 selectedValue = store.getState().apps.pyTorchSubParams[parameterData][item[i].name]
                                 var sel = ""
@@ -718,14 +719,14 @@ export class PyTorch extends React.Component {
                                         sel = true
                                     else
                                         sel = false
-                                    optionsTemp.push(<option value={k.name} selected={sel}> {k.name}</option>)
+                                    optionsTemp.push(<option key={k.name} value={k.name}> {k.name}</option>)
                                 })
                                 arr1.push(
-                                    <div className = "row mb-20">
+                                    <div  key={item[i].name} className = "row mb-20">
                                         <label className ={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                         <label className = "col-md-4">{item[i].description}</label>
                                         <div className = "col-md-3">
-                                            <select key = {`form-control ${item[i].name}_pt`} className = {`form-control ${item[i].name}_pt`}  ref={(el) => { this.eleSel = el }} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}>
+                                            <select key = {`form-control ${item[i].name}_pt`} defaultValue={selectedValue} className = {`form-control ${item[i].name}_pt`}  ref={(el) => { this.eleSel = el }} onChange={this.setChangeSubValues.bind(this,item[i],parameterData)}>
                                                 {optionsTemp}
                                             </select>
                                             <div key = {`${item[i].name}_pt`} className = "error_pt"></div>
@@ -747,20 +748,21 @@ export class PyTorch extends React.Component {
                 var mandateField= ["Loss","Optimizer","regularizer"];
                 var selectedValue = "";
                 var optionsTemp = []
-                parameterData.displayName != "Layer" && optionsTemp.push(<option value="None">--Select--</option>)
+                parameterData.displayName != "Layer" && optionsTemp.push(<option key={'None'} value="None">--Select--</option>)
+                var selectedOption=options.filter(i=>i.selected).length>0?options.filter(i=>i.selected)[0].name:""              
                 for (var prop in options) {
                     if(options[prop].selected)
                         selectedValue = options[prop].name;
-                    optionsTemp.push(<option key={prop} className={prop} defaultValue={options[prop].name} selected={options[prop].selected}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} >{options[prop].displayName}</option>);
                 }
                 let selParam = store.getState().apps.pyTorchSubParams
                 return(
-                    <div>
+                    <div key={parameterData.name}>
                         <div className = "row mb-20">
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-3">
-                                <select ref={(el) => { this.eleSel = el }} key= {`form-control ${parameterData.name}_pt`} className= {`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)}>
+                                <select ref={(el) => { this.eleSel = el }} defaultValue={selectedOption} key= {`form-control ${parameterData.name}_pt`} className= {`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)}>
                                     {optionsTemp}
                                 </select>
                             </div>
@@ -794,7 +796,7 @@ export class PyTorch extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     let mandateField = ["Batch Size","Number of Epochs"];
                     return (
-                        <div className = "row mb-20">
+                        <div key={parameterData.name} className = "row mb-20">
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label class = "col-md-4">{parameterData.description}</label>
                             <div class = "col-md-1">
@@ -807,7 +809,7 @@ export class PyTorch extends React.Component {
                 break;
             default:
                 return (
-                    <div className="row mb-20">
+                    <div key={parameterData.displayName} className="row mb-20">
                         <label className = "col-md-2">{parameterData.displayName}</label>
                         <label className = "col-md-4">{parameterData.description}</label>                                
                     </div>

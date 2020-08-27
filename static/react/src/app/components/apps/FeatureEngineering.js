@@ -711,7 +711,7 @@ export class FeatureEngineering extends React.Component {
         else
           numberOfSelectedDimensions += 1;
         return (
-          <tr className={('all ' + item.columnType)}>
+          <tr key={key} className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase() + item.columnType.slice(1)}</td>
             <td> <Button id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
@@ -793,11 +793,11 @@ export class FeatureEngineering extends React.Component {
                   </p>
                     <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.props.convertUsingBin === "true"} />
+                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" defaultChecked={this.props.convertUsingBin === "true"} />
                         <label for="mTod-binning1">Yes</label>
                       </div>
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.props.convertUsingBin === "false"} />
+                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" defaultChecked={this.props.convertUsingBin === "false"} />
                         <label for="mTod-binning2">No </label>
                       </div>
                     </span>

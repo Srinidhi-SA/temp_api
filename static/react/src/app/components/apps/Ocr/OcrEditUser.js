@@ -136,7 +136,7 @@ export class OcrEditUser extends React.Component{
 
     render(){
         let optionsTemp = [];
-        optionsTemp.push(<option id="none" value="none">--select--</option>);
+        optionsTemp.push(<option key={'none'} id="none" value="none">--select--</option>);
         for(var i=0; i<this.props.ocrReviwersList.length; i++){
             optionsTemp.push(<option key={this.props.ocrReviwersList[i].name} value={this.props.ocrReviwersList[i].name}>
                         {this.props.ocrReviwersList[i].name}

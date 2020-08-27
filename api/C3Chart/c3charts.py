@@ -69,7 +69,7 @@ class C3Chart(object):
         type = 'bar'
         if isinstance(self._type, tuple) or isinstance(self._type, list):
             type = self._type[0]
-        elif isinstance(self._type, str) or isinstance(self._type, str):
+        elif isinstance(self._type, str):
             type = self._type
         self._data = {
             self._data_type: self._data_data,

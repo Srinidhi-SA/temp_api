@@ -5,6 +5,8 @@ from collections import OrderedDict
 import cv2
 import os
 import matplotlib as mpl
+import PIL
+from PIL import ImageFont, ImageDraw, Image
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 if os.environ.get('DISPLAY', '') == '':
@@ -317,7 +319,61 @@ class ui_corrections:
         cv2.imwrite(gen_image, mask)
         return
 
-    def document_confidence(self, analysis):  ## TO DO
+    def render_flagged_image2(self, final_json, mask, gen_image_path, language_input):
+
+        #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+        height, width = mask.shape[:2]
+        #        area = height * width
+
+        language_fonts = {"Korean": 'gulim.ttf', 'Chinese-1': 'simsun.ttc', 'Japanese': 'TakaoGothic.ttf'}
+        if language_input in language_fonts.keys():
+            fontpath = "ocr/ITE/fonts/" + language_fonts[language_input]
+        else:
+            fontpath = "ocr/ITE/fonts/FreeMono.ttf"
+
+        font = ImageFont.truetype(fontpath, 12)
+
+        img_pil = Image.fromarray(mask)
+        draw = ImageDraw.Draw(img_pil)
+        b, g, r, a = 0, 0, 0, 0
+
+        if 'paragraphs' in final_json:
+            for k in final_json["paragraphs"]:
+                for l in final_json["paragraphs"][k]:
+                    for m in l:
+                        p1 = m['boundingBox']["p1"]
+                        p3 = m['boundingBox']["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m['text']
+
+                        draw.text((p1[0] + 3, p1[1]), text, font=font, fill=(b, g, r, a))
+
+
+        else:
+            pass
+
+        if 'tables' in final_json:
+            for k in final_json["tables"]:
+                for l in final_json["tables"][k]:
+                    for m in final_json["tables"][k][l]["words"]:
+                        p1 = m["boundingBox"]["p1"]
+                        p3 = m["boundingBox"]["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m["text"]
+
+                        draw.text((p1[0] + 3, p1[1]), text, font=font, fill=(b, g, r, a))
+        else:
+            pass
+        mask = np.array(img_pil)
+        mask = self.adjust_gamma(mask, gamma=0.4)
+        mask = dynamic_cavas(mask)
+
+        cv2.imwrite(gen_image_path, mask)
+        return
+
+    def document_confidence(self, analysis):
         word_count, error = 0, 0
         for line in analysis['lines']:
 
@@ -328,9 +384,19 @@ class ui_corrections:
                     error = error + 1
                 else:
                     pass
-
-        document_accuracy = round((word_count - error) / word_count, 2)
+        try:
+            document_accuracy = round((word_count - error) / word_count, 2)
+        except ZeroDivisionError:
+            document_accuracy = 0
         return document_accuracy, word_count
+
+    def document_fields_count(self, analysis):
+        word_count = 0
+        for line in analysis['lines']:
+
+            for word in line['words']:
+                word_count = word_count + 1
+        return word_count
 
 
 def ui_flag_v2(mask, final_json, gen_image, analysis, percent=1):
@@ -358,6 +424,46 @@ def ui_flag_v2(mask, final_json, gen_image, analysis, percent=1):
     return gen_image, doc_accuracy, total_words
 
 
+def ui_flag_v3(mask, final_json, gen_image, analysis, percent=1):
+    mask = mask
+    final_json = final_json
+
+    uc_obj = ui_corrections(mask, final_json)
+
+    final_json = uc_obj.default_all_words_flag_to_false(final_json)
+    doc_accuracy, total_words = uc_obj.document_confidence(analysis)
+
+    if percent == 1:
+        mode = "default"
+        needed_words = uc_obj.all_words(analysis)
+    else:
+        mode = None
+        needed_words = uc_obj.confidence_filter(analysis, percent)
+    upd, fj = uc_obj.flag_words_to_plot(final_json, needed_words, mode)
+
+    uc_obj.render_flagged_image(fj, uc_obj.mask, gen_image)
+    return gen_image, doc_accuracy, total_words
+
+
+def ui_flag_v4(mask, final_json, gen_image_path, analysis, language_input):
+    mask = mask
+    final_json = final_json
+    uc_obj = ui_corrections(mask, final_json)
+    #    final_json = uc_obj.default_all_words_flag_to_false(final_json)
+    total_words = uc_obj.document_fields_count(analysis)
+    #    if percent == 1:
+    #        mode = "default"
+    #        needed_words = uc_obj.all_words(analysis)
+    #    else:
+    #        mode = None
+    #        needed_words = uc_obj.confidence_filter(analysis, percent)
+    #    upd, fj = uc_obj.flag_words_to_plot(final_json, needed_words, mode)
+
+    uc_obj.render_flagged_image2(final_json, uc_obj.mask, gen_image_path, language_input)
+
+    return gen_image_path, total_words
+
+
 def check_if_centroid_inbetween_p1_p3(centroid, p1, p3):
     if p1[0] <= centroid[0] <= p3[0] and p1[1] <= centroid[1] <= p3[1]:
         return True
@@ -374,10 +480,6 @@ def fetch_click_word_from_final_json(final_json, click_coordinate):
                     p1 = word['boundingBox']['p1']
                     p3 = word['boundingBox']['p3']
                     print(p1, p3)
-                    '''for val in list(m.values()):
-                        if isinstance(val, list):
-                            p1 = val[0:2]
-                            p3 = val[4:6]'''
                     if check_if_centroid_inbetween_p1_p3(click_coordinate, p1, p3):
                         return True, word['text']
     if "tables" in final_json.keys():

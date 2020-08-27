@@ -5,7 +5,6 @@ import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {hideDataPreview} from "../../actions/dataActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {isEmpty, DYNAMICLOADERINTERVAL, getUserDetailsOrRestart, handleJobProcessing} from "../../helpers/helper";
