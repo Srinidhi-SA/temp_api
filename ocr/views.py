@@ -1618,6 +1618,14 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    #print('let us deleted')
+                    #instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
+                    #clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
 
