@@ -793,11 +793,11 @@ export class FeatureEngineering extends React.Component {
                   </p>
                     <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" checked={this.props.convertUsingBin === "true"} />
+                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning" defaultChecked={this.props.convertUsingBin === "true"} />
                         <label for="mTod-binning1">Yes</label>
                       </div>
                       <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" checked={this.props.convertUsingBin === "false"} />
+                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning" defaultChecked={this.props.convertUsingBin === "false"} />
                         <label for="mTod-binning2">No </label>
                       </div>
                     </span>

@@ -316,10 +316,18 @@ class OCRUserView(viewsets.ModelViewSet):
         return queryset
 
     def get_specific_reviewer_detail_queryset(self, request):
-        queryset = User.objects.filter(
-            groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            ocruserprofile__supervisor=request.user
-        )
+        user_group = request.user.groups.values_list('name', flat=True)
+        if 'Superuser' in user_group:
+            queryset = User.objects.filter(
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                ocruserprofile__supervisor=request.user,
+                is_active = True
+            )
+        else:
+            queryset = User.objects.filter(
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                is_active = True
+            )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -1610,6 +1618,14 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    #print('let us deleted')
+                    #instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
+                    #clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
 

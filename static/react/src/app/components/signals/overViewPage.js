@@ -88,10 +88,9 @@ export class OverViewPage extends React.Component {
     //   $('.sdbar_switch i').removeClass('sw_on');
     //   $('.sdbar_switch i').addClass('sw_off');
     // }
-    setTimeout(() => {
-          this.setState({ loading: false });
-           }, 0);
-
+     this.setTime = setTimeout(() => { 
+      this.setState({ loading: false });       
+    }, 0);  
   }
   componentDidUpdate(){
     var that = this;
@@ -105,6 +104,10 @@ export class OverViewPage extends React.Component {
       }}
     });
   }
+
+  componentWillUnmount = () => {            
+    clearTimeout(this.setTime);    
+}; 
 
   toggleSideList() {
     //alert($('.row-offcanvas').attr('class'));

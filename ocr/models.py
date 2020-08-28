@@ -61,7 +61,8 @@ class OCRUserProfile(models.Model):
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            "role": self.ocr_user.groups.values_list('name', flat=True)
+            "role": self.ocr_user.groups.values_list('name', flat=True),
+            "supervisor": (self.supervisor.username).capitalize() if self.supervisor is not None else None
         }
         return ocr_user_profile
 

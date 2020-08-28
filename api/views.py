@@ -6082,9 +6082,6 @@ def get_algorithm_config_list(request):
         slug = request.GET['slug']
     except:
         app_type = "CLASSIFICATION"
-    dataset_object = Dataset.objects.get(slug=slug)
-    import os
-    dataset_filesize = os.stat(dataset_object.input_file.path).st_size
     try:
         levels = int(request.GET['levels'])
     except:
@@ -6115,6 +6112,9 @@ def get_algorithm_config_list(request):
         #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
         elif app_type == "CLASSIFICATION" and mode == 'analyst':
+            dataset_object = Dataset.objects.get(slug=slug)
+            import os
+            dataset_filesize = os.stat(dataset_object.input_file.path).st_size
             if dataset_filesize < 128000000:
                 algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
             else:
