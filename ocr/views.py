@@ -728,7 +728,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading'],
+            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading','failed'],
             created_by=self.request.user,
             project__slug=projectslug,
             deleted=False
