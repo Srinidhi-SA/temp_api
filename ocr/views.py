@@ -722,14 +722,16 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return OCRImage.objects.filter(
             status__in=['ready_to_verify(L1)', 'l1_verified', 'ready_to_verify(L2)', 'ready_to_export', 'bad_scan'],
             created_by=self.request.user,
-            project__slug=projectslug
+            project__slug=projectslug,
+            deleted=False
         ).order_by('-created_at')
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading'],
             created_by=self.request.user,
-            project__slug=projectslug
+            project__slug=projectslug,
+            deleted=False
         ).order_by('-created_at')
 
     def get_queryset_by_status(self, projectslug, imageStatus):
