@@ -498,9 +498,7 @@ export class C3ChartNew extends React.Component{
             "columns": chartData.data.columns,
             "type": chartData.data.type,
             "x": chartData.data.x,
-            "xs":{
-              "data": chartData.data.xs.data
-            }
+            "xs":chartData.data.xs,
           },
           "grid": {
             "x":{
