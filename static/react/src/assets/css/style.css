@@ -23123,3 +23123,13 @@ min-width: 102px; }
   margin: 7.5px 0 !important;
   width: 100%;
 }
+.pageRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.pageRow select{
+  height: 30px;
+  background: #ffffff;
+}

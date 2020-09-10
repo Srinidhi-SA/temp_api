@@ -145,14 +145,21 @@ function fetchUploadedFiles(pageNo=store.getState().ocr.docTablePage,token){
 	let tabActive	= store.getState().ocr.tabActive==''?'active':store.getState().ocr.tabActive;
 	let filter_fields=store.getState().ocr.filter_fields
 	let filter_template=store.getState().ocr.filter_template
-	if(search_document==''){
-		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo, {
+	let pageSize = store.getState().ocr.docTablePagesize
+	if(search_document=='' && pageSize!= "All"){
+		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo +'&page_size=' + pageSize, {
 			method: 'get',
       headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
-  }
+	}
+	else if(search_document=='' && pageSize=== "All"){
+		return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&status='+ filter_status +'&confidence='+ filter_confidence +'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page=' + pageSize, {
+			method: 'get',
+      headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+	}
 	else{
-	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo, {
+	return fetch(API + '/ocr/ocrimage/get_ocrimages/?projectslug='+selected_project_slug+'&imageStatus='+tabActive+'&name='+search_document +'&status='+ filter_status +'&confidence='+filter_confidence+'&fields='+filter_fields+'&assignee='+filter_assignee+'&template='+filter_template+'&page_number=' + pageNo +'&page_size=' + pageSize, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]))
@@ -177,6 +184,12 @@ export function docTablePage(page){
 	return {
 		type: "DOC_TABLE_PAGE",
 		page,
+	}
+}
+export function docTablePagesize(pagesize){
+	return {
+		type: "DOC_TABLE_PAGESIZE",
+		pagesize,
 	}
 }
 export function projectPage(page){

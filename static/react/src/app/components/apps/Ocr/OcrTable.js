@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   getOcrUploadedFiles, saveImagePageFlag, saveDocumentPageFlag, saveImageDetails,
   saveSelectedImageName, storeOcrSortElements, updateCheckList, storeOcrFilterStatus, setProjectTabLoaderFlag,
-  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields, clearImageDetails, storeOcrFilterTemplate, docTablePage
+  storeOcrFilterConfidence, storeOcrFilterAssignee, storeDocSearchElem, tabActiveVal, storeOcrFilterFields, clearImageDetails, storeOcrFilterTemplate, docTablePage, docTablePagesize
 } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import store from "../../../store";
@@ -59,7 +59,12 @@ export class OcrTable extends React.Component {
     this.props.dispatch(docTablePage(pageNo))
     this.props.dispatch(getOcrUploadedFiles(pageNo))
   }
-
+  handlePageRow=(e)=>{
+    let selectedVal= e.target.value;
+    this.props.dispatch(docTablePagesize(selectedVal));
+    this.setState({ checkAll: false, checkedList: [] });
+    this.props.dispatch(getOcrUploadedFiles());
+  }
   handleImagePageFlag = (slug, name) => {
     this.getImage(slug)
     this.props.dispatch(saveSelectedImageName(name));
@@ -339,11 +344,18 @@ export class OcrTable extends React.Component {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
-    if (pages > 1) {
+    if (pages >= 0) {
       paginationTag = (
         <div class="col-md-12 text-center">
-          <div className="footer" id="Pagination">
-            <div className="pagination">
+          <div className="footer" id="Pagination">             
+            <div className="pagination pageRow">
+            <span>Rows per page:</span>
+                <select className="xs-mr-20 xs-ml-10" onChange={this.handlePageRow}>
+                  <option value="12">12</option>
+                  <option value="50">50</option>
+                  <option value="100">10</option>
+                  <option value="All">All</option>
+                </select>
               <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
             </div>
           </div>
@@ -515,6 +527,7 @@ export class OcrTable extends React.Component {
               <div className="table-responsive noSwipe xs-pb-10" style={{ minHeight: 300 }}>
                 {/* if total_data_count_wf <=1 then only render table else show panel box */}
                 {!this.props.projectTabLoaderFlag ? this.props.OcrDataList != '' ? this.props.OcrDataList.total_data_count_wf >= 1 ? (
+                  <div>
                   <Scrollbars style={{ width: 'calc(100% - 1px)', height: 360 }}>
                     <table id="documentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
                       <thead>
@@ -602,7 +615,10 @@ export class OcrTable extends React.Component {
                         {OcrTableHtml}
                       </tbody>
                     </table>
-                  </Scrollbars>)
+                  </Scrollbars>
+                  {paginationTag}
+                  </div>
+                  )
                   :
                   (<div class="panel">
                     <div class="panel-body">
@@ -617,7 +633,6 @@ export class OcrTable extends React.Component {
                   : (<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
                   : (<img id="loading" style={{ paddingTop: 0 }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
                 }
-                {paginationTag}
                 {ShowModel}
               </div>
             </div>
