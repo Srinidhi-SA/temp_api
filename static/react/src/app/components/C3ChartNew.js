@@ -498,9 +498,7 @@ export class C3ChartNew extends React.Component{
             "columns": chartData.data.columns,
             "type": chartData.data.type,
             "x": chartData.data.x,
-            "xs":{
-              "data": chartData.data.xs.data
-            }
+            "xs":chartData.data.xs,
           },
           "grid": {
             "x":{
@@ -578,7 +576,21 @@ export class C3ChartNew extends React.Component{
   render(){
     let that = this;
     window.onmouseover = function(event){
-      if(event.target.tagName==="tspan" && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
+
+    var graphs=document.getElementsByClassName('c3-axis-y-label')
+     for(var i=0;i<graphs.length;i++){
+       graphs[i].classList.add("graph"+i)
+       var label = d3.select(".graph"+i);
+       if( label.text().length>32){
+        var word1=label.text().substring(28,"");
+        var word2=label.text().substring(28);
+        label.text("");
+        label.append("tspan").text(word1).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))-12).attr("x",graphs[i].getAttribute('x'));
+        label.append("tspan").text(word2).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))+59).attr("x",graphs[i].getAttribute('x'));
+       }
+     }
+
+      if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
         let str = that.props.xdata
         let stockData = store.getState().signals.signalAnalysis.listOfNodes;
         switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
