@@ -263,7 +263,8 @@ def get_listed_data(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -304,7 +305,8 @@ def get_userlisted_data(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -333,7 +335,8 @@ def get_image_list_data(viewset, queryset, request, serializer):
             serializer = serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -376,7 +379,8 @@ def get_specific_listed_data(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -417,7 +421,8 @@ def get_reviewer_data(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -459,7 +464,8 @@ def get_specific_assigned_requests(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -501,7 +507,8 @@ def get_filtered_ocrimage_list(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -543,7 +550,8 @@ def get_filtered_project_list(
             serializer = list_serializer(query_set, many=True)
             return Response({
                 "data": serializer.data,
-                "total_no_of_pages":1
+                "total_no_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
