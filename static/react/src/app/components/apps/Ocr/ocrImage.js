@@ -443,7 +443,7 @@ export class OcrImage extends React.Component {
               <div style={{ display: 'inline' }}>
                 <ReactTooltip place="top" type="light" />
                 <button class="btn btn-warning" id="badScan" data-toggle="modal" data-target="#modal_badscan" data-tip="Tell us if you are not happy with the output">
-                  <i class="fa fa-info-circle"></i> Bad Scan
+                  <i class="fa fa-info-circle"></i> Bad Recognition
                 </button>
                 <button class="btn btn-primary" id="mac" onClick={this.handleMarkComplete}><i class="fa fa-check-circle"></i> &nbsp; {mark_text}</button>
               </div>
