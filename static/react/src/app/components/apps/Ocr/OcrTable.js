@@ -344,7 +344,7 @@ export class OcrTable extends React.Component {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
     let paginationTag = null
-    if (pages >= 0) {
+    if (pages >= 1) {
       paginationTag = (
         <div class="col-md-12 text-center">
           <div className="footer" id="Pagination">             
@@ -353,7 +353,7 @@ export class OcrTable extends React.Component {
                 <select className="xs-mr-20 xs-ml-10" onChange={this.handlePageRow}>
                   <option value="12">12</option>
                   <option value="50">50</option>
-                  <option value="100">10</option>
+                  <option value="100">100</option>
                   <option value="All">All</option>
                 </select>
               <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
