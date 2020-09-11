@@ -23123,3 +23123,6 @@ min-width: 102px; }
   margin: 7.5px 0 !important;
   width: 100%;
 }
+.residual .c3-axis-y text tspan{
+  font-size:11px
+}
