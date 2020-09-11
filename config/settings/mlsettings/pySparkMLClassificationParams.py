@@ -6,7 +6,7 @@ PYSPARK_ML_SUPPORTED_SPLIT_CRITERION_CLASSIFICATION = [
 
 PYSPARK_ML_SUPPORTED_SPLIT_MODEL_TYPE_CLASSIFICATION = [
     {"name": "multinomial", "selected": True, "displayName": "multinomial"},
-    {"name": "bernoulli", "selected": False, "displayName": "bernoulli"},
+    # {"name": "bernoulli", "selected": False, "displayName": "bernoulli"},
 ]
 
 PYSPARK_ML_SUPPORTED_SPLIT_FAMILY_CLASSIFICATION = [
@@ -346,15 +346,15 @@ PYSPARK_ML_NAIVE_BAYES_CLASSIFICATION_PARAMS = [
         "className": "smoothing",
         "displayName": "Alpha",
         "description": "Smoothing parameter",
-        "defaultValue": 1.0,
+        "defaultValue": 1,
         "acceptedValue": None,
-        "valueRange": [0.0, 1.0],
+        "valueRange": [0, 1],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
         "hyperpatameterTuningCandidate": True,
-        "expectedDataType": ["float"],
-        "allowedDataType": ["float"]
+        "expectedDataType": ["int"],
+        "allowedDataType": ["int"]
     },
     {
         "name": "modelType",

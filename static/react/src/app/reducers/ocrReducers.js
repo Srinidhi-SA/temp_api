@@ -91,6 +91,8 @@ export default function reducer(state = {
   ocrImgWidth: "",
   docTablePage: 1,
   projectPage:1,
+  docTablePagesize:12,
+  rDocTablePagesize:12
 
 }, action) {
   switch (action.type) {
@@ -856,6 +858,22 @@ export default function reducer(state = {
           }
         }
         break;
+        case "DOC_TABLE_PAGESIZE" :
+          {
+            return {
+              ...state,
+              docTablePagesize : action.pagesize
+            }
+          }
+          break;
+          case "RDOC_TABLE_PAGESIZE" :
+            {
+              return {
+                ...state,
+                rDocTablePagesize : action.pagesize
+              }
+            }
+            break;
         case "PROJECT_PAGE" :
           {
             return {

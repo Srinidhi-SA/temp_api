@@ -175,7 +175,7 @@ OCR_SECONDARY_TASK_PERCENTAGE = 100
 ###################  OUTLOOK EMAIL CONFIG  ##########
 OUTLOOK_DETAILS = {
     "client_id": '2e36be5f-0040-4f0d-bbef-12787ddc158b',
-    "client_secret": '=Ogz4[AHfGM[eBX.f1wtdkakrzTPht85',
+    "client_secret": '.5JwU-O9E_lY~uYUha5.3~dAUx3_0p_wu2',
     #"authority":'https://login.microsoftonline.com',
     #"authorize_url" : 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
     "tenant_id" : 'cc6b2eea-c864-4839-85f5-94736facc3be',
