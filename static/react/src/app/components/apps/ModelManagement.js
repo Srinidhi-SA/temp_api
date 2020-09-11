@@ -2,13 +2,13 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store"
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
-import {Button,Modal,Dropdown, Menu, MenuItem, Pagination} from "react-bootstrap";
+import {openDeployModalAction, closeDeployModalAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
+import {Button,Modal, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import { Router, Route, IndexRoute } from 'react-router';
-import {isEmpty, SEARCHCHARLIMIT,subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
-import {getAlgoAnalysis,emptyAlgoAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+import {emptyAlgoAnalysis} from "../../actions/signalActions";
 import { DeployPopup } from "./DeployPopup";
 import {getAppsAlgoList,refreshAppsAlgoList,handleAlgoDelete,handleAlgoClone,getAppDetails,getAllProjectList,getDeployPreview,createDeploy} from "../../actions/appActions";
 
@@ -274,9 +274,9 @@ export class ModelManagement extends React.Component {
           <td> {item.runtime}</td>
           <td><Button>
             <Link to={AlgoLink} id={item.slug} onClick={this.getAlgoAnalysis.bind(this,item)} className="title">
-              {Details}
+            {Details}
             </Link></Button>
-          </td>
+            </td>
           <td>
           <div class="pos-relative">
             <a class="btn btn-space btn-default btn-round btn-xs" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More...">
@@ -295,7 +295,7 @@ export class ModelManagement extends React.Component {
     
       //Jsx element for table body content
       let tablecontent="";
-      tablecontent = (<tbody className="no-border-x"> {mmTable} </tbody>);
+      tablecontent = (<tbody className="no-border-x">{mmTable}</tbody>);
 
       if (this.props.algoList.data.length != 0){
       }else if(this.props.algoList.current_item_count == 0){

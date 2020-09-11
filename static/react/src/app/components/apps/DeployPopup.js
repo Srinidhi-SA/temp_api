@@ -1,25 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Scrollbars } from "react-custom-scrollbars";
-import {
-  Button,
-  Dropdown,
-  Menu,
-  MenuItem,
-  Modal,
-  Nav,
-  NavItem,
-  Tab,
-  Row,
-  Col
-} from "react-bootstrap";
-import {
-  openBinsOrLevelsModalAction,
-  closeBinsOrLevelsModalAction,
-  openTransformColumnModalAction,
-  closeTransformColumnModalAction,
-  selectedBinsOrLevelsTabAction
-} from "../../actions/dataActions";
 import { saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect(store => {
@@ -85,7 +65,7 @@ export class DeployPopup extends React.Component {
                 name="name"
                 class="form-control"
                 placeholder="Name of the deployment"
-                defaultvalue={depData.deploytrainer}
+                defaultValue={depData.deploytrainer}
                 onInput={this.pickValue}
                 onChange={this.onchangeInput.bind(this)}
               />
@@ -101,7 +81,7 @@ export class DeployPopup extends React.Component {
                 name="datasetname"
                 class="form-control"
                 placeholder="Name of dataset"
-                defaultvalue={depData.datasetname}
+                defaultValue={depData.datasetname}
                 onInput={this.pickValue}
                 onChange={this.onchangeInput.bind(this)}
               />
@@ -182,7 +162,7 @@ export class DeployPopup extends React.Component {
                 name="timing_details"
                 defaultValue={depData.timing_details}
                 onChange={this.pickValue}
-              ><option value="none" selected>
+              ><option value="none">
                   --Select--
                 </option>
                 <option value="monthly">Monthly</option>
