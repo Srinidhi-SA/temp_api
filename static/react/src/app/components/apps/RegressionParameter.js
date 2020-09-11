@@ -13,7 +13,7 @@ import { updateAlgorithmData } from "../../actions/appActions";
     };
 })
 
-export class RegressionParameter2 extends React.Component {
+export class RegressionParameter extends React.Component {
   constructor(props) {
     super(props);
     if(this.props.editmodelFlag){
