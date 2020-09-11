@@ -241,7 +241,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def assigned_requests(self, request, *args, **kwargs):
         username = self.request.query_params.get('username')
-        response, queryset = get_specific_assigned_requests(
+        response = get_specific_assigned_requests(
             viewset=self,
             request=request,
             list_serializer=ReviewRequestSerializer,

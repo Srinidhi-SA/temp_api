@@ -476,7 +476,7 @@ def get_specific_assigned_requests(
     )
 
     resp = page_class.modified_get_paginate_response(page)
-    return resp, query_set
+    return resp
 
 
 def get_filtered_ocrimage_list(
