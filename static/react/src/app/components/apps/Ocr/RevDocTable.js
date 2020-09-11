@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem,ocrRdFiltertemplate} from '../../../actions/ocrActions';
+import { getRevrDocsList, saveImagePageFlag,saveImageDetails,saveSelectedImageName,saveRevDocumentPageFlag,ocrRdFilterFields,ocrRdFilterConfidence,ocrRdFilterStatus,clearImageDetails,storeSearchInRevElem,ocrRdFiltertemplate, rDocTablePagesize} from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -45,7 +45,11 @@ export class RevDocTable extends React.Component {
   handlePagination(pageNo){
     this.props.dispatch(getRevrDocsList(pageNo))
   }
-
+  handleRPageRow=(e)=>{
+    let selectedVal= e.target.value;
+    this.props.dispatch(rDocTablePagesize(selectedVal));
+    this.props.dispatch(getRevrDocsList())
+  }
   handleImagePageFlag = (slug,name) => {
     this.getImage(slug)
     this.props.dispatch(saveSelectedImageName(name));
@@ -136,11 +140,18 @@ export class RevDocTable extends React.Component {
     const current_page = this.props.OcrRevwrDocsList.current_page;
     let paginationTag = null
     let breadcrumb=null;
-    if (pages > 1) {
+    if (pages >= 1) {
       paginationTag = (
         <div class="col-md-12 text-center">
           <div className="footer" id="Pagination">
-            <div className="pagination">
+            <div className="pagination pageRow">
+            <span>Rows per page:</span>
+                <select className="xs-mr-20 xs-ml-10" onChange={this.handleRPageRow}>
+                  <option value="12">12</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="All">All</option>
+                </select>
               <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page} />
             </div>
           </div>
