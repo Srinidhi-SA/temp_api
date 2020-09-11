@@ -19308,6 +19308,11 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
   margin-left: -64px;
   padding-top: 15%;
 }
+#chartLoader{
+  position: relative;
+  left: 34%;
+  padding-top: 36%;
+}
 
 .cst-panel .panel-heading {
   padding: 10px;
@@ -23123,3 +23128,9 @@ min-width: 102px; }
   margin: 7.5px 0 !important;
   width: 100%;
 }
+#tab_statistics a[aria-expanded=false] .fa-angle-down,
+#tab_visualizations a[aria-expanded=false] .fa-angle-down,
+#tab_subsettings a[aria-expanded=false] .fa-angle-down{
+  transition: .3s transform ease-in-out;
+  transform: rotate(180deg);
+ }
