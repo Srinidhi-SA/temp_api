@@ -94,3 +94,25 @@ def extract_mask_horizontal(bw, scalev=40, scaleh=20):  ## OVERLAP OF HORIZONTAL
     horizontal = horizontal + cv2.morphologyEx(horizontal, cv2.MORPH_GRADIENT, np.ones((4, 4)))
 
     return horizontal, horizontal, None
+
+
+def extract_mask_clean(mask):
+    # Scalev and Scaleh are Used to increase/decrease the amount of lines to
+    # be detected
+
+    black_page = 0 * np.ones(mask.shape).astype(mask.dtype)
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    parent_area = mask.shape[0] * mask.shape[1]
+    areaThr = 0.003 * parent_area
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        if area <= areaThr:
+            x, y, w, h = cv2.boundingRect(cnt)
+            if (h < 0.05 * mask.shape[0]) and (w < 0.05 * mask.shape[1]):  ## 20 % border size check
+                mask[y:y + h, x:x + w] = black_page[y:y + h, x:x + w]
+            else:
+                pass
+        else:
+            pass
+
+    return mask

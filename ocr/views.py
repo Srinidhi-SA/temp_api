@@ -1115,7 +1115,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 for slug in ast.literal_eval(str(data['slug'])):
                     try:
                         foreign_user_mapping = {
-                            'sdas': 'Japanese',
                             'Devc': 'Chinese-1',
                             'Devj': 'Japanese',
                             'Devk': 'Korean'

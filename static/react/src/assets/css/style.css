@@ -23134,3 +23134,16 @@ min-width: 102px; }
   transition: .3s transform ease-in-out;
   transform: rotate(180deg);
  }
+.residual .c3-axis-y text tspan{
+  font-size:11px
+}
+.pageRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.pageRow select{
+  height: 30px;
+  background: #ffffff;
+}

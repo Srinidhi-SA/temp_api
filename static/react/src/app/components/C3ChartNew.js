@@ -555,7 +555,7 @@ export class C3ChartNew extends React.Component{
       }
 
     }
-
+  
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
     if(myData.subchart !=undefined && myData.subchart.show=== true){
@@ -588,6 +588,10 @@ export class C3ChartNew extends React.Component{
         label.append("tspan").text(word1).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))-12).attr("x",graphs[i].getAttribute('x'));
         label.append("tspan").text(word2).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))+59).attr("x",graphs[i].getAttribute('x'));
        }
+       
+       if(graphs[i].innerHTML=="Residuals"){
+        d3.selectAll('.c3')[0][i].classList.add("residual")
+      }
      }
 
       if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
