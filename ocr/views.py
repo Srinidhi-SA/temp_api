@@ -826,6 +826,22 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'imagefile' in data:
                 files = request.FILES.getlist('imagefile')
                 for file in files:
+                    if file.name.endswith('.pdf'):
+                        pass
+                    else:
+                        from ocr import validators
+                        status=validators.validate_image_dimension(file)
+                        if status == 0:
+                            return JsonResponse(
+                                {"status":"failed",
+                                 "message":"Height or Width is smaller than the allowed limit(50*50).",
+                                 "image":file.name})
+                        elif status == 1:
+                            return JsonResponse(
+                                {"status":"failed",
+                                 "message":"Height or Width is larger than the allowed limit(10000*10000).",
+                                 "image":file.name})
+
                     imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
