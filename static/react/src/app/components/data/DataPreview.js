@@ -199,6 +199,7 @@ export class DataPreview extends React.Component {
 
       if (chkClass.indexOf(item.slug) !== -1) {
         $("#side-chart").empty();
+        $(".visualizeLoader")[0].style.display = ""
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
         if (!$.isEmptyObject(item.chartData)) {
           const sideChartUpdate = item.chartData.chart_c3;
@@ -605,10 +606,11 @@ else{
                       </div>
                       <div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
                         <div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
-                          <div id="side-chart" style={{
-                            paddingTop: "12px"
-                          }}>
-                            {/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
+                          <div>
+                          <div className="visualizeLoader" style={{display:"none"}}>
+                            <img id="chartLoader" src={STATIC_URL+"assets/images/loaderChart.gif"}/>
+                          </div>
+                          <div id="side-chart" style={{paddingTop: "12px"}}>
                             {firstChart}
                             <div className="clearfix"></div>
                           </div>
@@ -616,6 +618,7 @@ else{
                       </div>
                     </div>
                   </div>
+                </div>
                  
                   {isSubsettingAllowed == true
                     ? <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>

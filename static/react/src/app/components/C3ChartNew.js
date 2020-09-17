@@ -555,7 +555,7 @@ export class C3ChartNew extends React.Component{
       }
 
     }
-
+  
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
     if(myData.subchart !=undefined && myData.subchart.show=== true){
@@ -588,6 +588,10 @@ export class C3ChartNew extends React.Component{
         label.append("tspan").text(word1).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))-12).attr("x",graphs[i].getAttribute('x'));
         label.append("tspan").text(word2).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))+59).attr("x",graphs[i].getAttribute('x'));
        }
+       
+       if(graphs[i].innerHTML=="Residuals"){
+        d3.selectAll('.c3')[0][i].classList.add("residual")
+      }
      }
 
       if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
@@ -656,6 +660,8 @@ export class C3ChartNew extends React.Component{
         if (that.props.classId == '_side' || that.props.classId == '_profile') {
           $(".chart-data-icon").empty();
         };
+        if($(".visualizeLoader")[0] != undefined)
+          $(".visualizeLoader")[0].style.display = "none"
       })
       if (this.props.classId != '_side' && !this.props.widthPercent) {
         this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
@@ -670,6 +676,7 @@ export class C3ChartNew extends React.Component{
         <div className="chart-area">
           <div className={this.classId} style={{margin:"10px 10px 0px 0px"}}></div>
          <div className={chartDownloadCls} style={{display:"none"}}></div>
+          {(!window.location.pathname.includes("/data/") && this.props.classId != "_side") &&
           <div className="chart-data-icon">
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -707,6 +714,7 @@ export class C3ChartNew extends React.Component{
             </div>
             <div className="clearfix"></div>
           </div>
+          }
           <div className={this.modalCls} role="dialog">
             <div className="modal-colored-header uploadData modal-dialog ">
               <ViewChartData tabledata={this.props.tabledata} tableCls={this.tableCls} classId={this.props.classId} tableDownload={this.tableDownload}/>

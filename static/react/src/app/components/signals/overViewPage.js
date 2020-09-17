@@ -93,6 +93,7 @@ export class OverViewPage extends React.Component {
     }, 0);  
   }
   componentDidUpdate(){
+    this.props.dispatch(updateselectedL1(this.l1Name))
     var that = this;
     $(function() {
       let index = $(".sb_navigation li>a.active").parent().index();
@@ -358,7 +359,6 @@ export class OverViewPage extends React.Component {
         } else if (that.urlPrefix == "/apps-stock-advisor") {
           nameLink = that.urlPrefix + "/" + this.props.match.params.slug + "/" + params.l1;
         }
-        this.props.dispatch(updateselectedL1(l1Name))
 
         let classname=".sb_navigation #subTab i.mAd_icons.ic_perf ~ span"
         if(l1Name=="Influencers")

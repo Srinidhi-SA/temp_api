@@ -22,7 +22,7 @@ export class ModelSummeryButton extends React.Component {
 		return (
       <div className="col-md-12">
         <div className="xs-mb-40 clearfix">
-	  			<button type="button" className="btn btn-info pull-right" onClick={this.show.bind(this)} title="Print Document"><i class="fa fa-eye"></i> View Residuals</button>
+	  			<button type="button" className="btn btn-info pull-right" onClick={this.show.bind(this)} title="View Residuals"><i class="fa fa-eye"></i> View Residuals</button>
 		  		<div className="clearfix"></div>
 			  	<ViewChart classId={this.props.classId} chartData={this.props.data} tableDownload={this.props.tabledownload}/>
 				</div>
