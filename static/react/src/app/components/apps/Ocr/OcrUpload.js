@@ -31,6 +31,7 @@ import ReactTooltip from 'react-tooltip';
 export class OcrUpload extends React.Component {
   constructor(props) {
     super(props);
+    this.fileSizeFlag;
     // this.props.dispatch(close());
     this.state = {
       selectedFiles: "",
@@ -102,7 +103,7 @@ export class OcrUpload extends React.Component {
 
   removeFile(item) {
     this.setState({
-      selectedFiles: Object.values(this.state.selectedFiles).filter(i => i.name != item),
+      selectedFiles: Object.values(this.state.selectedFiles).filter(i => i.name != item)
     })
   }
 
@@ -137,12 +138,22 @@ export class OcrUpload extends React.Component {
   handleSubmit(acceptedFiles) {
     let activeId = $(".ocrFileTab").find(".active")[0].innerText;
     let projectSlug= this.props.projectslug;
+    this.fileSizeFlag= false;
 
     if(activeId === "UPLOAD LOCAL FILE"){
       if (acceptedFiles.length == 0) {
         document.getElementById("resetMsg").innerText = "Please select files to upload.";
         return false
       }
+      acceptedFiles.map(i=>{
+        if(i.size >= 20000000){
+          document.getElementById("resetMsg").innerText="Please select file with less than 20MB.";
+          this.fileSizeFlag=true
+        }
+      })
+
+    if(!this.fileSizeFlag){
+      document.getElementById("resetMsg").innerText = "";
       $("#dataCloseBtn").hide()
       this.setState({ loader: true })
       $("#hideUploadBtn").show();
@@ -160,6 +171,7 @@ export class OcrUpload extends React.Component {
       if (json.message === "SUCCESS")
         this.setState({ uploaded: true })
     })
+  }
     }
     else if(activeId === "AMAZON S3 BUCKET"){
       if($(".p-multiselect-label")[0].innerHTML === "Choose"){
@@ -234,9 +246,9 @@ export class OcrUpload extends React.Component {
   }
 
   render() {
-    var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map(i => i.name).map((item, index) => (
-      <li>{item}
-        <span style={{ marginLeft: "15px" }} onClick={this.removeFile.bind(this, item)}>
+    var fileNames = this.state.selectedFiles != "" ? Object.values(this.state.selectedFiles).map((item, index) => (
+      <li>{item.name} -{item.size/1000} KB
+        <span style={{ marginLeft: "15px" }} onClick={this.removeFile.bind(this, item.name)}>
           <i class="fa fa-times" aria-hidden="true" style={{ color: '#555', cursor: 'pointer' }}></i>
         </span>
       </li>
