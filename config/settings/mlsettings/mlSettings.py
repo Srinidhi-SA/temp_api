@@ -511,92 +511,92 @@ AUTOML_ALGORITHM_LIST_REGRESSION = {
 }
 AUTOML_ALGORITHM_LIST_CLASSIFICATION = {
     "ALGORITHM_SETTING": [
-        {
-            "algorithmName": "Logistic Regression",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "lr",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "A statistical method to predict the likely outcome of any qualitative attribute. It is invariably used for predicting binary outcomes (such as Yes or No)."
-        },
-        {
-            "algorithmName": "Random Forest",
-            "selected": True,
-            "parameters": AUTOML_SKLEANR_ML_RF_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "rf",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """A meta estimator that uses averaging predictive power of a number of decision tree
-            classification models. This is very effective in predicting the likelihood in multi-class
-            classifications and also to control overfitting."""
-        },
-        {
-            "algorithmName": "XGBoost",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "xgb",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """A machine learning technique that produces an ensemble of multiple decision tree
-            models to predict categorical variables. It is highly preferred to leverage
-            computational power to build scalable and accurate models."""
-        },
-        {
-            "algorithmName": "naive bayes",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_NAIVE_BAYES_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "nb",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """The multinomial Naive Bayes classifier is suitable for classification with discrete
-            features (e.g., word counts for text classification).
-            The multinomial distribution normally requires integer feature counts.
-            However, in practice, fractional counts such as tf-idf may also work."""
-        },
-        {
-            "algorithmName": "Neural Network (Sklearn)",
-            "selected": True,
-            "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
-        },
-        {
-            "algorithmName": "Neural Network (TensorFlow)",
-            "selected": True,
-            "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "An end-to-end open source platform for machine learning. TensorFlow is a rich system for managing all aspects of a machine learning system."
-        },
-        {
-            "algorithmName": "Neural Network (PyTorch)",
-            "selected": True,
-            "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": "A python based library built to provide flexibility as a deep learning development platform. It is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing."
-        },
-        {
-            "algorithmName": "LightGBM",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "lgbm",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """For LightGBM Algorithm"""
-        },
-        {
-            "algorithmName": "Ensemble",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "en",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """For Ensemble Algorithm"""
-        },
-        {
-            "algorithmName": "Adaboost",
-            "selected": True,
-            "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
-            "algorithmSlug": ALGORITHMRANDOMSLUG + "adab",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
-            "description": """For Adaboost Algorithm"""
-        }
+        # {
+        #     "algorithmName": "Logistic Regression",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "lr",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": "A statistical method to predict the likely outcome of any qualitative attribute. It is invariably used for predicting binary outcomes (such as Yes or No)."
+        # },
+        # {
+        #     "algorithmName": "Random Forest",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEANR_ML_RF_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "rf",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """A meta estimator that uses averaging predictive power of a number of decision tree
+        #     classification models. This is very effective in predicting the likelihood in multi-class
+        #     classifications and also to control overfitting."""
+        # },
+        # {
+        #     "algorithmName": "XGBoost",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "xgb",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """A machine learning technique that produces an ensemble of multiple decision tree
+        #     models to predict categorical variables. It is highly preferred to leverage
+        #     computational power to build scalable and accurate models."""
+        # },
+        # {
+        #     "algorithmName": "naive bayes",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_NAIVE_BAYES_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "nb",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """The multinomial Naive Bayes classifier is suitable for classification with discrete
+        #     features (e.g., word counts for text classification).
+        #     The multinomial distribution normally requires integer feature counts.
+        #     However, in practice, fractional counts such as tf-idf may also work."""
+        # },
+        # {
+        #     "algorithmName": "Neural Network (Sklearn)",
+        #     "selected": True,
+        #     "parameters": SKLEARN_ML_NEURAL_NETWORK_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "mlp",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": "This model optimizes the log-loss function using LBFGS or stochastic gradient descent."
+        # },
+        # {
+        #     "algorithmName": "Neural Network (TensorFlow)",
+        #     "selected": True,
+        #     "parameters": SKLEARN_ML_TENSORFLOW_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "tfx",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": "An end-to-end open source platform for machine learning. TensorFlow is a rich system for managing all aspects of a machine learning system."
+        # },
+        # {
+        #     "algorithmName": "Neural Network (PyTorch)",
+        #     "selected": True,
+        #     "parameters": SKLEARN_ML_PYTORCH_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "nnpt",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": "A python based library built to provide flexibility as a deep learning development platform. It is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing."
+        # },
+        # {
+        #     "algorithmName": "LightGBM",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "lgbm",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """For LightGBM Algorithm"""
+        # },
+        # {
+        #     "algorithmName": "Ensemble",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "en",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """For Ensemble Algorithm"""
+        # },
+        # {
+        #     "algorithmName": "Adaboost",
+        #     "selected": True,
+        #     "parameters": AUTOML_SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
+        #     "algorithmSlug": ALGORITHMRANDOMSLUG + "adab",
+        #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+        #     "description": """For Adaboost Algorithm"""
+        # }
     ]
 }
