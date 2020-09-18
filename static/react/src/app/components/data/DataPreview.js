@@ -3,30 +3,28 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
 import {connect} from "react-redux";
 import store from "../../store";
-import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
   hideDataPreview,
   getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
   hideDataPreviewDropDown,
   popupAlertBox,
   getAllDataList,
   getDataList,
 } from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
+import {showHideSideChart, showHideSideTable, MINROWINDATASET} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import { getAppDetails } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
+import { C3ChartNew } from "../C3ChartNew";
 
 
 @connect((store) => {
@@ -48,8 +46,6 @@ import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../ac
     allDataList:store.datasets.allDataSets,
     datasets:store.datasets.dataList.data,
 		createSigLoaderFlag : store.datasets.createSigLoaderFlag,
-
-
   };
 })
 
@@ -65,7 +61,6 @@ export class DataPreview extends React.Component {
     this.firstTimeColTypeForChart = null;
     this.isSubsetted = false;
     this.new_subset = "";
-    this.toggleVisualizationSlug="";
   }
 
   hideDataPreview() {
@@ -174,8 +169,6 @@ export class DataPreview extends React.Component {
     showHideSideTable(this.firstTimeSideTable);
     showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
     hideDataPreviewDropDown(this.props.curUrl);
-    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
-
   }
 
   componentWillUpdate() {
@@ -206,8 +199,8 @@ export class DataPreview extends React.Component {
 
       if (chkClass.indexOf(item.slug) !== -1) {
         $("#side-chart").empty();
+        $(".visualizeLoader")[0].style.display = ""
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
-        toggleVisualization(item.slug,this.props.dataTransformSettings);
         if (!$.isEmptyObject(item.chartData)) {
           const sideChartUpdate = item.chartData.chart_c3;
           let yformat = item.chartData.yformat;
@@ -215,7 +208,7 @@ export class DataPreview extends React.Component {
           let chartInfo = []
           $("#side-chart").empty();
           ReactDOM.render(
-            <Provider store={store}><C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
+            <Provider store={store}><C3ChartNew chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
         }
         const sideTableUpdate = item.columnStats;
         let sideTableUpdatedTemplate = "";
@@ -324,11 +317,7 @@ else{
     }
   }
 };
-  shouldComponentUpdate(nextProps) {
-    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
-    return true;
-  }
-
+ 
   render() {
     var that = this;
     $(function() {
@@ -518,10 +507,9 @@ else{
           this.firstTimeSideTable = sideTable; //show hide side table
           this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
           this.firstTimeColTypeForChart = dataPrev.scriptMetaData.columnData[0].columnType;
-          this.toggleVisualizationSlug = dataPrev.scriptMetaData.columnData[0].slug;
           if (!$.isEmptyObject(this.firstTimeSideChart)) {
             let chartInfo = [];
-            firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
+            firstChart = <C3ChartNew chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
           }
           if (!isEmpty(dataPrev.scriptMetaData.columnData[0]))
             firstTimeSubSetting = dataPrev.scriptMetaData.columnData[0]
@@ -618,10 +606,11 @@ else{
                       </div>
                       <div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
                         <div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
-                          <div id="side-chart" style={{
-                            paddingTop: "12px"
-                          }}>
-                            {/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
+                          <div>
+                          <div className="visualizeLoader" style={{display:"none"}}>
+                            <img id="chartLoader" src={STATIC_URL+"assets/images/loaderChart.gif"}/>
+                          </div>
+                          <div id="side-chart" style={{paddingTop: "12px"}}>
                             {firstChart}
                             <div className="clearfix"></div>
                           </div>
@@ -629,6 +618,7 @@ else{
                       </div>
                     </div>
                   </div>
+                </div>
                  
                   {isSubsettingAllowed == true
                     ? <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>

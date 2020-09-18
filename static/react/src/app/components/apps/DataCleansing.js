@@ -1,31 +1,16 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import tinysort from 'tinysort';
-import { Provider } from "react-redux";
-import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
 import store from "../../store"
 import { InputSwitch } from 'primereact/inputswitch';
-import { C3Chart } from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {
-  hideDataPreview,
   getDataSetPreview,
-  renameMetaDataColumn,
-  updateTranformColumns,
-  hideDataPreviewDropDown,
-  popupAlertBox
 } from "../../actions/dataActions";
-import { dataSubsetting, clearDataPreview, clearLoadingMsg } from "../../actions/dataUploadActions"
-import { Button, Dropdown, Menu, MenuItem } from "react-bootstrap";
-import { STATIC_URL } from "../../helpers/env.js"
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables, updateDatasetVariables, handleDVSearch, handelSort, handleSelectAll, checkColumnIsIgnored, deselectAllVariablesDataPrev, makeAllVariablesTrueOrFalse, DisableSelectAllCheckbox, updateVariableSelectionArray, getTotalVariablesSelected } from "../../actions/dataActions";
-import { showHideSideChart, showHideSideTable, MINROWINDATASET, toggleVisualization, getRemovedVariableNames } from "../../helpers/helper.js"
-import { isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL } from "../../helpers/helper";
-import { DataUploadLoader } from "../common/DataUploadLoader";
-import Dialog from 'react-bootstrap-dialog';
-import { checkCreateScoreToProceed, getAppDetails } from "../../actions/appActions";
+import { Button } from "react-bootstrap";
+import { handelSort } from "../../actions/dataActions";
+import { getRemovedVariableNames } from "../../helpers/helper.js"
+import { isEmpty } from "../../helpers/helper";
 import {
   missingValueTreatmentSelectedAction,
   outlierRemovalSelectedAction,
@@ -58,7 +43,6 @@ import {
     checkedAll: store.datasets.checkedAll,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig:store.datasets.modelEditconfig,
-
 
   };
 })
@@ -355,14 +339,11 @@ tableHead.addEventListener('click', function (e) {
     else
     colType = this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.filter(item=>item.slug == colSlug)[0].columnType
     var arr = ["Measure", "Dimension", "Datetime"]
+    var selectedOption = arr.filter((i)=>i.toLowerCase() == colType.toLowerCase())[0]
     var optionsHtml = arr.map((item ,index)=> {
-      if (item.toLowerCase() == colType.toLowerCase()) {
-        return <option key={index} value={item.toLowerCase()} selected> {item}</option>
-      } else {
         return <option key={index} value={item.toLowerCase()} > {item}</option>
-      }
     })
-    return <select className="form-control" id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} >{colType}{optionsHtml}</select>
+    return <select className="form-control" defaultValue={selectedOption.toLowerCase()} id={colSlug+'dataType'} onChange={this.handleDataTypeChange.bind(this, colSlug)} >{colType}{optionsHtml}</select>
   }
 
   getOutlierRemovalOptions(dataType, colName, colSlug,outnum,missingnum) {
@@ -372,7 +353,7 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map((item,index)=><option key={index} value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].outlier_removal.operations.map((item,index)=><option key={index} value={item.name} >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.outlierRemoval) {
         selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
@@ -404,7 +385,7 @@ tableHead.addEventListener('click', function (e) {
     }
     var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing;
     if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType] && !disble) {
-      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map((item,index) => <option key={index} value={item.name} selected >{item.displayName}</option>))
+      var dcHTML = (data_cleansing[dataType].missing_value_treatment.operations.map((item,index) => <option key={index} value={item.name} >{item.displayName}</option>))
       var selectedValue = "none";
       if (colSlug in this.props.datasets.missingValueTreatment) {
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment

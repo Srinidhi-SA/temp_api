@@ -2,9 +2,7 @@ import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from "react-redux";
 import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } from "react-bootstrap";
-
 import store from "../../store";
-import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
 import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable} from "../../actions/dataActions";
@@ -111,6 +109,17 @@ export class DataVariableSelection extends React.Component {
     this.props.dispatch(makeAllVariablesTrueOrFalse(false));
   }
     componentDidUpdate(){
+        if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
+            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                this.props.dispatch(resetSelectedVariables(true));
+            }else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
+              ""; 
+            }else{  
+                this.props.dispatch( resetSelectedVariables(true));
+                deselectAllVariablesDataPrev(true);
+            }
+            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
+        }
         let dtList = store.getState().datasets.dataSetTimeDimensions
         if(!this.props.editmodelFlag && dtList.length!=0 && document.getElementById("unselect") != undefined){
             if(dtList.filter(i=>(i.selected===true)).length === 0 && !document.getElementById("unselect").checked){
@@ -196,19 +205,6 @@ export class DataVariableSelection extends React.Component {
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
 
-            if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
-            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-                this.props.dispatch(resetSelectedVariables(true));
-            }
-            else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
-              ""; 
-            }       // Need to go through this compleate if condition .
-            else{  
-                this.props.dispatch( resetSelectedVariables(true));
-                deselectAllVariablesDataPrev(true);
-            }
-            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
-        }
 
             var varCls = "";
 

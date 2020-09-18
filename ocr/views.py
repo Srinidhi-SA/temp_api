@@ -50,7 +50,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json, dynamic_cavas_size
+    cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 
 # ------------------------------------------------------------
@@ -59,7 +59,7 @@ from .permission import OCRImageRelatedPermission, \
     IsOCRClientUser
 # ------------------------------------------------------------
 
-from ocr.tasks import extract_from_image, write_to_ocrimage
+from ocr.tasks import extract_from_image, write_to_ocrimage, write_to_ocrimage2
 from celery.result import AsyncResult
 
 # ---------------------SERIALIZERS----------------------------
@@ -316,10 +316,18 @@ class OCRUserView(viewsets.ModelViewSet):
         return queryset
 
     def get_specific_reviewer_detail_queryset(self, request):
-        queryset = User.objects.filter(
-            groups__name__in=['ReviewerL1', 'ReviewerL2'],
-            ocruserprofile__supervisor=request.user
-        )
+        user_group = request.user.groups.values_list('name', flat=True)
+        if 'Superuser' in user_group:
+            queryset = User.objects.filter(
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                ocruserprofile__supervisor=request.user,
+                is_active = True
+            )
+        else:
+            queryset = User.objects.filter(
+                groups__name__in=['ReviewerL1', 'ReviewerL2'],
+                is_active = True
+            )
         return queryset
 
     def get_user_profile_object(self, username=None):
@@ -706,21 +714,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         ).order_by('-created_at').select_related('imageset')
         return queryset
 
-    def get_all_queryset(self):
+    @staticmethod
+    def get_all_queryset():
         return OCRImage.objects.all()
 
     def get_active_queryset(self, projectslug):
         return OCRImage.objects.filter(
             status__in=['ready_to_verify(L1)', 'l1_verified', 'ready_to_verify(L2)', 'ready_to_export', 'bad_scan'],
             created_by=self.request.user,
-            project__slug=projectslug
+            project__slug=projectslug,
+            deleted=False
         ).order_by('-created_at')
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading'],
+            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading','failed'],
             created_by=self.request.user,
-            project__slug=projectslug
+            project__slug=projectslug,
+            deleted=False
         ).order_by('-created_at')
 
     def get_queryset_by_status(self, projectslug, imageStatus):
@@ -815,6 +826,22 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'imagefile' in data:
                 files = request.FILES.getlist('imagefile')
                 for file in files:
+                    if file.name.endswith('.pdf'):
+                        pass
+                    else:
+                        from ocr import validators
+                        status=validators.validate_image_dimension(file)
+                        if status == 0:
+                            return JsonResponse(
+                                {"status":"failed",
+                                 "message":"Height or Width is smaller than the allowed limit(50*50).",
+                                 "image":file.name})
+                        elif status == 1:
+                            return JsonResponse(
+                                {"status":"failed",
+                                 "message":"Height or Width is larger than the allowed limit(10000*10000).",
+                                 "image":file.name})
+
                     imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
@@ -895,7 +922,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if serializer.is_valid():
                     image_object = serializer.save()
                     image_object.create()
-
+                else:
+                    serializer_error.append(serializer.errors)
+                    return JsonResponse(response)
             if data['dataSourceType'] == 'SFTP':
                 pass
 
@@ -986,12 +1015,12 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         try:
             instance = self.get_object_from_all()
-            if 'deleted' in data:
-                if data['deleted']:
-                    print('let us deleted')
-                    instance.delete()
-                    # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
-                    return JsonResponse({'message': 'Deleted'})
+            # if 'deleted' in data:
+            #     if data['deleted']:
+            #         print('let us deleted')
+            #         instance.delete()
+            #         # clean_up_on_delete.delay(instance.slug, OCRImage.__name__)
+            #         return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -1013,6 +1042,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     image_queryset.status = 'recognizing'
                     image_queryset.save()
                     template = json.loads(Template.objects.first().template_classification)
+
+                    if request.user == '':
+                        pass
+
                     try:
                         response = extract_from_image.apply_async(args=(image_queryset.imagefile.path, slug, template),
                                                                   retry=True, retry_policy={
@@ -1097,18 +1130,23 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'slug' in data:
                 for slug in ast.literal_eval(str(data['slug'])):
                     try:
+                        foreign_user_mapping = {
+                            'Devc': 'Chinese-1',
+                            'Devj': 'Japanese',
+                            'Devk': 'Korean'
+                        }
+
                         image_queryset = OCRImage.objects.get(slug=slug)
                         image_queryset.status = 'recognizing'
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
-                        response = write_to_ocrimage.apply_async(args=(image_queryset.imagefile.path, slug, template),
-                                                                 retry=True, retry_policy={
-                                'max_retries': 3,
-                                'interval_start': 1,
-                                'interval_step': 1,
-                                'interval_max': 3,
-                            })
-
+                        if request.user.username in foreign_user_mapping:
+                            # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
+                            response = write_to_ocrimage2.apply_async(
+                                args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
+                        else:
+                            response = write_to_ocrimage.apply_async(
+                                args=(image_queryset.imagefile.path, slug, template))
                         result = response.task_id
                         results.append({'slug': slug, 'id': result})
                     except Exception as e:
@@ -1184,11 +1222,21 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data['final_result'] = json.dumps(final_json)
             data['analysis_list'] = json.dumps(update_history)
             image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-            gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
-                                         analysis)
-            image = base64.decodebytes(gen_image)
-            with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
-                f.write(image)
+            foreign_user_mapping = {
+                'sdas': 'Japanese',
+                'Devc': 'Chinese-1',
+                'Devj': 'Japanese',
+                'Devk': 'Korean'
+            }
+            if request.user.username in foreign_user_mapping:
+                gen_image, _ = ui_flag_v4(cv2.imread(mask), final_json, image_path,
+                                             analysis, foreign_user_mapping[request.user.username])
+            else:
+                gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
+                                             analysis)
+            # image = base64.decodebytes(gen_image)
+            # with open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'wb') as f:
+            #    f.write(image)
             data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
                                            file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
 
@@ -1360,12 +1408,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response({
             "data": set(item['name'] for item in serializer.data)
         })
-
-    def delete(self, request, *args, **kwargs):
-        """
-        TODO
-        """
-        pass
 
 
 class OCRImagesetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -1570,3 +1612,45 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             list_serializer=ProjectListSerializer
         )
         return result
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        if 'name' in data:
+            projectname_list = []
+            project_query = Project.objects.filter(deleted=False, created_by=request.user)
+            for _, i in enumerate(project_query):
+                projectname_list.append(i.name)
+            if data['name'] in projectname_list:
+                return creation_failed_exception("Name already exists!.")
+            should_proceed = name_check(data['name'])
+            if should_proceed < 0:
+                if should_proceed == -1:
+                    return creation_failed_exception("Name is empty.")
+                if should_proceed == -2:
+                    return creation_failed_exception("Name is very large.")
+                if should_proceed == -3:
+                    return creation_failed_exception("Name have special_characters.")
+
+        try:
+            instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    #print('let us deleted')
+                    #instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
+                    #clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message': 'Deleted'})
+        except FileNotFoundError:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+        if serializer.is_valid():
+            serializer.save()
+            response = serializer.data
+            response['edited'] = True
+            return Response(response)
+        data1 = {'edited': False, 'error': str(serializer.errors)}
+        return Response(data1)

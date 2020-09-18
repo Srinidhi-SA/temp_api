@@ -264,14 +264,14 @@ export class PyLayer extends React.Component {
                             if(k.name === sel)
                                 selectedValue = true;
                             else selectedValue = false;
-                            optionsTemp.push(<option key={k.name}value={k.name} selected={selectedValue}> {k.name}</option>)
+                            optionsTemp.push(<option key={k.name}value={k.name}> {k.name}</option>)
                         })
                         arr1.push(
                             <div key={item[i].name} class="row mb-20">
                                 <label className={mandateField.includes(item[i].displayName)? "col-md-2 mandate" : "col-md-2"}>{item[i].displayName}</label>
                                 <label className="col-md-4">{item[i].description}</label>
                                 <div className = "col-md-3">
-                                    <select key={`form-control ${item[i].name}_pt`} className={`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
+                                    <select key={`form-control ${item[i].name}_pt`} defaultValue={sel} className={`form-control ${item[i].name}_pt`} ref={(el) => { this.eleSel = el }} onChange={this.setChangeLayerSubParams.bind(this,item[i],defaultParamName)}>
                                         {optionsTemp}
                                     </select>
                                     <div key={`${item[i].name}_pt`} className="error_pt"></div>
@@ -338,7 +338,7 @@ export class PyLayer extends React.Component {
                     }else if(options[prop].selected){
                         selectedValue = options[prop].name;
                     }
-                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={sel}>{options[prop].displayName}</option>);
+                    optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} >{options[prop].displayName}</option>);
                 }
                 
                 return(
@@ -347,7 +347,7 @@ export class PyLayer extends React.Component {
                             <label className = {mandateField.includes(parameterData.displayName)? "col-md-2 mandate" : "col-md-2"}>{parameterData.displayName}</label>
                             <label className = "col-md-4">{parameterData.description}</label>
                             <div className = "col-md-3">
-                                <select ref={(el) => { this.eleSel = el }} key={`form-control ${parameterData.name}_pt`} className={`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)} >
+                                <select ref={(el) => { this.eleSel = el }} defaultValue={selectedValue} key={`form-control ${parameterData.name}_pt`} className={`form-control ${parameterData.name}_pt`} onChange={this.selectHandleChange.bind(this,parameterData)} >
                                     {optionsTemp}
                                 </select>
                                 <div key={`${parameterData.name}_pt`} className = "error_pt"></div>

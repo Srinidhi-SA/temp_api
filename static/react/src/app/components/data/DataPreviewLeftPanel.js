@@ -3,10 +3,9 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
-import {C3Chart} from "../c3Chart";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails} from "../../actions/appActions";
+import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails,fetchScoreSummaryCSVSuccess} from "../../actions/appActions";
 import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
 import {isEmpty} from "../../helpers/helper";
@@ -19,13 +18,14 @@ import {isEmpty} from "../../helpers/helper";
 export class DataPreviewLeftPanel extends React.Component {
 	constructor(props) {
 		super(props);
-	}
+    }
+     componentWillUnmount(){
+     this.props.dispatch(fetchScoreSummaryCSVSuccess([]))
+     }
 	 componentWillMount(){
 	     this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-	     if(isEmpty(this.props.scoreCSVData) || this.props.scoreCSVData == null || this.props.scoreCSVData.length == 0){
 	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
-	     }
-	  }
+	 }
 	 emptyScoreCSVData(){
 	     this.props.dispatch(emptyScoreCSVData())
 	 }

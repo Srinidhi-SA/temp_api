@@ -61,7 +61,8 @@ class OCRUserProfile(models.Model):
             "active": self.is_active,
             "phone": self.phone,
             "user_type": self.user_type,
-            "role": self.ocr_user.groups.values_list('name', flat=True)
+            "role": self.ocr_user.groups.values_list('name', flat=True),
+            "supervisor": (self.supervisor.username).capitalize() if self.supervisor is not None else None
         }
         return ocr_user_profile
 
@@ -294,7 +295,8 @@ class OCRImage(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     imagefile = models.FileField(null=True, upload_to='ocrData', validators=[
         FileExtensionValidator(allowed_extensions=validators.VALID_EXTENSIONS,
-                               message=validators.VALIDATION_ERROR_MESSAGE)])
+                               message=validators.VALIDATION_ERROR_MESSAGE),
+                               validators.max_file_size])
     imageset = models.ForeignKey(OCRImageset, null=False, db_index=True)
     project = models.ForeignKey(Project, null=False, db_index=True)
     datasource_type = models.CharField(max_length=300, null=True)

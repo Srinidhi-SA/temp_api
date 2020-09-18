@@ -1,6 +1,5 @@
 import React from "react";
 import {getSignalAnalysis} from "../../actions/signalActions";
-import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREETABLE} from "../../helpers/helper";
@@ -25,7 +24,7 @@ export class DataBox extends React.Component {
 			</div>);
 		});
 		return (
-				<div>
+				<div className="documentDataBox">
 				{columnsTemplates}
 				</div>
 		);

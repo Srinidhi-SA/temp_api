@@ -198,7 +198,7 @@ export class AppsPanel extends React.Component {
         document.getElementById('search_apps').value = "";
       }
 
-    if (this.props.location.sort == "" || this.props.location.sort == null) {
+    if ((this.props.location.sort !=undefined) && (this.props.location.sort == "" || this.props.location.sort == null)) {
       this.props.dispatch(appsStoreSortElements("", null));
     }
 

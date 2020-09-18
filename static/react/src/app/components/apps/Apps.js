@@ -39,7 +39,7 @@ import {
 
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getAllUsersList,fetchModelEdit,getDataSetPreview,setEditModelValues} from "../../actions/dataActions";
+import {getAllUsersList,getDataSetPreview,setEditModelValues,fetchModelEditAPISuccess} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -74,7 +74,7 @@ export class Apps extends React.Component {
       
        //have to recheck next 3actions needed or not
       this.props.dispatch(setEditModelValues("","",false));
-      this.props.dispatch(fetchModelEdit(""))
+       this.props.dispatch(fetchModelEditAPISuccess(""))
       this.props.dispatch(selectMetricAction("", "", ""));
       this.props.dispatch(saveTopLevelValuesAction("false",""))
 
@@ -144,7 +144,7 @@ export class Apps extends React.Component {
     let modelManagement = ""
 
     if(appId==2 || appId == 13){
-      modelManagement = <Button  eventKey="algo" onClick={this.proceedToModelManagement.bind(this)} onSelect={this.modifyUrl.bind(this)} bsStyle="primary">Manage Models</Button>
+      modelManagement = <Button  onClick={this.proceedToModelManagement.bind(this)} bsStyle="primary">Manage Models</Button>
     }else{
       modelManagement = "";
     }

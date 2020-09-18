@@ -259,10 +259,12 @@ def get_listed_data(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -299,10 +301,12 @@ def get_userlisted_data(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -327,10 +331,12 @@ def get_image_list_data(viewset, queryset, request, serializer):
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -369,10 +375,12 @@ def get_specific_listed_data(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -409,10 +417,12 @@ def get_reviewer_data(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -450,10 +460,12 @@ def get_specific_assigned_requests(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -464,7 +476,7 @@ def get_specific_assigned_requests(
     )
 
     resp = page_class.modified_get_paginate_response(page)
-    return resp, query_set
+    return resp
 
 
 def get_filtered_ocrimage_list(
@@ -491,10 +503,12 @@ def get_filtered_ocrimage_list(
 
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower()  == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
@@ -532,10 +546,12 @@ def get_filtered_project_list(
 
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
     if 'page' in request.query_params:
-        if request.query_params.get('page') == 'all':
+        if request.query_params.get('page').lower() == 'all':
             serializer = list_serializer(query_set, many=True)
             return Response({
-                "data": serializer.data
+                "data": serializer.data,
+                "total_number_of_pages":1,
+                "current_page": 1
             })
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
