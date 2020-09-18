@@ -70,7 +70,7 @@ def validate_image_dimension(imagefile):
 
     if width > max_width or height > max_height:
         return 1
-    elif width < min_width or height < mix_height:
+    elif width < min_width or height < min_height:
         return 0
 
 def max_file_size(value):
