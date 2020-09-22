@@ -84,10 +84,17 @@ class Templates:
                 return 0
 
         elif reference['no_of_tables'] == 0 and current['no_of_tables'] == 0:
-            word_density_match = len(set(reference['words']).intersection(set(current['words']))) / len(
-                set(current['words']))
-            if word_density_match > 0.8:
-                return "match"
+            if sum([1 if abs(reference['spread'][key] - current['spread'][key]) <= 5 else 0 for key in
+                    reference['spread']]) >= 2:
+                word_density_match_1 = len(set(reference['words']).intersection(
+                    set(current['words']))) / len(set(current['words']))
+                word_density_match_2 = len(set(reference['words']).intersection(
+                    set(current['words']))) / len(set(reference['words']))
+                word_density_match = 0.5 * (word_density_match_1 + word_density_match_2)
+                if word_density_match > 0.6:
+                    return "match"
+                else:
+                    return 0
             else:
                 return 0
         else:
