@@ -70,14 +70,14 @@ def validate_image_dimension(imagefile):
 
     if width > max_width or height > max_height:
         return 1
-    elif width < min_width or height < mix_height:
+    elif width < min_width or height < min_height:
         return 0
 
 def max_file_size(value):
     """ METHOD : To Validate max file size for OCRImage model FileField. """
     limit = 20 * 1024 * 1024
     if value.size > limit:
-        raise ValidationError('File too large. Size should not exceed 50 MB.')
+        raise ValidationError('File too large. Size should not exceed 20 MB.')
 
 
 def max_num_files(value):
