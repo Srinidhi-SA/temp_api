@@ -260,7 +260,7 @@ def get_listed_data(
 
     if 'page' in request.query_params:
         if request.query_params.get('page').lower()  == 'all':
-            serializer = list_serializer(query_set, many=True)
+            serializer = list_serializer(query_set,context = {'request':request}, many=True)
             return Response({
                 "data": serializer.data,
                 "total_number_of_pages":1,
@@ -547,7 +547,7 @@ def get_filtered_project_list(
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
     if 'page' in request.query_params:
         if request.query_params.get('page').lower() == 'all':
-            serializer = list_serializer(query_set, many=True)
+            serializer = list_serializer(query_set,context = {'request':request}, many=True)
             return Response({
                 "data": serializer.data,
                 "total_number_of_pages":1,
