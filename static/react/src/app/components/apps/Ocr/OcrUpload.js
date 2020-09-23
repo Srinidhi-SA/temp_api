@@ -89,6 +89,7 @@ export class OcrUpload extends React.Component {
 
   onDrop = event => {
     document.getElementById("resetMsg").innerText = "";
+    document.getElementById("allUploadFail").innerText="";
     var allowType = ['image/png', 'image/jpeg', 'image/jpg', 'image/tif','application/pdf']
     var formatErr = Object.values(event.target.files).map(i => i.type).map((i, ind) => {
       return allowType.includes(i)
@@ -104,7 +105,12 @@ export class OcrUpload extends React.Component {
   removeFile(item) {
     this.setState({
       selectedFiles: Object.values(this.state.selectedFiles).filter(i => i.name != item)
-    })
+    },()=>{
+      if (this.state.selectedFiles==""){
+        document.getElementById("allUploadFail").innerText="";
+      }
+    }
+    )
   }
 
   saveS3Details(e){
@@ -154,6 +160,7 @@ export class OcrUpload extends React.Component {
 
     if(!this.fileSizeFlag){
       document.getElementById("resetMsg").innerText = "";
+      document.getElementById("allUploadFail").innerText="";
       $("#dataCloseBtn").hide()
       this.setState({ loader: true })
       $("#hideUploadBtn").show();
@@ -168,8 +175,19 @@ export class OcrUpload extends React.Component {
       headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
       body: data
     }).then(response => response.json()).then(json => {
-      if (json.message === "SUCCESS")
+      if (json.message === "SUCCESS" && json.invalid_files== 0){
         this.setState({ uploaded: true })
+      }
+      else if(json.serializer_data.length==0){
+        $("#dataCloseBtn").show()
+        this.setState({ loader: false })
+        document.getElementById("allUploadFail").innerText=`Upload failed for the selected files as ${json.invalid_files[0].message}`;
+      }
+      else if(json.invalid_files.length > 0 && json.serializer_data.length > 0){
+        this.setState({ uploaded: true })
+        document.getElementById("uploadError").innerText=`Upload failed for ${json.invalid_files.map(i=>i.image).toString()} as ${json.invalid_files[0].message}`;
+      }
+
     })
   }
     }
@@ -297,6 +315,7 @@ export class OcrUpload extends React.Component {
                           </ul>
                         </Scrollbars>
                       </div>
+                      <div id="allUploadFail" style={{color:'#ff0000',padding:10}}></div>
                     </div>
                   }
 
@@ -312,6 +331,7 @@ export class OcrUpload extends React.Component {
 
                       <div className="wow bounceIn" data-wow-delay=".25s" data-wow-offset="20" data-wow-duration="5s" data-wow-iteration="10">
                         <span style={{ paddingTop: 10, color: 'rgb(50, 132, 121)', display: 'block' }}>Uploaded Successfully</span></div>
+                    <div id="uploadError" style={{position:'absolute',bottom:0,padding:'10px 10px 0px 10px',textAlign:'center'}}></div>
                     </div>
                   }
                 </div>
