@@ -4,7 +4,7 @@ import {OcrDocument} from "./OcrDocument";
 import { OcrProjectScreen } from "./OcrProjectScreen";
 import { OcrTopNavigation } from "./ocrTopNavigation";
 import store from '../../../store';
-import { saveDocumentPageFlag, saveRevDocumentPageFlag } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag, saveRevDocumentPageFlag, fetchProjectsSuccess } from '../../../actions/ocrActions';
 
 @connect((store) => {
   return {
@@ -21,6 +21,7 @@ export class OcrProject extends React.Component {
     window.history.go(-1)
   }}
   componentWillMount(){
+    this.props.dispatch(fetchProjectsSuccess(""))
     if(store.getState().ocr.selected_project_name!=""){
       this.props.dispatch(saveDocumentPageFlag(true)); // onClick of BreadCrumb(projectName) if selProjName is not empty, setting flag true to Show ProDocTable 
     }
