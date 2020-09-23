@@ -455,6 +455,15 @@ export class C3ChartNew extends React.Component{
         "tooltip":{
           "format": (chartData.tooltip!=undefined && chartData.tooltip.format!=undefined)?d3.format(chartData.tooltip.format):"",
           "show" : (chartData.tooltip!=undefined && chartData.tooltip.show!=undefined)?chartData.tooltip.show:true
+        },
+        "onrendered": function(){
+          if(window.location.pathname.includes("automated-prediction-30vq9q5scd") && window.location.pathname.includes("/modelManagement/")){
+            d3.select(this.config.bindto).select(".c3-axis-x-label").attr("y", "-30px");
+            if(d3.select(this.config.bindto).select(".c3-legend-item text")[0][0] !=null){
+              let y = d3.select(this.config.bindto).select(".c3-legend-item text").attr("y");
+              d3.select(this.config.bindto).selectAll(".c3-legend-item").attr("transform", "translate(32,-20)");
+            }
+          }
         }
       }
       break;
@@ -536,11 +545,13 @@ export class C3ChartNew extends React.Component{
     }
 
     if (this.props.xdata) {
+      if(!window.location.pathname.includes("/modelManagement/")){
       myData.axis.x.height=120
       myData.axis.x.tick.rotate=-53
       myData.axis.x.tick.multiline=true
       myData.axis.x.tick.width=90
       myData.axis.x.tick.outer = false;
+      }
 
       let xdata = this.props.xdata;
       myData.axis.x.tick.format = function(x) {
@@ -555,7 +566,7 @@ export class C3ChartNew extends React.Component{
       }
 
     }
-  
+    myData.size.height = (window.location.pathname.includes("/modelManagement/") && myData.axis!=undefined && myData.axis.y.label.text === "% Count") ? 360:myData.size.height
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
     if(myData.subchart !=undefined && myData.subchart.show=== true){
