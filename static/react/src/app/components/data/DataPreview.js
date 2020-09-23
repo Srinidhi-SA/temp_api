@@ -534,9 +534,8 @@ else{
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <span><h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4></h3>
-                 </span>
-                
+                    <h3 style={{"display": "inline"}}> Data Preview </h3>
+                    <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4>
                 </div>
               </div>
               <div className="clearfix"></div>

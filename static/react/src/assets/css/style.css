@@ -21701,8 +21701,10 @@ input[type="range"]:focus::-ms-fill-upper {
   display: inline-block;
   vertical-align: top;
 }
-div.text-center.tbl_th_center th {
+div.text-center.tbl_th_center tr>th {
   text-align: center;
+  border-bottom: none;
+  font-weight: bold;
 }
 .col-xs-1.clr-alt4,
 .gray-box {
