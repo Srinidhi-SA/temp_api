@@ -124,7 +124,7 @@ export class C3ChartNew extends React.Component{
                   },
                   "color": chartData.color,
                   "data": {
-                    "axes": (chartData.data.axes.value!=undefined)?chartData.data.axes:{"value":chartData.data.axes.value},
+                    "axes": chartData.data.axes,
                     "columns": chartData.data.columns,
                     "type": chartData.data.type,
                     "x": chartData.data.x,
