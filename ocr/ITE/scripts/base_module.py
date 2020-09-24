@@ -882,6 +882,42 @@ class BaseModule:
 
         return table_struc_stats
 
+    def check_if_centroid_inbetween_p1_p3(self, centroid, p1, p3):
+        if p1[0] <= centroid[0] <= p3[0] and p1[1] <= centroid[1] <= p3[1]:
+            return True
+        else:
+            return False
+
+    def calculate_centroid(self, p1, p3):
+        x_centroid = int((p1[0] + p3[0]) * 0.5)
+        y_centroid = int((p1[1] + p3[1]) * 0.5)
+        return x_centroid, y_centroid
+
+    def extract_spread(self):
+
+        h, w = self.original_image.shape[:2]
+        q1 = {'p1': [0, 0], 'p3': [int(w * 0.5), int(h * 0.5)]}
+        q2 = {'p1': [int(w * 0.5), 0], 'p3': [w, int(h * 0.5)]}
+        q3 = {'p1': [0, int(h * 0.5)], 'p3': [int(w * 0.5), h]}
+        #        q4 = {'p1':[int(w*0.5),int(h*0.5)] ,'p3' : [w, h]}
+
+        paras = self.paras
+        spread = {'q1': 0, 'q2': 0, 'q3': 0, 'q4': 0}
+        for para in paras:
+            for line in paras[para]:
+                for word in line:
+                    bb = word["boundingBox"]
+                    p_centroid = self.calculate_centroid(bb['p1'], bb['p3'])
+                    if self.check_if_centroid_inbetween_p1_p3(p_centroid, q1['p1'], q1['p3']):
+                        spread['q1'] += 1
+                    elif self.check_if_centroid_inbetween_p1_p3(p_centroid, q2['p1'], q2['p3']):
+                        spread['q2'] += 1
+                    elif self.check_if_centroid_inbetween_p1_p3(p_centroid, q3['p1'], q3['p3']):
+                        spread['q3'] += 1
+                    else:
+                        spread['q4'] += 1
+        return spread
+
     def fetch_metadata(self, table_area_dict, table_count_dict, order, analysis, rel_para_area, paras,
                        table_rel_centroid_dist_dict, table_cell_dict):
         page_metadata = {}
@@ -902,8 +938,10 @@ class BaseModule:
 
         if len(table_count_dict) == 0:
             page_metadata["words"] = self.extract_words(analysis)
+            page_metadata["spread"] = self.extract_spread()
         else:
             page_metadata["words"] = []
+            page_metadata["spread"] = {'q1': 0, 'q2': 0, 'q3': 0, 'q4': 0}
         page_metadata["no_of_tables"] = len(page_metadata["table"])
         page_metadata["total_relative_table_area"] = sum(table_area_dict.values())
 

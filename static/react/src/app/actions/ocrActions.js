@@ -72,37 +72,37 @@ export function getOcrProjectsList(pageNo) {
 }
 
 function fetchProjects(pageNo = store.getState().ocr.projectPage, token) {
-	let search_project = store.getState().ocr.search_project
+	let search_project = store.getState().ocr.search_project;
+	let ProjectPageSize = store.getState().ocr.projectTablePagesize;
 	var userRole = getUserDetailsOrRestart.get().userRole
-	if (userRole == "ReviewerL1" || userRole == "ReviewerL2") {
-		if (search_project != "") {
-			return fetch(API + '/ocr/project/reviewer/?page_number=' + pageNo + '&name=' + search_project, {
-				method: 'get',
-				headers: getHeader(token)
-			}).then(response => Promise.all([response, response.json()]));
-		}
-		else {
-			return fetch(API + '/ocr/project/reviewer/?page_number=' + pageNo, {
-				method: 'get',
-				headers: getHeader(token)
-			}).then(response => Promise.all([response, response.json()]))
-		};
+	if(ProjectPageSize==="All"){
+			if (userRole == "ReviewerL1" || userRole == "ReviewerL2") {
+					return fetch(API + '/ocr/project/reviewer/?page_number=' + pageNo + '&name=' + search_project + '&page=' + ProjectPageSize, {
+						method: 'get',
+						headers: getHeader(token)
+					}).then(response => Promise.all([response, response.json()]));
+			}
+			else {
+					return fetch(API + '/ocr/project/?name=' + search_project + '&page_number=' + pageNo + '&page=' + ProjectPageSize, {
+						method: 'get',
+						headers: getHeader(token)
+					}).then(response => Promise.all([response, response.json()]));
+			}
 	}
-	else {
-		if (search_project != "") {
-			return fetch(API + '/ocr/project/?name=' + search_project + '&page_number=' + pageNo, {
-				method: 'get',
-				headers: getHeader(token)
-			}).then(response => Promise.all([response, response.json()]));
-		}
-		else {
-			return fetch(API + '/ocr/project/?page_number=' + pageNo, {
-				method: 'get',
-				headers: getHeader(token)
-			}).then(response => Promise.all([response, response.json()]));
-		}
+	else{
+				if (userRole == "ReviewerL1" || userRole == "ReviewerL2") {
+					return fetch(API + '/ocr/project/reviewer/?page_number=' + pageNo + '&name=' + search_project + '&page_size=' + ProjectPageSize, {
+						method: 'get',
+						headers: getHeader(token)
+					}).then(response => Promise.all([response, response.json()]));
+			}
+			else {
+					return fetch(API + '/ocr/project/?name=' + search_project + '&page_number=' + pageNo + '&page_size=' + ProjectPageSize, {
+						method: 'get',
+						headers: getHeader(token)
+					}).then(response => Promise.all([response, response.json()]));
+			}	
 	}
-
 }
 
 export function fetchProjectsSuccess(doc) {
@@ -195,6 +195,12 @@ export function docTablePagesize(pagesize) {
 export function rDocTablePagesize(pagesize) {
 	return {
 		type: "RDOC_TABLE_PAGESIZE",
+		pagesize,
+	}
+}
+export function projectTablePagesize(pagesize) {
+	return {
+		type: "PROJECT_TABLE_PAGESIZE",
 		pagesize,
 	}
 }

@@ -822,11 +822,32 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
+        invalid_files=list()
+        invalid_images = []
         if data['dataSourceType'] == 'fileUpload':
             if 'imagefile' in data:
                 files = request.FILES.getlist('imagefile')
                 for file in files:
-                    imagepath.append(file.name[:-4].replace('.', '_'))
+                    if file.name.endswith('.pdf'):
+                        imagepath.append(file.name[:-4].replace('.', '_'))
+                    else:
+                        from ocr import validators
+                        status=validators.validate_image_dimension(file)
+                        if status == 0:
+                            invalid_images.append(file.name)
+                            invalid_files.append(
+                                {"status":"failed",
+                                 "message":"Height or Width is smaller than the allowed limit(50*50).",
+                                 "image":file.name})
+
+                        elif status == 1:
+                            invalid_images.append(file.name)
+                            invalid_files.append(
+                                {"status":"failed",
+                                 "message":"Height or Width is larger than the allowed limit(10000*10000).",
+                                 "image":file.name})
+                        else:
+                            imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
             s3_downloader = S3File()
@@ -862,70 +883,79 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             imagename_list.append(i.name)
 
         for file in files:
-            if data['dataSourceType'] == 'S3':
-                img_data = dict()
-                django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
-                img_data['imagefile'] = django_file
-                img_data['projectslug'] = data['projectslug']
-                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
-                if file is None:
-                    img_data['name'] = img_data.get('name',
-                                                    img_data.get('datasource_type', "H") + "_" + str(
-                                                        random.randint(1000000, 10000000)))
-                else:
-                    img_data['name'] = file[:-4].replace('.', '_')
-                img_data['created_by'] = request.user.id
-                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                # if img_data['name'] in imagename_list:
-                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                #     response['serializer_error'] = str(serializer_error)
-                #     response['message'] = 'FAILED'
-                #     return JsonResponse(response)
-                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
-                if serializer.is_valid():
-                    image_object = serializer.save()
-                    image_object.create()
+            if file.name not in invalid_images:
+                if data['dataSourceType'] == 'S3':
+                    img_data = dict()
+                    django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
+                    img_data['imagefile'] = django_file
+                    img_data['projectslug'] = data['projectslug']
+                    img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
+                    if file is None:
+                        img_data['name'] = img_data.get('name',
+                                                        img_data.get('datasource_type', "H") + "_" + str(
+                                                            random.randint(1000000, 10000000)))
+                    else:
+                        img_data['name'] = file[:-4].replace('.', '_')
+                    img_data['created_by'] = request.user.id
+                    img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                    # if img_data['name'] in imagename_list:
+                    #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                    #     response['serializer_error'] = str(serializer_error)
+                    #     response['message'] = 'FAILED'
+                    #     return JsonResponse(response)
+                    serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                    if serializer.is_valid():
+                        image_object = serializer.save()
+                        image_object.create()
 
-            if data['dataSourceType'] == 'fileUpload':
-                img_data['imagefile'] = file
-                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
-                if file is None:
-                    img_data['name'] = img_data.get('name',
-                                                    img_data.get('datasource_type', "H") + "_" + str(
-                                                        random.randint(1000000, 10000000)))
-                else:
-                    img_data['name'] = file.name[:-4].replace('.', '_')
-                img_data['created_by'] = request.user.id
-                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                # if img_data['name'] in imagename_list:
-                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                #     response['serializer_error'] = str(serializer_error)
-                #     response['message'] = 'FAILED'
-                #     return JsonResponse(response)
-                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                if data['dataSourceType'] == 'fileUpload':
+                    img_data['imagefile'] = file
+                    img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
+                    if file is None:
+                        img_data['name'] = img_data.get('name',
+                                                        img_data.get('datasource_type', "H") + "_" + str(
+                                                            random.randint(1000000, 10000000)))
+                    else:
+                        img_data['name'] = file.name[:-4].replace('.', '_')
+                    img_data['created_by'] = request.user.id
+                    img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                    # if img_data['name'] in imagename_list:
+                    #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                    #     response['serializer_error'] = str(serializer_error)
+                    #     response['message'] = 'FAILED'
+                    #     return JsonResponse(response)
+                    serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                    if serializer.is_valid():
+                        image_object = serializer.save()
+                        image_object.create()
+                    else:
+                        serializer_error.append(serializer.errors)
+                        return JsonResponse(response)
+                if data['dataSourceType'] == 'SFTP':
+                    pass
+
+                img_data['status'] = 'ready_to_recognize'
+                serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
+                                                context={"request": self.request})
                 if serializer.is_valid():
-                    image_object = serializer.save()
-                    image_object.create()
+                    serializer.save()
+                    serializer_data.append(serializer.data)
                 else:
                     serializer_error.append(serializer.errors)
-                    return JsonResponse(response)
-            if data['dataSourceType'] == 'SFTP':
-                pass
-
-            img_data['status'] = 'ready_to_recognize'
-            serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
-                                            context={"request": self.request})
-            if serializer.is_valid():
-                serializer.save()
-                serializer_data.append(serializer.data)
             else:
-                serializer_error.append(serializer.errors)
-        if not serializer_error:
-            response['serializer_data'] = serializer_data
-            response['message'] = 'SUCCESS'
-        else:
-            response['serializer_error'] = str(serializer_error)
-            response['message'] = 'FAILED'
+                pass
+        try:
+            if not serializer_error:
+                response['serializer_data'] = serializer_data
+                response['message'] = 'SUCCESS'
+                response['invalid_files'] = invalid_files
+            else:
+                response['serializer_error'] = str(serializer_error)
+                response['message'] = 'FAILED'
+                response['invalid_files'] = invalid_files
+        except:
+            response['invalid_files'] = invalid_files
+
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
