@@ -49,6 +49,11 @@ export class AppsModelDetail extends React.Component {
 	}
 
 	componentDidMount() {
+		if(document.getElementsByClassName("noTable")[0] !=undefined){
+			document.getElementsByClassName("noTable")[0].parentElement.parentElement.nextElementSibling.className = "col-md-8 col-md-offset-2"
+			let element = document.getElementsByClassName("noTable")[0].parentElement.parentElement.nextElementSibling.children[0].firstElementChild;
+			element.remove()
+		}
 		let currentModel= this.props.modelSlug;
 		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
@@ -129,21 +134,6 @@ export class AppsModelDetail extends React.Component {
 	gotoHyperparameterSummary(){
 		this.setState({showHyperparameterSummary:true})
 	}
-	showMore(evt){
-			evt.preventDefault();
-			$.each(evt.target.parentElement.children,function(k1,v1){
-				$.each(v1.children,function(k2,v2){
-					if(v2.className == "modelSummery hidden")
-					v2.className = "modelSummery";
-					else if(v2.className == "modelSummery")
-					v2.className = "modelSummery hidden";
-				})
-			});
-		if(evt.target.innerHTML == "Show More")
-		evt.target.innerHTML = "Show Less";
-		else
-		evt.target.innerHTML = "Show More";
-	}
   render() {
 		if(document.querySelector(".sm-pb-10")!= null ){
 			let FE = document.querySelector(".sm-pb-10")
@@ -170,35 +160,26 @@ export class AppsModelDetail extends React.Component {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 				var cardDataArray = data.cardData;
-				var isHideData = $.grep(cardDataArray,function(val,key){
-					return(val.dataType == "html" && val.classTag == "hidden");
-				});
+				if( (cardDataArray.filter(i=>(i.dataType==="table" && i.data.tableData.length===1))).length!=0 ){
+					let newData = {}
+					newData = cardDataArray[0]
+					cardDataArray = []
+					cardDataArray[0] = newData
+					cardDataArray[0].classTag = "noTable"
+				}
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
 					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
+					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
 									return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
-		/*}
-		else{
-			var listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
-			var cardDataList = listOfCardList.map((data, i) => {
-				if( i != 0 ){
-					if(i%2 != 0)
-					return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
-					else
-					return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
-				}
-				else return (<Card key={i} cardData={data} />)
-			});
-		}*/
 		
 		if(listOfCardList){
 			return (
@@ -224,7 +205,7 @@ export class AppsModelDetail extends React.Component {
 		                     </h3>
 							 <div className="clearfix"></div>
 							 
-		                <div className="panel panel-mAd documentModeSpacing box-shadow">
+		                <div className={this.props.match.params.AppId === "regression-app-6u8ybu4vdr"?"panel panel-mAd documentModeSpacing box-shadow regSpacing":"panel panel-mAd documentModeSpacing box-shadow"}>
 		                  
 		                   <div className="panel-body no-border">
 		                   <div className="container-fluid">

@@ -21064,7 +21064,12 @@ svg {
 .documentModeSpacing .chart-area{
   margin-bottom: 25px;
 }
-
+.regSpacing .col-md-6 .col-md-12{
+  margin-bottom: 0px !important;
+}
+.regSpacing .chart-area{
+  margin-bottom: 0px;
+}
 .loadingBar {
   background-color: #148071;
   height: 3px;

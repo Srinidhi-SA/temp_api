@@ -40,10 +40,17 @@ export class CardHtml extends React.Component {
                 </div>
            );
    }
-   else {
+   else if(this.props.classTag === "noTable"){
+    return(
+      <div className="noTable" style={{marginTop:"15px"}}>
+       {renderHTML(element)}
+       </div>
+  ); 
+   }else {
      let txtAlign = "";
      if(this.props.htmlElement === "<h4>Sentiment by Concept</h4>" || 
-        this.props.htmlElement === "<h4>Impact on Stock Price</h4>" ){
+        this.props.htmlElement === "<h4>Impact on Stock Price</h4>" ||
+        this.props.htmlElement.includes("<h4>Influence of Key Features on ")){
        txtAlign = "center";
      }else if(this.props.htmlElement === "<h3>Model Summary</h3>"){
        element = "<h3 class="+"modelTitle"+">Model Summary</h3>"

@@ -43,6 +43,24 @@ export class Card extends React.Component {
 	  if(this.props.currentAppDetails&&this.props.currentAppDetails.app_type&&this.props.currentAppDetails.app_type == "REGRESSION")
       $('#box0').parent('div').addClass('text-center');
     }
+    showMore(evt){
+        evt.preventDefault();
+        $.each(evt.target.parentElement.querySelectorAll(".paramList"),function(k1,v1){
+            $.each(v1.children,function(k2,v2){
+                if(v2.className == "modelSummery hidden"){
+                    v2.className = "modelSummery";
+                }
+                else if(v2.className == "modelSummery"){
+                    v2.className = "modelSummery hidden";
+                }
+            })
+        });
+        if(evt.target.innerHTML == "Show More"){
+            evt.target.innerHTML = "Show Less";
+        }else{
+            evt.target.innerHTML = "Show More";
+        }
+    }
     handleCheckBoxEvent(event){
         this.props.dispatch(pickToggleValue(event.target.id, event.target.checked));
         if (this.props.toggleValues[event.target.id] == true) {
@@ -180,11 +198,25 @@ export class Card extends React.Component {
     render() {
         cardData = this.props.cardData;
 		let stockClassName = "";
+        if(cardData[0].data!=undefined && cardData[0].data === "<h4><center>Algorithm Parameters </center></h4>")
+            stockClassName = "algoParams"
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)
-		stockClassName = "stockClassName";
+		    stockClassName = "stockClassName";
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
+        var isHideData = $.grep(cardData,function(val,key){
+            return(val.dataType == "html" && val.classTag == "hidden");
+        });
         return (
+            stockClassName === "algoParams"?
+                <div className={stockClassName}>
+                    {cardElements[0]}
+                    <Scrollbars autoHeight autoHeightMin={200} autoHeightMax={330} style={{marginTop:"25px"}}>
+                        <div className="paramList">{cardElements.slice(1)}</div>
+                        </Scrollbars>
+                        {isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}
+                </div>
+                :
                 <div className = {stockClassName}>
                 {cardElements}
                 </div>
