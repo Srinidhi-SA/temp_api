@@ -122,3 +122,5 @@ class StockSenseTest(TestCase):
                                                sort_by='publishedAt',
                                                )
         self.assertEqual(top_headlines['status'], 'ok')
+
+
