@@ -121,4 +121,7 @@ export class RevProjectTable extends React.Component {
 
       )
    }
+   componentWillUnmount=()=>{
+      this.props.dispatch(projectTablePagesize("12"));
+   }
 }

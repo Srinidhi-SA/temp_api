@@ -225,4 +225,7 @@ export class OcrProjectScreen extends React.Component {
          </div>
       )
    }
+   componentWillUnmount=()=>{
+      this.props.dispatch(projectTablePagesize("12"));
+   }
 }
