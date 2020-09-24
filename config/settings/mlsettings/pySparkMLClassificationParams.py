@@ -1,18 +1,16 @@
-
 PYSPARK_ML_SUPPORTED_SPLIT_CRITERION_CLASSIFICATION = [
     {"name": "gini", "selected": True, "displayName": "Gini Impurity"},
-    {"name": "entropy", "selected": False, "displayName": "Entropy"},
+    {"name": "entropy", "selected": False, "displayName": "Entropy"}
 ]
 
 PYSPARK_ML_SUPPORTED_SPLIT_MODEL_TYPE_CLASSIFICATION = [
-    {"name": "multinomial", "selected": True, "displayName": "multinomial"},
-    # {"name": "bernoulli", "selected": False, "displayName": "bernoulli"},
+    {"name": "multinomial", "selected": True, "displayName": "multinomial"}
 ]
 
 PYSPARK_ML_SUPPORTED_SPLIT_FAMILY_CLASSIFICATION = [
     {"name": "auto", "selected": True, "displayName": "auto"},
     {"name": "binomial", "selected": False, "displayName": "binomial"},
-    {"name": "multinomial", "selected": False, "displayName": "multinomial"},
+    {"name": "multinomial", "selected": False, "displayName": "multinomial"}
 ]
 
 PYSPARK_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
@@ -20,7 +18,7 @@ PYSPARK_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
     {"name": "lbfgs", "selected": False, "displayName": "lbfgs", "penalty": "l2"},
     {"name": "sag", "selected": False, "displayName": "sag", "penalty": "l2"},
     {"name": "liblinear", "selected": False, "displayName": "liblinear", "penalty": "l1"},
-    {"name": "saga", "selected": False, "displayName": "saga", "penalty": "l1"},
+    {"name": "saga", "selected": False, "displayName": "saga", "penalty": "l1"}
 ]
 
 PYSPARK_ML_SUPPORTED_MULTICLASS_OPTION = [
@@ -37,7 +35,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "description": "Max number of iterations.",
         "defaultValue": 100,
         "acceptedValue": None,
-        "valueRange": [10,1000],
+        "valueRange": [10, 1000],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
@@ -52,7 +50,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "description": "Regularisation parameter.",
         "defaultValue": 0.0,
         "acceptedValue": None,
-        "valueRange": [0.00001,0.5],
+        "valueRange": [0.00001, 0.5],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
@@ -81,7 +79,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "description": "Depth for tree aggregation",
         "defaultValue": 2,
         "acceptedValue": None,
-        "valueRange": [2,10],
+        "valueRange": [2, 10],
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
@@ -142,7 +140,7 @@ PYSPARK_ML_LOGISTIC_REGRESSION_PARAMS = [
         "description": "Convergence tolerance for iterative algorithms",
         "defaultValue": 0.000001,
         "acceptedValue": None,
-        "valueRange": [0,1000],
+        "valueRange": [0, 1000],
         "paramType": "number",
         "uiElemType": "textBox",
         "display": True,
@@ -330,7 +328,7 @@ PYSPARK_ML_DECISIONTREE_CLASSIFICATION_PARAMS = [
         "description": "Minimum information gain for a split to be considered at a tree node.",
         "defaultValue": 0.0,
         "acceptedValue": None,
-        "valueRange": [0,1],
+        "valueRange": [0, 1],
         "paramType": "number",
         "uiElemType": "slider",
         "display": True,
