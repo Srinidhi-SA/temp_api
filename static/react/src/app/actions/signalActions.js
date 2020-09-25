@@ -404,7 +404,7 @@ export function updateAdvanceSettings(event){
    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
    var selOption = event.target.childNodes[event.target.selectedIndex];
-   var varType = selOption.value;
+   var varType = selOption.getAttribute("data-dataType");
    var varText = selOption.text;
    var varSlug = selOption.getAttribute("name");
     return (dispatch) => {

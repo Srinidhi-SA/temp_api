@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements,variableSlectionBack} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable, saveSignalName} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -150,6 +150,9 @@ export class VariableSelection extends React.Component {
     componentWillMount(){
         if(this.props.fromVariableSelectionPage){
 
+      }
+      else if(store.getState().datasets.varibleSelectionBackFlag){
+      ""
       }else{
             if (this.props.dataPreview == null) {
                 this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
@@ -279,12 +282,13 @@ export class VariableSelection extends React.Component {
         return list;
     }
     handleBack=()=>{
+      this.props.dispatch(variableSlectionBack(true));
         const slug = this.props.match.params.slug;
         if(this.props.match.path.includes("data"))
         this.props.history.replace(`/data/${slug}?from=createSignal`)
         else if(this.props.match.path.includes("signals"))
         this.props.history.replace(`/signals/${slug}?from=createSignal`);
-      }
+    }
     setSignalName(event){
         this.props.dispatch(saveSignalName(event.target.value));
     }
@@ -306,7 +310,7 @@ export class VariableSelection extends React.Component {
                 renderSelectBox = metaData.map((metaItem,metaIndex) =>{
                     if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol){
                         return(
-                                <option key={metaItem.slug}  name={metaItem.slug}   value={metaItem.columnType}>{metaItem.name}</option>
+                            <option key={metaItem.slug}  data-dataType={metaItem.columnType} name={metaItem.slug}   value={metaItem.name}>{metaItem.name}</option>
                         );
                     }
                 })
@@ -339,7 +343,7 @@ export class VariableSelection extends React.Component {
 				 
 				<label for="signalVariableList" className="col-lg-2 control-label cst-fSize">I want to analyze </label>
 				<div className="col-lg-4">                 
-                <select className="form-control" id="signalVariableList"  onChange={this.setPossibleList.bind(this)}>
+                <select className="form-control" id="signalVariableList" defaultValue={store.getState().signals.getVarText}  onChange={this.setPossibleList.bind(this)}>
                 <option value="">--Select--</option>
                 {renderSelectBox}
                 </select>                 
@@ -402,7 +406,7 @@ export class VariableSelection extends React.Component {
                </div>
                 <div className="col-lg-5 col-lg-offset-5">
 				<div class="input-group xs-mb-15">
-                    <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                    <input type="text" name="createSname" id="createSname"  required={true} onChange={this.setSignalName.bind(this)}  defaultValue={store.getState().datasets.varibleSelectionBackFlag?store.getState().signals.setSigName:""}  class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
                     <button id="signalCreate" type="submit" class="btn btn-primary">Create Signal</button></span>
                  </div>
 				</div>
