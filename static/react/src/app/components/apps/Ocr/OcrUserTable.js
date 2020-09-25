@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Pagination} from "react-bootstrap";
 import store from "../../../store";
-import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction, getallAppsList} from "../../../actions/ocrActions";
+import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction, getallAppsList,userTablePagesize} from "../../../actions/ocrActions";
 import { statusMessages } from "../../../helpers/helper";
 import { Checkbox } from "primereact/checkbox";
 import { OcrAddUser } from "./OcrAddUser";
@@ -101,12 +101,19 @@ export class OcrUserTable extends React.Component{
             this.props.dispatch(fetchOcrListByReviewerType(parseFloat(e.target.id),store.getState().ocr.ocrUserPageNum));
         }        
     }
-    handlePagination(pageNo){
+    handlePagination=(pageNo)=>{
         this.props.dispatch(saveOcrUserPageNumAction(pageNo));
         this.props.selectedTabId != "none"?
             this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum))
             : this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
     }
+    handlePageRow=(e)=>{
+        let selectedVal= e.target.value;
+        this.props.dispatch(userTablePagesize(selectedVal));
+        this.props.selectedTabId != "none"?
+        this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum))
+        : this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum))
+      }
     handleSearchElement(e){
         this.props.dispatch(saveUserSearchElementAction(e.target.value));
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
@@ -134,9 +141,25 @@ export class OcrUserTable extends React.Component{
         }else{
             const pages = store.getState().ocr.allOcrUsers.total_number_of_pages;
             const current_page = store.getState().ocr.allOcrUsers.current_page;
-            if(pages > 1){
-                paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
-            }
+            if (pages >= 1) {
+                paginationTag = (
+                   <div class="col-md-12 text-center">
+                      <div className="footer" id="Pagination">
+                         <div className="pagination pageRow">
+                         <span>Rows per page:</span>
+                         <select className="xs-mr-20 xs-ml-10" onChange={this.handlePageRow} value={store.getState().ocr.userTablePagesize}>
+                            <option value="12">12</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="All">All</option>
+                         </select>
+                         <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+                         </div>
+                      </div>
+                   </div>
+                )
+             }
+
             manageUsersTable = 
                 <table className = "table manageUserTable">
                     <thead><tr>

@@ -204,6 +204,12 @@ export function projectTablePagesize(pagesize) {
 		pagesize,
 	}
 }
+export function userTablePagesize(pagesize) {
+	return {
+		type: "USER_TABLE_PAGESIZE",
+		pagesize,
+	}
+}
 export function projectPage(page) {
 	return {
 		type: "PROJECT_PAGE",
@@ -547,19 +553,36 @@ export function fetchAllOcrUsersAPI(pageNo, token) {
 	if (pageNo === undefined) {
 		pageNo = 1;
 	}
-	let searchElement = store.getState().ocr.ocrSearchElement
+	let searchElement = store.getState().ocr.ocrSearchElement;
+	let userTablePagesize = store.getState().ocr.userTablePagesize;
+	if (userTablePagesize === "All") {
 	if (searchElement != "") {
-		return fetch(API + '/ocr/user/?first_name=' + searchElement + '&page_number=' + pageNo, {
+		return fetch(API + '/ocr/user/?first_name=' + searchElement + '&page_number=' + pageNo + '&page=' + userTablePagesize, {
 			method: 'get',
 			headers: getHeader(token)
 		}).then(response => Promise.all([response, response.json()]));
 	}
 	else {
-		return fetch(API + "/ocr/user/?page_number=" + pageNo, {
+		return fetch(API + "/ocr/user/?page_number=" + pageNo + '&page=' + userTablePagesize, {
 			method: "get",
 			headers: getHeaderForJson(token),
 		}).then(response => Promise.all([response, response.json()]));
 	}
+}
+else{
+	if (searchElement != "") {
+		return fetch(API + '/ocr/user/?first_name=' + searchElement + '&page_number=' + pageNo + '&page_size=' + userTablePagesize, {
+			method: 'get',
+			headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]));
+	}
+	else {
+		return fetch(API + "/ocr/user/?page_number=" + pageNo + '&page_size=' + userTablePagesize, {
+			method: "get",
+			headers: getHeaderForJson(token),
+		}).then(response => Promise.all([response, response.json()]));
+	}
+}
 }
 function saveAllOcrUsersList(json) {
 	return {
@@ -589,19 +612,36 @@ function fetchOcrListByReviewerTypeAPI(id, pageNo, token) {
 	if (pageNo === undefined) {
 		pageNo = 1;
 	}
-	let searchElement = store.getState().ocr.ocrSearchElement
+	let searchElement = store.getState().ocr.ocrSearchElement;
+	let userTablePagesize = store.getState().ocr.userTablePagesize;
+
+	if (userTablePagesize === "All") {
 	if (searchElement != "") {
-		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&first_name=" + searchElement + "&page_number=" + pageNo, {
+		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&first_name=" + searchElement + "&page_number=" + pageNo + '&page=' + userTablePagesize, {
 			method: 'get',
 			headers: getHeader(token)
 		}).then(response => Promise.all([response, response.json()]));
 	}
 	else {
-		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&page_number=" + pageNo, {
+		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&page_number=" + pageNo + '&page=' + userTablePagesize, {
 			method: "get",
 			headers: getHeaderForJson(token),
 		}).then(response => Promise.all([response, response.json()]));
 	}
+}else{
+	if (searchElement != "") {
+		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&first_name=" + searchElement + "&page_number=" + pageNo + '&page_size=' + userTablePagesize, {
+			method: 'get',
+			headers: getHeader(token)
+		}).then(response => Promise.all([response, response.json()]));
+	}
+	else {
+		return fetch(API + "/ocr/user/reviewer_list/?role=" + id + "&page_number=" + pageNo + '&page_size=' + userTablePagesize, {
+			method: "get",
+			headers: getHeaderForJson(token),
+		}).then(response => Promise.all([response, response.json()]));
+	}	
+}
 }
 
 export function getReviewersListAction() {
