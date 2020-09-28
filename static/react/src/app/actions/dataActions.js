@@ -3,7 +3,8 @@ import {API,STATIC_URL} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
-import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
+import {closeAppsLoaderValue,openAppsLoaderValue,saveSelectedValuesForModel} from "./appActions";
+import {resetSelectedTargetVariable} from "./signalActions";
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
@@ -1627,7 +1628,10 @@ export function updateColSlug(slug){
 export function handleColumnActions(transformSettings,slug,isSubsetting) {
     return (dispatch) => {
         return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
-            if(response.status === 200){
+            if(response.status === 200){ 
+                dispatch(saveSelectedValuesForModel(store.getState().apps.apps_regression_modelName, "", ""))
+                dispatch(makeAllVariablesTrueOrFalse(true));
+                dispatch((resetSelectedTargetVariable()))
                 dispatch(fetchDataValidationSuccess(json,isSubsetting));
                 dispatch(hideLoading());
                 dispatch(vaiableSelectionUpdate(true));
@@ -2062,5 +2066,16 @@ export function clearFeatureEngineering(){
 export function setCreateSignalLoaderFlag(flag){
     return {
         type : "SET_CREATE_SIG_LOADER_FLAG",flag
+    }
+}
+
+export function variableSlectionBack(flag){
+    return {
+        type : "SET_VARIABLE_SELECTION_BACK",flag
+    }
+}
+export function SaveScoreName(value){
+    return {
+        type : "SAVE_SCORE_NAME",value
     }
 }

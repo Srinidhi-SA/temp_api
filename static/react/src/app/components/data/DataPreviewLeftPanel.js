@@ -48,7 +48,7 @@ export class DataPreviewLeftPanel extends React.Component {
                         return(<th key={colIndex}><b>{colData}</b></th>)
                     })
                 }
-                return colData;
+                return colData!=""?colData:null;
             });
 		    tableRowTemplate = scoreData.map(function(row,id){
 		        if(row != ""){

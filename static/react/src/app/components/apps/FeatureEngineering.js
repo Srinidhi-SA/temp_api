@@ -705,7 +705,7 @@ export class FeatureEngineering extends React.Component {
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, key) => {
         if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1)
-          return "";
+          return null;
         if (item.columnType == "measure")
           numberOfSelectedMeasures += 1;
         else
@@ -844,7 +844,7 @@ export class FeatureEngineering extends React.Component {
                           <thead>
                             <tr key="trKey" className="myHead">
                               <th className="text-left"><b>Variable name</b></th>
-                              <th ><b>Data type</b></th>
+                              <th><b>Data type</b></th>
                               <th></th>
                               <th></th>
                             </tr>

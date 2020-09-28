@@ -24,7 +24,10 @@ export class DetailOverlay extends React.Component {
 		  return( <li key={index}><i class="fa fa-check"></i>&nbsp;&nbsp;{key}</li>);
 	  })
 	 let  analysisList = <ul class="list-unstyled">{value}</ul>;
-	   return  <p className="overlayTooltip"><h5 class="text-primary">List Of Signals</h5>{analysisList}</p>
+     return <div className="overlayTooltip">
+              <div class="text-primary">List Of Signals</div>
+              {analysisList}
+            </div>
   }
   render() {
    var details = this.props.details.brief_info;

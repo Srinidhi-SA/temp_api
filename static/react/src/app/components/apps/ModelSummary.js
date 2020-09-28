@@ -14,6 +14,7 @@ import $ from "jquery";
 import { Deployment } from "./Deployment";
 import { ModelSummeryButton } from "../common/ModelSummeryButton";
 import { C3ChartNew } from "../C3ChartNew";
+import { Scrollbars } from "react-custom-scrollbars";
 
 @connect((store) => {
   return {
@@ -101,10 +102,14 @@ export class ModelSummary extends React.Component {
             }else{
               return( 
                 story.data.map((data,index)=>{
-                return (<div className="col-md-5ths col-sm-6 col-xs-12 bgStockBox">
-                <h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
-                <p>{data.description}</p>
-                </div>);
+                return (
+                  <div className="col-md-5ths col-sm-6 col-xs-12 bgStockBox">
+                    <h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
+                    <Scrollbars className="performanceCard" style={{height:"78px"}} renderTrackHorizontal={props => <div {...props} style={{display: 'none'}} className="track-horizontal"/>}>
+                      <div style={{padding:"5px 10px"}} >{data.description}</div>
+                    </Scrollbars>
+                  </div>
+                );
               })
               );
             }

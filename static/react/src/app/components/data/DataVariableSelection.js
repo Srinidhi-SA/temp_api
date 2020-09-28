@@ -5,7 +5,7 @@ import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } f
 import store from "../../store";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 
@@ -78,6 +78,8 @@ export class DataVariableSelection extends React.Component {
         else if(this.props.editmodelFlag){ //removed from === 'editModel'
 
         }
+        else if(store.getState().datasets.varibleSelectionBackFlag){
+        }
         else{
             window.scrollTo(0, 0);
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
@@ -85,13 +87,13 @@ export class DataVariableSelection extends React.Component {
                 this.props.dispatch( resetSelectedVariables(true) );
             }
             else{
-            this.props.dispatch( resetSelectedVariables(true) );
-            deselectAllVariablesDataPrev(true);
+                    this.props.dispatch( resetSelectedVariables(true) );
+                    deselectAllVariablesDataPrev(true);
             }
             this.props.dispatch(resetSelectedTargetVariable());
         }
        if (from !== 'data_cleansing') {
-           this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
+                this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
     }
    
 
@@ -114,14 +116,16 @@ export class DataVariableSelection extends React.Component {
                 this.props.dispatch(resetSelectedVariables(true));
             }else if(this.props.editmodelFlag){ //In edit mode dispatch updateDatasetVariables directly, if not all variables are resetting and getting checked
               ""; 
-            }else{  
-                this.props.dispatch( resetSelectedVariables(true));
-                deselectAllVariablesDataPrev(true);
+            }else if(store.getState().datasets.varibleSelectionBackFlag){
+            }
+            else{  
+                    this.props.dispatch( resetSelectedVariables(true));
+                    deselectAllVariablesDataPrev(true);
             }
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
         }
         let dtList = store.getState().datasets.dataSetTimeDimensions
-        if(!this.props.editmodelFlag && dtList.length!=0 && document.getElementById("unselect") != undefined){
+        if(!store.getState().datasets.varibleSelectionBackFlag && !this.props.editmodelFlag && dtList.length!=0 && document.getElementById("unselect") != undefined){
             if(dtList.filter(i=>(i.selected===true)).length === 0 && !document.getElementById("unselect").checked){
                 this.props.dispatch(setDefaultTimeDimensionVariable(dtList[0]));
             }else if(dtList.filter(i=>i.selected).length === 0){
@@ -172,8 +176,8 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             if(this.props.match.path.includes("/createScore") && !$.isEmptyObject(modelSummary))
             this.props.dispatch(updateVariableSelectionArray(modelSummary));
-            this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
-           var  metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
+            this.possibleAnalysisList = store.getState().datasets.varibleSelectionBackFlag?store.getState().datasets.dataSetAnalysisList:dataPrev.meta_data.uiMetaData.advanced_settings
+            var  metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             this.measures = [];
             this.dimensions = [];
             this.datetime = [];

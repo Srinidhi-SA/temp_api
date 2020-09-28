@@ -39,7 +39,7 @@ import {
 
 } from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getAllUsersList,getDataSetPreview,setEditModelValues,fetchModelEditAPISuccess} from "../../actions/dataActions";
+import {getAllUsersList,getDataSetPreview,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -71,6 +71,7 @@ export class Apps extends React.Component {
        this.props.dispatch(parameterTuningVisited(false))
        this.props.dispatch(clearTensorFlowArray());
        this.props.dispatch(clearPyTorchValues());
+       this.props.dispatch(variableSlectionBack(false));
       
        //have to recheck next 3actions needed or not
       this.props.dispatch(setEditModelValues("","",false));

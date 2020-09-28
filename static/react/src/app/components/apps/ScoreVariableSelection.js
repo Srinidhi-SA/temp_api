@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse} from "../../actions/dataActions";
+import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,variableSlectionBack,SaveScoreName} from "../../actions/dataActions";
 import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
@@ -49,6 +49,14 @@ export class ScoreVariableSelection extends React.Component {
         }
     }
 
+    handleBack=()=>{
+      const appId = this.props.match.params.AppId;
+      const slug = this.props.match.params.slug;
+      const modelSlug =this.props.match.params.modelSlug
+      this.props.dispatch(variableSlectionBack(true));
+      this.props.dispatch(SaveScoreName($("#createScoreName").val()))
+      this.props.history.replace(`/apps/${appId}/analyst/models/${modelSlug}/data/${slug}#?from=variableSelection`);      
+    }
     render() {
         if(store.getState().apps.scoreSummaryFlag){
             let mod = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
@@ -95,10 +103,13 @@ export class ScoreVariableSelection extends React.Component {
 				<FormGroup role="form">
 				<div className="col-lg-5 col-lg-offset-7">
 				<div class="input-group xs-mb-15">
-                        <input type="text" name="createScoreName" required={true} id="createScoreName" className="form-control" placeholder="Create Score Name"/><span class="input-group-btn">
+                        <input type="text" name="createScoreName" required={true} id="createScoreName" defaultValue={store.getState().datasets.varibleSelectionBackFlag?store.getState().datasets.scoreName:""} className="form-control" placeholder="Create Score Name"/><span class="input-group-btn">
                           <button type="submit" class="btn btn-primary">Score Model</button></span>
                  </div>
 				</div>
+                <div class="col-md-8">
+                  <Button id="ScoreVariableselectionBack"  onClick={this.handleBack}  bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                </div>
                 </FormGroup>
 				
                 </Form>

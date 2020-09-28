@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, Redirect } from "react-router-dom";
-import { saveDocumentPageFlag, getOcrProjectsList, selectedProjectDetails, projectPage } from '../../../actions/ocrActions';
+import { saveDocumentPageFlag, getOcrProjectsList, selectedProjectDetails, projectPage, projectTablePagesize } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
@@ -29,13 +29,14 @@ export class OcrProjectScreen extends React.Component {
          deleteProjectFlag: false,
          deleteProjectName: "",
       }
+
    }
 
    handleDocumentPageFlag(slug, name) {
       this.props.dispatch(saveDocumentPageFlag(true));
       this.props.dispatch(selectedProjectDetails(slug, name))
    }
-   componentWillMount = () => {
+   componentWillMount = () => {    
       this.props.dispatch(getOcrProjectsList())
    }
 
@@ -43,6 +44,11 @@ export class OcrProjectScreen extends React.Component {
       this.props.dispatch(projectPage(pageNo))
       this.props.dispatch(getOcrProjectsList(pageNo))
    }
+   handlePageRow=(e)=>{
+      let selectedVal= e.target.value;
+      this.props.dispatch(projectTablePagesize(selectedVal));
+      this.props.dispatch(getOcrProjectsList())
+    }
    closePopup = () => {
       this.setState({ editProjectFlag: false })
    }
@@ -108,12 +114,19 @@ export class OcrProjectScreen extends React.Component {
       const pages = this.props.OcrProjectList.total_number_of_pages;
       const current_page = this.props.OcrProjectList.current_page;
       let paginationTag = null
-      if (pages > 1) {
+      if (pages >= 1) {
          paginationTag = (
             <div class="col-md-12 text-center">
                <div className="footer" id="Pagination">
-                  <div className="pagination">
-                     <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+                  <div className="pagination pageRow">
+                  <span>Rows per page:</span>
+                  <select className="xs-mr-20 xs-ml-10" onChange={this.handlePageRow}>
+                     <option value="12">12</option>
+                     <option value="50">50</option>
+                     <option value="100">100</option>
+                     <option value="All">All</option>
+                  </select>
+                  <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
                   </div>
                </div>
             </div>
@@ -211,5 +224,8 @@ export class OcrProjectScreen extends React.Component {
             </div>
          </div>
       )
+   }
+   componentWillUnmount=()=>{
+      this.props.dispatch(projectTablePagesize("12"));
    }
 }

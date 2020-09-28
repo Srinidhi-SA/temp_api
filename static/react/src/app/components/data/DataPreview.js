@@ -11,6 +11,7 @@ import {
   popupAlertBox,
   getAllDataList,
   getDataList,
+  makeAllVariablesTrueOrFalse
 } from "../../actions/dataActions";
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import { Button } from "react-bootstrap";
@@ -22,7 +23,7 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import { getAppDetails } from "../../actions/appActions";
+import { getAppDetails,saveSelectedValuesForModel } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 import { C3ChartNew } from "../C3ChartNew";
 
@@ -314,6 +315,9 @@ else{
         'transformation_settings': transformationSettings
       };
       this.props.dispatch(dataSubsetting(subSettingRq, this.props.dataPreview.slug))
+      this.props.dispatch(saveSelectedValuesForModel(store.getState().apps.apps_regression_modelName, "", ""))
+      this.props.dispatch(makeAllVariablesTrueOrFalse(true));
+      this.props.dispatch(resetSelectedTargetVariable())
     }
   }
 };
@@ -534,9 +538,8 @@ else{
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <span><h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4></h3>
-                 </span>
-                
+                    <h3 style={{"display": "inline"}}> Data Preview </h3>
+                    <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4>
                 </div>
               </div>
               <div className="clearfix"></div>
