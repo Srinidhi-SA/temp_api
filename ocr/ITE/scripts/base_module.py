@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ocr.ITE.scripts.utils import optimal_params, extract_mask_clean
+from ocr.ITE.scripts.utils import optimal_params, extract_mask_clean, extract_mask_clean_vert
 from ocr.ITE.scripts.utils import extract_mask, extract_mask_horizontal
 import numpy as np
 import cv2
@@ -69,7 +69,7 @@ class BaseModule:
 
         elif (len(tables) > 0) and (sum([len(tables[table]) for table in tables]) > 0):
 
-            clean_mask = extract_mask_clean(horizontal.copy()) + extract_mask_clean(vertical.copy())
+            clean_mask = extract_mask_clean(horizontal.copy()) + extract_mask_clean_vert(vertical.copy())
             table_mask = self.extract_tables_only_mask(table_count_dict, self.mask)
             self.mask = clean_mask + table_mask
 
@@ -77,7 +77,7 @@ class BaseModule:
             self.mask, horizontal, vertical = extract_mask_horizontal(
                 bwimage, scalev=scalev, scaleh=scaleh)
         else:
-            self.mask = extract_mask_clean(horizontal.copy()) + extract_mask_clean(vertical.copy())
+            self.mask = extract_mask_clean(horizontal.copy()) + extract_mask_clean_vert(vertical.copy())
         return self.final_json, self.mask, self.metadata, template_obj.template
 
     #        page metadata for paragraphs to be done here

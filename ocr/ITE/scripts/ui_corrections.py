@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import base64
+import re
+
 import numpy as np
 from collections import OrderedDict
 import cv2
 import os
 import matplotlib as mpl
-import PIL
 from PIL import ImageFont, ImageDraw, Image
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
@@ -236,7 +237,7 @@ class ui_corrections:
         #        fontscale_final = (fontScale_default+fontscale)*0.5
         return fontscale, font
 
-    def render_flagged_image(self, final_json_to_flag, mask, gen_image):  # plain_mask = False
+    """def render_flagged_image(self, final_json_to_flag, mask, gen_image):  # plain_mask = False
 
         #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
         height, width, _ = mask.shape
@@ -317,7 +318,7 @@ class ui_corrections:
             mask = self.adjust_gamma(mask, gamma=0.4)
         mask = dynamic_cavas(mask)
         cv2.imwrite(gen_image, mask)
-        return
+        return"""
 
     def render_flagged_image2(self, final_json, mask, gen_image_path, language_input):
 
@@ -370,6 +371,147 @@ class ui_corrections:
         mask = self.adjust_gamma(mask, gamma=0.4)
         mask = dynamic_cavas(mask)
 
+        cv2.imwrite(gen_image_path, mask)
+        return
+
+    def render_flagged_image(self, final_json_to_flag, mask, gen_image_path):
+        words_with_special_characters = []
+        #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
+        height, width = mask.shape[:2]
+        area = height * width
+        #        fontScale = 0.6
+        #        print (fontScale)
+        #        print(final_json_to_flag)
+        #        print('RESULT: ',sum([len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]))
+        # if ((len(final_json_to_flag["tables"]) == 0) or (sum(
+        #         [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
+        #     height, width) < 700:  # or plain_mask == True:
+        #     white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
+        #     mask = white_canvas.copy()
+        # else:
+        #     pass
+
+        if 'paragraphs' in final_json_to_flag:
+            for k in final_json_to_flag["paragraphs"]:
+                for l in final_json_to_flag["paragraphs"][k]:
+                    for m in l:
+                        p1 = m['boundingBox']["p1"]
+                        p3 = m['boundingBox']["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m['text']
+                        #                        print(text)
+                        #
+                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
+                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
+                        #
+                        #                        print('*'*10)
+                        #
+                        #                        if "º" in text:
+                        #                            print(text)
+                        x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
+                        if x:
+                            #                            print(text)
+                            words_with_special_characters.append(m)
+                        else:
+                            height, ratio = abs(
+                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                            fontScale, font = self.get_optimal_params(
+                                height, ratio, area)
+                            #                        print('FONT : ',font)
+                            if m['flag']:
+                                mask = self.highlight_word(
+                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                            else:
+                                cv2.putText(mask,
+                                            text,
+                                            (p4[0] + 3,
+                                             int((p4[1] + p1[1]) * 0.5)),
+                                            font,
+                                            fontScale,
+                                            (0,
+                                             0,
+                                             0),
+                                            1,
+                                            cv2.LINE_AA)
+        else:
+            pass
+
+        if 'tables' in final_json_to_flag:
+            for k in final_json_to_flag["tables"]:
+                for l in final_json_to_flag["tables"][k]:
+                    for m in final_json_to_flag["tables"][k][l]["words"]:
+                        p1 = m["boundingBox"]["p1"]
+                        p3 = m["boundingBox"]["p3"]
+                        p2 = [p3[0], p1[1]]
+                        p4 = [p1[0], p3[1]]
+                        text = m["text"]
+                        #                        print(text)
+                        vertices = [p1, p2, p3, p4]
+
+                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
+                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
+                        #
+                        #                        print('*'*10)
+                        #                        if "º" in text:
+                        #                            print(text)
+                        x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
+                        if x:
+                            #                            print(text)
+                            words_with_special_characters.append(m)
+                        else:
+                            height, ratio = abs(
+                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                            fontScale, font = self.get_optimal_params(
+                                height, ratio, area)
+                            #                        print('FONT : ',font)
+                            if m['flag']:
+                                mask = self.highlight_word(
+                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                            else:
+                                cv2.putText(mask,
+                                            text,
+                                            (p4[0] + 3,
+                                             int((p4[1] + p1[1]) * 0.5)),
+                                            font,
+                                            fontScale,
+                                            (0,
+                                             0,
+                                             0),
+                                            1,
+                                            cv2.LINE_AA)
+        #            print("end of table")
+        else:
+            pass
+
+        #        int((p4[1]+p1[1])*0.5)
+
+        if area < 1000 * 1000:
+            pass
+
+
+
+        else:
+            mask = self.adjust_gamma(mask, gamma=0.4)
+        if len(words_with_special_characters) > 0:
+            for except_word in words_with_special_characters:
+                img_pil = Image.fromarray(mask)
+                draw = ImageDraw.Draw(img_pil)
+                b, g, r, a = 0, 0, 0, 0
+                fontpath = "ocr/ITE/fonts/Nobile-Regular.ttf"
+                font_custom = ImageFont.truetype(fontpath, 20)
+                p1 = except_word['boundingBox']["p1"]
+                p3 = except_word['boundingBox']["p3"]
+                p2 = [p3[0], p1[1]]
+                p4 = [p1[0], p3[1]]
+                text = except_word['text']
+                if except_word['flag'] == True:
+                    draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
+                draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
+            mask = np.array(img_pil)
+        else:
+            pass
+        mask = dynamic_cavas(mask)
         cv2.imwrite(gen_image_path, mask)
         return
 
