@@ -410,30 +410,30 @@ class ui_corrections:
                         #                        if "º" in text:
                         #                            print(text)
                         x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
-                        # if x:
-                        #     #                            print(text)
-                        #     words_with_special_characters.append(m)
-                        # else:
-                        height, ratio = abs(
-                            p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                        fontScale, font = self.get_optimal_params(
-                            height, ratio, area)
-                        #                        print('FONT : ',font)
-                        if m['flag']:
-                            mask = self.highlight_word(
-                                mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                        if x:
+                            #                            print(text)
+                            words_with_special_characters.append(m)
                         else:
-                            cv2.putText(mask,
-                                        text,
-                                        (p4[0] + 3,
-                                         int((p4[1] + p1[1]) * 0.5)),
-                                        font,
-                                        fontScale,
-                                        (0,
-                                         0,
-                                         0),
-                                        1,
-                                        cv2.LINE_AA)
+                            height, ratio = abs(
+                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                            fontScale, font = self.get_optimal_params(
+                                height, ratio, area)
+                            #                        print('FONT : ',font)
+                            if m['flag']:
+                                mask = self.highlight_word(
+                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                            else:
+                                cv2.putText(mask,
+                                            text,
+                                            (p4[0] + 3,
+                                             int((p4[1] + p1[1]) * 0.5)),
+                                            font,
+                                            fontScale,
+                                            (0,
+                                             0,
+                                             0),
+                                            1,
+                                            cv2.LINE_AA)
         else:
             pass
 
@@ -456,30 +456,30 @@ class ui_corrections:
                         #                        if "º" in text:
                         #                            print(text)
                         x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
-                        # if x:
-                        #     #                            print(text)
-                        #     words_with_special_characters.append(m)
-                        # else:
-                        height, ratio = abs(
-                            p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                        fontScale, font = self.get_optimal_params(
-                            height, ratio, area)
-                        #                        print('FONT : ',font)
-                        if m['flag']:
-                            mask = self.highlight_word(
-                                mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                        if x:
+                            #                            print(text)
+                            words_with_special_characters.append(m)
                         else:
-                            cv2.putText(mask,
-                                        text,
-                                        (p4[0] + 3,
-                                         int((p4[1] + p1[1]) * 0.5)),
-                                        font,
-                                        fontScale,
-                                        (0,
-                                         0,
-                                         0),
-                                        1,
-                                        cv2.LINE_AA)
+                            height, ratio = abs(
+                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                            fontScale, font = self.get_optimal_params(
+                                height, ratio, area)
+                            #                        print('FONT : ',font)
+                            if m['flag']:
+                                mask = self.highlight_word(
+                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                            else:
+                                cv2.putText(mask,
+                                            text,
+                                            (p4[0] + 3,
+                                             int((p4[1] + p1[1]) * 0.5)),
+                                            font,
+                                            fontScale,
+                                            (0,
+                                             0,
+                                             0),
+                                            1,
+                                            cv2.LINE_AA)
         #            print("end of table")
         else:
             pass
@@ -493,24 +493,24 @@ class ui_corrections:
 
         else:
             mask = self.adjust_gamma(mask, gamma=0.4)
-        # if len(words_with_special_characters) > 0:
-        #     for except_word in words_with_special_characters:
-        #         img_pil = Image.fromarray(mask)
-        #         draw = ImageDraw.Draw(img_pil)
-        #         b, g, r, a = 0, 0, 0, 0
-        #         fontpath = "ocr/ITE/fonts/Nobile-Regular.ttf"
-        #         font_custom = ImageFont.truetype(fontpath, 20)
-        #         p1 = except_word['boundingBox']["p1"]
-        #         p3 = except_word['boundingBox']["p3"]
-        #         p2 = [p3[0], p1[1]]
-        #         p4 = [p1[0], p3[1]]
-        #         text = except_word['text']
-        #         if except_word['flag'] == True:
-        #             draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
-        #         draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
-        #     mask = np.array(img_pil)
-        # else:
-        #     pass
+        if len(words_with_special_characters) > 0:
+            img_pil = Image.fromarray(mask)
+            draw = ImageDraw.Draw(img_pil)
+            for except_word in words_with_special_characters:
+                b, g, r, a = 0, 0, 0, 0
+                fontpath = "ocr/ITE/fonts/Nobile-Regular.ttf"
+                font_custom = ImageFont.truetype(fontpath, 20)
+                p1 = except_word['boundingBox']["p1"]
+                p3 = except_word['boundingBox']["p3"]
+                p2 = [p3[0], p1[1]]
+                p4 = [p1[0], p3[1]]
+                text = except_word['text']
+                if except_word['flag'] == True:
+                    draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
+                draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
+            mask = np.array(img_pil)
+        else:
+            pass
         mask = dynamic_cavas(mask)
         cv2.imwrite(gen_image_path, mask)
         return
