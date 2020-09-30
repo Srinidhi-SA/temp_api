@@ -7,7 +7,7 @@ import { Modal, Button, Tab, Row, Col, Nav, NavItem, Form, FormGroup, FormContro
 import { DataVariableSelection } from "../data/DataVariableSelection";
 import { updateTrainAndTest, createModel, updateSelectedVariable, showLevelCountsForTarget, updateTargetLevel, saveSelectedValuesForModel, updateRegressionTechnique, updateCrossValidationValue, getAppDetails, reSetRegressionVariables, selectMetricAction } from "../../actions/appActions";
 import { AppsLoader } from "../common/AppsLoader";
-import { getDataSetPreview, showAllVariables,makeAllVariablesTrueOrFalse,updateVariableSelectionArray } from "../../actions/dataActions";
+import { getDataSetPreview, showAllVariables,makeAllVariablesTrueOrFalse,updateVariableSelectionArray,variableSlectionBack,saveLevelCountVal } from "../../actions/dataActions";
 import { hideTargetVariable } from "../../actions/signalActions";
 import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
 import { options } from "react-bootstrap-dialog";
@@ -63,7 +63,8 @@ export class ModelVariableSelection extends React.Component {
     }
     componentWillMount() {
         const from = this.getValueOfFromParam();
-         if (from === 'data_cleansing') {
+        var backflag=store.getState().datasets.varibleSelectionBackFlag
+         if (from === 'data_cleansing'|| backflag) {
         } else if((this.props.currentAppDetails === null || this.props.dataPreview === null) && !this.props.editmodelFlag){
             let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
             this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
@@ -228,7 +229,15 @@ componentDidMount = () => {
                 
                 this.setState({perspective:true })
 
-    }
+            }
+            
+    handleBack=()=>{
+      this.props.dispatch(variableSlectionBack(true));
+      this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(), $("#createModelAnalysisList").val(), $("#createModelLevelCount").val()));
+      const appId = this.props.match.params.AppId;
+      const slug = this.props.match.params.slug;
+      this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}?from=variableSelection`);
+      }
     render() {
         if(this.props.editmodelFlag && (this.props.dataPreview===null || Object.keys(this.props.dataPreview).length ===0) ){
             return (
@@ -265,8 +274,8 @@ componentDidMount = () => {
                                         return 0;
                                     }));                    
             if (sortedMetaData) {
-                renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} disabled={this.props.editmodelFlag} defaultValue={store.getState().apps.apps_regression_targetType} id="createModelAnalysisList">
-                    <option value="">--Select--</option>
+                renderSelectBox = <select className="form-control" onChange={this.setPossibleList.bind(this)} disabled={this.props.editmodelFlag} defaultValue={store.getState().apps.apps_regression_targetType?store.getState().apps.apps_regression_targetType:"select"} id="createModelAnalysisList">
+                    <option value="select" disabled>--Select--</option>
                     {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?
                         sortedMetaData.map((metaItem, metaIndex) => {
                             if (metaItem.columnType == "measure" && !metaItem.dateSuggestionFlag && !metaItem.uidCol) {
@@ -425,7 +434,11 @@ componentDidMount = () => {
                                                     <button type="submit" id="variableSelectionProceed" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>{!this.props.editmodelFlag?
+                                  <div class="col-md-8">
+                                  <Button id="variableselectionBack"  onClick={this.handleBack}  bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
+                                  </div>:""
+                                    }
                                     <div className="clearfix"></div>
                                 </FormGroup>
                             </Form>

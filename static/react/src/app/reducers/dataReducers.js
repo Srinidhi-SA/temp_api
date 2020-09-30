@@ -91,6 +91,8 @@ export default function reducer(state = {
   createSigLoaderFlag: false,
   metaDataLoaderidxVal:0,
   metaDataLoaderidx:0,
+  varibleSelectionBackFlag:false,
+  scoreName:""
 }, action) {
 
   switch (action.type) {
@@ -1031,6 +1033,20 @@ export default function reducer(state = {
       return {
         ...state,
         createSigLoaderFlag : action.flag
+      }
+    }
+    break;
+    case "SET_VARIABLE_SELECTION_BACK":{
+      return {
+        ...state,
+        varibleSelectionBackFlag : action.flag,
+      }
+    }
+    break;
+    case "SAVE_SCORE_NAME":{
+      return {
+        ...state,
+        scoreName : action.value
       }
     }
     break;
