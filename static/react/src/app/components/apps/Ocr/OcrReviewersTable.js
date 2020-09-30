@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
-import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails,ocrRevFilterTime,ocrRevFilterAccuracy}from '../../../actions/ocrActions'
+import {getOcrReviewersList,saveRevDocumentPageFlag,selectedReviewerDetails,ocrRevFilterTime,ocrRevFilterAccuracy, ReviewerTablePagesize}from '../../../actions/ocrActions'
 import { connect } from "react-redux";
 import store from "../../../store";
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
 import { Link, Redirect } from "react-router-dom";
-
-
-
 
 @connect((store) => {
   return {
@@ -38,7 +35,11 @@ export default class OcrReviewersTable extends Component {
 handlePagination = (pageNo) => {
   this.props.dispatch(getOcrReviewersList(pageNo))
 }
-
+handlePageRow=(e)=>{
+  let selectedVal= e.target.value;
+  this.props.dispatch(ReviewerTablePagesize(selectedVal));
+  this.props.dispatch(getOcrReviewersList())
+}
 handleDocumentPageFlag (slug,name){
   this.props.dispatch(saveRevDocumentPageFlag(true));
   this.props.dispatch(selectedReviewerDetails(slug,name))
@@ -85,17 +86,24 @@ filterRevList(filtertBy, filterOn,reset) {
     const pages = this.props.OcrReviewerList.total_number_of_pages;
     const current_page = this.props.OcrReviewerList.current_page;
     let paginationTag = null
-    if (pages>1) {
+    if (pages >= 1) {
       paginationTag = (
-        <div class="col-md-12 text-center">
-          <div className="footer" id="Pagination">
-            <div className="pagination">
-              <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+         <div class="col-md-12 text-center">
+            <div className="footer" id="Pagination">
+               <div className="pagination pageRow">
+               <span>Rows per page:</span>
+               <select className="xs-mr-20 xs-ml-10" onChange={this.handlePageRow} value={store.getState().ocr.reviewerTablePagesize}>
+                  <option value="12">12</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="All">All</option>
+               </select>
+               <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handlePagination} first last next prev boundaryLinks items={pages} activePage={current_page} />
+               </div>
             </div>
-          </div>
-        </div>
+         </div>
       )
-    }
+   }
 
     var reviewersTable = (
       this.props.OcrReviewerList != '' ? (this.props.OcrReviewerList.data.length != 0 ? this.props.OcrReviewerList.data.map((item, index) => {
