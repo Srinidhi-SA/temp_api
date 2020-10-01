@@ -2824,3 +2824,8 @@ export function fetchDeployPreviewSuccess(doc) {
 export function showCreateModalPopup() {
   return { type: "SHOW_CREATE_MODAL_LOADER" }
 }
+export function setLoaderFlagAction(flag){
+  return {
+    type:"SET_LOADER_FLAG",flag
+  }
+}

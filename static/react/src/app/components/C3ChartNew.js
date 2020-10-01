@@ -42,7 +42,12 @@ export class C3ChartNew extends React.Component{
   
   componentDidMount() {
     $(".chart" + this.props.classId).empty();
-    $('.chart-data-icon').css('visibility', 'hidden');
+    this.updateChart();
+    if (this.props.classId == '_side' || this.props.classId == '_profile') {
+      $(".chart-data-icon").empty();
+    };
+    if($(".visualizeLoader")[0] != undefined)
+      $(".visualizeLoader")[0].style.display = "none"
   }
 
   // componentWillUnmount(){
@@ -659,21 +664,10 @@ export class C3ChartNew extends React.Component{
       }
     }
     if(store.getState().signals.viewChartFlag){
-      $(function(){
-        that.updateChart();
-      })
       return(
         <div className={this.props.classId}></div>
       )
     }else{
-      $(function(){
-        that.updateChart();
-        if (that.props.classId == '_side' || that.props.classId == '_profile') {
-          $(".chart-data-icon").empty();
-        };
-        if($(".visualizeLoader")[0] != undefined)
-          $(".visualizeLoader")[0].style.display = "none"
-      })
       if (this.props.classId != '_side' && !this.props.widthPercent) {
         this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
         this.modalCls = "modal fade chart-modal" + this.props.classId;
