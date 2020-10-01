@@ -192,7 +192,9 @@ export class Data extends React.Component {
       );
     } else {
       return (
-        <div>
+        <div className="side-body">
+          <div className="page-head">
+          </div>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
            <Dialog ref={(el) => { this.dialog = el }}/>
         </div>
