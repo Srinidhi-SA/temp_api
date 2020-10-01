@@ -95,6 +95,7 @@ export default function reducer(state = {
   rDocTablePagesize:12,
   projectTablePagesize:12,
   userTablePagesize:12,
+  reviewerTablePagesize:12,
 
 }, action) {
   switch (action.type) {
@@ -892,6 +893,14 @@ export default function reducer(state = {
                 }
               }
               break;
+              case "REVIEWER_TABLE_PAGESIZE" :
+                {
+                  return {
+                    ...state,
+                    reviewerTablePagesize : action.pagesize
+                  }
+                }
+                break;
         case "PROJECT_PAGE" :
           {
             return {

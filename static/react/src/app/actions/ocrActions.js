@@ -210,6 +210,12 @@ export function userTablePagesize(pagesize) {
 		pagesize,
 	}
 }
+export function ReviewerTablePagesize(pagesize) {
+	return {
+		type: "REVIEWER_TABLE_PAGESIZE",
+		pagesize,
+	}
+}
 export function projectPage(page) {
 	return {
 		type: "PROJECT_PAGE",
@@ -237,12 +243,21 @@ export function getOcrReviewersList(pageNo) {
 }
 
 function fetchReviewersList(pageNo = 1, token) {
-	let filter_rev_time = store.getState().ocr.filter_rev_time
-	let filter_rev_accuracy = store.getState().ocr.filter_rev_accuracy
-	return fetch(API + '/ocr/user/reviewer_detail_list/?time=' + filter_rev_time + '&accuracy=' + filter_rev_accuracy + '&page_number=' + pageNo, {
+	let filter_rev_time = store.getState().ocr.filter_rev_time;
+	let filter_rev_accuracy = store.getState().ocr.filter_rev_accuracy;
+	let reviewerTablePagesize = store.getState().ocr.reviewerTablePagesize;
+	if (reviewerTablePagesize === "All"){
+	return fetch(API + '/ocr/user/reviewer_detail_list/?time=' + filter_rev_time + '&accuracy=' + filter_rev_accuracy + '&page_number=' + pageNo  + '&page=' + reviewerTablePagesize, {
 		method: 'get',
 		headers: getHeader(token)
 	}).then(response => Promise.all([response, response.json()]));
+}
+else{
+	return fetch(API + '/ocr/user/reviewer_detail_list/?time=' + filter_rev_time + '&accuracy=' + filter_rev_accuracy + '&page_number=' + pageNo  + '&page_size=' + reviewerTablePagesize, {
+		method: 'get',
+		headers: getHeader(token)
+	}).then(response => Promise.all([response, response.json()]));
+}
 }
 
 export function fetchReviewersSuccess(doc) {

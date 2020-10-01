@@ -13,6 +13,7 @@ from ocr.ITE.scripts.data_ingestion import ingestion_1
 from ocr.ITE.scripts.image_class import image_cls
 from ocr.ITE.scripts.apis import Api_Call, fetch_google_response2, Api_Call2
 from ocr.ITE.scripts.domain_classification import Domain
+from ocr.ITE.scripts.pep_module import Pep
 from ocr.ITE.scripts.preprocessing import Preprocess
 from ocr.ITE.scripts.base_module import BaseModule
 from ocr.ITE.scripts.timesheet.timesheet_preprocessing import Preprocessing
@@ -122,7 +123,7 @@ def main2(input_path, template, slug=None):
             random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
     try:
-        api_response = Api_Call(input_path)
+        pep = Pep(input_path)
     except Exception as e:
         image = cv2.imread(input_path)
         original_image = "ocr/ITE/database/{}_original_image.png".format(slug)
@@ -139,12 +140,12 @@ def main2(input_path, template, slug=None):
         return response
     # google_response2 = fetch_google_response2(input_path)
 
-    flag = Domain().process_domain(api_response.page_wise_response(1), cv2.imread(input_path))
+    flag = Domain().process_domain(pep.fetch_analysis(), cv2.imread(input_path))
     if flag == "Time Sheet":
         Preprocessing(input_path).crop_and_save(input_path)
-        api_response = Api_Call(input_path)
+        pep = Pep(input_path)
     image_obj = image_cls(input_path, input_path.split('/')[-1])
-    image_obj.set_microsoft_analysis(api_response.page_wise_response(1))
+    image_obj.set_microsoft_analysis(pep.fetch_analysis())
 
     analysis = image_obj.microsoft_analysis
     image_obj.set_domain_flag(flag)

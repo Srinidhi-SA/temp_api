@@ -116,3 +116,22 @@ def extract_mask_clean(mask):
             pass
 
     return mask
+
+
+def extract_mask_clean_vert(mask):
+    black_page = 0 * np.ones(mask.shape).astype(mask.dtype)
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    parent_area = mask.shape[0] * mask.shape[1]
+    areaThr = 0.003 * parent_area
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        if area <= areaThr:
+            x, y, w, h = cv2.boundingRect(cnt)
+            if h < 0.1 * mask.shape[0]:
+                mask[y:y + h, x:x + w] = black_page[y:y + h, x:x + w]
+            else:
+                pass
+        else:
+            pass
+
+    return mask
