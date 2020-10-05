@@ -933,3 +933,8 @@ export function fromVariableSelectionPage(flag){
       type: "FROM_VARIABLE_SELECTION_PAGE",flag
   }
 }
+export function saveDocmodeConfig(value){
+  return {
+      type: "SAVE_DOCUMENTMODE_CONFIG",value
+  }
+}
