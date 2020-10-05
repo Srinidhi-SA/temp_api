@@ -34,6 +34,7 @@ export default function reducer(state = {
   fromVariableSelectionPage:false,
   sigLoaderidxVal:0,
   sigLoaderidx:0,
+  documentModeConfig:''
 }, action) {
 
   switch (action.type) {
@@ -363,6 +364,14 @@ export default function reducer(state = {
       fromVariableSelectionPage:action.flag
     }
   }break;
+  case "SAVE_DOCUMENTMODE_CONFIG":
+      {
+        return {
+          ...state,
+          documentModeConfig: action.value,
+        }
+      }
+      break;
   case "ALL_SIGNAL_LIST":
       {
         return {
