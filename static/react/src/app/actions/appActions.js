@@ -2293,7 +2293,6 @@ function scoreToProceed(flag) {
 }
 
 export function showLevelCountsForTarget(event) {
-  debugger;
   var selOption = event.target.childNodes[event.target.selectedIndex];
   var varText = selOption.text;
   var varSlug = selOption.getAttribute("name");

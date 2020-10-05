@@ -65,7 +65,6 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(getAllModelList(this.props.currentAppId));
 	}
 	openModelPopup(){
-		debugger
 		// if(store.getState().datasets.allDataSets.data)
 		this.props.dispatch( resetSelectedVariables(true) );
 		this.props.dispatch(saveSelectedValuesForModel("","",""));
@@ -80,7 +79,6 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
-		debugger;
         if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
