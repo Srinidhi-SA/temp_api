@@ -714,8 +714,8 @@ export class FeatureEngineering extends React.Component {
           <tr key={key} className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
             <td> {item.columnType.charAt(0).toUpperCase() + item.columnType.slice(1)}</td>
-            <td> <Button id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="cst_button">Create Bins or Levels</Button></td>
-            <td> <Button id={`tranform_${item.name}`} onClick={this.openTransformColumnModal.bind(this, item)} bsStyle="cst_button">Transform</Button></td>
+            <td> <Button className= "btn btn-cst_button" id={`bin_${item.name}`} onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} >Create Bins or Levels</Button></td>
+            <td> <Button className= "btn btn-cst_button" id={`tranform_${item.name}`} onClick={this.openTransformColumnModal.bind(this, item)} >Transform</Button></td>
           </tr>
         );
       })
