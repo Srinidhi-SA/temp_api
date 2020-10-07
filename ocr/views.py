@@ -1329,7 +1329,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = HttpResponse(result, content_type="application/text")
                 response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
                 return response
-            result = image_queryset.google_response
+            result = image_queryset.final_result
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
                 response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
