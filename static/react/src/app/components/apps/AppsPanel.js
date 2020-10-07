@@ -303,7 +303,8 @@ export class AppsPanel extends React.Component {
         appListTemplate =  <div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>
 
       }else{
-        return(<div>
+        return(<div className="side-body">
+          <div className="page-head"></div>
         <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
       </div>)
       }

@@ -42,7 +42,12 @@ export class C3ChartNew extends React.Component{
   
   componentDidMount() {
     $(".chart" + this.props.classId).empty();
-    $('.chart-data-icon').css('visibility', 'hidden');
+    this.updateChart();
+    if (this.props.classId == '_side' || this.props.classId == '_profile') {
+      $(".chart-data-icon").empty();
+    };
+    if($(".visualizeLoader")[0] != undefined)
+      $(".visualizeLoader")[0].style.display = "none"
   }
 
   // componentWillUnmount(){
@@ -556,7 +561,7 @@ export class C3ChartNew extends React.Component{
       let xdata = this.props.xdata;
       myData.axis.x.tick.format = function(x) {
         if (xdata[x] && xdata[x].length > 20) {
-          return xdata[x].substr(0,12) + "..."
+         return xdata[x].substr(0,11) + "..."+xdata[x].substr(xdata[x].length-8)
         } else {
           return xdata[x];
         } 
@@ -570,7 +575,7 @@ export class C3ChartNew extends React.Component{
     myData['bindto'] = this.getChartElement().get(0);
     let chart = c3.generate(myData);
     if(myData.subchart !=undefined && myData.subchart.show=== true){
-      chart.zoom([0,this.props.xdata.length-1])
+      chart.zoom([0,(this.props.xdata.length-1)/2])
       chart.element.getElementsByClassName("extent")[0].innerHTML = "<title id="+"c3BrushTip"+">Move grey section to zoom and view different part of the chart<title/>"
     }
 
@@ -584,6 +589,21 @@ export class C3ChartNew extends React.Component{
     
   }
 
+  handleDocumentmodeTooltips(arr,target){
+    var shortListdata=""
+      for(var i=0;i<arr.length;i++){
+        for(var j=0;j<arr[i].length;j++){
+          for(var k=0;k<arr[i][j].cardData.length;k++){
+           if(arr[i][j].cardData[k].dataType=="html"){ 
+            if(arr[i][j].cardData[k].data.replace(/<[^>]*>?/gm, '').replace(/ /g,'').includes(target.replace(/ /g,''))){
+            shortListdata=arr[i][j].cardData.filter(item=>item.dataType=="c3Chart")[0].data.xdata      
+            }
+           }
+          }    
+        }
+      }
+      return shortListdata
+  } 
   render(){
     let that = this;
     window.onmouseover = function(event){
@@ -605,9 +625,24 @@ export class C3ChartNew extends React.Component{
       }
      }
 
-      if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" && isNaN(event.target.innerHTML)){
+      if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" &&event.target.parentElement.parentElement.parentElement.getAttribute("class")==="c3-axis c3-axis-x"){ //isNaN(event.target.innerHTML)
         let str = that.props.xdata
         let stockData = store.getState().signals.signalAnalysis.listOfNodes;
+
+        if(this.location.pathname.includes('signaldocumentMode') && event.target.parentElement.children.length>1){
+          var selectedElement =""
+          for(let i=0;i<event.target.parentElement.children.length;i++){
+            selectedElement= selectedElement.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&"))
+          }
+          if(selectedElement.includes("...")){
+           let documentModeData=store.getState().signals.documentModeConfig;
+           var target=event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.innerText
+           str= that.handleDocumentmodeTooltips(documentModeData,target)
+          }         
+        }
+          if(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.firstChild.innerText.includes("Influence of Key Features")){
+            str=store.getState().apps.modelSummary.data.model_summary.listOfCards[3].cardData[1].data.xdata
+          }
         switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
           case "Articles by Stock": 
             str = stockData[0].listOfCards[0].cardData[1].data.xdata
@@ -624,25 +659,43 @@ export class C3ChartNew extends React.Component{
           case "Sentiment Score by Concept":
               str = stockData[1].listOfNodes[0].listOfCards[0].cardData[2].data.xdata
               break;
-        }
+          case "Feature Importance":
+              str=store.getState().apps.modelSummary.data.model_summary.listOfCards[2].cardData[0].data.xdata
+        }    
         let tooltip= "";
         if(str != undefined){
-          str = str.map(i=>i.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
+          str = str.map(i=>i.replace(/&amp/g, "&")) 
           for(let i=0;i<event.target.parentElement.children.length;i++){
-            tooltip = tooltip.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
+            tooltip = tooltip.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&"))
           }
-          for(let i=0;i<str.length;i++){
-            if(str[i].includes(tooltip)){
+
+          if(tooltip.includes("...")){
+            var splitWords=tooltip.split('...')
+            for(let i=0;i<str.length;i++){
+              if(str[i].replace(/[^A-Z0-9\&\-]/ig, "").includes(splitWords[0].replace(/[^A-Z0-9\&\-]/ig, "")) && str[i].replace(/[^A-Z0-9\&\-]/ig, "").includes(splitWords[1].replace(/[^A-Z0-9\&\-]/ig, ""))){
               tooltip = str[i]
+              }
             }
           }
+          else{
+            
+            tooltip =tooltip.includes('&lt')||tooltip.includes('&gt')? (tooltip.replace('&lt','<').replace('&gt', '>')).replace(';',''):tooltip   //.replace(/[^A-Z0-9\&\-]/ig, "")         
+          for(let i=0;i<str.length;i++){
+            if(str[i]==tooltip){
+            tooltip = str[i]
+            }
+          }
+        }       
         }else{
           if(event.target.parentElement.children.length>1){
             let ar=[]
             for(let i=0;i<(event.target.parentElement.children).length;i++){
-              ar.push((event.target.parentElement.children)[i].innerHTML.replace(/&amp/g, "&").replace(/[^A-Z0-9\&\-]/ig, ""))
+              ar.push((event.target.parentElement.children)[i].innerHTML.replace(/&amp/g, "&"))
             }
             tooltip = ar.join(" ")
+          }
+          else if(event.target.parentElement.children.length==1){
+            tooltip= event.target.parentElement.children[0].innerHTML.replace('&lt','<').replace(';',"").replace('&gt','>')
           }
         }
         
@@ -659,21 +712,10 @@ export class C3ChartNew extends React.Component{
       }
     }
     if(store.getState().signals.viewChartFlag){
-      $(function(){
-        that.updateChart();
-      })
       return(
         <div className={this.props.classId}></div>
       )
     }else{
-      $(function(){
-        that.updateChart();
-        if (that.props.classId == '_side' || that.props.classId == '_profile') {
-          $(".chart-data-icon").empty();
-        };
-        if($(".visualizeLoader")[0] != undefined)
-          $(".visualizeLoader")[0].style.display = "none"
-      })
       if (this.props.classId != '_side' && !this.props.widthPercent) {
         this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
         this.modalCls = "modal fade chart-modal" + this.props.classId;

@@ -119,6 +119,7 @@ export default function reducer(state = {
         modelLoaderidxVal:0,
         modelLoaderidx:0,
         allStockAnalysisList:{},
+        chartLoaderFlag:false,
 
 }, action) {
 
@@ -1326,6 +1327,13 @@ export default function reducer(state = {
         throw new Error("Unable to fetch stock analysis list!!");
       }
       break;
+    case "SET_LOADER_FLAG":{
+        return{
+            ...state,
+            chartLoaderFlag:action.flag
+        }
+    }
+    break;
     }
     return state
 }

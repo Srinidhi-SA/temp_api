@@ -319,7 +319,7 @@ export class DataVariableSelection extends React.Component {
                                             </div>
 
 											<div className="ma-checkbox inline">
-                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.measureAllChecked}/>
+                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={(store.getState().datasets.dataSetMeasures.length === 0)?false:store.getState().datasets.measureAllChecked}/>
                                                 <label htmlFor="measure">Select All</label>
                                             </div>
 
@@ -374,7 +374,7 @@ export class DataVariableSelection extends React.Component {
                                             </div>
 
 											<div className="ma-checkbox inline">
-                                                <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.dimensionAllChecked}/>
+                                                <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={(store.getState().datasets.dataSetDimensions.length === 0)?false:store.getState().datasets.dimensionAllChecked}/>
                                                 <label htmlFor="dimension">Select All</label>
                                             </div>
                                         </div>

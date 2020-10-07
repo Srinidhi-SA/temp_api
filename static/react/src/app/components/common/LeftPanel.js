@@ -64,7 +64,7 @@ class LeftPanel extends React.Component {
               <ul className="nav navbar-nav">
               {(view_signal_permission=="true")?
                 <li>
-                  <NavLink id="signalTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
+                  <NavLink id="signalTab" onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]signal/.test(location.pathname)} className="sdb" to="/signals">
                     <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
                     Signal</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">

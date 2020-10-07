@@ -494,9 +494,9 @@ class ui_corrections:
         else:
             mask = self.adjust_gamma(mask, gamma=0.4)
         if len(words_with_special_characters) > 0:
+            img_pil = Image.fromarray(mask)
+            draw = ImageDraw.Draw(img_pil)
             for except_word in words_with_special_characters:
-                img_pil = Image.fromarray(mask)
-                draw = ImageDraw.Draw(img_pil)
                 b, g, r, a = 0, 0, 0, 0
                 fontpath = "ocr/ITE/fonts/Nobile-Regular.ttf"
                 font_custom = ImageFont.truetype(fontpath, 20)
