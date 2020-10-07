@@ -696,7 +696,8 @@ else{
       }
     } else {
       return (
-        <div>
+        <div className="side-body">
+          <div className="page-head"></div>
           <DataUploadLoader/>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/> {/*<div><div className="text-center text-muted xs-mt-50"><h2>Data preview failed to load. Please refresh the page or try again later</h2></div></div>*/}
         </div>

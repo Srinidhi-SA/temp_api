@@ -5,7 +5,7 @@ import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
 import {STATIC_URL,API} from "../../helpers/env.js";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,saveDocmodeConfig} from "../../actions/signalActions";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
 import {getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
@@ -45,6 +45,7 @@ export class SignalDocumentMode extends React.Component {
       for (i = 0; i < _Node.listOfNodes.length; i++) {
         result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
       }
+      result!=null && this.props.dispatch(saveDocmodeConfig(result))
       return result;
     }
   }

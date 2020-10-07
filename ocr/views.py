@@ -52,6 +52,7 @@ from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
     cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
+from ocrflow.models import Task, ReviewRequest
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
@@ -1329,7 +1330,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = HttpResponse(result, content_type="application/text")
                 response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
                 return response
-            result = image_queryset.google_response
+            result = image_queryset.final_result
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
                 response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
@@ -1647,15 +1648,44 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if should_proceed == -3:
                     return creation_failed_exception("Name have special_characters.")
 
+            return JsonResponse({'message': 'Deleted'})
+
         try:
-            instance = self.get_object_from_all()
             if 'deleted' in data:
-                if data['deleted'] == True:
-                    #print('let us deleted')
-                    #instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
-                    #clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                userGroup = request.user.groups.all()[0].name
+                if userGroup in ['Admin','Superuser']:
+                    instance = self.get_object_from_all()
+                    if data['deleted'] == True:
+                        instance.deleted = True
+                        instance.save()
+                        return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "ReviewerL1":
+                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    for image in ocr_images:
+                        if image.l1_assignee == request.user:
+                            image.l1_assignee = None
+                            image.save()
+                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    for obj in rev:
+                        try:
+                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task.delete()
+                        except:
+                            pass
+                    return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "ReviewerL2":
+                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    for image in ocr_images:
+                        if image.assignee == request.user:
+                            image.assignee = None
+                            image.save()
+                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    for obj in rev:
+                        try:
+                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task.delete()
+                        except:
+                            pass
                     return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
