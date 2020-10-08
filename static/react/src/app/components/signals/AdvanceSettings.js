@@ -116,7 +116,7 @@ export class AdvanceSettings extends React.Component {
 						let val = trendSubItem.name;
 						if(trendSubItem.name.toLowerCase() == "count"){
 							return(
-									<li key={trendSubIndex}><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+									<li key={trendSubIndex}><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  defaultChecked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 							);
 						}else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
 							if(trendSubItem.status){
@@ -125,7 +125,7 @@ export class AdvanceSettings extends React.Component {
 							}
 							return(
 									<li key={trendSubIndex} ><div className="col-md-4">
-									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div>
+									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  defaultChecked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div>
 									</div>
 									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control " onChange={this.handleTrendAnalysis.bind(this)}>
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
@@ -139,7 +139,7 @@ export class AdvanceSettings extends React.Component {
 						}
 					})
 					return(
-							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							<ul className="list-unstyled">
 
 							{trendSub}
@@ -150,7 +150,7 @@ export class AdvanceSettings extends React.Component {
 							</li>);
 				}else{
 					return(
-							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							</li>)
 				}//end of trendsetting check
 			}else{
@@ -182,7 +182,7 @@ export class AdvanceSettings extends React.Component {
 							status = true;
 						}
 						return(
-								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)} disabled={disableElement}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status} disabled={disableElement}/>{subItem.displayName}</label>
+								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)} disabled={disableElement}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} defaultChecked={status} disabled={disableElement}/>{subItem.displayName}</label>
 						);
 					});
 					countOptions  = (function(){
@@ -228,7 +228,7 @@ export class AdvanceSettings extends React.Component {
 				}
 
 				return(
-						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)} disabled={disableElement} /><label htmlFor={id}>{metaItem.displayName}</label></div>
+						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)} disabled={disableElement} /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
 						<div className="clearfix"></div>
