@@ -18,6 +18,7 @@ from .serializers import TaskSerializer, \
     ReviewRequestListSerializer, \
     ReviewRequestSerializer, \
     OCRRulesSerializer
+from api.datasets.helper import convert_to_string
 
 
 # Create your views here.
@@ -230,6 +231,12 @@ class ReviewRequestView(viewsets.ModelViewSet):
             slug=self.kwargs.get('pk')
         )
 
+    def get_task_from_all(self):
+
+        return Task.objects.get(
+            id=self.kwargs.get('pk')
+        )
+
     def list(self, request):
 
         return get_listed_data(
@@ -326,7 +333,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
                 userGroup = request.user.groups.all()[0].name
 
                 if userGroup == "ReviewerL1":
-                    instance = self.get_object_from_all()
+                    instance = self.get_task_from_all()
                     instance.delete()
                     ocr_image= OCRImage.objects.get(slug=data['image_slug'])
                     if ocr_image.l1_assignee == request.user:
@@ -335,7 +342,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
 
                     return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL2":
-                    instance = self.get_object_from_all()
+                    instance = self.get_task_from_all()
                     instance.delete()
                     ocr_image= OCRImage.objects.get(slug=data['image_slug'])
                     if ocr_image.assignee == request.user:
