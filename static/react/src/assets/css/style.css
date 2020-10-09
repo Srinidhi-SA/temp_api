@@ -23160,3 +23160,7 @@ min-width: 102px; }
   border-style: solid;
   border-color: #e9e9e9;
 }
+.dropdown-toggle[aria-expanded="true"] .caret{
+  transition: .3s tranform ease-in-out;
+  transform: rotate(180deg);
+ }

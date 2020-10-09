@@ -585,20 +585,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 if(analysisList[i].name == evt.name){
                     for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
                         if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-                            if($("#"+evt.id).val() != ""){
-                                let cusNum =  parseFloat($("#"+evt.id).val());
-                                if((cusNum^0) != cusNum){
-                                    let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
-                                    bootbox.alert(errormsg);
-                                    return;
-                                }else if(cusNum <= 0){
-                                    let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
-                                    bootbox.alert(errormsg);
-                                    return;
-                                }else{
-                                    analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
-                                }
-                            }
+                            analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
                         }
                     }
                     break;
@@ -616,20 +603,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                     analysisList[i].status = false;
                 for(var j=0;j<analysisList[i].binSetting.length;j++){
                     if(evt.id == j){
-                        if(evt.value != ""){
-                            let binNum =  parseFloat(evt.value);
-                            if((binNum^0) != binNum){
-                                let errormsg = statusMessages("warning", "Decimal Values are not allowed", "small_mascot");
-                                bootbox.alert(errormsg);
-                                return;
-                            }else if(binNum <= 0){
-                                let errormsg = statusMessages("warning", "Values should be greater than zero", "small_mascot");
-                                bootbox.alert(errormsg);
-                                return;
-                            }else{
-                                analysisList[i].binSetting[j].value = parseInt(evt.value);                                
-                            }
-                        }
+                        analysisList[i].binSetting[j].value = parseInt(evt.value);                                
                     }
                 }
                 break;

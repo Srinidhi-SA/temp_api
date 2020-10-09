@@ -35,6 +35,7 @@ export class OcrAddUser extends React.Component{
         this.props.dispatch(closeAddUserPopup());
     }
     saveNewUserDetails(e){
+        $("#resetMsg")[0].innerText = ""
         let name = e.target.name;
         let value = e.target.value;
         this.props.dispatch(saveNewUserDetails(name,value));
