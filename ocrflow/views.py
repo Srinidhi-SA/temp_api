@@ -316,3 +316,31 @@ class ReviewRequestView(viewsets.ModelViewSet):
         serializer = ReviewRequestSerializer(instance=instance, context={'request': request})
 
         return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        try:
+            if 'deleted' in data:
+                userGroup = request.user.groups.all()[0].name
+
+                if userGroup == "ReviewerL1":
+                    instance = self.get_object_from_all()
+                    instance.delete()
+                    ocr_image= OCRImage.objects.get(slug=data['image_slug'])
+                        if ocr_image.l1_assignee == request.user:
+                            ocr_image.l1_assignee = None
+                            ocr_image.save()
+
+                    return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "ReviewerL2":
+                    instance = self.get_object_from_all()
+                    instance.delete()
+                    ocr_image= OCRImage.objects.get(slug=data['image_slug'])
+                        if ocr_image.assignee == request.user:
+                            ocr_image.assignee = None
+                            ocr_image.save()
+                    return JsonResponse({'message': 'Deleted'})
+        except FileNotFoundError:
+            return creation_failed_exception("File Doesn't exist.")
