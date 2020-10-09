@@ -329,18 +329,18 @@ class ReviewRequestView(viewsets.ModelViewSet):
                     instance = self.get_object_from_all()
                     instance.delete()
                     ocr_image= OCRImage.objects.get(slug=data['image_slug'])
-                        if ocr_image.l1_assignee == request.user:
-                            ocr_image.l1_assignee = None
-                            ocr_image.save()
+                    if ocr_image.l1_assignee == request.user:
+                        ocr_image.l1_assignee = None
+                        ocr_image.save()
 
                     return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL2":
                     instance = self.get_object_from_all()
                     instance.delete()
                     ocr_image= OCRImage.objects.get(slug=data['image_slug'])
-                        if ocr_image.assignee == request.user:
-                            ocr_image.assignee = None
-                            ocr_image.save()
+                    if ocr_image.assignee == request.user:
+                        ocr_image.assignee = None
+                        ocr_image.save()
                     return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")
