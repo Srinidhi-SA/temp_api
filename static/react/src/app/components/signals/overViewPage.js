@@ -18,7 +18,7 @@ import store from "../../store";
 import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag, setLoaderFlagAction} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
@@ -108,6 +108,7 @@ export class OverViewPage extends React.Component {
 
   componentWillUnmount = () => {            
     clearTimeout(this.setTime);    
+    this.props.dispatch(setLoaderFlagAction(true))  
 }; 
 
   toggleSideList() {

@@ -18,12 +18,12 @@ export class NormalTable extends React.Component {
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
    return (
-           <div className="table-style">
-           <table className={className}>
-               <thead><tr>{headerComponents}</tr></thead>
-               <tbody>{rowComponents}</tbody>
-           </table>
-           </div>
-       );
+      <div className="table-style" style={{marginTop:(this.props.tableData.topHeader === "Model Comparison" || this.props.tableData.topHeader === "Distribution of Predicted Values")?"40px":null}}>
+      <table className={className}>
+          <thead><tr>{headerComponents}</tr></thead>
+          <tbody>{rowComponents}</tbody>
+      </table>
+      </div>
+    );
   }
 }

@@ -52,6 +52,7 @@ from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
     cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
+from ocrflow.models import Task, ReviewRequest
 
 # ------------------------------------------------------------
 # ---------------------PERMISSIONS----------------------------
@@ -822,27 +823,32 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
+        invalid_files=list()
+        invalid_images = []
         if data['dataSourceType'] == 'fileUpload':
             if 'imagefile' in data:
                 files = request.FILES.getlist('imagefile')
                 for file in files:
                     if file.name.endswith('.pdf'):
-                        pass
+                        imagepath.append(file.name[:-4].replace('.', '_'))
                     else:
                         from ocr import validators
                         status=validators.validate_image_dimension(file)
                         if status == 0:
-                            return JsonResponse(
+                            invalid_images.append(file.name)
+                            invalid_files.append(
                                 {"status":"failed",
                                  "message":"Height or Width is smaller than the allowed limit(50*50).",
                                  "image":file.name})
+
                         elif status == 1:
-                            return JsonResponse(
+                            invalid_images.append(file.name)
+                            invalid_files.append(
                                 {"status":"failed",
                                  "message":"Height or Width is larger than the allowed limit(10000*10000).",
                                  "image":file.name})
-
-                    imagepath.append(file.name[:-4].replace('.', '_'))
+                        else:
+                            imagepath.append(file.name[:-4].replace('.', '_'))
 
         if data['dataSourceType'] == 'S3':
             s3_downloader = S3File()
@@ -878,70 +884,79 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             imagename_list.append(i.name)
 
         for file in files:
-            if data['dataSourceType'] == 'S3':
-                img_data = dict()
-                django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
-                img_data['imagefile'] = django_file
-                img_data['projectslug'] = data['projectslug']
-                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
-                if file is None:
-                    img_data['name'] = img_data.get('name',
-                                                    img_data.get('datasource_type', "H") + "_" + str(
-                                                        random.randint(1000000, 10000000)))
-                else:
-                    img_data['name'] = file[:-4].replace('.', '_')
-                img_data['created_by'] = request.user.id
-                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                # if img_data['name'] in imagename_list:
-                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                #     response['serializer_error'] = str(serializer_error)
-                #     response['message'] = 'FAILED'
-                #     return JsonResponse(response)
-                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
-                if serializer.is_valid():
-                    image_object = serializer.save()
-                    image_object.create()
+            if file.name not in invalid_images:
+                if data['dataSourceType'] == 'S3':
+                    img_data = dict()
+                    django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
+                    img_data['imagefile'] = django_file
+                    img_data['projectslug'] = data['projectslug']
+                    img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
+                    if file is None:
+                        img_data['name'] = img_data.get('name',
+                                                        img_data.get('datasource_type', "H") + "_" + str(
+                                                            random.randint(1000000, 10000000)))
+                    else:
+                        img_data['name'] = file[:-4].replace('.', '_')
+                    img_data['created_by'] = request.user.id
+                    img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                    # if img_data['name'] in imagename_list:
+                    #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                    #     response['serializer_error'] = str(serializer_error)
+                    #     response['message'] = 'FAILED'
+                    #     return JsonResponse(response)
+                    serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                    if serializer.is_valid():
+                        image_object = serializer.save()
+                        image_object.create()
 
-            if data['dataSourceType'] == 'fileUpload':
-                img_data['imagefile'] = file
-                img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
-                if file is None:
-                    img_data['name'] = img_data.get('name',
-                                                    img_data.get('datasource_type', "H") + "_" + str(
-                                                        random.randint(1000000, 10000000)))
-                else:
-                    img_data['name'] = file.name[:-4].replace('.', '_')
-                img_data['created_by'] = request.user.id
-                img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
-                # if img_data['name'] in imagename_list:
-                #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
-                #     response['serializer_error'] = str(serializer_error)
-                #     response['message'] = 'FAILED'
-                #     return JsonResponse(response)
-                serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                if data['dataSourceType'] == 'fileUpload':
+                    img_data['imagefile'] = file
+                    img_data['imageset'] = OCRImageset.objects.filter(id=imageset_id)
+                    if file is None:
+                        img_data['name'] = img_data.get('name',
+                                                        img_data.get('datasource_type', "H") + "_" + str(
+                                                            random.randint(1000000, 10000000)))
+                    else:
+                        img_data['name'] = file.name[:-4].replace('.', '_')
+                    img_data['created_by'] = request.user.id
+                    img_data['project'] = Project.objects.filter(slug=img_data['projectslug'])
+                    # if img_data['name'] in imagename_list:
+                    #     serializer_error.append(creation_failed_exception("Image name already exists!.").data['exception'])
+                    #     response['serializer_error'] = str(serializer_error)
+                    #     response['message'] = 'FAILED'
+                    #     return JsonResponse(response)
+                    serializer = OCRImageSerializer(data=img_data, context={"request": self.request})
+                    if serializer.is_valid():
+                        image_object = serializer.save()
+                        image_object.create()
+                    else:
+                        serializer_error.append(serializer.errors)
+                        return JsonResponse(response)
+                if data['dataSourceType'] == 'SFTP':
+                    pass
+
+                img_data['status'] = 'ready_to_recognize'
+                serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
+                                                context={"request": self.request})
                 if serializer.is_valid():
-                    image_object = serializer.save()
-                    image_object.create()
+                    serializer.save()
+                    serializer_data.append(serializer.data)
                 else:
                     serializer_error.append(serializer.errors)
-                    return JsonResponse(response)
-            if data['dataSourceType'] == 'SFTP':
-                pass
-
-            img_data['status'] = 'ready_to_recognize'
-            serializer = OCRImageSerializer(instance=image_object, data=img_data, partial=True,
-                                            context={"request": self.request})
-            if serializer.is_valid():
-                serializer.save()
-                serializer_data.append(serializer.data)
             else:
-                serializer_error.append(serializer.errors)
-        if not serializer_error:
-            response['serializer_data'] = serializer_data
-            response['message'] = 'SUCCESS'
-        else:
-            response['serializer_error'] = str(serializer_error)
-            response['message'] = 'FAILED'
+                pass
+        try:
+            if not serializer_error:
+                response['serializer_data'] = serializer_data
+                response['message'] = 'SUCCESS'
+                response['invalid_files'] = invalid_files
+            else:
+                response['serializer_error'] = str(serializer_error)
+                response['message'] = 'FAILED'
+                response['invalid_files'] = invalid_files
+        except:
+            response['invalid_files'] = invalid_files
+
         return JsonResponse(response)
 
     def list(self, request, *args, **kwargs):
@@ -1315,7 +1330,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = HttpResponse(result, content_type="application/text")
                 response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
                 return response
-            result = image_queryset.google_response
+            result = image_queryset.final_result
             if data['format'] == 'json':
                 response = HttpResponse(result, content_type="application/json")
                 response['Content-Disposition'] = 'attachment; filename={}.json'.format(data['slug'])
@@ -1324,7 +1339,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 response = HttpResponse(result, content_type="application/xml")
                 response['Content-Disposition'] = 'attachment; filename={}.xml'.format(data['slug'])
             elif data['format'] == 'csv':
-                result = json_2_csv(json.loads(result))
+                df = timesheet_main(final_result)
+                result = df.to_csv()
+                # result = json_2_csv(json.loads(result))
                 response = HttpResponse(result, content_type="application/text")
                 response['Content-Disposition'] = 'attachment; filename={}.csv'.format(data['slug'])
             else:
@@ -1633,15 +1650,44 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 if should_proceed == -3:
                     return creation_failed_exception("Name have special_characters.")
 
+            return JsonResponse({'message': 'Deleted'})
+
         try:
-            instance = self.get_object_from_all()
             if 'deleted' in data:
-                if data['deleted'] == True:
-                    #print('let us deleted')
-                    #instance.data = '{}'
-                    instance.deleted = True
-                    instance.save()
-                    #clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                userGroup = request.user.groups.all()[0].name
+                if userGroup in ['Admin','Superuser']:
+                    instance = self.get_object_from_all()
+                    if data['deleted'] == True:
+                        instance.deleted = True
+                        instance.save()
+                        return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "ReviewerL1":
+                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    for image in ocr_images:
+                        if image.l1_assignee == request.user:
+                            image.l1_assignee = None
+                            image.save()
+                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    for obj in rev:
+                        try:
+                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task.delete()
+                        except:
+                            pass
+                    return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "ReviewerL2":
+                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    for image in ocr_images:
+                        if image.assignee == request.user:
+                            image.assignee = None
+                            image.save()
+                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    for obj in rev:
+                        try:
+                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task.delete()
+                        except:
+                            pass
                     return JsonResponse({'message': 'Deleted'})
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")

@@ -92,7 +92,10 @@ export default function reducer(state = {
   docTablePage: 1,
   projectPage:1,
   docTablePagesize:12,
-  rDocTablePagesize:12
+  rDocTablePagesize:12,
+  projectTablePagesize:12,
+  userTablePagesize:12,
+  reviewerTablePagesize:12,
 
 }, action) {
   switch (action.type) {
@@ -874,6 +877,30 @@ export default function reducer(state = {
               }
             }
             break;
+          case "PROJECT_TABLE_PAGESIZE" :
+            {
+              return {
+                ...state,
+                projectTablePagesize : action.pagesize
+              }
+            }
+            break;
+            case "USER_TABLE_PAGESIZE" :
+              {
+                return {
+                  ...state,
+                  userTablePagesize : action.pagesize
+                }
+              }
+              break;
+              case "REVIEWER_TABLE_PAGESIZE" :
+                {
+                  return {
+                    ...state,
+                    reviewerTablePagesize : action.pagesize
+                  }
+                }
+                break;
         case "PROJECT_PAGE" :
           {
             return {

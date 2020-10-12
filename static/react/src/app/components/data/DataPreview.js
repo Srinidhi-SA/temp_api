@@ -465,7 +465,8 @@ else{
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
                 <a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls} title={thElement.name}>
                   <i className={iconCls}></i>
-                  <span>{thElement.name}</span> <b className="caret"></b>
+                  <span>{thElement.name}</span>
+                  {this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
                 </a>
                 {dataValidationCom}
               </th>
@@ -538,9 +539,8 @@ else{
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <span><h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4></h3>
-                 </span>
-                
+                    <h3 style={{"display": "inline"}}> Data Preview </h3>
+                    <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4>
                 </div>
               </div>
               <div className="clearfix"></div>
@@ -697,7 +697,8 @@ else{
       }
     } else {
       return (
-        <div>
+        <div className="side-body">
+          <div className="page-head"></div>
           <DataUploadLoader/>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/> {/*<div><div className="text-center text-muted xs-mt-50"><h2>Data preview failed to load. Please refresh the page or try again later</h2></div></div>*/}
         </div>

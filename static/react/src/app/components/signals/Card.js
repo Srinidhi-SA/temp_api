@@ -20,6 +20,8 @@ import {handleSignalToggleButton,predictionLabelClick} from "../../helpers/helpe
 import {ModelSummeryButton} from "../common/ModelSummeryButton";
 import {D3ParallelChartt} from "../D3ParallelChartt";
 import { C3ChartNew } from "../C3ChartNew";
+import { STATIC_URL } from "../../helpers/env";
+import { setLoaderFlagAction } from "../../actions/appActions";
 
 var data = null,
 yformat = null,
@@ -31,6 +33,7 @@ cardData = {};
         chartObject: store.chartObject.chartObj,
         currentAppDetails: store.apps.currentAppDetails,
         toggleValues: store.signals.toggleValues,
+        chartLoaderFlag:store.apps.chartLoaderFlag
     };
 })
 
@@ -42,6 +45,24 @@ export class Card extends React.Component {
     componentDidMount() {
 	  if(this.props.currentAppDetails&&this.props.currentAppDetails.app_type&&this.props.currentAppDetails.app_type == "REGRESSION")
       $('#box0').parent('div').addClass('text-center');
+    }
+    showMore(evt){
+        evt.preventDefault();
+        $.each(evt.target.parentElement.querySelectorAll(".paramList"),function(k1,v1){
+            $.each(v1.children,function(k2,v2){
+                if(v2.className == "modelSummery hidden"){
+                    v2.className = "modelSummery";
+                }
+                else if(v2.className == "modelSummery"){
+                    v2.className = "modelSummery hidden";
+                }
+            })
+        });
+        if(evt.target.innerHTML == "Show More"){
+            evt.target.innerHTML = "Show Less";
+        }else{
+            evt.target.innerHTML = "Show More";
+        }
     }
     handleCheckBoxEvent(event){
         this.props.dispatch(pickToggleValue(event.target.id, event.target.checked));
@@ -83,10 +104,12 @@ export class Card extends React.Component {
                         let divClass="";
                         let parentDivClass = "col-md-12";
                         if(!cardWidth || cardWidth > 50)
-                        divClass = "col-md-7 col-md-offset-2"
+                        divClass = "col-md-8 col-md-offset-2"
                         else
                         divClass = "col-md-12";
                         let sideChart=false;
+                        if(window.location.pathname.includes("apps-stock-advisor"))
+                            divClass = "col-md-7 col-md-offset-2"
                         if(story.data.chart_c3.title.text === "Stock Performance Analysis")
                             return (<div key={randomNum} className={parentDivClass}><div class={divClass} ><HighChart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                         else
@@ -180,13 +203,32 @@ export class Card extends React.Component {
     render() {
         cardData = this.props.cardData;
 		let stockClassName = "";
+        if(cardData[0].data!=undefined && cardData[0].data === "<h4><center>Algorithm Parameters </center></h4>")
+            stockClassName = "algoParams"
 		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)
-		stockClassName = "stockClassName";
+		    stockClassName = "stockClassName";
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
+        var isHideData = $.grep(cardData,function(val,key){
+            return(val.dataType == "html" && val.classTag == "hidden");
+        });
         return (
-                <div className = {stockClassName}>
-                {cardElements}
+            stockClassName === "algoParams"?
+                <div className={stockClassName}>
+                    {cardElements[0]}
+                    <Scrollbars autoHeight autoHeightMin={200} autoHeightMax={330} style={{marginTop:"25px"}}>
+                        <div className="paramList">{cardElements.slice(1)}</div>
+                        </Scrollbars>
+                        {isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}
+                </div>
+                :
+                <div className = {stockClassName} onLoad={()=>this.props.dispatch(setLoaderFlagAction(false))}>
+                { this.props.chartLoaderFlag && 
+                    <div style={{display:"flex",height:"400px"}}>
+                        <img src={STATIC_URL+"assets/images/Preloader_2.gif"} style={{margin:"auto"}}></img>
+                    </div>
+                }
+                {!this.props.chartLoaderFlag && cardElements}
                 </div>
         );
 
