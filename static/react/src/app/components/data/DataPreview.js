@@ -465,7 +465,8 @@ else{
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
                 <a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls} title={thElement.name}>
                   <i className={iconCls}></i>
-                  <span>{thElement.name}</span> <b className="caret"></b>
+                  <span>{thElement.name}</span>
+                  {this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
                 </a>
                 {dataValidationCom}
               </th>

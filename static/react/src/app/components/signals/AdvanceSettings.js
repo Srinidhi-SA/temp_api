@@ -37,9 +37,19 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(checkAllAnalysisSelected())
 	}
 	updateAdvanceSettings(){
-		this.props.dispatch(saveAdvanceSettings());
-		this.props.dispatch(advanceSettingsModal(false));
-		this.props.dispatch(checkAllAnalysisSelected())
+		let isError = false;
+		$('.error_pt ').each(function(){
+			if($(this)[0].innerHTML != ""){
+				isError = true;
+			}
+		});
+		if(isError){
+			document.getElementById("resolveError").innerText="Please resolve above errors"
+		}else{
+			this.props.dispatch(saveAdvanceSettings());
+			this.props.dispatch(advanceSettingsModal(false));
+			this.props.dispatch(checkAllAnalysisSelected())
+		}
 	}
 
 	handleAnlysisListActions(e){
@@ -53,33 +63,37 @@ export class AdvanceSettings extends React.Component {
 		}
 	}
 	handleCustomInput(evt){
-	    if(evt.target.value){
-	        if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
-	            this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
-	        }else{
-	            evt.target.value = "";
-	        }
-	    }else{
-	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
-	    }
+		document.getElementById("resolveError").innerText=""
+		this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
+		if(evt.target.value === "" || evt.target.value.startsWith("0") ){
+			evt.target.nextSibling.innerText = "Please enter a valid number"
+		}else if( (parseFloat(evt.target.value)^0) != parseFloat(evt.target.value) || evt.target.value.includes(".") ){
+			evt.target.nextSibling.innerText = "Decimals are not allowed"
+		}else if( (parseInt(evt.target.value)<parseInt(evt.target.min)) || (parseInt(evt.target.value)>parseInt(evt.target.max)) ){
+			evt.target.nextSibling.innerText="Valid Range is "+evt.target.min+"-"+evt.target.max
+		}else{
+			evt.target.nextSibling.innerText = ""
+		}
 	}
 	handleBinningInput(evt){
-	    if(evt.target.value){
-            if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
-                this.props.dispatch(selectedAnalysisList(evt.target,"association"))
-            }else{
-                evt.target.value = "";
-            }
-        }else{
-            this.props.dispatch(selectedAnalysisList(evt.target,"association"))
-        }
+		document.getElementById("resolveError").innerText=""
+		this.props.dispatch(selectedAnalysisList(evt.target,"association"))
+		if(evt.target.value === "" || evt.target.value.startsWith("0")){
+			evt.target.nextSibling.innerText = "Please enter a value"
+		}else if( (parseFloat(evt.target.value)^0) != parseFloat(evt.target.value) || evt.target.value.includes(".")){
+			evt.target.nextSibling.innerText = "Decimals are not allowed"
+		}else if( (parseInt(evt.target.value)<parseInt(evt.target.min)) || (parseInt(evt.target.value) > parseInt(evt.target.max)) ){
+			evt.target.nextSibling.innerText="Value Range is "+evt.target.min+"-"+evt.target.max
+		}else{
+			evt.target.nextSibling.innerText=""
+		}
 	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
 	renderAllAnalysisList(analysisList,trendSettings){
 
-		let associationPlaceholder = "0-"+ store.getState().datasets.dataSetDimensions.length;
+		let associationPlaceholder = "1-"+ store.getState().datasets.dataSetDimensions.length;
 		let customMaxValue = store.getState().datasets.dataSetDimensions.length;
 
 		var that = this;
@@ -102,7 +116,7 @@ export class AdvanceSettings extends React.Component {
 						let val = trendSubItem.name;
 						if(trendSubItem.name.toLowerCase() == "count"){
 							return(
-									<li key={trendSubIndex}><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+									<li key={trendSubIndex}><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  defaultChecked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 							);
 						}else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
 							if(trendSubItem.status){
@@ -111,7 +125,7 @@ export class AdvanceSettings extends React.Component {
 							}
 							return(
 									<li key={trendSubIndex} ><div className="col-md-4">
-									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div>
+									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  defaultChecked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div>
 									</div>
 									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control " onChange={this.handleTrendAnalysis.bind(this)}>
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
@@ -125,7 +139,7 @@ export class AdvanceSettings extends React.Component {
 						}
 					})
 					return(
-							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							<ul className="list-unstyled">
 
 							{trendSub}
@@ -136,12 +150,12 @@ export class AdvanceSettings extends React.Component {
 							</li>);
 				}else{
 					return(
-							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							</li>)
 				}//end of trendsetting check
 			}else{
 			    if(metaItem.name.indexOf("influencer") != -1){
-			      associationPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
+			      associationPlaceholder = "1-"+ (store.getState().datasets.dataSetMeasures.length -1);
 			      customMaxValue = store.getState().datasets.dataSetMeasures.length -1;
 			    }
 				var countOptions=null, binOptions=null,binTemplate = null,options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
@@ -160,7 +174,7 @@ export class AdvanceSettings extends React.Component {
 							if(subItem.status){
 								customInputDivClass = "col-md-5 md-p-0";
 							}
-							customValueInput =     <OverlayTrigger  placement="top" overlay={tooltipText} disabled={disableElement}><input type="number" id={subIndex} min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName} disabled={disableElement}/></OverlayTrigger>
+							customValueInput = <div><OverlayTrigger  placement="top" overlay={tooltipText} disabled={disableElement}><input type="number" id={subIndex} min="1" max={customMaxValue} value={subItem.value===null?"":subItem.value} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName} disabled={disableElement}/></OverlayTrigger><div className="error_pt "></div></div>
 
 						}
 						if(subItem.status){
@@ -168,7 +182,7 @@ export class AdvanceSettings extends React.Component {
 							status = true;
 						}
 						return(
-								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)} disabled={disableElement}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status} disabled={disableElement}/>{subItem.displayName}</label>
+								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)} disabled={disableElement}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} defaultChecked={status} disabled={disableElement}/>{subItem.displayName}</label>
 						);
 					});
 					countOptions  = (function(){
@@ -190,11 +204,12 @@ export class AdvanceSettings extends React.Component {
 
 				    binTemplate = metaItem.binSetting.map((binItem,binIndex)=>{
 				        if(!binItem.hasOwnProperty("defaultValue")){
-				            return (<label key={binIndex}><b>{binItem.displayName}</b></label>)
+				            return (<label style={{paddingLeft:"20px"}} key={binIndex}><b>{binItem.displayName}</b></label>)
 				        }else{
-				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
-				            <div className="col-sm-3">
-	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)} disabled={disableElement}/>
+				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-7" style={{paddingLeft:"20px"}} >{binItem.displayName}</label>
+				            <div className="col-sm-5" style={{padding:"0px 0px 20px 0px"}}>
+	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value} onKeyDown={ (evt) => evt.key === 'e' && evt.preventDefault()}   onChange={this.handleBinningInput.bind(this)} disabled={disableElement}/>
+													<div className="error_pt "></div>
 	                        </div>
 	                        </div>)
 				        }
@@ -203,7 +218,7 @@ export class AdvanceSettings extends React.Component {
 				    binOptions  = (function(){
                         return(
                                 <div>
-                                <div className="col-md-10 md-pl-20 md-pt-20">
+                                <div className="col-md-12" style={{padding:"20px 0px 0px 0px"}}>
                                 {binTemplate}
                                 </div>
                                 </div>
@@ -213,7 +228,7 @@ export class AdvanceSettings extends React.Component {
 				}
 
 				return(
-						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)} disabled={disableElement} /><label htmlFor={id}>{metaItem.displayName}</label></div>
+						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} defaultChecked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)} disabled={disableElement} /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
 						<div className="clearfix"></div>
@@ -258,6 +273,7 @@ export class AdvanceSettings extends React.Component {
 				</Modal.Body>
 
 				<Modal.Footer>
+				<div className="error_pt" id="resolveError" style={{float:"left"}}></div>
 				<Button onClick={this.closeAdvanceSettingsModal.bind(this)}>Cancel</Button>
 				<Button bsStyle="primary" onClick={this.updateAdvanceSettings.bind(this)}>Save</Button>
 				</Modal.Footer>
