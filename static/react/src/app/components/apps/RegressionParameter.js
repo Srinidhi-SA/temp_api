@@ -233,6 +233,7 @@ export class RegressionParameter extends React.Component {
       e.target.parentElement.lastElementChild.innerHTML = "Only numbers are allowed";
     }else{
       e.target.parentElement.lastElementChild.innerHTML = "";
+      e.target.classList.remove("regParamFocus");
     }
     const parts = e.target.value.split(/,|\u3001/);
     for (let i = 0; i < parts.length; ++i){
@@ -246,12 +247,14 @@ export class RegressionParameter extends React.Component {
         }
         if(checkType2.iserror == true){
           e.target.parentElement.lastElementChild.innerHTML = checkType2.errmsg
+          e.target.classList.add("regParamFocus");
           return false;
         }
         let match1 = parseFloat(match[1])
         let match2 = parseFloat(match[4])
         if((Number(match1) != match1) || (Number(match2) != match2)){
           e.target.parentElement.lastElementChild.innerHTML = "Enter a valid number";
+          e.target.classList.add("regParamFocus");
           return false;
         }
         if(match1<min || match2<min || match1>max ||match2>max || match1>match2 || match1==="" || match2==="" || match1===match2){
@@ -263,16 +266,19 @@ export class RegressionParameter extends React.Component {
         var isSingleNumber = parts[i].split(/-|\u3001/);
         if(isSingleNumber.length > 1){
           e.target.parentElement.lastElementChild.innerHTML = "Valid range is "+min+"-"+max;
+          e.target.classList.add("regParamFocus");
           return false;
         }
         if(Number(parts[i]) != parts[i]){
           e.target.parentElement.lastElementChild.innerHTML = "Enter a valid number";
+          e.target.classList.add("regParamFocus");
           return false;
         }
         if(parts[i] === ""){
           e.target.parentElement.lastElementChild.innerHTML = "";
         }else if(parts[i] < min || parts[i] > max){
           e.target.parentElement.lastElementChild.innerHTML = "Valid range is "+min+"-"+max;
+          e.target.classList.add("regParamFocus");
           return false;
         }
         var checkType = this.checkType(parts[i],type,min,max);
@@ -297,9 +303,9 @@ export class RegressionParameter extends React.Component {
       e.target.parentElement.lastElementChild.innerHTML = ""
     
     if(e.target.parentElement.lastElementChild.innerHTML !=""){
-      $("."+e.target.classList[1]).addClass("regParamFocus");
+      e.target.classList.add("regParamFocus");
     }else
-      $("."+e.target.classList[1]).remove("regParamFocus");
+      e.target.classList.remove("regParamFocus");
     
     ($(".momentumCls").val())>=0.1?$(".nesterovsCls").prop("disabled",false):$(".nesterovsCls").prop("disabled",true)
     this.setState({ defaultVal: value });
@@ -316,7 +322,13 @@ export class RegressionParameter extends React.Component {
     }
     else if(paramType === "slider"){
       this.setState({ defaultVal: e.target.value });
-      document.getElementsByName(this.state.name)[0].parentElement.querySelector(".range-validate").innerText = ""
+      var index=0
+      if((document.getElementsByName(this.state.name).length==2) && ($('li.active')[0].innerText=="NEURAL NETWORK (SKLEARN)")&& (this.state.name=="max_iter"||this.state.name=="tol")){
+        index=1
+        }
+        
+      document.getElementsByName(this.state.name)[index].parentElement.querySelector(".range-validate").innerText = ""
+      document.getElementsByName(this.state.name)[index].parentElement.querySelector(".form-control").classList.remove("regParamFocus")
       this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     else if(paramType === "checkbox"){
@@ -576,7 +588,7 @@ export class RegressionParameter extends React.Component {
           <div className= {"row" + " "+getClassNameList.rowCls}>
             {tune?
               <div className="col-md-4 for_multiselect">
-                <MultiSelect value={this.state.dropValues} className="form-control multi" options={optionsTemp1} onChange={this.handleChange.bind(this,"list")} placeholder="None Selected"/>
+                <MultiSelect value={this.state.dropValues} className={"form-control multi"+ ((selectedValue.length == 0)? ' regParamFocus':'')} options={optionsTemp1} onChange={this.handleChange.bind(this,"list")} placeholder="None Selected"/>
                 </div>:
               <div className="col-md-6 for_multiselect">
                 <select ref={(el) => { this.eleSel = el }} defaultValue={selectedOption} className={getClassNameList.cls} multiple={false} onChange={this.handleChange.bind(this,"list")}>

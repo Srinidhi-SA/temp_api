@@ -28,6 +28,7 @@ export class PyLayer extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
+        e.target.classList.remove("regParamFocus")
         if(parameterData.name === "activation" && (e.target.value === "ReLU" || e.target.value === "LeakyReLU") ){
             $("#suggest_pt")[0].innerHTML = "Select Kaiming Normal or Kaiming Unifrom from  weight_init for best results";
         }
@@ -39,9 +40,11 @@ export class PyLayer extends React.Component {
         if(this.props.idNum === 1 && parameterData.name === "activation" && e.target.value != "Sigmoid" && ($(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please select Sigmoid as Loss is "+ $(".loss_pt")[0].value
+            e.target.classList.add('regParamFocus')        
         }else if(parameterData.name === "weight_init" && e.target.value === "Dirac"){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Used only for Image Data"
+            e.target.classList.add('regParamFocus')
         }else{
             e.target.parentElement.lastElementChild.innerText = ""
             this.props.dispatch(pytorchValidateFlag(true));
@@ -108,17 +111,21 @@ export class PyLayer extends React.Component {
         if(!Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')        
         }
         else if(val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter value"
+            e.target.classList.add('regParamFocus')        
         }
         else if(val<=0){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter value greater than 0"
+            e.target.classList.add('regParamFocus')        
         }else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')        
             let layerArry = this.props.idNum
             let newLyrVal = this.props.pyTorchLayer[layerArry];
             newLyrVal[parameterData.name] = parseInt(val);
@@ -135,6 +142,7 @@ export class PyLayer extends React.Component {
     setChangeLayerSubParams(subparameterData,defaultParamName,e){
         this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')   
             let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = e.target.value;
@@ -146,74 +154,92 @@ export class PyLayer extends React.Component {
         if( (name === "alpha" || name === "lambd" || name === "max_val" || name === "negative_slope" || name === "init" || name === "num_parameters" || name === "lower" || name === "upper" || name === "momentum" || name === "eps" || name === "p") && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')        
         }
         else if(name === "min_val" && (val>1 || val<-1 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -1 to 1"
+            e.target.classList.add('regParamFocus')        
         }
         else if( name === "min_val" && ($(".min_val_pt")[this.props.idNum-1].value > $(".max_val_pt")[this.props.idNum-1].value)){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "min_val should be less than max_val"
+            e.target.classList.add('regParamFocus')        
         }
         else if(name === "max_val" && ($(".min_val_pt")[this.props.idNum-1].value > $(".max_val_pt")[this.props.idNum-1].value)){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "max_val should be greater than min_val"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "embed_dim" || name === "num_heads" || name === "kdim" || name === "vdim" || name === "beta" || name === "threshold" || name === "div_value") && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "n_classes" || name === "dim") && val<0){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "embed_dim" || name === "num_heads" || name === "dim" || name === "n_classes" || name === "kdim" || name === "vdim") && !Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "lower_bound" || name === "upper_bound") && $(".input_unit_pt")[0].value === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please enter Input units"
+            e.target.classList.add('regParamFocus')        
         }
         else if( name === "lower_bound" && (val< (-1/Math.sqrt($(".input_unit_pt")[0].value)) || val==="") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ (-1/Math.sqrt($(".input_unit_pt")[0].value))
+            e.target.classList.add('regParamFocus')        
         }
         else if( name === "upper_bound" && (val> (1/Math.sqrt($(".input_unit_pt")[0].value)) || val === "") ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Value should be greater than "+ 1/Math.sqrt($(".input_unit_pt")[0].value)
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "lower_bound" || name === "upper_bound")&& ( $(".lower_bound_pt")[0].value>$(".upper_bound_pt")[0].value )){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Lower bound must be less than Upper bound"
+            e.target.classList.add('regParamFocus')        
         }
         else if(defaultParamName === "weight_init" && name === "std" && (val<=0 || val>5)){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 1 to 5"
+            e.target.classList.add('regParamFocus')        
         }
         else if( ( name === "std" || name === "a" || name === "sparsity") && ( val<-1 || val>1 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -1 to 1"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "mean" || name === "min" || name === "max")  && ( val<0 || val>1 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')        
         }
         else if( name === "gain"  && ( val<0 || val>2 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 2"
+            e.target.classList.add('regParamFocus')        
         }
         else if( (name === "val" || name === "sparsity")  && ( val<-2 || val>2 || val==="" ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is -2 to 2"
+            e.target.classList.add('regParamFocus')        
         }
         else if( ($("#min_pt")[0]!=undefined && $("#max_pt")[0]!=undefined) && ($("#min_pt")[0].value > $("#max_pt")[0].value) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "min should be less than max"
+            e.target.classList.add('regParamFocus')        
         }
         else{
             this.props.dispatch(pytorchValidateFlag(true));
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')        
             let layerArry = this.props.idNum
             let newsubLyrVal = this.props.pyTorchLayer[layerArry];
             newsubLyrVal[defaultParamName][subparameterData.name] = parseFloat(e.target.value);

@@ -22087,9 +22087,6 @@ div#replaceValues {
   box-shadow: 3px 2px 8px 0px #457b74;
 }
 
-.regParamFocus {
-  border-color: #ef6262;
-}
 
 
 .customeTheme {
@@ -23146,4 +23143,12 @@ min-width: 102px; }
 .pageRow select{
   height: 30px;
   background: #ffffff;
+}
+.regParamFocus {
+  border-color: #ef6262;
+}
+
+.regParamFocus:focus {
+  border-color: #ef6262;
+  box-shadow: none;
 }
