@@ -324,7 +324,7 @@ body .pi {
           background-color: #eaeaea; }
   body .p-multiselect {
     background: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #00998c;
     -o-transition: border-color 0.2s;
     -webkit-transition: border-color 0.2s;
     transition: border-color 0.2s;
@@ -332,7 +332,7 @@ body .pi {
     }
 	.form_withrowlabels .p-multiselect {width: 160px;}
     body .p-multiselect:not(.p-disabled):hover {
-      border-color: #e0e0e0; }
+      border-color: #00998c; }
     body .p-multiselect:not(.p-disabled):focus {
       border-color: #007ad9;
       outline: 0 none;

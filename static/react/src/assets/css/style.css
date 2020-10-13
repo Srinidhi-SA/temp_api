@@ -23169,3 +23169,10 @@ min-width: 102px; }
   transition: .3s tranform ease-in-out;
   transform: rotate(180deg);
  }
+
+body .p-multiselect.regParamFocus {
+  border-color: #ef6262;
+}
+body .p-multiselect.regParamFocus:hover {
+  border-color: #ef6262;
+}
