@@ -56,6 +56,10 @@ export class TensorFlow extends React.Component {
         e.target.parentElement.lastElementChild.innerHTML = "" 
         this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,Math.trunc(Number(val)).toString(),"NonTuningParameter"));
       }
+      if(e.target.parentElement.lastElementChild.innerHTML !=""){
+        e.target.classList.add("regParamFocus");
+      }else
+        e.target.classList.remove("regParamFocus");
   }
   
   handleSelectBox(item,e){
@@ -65,24 +69,34 @@ export class TensorFlow extends React.Component {
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
     }else if(e.target.classList.value=="form-control metrics_tf" && loss=="sparse_categorical_crossentropy" && $(".metrics_tf").val().indexOf("sparse")==-1){
       document.getElementById("loss_tf").innerText=""
+      document.getElementsByClassName("loss_tf")[0].classList.remove("regParamFocus");
       document.getElementById("metrics_tf").innerText="Metrics should be sparse."
+      document.getElementsByClassName("metrics_tf")[0].classList.add("regParamFocus");
     }
     else if(e.target.classList.value=="form-control loss_tf" && loss!="sparse_categorical_crossentropy" && $(".metrics_tf").val().indexOf("sparse")!=-1){
       document.getElementById("metrics_tf").innerText=""
+      document.getElementsByClassName("metrics_tf")[0].classList.remove("regParamFocus",);
       document.getElementById("loss_tf").innerText="Loss should be sparse."
+      document.getElementsByClassName("loss_tf")[0].classList.add("regParamFocus");
     }
     else if($(".loss_tf").val().indexOf("sparse")==-1&& $(".metrics_tf").val().indexOf("sparse")!=-1){
       document.getElementById("loss_tf").innerText=""
+      document.getElementsByClassName("loss_tf")[0].classList.remove("regParamFocus");
       document.getElementById("metrics_tf").innerText="Metrics should not be sparse."
+      document.getElementsByClassName("metrics_tf")[0].classList.add("regParamFocus");
     }
     else if($(".metrics_tf").val().indexOf("sparse")==-1 && $(".loss_tf").val().indexOf("sparse")!=-1){
       document.getElementById("metrics_tf").innerText=""
+      document.getElementsByClassName("metrics_tf")[0].classList.remove("regParamFocus");
       document.getElementById("loss_tf").innerText="Loss should not be sparse."
+      document.getElementsByClassName("loss_tf")[0].classList.add("regParamFocus");
     }
     else
     {
       document.getElementById("metrics_tf").innerText=""
       document.getElementById("loss_tf").innerText=""
+      document.getElementsByClassName("metrics_tf")[0].classList.remove("regParamFocus");
+      document.getElementsByClassName("loss_tf")[0].classList.remove("regParamFocus");
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
     }
   }
@@ -122,14 +136,17 @@ export class TensorFlow extends React.Component {
 
         for(let i=0; i<unitLength; i++){
           var unitFlag;
-          if(document.getElementsByClassName("units_tf")[i].value==="")
+          if(document.getElementsByClassName("units_tf")[i].value===""){
+          document.getElementsByClassName("units_tf")[i].classList.add("regParamFocus");
           unitFlag = true;
-        }
+        }}
 
         for(let i=0; i<rateLength; i++){
           var rateFlag;
-          if(document.getElementsByClassName("rate_tf")[i].value==="")
-          rateFlag = true;
+          if(document.getElementsByClassName("rate_tf")[i].value===""){
+            rateFlag = true;
+            document.getElementsByClassName("rate_tf")[i].classList.add("regParamFocus");
+          }
         }
       
         for(let i=0; i<errMsgLen; i++){
@@ -138,18 +155,19 @@ export class TensorFlow extends React.Component {
             errMsgFlag = true;
         }
 
-    if ($(".activation_tf option:selected").text().includes("--Select--")){
-       this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
-    }else if(unitFlag){
-       this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
-    }else if ($(".batch_normalization_tf option:selected").text().includes("--Select--")){
+    if (($(".activation_tf option:selected").text().includes("--Select--"))||($(".batch_normalization_tf option:selected").text().includes("--Select--"))||(unitFlag)||(rateFlag)){
+      
+       for(let i=0;i<$(".form-control.activation_tf").length;i++){
+        if( $(".form-control.activation_tf")[i].value=="--Select--")
+        $(".form-control.activation_tf")[i].classList.add("regParamFocus")
+       }
+
+       for(let i=0;i<$(".form-control.batch_normalization_tf").length;i++){
+        if( $(".form-control.batch_normalization_tf")[i].value=="--Select--")
+        $(".form-control.batch_normalization_tf")[i].classList.add("regParamFocus")
+       }     
       this.props.dispatch(tensorValidateFlag(false));
-      bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer in TensorFlow.", "small_mascot"));
-    }else if(rateFlag){
-       this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
+       bootbox.alert(statusMessages("warning", "Please enter all the mandatory fields for TensorFlow Algorithm.", "small_mascot"));
     }else if(errMsgFlag){
        this.props.dispatch(tensorValidateFlag(false));
        bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer in TensorFlow.", "small_mascot"));
