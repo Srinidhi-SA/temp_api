@@ -2,6 +2,11 @@ from django.contrib.auth.forms import UserCreationForm,  UserChangeForm
 from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
+from api.utils import name_check
+# ---------------------EXCEPTIONS-----------------------------
+from api.exceptions import creation_failed_exception, \
+    retrieve_failed_exception
+# ------------------------------------------------------------
 
 
 class CustomUserCreationForm(forms.Form):
@@ -17,6 +22,16 @@ class CustomUserCreationForm(forms.Form):
         r = User.objects.filter(username=username)
         if r.count():
             raise  ValidationError("Username already exists")
+        #---------------User Name check Validations-----------
+        should_proceed = name_check(username)
+        if should_proceed < 0:
+            if should_proceed == -1:
+                return creation_failed_exception("UserName is empty.")
+            if should_proceed == -2:
+                return creation_failed_exception("UserName is very large.")
+            if should_proceed == -3:
+                return creation_failed_exception("UserName have invalid_characters.")
+        #--------------------------------------------------------
         return username
 
     def clean_email(self):
@@ -38,11 +53,31 @@ class CustomUserCreationForm(forms.Form):
     def clean_first_name(self):
         if self.cleaned_data["first_name"].strip() == '':
             raise ValidationError("First name is required.")
+        #---------------First Name check Validations-----------
+        should_proceed = name_check(self.cleaned_data["first_name"])
+        if should_proceed < 0:
+            if should_proceed == -1:
+                return creation_failed_exception("First Name is empty.")
+            if should_proceed == -2:
+                return creation_failed_exception("First Name is very large.")
+            if should_proceed == -3:
+                return creation_failed_exception("First Name have special_characters.")
+        #--------------------------------------------------------
         return self.cleaned_data["first_name"]
 
     def clean_last_name(self):
         if self.cleaned_data["last_name"].strip() == '':
             raise ValidationError("Last name is required.")
+        #---------------Last Name check Validations-----------
+        should_proceed = name_check(self.cleaned_data["last_name"])
+        if should_proceed < 0:
+            if should_proceed == -1:
+                return creation_failed_exception("Last Name is empty.")
+            if should_proceed == -2:
+                return creation_failed_exception("Last Name is very large.")
+            if should_proceed == -3:
+                return creation_failed_exception("Last Name have special_characters.")
+        #--------------------------------------------------------
         return self.cleaned_data["last_name"]
 
     def save(self, commit=True):

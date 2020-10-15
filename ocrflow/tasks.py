@@ -16,7 +16,7 @@ def get_L2_task_assignment_count(querysetCount, percentage):
     percentage = int(math.floor((percentage/100)*querysetCount))
     return percentage
 
-@periodic_task(run_every=(crontab(minute='*/2')), name="start_auto_assignment_L1", ignore_result=False,
+@periodic_task(run_every=(crontab(minute='*/1')), name="start_auto_assignment_L1", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L1():
     OCRRules_queryset = OCRRules.objects.all()
@@ -61,7 +61,7 @@ def start_auto_assignment_L1():
             print("Auto-Assignment is not Active for Superuser-{0}".format(OCRRule.created_by))
             print("~" * 90)
 
-@periodic_task(run_every=(crontab(minute='*/2')), name="start_auto_assignment_L2", ignore_result=False,
+@periodic_task(run_every=(crontab(minute='*/1')), name="start_auto_assignment_L2", ignore_result=False,
                queue=CONFIG_FILE_NAME)
 def start_auto_assignment_L2():
     OCRRules_queryset = OCRRules.objects.all()
