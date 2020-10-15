@@ -1581,6 +1581,16 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = kwargs.get('data')
         else:
             data = request.data
+        #---------------Project Name check Validations-----------
+        should_proceed = name_check(data['name'])
+        if should_proceed < 0:
+            if should_proceed == -1:
+                return creation_failed_exception("Name is empty.")
+            if should_proceed == -2:
+                return creation_failed_exception("Name is very large.")
+            if should_proceed == -3:
+                return creation_failed_exception("Name have special_characters.")
+        #--------------------------------------------------------
         data = convert_to_string(data)
         projectname_list = []
         project_query = self.get_queryset()
