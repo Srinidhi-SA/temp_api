@@ -50,6 +50,15 @@ export class C3ChartNew extends React.Component{
       $(".visualizeLoader")[0].style.display = "none"
   }
 
+  componentDidUpdate(){
+    this.updateChart();
+    if (this.props.classId == '_side' || this.props.classId == '_profile') {
+      $(".chart-data-icon").empty();
+    };
+    if($(".visualizeLoader")[0] != undefined)
+      $(".visualizeLoader")[0].style.display = "none"
+  }
+
   // componentWillUnmount(){
   //   if(Object.keys(this.props.data).length != 0)
   //     this.props.dispatch(clearC3Date())

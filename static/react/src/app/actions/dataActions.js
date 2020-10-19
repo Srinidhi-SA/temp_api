@@ -2053,3 +2053,8 @@ export function SaveScoreName(value){
         type : "SAVE_SCORE_NAME",value
     }
 }
+export function saveSelectedColSlug(slug){
+    return{
+        type:"ACTIVE_COL_SLUG",slug
+    }
+}
