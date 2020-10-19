@@ -6088,55 +6088,35 @@ def get_algorithm_config_list(request):
         levels = 2
 
     user = request.user
-
+    dataset_object = Dataset.objects.get(slug=slug)
+    import os
+    dataset_filesize = os.stat(dataset_object.input_file.path).st_size
     try:
         if app_type == "CLASSIFICATION" and mode == 'autoML':
             algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)
-            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-            if levels > 2:
-                tempArray.append(settings.SKLEARN_ROC_OBJ)
-
-            for obj in algoArray:
-                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
         elif app_type == "REGRESSION" and mode == 'autoML':
             algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_REGRESSION)
-            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-            if levels > 2:
-                tempArray.append(settings.SKLEARN_ROC_OBJ)
-
-            for obj in algoArray:
-                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
-        # else:
-        #    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-
         elif app_type == "CLASSIFICATION" and mode == 'analyst':
-            dataset_object = Dataset.objects.get(slug=slug)
-            import os
-            dataset_filesize = os.stat(dataset_object.input_file.path).st_size
             if dataset_filesize < 128000000:
                 algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
             else:
                 algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION_PYSPARK)
-            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-            if levels > 2:
-                tempArray.append(settings.SKLEARN_ROC_OBJ)
-
-            for obj in algoArray:
-                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
         elif app_type == "REGRESSION" and mode == 'analyst':
-            algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
-            algoArray = algorithm_config_list["ALGORITHM_SETTING"]
-            tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
-            if levels > 2:
-                tempArray.append(settings.SKLEARN_ROC_OBJ)
-
-            for obj in algoArray:
-                obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+            if dataset_filesize < 128000000:
+                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+            else:
+                algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION_PYSPARK)
         else:
             algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+
+        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+        if levels > 2:
+            tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+        for obj in algoArray:
+            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
+
     except Exception as e:
         print(e)
 

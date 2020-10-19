@@ -1012,6 +1012,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'deleted' in data:
+            instance = self.get_object_from_all()
+            if data['deleted'] == True:
+                instance.deleted = True
+                instance.save()
+                return JsonResponse({'message': 'Deleted'})
+
         if 'name' in data:
             imagename_list = []
             image_query = OCRImage.objects.filter(deleted=False, created_by=request.user)
