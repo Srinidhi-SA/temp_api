@@ -631,3 +631,39 @@ export function getRemovedVariableNames(dataset){
     return arr;
 
 }
+
+export function FocusSelectErrorFields(){
+  var selectBoxList=[ "loss_pt",  "reduction_pt", "zero_infinity_pt",  "log_input_pt",
+   "full_pt", "amsgrad_pt", "nesterov_pt", "line_search_fn_pt","centered_pt",
+   "optimizer_pt","regularizer_pt","affine_pt","track_running_stats_pt","bias_pt",
+   "add_bias_kv_pt","add_zero_attn_pt","head_bias_pt",
+   "mode_pt" ,"nonlinearity_pt", "bias_init_pt", "weight_init_pt","num_parameters_pt"] // "dropout_pt" 
+  var selectBoxError=false
+    for(var i=0;i<selectBoxList.length;i++){
+       if(($("."+selectBoxList[i])[0] != undefined) && ($("."+selectBoxList[i]+" option:selected").text().toLowerCase().includes("--select--"))){
+       document.getElementsByClassName(selectBoxList[i])[0].classList.add('regParamFocus')
+       selectBoxError=true
+       }
+    }
+  return selectBoxError
+}
+
+export function FocusInputErrorFields(){
+   var inputsError=false
+   var inputFileds=["blank_pt","rho_pt","lr_pt","lr_decay_pt","weight_decay_pt"
+   ,"eps_pt","max_iter_pt","max_eval_pt","tolerance_grad_pt","tolerance_change_pt","dampening_pt","lambd_pt",
+   "alpha_pt","t0_pt","history_size_pt","betas1_pt","betas2_pt","eta1_pt","eta2_pt","step_sizes1_pt",
+   "step_sizes2_pt","l1_decay_pt","l2_decay_pt","min_val_pt","max_val_pt","negative_slope_pt","kdim_pt",
+   "vdim_pt","init_pt","lower_pt","upper_pt","p_pt","beta_pt","threshold_pt","value_pt","div_value_pt","val_pt",
+   "mean_pt","std_pt","gain_pt","a_pt","sparsity_pt","std_pt","dropout_pt","lower_bound_pt","upper_bound_pt"
+   ,"input_unit_pt","output_unit_pt"
+   ]
+
+   for(var i=0;i<inputFileds.length;i++){
+       if($("."+inputFileds[i])[0] != undefined && (($("."+inputFileds[i])[0]).value === "" || $("."+inputFileds[i])[0].value === undefined)){
+       document.getElementsByClassName(inputFileds[i])[0].classList.add('regParamFocus')
+       inputsError=true
+       }
+   }
+   return inputsError
+}

@@ -20,7 +20,7 @@ import backoff
 
 class Pep:  # preprocess_extract_pipeline
 
-    def __init__(self, image_path, crop=False, c2=False, enhance=True):
+    def __init__(self, image_path, crop=False, c2=True, enhance=True):
 
         debug = False
         self.image_path = image_path

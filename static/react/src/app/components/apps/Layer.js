@@ -38,6 +38,10 @@ export default class Layer extends Component {
     val=name=="units"?Math.trunc(Number(val)).toString():val
     this.props.dispatch(updateTensorFlowArray(this.props.id,name,val))
     }
+    if(e.target.parentElement.lastElementChild.innerHTML !=""){
+      e.target.classList.add("regParamFocus");
+    }else
+      e.target.classList.remove("regParamFocus");
   }
   getOptions(item) {
 

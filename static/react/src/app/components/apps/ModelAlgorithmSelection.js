@@ -9,7 +9,7 @@ import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
-import {statusMessages} from "../../helpers/helper";
+import {statusMessages,FocusSelectErrorFields,FocusInputErrorFields} from "../../helpers/helper";
 import { TensorFlow } from "./TensorFlow";
 import { PyTorch } from "./PyTorch";
 
@@ -131,51 +131,58 @@ export class ModelAlgorithmSelection extends React.Component {
        var finalActivationPrediction = ["sigmoid","softmax"]
         for(let i=0; i<units.length; i++){
             var unitFlag;
-            if(units[i].value==="")
-            unitFlag = true;
-           }
+            if(units[i].value===""){
+                unitFlag = true;
+                units[i].classList.add("regParamFocus");
+            }
+        }
         
         for(let i=0; i<rates.length; i++){
             var rateFlag;
-            if(rates[i].value==="")
-            rateFlag = true;
-           }
+            if(rates[i].value===""){
+                rateFlag = true;
+                rates[i].classList.add("regParamFocus");            
+            }
+        }
            
         for(let i=0; i<errMsgs.length; i++){
             var errMsgFlag;
             if(errMsgs[i].innerText!="")
             errMsgFlag = true;
-            }
+        }
+        if(($(".activation_tf option:selected").text().includes("--Select--"))||($(".batch_normalization_tf option:selected").text().includes("--Select--"))||(unitFlag)||(rateFlag)){
+      
+         for(let i=0;i<$(".form-control.activation_tf").length;i++){
+            if( $(".form-control.activation_tf")[i].value=="--Select--")
+             $(".form-control.activation_tf")[i].classList.add("regParamFocus")
+         }
 
-        if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
-        bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
-        return false
-        }else if ($(".activation_tf option:selected").text().includes("--Select--")){
-            bootbox.alert(statusMessages("warning", "Please select 'Activation' for dense layer in TensorFlow.", "small_mascot"));
+          for(let i=0;i<$(".form-control.batch_normalization_tf").length;i++){
+            if( $(".form-control.batch_normalization_tf")[i].value=="--Select--")
+            $(".form-control.batch_normalization_tf")[i].classList.add("regParamFocus")
+          }
+    
+          bootbox.alert(statusMessages("warning", "Please Enter Mandatory Fields of TensorFlow Algorithm.", "small_mascot"));
+          return false;            
+        }else if(tfInputs.length>1 && tfInputs[tfInputs.length-1].layer=="Dropout"){
+            bootbox.alert(statusMessages("warning", "Final layer should be 'Dense' for TensorFlow.", "small_mascot"));
             return false
         }else if(this.props.currentAppId === 2 && tfInputs.length>=1 && !finalActivationPrediction.includes(tfInputs[tfInputs.length-1].activation)){
             bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Softmax' or 'Sigmoid' for activation.", "small_mascot"));
+            $(".form-control.activation_tf")[$(".form-control.activation_tf").length-1].classList.add("regParamFocus")
             return false;           
         }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].activation!='relu'){
             bootbox.alert(statusMessages("warning", "TensorFlow final Dense layer should have 'Relu' for activation.", "small_mascot"));
+            $(".form-control.activation_tf")[$(".form-control.activation_tf").length-1].classList.add("regParamFocus")            
             return false;            
         }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].units!=1){
             bootbox.alert(statusMessages("warning", "TensorFlow Units in last layer should always be 1.", "small_mascot"));
+            $(".form-control.units_tf")[$(".form-control.units_tf").length-1].classList.add("regParamFocus")                
             return false;            
-        }else if(unitFlag){
-            bootbox.alert(statusMessages("warning", "Please enter 'Units' for dense layer in TensorFlow.", "small_mascot"));
-            return false;
-        }else if($(".batch_normalization_tf option:selected").text().includes("--Select--")){
-            bootbox.alert(statusMessages("warning", "Please select 'Batch Normalisation' for dense layer  in TensorFlow.", "small_mascot"));
-            return false;            
-        }else if(rateFlag){
-            bootbox.alert(statusMessages("warning", "Please enter 'Rate' for dropout layer in TensorFlow.", "small_mascot"));
-            return false;
         }else if(errMsgFlag){
             bootbox.alert(statusMessages("warning", "Please resolve errors for TensorFlow.", "small_mascot"));
             return false;
         }
-       
         if(this.props.currentAppId === 2 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
             this.props.dispatch(updateTensorFlowArray(tfInputs.length,"units",store.getState().apps.targetLevelCounts.length.toString()))
         }else if(this.props.currentAppId === 13 && tfInputs.length>=1 && tfInputs[tfInputs.length-1].layer=="Dense"){
@@ -191,47 +198,68 @@ export class ModelAlgorithmSelection extends React.Component {
             targetCount = store.getState().apps.targetLevelCounts;
             pyTorchLayerCount = Object.keys(this.props.pyTorchLayer).length;
         }
-        let errormsg = statusMessages("warning","Please Enter Mandatory Fields of PyTorch Algorithm...","small_mascot");
+        let errormsg = statusMessages("warning","Please Enter Mandatory Fields of PyTorch Algorithm.","small_mascot");
         if(pyTorchClassFlag){
-            if(!this.props.pytorchValidateFlag){
-                bootbox.alert(errormsg);
+
+            var isMandatoryError=false
+            for(let i=0;i<pyTorchLayerCount;i++){
+                if(document.getElementsByClassName("input_unit_pt")[i].value === ""){
+                    document.getElementsByClassName("input_unit_pt")[i].classList.add('regParamFocus')    
+                    isMandatoryError=true
+                }
+                 if(document.getElementsByClassName("output_unit_pt")[i].value === ""){
+                    document.getElementsByClassName("output_unit_pt")[i].classList.add('regParamFocus')    
+                    isMandatoryError=true
+                }
+                 if($(".bias_init_pt option:selected")[i].value === "None"){
+                    $(".form-control.bias_init_pt")[i].classList.add("regParamFocus")
+                    isMandatoryError=true
+                }
+                 if($(".weight_init_pt option:selected")[i].value === "None"){
+                    $(".form-control.weight_init_pt")[i].classList.add("regParamFocus")
+                    isMandatoryError=true
+                }
+            }
+
+            var hasErrorText=false;
+            for(let i=0; i<document.getElementsByClassName("error_pt").length; i++){
+            if(document.getElementsByClassName("error_pt")[i].innerText!="" && document.getElementsByClassName("error_pt")[i].id!="suggest_pt"){
+                hasErrorText = true;
+            }
+            }
+            
+            if(hasErrorText){
+                bootbox.alert(statusMessages("warning", "Please resolve errors for PyTorch.", "small_mascot"));
                 return false;
             }
-            else if( ($(".loss_pt")[0].value === "None") || ($(".optimizer_pt")[0].value === "None") || ($(".regularizer_pt")[0].value === "None") ){
+            else if(FocusSelectErrorFields()||FocusInputErrorFields()){
+                FocusInputErrorFields()
                 bootbox.alert(errormsg);
-                return false;
-            }
+            return false;
+            }   
             else if(pyTorchLayerCount === 0){
                 bootbox.alert(statusMessages("warning", "Please Add Layers for PyTorch", "small_mascot"));
+                return false;
+            }else if(!this.props.pytorchValidateFlag){
+                bootbox.alert(errormsg);
+                return false;
+            }
+            else if(isMandatoryError){
+                bootbox.alert(errormsg);
                 return false;
             }
             else if((pyTorchLayerCount != 0) && ( (this.props.pyTorchLayer[pyTorchLayerCount].units_op < targetCount.length) || (this.props.pyTorchLayer[pyTorchLayerCount].units_op > targetCount.length) )){
                 bootbox.alert(statusMessages("warning", "No. of output units in Pytorch final layer should be equal to the no. of levels in the target column(which is "+targetCount.length+").", "small_mascot"));
+                document.getElementsByClassName("output_unit_pt")[pyTorchLayerCount-1].classList.add('regParamFocus')                
                 return false;
             }
             else if( (pyTorchLayerCount != 0) && $(".activation_pt")[pyTorchLayerCount-1].value != "Sigmoid" && ( $(".loss_pt")[0].value === "NLLLoss" || $(".loss_pt")[0].value === "BCELoss") ){
                 this.props.dispatch(pytorchValidateFlag(false));
                 bootbox.alert(statusMessages("warning", "Activation should be Sigmoid as Loss selected is"+$(".loss_pt")[0].value+"", "small_mascot"));
+                document.getElementsByClassName("activation_pt")[pyTorchLayerCount-1].classList.add('regParamFocus')
                 return false;
             }
-            for(let i=0;i<pyTorchLayerCount;i++){
-                if(document.getElementsByClassName("input_unit_pt")[i].value === ""){
-                    bootbox.alert(errormsg);
-                    return false;
-                }
-                else if(document.getElementsByClassName("output_unit_pt")[i].value === ""){
-                    bootbox.alert(errormsg);
-                    return false;
-                }
-                else if($(".bias_init_pt option:selected")[i].value === "None"){
-                    bootbox.alert(errormsg);
-                    return false;
-                }
-                else if($(".weight_init_pt option:selected")[i].value === "None"){
-                    bootbox.alert(errormsg);
-                    return false;
-                }
-            }
+            
             if(this.props.pytorchValidateFlag && ( $(".optimizer_pt option:selected").text().includes("Adam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("SparseAdam") || $(".optimizer_pt option:selected").text().includes("AdamW") || $(".optimizer_pt option:selected").text().includes("Adamax") ) ){
                 let beta = this.props.pyTorchSubParams;
                 let tupVal = beta["optimizer"]["betas"].toString();

@@ -22094,9 +22094,6 @@ div#replaceValues {
   box-shadow: 3px 2px 8px 0px #457b74;
 }
 
-.regParamFocus {
-  border-color: #ef6262;
-}
 
 
 .customeTheme {
@@ -23154,6 +23151,14 @@ min-width: 102px; }
   height: 30px;
   background: #ffffff;
 }
+.regParamFocus {
+  border-color: #ef6262;
+}
+
+.regParamFocus:focus {
+  border-color: #ef6262;
+  box-shadow: none;
+}
 .performanceCard{
   background: #fafafa;
   border-width: 0 1px 1px 1px;
@@ -23164,3 +23169,10 @@ min-width: 102px; }
   transition: .3s tranform ease-in-out;
   transform: rotate(180deg);
  }
+
+body .p-multiselect.regParamFocus {
+  border-color: #ef6262;
+}
+body .p-multiselect.regParamFocus:hover {
+  border-color: #ef6262;
+}

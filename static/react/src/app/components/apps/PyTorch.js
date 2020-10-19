@@ -5,7 +5,7 @@ import store from "../../store";
 import {Button} from "react-bootstrap";
 import {PyLayer} from "./PyLayer";
 import { updateAlgorithmData, setPyTorchSubParams, setPyTorchLayer, pytorchValidateFlag, clearPyTorchValues, setIdLayer } from "../../actions/appActions";
-import {statusMessages} from  "../../helpers/helper"
+import {statusMessages,FocusSelectErrorFields,FocusInputErrorFields} from  "../../helpers/helper"
 @connect((store)=>{
     return{
         algorithmData:store.apps.regression_algorithm_data,
@@ -91,173 +91,68 @@ export class PyTorch extends React.Component {
     }
 
     handleClick(){
-        if ($(".loss_pt option:selected").text().includes("--Select--")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select Loss.", "small_mascot"));
+        var hasErrorText=false;
+        for(let i=0; i<document.getElementsByClassName("error_pt").length; i++){
+            if(document.getElementsByClassName("error_pt")[i].innerText!="" && document.getElementsByClassName("error_pt")[i].id!="suggest_pt"){
+                hasErrorText = true;
+            }
         }
-        else if( ($(".blank_pt")[0] != undefined) && ($(".blank_pt")[0].value === "")){
+
+        if(FocusSelectErrorFields()||FocusInputErrorFields()){
+            FocusInputErrorFields()
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter blank value", "small_mascot"));
+            bootbox.alert(statusMessages("warning", "Please Enter Mandatory Fields of PyTorch Algorithm.", "small_mascot"));
         }
-        else if( ($(".reduction_pt")[0] != undefined) && ($(".reduction_pt option:selected").text().includes("--Select--")) ){
+        else if(hasErrorText){
+            bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer in PyTorch", "small_mascot"));
             this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select reduction.", "small_mascot"));
-        }
-        else if( ($(".zero_infinity_pt")[0] != undefined) && ($(".zero_infinity_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select zero_infinity.", "small_mascot"));
-        }
-        else if( ($(".log_input_pt")[0] != undefined) && ($(".log_input_pt option:selected").text().includes("--Select--"))){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select log_input.", "small_mascot"));
-        }
-        else if( ($(".full_pt")[0] != undefined) && ($(".full_pt option:selected").text().includes("--Select--"))){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select full.", "small_mascot"));
-        }
-        else if( ($(".rho_pt")[0] != undefined) && ($(".rho_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter rho value", "small_mascot"));
-        }
-        else if( ($(".lr_pt")[0] != undefined) && ($(".lr_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter lr value", "small_mascot"));
-        }
-        else if( ($(".lr_decay_pt")[0] != undefined) && ($(".lr_decay_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter lr_decay value", "small_mascot"));
-        }
-        else if( ($(".weight_decay_pt")[0] != undefined) && ($(".weight_decay_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter weight_decay value", "small_mascot"));
-        }
-        else if( ($(".eps_pt")[0] != undefined) && ($(".eps_pt")[0].value === "")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter eps value", "small_mascot"));
-        }
-        else if( ($(".max_iter_pt")[0] != undefined) && ($(".max_iter_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter max_iter value", "small_mascot"));
-        }
-        else if( ($(".max_eval_pt")[0] != undefined) && ($(".max_eval_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter max_eval value", "small_mascot"));
-        }
-        else if( ($(".tolerance_grad_pt")[0] != undefined) && ($(".tolerance_grad_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter tolerance_grad value", "small_mascot"));
-        }
-        else if( ($(".tolerance_change_pt")[0] != undefined) && ($(".tolerance_change_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter tolerance_change value", "small_mascot"));
-        }
-        else if( ($(".dampening_pt")[0] != undefined) && ($(".dampening_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter dampening value", "small_mascot"));
-        }
-        else if( ($(".amsgrad_pt")[0] != undefined) && ($(".amsgrad_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select amsgrad.", "small_mascot"));
-        }
-        else if( ($(".nesterov_pt")[0] != undefined) && ($(".nesterov_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select nesterov.", "small_mascot"));
-        }
-        else if( ($(".lambd_pt")[0] != undefined) && ($(".lambd_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter lambd value", "small_mascot"));
         }
         else if( ($(".momentum_pt")[0] != undefined) && ( ($(".momentum_pt")[0].value === "") || ($(".momentum_pt")[0].value <=0) ) ){
             this.props.dispatch(pytorchValidateFlag(false));
             bootbox.alert(statusMessages("warning", "Please enter momentum value greater than 0", "small_mascot"));
-        }
-        else if( ($(".alpha_pt")[0] != undefined) && ($(".alpha_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter alpha value", "small_mascot"));
-        }
-        else if( ($(".t0_pt")[0] != undefined) && ($(".t0_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter t0 value", "small_mascot"));
-        }
-        else if( ($(".history_size_pt")[0] != undefined) && ($(".history_size_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter history_size value", "small_mascot"));
-        }
-        else if( ($(".line_search_fn_pt")[0] != undefined) && ($(".line_search_fn_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select line_search_fn.", "small_mascot"));
-        }
-        else if( ($(".centered_pt")[0] != undefined) && ($(".centered_pt option:selected").text().includes("--Select--")) ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select centered.", "small_mascot"));
-        }
-        else if($(".optimizer_pt option:selected").text().includes("--Select--")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select Optimizer.", "small_mascot"));
-        }
-        else if( ($(".betas1_pt")[0] != undefined) && ($(".betas1_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter beta1 value", "small_mascot"));
-        }
-        else if( ($(".betas2_pt")[0] != undefined) && ($(".betas2_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter beta2 value", "small_mascot"));
-        }
-        else if( ($(".eta1_pt")[0] != undefined) && ($(".eta1_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter eta1 value", "small_mascot"));
-        }
-        else if( ($(".eta2_pt")[0] != undefined) && ($(".eta2_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter eta2 value", "small_mascot"));
-        }
-        else if( ($(".step_sizes1_pt")[0] != undefined) && ($(".step_sizes1_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter step_sizes1 value", "small_mascot"));
-        }
-        else if( ($(".step_sizes2_pt")[0] != undefined) && ($(".step_sizes2_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter step_sizes2 value", "small_mascot"));
-        }
-        else if ($(".regularizer_pt option:selected").text().includes("--Select--")){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please select Regularizer.", "small_mascot"));
-        }
-        else if( ($(".l1_decay_pt")[0] != undefined) && ($(".l1_decay_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter l1_decay value", "small_mascot"));
-        }
-        else if( ($(".l2_decay_pt")[0] != undefined) && ($(".l2_decay_pt")[0].value === "") ){
-            this.props.dispatch(pytorchValidateFlag(false));
-            bootbox.alert(statusMessages("warning", "Please enter l2_decay value", "small_mascot"));
+            document.getElementsByClassName("momentum_pt")[0].classList.add('regParamFocus')    
+        
         }
         else if (Object.keys(this.props.pyTorchLayer).length != 0){
+            var throwError=false
             for(let i=0;i<this.props.idLayer.length;i++){
                 if($(".input_unit_pt")[i].value === "" || $(".input_unit_pt")[i].value === undefined){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please enter input units for layer.", "small_mascot"));
-                    return false;
+                    document.getElementsByClassName("input_unit_pt")[i].classList.add('regParamFocus')    
+                    throwError=true
                 }
-                else if($(".output_unit_pt")[i].value === "" || $(".output_unit_pt")[i].value === undefined){
-                    bootbox.alert(statusMessages("warning", "Please enter output units for layer.", "small_mascot"));
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    return false;
+
+                if($(".output_unit_pt")[i].value === "" || $(".output_unit_pt")[i].value === undefined){
+                    document.getElementsByClassName("output_unit_pt")[i].classList.add('regParamFocus')    
+                    throwError=true
+                } 
+                
+                
+               if($(".form-control.bias_init_pt")[i].value=="None"){
+                    $(".form-control.bias_init_pt")[i].classList.add("regParamFocus")
+                    throwError=true            
                 }
-                else if($(".bias_init_pt option:selected").text().includes("--Select--")){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please select bias_init for layer.", "small_mascot"));
-                    return false;
-                }
-                else if($(".weight_init_pt option:selected").text().includes("--Select--")){
-                    this.props.dispatch(pytorchValidateFlag(false));
-                    bootbox.alert(statusMessages("warning", "Please select weight_init for layer.", "small_mascot"));
-                    return false;
-                }
-                else if(!$(".dropout_pt option:selected").text().includes("--Select--")){
-                    if($(".p_pt")[0].value === "" || $(".p_pt")[0].value === undefined){
+
+                if($(".form-control.weight_init_pt")[i].value=="None"){
+                    $(".form-control.weight_init_pt")[i].classList.add("regParamFocus")
+                    throwError=true           
+                 }
+
+                if(throwError){
                         this.props.dispatch(pytorchValidateFlag(false));
+                        if(i==this.props.idLayer.length-1){
+                            //edit error msg
+                        bootbox.alert(statusMessages("warning", "Please Enter Mandatory Fields of PyTorch Algorithm layer.", "small_mascot"));
+                        return false
+                        }
+                }
+                else if($(".form-control.dropout_pt")[i].value!="None"){//$(".form-control.dropout_pt")[0].value=="None"
+                    if($(".p_pt")[i]!=undefined && ($(".p_pt")[i].value === "" || $(".p_pt")[i].value === undefined)){
+                        this.props.dispatch(pytorchValidateFlag(false));
+                        if(i==this.props.idLayer.length-1)
                         bootbox.alert(statusMessages("warning", "Please enter p value for dropout.", "small_mascot"));
-                        return false;
+                        $(".p_pt")[i].classList.add("regParamFocus")
+                       
+                        // return false;
                     }else{
                         this.props.dispatch(pytorchValidateFlag(true));
                     }
@@ -275,6 +170,7 @@ export class PyTorch extends React.Component {
     }
 
     selectHandleChange(parameterData,e){
+        e.target.classList.remove('regParamFocus')
         if(parameterData.name === "loss" || parameterData.name === "optimizer" || parameterData.name === "regularizer"){
             let subParamDt = this.props.pyTorchSubParams;
             if(parameterData.name === "loss"){
@@ -321,22 +217,27 @@ export class PyTorch extends React.Component {
       let val = e.target.value === "--Select--"? null:e.target.value;
       if(name == "number_of_epochs" && (val<1 || val==="")){
         e.target.parentElement.lastElementChild.innerText = "value range is 1 to infinity"
+        e.target.classList.add('regParamFocus')        
         this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name === "number_of_epochs" && (!Number.isInteger(parseFloat(val))) ){
         e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
+        e.target.classList.add('regParamFocus')
         this.props.dispatch(pytorchValidateFlag(false));
       }
-      else if(name=="batch_size" && ( val<0 || val>this.props.datasetRow-1 || val==="") ){
+      else if(name=="batch_size" && ( val<=0 || val>this.props.datasetRow-1 || val==="") ){
         e.target.parentElement.lastElementChild.innerText = `value range is 1 to ${this.props.datasetRow-1}`
+        e.target.classList.add('regParamFocus')
         this.props.dispatch(pytorchValidateFlag(false));
       }
       else if(name === "batch_size" && (!Number.isInteger(parseFloat(val))) ){
         e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
+        e.target.classList.add('regParamFocus')
         this.props.dispatch(pytorchValidateFlag(false));
       }
     else {
         e.target.parentElement.lastElementChild.innerText = ""
+        e.target.classList.remove('regParamFocus')
         this.props.dispatch(updateAlgorithmData(this.props.parameterData.algorithmSlug,parameterData.name,parseInt(e.target.value),this.props.type));
         this.props.dispatch(pytorchValidateFlag(true));
         let subParamArry = this.props.pyTorchSubParams;
@@ -355,11 +256,14 @@ export class PyTorch extends React.Component {
             if(val < 1 || val > 100){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "value range is 1 to 100"
+                e.target.classList.add('regParamFocus')
             }else if(!Number.isInteger(parseFloat(val))){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
+                e.target.classList.add('regParamFocus')
             }else{
                 e.target.parentElement.lastElementChild.innerText = ""
+                e.target.classList.remove('regParamFocus')
                 this.props.dispatch(pytorchValidateFlag(true));
                 let selectedPar = subParamArry["loss"];
                 selectedPar[data.name] = parseInt(val);
@@ -369,128 +273,192 @@ export class PyTorch extends React.Component {
         else if(name === "weight" && val === ""){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter value"
+            e.target.classList.add('regParamFocus')
         }
         else if(name === "weight" && !commaLetters.test(val)){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Numbers only"
+            e.target.classList.add('regParamFocus')
         }
         else if(name === "weight" && !checkWeight.test(val)){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "format should be 0.3,1.7"
+            e.target.classList.add('regParamFocus')
+
         }else if(name === "weight" && (val.split(",")).length > 2){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Please enter only two values"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "ignore_index" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')
         }
         else if(name === "eps" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "rho" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "lr" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "weight_decay" && (val>0.1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 0.1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "lr_decay" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "lambd" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "alpha" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "t0" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "max_iter" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "max_eval" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "tolerance_grad" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "tolerance_change" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "history_size" && (val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Enter a positive integer"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "momentum" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "dampening" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if( (name === "ignore_index" || name === "max_iter" || name === "max_eval" || name === "history_size") && !Number.isInteger(parseFloat(val)) ){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "Decimals not allowed"
+            e.target.classList.add('regParamFocus')
+            
         }
         else if(data.name === "nesterov" && val === "True" && ($(".dampening_pt")[0].value != 0) && ($(".momentum_pt")[0].value <= 0)){
             document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
+            document.getElementsByClassName("momentum_pt")[0].classList.add('regParamFocus')
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
+            document.getElementsByClassName("dampening_pt")[0].classList.add('regParamFocus')
         }
         else if(data.name === "nesterov" && val === "True" && ($(".momentum_pt")[0].value <= 0)){
             document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
+            document.getElementsByClassName("momentum_pt")[0].classList.add('regParamFocus')
+         
         }
         else if(data.name === "nesterov" && val === "True" && ($(".dampening_pt")[0].value != 0)){
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
+            document.getElementsByClassName("dampening_pt")[0].classList.add('regParamFocus')
+         
         }
         else if(data.name === "nesterov" && (val === "False" || val === "None")){
             document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = ""
+            document.getElementsByClassName("momentum_pt")[0].classList.remove('regParamFocus')
+
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = ""
+            document.getElementsByClassName("dampening_pt")[0].classList.remove('regParamFocus')
+
         }
-        else if(data.name === "momentum" && parseFloat(val) <= 0 && $(".nesterov_pt")[0].value === "True"){
+        else if(data.name === "momentum" && parseFloat(val) <= 0 && $(".nesterov_pt")[0]!=undefined && $(".nesterov_pt")[0].value === "True"){
             document.getElementsByClassName("momentum_pt")[0].nextSibling.innerText = "Value should be greater than zero"
+            document.getElementsByClassName("momentum_pt")[0].classList.add('regParamFocus')
+         
         }
         else if(data.name === "dampening" && parseFloat(val) != 0 && $(".nesterov_pt")[0].value === "True"){
             document.getElementsByClassName("dampening_pt")[0].nextSibling.innerText = "Please make dampening zero"
+            document.getElementsByClassName("dampening_pt")[0].classList.add('regParamFocus')
+        
         }
         else if(name === "l1_decay" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "l2_decay" && (val>1 || val<0 || val === "")){
             this.props.dispatch(pytorchValidateFlag(false));
             e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+            e.target.classList.add('regParamFocus')
+
         }
         else if(name === "betas"){
             let selectedPar = subParamArry["optimizer"];
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "Enter value"
+                e.target.classList.add('regParamFocus')
+ 
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+                e.target.classList.add('regParamFocus')
+l
             }else if(e.target.className.includes("betas1")){
                 if(this.props.pyTorchSubParams["optimizer"]["betas"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of beta1 should be lesser than beta2"
+                    e.target.classList.add('regParamFocus')
+
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["betas"][0] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -499,8 +467,11 @@ export class PyTorch extends React.Component {
                 if(this.props.pyTorchSubParams["optimizer"]["betas"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of beta2 should be greater than beta1"
+                    e.target.classList.add('regParamFocus')
+
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["betas"][1] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -511,15 +482,21 @@ export class PyTorch extends React.Component {
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "Enter value"
+                e.target.classList.add('regParamFocus')
+
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+                e.target.classList.add('regParamFocus')
+
             }else if(e.target.className.includes("eta1")){
                 if(this.props.pyTorchSubParams["optimizer"]["eta"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of eta1 should be lesser than eta2"
+                    e.target.classList.add('regParamFocus')
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["eta"][0] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -528,8 +505,11 @@ export class PyTorch extends React.Component {
                 if(this.props.pyTorchSubParams["optimizer"]["eta"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of eta2 should be greater than eta1"
+                    e.target.classList.add('regParamFocus')
+                    
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["eta"][1] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -540,15 +520,21 @@ export class PyTorch extends React.Component {
             if(val === ""){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "Enter value"
+                e.target.classList.add('regParamFocus')
+
             }else if(val>1 || val<0){
                 this.props.dispatch(pytorchValidateFlag(false));
                 e.target.parentElement.lastElementChild.innerText = "value range is 0 to 1"
+                e.target.classList.add('regParamFocus')
+
             }else if(e.target.className.includes("step_sizes1")){
                 if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][1] < val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of step_sizes1 should be lesser than step_sizes2"
+                    e.target.classList.add('regParamFocus')                    
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["step_sizes"][0] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -557,8 +543,11 @@ export class PyTorch extends React.Component {
                 if(this.props.pyTorchSubParams["optimizer"]["step_sizes"][0] > val ){
                     this.props.dispatch(pytorchValidateFlag(false));
                     e.target.parentElement.lastElementChild.innerText = "value of step_sizes2 should be greater than step_sizes1"
+                    e.target.classList.add('regParamFocus')
+               
                 }else{
                     e.target.parentElement.lastElementChild.innerText = ""
+                    e.target.classList.remove('regParamFocus')
                     this.props.dispatch(pytorchValidateFlag(true));
                     selectedPar["step_sizes"][1] = parseFloat(val);
                     this.props.dispatch(setPyTorchSubParams(subParamArry));
@@ -567,6 +556,7 @@ export class PyTorch extends React.Component {
         }
         else if(parameterData === "loss"){
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')
             this.props.dispatch(pytorchValidateFlag(true));
             let selectedPar = subParamArry["loss"];
             if(data.name === "reduction" || data.name === "zero_infinity" || data.name === "log_input" || data.name === "full")
@@ -586,6 +576,7 @@ export class PyTorch extends React.Component {
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else if(parameterData === "optimizer"){
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')
             this.props.dispatch(pytorchValidateFlag(true));
             let selectedPar = subParamArry["optimizer"];
             if(data.name === "amsgrad" || data.name === "line_search_fn" || data.name==="nesterov" ||data.name === "centered")
@@ -594,12 +585,14 @@ export class PyTorch extends React.Component {
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else if(parameterData === "regularizer"){
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')
             this.props.dispatch(pytorchValidateFlag(true));
             let selectedPar = subParamArry["regularizer"];
             selectedPar[data.name] = parseFloat(val);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
         }else{
             e.target.parentElement.lastElementChild.innerText = ""
+            e.target.classList.remove('regParamFocus')
             this.props.dispatch(pytorchValidateFlag(true));
             subParamArry[data.name] = parseFloat(val);
             this.props.dispatch(setPyTorchSubParams(subParamArry));
