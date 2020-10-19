@@ -6,10 +6,11 @@ import { store } from '../../../store';
 import { Pagination } from "react-bootstrap";
 import { STATIC_URL } from '../../../helpers/env';
 import { Checkbox } from 'primereact/checkbox';
-import { getUserDetailsOrRestart } from "../../../helpers/helper"
+import { getUserDetailsOrRestart, statusMessages } from "../../../helpers/helper"
 import { OcrUpload } from "./OcrUpload";
 import { API } from "../../../helpers/env";
 import { Scrollbars } from 'react-custom-scrollbars';
+import { Modal, Button, } from "react-bootstrap/";
 
 @connect((store) => {
   return {
@@ -29,6 +30,10 @@ export class RevDocTable extends React.Component {
     this.state = {
       checkedList: [],
       filterVal:'',
+      deleteDocSlug: "",
+      deleteDocFlag: false,
+      deleteDocName: "",
+      deleteTask: "",
     }
   }
   componentWillUnmount() {
@@ -135,6 +140,30 @@ export class RevDocTable extends React.Component {
     this.props.dispatch(storeSearchInRevElem(''));
     this.props.dispatch(getRevrDocsList())
   }
+
+  closeDeletePopup = () => {
+    this.setState({ deleteDocFlag: false })
+ }
+ openDeletePopUp = (name, slug, task) => {
+    this.setState({ deleteDocName: name, deleteDocSlug: slug, deleteDocFlag: true, deleteTask: task})
+ }
+
+ deleteDocument = () => {
+   let task = this.state.deleteTask;
+   let taskId = task.filter(i=>i.assigned_user== getUserDetailsOrRestart.get().userName)[0].id;
+  return fetch(API + '/ocrflow/review/' + taskId + '/', {
+     method: 'put',
+     headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+     body: JSON.stringify({ deleted: true ,"image_slug": this.state.deleteDocSlug})
+  }).then(response => response.json())
+     .then(data => {
+        if (data.message === "Deleted") {
+          this.closeDeletePopup(),
+          bootbox.alert(statusMessages("success", "Document deleted.", "small_mascot"))
+          this.props.dispatch(getRevrDocsList())
+        }
+     })
+}
   render() {
     const pages = this.props.OcrRevwrDocsList.total_number_of_pages;
     const current_page = this.props.OcrRevwrDocsList.current_page;
@@ -187,6 +216,9 @@ export class RevDocTable extends React.Component {
             <td>{new Date(item.created_on).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
             <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
             <td>{item.modified_by}</td>
+            <td>
+              <span title="Delete" style={{ cursor: 'pointer', fontSize: 16 }} className="fa fa-trash text-danger xs-mr-5" onClick={() => this.openDeletePopUp(item.ocrImageData.name, item.ocrImageData.slug, item.tasks)}></span>
+            </td>
           </tr>
         )
       }
@@ -308,6 +340,7 @@ export class RevDocTable extends React.Component {
                 <th>Created</th>
                 <th>Modified</th>
                 <th>Modified By</th>
+                <th>ACTION</th>
               </tr>
              </thead>
              <tbody className="no-border-x">
@@ -321,6 +354,28 @@ export class RevDocTable extends React.Component {
           }
           {paginationTag}
          </div>
+         <div id="deleteProject" role="dialog" className="modal fade modal-colored-header">
+               <Modal backdrop="static" show={this.state.deleteDocFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+                  <Modal.Header closeButton>
+                     <h3 className="modal-title">Delete Project</h3>
+                  </Modal.Header>
+                  <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
+                     <div className="row">
+                        <div class="col-sm-4">
+                           <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
+                        </div>
+                        <div className="col-sm-8">
+                           <h4 class="text-warning">Warning !</h4>
+                           <div>Are you sure you want to delete {this.state.deleteDocName} document?</div>
+                           <div className="xs-mt-10">
+                              <Button bsStyle="primary" onClick={this.deleteDocument}>Yes</Button>
+                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                           </div>
+                        </div>
+                     </div>
+                  </Modal.Body>
+               </Modal>
+            </div>
     </div>
     )
   }
