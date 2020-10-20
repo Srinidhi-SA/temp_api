@@ -42,6 +42,9 @@ export class OcrTable extends React.Component {
       exportType: "json",
       checkAll: false,
       aSyncExtractId: [],
+      deleteDocSlug: "",
+      deleteDocFlag: false,
+      deleteDocName: "",
     }
   }
 
@@ -340,6 +343,29 @@ export class OcrTable extends React.Component {
       })
     }
   }
+
+  closeDeletePopup = () => {
+    this.setState({ deleteDocFlag: false })
+ }
+ openDeletePopUp = (name, slug) => {
+    this.setState({ deleteDocName: name, deleteDocSlug: slug, deleteDocFlag: true})
+ }
+
+ deleteDocument = () => {
+  return fetch(API + '/ocr/ocrimage/' + this.state.deleteDocSlug + '/', {
+     method: 'put',
+     headers: this.getHeader(getUserDetailsOrRestart.get().userToken),
+     body: JSON.stringify({ deleted: true })
+  }).then(response => response.json())
+     .then(data => {
+        if (data.message === "Deleted") {
+          this.closeDeletePopup(),
+          bootbox.alert(statusMessages("success", "Document deleted.", "small_mascot"))
+          this.props.dispatch(getOcrUploadedFiles());
+        }
+     })
+}
+
   render() {
     const pages = this.props.OcrDataList.total_number_of_pages;
     const current_page = this.props.OcrDataList.current_page;
@@ -443,6 +469,9 @@ export class OcrTable extends React.Component {
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
             <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
+            <td>
+              <span title="Delete" style={{ cursor: 'pointer', fontSize: 16 }} className="fa fa-trash text-danger xs-mr-5" onClick={() => this.openDeletePopUp(item.name, item.slug)}></span>
+            </td>
           </tr>
         )
       }
@@ -609,6 +638,7 @@ export class OcrTable extends React.Component {
                           <th>Created By</th>
                           <th>Modified By</th>
                           <th>Last Modified</th>
+                          <th>ACTION</th>
                         </tr>
                       </thead>
                       <tbody className="no-border-x">
@@ -638,6 +668,28 @@ export class OcrTable extends React.Component {
             </div>
           </div>
         </div>
+        <div role="dialog" className="modal fade modal-colored-header">
+               <Modal backdrop="static" show={this.state.deleteDocFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+                  <Modal.Header closeButton>
+                     <h3 className="modal-title">Delete Project</h3>
+                  </Modal.Header>
+                  <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
+                     <div className="row">
+                        <div class="col-sm-4">
+                           <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
+                        </div>
+                        <div className="col-sm-8">
+                           <h4 class="text-warning">Warning !</h4>
+                           <div>Are you sure you want to delete {this.state.deleteDocName} document?</div>
+                           <div className="xs-mt-10">
+                              <Button bsStyle="primary" onClick={this.deleteDocument}>Yes</Button>
+                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                           </div>
+                        </div>
+                     </div>
+                  </Modal.Body>
+               </Modal>
+            </div>
       </div>
     )
   }

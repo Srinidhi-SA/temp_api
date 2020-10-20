@@ -664,7 +664,10 @@ PYSPARK_GBT_REGRESSION_PARAMS = [
         ],
         "paramType": "list",
         "uiElemType": "checkbox",
+        "display": True,
         "hyperpatameterTuningCandidate": False,
+        "expectedDataType": ["string"],
+        "allowedDataType": ["string"]
     },
     {
         "name": "maxIter",
@@ -691,6 +694,7 @@ PYSPARK_GBT_REGRESSION_PARAMS = [
         "valueRange": [0, 1],
         "paramType": "number",
         "uiElemType": "slider",
+        "display": True,
         "hyperpatameterTuningCandidate": True,
         "expectedDataType": ["float"],
         "allowedDataType": ["float"]
