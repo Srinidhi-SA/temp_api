@@ -46,6 +46,7 @@ export class OcrTopNavigation extends React.Component {
 }
 
   render() {
+    let reviewTab = getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser" ? "Reviewers" : "Projects";
     return (
      
         <div class="page-head">
@@ -76,7 +77,7 @@ export class OcrTopNavigation extends React.Component {
           }
 
           <li><NavLink className="" to="/apps/ocr-mq44ewz7bp/reviewer/" onClick={this.handleRoute.bind(this)} activeClassName="active">
-            <i class="fa fa-users fa-lg"></i> Reviewers
+            <i class="fa fa-users fa-lg"></i> {reviewTab}
               </NavLink>
           </li>
           {(getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole == "Superuser") &&
