@@ -1541,7 +1541,10 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def total_projects(self):
-        return Project.objects.filter(created_by=self.request.user).count()
+        return Project.objects.filter(
+            created_by=self.request.user,
+            deleted=False
+        ).count()
 
     def total_reviewers(self):
         return OCRUserProfile.objects.filter(
@@ -1677,6 +1680,11 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if data['deleted'] == True:
                         instance.deleted = True
                         instance.save()
+                        #Deleting OCR Images on same project
+                        ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                        for image in ocr_images:
+                            image.deleted = True
+                            image.save()
                         return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL1":
                     ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
