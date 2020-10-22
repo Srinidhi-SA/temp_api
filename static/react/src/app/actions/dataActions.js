@@ -27,8 +27,9 @@ export function refreshDatasets(props){
         refreshDatasetsInterval = setInterval(function() {
             var pageNo = window.location.href.split("=").pop();
             if(isNaN(pageNo)) pageNo = 1;
-            if(window.location.pathname == "/data")
+            if(window.location.pathname == "/data" && store.getState().datasets.dataList.data!=undefined && store.getState().datasets.dataList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 ){
                 dispatch(getDataList(parseInt(pageNo)));
+            }
         },DEFAULTINTERVAL);
     }
 }

@@ -64,10 +64,8 @@ export function refreshAppsModelList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-        if(store.getState().apps.modelList.data!=undefined && store.getState().apps.modelList.data.filter(i=> (i.status!="SUCCESS" && i.completed_percentage!=100) ).length != 0 )
+        if(store.getState().apps.modelList.data!=undefined && store.getState().apps.modelList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
-        else
-        clearInterval(refreshAppsModelInterval)
     }
       , APPSDEFAULTINTERVAL);
   }
@@ -681,7 +679,7 @@ export function refreshAppsScoreList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores")
+      if(window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores" && store.getState().apps.scoreList.data!=undefined && store.getState().apps.scoreList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsScoreList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -2754,7 +2752,7 @@ export function refreshStockAppsList(props) {
         stockAppLocation = "/apps-stock-advisor";
       else
         stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url+"/";
-      if (window.location.pathname == stockAppLocation)
+      if(window.location.pathname == stockAppLocation && store.getState().apps.stockAnalysisList.data!=undefined && store.getState().apps.stockAnalysisList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsStockList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);

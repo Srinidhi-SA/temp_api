@@ -231,7 +231,7 @@ export function refreshSignals(props) {
       var pageNo = window.location.href.split("=").pop();
       if (isNaN(pageNo))
         pageNo = 1;
-      if (window.location.pathname == "/signals")
+      if(window.location.pathname == "/signals" && store.getState().signals.signalList.data!=undefined && store.getState().signals.signalList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )  
         dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
       }
     , DEFAULTINTERVAL);
