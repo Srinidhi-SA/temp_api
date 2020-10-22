@@ -409,9 +409,11 @@ class ui_corrections:
                         #
                         #                        if "º" in text:
                         #                            print(text)
-                        x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
-                        if x:
+                        # x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
+                        # if x:
                             #                            print(text)
+                        x = re.findall(r'[^\x00-\x7F]', text)
+                        if x:
                             words_with_special_characters.append(m)
                         else:
                             height, ratio = abs(
@@ -455,7 +457,7 @@ class ui_corrections:
                         #                        print('*'*10)
                         #                        if "º" in text:
                         #                            print(text)
-                        x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
+                        x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
                             #                            print(text)
                             words_with_special_characters.append(m)
@@ -498,17 +500,36 @@ class ui_corrections:
             draw = ImageDraw.Draw(img_pil)
             for except_word in words_with_special_characters:
                 b, g, r, a = 0, 0, 0, 0
-                fontpath = "ocr/ITE/fonts/Nobile-Regular.ttf"
+                fontpath = "ocr/ITE/fonts/DejaVuSans.ttf"
                 font_custom = ImageFont.truetype(fontpath, 20)
                 p1 = except_word['boundingBox']["p1"]
                 p3 = except_word['boundingBox']["p3"]
                 p2 = [p3[0], p1[1]]
                 p4 = [p1[0], p3[1]]
+                heightofbox = p3[1] - p1[1]
+                if heightofbox != 0:
+                    font_size = int(heightofbox * .8)
+                else:
+                    font_size = 7
                 text = except_word['text']
+                font_custom = ImageFont.truetype(fontpath, font_size)
+                yanchor_cord = int(p1[1]) - int(heightofbox / 4)
                 if except_word['flag'] == True:
-                    draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
-                draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
+                    draw.text((p1[0], yanchor_cord), text, fill=(0, 0, 0), font=font_custom,
+                              stroke_fill=(0, 255, 255, 255), stroke_width=5)
+                else:
+                    # draw.rectangle(((p1[0],p1[1]),(p3[0],p3[1])),fill=(0, 255, 255, 255))
+                    draw.text((p1[0], yanchor_cord), text, fill=(0, 0, 0), font=font_custom)
+                # img_pil.show()
             mask = np.array(img_pil)
+        #     else:
+        #     pass
+        # mask = dynamic_cavas(mask)
+        #         text = except_word['text']
+        #         if except_word['flag'] == True:
+        #             draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
+        #         draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
+        #     mask = np.array(img_pil)
         else:
             pass
         mask = dynamic_cavas(mask)
