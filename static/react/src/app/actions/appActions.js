@@ -2829,3 +2829,8 @@ export function setLoaderFlagAction(flag){
     type:"SET_LOADER_FLAG",flag
   }
 }
+export function modifyActiveAlgorithmTab(slug){
+  return{
+    type:"ACTIVE_ALGORITHM_SLUG",slug
+  }
+}
