@@ -492,6 +492,7 @@ export class C3ChartNew extends React.Component{
                   "text": chartData.axis.x.label.text,
               },
               "tick": {
+                "format":d3.format(".2f"),
                 "fit": chartData.axis.x.tick.fit,
                 "multiline": chartData.axis.x.tick.multiline,
                 "rotate": chartData.axis.x.tick.rotate,
@@ -504,7 +505,7 @@ export class C3ChartNew extends React.Component{
                   "text": chartData.axis.y.label.text
               },
               "tick": {
-                  "format": (this.props.yformat!=null||this.props.yformat!=undefined)?d3.format(this.props.yformat):d3.format(".2f"),
+                  "format": d3.format(".2f"),
                   "multiline": chartData.axis.y.tick.multiline,
                   "outer": false
               },
@@ -559,12 +560,22 @@ export class C3ChartNew extends React.Component{
     }
 
     if (this.props.xdata) {
-      if(!window.location.pathname.includes("/modelManagement/")){
-      myData.axis.x.height=120
+      if(!window.location.pathname.includes("/modelManagement/") || window.location.pathname.includes("regression-app")){
       myData.axis.x.tick.rotate=-53
       myData.axis.x.tick.multiline=true
-      myData.axis.x.tick.width=90
       myData.axis.x.tick.outer = false;
+      }
+      let longLen = this.props.xdata.reduce((a,b) => a.length >= b.length?a:b);
+      longLen = longLen.length
+      if(longLen <= 5){
+        myData.axis.x.height=70
+        myData.axis.x.tick.width=50
+      }else if(longLen < 10){
+        myData.axis.x.height=90
+        myData.axis.x.tick.width=60
+      }else{
+        myData.axis.x.height=100
+        myData.axis.x.tick.width=90
       }
 
       let xdata = this.props.xdata;
@@ -579,6 +590,10 @@ export class C3ChartNew extends React.Component{
         return xdata[d];
       }
 
+    }else if(this.props.data.data.xs!=null || this.props.data.data.xs!=undefined){
+      myData.axis.x.tick.multiline = true,
+      myData.axis.x.height=80,
+      myData.axis.x.tick.width=60
     }
     myData.size.height = (window.location.pathname.includes("/modelManagement/") && myData.axis!=undefined && myData.axis.y.label.text === "% Count") ? 360:myData.size.height
     myData['bindto'] = this.getChartElement().get(0);

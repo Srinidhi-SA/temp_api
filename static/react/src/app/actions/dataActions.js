@@ -27,8 +27,10 @@ export function refreshDatasets(props){
         refreshDatasetsInterval = setInterval(function() {
             var pageNo = window.location.href.split("=").pop();
             if(isNaN(pageNo)) pageNo = 1;
-            if(window.location.pathname == "/data")
+            let dataLst = store.getState().datasets.dataList.data
+            if(window.location.pathname == "/data" && dataLst!=undefined && dataLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 ){
                 dispatch(getDataList(parseInt(pageNo)));
+            }
         },DEFAULTINTERVAL);
     }
 }
@@ -36,7 +38,8 @@ export function getDataList(pageNo) {
 	return (dispatch) => {
 		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
-				dispatch(hideLoading())
+                dispatch(hideLoading())
+                dispatch(paginationFlag(false))
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
@@ -2056,5 +2059,10 @@ export function SaveScoreName(value){
 export function saveSelectedColSlug(slug){
     return{
         type:"ACTIVE_COL_SLUG",slug
+    }
+}
+export function paginationFlag(flag){
+    return{
+        type:"PAGINATION_FLAG",flag
     }
 }

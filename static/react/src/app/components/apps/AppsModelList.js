@@ -9,7 +9,7 @@ import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstra
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
     updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
-import {updateSelectedVariablesAction} from "../../actions/dataActions";
+import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
@@ -218,11 +218,19 @@ var dateFormat = require('dateformat');
                         </div>
                         
                         <div class="clearfix xs-m-10"></div>
-
-                        <div className="row">
-                        {appsModelList}
-                        <div className="clearfix"></div>
-                        </div>
+                        {
+                            store.getState().datasets.paginationFlag &&
+                            <div className="paginationFlg">
+                              <img src={STATIC_URL+"assets/images/pageLoader.gif"} style={{margin:"auto"}}></img>
+                            </div>
+                        }
+                        {
+                            !store.getState().datasets.paginationFlag &&
+                            <div className="row">
+                            {appsModelList}
+                            <div className="clearfix"></div>
+                            </div>
+                        }
                         <div className="ma-datatable-footer"  id="idPagination">
                         <div className="dataTables_paginate">
                         {paginationTag}
@@ -243,6 +251,7 @@ var dateFormat = require('dateformat');
             }
         }
         handleSelect(eventKey) {
+            this.props.dispatch(paginationFlag(true))
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if (this.props.model_search_element) {
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')

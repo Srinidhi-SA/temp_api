@@ -94,6 +94,8 @@ export default function reducer(state = {
   varibleSelectionBackFlag:false,
   scoreName:"",
   activeColSlug:"",
+  paginationFlag:false,
+  
 }, action) {
 
   switch (action.type) {
@@ -1077,6 +1079,13 @@ export default function reducer(state = {
       return{
         ...state,
         activeColSlug:action.slug
+      }
+    }
+    break;
+    case "PAGINATION_FLAG":{
+      return{
+        ...state,
+        paginationFlag:action.flag
       }
     }
     break;
