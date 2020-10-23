@@ -33,6 +33,7 @@ import Dialog from 'react-bootstrap-dialog'
 import {ScoreCard}  from "./ScoreCard";
 import {LatestScores} from "./LatestScores";
 import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
+import { paginationFlag } from "../../actions/dataActions";
 
 
 
@@ -186,11 +187,19 @@ export class AppsScoreList extends React.Component {
                     </div>
                     
                     <div class="clearfix xs-m-10"></div>
-                    
-                    <div className="row">
-                    {appsScoreList}
-                    <div className="clearfix"></div>
-                    </div>
+                    {
+                        store.getState().datasets.paginationFlag &&
+                        <div className="paginationFlg">
+                          <img src={STATIC_URL+"assets/images/pageLoader.gif"} style={{margin:"auto"}}></img>
+                        </div>
+                      }{
+                        !store.getState().datasets.paginationFlag &&
+                        <div className="row">
+                        {appsScoreList}
+                        <div className="clearfix"></div>
+                        </div>
+
+                      }
                     <div className="ma-datatable-footer" id="idPagination">
                     <div className="dataTables_paginate">
                     {paginationTag}
@@ -212,6 +221,7 @@ export class AppsScoreList extends React.Component {
         }
     }
     handleSelect(eventKey) {
+        this.props.dispatch(paginationFlag(true))
         var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
 
         if (this.props.score_search_element) {

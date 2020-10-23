@@ -7091,7 +7091,7 @@ color: #FFF; }
 .side-body {
 	margin-left: 70px;
 	margin-top: 60px;
-	padding-bottom: 80px; /*For chat bot */
+  padding-bottom: 50px; /*For chat bot */
 }
 
 /* small screen */
@@ -23175,4 +23175,8 @@ body .p-multiselect.regParamFocus {
 }
 body .p-multiselect.regParamFocus:hover {
   border-color: #ef6262;
+}
+.paginationFlg{
+  display: flex;
+  height: 380px;
 }

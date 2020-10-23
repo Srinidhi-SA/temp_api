@@ -8,7 +8,7 @@ import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoad
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected, paginationFlag} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -180,6 +180,7 @@ export function getList(token, pageNo) {
     return fetchPosts(token, pageNo,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(hideLoading())
+        dispatch(paginationFlag(false))
         dispatch(fetchPostsSuccess(json))
       } else {
         dispatch(fetchPostsError(json))
@@ -231,7 +232,8 @@ export function refreshSignals(props) {
       var pageNo = window.location.href.split("=").pop();
       if (isNaN(pageNo))
         pageNo = 1;
-      if(window.location.pathname == "/signals" && store.getState().signals.signalList.data!=undefined && store.getState().signals.signalList.data.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )  
+      let signalLst = store.getState().signals.signalList.data
+      if(window.location.pathname == "/signals" && signalLst!=undefined && signalLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )  
         dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
       }
     , DEFAULTINTERVAL);
