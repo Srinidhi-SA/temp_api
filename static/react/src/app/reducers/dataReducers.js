@@ -92,7 +92,8 @@ export default function reducer(state = {
   metaDataLoaderidxVal:0,
   metaDataLoaderidx:0,
   varibleSelectionBackFlag:false,
-  scoreName:""
+  scoreName:"",
+  activeColSlug:"",
 }, action) {
 
   switch (action.type) {
@@ -1069,6 +1070,13 @@ export default function reducer(state = {
         ...state,
         metaDataLoaderidxVal:0,
         metaDataLoaderidx:0,
+      }
+    }
+    break;
+    case "ACTIVE_COL_SLUG":{
+      return{
+        ...state,
+        activeColSlug:action.slug
       }
     }
     break;
