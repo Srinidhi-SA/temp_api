@@ -39,9 +39,15 @@ export class OcrCreateProject extends React.Component {
   };
 
   handleSubmit() {
+    let ProjectNameFormat= /^(?=.{8,20}$)[^\\._]?[a-zA-Z0-9]+([._][a-zA-Z0-9]+)*[^\\._]?$/;
     var projectName = document.getElementById('projectName').value
+
     if (projectName.trim() == "") {
       document.getElementById("resetMsg").innerText = "Please enter project name.";
+      return false;
+    }
+    else if(!ProjectNameFormat.test(document.getElementById("projectName").value)){
+      document.getElementById("resetMsg").innerText = "Please enter valid Project Name"
       return false;
     }
     var projectLead = document.getElementById('projectLead').value
@@ -160,6 +166,13 @@ export class OcrCreateProject extends React.Component {
                       </div>
                     </div>
                   </div>
+                  <div style={{marginTop: "15px",marginLeft: "15px",marginBottom:0}}>
+                      <ul style={{paddingLeft:20}}>
+                          <li>Project Name must contain only alphanumeric character, underscore, and dot.</li>
+                          <li>Project Name should have 8-20 characters.</li>
+                          <li>Underscore and dot can not be next to each other and multiple times in a row.</li>
+                      </ul>          
+                  </div> 
                 </div>
               </Modal.Body>
               <Modal.Footer>
