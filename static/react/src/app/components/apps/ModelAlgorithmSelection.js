@@ -57,7 +57,7 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             
-            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected
+            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0]!=undefined? this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected:false
             
         if(!isContinueRange || !isContinueMulticheck){
              if(document.getElementsByClassName("InterceptGrid")[0] !=undefined && document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
