@@ -2,12 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { Pagination} from "react-bootstrap";
 import store from "../../../store";
-import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction, getallAppsList,userTablePagesize} from "../../../actions/ocrActions";
+import {fetchAllOcrUsersAction, deleteOcrUserAction, saveSelectedOcrUserList, openEditUserModalAction, getReviewersListAction, activateOcrUserAction, deActivateOcrUserAction, openAddUserPopup, setUserTableLoaderFlag, storeSelectedTabId, fetchOcrListByReviewerType, clearUserSearchElementAction, saveUserSearchElementAction, selectAllOcrUsers, saveOcrUserPageNumAction, getallAppsList,userTablePagesize, deleteUserFlag} from "../../../actions/ocrActions";
 import { statusMessages } from "../../../helpers/helper";
 import { Checkbox } from "primereact/checkbox";
 import { OcrAddUser } from "./OcrAddUser";
 import { OcrEditUser } from "./OcrEditUser";
 import { STATIC_URL } from "../../../helpers/env.js";
+import { Modal, Button, } from "react-bootstrap/";
 
 @connect((store) => {
   return {
@@ -20,6 +21,7 @@ import { STATIC_URL } from "../../../helpers/env.js";
     isAllCheckedFlag : store.ocr.isAllCheckedFlag,
     ocrUserPageNum : store.ocr.ocrUserPageNum,
     editedUserDetails : store.ocr.editedUserDetails,
+    userDeleteFlag: store.ocr.userDeleteFlag,
   };
 })
 
@@ -66,7 +68,7 @@ export class OcrUserTable extends React.Component{
             bootbox.alert(statusMessages("warning", "Please select users", "small_mascot"));
         }else{
             switch(e.target.id){
-                case "delete":
+                case "deleteUser":
                         this.props.dispatch(deleteOcrUserAction(this.props.selectedOcrUsers));
                     break;
                 case "activate":
@@ -123,6 +125,12 @@ export class OcrUserTable extends React.Component{
         this.props.dispatch(clearUserSearchElementAction());
         this.props.selectedTabId === "none"?this.props.dispatch(fetchAllOcrUsersAction(store.getState().ocr.ocrUserPageNum)):this.props.dispatch(fetchOcrListByReviewerType(parseFloat(this.props.selectedTabId),store.getState().ocr.ocrUserPageNum));
     }
+    closeDeletePopup = () => {
+        this.props.dispatch(deleteUserFlag(false))
+     }
+     openPopUp = () => {
+        this.props.dispatch(deleteUserFlag(true))
+     }
     render(){
         let paginationTag = null;
         let manageUsersTable = ""
@@ -219,7 +227,7 @@ export class OcrUserTable extends React.Component{
                             <ul role="menu" className ="dropdown-menu dropdown-menu-right">
                                 <li><a name="actionType" title="Activate" id="activate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-plus-circle text-primary xs-mr-5"></i> Activate</a></li>
                                 <li><a name="actionType" title="Deactivate" id="deactivate" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-minus-circle text-warning xs-mr-5"></i> Deactivate</a></li>
-                                <li><a name="actionType" title="Delete" id="delete" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-trash text-danger xs-mr-5"></i> Delete</a></li>
+                                <li><a name="actionType" title="Delete" id="delete" onClick={this.openPopUp}><i className ="fa fa-trash text-danger xs-mr-5"></i> Delete</a></li>
                                 <li><a name="actionType" title="Edit" id="edit" onClick={this.selectActiontype.bind(this)}><i className ="fa fa-pencil-square-o text-secondary xs-mr-5"></i> Edit</a></li>
                             </ul>
                         </div>
@@ -229,6 +237,28 @@ export class OcrUserTable extends React.Component{
                         </div>
                     </div>
                 </div>
+                <div id="deleteUser" role="dialog" className="modal fade modal-colored-header">
+               <Modal backdrop="static" show={this.props.userDeleteFlag} onHide={this.closeDeletePopup.bind(this)} dialogClassName="modal-colored-header">
+                  <Modal.Header closeButton>
+                     <h3 className="modal-title">Delete User</h3>
+                  </Modal.Header>
+                  <Modal.Body style={{ padding: '20px 15px 25px 15px' }}>
+                     <div className="row">
+                        <div class="col-sm-4">
+                           <img style={{ width: '100%' }} src={STATIC_URL + "assets/images/alert_warning.png"} />
+                        </div>
+                        <div className="col-sm-8">
+                           <h4 class="text-warning">Warning !</h4>
+                           <div>Are you sure you want to delete the user?</div>
+                           <div className="xs-mt-10">
+                              <Button bsStyle="primary" id="deleteUser" onClick={this.selectActiontype.bind(this)}>Yes</Button>
+                              <Button onClick={this.closeDeletePopup.bind(this)}>No</Button>
+                           </div>
+                        </div>
+                     </div>
+                  </Modal.Body>
+               </Modal>
+            </div>
                 <div className = "table-responsive box-shadow xs-mt-5">
                     {manageUsersTable}
                 </div>
