@@ -30,7 +30,7 @@ import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack} from "../../actions/dataActions";
+import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
@@ -86,6 +86,7 @@ export class Signals extends React.Component {
 }
 
   handleSelect(eventKey) {
+    this.props.dispatch(paginationFlag(true));
     if (this.props.signal_search_element) {
       if (this.props.signal_sorton) {
         this.props.history.push('/signals?search=' + this.props.signal_search_element + '&sort=' + this.props.signal_sorton + '&page=' + eventKey + '');
@@ -226,11 +227,19 @@ export class Signals extends React.Component {
 
 
 
-
-            <div className="row">
-              {storyList}
-              <div className="clearfix"></div>
-            </div>
+              {
+                store.getState().datasets.paginationFlag &&
+                <div className="paginationFlg">
+                  <img src={STATIC_URL+"assets/images/pageLoader.gif"} style={{margin:"auto"}}></img>
+                </div>
+              }
+              {
+                !store.getState().datasets.paginationFlag &&
+                <div className="row">
+                  {storyList}
+                  <div className="clearfix"></div>
+                </div>
+              }
 
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">

@@ -15,6 +15,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {AppsLoader} from "../common/AppsLoader";
 import {StocksCard} from "./StocksCard";
 import {LatestStocks} from "./LatestStocks";
+import { paginationFlag } from "../../actions/dataActions";
 
 var dateFormat = require('dateformat');
 
@@ -157,11 +158,19 @@ export class AppsStockAdvisorList extends React.Component {
 					<div class="clearfix"></div>
 					</div>
 					<div class="clearfix xs-m-10"></div>
-					<div className="row">
-				
-					{stockList}
-					<div className="clearfix"></div>
-					</div>
+					{
+						store.getState().datasets.paginationFlag &&
+						<div className="paginationFlg">
+							<img src={STATIC_URL+"assets/images/pageLoader.gif"} style={{margin:"auto"}}></img>
+						</div>
+					}
+					{
+						!store.getState().datasets.paginationFlag &&
+						<div className="row">
+						{stockList}
+						<div className="clearfix"></div>
+						</div>
+					}
 					<div className="ma-datatable-footer" id="idPagination">
 					<div className="dataTables_paginate">
 					{paginationTag}
@@ -183,7 +192,7 @@ export class AppsStockAdvisorList extends React.Component {
 		}
 	}
 	handleSelect(eventKey) {
-            
+            this.props.dispatch(paginationFlag(true))
             if (this.props.stock_model_search_element) {
                 this.props.history.push('/apps-stock-advisor?search=' + this.props.stock_model_search_element+'?page='+eventKey+'')
             }  else if(this.props.stock_apps_model_sorton){

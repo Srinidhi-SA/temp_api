@@ -1012,6 +1012,13 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         data = convert_to_string(data)
 
+        if 'deleted' in data:
+            instance = self.get_object_from_all()
+            if data['deleted'] == True:
+                instance.deleted = True
+                instance.save()
+                return JsonResponse({'message': 'Deleted'})
+
         if 'name' in data:
             imagename_list = []
             image_query = OCRImage.objects.filter(deleted=False, created_by=request.user)
@@ -1534,7 +1541,10 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def total_projects(self):
-        return Project.objects.filter(created_by=self.request.user).count()
+        return Project.objects.filter(
+            created_by=self.request.user,
+            deleted=False
+        ).count()
 
     def total_reviewers(self):
         return OCRUserProfile.objects.filter(
@@ -1581,6 +1591,16 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = kwargs.get('data')
         else:
             data = request.data
+        #---------------Project Name check Validations-----------
+        should_proceed = name_check(data['name'])
+        if should_proceed < 0:
+            if should_proceed == -1:
+                return creation_failed_exception("Name is empty.")
+            if should_proceed == -2:
+                return creation_failed_exception("Name is very large.")
+            if should_proceed == -3:
+                return creation_failed_exception("Name have special_characters.")
+        #--------------------------------------------------------
         data = convert_to_string(data)
         projectname_list = []
         project_query = self.get_queryset()
@@ -1660,6 +1680,11 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                     if data['deleted'] == True:
                         instance.deleted = True
                         instance.save()
+                        #Deleting OCR Images on same project
+                        ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                        for image in ocr_images:
+                            image.deleted = True
+                            image.save()
                         return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL1":
                     ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])

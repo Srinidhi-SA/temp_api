@@ -343,6 +343,43 @@ else:
             }
         ]
     }
+    ALGORITHM_LIST_REGRESSION_PYSPARK = {
+        "ALGORITHM_SETTING": [
+            {
+                "algorithmName": "Linear Regression",
+                "selected": True,
+                "parameters": PYSPARK_LINEAR_REGRESSION_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "linr",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+                "description": "A statistical method to predict the likely outcome of any quantitative attribute. It is invariably used for estimating values of any numeric variables like sales, number of products, etc."
+            },
+            {
+                "algorithmName": "Gradient Boosted Tree Regression",
+                "selected": True,
+                "parameters": PYSPARK_GBT_REGRESSION_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "gbtr",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+                "description": "A machine learning technique that produces an ensemble of multiple decision tree models to predict numeric variables. It is highly preferred to leverage computational power to build scalable and accurate models."
+
+            },
+            {
+                "algorithmName": "Decision Tree Regression",
+                "selected": True,
+                "parameters": PYSPARK_DTREE_REGRESSION_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "dtreer",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+                "description": "A machine learning technique that produces an ensemble of multiple decision tree models to predict numeric variables. It is highly preferred to leverage computational power to build scalable and accurate models."
+            },
+            {
+                "algorithmName": "Random Forest Regression",
+                "selected": True,
+                "parameters": PYSPARK_RF_REGRESSION_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "rfr",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION,
+                "description": "A meta estimator that uses averaging predictive power of a number of decision tree classification models. This is very effective in predicting the expected values of numeric variables and also to control overfitting."
+            }
+        ]
+    }
     ALGORITHM_LIST_CLASSIFICATION = {
         "ALGORITHM_SETTING": [
             {

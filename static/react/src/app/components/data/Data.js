@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {Share} from "../common/Share"
-import {getDataList,refreshDatasets,setEditModelValues,storeSignalMeta, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList,fetchModelEditAPISuccess,variableSlectionBack} from "../../actions/dataActions";
+import {getDataList,refreshDatasets,setEditModelValues,storeSignalMeta, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,getAllUsersList,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -174,11 +174,20 @@ export class Data extends React.Component {
               </div>
             </div>
             <div class="clearfix"></div>
-
-            <div className="row">
+            {
+              store.getState().datasets.paginationFlag &&
+              <div className="row">
+                <div className="paginationFlg">
+                  <img src={STATIC_URL+"assets/images/pageLoader.gif"} style={{margin:"auto"}}></img>
+                </div>
+              </div>
+            }{
+              !store.getState().datasets.paginationFlag &&
+              <div className="row">
             {dataList}
               <div className="clearfix"></div>
             </div>
+            }
             <div className="ma-datatable-footer" id="idPagination">
               <div className="dataTables_paginate">
                 {paginationTag}
@@ -203,6 +212,7 @@ export class Data extends React.Component {
   }
 
   handleSelect(eventKey) {
+    this.props.dispatch(paginationFlag(true));
 		if (this.props.data_search_element) {
       if(this.props.data_sorton)
       this.props.history.push('/data?search=' + this.props.data_search_element +'&sort='+this.props.data_sorton+ '&page=' + eventKey + '');

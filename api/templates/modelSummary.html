@@ -1,8 +1,6 @@
 <html>
 <title>summary</title>
-
 <head>
-
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <style>
@@ -26,18 +24,18 @@
     }
 
     .progress-bar div span {
-    position: absolute;
-    font-family: Arial;
-    font-size: 16px;
-    line-height: 54px;
-    height: 54px;
-    width: 54px;
-    left: 6px;
-    top: 6px;
-    text-align: center;
-    border-radius: 50%;
-    background-color: white !important;
-    -webkit-print-color-adjust: exact;
+      position: absolute;
+      font-family: Arial;
+      font-size: 16px;
+      line-height: 54px;
+      height: 54px;
+      width: 54px;
+      left: 6px;
+      top: 6px;
+      text-align: center;
+      border-radius: 50%;
+      background-color: white !important;
+      -webkit-print-color-adjust: exact;
     }
 
     .progress-bar .background {
@@ -55,7 +53,7 @@
     .progress-bar .left {
       clip: rect(0 33px 68px 0);
       opacity: 1;
-      background-color:rgb(214, 214, 214) !important;
+      background-color: rgb(214, 214, 214) !important;
       -webkit-print-color-adjust: exact;
     }
 
@@ -63,7 +61,7 @@
       clip: rect(0 33px 68px 0);
       transform: rotate(180deg);
       opacity: 0;
-      background-color:rgb(0, 153, 140) !important;
+      background-color: rgb(0, 153, 140) !important;
       -webkit-print-color-adjust: exact;
     }
 
@@ -89,7 +87,7 @@
 
     #table {
       margin-top: 15px;
-      width: 100%;
+      width: 50%;
       font-size: 14px;
     }
 
@@ -202,17 +200,22 @@
     #algoList {
       margin-top: 20px;
     }
-    .printBtn{
-    float: right;
-    background-color: #3b998c;
-    border: none;
-    color: #fff;
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-weight: 600;
+
+    .printBtn {
+      background-color: #3b998c;
+      border: none;
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      position: absolute;
+      right: 80px;
+      top: 15px;
+      z-index: 9999;
     }
-    .scroll{
+
+    .scroll {
       max-height: 500px;
       overflow-y: auto;
       display: block;
@@ -223,170 +226,74 @@
   </style>
   <script>
     function printPage() {
-      $(".featureTab").removeClass("scroll");
       window.print();
-      $(".featureTab").addClass("scroll");
+      // $(".featureTab").removeClass("scroll");
+      // $(".featureTab").addClass("scroll");
     }
+    (function ($) {
+      $.fn.loading = function () {
+        var DEFAULTS = {
+          backgroundColor: '#b3cef6',
+          progressColor: '#4b86db',
+          percent: 0,
+          duration: 2000
+        };
 
-(function ($) {
-	$.fn.loading = function () {
-		var DEFAULTS = {
-			backgroundColor: '#b3cef6',
-			progressColor: '#4b86db',
-			percent: 0,
-			duration: 2000
-		};	
-		
-		$(this).each(function () {
-			var $target  = $(this);
+        $(this).each(function () {
+          var $target = $(this);
 
-			var opts = {
-			backgroundColor: $target.data('color') ? $target.data('color').split(',')[0] : DEFAULTS.backgroundColor,
-			progressColor: $target.data('color') ? $target.data('color').split(',')[1] : DEFAULTS.progressColor,
-			percent: $target.data('percent') ? $target.data('percent') : DEFAULTS.percent,
-			duration: $target.data('duration') ? $target.data('duration') : DEFAULTS.duration
-			};
-	
-			$target.append('<div class="background"></div><div class="rotate"></div><div class="left"></div><div class="right"></div><div class=""><span>' + opts.percent + '%</span></div>');
-	
-			$target.find('.background').css('background-color', opts.backgroundColor);
-			$target.find('.left').css('background-color', opts.backgroundColor);
-			$target.find('.rotate').css('background-color', opts.progressColor);
-			$target.find('.right').css('background-color', opts.progressColor);
-	
-			var $rotate = $target.find('.rotate');
-			setTimeout(function () {	
-				$rotate.css({
-					'transition': 'transform ' + opts.duration + 'ms linear',
-					'transform': 'rotate(' + opts.percent * 3.6 + 'deg)'
-				});
-			},1);		
+          var opts = {
+            backgroundColor: $target.data('color') ? $target.data('color').split(',')[0] : DEFAULTS.backgroundColor,
+            progressColor: $target.data('color') ? $target.data('color').split(',')[1] : DEFAULTS.progressColor,
+            percent: $target.data('percent') ? $target.data('percent') : DEFAULTS.percent,
+            duration: $target.data('duration') ? $target.data('duration') : DEFAULTS.duration
+          };
 
-			if (opts.percent > 50) {
-				var animationRight = 'toggle ' + (opts.duration / opts.percent * 50) + 'ms step-end';
-				var animationLeft = 'toggle ' + (opts.duration / opts.percent * 50) + 'ms step-start';  
-				$target.find('.right').css({
-					animation: animationRight,
-					opacity: 1
-				});
-				$target.find('.left').css({
-					animation: animationLeft,
-					opacity: 0
-				});
-			} 
-		});
-	}
-})(jQuery);
+          $target.append('<div class="background"></div><div class="rotate"></div><div class="left"></div><div class="right"></div><div class=""><span>' + opts.percent + '%</span></div>');
 
+          $target.find('.background').css('background-color', opts.backgroundColor);
+          $target.find('.left').css('background-color', opts.backgroundColor);
+          $target.find('.rotate').css('background-color', opts.progressColor);
+          $target.find('.right').css('background-color', opts.progressColor);
+
+          var $rotate = $target.find('.rotate');
+          setTimeout(function () {
+            $rotate.css({
+              'transition': 'transform ' + opts.duration + 'ms linear',
+              'transform': 'rotate(' + opts.percent * 3.6 + 'deg)'
+            });
+          }, 1);
+
+          if (opts.percent > 50) {
+            var animationRight = 'toggle ' + (opts.duration / opts.percent * 50) + 'ms step-end';
+            var animationLeft = 'toggle ' + (opts.duration / opts.percent * 50) + 'ms step-start';
+            $target.find('.right').css({
+              animation: animationRight,
+              opacity: 1
+            });
+            $target.find('.left').css({
+              animation: animationLeft,
+              opacity: 0
+            });
+          }
+        });
+      }
+    })(jQuery);
   </script>
 </head>
 
 <body>
   <div class="contain">
-    <div class="row">
-      <div class="col-md-12">
-        <h3 class="header">Model Summary
-          <button class="printBtn" onclick="printPage()">
-              <span class="glyphicon glyphicon-download-alt"></span>
-            Print</button>
-          </h3>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="modelDesc"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <table id="table"></table>
-        <div id="algoList"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div class="featureTab">
-         <table class="feature_table_style" id="featureTable"></table>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="firstAlgo"></div>
-        <div id="firstAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="firstAlgoMatrix"></div>
-        <table class="apps_table_style" id="firstAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="secondAlgo"></div>
-        <div id="secondAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="secondAlgoMatrix"></div>
-        <table class="apps_table_style" id="secondAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="thirdAlgo"></div>
-        <div id="thirdAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="thirdAlgoMatrix"></div>
-        <table class="apps_table_style" id="thirdAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="fourthAlgo"></div>
-        <div id="fourthAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="fourthAlgoMatrix"></div>
-        <table class="apps_table_style" id="fourthAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="fifthAlgo"></div>
-        <div id="fifthAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="fifthAlgoMatrix"></div>
-        <table class="apps_table_style" id="fifthAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="sixthAlgo"></div>
-        <div id="sixthAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="sixthAlgoMatrix"></div>
-        <table class="apps_table_style" id="sixthAlgoMatrixTable"></table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="seventhAlgo"></div>
-        <div id="seventhAlgoDesc"></div>
-      </div>
-      <div class="col-md-5 col-md-offset-1">
-        <div id="seventhAlgoMatrix"></div>
-        <table class="apps_table_style" id="seventhAlgoMatrixTable"></table>
-      </div>
-    </div>
-
+    <button class="printBtn" onclick="printPage()">
+      <span class="glyphicon glyphicon-download-alt"></span>
+      Print</button>
+    <div id="summary"></div>
   </div>
   <script>
-
 
     var response;
     var summary;
     var URL= "{{Response}}"
-
 
     async function getData() {
       let response = await fetch(URL);
@@ -398,167 +305,76 @@
       .then(data => {
         response = data;
         responseNode = response.modelDetail.data.model_summary.listOfCards;
-        var modelDesc = response.modelDetail.data.model_summary.listOfCards[0].cardData[1].data
-        document.getElementById("modelDesc").innerHTML = modelDesc;
+        for (var i = 0; i < responseNode.length; i++) {
+          var htmlChild = document.createElement('div');
+          {
+            responseNode[i].cardWidth === 100 ?
+            htmlChild.classList.add("col-md-12") :
+            htmlChild.classList.add("col-md-6")
+          }
+          var inner = "";
+          for (var j = 0; j < responseNode[i].cardData.length; j++) {
+            if (responseNode[i].cardData[j].dataType == "html") {
+              inner += responseNode[i].cardData[j].data;
+              if (j == responseNode[i].cardData.length - 1) {
+                htmlChild.innerHTML = inner;
+                document.getElementById("summary").appendChild(htmlChild);
+                $(".progress-bar").loading();
+              }
+            }
+            else if (responseNode[i].cardData[j].dataType == "table") {
+              if (responseNode[i].cardData[j].data.tableType == "circularChartTable") {
+                htmlChild.classList.remove("col-md-6")
+                htmlChild.classList.add("col-md-12")
+                var chart = circularChart(responseNode[i].cardData[j].data.tableData);
+                inner += chart;
+                if (j == responseNode[i].cardData.length - 1) {
+                  htmlChild.innerHTML = inner;
+                  document.getElementById("summary").appendChild(htmlChild);
+                }
+              }
+              else if (responseNode[i].cardData[j].data.tableType == "confusionMatrix") {
+                var matrixData = confusionMatrix(responseNode[i].cardData[j].data.tableData);
+                inner += matrixData;
+                if (j == responseNode[i].cardData.length - 1) {
+                  htmlChild.innerHTML = inner;
+                  document.getElementById("summary").appendChild(htmlChild);
+                }
+              }
+            }
+          }
 
-        summary = response.modelDetail.data.model_summary.listOfCards[1].cardData[0].data.tableData;
-        circularChart(summary);
-
-        // var featureTabData = response.modelDetail.table_data;
-
-        var algoList = response.modelDetail.data.model_summary.listOfCards[1].cardData[1].data
-        document.getElementById("algoList").innerHTML = algoList;
-
-        var firstAlgo = response.modelDetail.data.model_summary.listOfCards[3]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[3].cardData[0].data
-        document.getElementById("firstAlgo").innerHTML = firstAlgo;
-
-        var firstAlgoDesc = response.modelDetail.data.model_summary.listOfCards[3]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[3].cardData[1].data
-        document.getElementById("firstAlgoDesc").innerHTML = firstAlgoDesc;
-
-        var firstAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[4]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[4].cardData[0].data
-        document.getElementById("firstAlgoMatrix").innerHTML = firstAlgoMatrix;
-
-        var matrixTable = response.modelDetail.data.model_summary.listOfCards[4]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[4].cardData[1].data.tableData
-
-        if(firstAlgo!=""){
-        var matrixTabOne = confusionMatrix(matrixTable);
-        var table = document.getElementById("firstAlgoMatrixTable");
-        table.innerHTML = matrixTabOne;
         }
-
-        var secondAlgo = response.modelDetail.data.model_summary.listOfCards[5]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[5].cardData[0].data
-        document.getElementById("secondAlgo").innerHTML = secondAlgo;
-
-        var secondAlgoDesc = response.modelDetail.data.model_summary.listOfCards[5]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[5].cardData[1].data
-        document.getElementById("secondAlgoDesc").innerHTML = secondAlgoDesc;
-
-        var secondAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[6]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[6].cardData[0].data
-        document.getElementById("secondAlgoMatrix").innerHTML = secondAlgoMatrix;
-
-        var matrixTable2 = response.modelDetail.data.model_summary.listOfCards[6]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[6].cardData[1].data.tableData
-
-        var thirdAlgo = response.modelDetail.data.model_summary.listOfCards[7]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[7].cardData[0].data
-        document.getElementById("thirdAlgo").innerHTML = thirdAlgo;
-
-        var thirdAlgoDesc = response.modelDetail.data.model_summary.listOfCards[7]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[7].cardData[1].data
-        document.getElementById("thirdAlgoDesc").innerHTML = thirdAlgoDesc;
-
-        var thirdAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[8]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[8].cardData[0].data
-        document.getElementById("thirdAlgoMatrix").innerHTML = thirdAlgoMatrix;
-
-        var matrixTable3 = response.modelDetail.data.model_summary.listOfCards[8]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[8].cardData[1].data.tableData
-
-        var fourthAlgo = response.modelDetail.data.model_summary.listOfCards[9]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[9].cardData[0].data
-        document.getElementById("fourthAlgo").innerHTML = fourthAlgo;
-
-        var fourthAlgoDesc = response.modelDetail.data.model_summary.listOfCards[9]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[9].cardData[1].data
-        document.getElementById("fourthAlgoDesc").innerHTML = fourthAlgoDesc;
-
-        var fourthAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[10]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[10].cardData[0].data
-        document.getElementById("fourthAlgoMatrix").innerHTML = fourthAlgoMatrix;
-
-        var matrixTable4 = response.modelDetail.data.model_summary.listOfCards[10]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[10].cardData[1].data.tableData
-
-        var fifthAlgo = response.modelDetail.data.model_summary.listOfCards[11]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[11].cardData[0].data
-        document.getElementById("fifthAlgo").innerHTML = fifthAlgo;
-
-        var fifthAlgoDesc = response.modelDetail.data.model_summary.listOfCards[11]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[11].cardData[1].data
-        document.getElementById("fifthAlgoDesc").innerHTML = fifthAlgoDesc;
-
-        var fifthAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[12]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[12].cardData[0].data
-        document.getElementById("fifthAlgoMatrix").innerHTML = fifthAlgoMatrix;
-
-        var matrixTable5 = response.modelDetail.data.model_summary.listOfCards[12]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[12].cardData[1].data.tableData
-
-        var sixthAlgo = response.modelDetail.data.model_summary.listOfCards[13]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[13].cardData[0].data
-        document.getElementById("sixthAlgo").innerHTML = sixthAlgo;
-
-        var sixthAlgoDesc = response.modelDetail.data.model_summary.listOfCards[13]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[13].cardData[1].data
-        document.getElementById("sixthAlgoDesc").innerHTML = sixthAlgoDesc;
-
-        var sixthAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[14]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[14].cardData[0].data
-        document.getElementById("sixthAlgoMatrix").innerHTML = sixthAlgoMatrix;
-
-        var matrixTable6 = response.modelDetail.data.model_summary.listOfCards[14]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[14].cardData[1].data.tableData
-
-        var seventhAlgo = response.modelDetail.data.model_summary.listOfCards[15]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[15].cardData[0].data
-        document.getElementById("seventhAlgo").innerHTML = seventhAlgo;
-
-        var seventhAlgoDesc = response.modelDetail.data.model_summary.listOfCards[15]=== undefined ? "" :response.modelDetail.data.model_summary.listOfCards[15].cardData[1].data
-        document.getElementById("seventhAlgoDesc").innerHTML = seventhAlgoDesc;
-
-        var seventhAlgoMatrix = response.modelDetail.data.model_summary.listOfCards[16]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[16].cardData[0].data
-        document.getElementById("seventhAlgoMatrix").innerHTML = seventhAlgoMatrix;
-
-        var matrixTable7 = response.modelDetail.data.model_summary.listOfCards[16]=== undefined ? "" : response.modelDetail.data.model_summary.listOfCards[16].cardData[1].data.tableData
-
-        if(secondAlgo!=""){
-        var matrixTabTwo = confusionMatrix(matrixTable2);
-        var table = document.getElementById("secondAlgoMatrixTable");
-        table.innerHTML = matrixTabTwo;
-        }
-
-        if(thirdAlgo!=""){
-        var matrixTabThree = confusionMatrix(matrixTable3);
-        var table = document.getElementById("thirdAlgoMatrixTable");
-        table.innerHTML = matrixTabThree;
-        }
-
-        if(fourthAlgo!=""){
-        var matrixTabFour = confusionMatrix(matrixTable4);
-        var table = document.getElementById("fourthAlgoMatrixTable");
-        table.innerHTML = matrixTabFour;
-        }
-
-        if(fifthAlgo!=""){
-        var matrixTabFive = confusionMatrix(matrixTable5);
-        var table = document.getElementById("fifthAlgoMatrixTable");
-        table.innerHTML = matrixTabFive;
-        }
-
-        if(sixthAlgo!=""){
-        var matrixTabSix = confusionMatrix(matrixTable6);
-        var table = document.getElementById("sixthAlgoMatrixTable");
-        table.innerHTML = matrixTabSix;
-        }
-
-        if(seventhAlgo!=""){
-        var matrixTabSeven = confusionMatrix(matrixTable7);
-        var table = document.getElementById("seventhAlgoMatrixTable");
-        table.innerHTML = matrixTabSeven;
-        }
-
-
-        // featureTable(featureTabData);
-
-
-      })
+      });
 
     function circularChart(summary) {
-      var str = "";
 
+      var str = "";
+      str += "<table id='table'>"
       for (var row = 0; row < 1; row++) {
         str += "<tr>"; // open HTML row
-            for (var col = 0; col < summary[row].length; col++)
-            str += "<th>" + summary[row][col] + "</th>";
+        for (var col = 0; col < summary[row].length; col++)
+          str += "<th>" + summary[row][col] + "</th>";
         str += "</tr>"; // close HTML row
 
       }
       for (var row = 1; row < summary.length; row++) {
         str += "<tr>"; // open HTML row
-            for (var col = 0; col < 1; col++)
-            str += "<td>" + summary[row][col] + "</td>";
-       
-            for (var col = 1; col < summary[row].length; col++)
-            str += "<td>" +  `<div class="progress-bar" data-percent=${summary[row][col]} data-duration="1000" data-color="#d6d6d6,#00998c"></div>`+ "</td>";
-      
+        for (var col = 0; col < 1; col++)
+          str += "<td>" + summary[row][col] + "</td>";
+
+        for (var col = 1; col < summary[row].length; col++)
+          str += "<td>" + `<div class="progress-bar" data-percent=${summary[row][col]} data-duration="1000" data-color="#d6d6d6,#00998c"></div>` + "</td>";
+
         str += "</tr>"; // close HTML row
 
       }
+      str += "</table>"
 
-      var table = document.getElementById("table");
-      table.innerHTML = str;
+
       $(".progress-bar").loading();
+
+      return str;
     }
 
     // function featureTable(featureTabData) {
@@ -583,32 +399,35 @@
 
     //   var table = document.getElementById("featureTable");
     //   table.innerHTML = str;
-    //   $(".featureTab ").addClass("scroll");
+    //   $(".featureTab").addClass("scroll");
     // }
 
     function confusionMatrix(matrixTable) {
       var str = "";
-
+      str += "<table class='apps_table_style'>"
       str += "<thead>";
       str += "<tr>";
-      str += `<th colspan= ${matrixTable.length + 1} class='text-center'>Actual</th>`;
+      str += `<th colspan= ${matrixTable.length + 1}  class='text-center'>Actual</th>`;
       str += "<tr>";
       str += "</thead>"; // close HTML row
 
       for (var row = 0; row < 1; row++) {
         str += "<tr>"; // open HTML row
-          str += `<th rowspan=${matrixTable.length} class="left_highlilght">Predicted</th>`;
-            for (var col = 0; col < matrixTable[row].length; col++)
-             str += "<th>" + matrixTable[row][col] + "</th>";
-             str += "</tr>"; // close HTML row
+        str += `<th rowspan=${matrixTable.length} class="left_highlilght">Predicted</th>`;
+        for (var col = 0; col < matrixTable[row].length; col++)
+          str += "<th>" + matrixTable[row][col] + "</th>";
+        str += "</tr>"; // close HTML row
+
       }
 
       for (var row = 1; row < matrixTable.length; row++) {
         str += "<tr>"; // open HTML row
-            for (var col = 0; col < matrixTable[row].length; col++)
-            str += "<td>" + matrixTable[row][col] + "</td>";
-            str += "</tr>"; // close HTML row
+        for (var col = 0; col < matrixTable[row].length; col++)
+          str += "<td>" + matrixTable[row][col] + "</td>";
+        str += "</tr>"; // close HTML row
       }
+      str += "</table>"
+
       return str;
     }
 
