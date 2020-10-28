@@ -44,9 +44,9 @@ export class SignalCard extends React.Component {
         super(props);
         this.props=props;
     }
-    getSignalAnalysis(status,e) {
+    getSignalAnalysis(status,itemSlug) {
       if(status==FAILED){
-        bootbox.alert(statusMessages("error",this.props.signalList.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));
+        bootbox.alert(statusMessages("error",this.props.signalList.filter(i=>(i.slug===itemSlug))[0].completed_message,"small_mascot"));
       }else{
         this.props.dispatch(emptySignalAnalysis());
       }
@@ -82,12 +82,8 @@ export class SignalCard extends React.Component {
             var completed_percent = story.completed_percentage
             if(completed_percent>99)
             completed_percent=99
-            var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this,story.status)} className="title">
-              {story.name}
-              </Link>
               if(story.status == INPROGRESS){
                   percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
-                  signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
              
               }else if(story.status == SUCCESS){
                   story.completed_percentage = 100;
@@ -108,12 +104,13 @@ export class SignalCard extends React.Component {
             return (
               <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                 <div id={story.name} className="rep_block newCardStyle" name={story.name}>
+                <Link to={story.status == INPROGRESS?"#":signalLink} id={story.slug} onClick={story.status== INPROGRESS?this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message):this.getSignalAnalysis.bind(this,story.status,story.slug)}>
                   <div className="card-header"></div>
                   <div className="card-center-tile">
                     <div className="row">
                       <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
-                          {signalClick}
+                          <span>{story.name}</span>
                         </h5>
 						<div className="pull-right">{iconDetails}</div>
                     <div className="clearfix"></div>
@@ -123,11 +120,14 @@ export class SignalCard extends React.Component {
 
                     </div>
                   </div>
+                  </Link>
                   <div className="card-footer">
+                <Link to={story.status == INPROGRESS?"#":signalLink} id={story.slug} onClick={story.status== INPROGRESS?this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message):this.getSignalAnalysis.bind(this,story.status)}>
                     <div className="left_div">
                       <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                       <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
+                    </Link>
 
 					{
 

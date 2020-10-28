@@ -75,11 +75,9 @@ export class ScoreCard extends React.Component {
             }else{
             var scoreLink = "/apps/" + this.props.match.params.AppId + modeSelected + "/scores/" + data.slug;
             }
-            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
                             percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;
-                            scoreLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                         }else if(data.status == SUCCESS){
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
@@ -91,13 +89,14 @@ export class ScoreCard extends React.Component {
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>
+                    <Link id={data.slug} to={data.status == INPROGRESS?"#":scoreLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>
                     <div className="card-header"></div>
                     <div className="card-center-tile">
                     <div className="row">
                     
                     <div className="col-xs-12">
                     <h5 className="title newCardTitle pull-left">
-                    {scoreLink1}
+                    <span>{data.name}</span>
                     </h5>
 					<div className="pull-right"><img src={STATIC_URL + "assets/images/apps_score_icon.png"} alt="LOADING"/></div>
 					<div className="clearfix"></div>
@@ -109,11 +108,14 @@ export class ScoreCard extends React.Component {
                     </div>
                     </div>
                     </div>
+                    </Link>
                     <div className="card-footer">
+                    <Link id={data.slug} to={data.status == INPROGRESS?"#":scoreLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getScoreSummary.bind(this, data.slug,data.status,data.shared_slug)}>
                     <div className="left_div">
                     <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                     <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
+                    </Link>
 					
 					{
                         isDropDown == true ? <div class="btn-toolbar pull-right">

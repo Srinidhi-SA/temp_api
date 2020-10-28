@@ -54,12 +54,12 @@ export class DataCard extends React.Component {
         this.props.dispatch(getAllUsersList())
       }
     
-    getPreviewData(status,e) {
+    getPreviewData(status,dataSlug) {
         if(status==FAILED){
-            bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));            
+            bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===dataSlug))[0].completed_message,"small_mascot"));            
         }else{
             var that = this;
-            this.selectedData = e.target.id;
+            this.selectedData = dataSlug //e.target.id;
             //alert(this.selectedData);
             this.props.dispatch(clearDataPreview());
             this.props.dispatch(storeSignalMeta(null, that.props.match.url));
@@ -102,12 +102,8 @@ export class DataCard extends React.Component {
             }
             var percentageDetails = "";
             
-            var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this,data.status)}>
-            {data.name}
-            </Link>
             if(data.status == INPROGRESS){
                 percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>
-                dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
             }else if(data.status == SUCCESS){
                 data.completed_percentage = 100;
                 percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
@@ -138,12 +134,13 @@ export class DataCard extends React.Component {
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div id={data.name} className="rep_block newCardStyle" name={data.name}>
+                    <Link id={data.slug} to={data.status == INPROGRESS?"#":dataSetLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message):this.getPreviewData.bind(this,data.status,data.slug)}>
                     <div className="card-header"></div>
                     <div className="card-center-tile">
                     <div className="row">
                     <div className="col-xs-12">
                     <h5 className="title newCardTitle pull-left">
-                    {dataClick}
+                      <span>{data.name}</span>
                     </h5>
                     <div className="pull-right">{iconDetails}</div>
                     <div className="clearfix"></div>
@@ -154,11 +151,14 @@ export class DataCard extends React.Component {
                                 
                                 </div>
                                 </div>
+                                </Link>
                                 <div className="card-footer">
+                                 <Link id={data.slug} to={data.status == INPROGRESS?"#":dataSetLink} onClick={data.status == INPROGRESS?this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message):this.getPreviewData.bind(this,data.status,data.slug)}>
                                 <div className="left_div">
                                 <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                                 <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                                 </div>
+                                </Link>
 								
                     {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                             <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
