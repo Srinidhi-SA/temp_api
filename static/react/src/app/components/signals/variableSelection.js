@@ -155,7 +155,8 @@ export class VariableSelection extends React.Component {
       ""
       }else{
             if (this.props.dataPreview == null) {
-                this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+               var setPath=this.props.history.location.pathname.includes("/data/")?"/data/":"/signals/"
+               this.props.history.replace(setPath+this.props.match.params.slug)
             }
             this.props.dispatch(closeCsLoaderModal());
             this.props.dispatch(resetSelectedTargetVariable());

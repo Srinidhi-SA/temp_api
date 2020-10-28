@@ -95,9 +95,14 @@ class App extends React.Component {
             {
              var list=store.getState().signals.allSignalList
             if(Object.values(list).map(i=>i.slug).includes(props.match.params.slug)||store.getState().signals.selectedSignal==props.match.params.slug||Object.keys(list).length === 0|| store.getState().signals.signalAnalysis.slug==props.match.params.slug)
-              return (<Signal {...props}/>)
-              else
-              return (<DataPreview {...props}/>)
+              {
+                if(document.getElementsByClassName('cst-fSize')[0]!=undefined && document.getElementsByClassName('cst-fSize')[0].innerText=="I want to analyze")
+                return (<DataPreview {...props}/>)
+                else 
+                return (<Signal {...props}/>)
+              }else{
+                return (<DataPreview {...props}/>)
+              }
             }
             break;
           case "/signals/:slug/:l1":

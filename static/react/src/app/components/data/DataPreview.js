@@ -75,7 +75,7 @@ export class DataPreview extends React.Component {
           url: "/apps",
           text: "Close"
         };
-        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['create'] = {
           url: "/apps/" + this.props.match.params.AppId + modeSelected+ "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
           text: CREATESCORE
@@ -85,7 +85,7 @@ export class DataPreview extends React.Component {
           url: "/apps",
           text: "Close"
         };
-        var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
+        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['create'] = {
           url: "/apps/" + this.props.match.params.AppId + modeSelected+"/models/data/" + this.props.match.params.slug + "/createModel",
           text: CREATEMODEL

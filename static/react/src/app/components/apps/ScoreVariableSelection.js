@@ -43,6 +43,7 @@ export class ScoreVariableSelection extends React.Component {
     componentWillMount() {
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
         if(this.props.dataPreview == null){
+            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/analyst/models/"+this.props.match.params.modelSlug+"/data/"+this.props.match.params.slug)
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
             this.props.dispatch(getAppsModelSummary(this.props.match.params.modelSlug));
 

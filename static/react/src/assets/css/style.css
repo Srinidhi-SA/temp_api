@@ -18124,8 +18124,23 @@ div.dataTables_wrapper div.dataTables_length label select {
   display: block;
   height: 22px;
 }
+.newCardTitle span {
+  color: #333333;
+  /* border: 1px solid; */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-transform: capitalize;
+  font-weight: normal;
+  display: block;
+  height: 22px;
+}
 
 .newCardTitle a.title {
+  display: inline-block;
+  width: 100%;
+}
+.newCardTitle span.title {
   display: inline-block;
   width: 100%;
 }
@@ -18392,9 +18407,10 @@ a.app-link p {
 }
 .card-footer .left_div {
   float: left;
-  width: 57%;
+  width: 70%;
   margin-top: 3px;
   line-height: 18px;
+  color:#969696
 }
 .card-footer .pover,
 .card-footer .more_button {
