@@ -52,9 +52,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
-        getFailedMsg(status,e) {
+        getFailedMsg(status,itemSlug) {
             if(status==FAILED){
-                bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===e.target.id))[0].completed_message,"small_mascot"));            
+                bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug==itemSlug))[0].completed_message,"small_mascot"));            
             }
             else
                 return;
@@ -78,12 +78,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     }else{
                         var modelLink = "/apps/"+this.props.match.params.AppId+ modeSelected + "/models/" + data.slug;
                     }
-                    var modelLink1 = <Link id={data.slug} to={modelLink} onClick={this.getFailedMsg.bind(this,data.status)}>{data.name}</Link>
                     var percentageDetails = "";
                     if(data.status == INPROGRESS){
                         var setAppLoaderVal = data.completed_percentage;
                         percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{setAppLoaderVal >= 0 ? setAppLoaderVal +' %':"In Progress"}</span></div>;
-                        modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                     }else if(data.status == SUCCESS){
                         data.completed_percentage = 100;
                         percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;  
@@ -95,13 +93,14 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     return (
                             <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                             <div id={data.name} className="rep_block newCardStyle" name={data.name}>
+                            <Link to={data.status == INPROGRESS?"#":modelLink} id={data.slug} onClick={data.status== INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getFailedMsg.bind(this,data.status,data.slug)}>
                             <div className="card-header"></div>
                             <div className="card-center-tile">
                             <div className="row">
                             <div className="col-xs-12">
                             
                             <h5 className="title newCardTitle pull-left">
-                            {modelLink1}
+                            <span>{data.name}</span>
                             </h5>                         
 							<div className="pull-right">{store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}</div>
 							<div className="clearfix"></div>
@@ -122,11 +121,14 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
                             </div>
                             </div>
+                            </Link>
                             <div className="card-footer">
+                            <Link to={data.status == INPROGRESS?"#":modelLink} id={data.slug} onClick={data.status== INPROGRESS?this.openDataLoaderScreen.bind(this,data):this.getFailedMsg.bind(this,data.status,data.slug)}>                          
                             <div className="left_div">
                             <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                             <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                             </div>
+                            </Link>
                             
 							{
                                 isDropDown == true ? <div class="btn-toolbar pull-right">

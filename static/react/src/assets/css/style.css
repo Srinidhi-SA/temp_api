@@ -7091,7 +7091,7 @@ color: #FFF; }
 .side-body {
 	margin-left: 70px;
 	margin-top: 60px;
-	padding-bottom: 80px; /*For chat bot */
+  padding-bottom: 50px; /*For chat bot */
 }
 
 /* small screen */
@@ -17083,7 +17083,7 @@ div.dataTables_wrapper div.dataTables_length label select {
   margin-right: 40px !important;
 }
 .xs-mb-40 {
-  margin-bottom: 40px !important;
+  margin: 20px 0px !important;
 }
 .xs-p-30 {
   padding: 30px !important;
@@ -18124,8 +18124,23 @@ div.dataTables_wrapper div.dataTables_length label select {
   display: block;
   height: 22px;
 }
+.newCardTitle span {
+  color: #333333;
+  /* border: 1px solid; */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-transform: capitalize;
+  font-weight: normal;
+  display: block;
+  height: 22px;
+}
 
 .newCardTitle a.title {
+  display: inline-block;
+  width: 100%;
+}
+.newCardTitle span.title {
   display: inline-block;
   width: 100%;
 }
@@ -18392,9 +18407,10 @@ a.app-link p {
 }
 .card-footer .left_div {
   float: left;
-  width: 57%;
+  width: 70%;
   margin-top: 3px;
   line-height: 18px;
+  color:#969696
 }
 .card-footer .pover,
 .card-footer .more_button {
@@ -23175,4 +23191,8 @@ body .p-multiselect.regParamFocus {
 }
 body .p-multiselect.regParamFocus:hover {
   border-color: #ef6262;
+}
+.paginationFlg{
+  display: flex;
+  height: 380px;
 }

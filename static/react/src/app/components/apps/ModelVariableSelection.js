@@ -65,9 +65,13 @@ export class ModelVariableSelection extends React.Component {
         const from = this.getValueOfFromParam();
         var backflag=store.getState().datasets.varibleSelectionBackFlag
          if (from === 'data_cleansing'|| backflag) {
+            if (this.props.currentAppDetails == null||this.props.dataPreview === null) {
+                let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
+                this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models/data/"+this.props.match.params.slug)
+            }
         } else if((this.props.currentAppDetails === null || this.props.dataPreview === null) && !this.props.editmodelFlag){
             let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
-            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+            this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models/data/"+this.props.match.params.slug)
         }else{
         this.props.dispatch(saveSelectedValuesForModel("","",""));
         this.props.dispatch(selectMetricAction("","",""));
@@ -239,7 +243,7 @@ componentDidMount = () => {
       this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}?from=variableSelection`);
       }
     render() {
-        if(this.props.editmodelFlag && (this.props.dataPreview===null || Object.keys(this.props.dataPreview).length ===0) ){
+        if((this.props.editmodelFlag && (this.props.dataPreview===null || Object.keys(this.props.dataPreview).length ===0))||this.props.dataPreview==null ){
             return (
               <div className="side-body">
                 <div className="page-head"></div>

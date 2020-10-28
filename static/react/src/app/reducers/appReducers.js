@@ -120,6 +120,7 @@ export default function reducer(state = {
         modelLoaderidx:0,
         allStockAnalysisList:{},
         chartLoaderFlag:false,
+        activeAlgorithmTab:""
 
 }, action) {
 
@@ -1334,6 +1335,12 @@ export default function reducer(state = {
         }
     }
     break;
+    case "ACTIVE_ALGORITHM_SLUG":{
+        return{
+            ...state,
+            activeAlgorithmTab:action.slug
+        }
+    }
     }
     return state
 }
