@@ -23196,3 +23196,11 @@ body .p-multiselect.regParamFocus:hover {
   display: flex;
   height: 380px;
 }
+.template .active{
+  font-weight: 600;
+  background-color: #00998c; 
+  color: #fff !important;
+}
+.templateScroll li a{
+  padding-left: 10px;
+}

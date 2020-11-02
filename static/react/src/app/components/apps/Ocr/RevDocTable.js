@@ -19,7 +19,8 @@ import { Modal, Button, } from "react-bootstrap/";
     documentFlag: store.ocr.documentFlag,
     revDocumentFlag:store.ocr.revDocumentFlag,
     reviewerName: store.ocr.selected_reviewer_name,
-    projectName:store.ocr.selected_project_name
+    projectName:store.ocr.selected_project_name,
+    template: store.ocr.filter_rd_template,
   };
 })
 
@@ -230,7 +231,7 @@ export class RevDocTable extends React.Component {
     let templateOptions= (this.props.OcrRevwrDocsList!=""?
     this.props.OcrRevwrDocsList.values.map((item,index)=>{
       return(
-          <li key={index}><a class="cursor" onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+          <li key={index}><a className={ this.props.template == item ? "active cursor" : "cursor" } onClick={this.filterRevDocrList.bind(this,item,'template')} name={item} data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
       )}):
       "")
     return (
@@ -278,9 +279,9 @@ export class RevDocTable extends React.Component {
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
                             <span>TEMPLATE</span> <b class="caret"></b>
                           </a>
-                          <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{minWidth:'130px'}}>
+                          <ul class="dropdown-menu scrollable-menu dropdownScroll template" style={{minWidth:'130px', paddingLeft:0}}>
                           <Scrollbars className="templateScroll" style={{ height: 160,overflowX:'hidden' }} >
-                            <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'template')} name='all'>All</a></li>
+                            <li><a className={ this.props.template == "" ? "active cursor" : "cursor" } onClick={this.filterRevDocrList.bind(this, '', 'template')} name='all'>All</a></li>
                             {templateOptions}
                              </Scrollbars>
                           </ul>
@@ -381,5 +382,6 @@ export class RevDocTable extends React.Component {
   }
   componentWillUnmount = () => {
     this.props.dispatch(clearImageDetails());
+    this.props.dispatch(ocrRdFiltertemplate(""));
   }
 }
