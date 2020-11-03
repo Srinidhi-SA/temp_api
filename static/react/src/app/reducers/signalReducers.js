@@ -2,6 +2,7 @@ export default function reducer(state = {
   signalList: {},
   allSignalList:{},
   signalAnalysis:{},
+  signalAnalysisViewed:"",
   algoAnalysis:{},
   selectedAlgo:{},
   selectedSignal:{},
@@ -60,6 +61,7 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: action.signalAnalysis.data,
+          signalAnalysisViewed:action.signalAnalysis.viewed,
           selectedSignal: action.errandId,
           urlPrefix:"/signals",
           signalLoadedText:action.signalAnalysis.initial_messages,

@@ -120,8 +120,10 @@ export class Data extends React.Component {
 
   render() {
     if (store.getState().datasets.dataPreviewFlag && this.props.dataPreview &&this.props.dataPreview.status!="FAILED") {
-    	let _link = "/data/" + store.getState().datasets.selectedDataSet;
-    	return (<Redirect to={_link}/>);
+      if(!store.getState().datasets.dataPreview.viewed) {
+      let _link = "/data/" + store.getState().datasets.selectedDataSet;
+      return (<Redirect to={_link}/>);
+      }
     }
 
     const dataSets = store.getState().datasets.dataList.data;

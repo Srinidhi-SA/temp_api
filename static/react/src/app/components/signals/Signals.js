@@ -160,9 +160,12 @@ export class Signals extends React.Component {
   }
   render() {
     document.body.className = "";
-   if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
+    if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
+    var viewed=store.getState().signals.signalAnalysisViewed;
+    if(!viewed && viewed!="") {  
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
       return (<Redirect to={_link}/>);
+    }
     }
 
     var data = this.props.signalList;
