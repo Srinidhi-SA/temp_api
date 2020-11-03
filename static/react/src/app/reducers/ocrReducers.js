@@ -96,6 +96,7 @@ export default function reducer(state = {
   projectTablePagesize:12,
   userTablePagesize:12,
   reviewerTablePagesize:12,
+  userDeleteFlag: false,
 
 }, action) {
   switch (action.type) {
@@ -906,6 +907,13 @@ export default function reducer(state = {
             return {
               ...state,
               projectPage : action.page
+            }
+          }
+          break;
+          case "USER_DELETE_FLAG": {
+            return {
+              ...state,
+              userDeleteFlag : action.flag
             }
           }
           break;

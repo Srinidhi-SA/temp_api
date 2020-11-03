@@ -800,6 +800,7 @@ export function deleteOcrUserAction(userNames) {
 					: dispatch(fetchOcrListByReviewerType(parseFloat(store.getState().ocr.selectedTabId), store.getState().ocr.ocrUserPageNum));
 				bootbox.alert(statusMessages("success", json.message, "small_mascot"));
 				dispatch(clearUserFlagAction());
+				dispatch(deleteUserFlag(false));
 			} else if (response.status === 200 && !json.deleted) {
 				bootbox.alert(statusMessages("warning", "Unable to delete", "small_mascot"));
 			} else {
@@ -1227,6 +1228,12 @@ export function closeFlag(data) {
 		type: "CLOSE_FLAG",
 		data
 	}
+}
+	export function deleteUserFlag(flag) {
+		return {
+			type: "USER_DELETE_FLAG",
+			flag
+		}
 }
 
 

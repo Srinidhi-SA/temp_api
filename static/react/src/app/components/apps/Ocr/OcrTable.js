@@ -395,7 +395,7 @@ export class OcrTable extends React.Component {
     ) : '' : '')
 
     var getTemplateOptions = (this.props.OcrDataList != '' ? this.props.OcrDataList.values.map((item,index) => {
-      return <li key={index}><a class="cursor" onClick={this.filterOcrList.bind(this, item, 'template')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
+      return <li key={index}><a className= { store.getState().ocr.filter_template== item ? "active cursor" : "cursor" } onClick={this.filterOcrList.bind(this, item, 'template')} name="all" data-toggle="modal" data-target="#modal_equal"> {item}</a></li>
     }
     ) : '')
 
@@ -588,10 +588,10 @@ export class OcrTable extends React.Component {
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Template" aria-expanded="true">
                               <span>TEMPLATE</span> <b class="caret"></b>
                             </a>
-                            <ul class="dropdown-menu scrollable-menu dropdownScroll" style={{ minWidth: '130px' }}>
+                            <ul class="dropdown-menu scrollable-menu dropdownScroll template" style={{ minWidth: '130px',paddingLeft:0 }}>
                               <Scrollbars className="templateScroll" style={{ height: 160, overflowX: 'hidden' }} >
-                                <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'template')} name='all'>All</a></li>
-                                {getTemplateOptions}
+                                <li><a className= { store.getState().ocr.filter_template== "" ? "active cursor" : "cursor" }  onClick={this.filterOcrList.bind(this, '', 'template')} name='all'>All</a></li>
+                                {getTemplateOptions} 
                               </Scrollbars>
                             </ul>
                           </th>
