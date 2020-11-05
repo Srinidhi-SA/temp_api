@@ -14,7 +14,7 @@ from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 
 from ocr import validators
-from ocr.tasks import send_welcome_email
+from ocr.tasks import send_welcome_email, send_info_email
 
 
 # -------------------------------------------------------------------------------
@@ -141,6 +141,11 @@ def send_email(sender, instance, created, **kwargs):
     if created:
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
+
+        #Adding info mail for Admin
+        send_info_email.delay(username=instance.ocr_user.username,
+            supervisor=instance.supervisor.username
+            )
 
 
 def upload_dir(instance, filename):
