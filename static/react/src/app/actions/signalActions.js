@@ -309,7 +309,19 @@ function fetchPosts_analysis(token, errandId) {
 }
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
-  if (signalAnalysis.status == SUCCESS) {
+  if(signalAnalysis.status == SUCCESS && (signalAnalysis.data.listOfCards.length === 0 && signalAnalysis.data.listOfNodes.length === 0)){
+    bootbox.dialog({
+            message:"Unable to fetch score summary, try creating again.",
+            buttons: {
+                'confirm': {
+                    label: 'Ok',
+                    callback:function(){
+                        window.location.pathname = "/signals"
+                    }
+                },
+            },
+          });
+  }else if(signalAnalysis.status == SUCCESS) {
     if(store.getState().signals.createSignalLoaderModal && signalAnalysis.message!=null && signalAnalysis.message.length>0){
       document.getElementsByClassName("sigProgress")[0].innerHTML = (document.getElementsByClassName("sigProgress")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
       $("#loadingMsgs")[0].innerHTML = "Step " + (signalAnalysis.message.length-3) + ": " + signalAnalysis.message[signalAnalysis.message.length-3].shortExplanation;
@@ -329,7 +341,6 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     },2000) 
   } 
   else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
-    //bootbox.alert("Your signal could not be created. Please try later.")
     bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())

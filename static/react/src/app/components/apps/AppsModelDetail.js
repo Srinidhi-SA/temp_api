@@ -141,117 +141,110 @@ export class AppsModelDetail extends React.Component {
 			FE.style.display = "none";
 			document.querySelector(".chart-area").style.display = "none";
 			}
-		 }
+		}
 		if(this.state.showHyperparameterSummary)
-		return(<AppsModelHyperDetail match={this.props.match}/>)
+			return(<AppsModelHyperDetail match={this.props.match}/>)
   	const modelSummary = store.getState().apps.modelSummary;
 	 	var showExportPmml = true;
 		var showCreateScore = true;
 		var hyperParameterData;
-	let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
-	const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
-	if (!$.isEmptyObject(modelSummary)) {
-		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
-        showExportPmml = modelSummary.permission_details.downlad_pmml;
-		showCreateScore = modelSummary.permission_details.create_score;
-				var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
-	      var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
-				var cardDataList = listOfCardList.map((data, i) => {
-				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
-				var cardDataArray = data.cardData;
-				if( (cardDataArray.filter(i=>(i.dataType==="table" && i.data.tableData.length===1))).length!=0 ){
-					let newData = {}
-					newData = cardDataArray[0]
-					cardDataArray = []
-					cardDataArray[0] = newData
-					cardDataArray[0].classTag = "noTable"
-				}
-				if(data.cardWidth == 100){
-					componentsWidth = 0;
-					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-				}
-				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
-					componentsWidth = data.cardWidth;
-					return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-				}
-				else{
-					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-							}
+		let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
+		const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
+		if (!$.isEmptyObject(modelSummary)) {
+			hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
+      showExportPmml = modelSummary.permission_details.downlad_pmml;
+			showCreateScore = modelSummary.permission_details.create_score;
+			var failedAlgorithms =	modelSummary.data.config.fail_card.filter(i=>i.success==="False").map(i=>i.Algorithm_Name).map(a => a.charAt(0).toUpperCase() + a.substr(1)).join(', ');
+			var listOfCardList = modelSummary.data.model_summary.listOfCards;	
+			var componentsWidth = 0;
+			var cardDataList = "";
+			if(!$.isEmptyObject(listOfCardList)){
+				cardDataList = listOfCardList.map((data, i) => {
+					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
+					var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
+					var cardDataArray = data.cardData;
+					if(cardDataArray.length>0){
+						if((cardDataArray.filter(i=>(i.dataType==="table" && i.data.tableData.length===1))).length!=0 ){
+							let newData = {}
+							newData = cardDataArray[0]
+							cardDataArray = []
+							cardDataArray[0] = newData
+							cardDataArray[0].classTag = "noTable"
+						}
+						if(data.cardWidth == 100){
+							componentsWidth = 0;
+							return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+						}
+						else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+							componentsWidth = data.cardWidth;
+							return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+						}
+						else{
+							componentsWidth = componentsWidth+data.cardWidth;
+							return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+						}
+					}else{
+						return""
+					}
 				});
-		
-		if(listOfCardList){
-			return (
-			          <div className="side-body">
-
-			          <div className="main-content">
-			          <div className="row">
-		                <div className="col-md-12">
-							<h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
-		                      <div className="btn-toolbar pull-right">
-		                        <div className="btn-group summaryIcons">
-		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
-		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
-		                            </button>
-							   <Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
-
-		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
-
-								 </Link>
-		                        </div>
-		                      </div>
-		                     </h3>
-							 <div className="clearfix"></div>
-							 
-		                <div className={this.props.match.params.AppId === "regression-app-6u8ybu4vdr"?"panel panel-mAd documentModeSpacing box-shadow regSpacing":"panel panel-mAd documentModeSpacing box-shadow"}>
-		                  
-		                   <div className="panel-body no-border">
-		                   <div className="container-fluid">
-
-		                  {cardDataList}
-
-		                    </div>
-												<div>
-											  {failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
-										  	</div>
-		                    <div className="col-md-12 text-right xs-mt-30">
-												{!$.isEmptyObject(hyperParameterData)?
+			}
+			if(listOfCardList){
+				return(
+					<div className="side-body">
+						<div className="main-content">
+							<div className="row">
+								<div className="col-md-12">
+								<h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
+									<div className="btn-toolbar pull-right">
+										<div className="btn-group summaryIcons">
+											<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
+											<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+												<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+											</button>
+											<Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
+												<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+											</Link>
+										</div>
+									</div>
+								</h3>
+								<div className="clearfix"></div>
+								<div className={this.props.match.params.AppId === "regression-app-6u8ybu4vdr"?"panel panel-mAd documentModeSpacing box-shadow regSpacing":"panel panel-mAd documentModeSpacing box-shadow"}>
+									<div className="panel-body no-border">
+										<div className="container-fluid">
+											{cardDataList}
+										</div>
+										<div>
+											{failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
+										</div>
+										<div className="col-md-12 text-right xs-mt-30">
+											{!$.isEmptyObject(hyperParameterData)?
 												<span>
-												<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
-												<span className="xs-pl-10"></span></span>:""}
-												{showExportPmml?
-		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
-		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
-		                   </div>
-		                    
-		             </div>
-		             <ExportAsPMML/>
-		                    </div>
-		                  </div>
-		                </div>
-		              </div>
-
-
-
-			          </div>
-			      );
+													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+													<span className="xs-pl-10"></span>
+												</span>:""
+											}
+											{showExportPmml?<Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
+											{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
+										</div>   
+									</div>
+									<ExportAsPMML/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				);
+			}
 		}
-	}
-
-	else{
-		return (
-
-		      <div className="side-body">
-		        <div className="page-head">
-		        </div>
-		        <div className="main-content">
-		          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-		        </div>
-		      </div>
-		    );
-	}
-
+		else{
+			return (
+				<div className="side-body">
+					<div className="page-head"></div>
+					<div className="main-content">
+						<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+					</div>
+				</div>
+			);
+		}
   }
 }
