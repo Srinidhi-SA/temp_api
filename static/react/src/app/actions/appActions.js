@@ -27,7 +27,7 @@ import {
   DELETEDEPLOYMENT,
   RENAMESTOCKMODEL
 } from "../helpers/helper";
-import { hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview } from "./dataActions";
+import { hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview, paginationFlag } from "./dataActions";
 import { getHeaderWithoutContent } from "./dataUploadActions";
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog';
@@ -64,10 +64,9 @@ export function refreshAppsModelList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-        if(store.getState().apps.modelList.data!=undefined && store.getState().apps.modelList.data.filter(i=> (i.status!="SUCCESS" && i.completed_percentage!=100) ).length != 0 )
+      let modelLst = store.getState().apps.modelList.data
+        if(modelLst.data!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
-        else
-        clearInterval(refreshAppsModelInterval)
     }
       , APPSDEFAULTINTERVAL);
   }
@@ -117,6 +116,7 @@ export function getAppsModelList(pageNo) {
   return (dispatch) => {
     return fetchModelList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
+        dispatch(paginationFlag(false))
         dispatch(fetchModelListSuccess(json))
       } else {
         dispatch(fetchModelListError(json))
@@ -681,7 +681,9 @@ export function refreshAppsScoreList(props) {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores")
+      let scoreLst = store.getState().apps.scoreList.data
+      if(window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/analyst/scores" && 
+      scoreLst!=undefined && scoreLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsScoreList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -691,6 +693,7 @@ export function getAppsScoreList(pageNo) {
   return (dispatch) => {
     return fetchScoreList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
+        dispatch(paginationFlag(false))
         dispatch(fetchScoreListSuccess(json));
       } else {
         dispatch(fetchScoreListError(json))
@@ -1955,6 +1958,7 @@ export function getAppsStockList(pageNo) {
   return (dispatch) => {
     return fetchStockList(pageNo, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
+        dispatch(paginationFlag(false))
         dispatch(fetchStockListSuccess(json))
       } else {
         dispatch(fetchStockListError(json))
@@ -2754,7 +2758,9 @@ export function refreshStockAppsList(props) {
         stockAppLocation = "/apps-stock-advisor";
       else
         stockAppLocation = "/" + store.getState().apps.currentAppDetails.app_url+"/";
-      if (window.location.pathname == stockAppLocation)
+      let stockLst = store.getState().apps.stockAnalysisList.data;
+      if(window.location.pathname == stockAppLocation && stockLst!=undefined && 
+        stockLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsStockList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -2827,5 +2833,10 @@ export function showCreateModalPopup() {
 export function setLoaderFlagAction(flag){
   return {
     type:"SET_LOADER_FLAG",flag
+  }
+}
+export function modifyActiveAlgorithmTab(slug){
+  return{
+    type:"ACTIVE_ALGORITHM_SLUG",slug
   }
 }

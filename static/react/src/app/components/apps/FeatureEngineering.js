@@ -35,7 +35,6 @@ import { statusMessages } from "../../helpers/helper";
     numberOfBins: store.datasets.topLevelData.numberOfBins,
     editmodelFlag:store.datasets.editmodelFlag,
     modelEditconfig: store.datasets.modelEditconfig,
-    datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
   };
 })
 
@@ -56,7 +55,7 @@ export class FeatureEngineering extends React.Component {
   componentWillMount() {
     if (this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null) {
       let mod =  window.location.pathname.includes("analyst")?"analyst":"autoML"
-      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models")
+      this.props.history.replace("/apps/"+this.props.match.params.AppId+"/"+mod+"/models/data/"+this.props.match.params.slug)
     }else{
       this.setState({ featureEngineering: this.props.featureEngineering });
       if (this.props.dataPreview == null || this.props.dataPreview.status == 'FAILED') {
@@ -606,14 +605,15 @@ export class FeatureEngineering extends React.Component {
     this.saveTopLevelValues();
   }
   handleTopLevelInputOnchange(event) {
+    var datasetRow = this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value
     if(this.props.convertUsingBin === "true" && document.getElementById("flight_number").value === ""){
       $("#binErrorMsg").removeClass("visibilityHidden");
       $("#binErrorMsg").html("Please enter number of bins");
       return false;
     }
-    else if(0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= this.props.datasetRow){
+    else if(0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= datasetRow){
       $("#binErrorMsg").removeClass("visibilityHidden");
-      $("#binErrorMsg").html("Value should be greater than 0 and less than "+ this.props.datasetRow +"");
+      $("#binErrorMsg").html("Value should be greater than 0 and less than "+ datasetRow +"");
       return false;
     }
     else if(!Number.isInteger(parseFloat(event.target.value))){
@@ -632,11 +632,12 @@ export class FeatureEngineering extends React.Component {
     this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, this.state.topLevelInput));
     this.setState({ state: this.state });
   }
-  handleProcedClicked(event) {
+  handleProcedClicked(dataPreview,event) {
+    var datasetRow = dataPreview.meta_data.uiMetaData.metaDataUI[0].value
     if(this.props.convertUsingBin === "true" && document.getElementById("flight_number").value === "" ){
       bootbox.alert(statusMessages("warning", "Please resolve errors", "small_mascot"));
       return false;
-    }else if( this.props.convertUsingBin === "true" && (0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= this.props.datasetRow) ){
+    }else if( this.props.convertUsingBin === "true" && (0 >= document.getElementById("flight_number").value || document.getElementById("flight_number").value >= datasetRow) ){
       bootbox.alert(statusMessages("warning", "Please resolve errors", "small_mascot"));
       return false;
     }
@@ -857,7 +858,7 @@ export class FeatureEngineering extends React.Component {
                   <div className="panel-body box-shadow">
                   <Button id="FeBack" onClick={this.handleBack} bsStyle="primary"><i class="fa fa-angle-double-left"></i> Back</Button>
                     <div className="buttonRow" id="dataPreviewButton" style={{float:"right",display:"inline-block"}}>
-                      <Button id="FeProceed" onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                      <Button id="FeProceed" onClick={this.handleProcedClicked.bind(this,this.props.dataPreview)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                     </div>
                     <div class="xs-p-10"></div>
                   </div>

@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams,updateTensorFlowArray} from "../../actions/appActions";
+import {createModel,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams,updateTensorFlowArray, modifyActiveAlgorithmTab} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -44,6 +44,7 @@ export class ModelAlgorithmSelection extends React.Component {
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
+        this.props.dispatch(modifyActiveAlgorithmTab(this.props.automaticAlgorithmData[0].algorithmSlug))
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
@@ -56,7 +57,7 @@ export class ModelAlgorithmSelection extends React.Component {
             var isContinueRange = this.checkRangeValidation();
             var isContinueMulticheck = this.checkMultiSelectValidation();
             
-            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected
+            var tfFlag=this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0]!=undefined? this.props.manualAlgorithmData.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].selected:false
             
         if(!isContinueRange || !isContinueMulticheck){
              if(document.getElementsByClassName("InterceptGrid")[0] !=undefined && document.getElementsByClassName("InterceptGrid")[0].innerHTML.includes("None selected")){
@@ -294,8 +295,17 @@ export class ModelAlgorithmSelection extends React.Component {
     changeAlgorithmSelection(data){
         this.props.dispatch(updateAlgorithmData(data.algorithmSlug));
     }
-    changeParameter(){
-        this.props.dispatch(saveParameterTuning());
+    changeParameter(slug){
+        var isContinueRange = this.checkRangeValidation();
+        var isContinueSelect = this.checkMultiSelectValidation();
+        if(!(isContinueRange && isContinueSelect)){
+            let msg= statusMessages("warning","Please resolve errors...","small_mascot");
+            bootbox.alert(msg);
+            return false;
+        }else{
+            this.props.dispatch(modifyActiveAlgorithmTab(slug))
+            this.props.dispatch(saveParameterTuning());
+        }
     }
     changeHyperParameterType(slug,e){
         this.props.dispatch(changeHyperParameterType(slug,e.target.value));
@@ -389,7 +399,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     if(data.selected == true)
                     {
                         return(
-                            <Tab  key={Index}eventKey={data.algorithmSlug} title={data.algorithmName}>
+                            <Tab  key={Index} eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <FormGroup role="form">
                                 {data.algorithmName === "Neural Network (TensorFlow)"?
                                 <TensorFlow data/>
@@ -462,7 +472,7 @@ export class ModelAlgorithmSelection extends React.Component {
 
 
                             } */}
-                               <Tabs  id="algosel" onSelect={this.changeParameter.bind(this)} className="tab-container">
+                               <Tabs id="algosel" defaultActiveKey={this.props.automaticAlgorithmData.filter(i=>i.selected)[0].algorithmSlug} activeKey={store.getState().apps.activeAlgorithmTab} onSelect={this.changeParameter.bind(this)} className="tab-container">
                                 {pageData}
                                 </Tabs>
 							<div className="clearfix"></div>

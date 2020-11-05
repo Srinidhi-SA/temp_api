@@ -43,11 +43,17 @@ export class OcrAddUser extends React.Component{
     submitNewUserDetails(e){
         let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         let paswdFormat=  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,15}$/;
+        let userNameFormat= /^(?=.{8,20}$)[^\\._]?[a-zA-Z0-9]+([._][a-zA-Z0-9]+)*[^\\._]?$/;
+        let nameFormat= /^([a-zA-Z]){4,}$/;
         
         if($("#first_name")[0].value === "" || $("#last_name")[0].value === "" || $("#username")[0].value === "" || $("#email")[0].value === "" || $("#password1")[0].value === "" || $("#password2")[0].value === ""){
             $("#resetMsg")[0].innerText = "Please enter mandatory fields"
-        }else if( $("#first_name")[0].value.length < 4 || $("#last_name")[0].value.length < 4 || $("#username")[0].value.length <4 ){
-            $("#resetMsg")[0].innerText = "Please ensure names has at least 4 characters"
+        }else if(!nameFormat.test(document.getElementById("first_name").value)){
+            $("#resetMsg")[0].innerText = "First Name should have only alphabets with minimum 4 characters"
+        }else if(!nameFormat.test(document.getElementById("last_name").value)){
+            $("#resetMsg")[0].innerText = "Last Name should have only alphabets with minimum 4 characters"
+        }else if(!userNameFormat.test(document.getElementById("username").value)){
+            $("#resetMsg")[0].innerText = "Please enter valid User Name"
         }else if(!mailFormat.test($("#email")[0].value)){
             $("#resetMsg")[0].innerText = "Invalid Email Id"
         }else if(!paswdFormat.test($("#password1")[0].value)){
@@ -117,7 +123,7 @@ export class OcrAddUser extends React.Component{
                                 
                                 <label className={this.props.createUserFlag?"":"mandate"} for="password">Password</label>
                                 <label className={this.props.createUserFlag?"":"mandate"} for="confirmPassword" style={{marginLeft:"100px"}}>Confirm Password</label>
-                                <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue}/>
+                                <input type="password" id="password1" name="password1" placeholder="Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 <input type="password" id="password2" name="password2" placeholder="Confirm Password" onInput={this.saveNewUserDetails.bind(this)} disabled={disabledValue} />
                                 {this.props.createUserFlag &&
                                     <div>
@@ -141,8 +147,14 @@ export class OcrAddUser extends React.Component{
                                     </div>
                                 }
                                 {!this.props.ocrUserProfileFlag && !this.props.createUserFlag &&
-                                    <p style={{marginTop: "15px",marginLeft: "15px",marginBottom:0}}>Note: Password must contain 8-15 letters with atleast 1 number and 1 special character
-                                    </p>
+                                    <div style={{marginTop: "15px",marginLeft: "15px",marginBottom:0}}>
+                                        <div>Please follow the below format for Username and Password.</div>
+                                         <ul style={{paddingLeft:20}}>
+                                             <li>Username must contain only alphanumeric character, underscore, and dot with 8-20 characters.</li>
+                                             <li>Underscore and dot can not be next to each other and multiple times in a row.</li>
+                                             <li>Password must contain 8-15 letters with atleast 1 number and 1 special character</li>
+                                         </ul>          
+                                    </div>  
                                 }
                             </div>
                         }
@@ -161,7 +173,7 @@ export class OcrAddUser extends React.Component{
                         }
                     </Modal.Body>
                     <Modal.Footer>
-                        <div id="resetMsg"></div>
+                        <div id="resetMsg" style={{width:'60%'}}></div>
                         {(!this.props.createUserFlag && !this.props.ocrUserProfileFlag)?<Button bsStyle="primary" id="createUserBtn" onClick={this.submitNewUserDetails.bind(this)}>Create User</Button>:""}
                         {!this.props.ocrUserProfileFlag?<Button bsStyle="primary" id="addUser" disabled={this.props.createUserFlag?false:true} onClick={this.submitNewUserStatus.bind(this)}>Save</Button>:""}
                         {this.props.ocrUserProfileFlag?<Button bsStyle="primary" id="addUser" onClick={this.closeAddUserPopup.bind(this)}>Close</Button>:""}

@@ -292,7 +292,7 @@ export class RegressionParameter extends React.Component {
   }
   validateRangeandField(e){
     let value = e.target.value;
-    let floatTypeParams = ["regParam","elasticNetParam","threshold","minInfoGain","smoothing","tol","C","min_samples_split","min_samples_leaf","eta","subsample","colsample_bytree","colsample_bylevel","alpha","learning_rate_init","power_t","momentum","validation_fraction","beta_1 ","beta_2 ","max_leaf_nodes"]
+    let floatTypeParams = ["regParam","elasticNetParam","threshold","minInfoGain","smoothing","tol","C","min_samples_split","min_samples_leaf","eta","subsample","colsample_bytree","colsample_bylevel","alpha","learning_rate_init","power_t","momentum","validation_fraction","beta_1 ","beta_2 ","max_leaf_nodes","stepSize"]
     if(value === ""){
       e.target.parentElement.lastElementChild.innerHTML = "Enter a valid number"
     }else if(value < this.state.min || value > this.state.max){
@@ -326,7 +326,7 @@ export class RegressionParameter extends React.Component {
       if((document.getElementsByName(this.state.name).length==2) && ($('li.active')[0].innerText=="NEURAL NETWORK (SKLEARN)")&& (this.state.name=="max_iter"||this.state.name=="tol")){
         index=1
         }
-        
+
       document.getElementsByName(this.state.name)[index].parentElement.querySelector(".range-validate").innerText = ""
       document.getElementsByName(this.state.name)[index].parentElement.querySelector(".form-control").classList.remove("regParamFocus")
       this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
