@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,updateScoreSlug,getAppDetails,updateScoreSummaryFlag} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,updateScoreSlug,getAppDetails,updateScoreSummaryFlag, clearScoreSummary} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -133,5 +133,8 @@ export class AppsScoreDetail extends React.Component {
 				</div>
 			);
 		}
-  }
+	}
+	componentWillUnmount(){
+		this.props.dispatch(clearScoreSummary())
+	}
 }

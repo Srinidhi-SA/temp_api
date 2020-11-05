@@ -2078,3 +2078,8 @@ export function paginationFlag(flag){
         type:"PAGINATION_FLAG",flag
     }
 }
+export function clearDataList(){
+    return{
+        type:"CLEAR_DATA_LIST"
+    }
+}

@@ -2876,3 +2876,18 @@ export function modifyActiveAlgorithmTab(slug){
     type:"ACTIVE_ALGORITHM_SLUG",slug
   }
 }
+export function clearScoreSummary(){
+  return{
+    type:"CLEAR_SCORE_SUMMARY"
+  }
+}
+export function clearModelList(){
+  return{
+    type: "CLEAR_MODEL_LIST"
+  }
+}
+export function clearScoreList(){
+  return{
+    type:"CLEAR_SCORE_LIST"
+  }
+}

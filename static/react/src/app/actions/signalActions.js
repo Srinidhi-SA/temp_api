@@ -951,3 +951,8 @@ export function saveDocmodeConfig(value){
       type: "SAVE_DOCUMENTMODE_CONFIG",value
   }
 }
+export function clearSignalList(){
+  return {
+      type: "CLEAR_SIGNAL_LIST"
+  }
+}

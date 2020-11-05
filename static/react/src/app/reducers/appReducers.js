@@ -389,7 +389,13 @@ export default function reducer(state = {
         }
     }
     break;
-
+    case "CLEAR_SCORE_LIST":{
+        return{
+            ...state,
+            scoreList:{}
+        }
+    }
+    break;
     case "SCORE_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -462,7 +468,15 @@ export default function reducer(state = {
         }
     }
     break;
-
+    case "CLEAR_SCORE_SUMMARY":{
+        return{
+            ...state,
+            scoreSummary: {},
+            scoreSlug:"",
+            scoreSlugShared:"",
+        }
+    }
+    break;
     case "SCORE_SUMMARY_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -1339,6 +1353,13 @@ export default function reducer(state = {
         return{
             ...state,
             activeAlgorithmTab:action.slug
+        }
+    }
+    break;
+    case "CLEAR_MODEL_LIST": {
+        return{
+            ...state,
+            modelList:{}
         }
     }
     }
