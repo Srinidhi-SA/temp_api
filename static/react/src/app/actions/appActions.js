@@ -65,7 +65,7 @@ export function refreshAppsModelList(props) {
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       let modelLst = store.getState().apps.modelList.data
-        if(modelLst.data!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
+        if(modelLst!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
