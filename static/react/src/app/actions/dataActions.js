@@ -162,6 +162,18 @@ export function getDataSetPreview(slug,interval) {
                     setTimeout(function() {
                     window.location.pathname="/signals";
                     },2000);
+                }else if(Object.keys(json.meta_data.scriptMetaData).length === 0 || json.meta_data.uiMetaData === null || json.meta_data.uiMetaData.columnDataUI===undefined){
+                    bootbox.dialog({
+                        message:"Sorry, Unable to fetch data preview",
+                        buttons: {
+                            'confirm': {
+                                label: 'Ok',
+                                callback:function(){
+                                    window.location.pathname = "/data";
+                                }
+                            },
+                        },
+                    });
                 }
                 else{
                 dispatch(setCreateSignalLoaderFlag(false))
@@ -2064,5 +2076,10 @@ export function saveSelectedColSlug(slug){
 export function paginationFlag(flag){
     return{
         type:"PAGINATION_FLAG",flag
+    }
+}
+export function clearDataList(){
+    return{
+        type:"CLEAR_DATA_LIST"
     }
 }

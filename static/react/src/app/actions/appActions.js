@@ -65,7 +65,7 @@ export function refreshAppsModelList(props) {
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       let modelLst = store.getState().apps.modelList.data
-        if(modelLst.data!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
+        if(modelLst!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
     }
       , APPSDEFAULTINTERVAL);
@@ -761,6 +761,18 @@ export function getAppsModelSummary(slug, fromCreateModel) {
           setTimeout(function () {
             window.location.pathname = "/signals";
           }, 2000);
+        }else if(json.status === SUCCESS && json.data.model_summary.listOfCards.length===0){
+          bootbox.dialog({
+            message:"Unable to fetch score summary, try creating again.",
+            buttons: {
+                'confirm': {
+                    label: 'Ok',
+                    callback:function(){
+                        window.location.pathname = window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/'));
+                    }
+                },
+            },
+          });
         }
 
         else if (json.status == SUCCESS) {
@@ -920,7 +932,19 @@ export function getAppsScoreSummary(slug) {
             window.location.pathname = "/signals";
           }, 2000);
         }
-
+        else if(json.status == SUCCESS && json.data.listOfCards.length===0){
+          bootbox.dialog({
+            message:"Unable to fetch score summary, try creating again.",
+            buttons: {
+                'confirm': {
+                    label: 'Ok',
+                    callback:function(){
+                        window.location.pathname = window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/'));
+                    }
+                },
+            },
+          });
+        }
         else if (json.status == SUCCESS) {
           if (store.getState().apps.appsLoaderModal && json.message !== null && json.message.length > 0) {
             document.getElementsByClassName("appsPercent")[0].innerHTML = (document.getElementsByClassName("appsPercent")[0].innerText === "In Progress")?"<h2 class="+"text-white"+">"+"100%"+"</h2>":"100%"
@@ -2105,12 +2129,24 @@ export function getStockAnalysis(slug, appsInterval) {
     return fetchStockAnalysisAPI(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
         if (json.status == SUCCESS) {
-          if (appsInterval != undefined) {
+          if(Object.keys(json.data).length===0){
+              bootbox.dialog({
+                message:"Sorry, Unable to fetch stock details",
+                buttons: {
+                    'confirm': {
+                        label: 'Ok',
+                        callback:function(){
+                            window.location.pathname = "/apps-stock-advisor";
+                        }
+                    },
+                },
+            });
+          }else if (appsInterval != undefined) {
             clearInterval(appsInterval);
             dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
             dispatch(uploadStockAnalysisFlag(true));
             dispatch(closeAppsLoaderValue());
-          } else {
+          }else {
             dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
             dispatch(uploadStockAnalysisFlag(true));
           }
@@ -2838,5 +2874,20 @@ export function setLoaderFlagAction(flag){
 export function modifyActiveAlgorithmTab(slug){
   return{
     type:"ACTIVE_ALGORITHM_SLUG",slug
+  }
+}
+export function clearScoreSummary(){
+  return{
+    type:"CLEAR_SCORE_SUMMARY"
+  }
+}
+export function clearModelList(){
+  return{
+    type: "CLEAR_MODEL_LIST"
+  }
+}
+export function clearScoreList(){
+  return{
+    type:"CLEAR_SCORE_LIST"
   }
 }
