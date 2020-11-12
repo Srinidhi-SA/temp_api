@@ -143,8 +143,11 @@ def send_email(sender, instance, created, **kwargs):
         send_welcome_email.delay(username=instance.ocr_user.username)
 
         #Adding info mail for Admin
+        from django_currentuser.middleware import (
+        get_current_user, get_current_authenticated_user)
+        user=get_current_authenticated_user()
         send_info_email.delay(username=instance.ocr_user.username,
-            supervisor=instance.supervisor.username
+            supervisor=user.username
             )
 
 
