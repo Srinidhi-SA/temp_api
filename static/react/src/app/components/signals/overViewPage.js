@@ -21,9 +21,6 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 import { chartdate } from "../../actions/chartActions";
 
-//import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
-//let showSubTree=false;
-
 @connect((store) => {
   return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix, customerDataset_slug: store.apps.customerDataset_slug};
 })
@@ -247,6 +244,7 @@ export class OverViewPage extends React.Component {
         let selectedNode = null;
         let selectedNode_slug = null;
         let selectedURL = ""
+        let hideListOfAnalysis = true;
         if (Object.keys(params).length == 3) {
           selectedNode_slug = params.l1;
           selectedURL = that.urlPrefix + "/" + params.slug + "/" + params.l1;
@@ -257,7 +255,7 @@ export class OverViewPage extends React.Component {
        
         selectedNode = fetchNodeFromTree(selectedNode_slug, this.props.signal);
         if(selectedNode.listOfCards.length!=1) {
-          $("#sticky-container").removeClass("hidden");
+          hideListOfAnalysis = false;
           cardList = selectedNode.listOfCards.map((card, i) => {
             let selectedLink = selectedURL + "/" + card.slug;
             return (
@@ -337,7 +335,7 @@ export class OverViewPage extends React.Component {
                   <h3 className="xs-mt-0 xs-mb-0"> {storyName}
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group summaryIcons">
-                        <div className="btn btn-default sticky-container hidden-xs hidden" id="sticky-container">
+                        <div className={"btn btn-default sticky-container hidden-xs " +(hideListOfAnalysis?"hidden":"")} id="sticky-container">
                           <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round btn-xs" title="List of Analysis">
                             <i class="fa fa-list-ul"></i>
                           </button>
