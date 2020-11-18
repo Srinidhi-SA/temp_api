@@ -158,7 +158,7 @@ def upload_dir(instance, filename):
     return os.path.join('ocrData', filename)
 
 
-post_save.connect(send_email, sender=OCRUserProfile)
+#post_save.connect(send_email, sender=OCRUserProfile)
 
 
 class Project(models.Model):
@@ -321,6 +321,7 @@ class OCRImage(models.Model):
     conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
     analysis_list = models.TextField(max_length=3000000, default="[]", null=True)
     analysis = models.TextField(max_length=3000000, default="{}", null=True)
+    metadata = models.TextField(max_length=3000000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     classification = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=3000000, default="{}", null=True)

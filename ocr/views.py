@@ -50,7 +50,7 @@ from ocr.query_filtering import get_listed_data, get_image_list_data, \
 from .ITE.scripts.info_mapping import Final_json
 from .ITE.scripts.timesheet.timesheet_modularised import timesheet_main
 from .ITE.scripts.ui_corrections import ui_flag_v2, fetch_click_word_from_final_json, ui_corrections, offset, \
-    cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3
+    cleaned_final_json, sort_json, dynamic_cavas_size, ui_flag_v4, ui_flag_v3, ui_flag_custom, custom_field, update_meta
 from .models import OCRImage, OCRImageset, OCRUserProfile, Project, Template
 from ocrflow.models import Task, ReviewRequest
 
@@ -322,12 +322,12 @@ class OCRUserView(viewsets.ModelViewSet):
             queryset = User.objects.filter(
                 groups__name__in=['ReviewerL1', 'ReviewerL2'],
                 ocruserprofile__supervisor=request.user,
-                is_active = True
+                is_active=True
             )
         else:
             queryset = User.objects.filter(
                 groups__name__in=['ReviewerL1', 'ReviewerL2'],
-                is_active = True
+                is_active=True
             )
         return queryset
 
@@ -729,7 +729,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_backlog_queryset(self, projectslug):
         return OCRImage.objects.filter(
-            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading','failed'],
+            status__in=['ready_to_recognize', 'ready_to_assign', 'recognizing', 'uploading', 'failed'],
             created_by=self.request.user,
             project__slug=projectslug,
             deleted=False
@@ -823,7 +823,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = convert_to_string(data)
         img_data = data
 
-        invalid_files=list()
+        invalid_files = list()
         invalid_images = []
         if data['dataSourceType'] == 'fileUpload':
             if 'imagefile' in data:
@@ -833,20 +833,20 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         imagepath.append(file.name[:-4].replace('.', '_'))
                     else:
                         from ocr import validators
-                        status=validators.validate_image_dimension(file)
+                        status = validators.validate_image_dimension(file)
                         if status == 0:
                             invalid_images.append(file.name)
                             invalid_files.append(
-                                {"status":"failed",
-                                 "message":"Height or Width is smaller than the allowed limit(50*50).",
-                                 "image":file.name})
+                                {"status": "failed",
+                                 "message": "Height or Width is smaller than the allowed limit(50*50).",
+                                 "image": file.name})
 
                         elif status == 1:
                             invalid_images.append(file.name)
                             invalid_files.append(
-                                {"status":"failed",
-                                 "message":"Height or Width is larger than the allowed limit(10000*10000).",
-                                 "image":file.name})
+                                {"status": "failed",
+                                 "message": "Height or Width is larger than the allowed limit(10000*10000).",
+                                 "image": file.name})
                         else:
                             imagepath.append(file.name[:-4].replace('.', '_'))
 
@@ -1165,7 +1165,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         if request.user.username in foreign_user_mapping:
                             # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
                             response = write_to_ocrimage2.apply_async(
-                                args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username], template))
+                                args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username],
+                                      template))
                         else:
                             response = write_to_ocrimage.apply_async(
                                 args=(image_queryset.imagefile.path, slug, template))
@@ -1211,6 +1212,93 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         #    return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
     @list_route(methods=['post'])
+    def get_word_custom(self, request, *args, **kwargs):
+        data = request.data
+        p1 = data['p1']
+        p3 = data['p3']
+        type = 'Alpha'
+        label = 'default_label'
+        if 'type' in data:
+            type = data['type']
+        if 'label' in data:
+            label = data['label']
+
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            metadata = json.loads(image_queryset.metadata)
+
+            review_start_time = image_queryset.review_start
+            if not review_start_time:
+                data['review_start'] = datetime.datetime.now()
+                serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                                 context={"request": self.request})
+                if serializer.is_valid():
+                    serializer.save()
+            analysis = json.loads(image_queryset.analysis)
+
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            size = cv2.imread(mask).shape
+            dynamic_shape = dynamic_cavas_size(size[:-1])
+            p1 = offset(p1, size, dynamic_shape)
+            p3 = offset(p3, size, dynamic_shape)
+            update_data = {'label': label, 'BoundingBox': [p1, p3], 'Type': type}
+            response = custom_field(analysis, [p1, p3])
+            metadata = update_meta(update_data, metadata)
+            data1 = {'metadata': json.dumps(metadata)}
+            serializer = self.get_serializer(instance=image_queryset, data=data1, partial=True,
+                                             context={"request": self.request})
+            if serializer.is_valid():
+                serializer.save()
+
+            final_json = json.loads(image_queryset.final_result)
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            gen_image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+
+            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis, metadata)
+            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+
+            if serializer.is_valid():
+                serializer.save()
+                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+                object_details = od.data
+                object_details['message'] = 'SUCCESS'
+                object_details['data'] = response
+                return Response(object_details)
+            return Response(serializer.errors)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
+
+    @list_route(methods=['post'])
+    def update_image_custom(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            metadata = json.loads(image_queryset.metadata)
+            final_json = json.loads(image_queryset.final_result)
+            analysis = json.loads(image_queryset.analysis)
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            gen_image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+
+            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis, metadata)
+            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+
+            if serializer.is_valid():
+                serializer.save()
+                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+                object_details = od.data
+                object_details['message'] = 'SUCCESS'
+                return Response(object_details)
+            return Response(serializer.errors)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to update the image!', 'error': str(e)})
+
+    @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
         data = request.data
         x = data['x']
@@ -1252,7 +1340,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             }
             if request.user.username in foreign_user_mapping:
                 gen_image, _ = ui_flag_v4(cv2.imread(mask), final_json, image_path,
-                                             analysis, foreign_user_mapping[request.user.username])
+                                          analysis, foreign_user_mapping[request.user.username])
             else:
                 gen_image, _, _ = ui_flag_v2(cv2.imread(mask), final_json, image_path,
                                              analysis)
@@ -1591,7 +1679,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             data = kwargs.get('data')
         else:
             data = request.data
-        #---------------Project Name check Validations-----------
+        # ---------------Project Name check Validations-----------
         should_proceed = name_check(data['name'])
         if should_proceed < 0:
             if should_proceed == -1:
@@ -1600,7 +1688,7 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 return creation_failed_exception("Name is very large.")
             if should_proceed == -3:
                 return creation_failed_exception("Name have special_characters.")
-        #--------------------------------------------------------
+        # --------------------------------------------------------
         data = convert_to_string(data)
         projectname_list = []
         project_query = self.get_queryset()
@@ -1675,41 +1763,41 @@ class ProjectView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         try:
             if 'deleted' in data:
                 userGroup = request.user.groups.all()[0].name
-                if userGroup in ['Admin','Superuser']:
+                if userGroup in ['Admin', 'Superuser']:
                     instance = self.get_object_from_all()
                     if data['deleted'] == True:
                         instance.deleted = True
                         instance.save()
-                        #Deleting OCR Images on same project
-                        ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                        # Deleting OCR Images on same project
+                        ocr_images = OCRImage.objects.filter(project__slug=self.kwargs['slug'])
                         for image in ocr_images:
                             image.deleted = True
                             image.save()
                         return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL1":
-                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    ocr_images = OCRImage.objects.filter(project__slug=self.kwargs['slug'])
                     for image in ocr_images:
                         if image.l1_assignee == request.user:
                             image.l1_assignee = None
                             image.save()
-                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    rev = ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
                     for obj in rev:
                         try:
-                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task = Task.objects.get(object_id=obj.id, assigned_user=request.user)
                             task.delete()
                         except:
                             pass
                     return JsonResponse({'message': 'Deleted'})
                 elif userGroup == "ReviewerL2":
-                    ocr_images= OCRImage.objects.filter(project__slug=self.kwargs['slug'])
+                    ocr_images = OCRImage.objects.filter(project__slug=self.kwargs['slug'])
                     for image in ocr_images:
                         if image.assignee == request.user:
                             image.assignee = None
                             image.save()
-                    rev=ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
+                    rev = ReviewRequest.objects.filter(ocr_image__project__slug=self.kwargs['slug'])
                     for obj in rev:
                         try:
-                            task = Task.objects.get(object_id=obj.id,assigned_user=request.user)
+                            task = Task.objects.get(object_id=obj.id, assigned_user=request.user)
                             task.delete()
                         except:
                             pass
