@@ -6079,7 +6079,6 @@ def get_algorithm_config_list(request):
     try:
         app_type = request.GET['app_type']
         mode = request.GET['mode']
-        slug = request.GET['slug']
     except:
         app_type = "CLASSIFICATION"
     try:
@@ -6088,9 +6087,11 @@ def get_algorithm_config_list(request):
         levels = 2
 
     user = request.user
-    dataset_object = Dataset.objects.get(slug=slug)
-    import os
-    dataset_filesize = os.stat(dataset_object.input_file.path).st_size
+    if mode == "analyst":
+        import os
+        slug = request.GET['slug']
+        dataset_object = Dataset.objects.get(slug=slug)
+        dataset_filesize = os.stat(dataset_object.input_file.path).st_size
     try:
         if app_type == "CLASSIFICATION" and mode == 'autoML':
             algorithm_config_list = copy.deepcopy(settings.AUTOML_ALGORITHM_LIST_CLASSIFICATION)

@@ -8,6 +8,8 @@ import cv2
 import os
 import matplotlib as mpl
 from PIL import ImageFont, ImageDraw, Image
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 if os.environ.get('DISPLAY', '') == '':
@@ -163,6 +165,70 @@ class ui_corrections:
         upd = {'U1': u1}
         # update_u1(upd, image_name)
         return upd, final_json
+
+    def flag_words_to_plot_custom(self, final_json, metadata):
+        final_dict = {}
+        for field in metadata['custom_fields']:
+            p1, p3 = metadata['custom_fields'][field]['BoundingBox']
+
+            final_dict[field] = []
+            for k in final_json["paragraphs"]:
+                for l in final_json["paragraphs"][k]:
+                    for m in l:
+                        p1w = m['boundingBox']["p1"]
+                        p3w = m['boundingBox']["p3"]
+                        p2w = [p3[0], p1[1]]
+                        p4w = [p1[0], p3[1]]
+                        bb = p1w + p2w + p3w + p4w
+                        x, y = self.calculate_centroid(p1w, p3w)
+
+                        if self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3):
+                            m['flag'] = True
+                            final_dict[field].append((m['text'], bb))
+                        elif 'flag' in list(m.keys()):
+                            pass
+                        else:
+                            m['flag'] = False
+
+            for k in final_json["tables"]:
+                for l in final_json["tables"][k]:
+                    for m in final_json["tables"][k][l]["words"]:
+                        p1w = m['boundingBox']["p1"]
+                        p3w = m['boundingBox']["p3"]
+                        p2w = [p3[0], p1[1]]
+                        p4w = [p1[0], p3[1]]
+                        bb = p1w + p2w + p3w + p4w
+                        x, y = self.calculate_centroid(p1w, p3w)
+
+                        if self.check_if_centroid_inbetween_p1_p3([x, y], p1, p3):
+                            m['flag'] = True
+                            final_dict[field].append((m['text'], bb))
+                        elif 'flag' in list(m.keys()):
+                            pass
+                        else:
+                            m['flag'] = False
+
+        for label in final_dict:
+
+            words = final_dict[label]
+            label_final = []
+
+            #            depths = list(map(lambda x : x[1][1] , words))
+            depths = list(map(lambda x: int((x[1][1] + x[1][5]) * 0.5), words))
+            groups_formed = dict(enumerate(grouper(depths), 1))
+
+            for group in groups_formed:
+                sub_line = []
+                for word in words:
+                    #                    if word[1][1] in groups_formed[group]:
+                    if int((word[1][1] + word[1][5]) * 0.5) in groups_formed[group]:
+                        sub_line.append(word[0])
+                    else:
+                        pass
+                label_final.append(' '.join(sub_line))
+
+            final_dict[label] = '\n'.join(label_final)
+        return final_dict, final_json
 
     def highlight_word(self, img, text, cord, fontScale,
                        font):  # text = "Some text in a box!"  img = np.zeros((500, 500))
@@ -411,7 +477,7 @@ class ui_corrections:
                         #                            print(text)
                         # x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
                         # if x:
-                            #                            print(text)
+                        #                            print(text)
                         x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
                             words_with_special_characters.append(m)
@@ -797,3 +863,117 @@ def dynamic_cavas_size(shape):
     dim = height_scaled, width_scaled
 
     return dim
+
+
+def custom_field(analysis, cords):  ##[p1,p3]
+
+    final_dict = {}
+    wc = []
+    for i, line in enumerate(analysis["lines"]):
+        wc.append([(word['boundingBox'], word['text']) for word in line['words']])
+
+    p1, p3 = cords
+    p2 = [p3[0], p1[1]]
+    p4 = [p1[0], p3[1]]
+    bb = [p1, p2, p3, p4]
+    tp = Polygon(bb)
+
+    final_dict['label'] = []
+    for line in wc:
+        for word in line:
+            bb = word[0]
+            centroid = Point(int((bb[0] + bb[2]) * 0.5), int((bb[1] + bb[5]) * 0.5))
+            if tp.contains(centroid):
+                if (list(set(word[1])) != ['.']) and (list(set(word[1])) != ['.', ' ']):
+                    final_dict['label'].append((word[1], word[0]))
+                else:
+                    pass
+            else:
+                pass
+
+    for label in final_dict:
+
+        words = final_dict[label]
+        label_final = []
+
+        depths = list(map(lambda x: int((x[1][1] + x[1][5]) * 0.5), words))
+        groups_formed = dict(enumerate(grouper(depths), 1))
+
+        for group in groups_formed:
+            sub_line = []
+            for word in words:
+                if int((word[1][1] + word[1][5]) * 0.5) in groups_formed[group]:
+                    sub_line.append(word[0])
+                else:
+                    pass
+            label_final.append(' '.join(sub_line))
+
+        final_dict[label] = '\n'.join(label_final)
+
+    return final_dict['label']
+
+
+# def custom_fields_adapter(p1, p3, **labels):
+#     custom_fields_new = dict()
+#     if labels:
+#         custom_fields_new[]
+
+
+def update_meta(data, metadata):  ## FOR EACH SELECTION
+
+    # data = {'label': 'default_label' , 'BoundingBox': [p1,p3] , 'Type' : 'Alpha'}
+    if 'custom_fields' not in list(metadata.keys()):
+        metadata['custom_fields'] = {}
+
+    if len(metadata['custom_fields']) == 0:
+
+        if data['label'] == 'default_label':
+            custom_field = 'label1'
+        else:
+            custom_field = data['label']
+    else:
+        if data['label'] == 'default_label':
+            default_labels = [x for x in list(metadata['custom_fields'].keys()) if 'label' in x]
+            if len(default_labels) == 0:
+                custom_field = 'label1'
+            else:
+                custom_field = 'label' + str(int(sorted(default_labels)[-1][-1]) + 1)
+        else:
+            custom_field = data['label']
+
+    metadata['custom_fields'][custom_field] = {}
+
+    for key in data:
+        if key != 'label':
+            metadata['custom_fields'][custom_field][key] = data[key]
+
+    return metadata
+
+
+def grouper(iterable):
+    prev = None
+    group = []
+    for item in iterable:
+        if not prev or item - prev <= 10:
+            group.append(item)
+        else:
+            yield group
+            group = [item]
+        prev = item
+    if group:
+        yield group
+
+
+def ui_flag_custom(mask, final_json, gen_image_path, analysis, metadata):
+    uc_obj = ui_corrections(mask, final_json)
+    final_json = uc_obj.default_all_words_flag_to_false(final_json)
+    doc_accuracy, total_words = uc_obj.document_confidence(analysis)
+
+    if 'custom_fields' in metadata.keys():
+        custom_words, fj = uc_obj.flag_words_to_plot_custom(final_json, metadata)
+
+        uc_obj.render_flagged_image(fj, uc_obj.mask, gen_image_path)
+
+    else:
+        print('No custom Field info found in metadata')
+    return gen_image_path, doc_accuracy, total_words, custom_words
