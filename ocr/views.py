@@ -1250,7 +1250,24 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if serializer.is_valid():
                 serializer.save()
 
-            return JsonResponse({'data': response})
+            final_json = json.loads(image_queryset.final_result)
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            gen_image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
+
+            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis, metadata)
+            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
+                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
+            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
+                                             context={"request": self.request})
+
+            if serializer.is_valid():
+                serializer.save()
+                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
+                object_details = od.data
+                object_details['message'] = 'SUCCESS'
+                object_details['data'] = response
+                return Response(object_details)
+            return Response(serializer.errors)
         except Exception as e:
             return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
 
