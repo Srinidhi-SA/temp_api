@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { OcrTable } from "./OcrTable";
 import { OcrImage } from "./ocrImage";
-import {RevDocTable} from './RevDocTable'
+import {RevDocTable} from './RevDocTable';
 @connect((store) => {
   return {
     imageFlag: store.ocr.imageFlag,
