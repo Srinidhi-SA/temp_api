@@ -158,7 +158,7 @@ def upload_dir(instance, filename):
     return os.path.join('ocrData', filename)
 
 
-#post_save.connect(send_email, sender=OCRUserProfile)
+post_save.connect(send_email, sender=OCRUserProfile)
 
 
 class Project(models.Model):
