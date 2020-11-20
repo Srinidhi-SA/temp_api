@@ -14,7 +14,7 @@ from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 
 from ocr import validators
-from ocr.tasks import send_welcome_email
+from ocr.tasks import send_welcome_email, send_info_email
 
 
 # -------------------------------------------------------------------------------
@@ -142,6 +142,14 @@ def send_email(sender, instance, created, **kwargs):
         print("Sending welcome mail ...")
         send_welcome_email.delay(username=instance.ocr_user.username)
 
+        #Adding info mail for Admin
+        from django_currentuser.middleware import (
+        get_current_user, get_current_authenticated_user)
+        user=get_current_authenticated_user()
+        send_info_email.delay(username=instance.ocr_user.username,
+            supervisor=user.username
+            )
+
 
 def upload_dir(instance, filename):
     fullname = os.path.join(settings.MEDIA_ROOT, 'ocrData', filename)
@@ -150,7 +158,7 @@ def upload_dir(instance, filename):
     return os.path.join('ocrData', filename)
 
 
-post_save.connect(send_email, sender=OCRUserProfile)
+#post_save.connect(send_email, sender=OCRUserProfile)
 
 
 class Project(models.Model):
@@ -313,6 +321,8 @@ class OCRImage(models.Model):
     conf_google_response = models.TextField(max_length=3000000, default="{}", null=True)
     analysis_list = models.TextField(max_length=3000000, default="[]", null=True)
     analysis = models.TextField(max_length=3000000, default="{}", null=True)
+    metadata = models.TextField(max_length=3000000, default="{}", null=True)
+    custom_data = models.TextField(max_length=3000000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     classification = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=3000000, default="{}", null=True)

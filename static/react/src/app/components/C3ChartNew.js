@@ -87,10 +87,9 @@ export class C3ChartNew extends React.Component{
   getChartElement() {
     if (this.props.classId == '_side') {
       return $(".chart", this.element);
-    } else if (this.props.widthPercent) {
+    }else if (this.props.widthPercent) {
       return $(".chart" + this.props.classId, this.element);
-    } else if(store.getState().signals.viewChartFlag){
-      
+    }else if(store.getState().signals.viewChartFlag){
       return $("."+this.props.classId, this.element);
     }
     return $(".chart" + this.props.classId, this.element);
@@ -469,15 +468,6 @@ export class C3ChartNew extends React.Component{
         "tooltip":{
           "format": (chartData.tooltip!=undefined && chartData.tooltip.format!=undefined)?d3.format(chartData.tooltip.format):"",
           "show" : (chartData.tooltip!=undefined && chartData.tooltip.show!=undefined)?chartData.tooltip.show:true
-        },
-        "onrendered": function(){
-          if(window.location.pathname.includes("automated-prediction-30vq9q5scd") && window.location.pathname.includes("/modelManagement/")){
-            d3.select(this.config.bindto).select(".c3-axis-x-label").attr("y", "-30px");
-            if(d3.select(this.config.bindto).select(".c3-legend-item text")[0][0] !=null){
-              let y = d3.select(this.config.bindto).select(".c3-legend-item text").attr("y");
-              d3.select(this.config.bindto).selectAll(".c3-legend-item").attr("transform", "translate(32,-20)");
-            }
-          }
         }
       }
       break;
@@ -559,10 +549,26 @@ export class C3ChartNew extends React.Component{
       myData.subchart.show = false
     }
 
+    myData.onrendered=function(){
+      if(that.props.xdata){
+        d3.select(this.config.bindto).selectAll(".c3-axis-x>.tick>text").append("title")
+        .text(function(d){
+          return that.props.xdata[d];
+        });
+      }
+      if(window.location.pathname.includes("automated-prediction-30vq9q5scd") && window.location.pathname.includes("/modelManagement/")){
+        d3.select(this.config.bindto).select(".c3-axis-x-label").attr("y", "-30px");
+        if(d3.select(this.config.bindto).select(".c3-legend-item text")[0][0] !=null){
+          let y = d3.select(this.config.bindto).select(".c3-legend-item text").attr("y");
+          d3.select(this.config.bindto).selectAll(".c3-legend-item").attr("transform", "translate(32,-20)");
+        }
+      }
+    }
+
     if (this.props.xdata) {
       if(!window.location.pathname.includes("/modelManagement/") || window.location.pathname.includes("regression-app")){
       myData.axis.x.tick.rotate=-53
-      myData.axis.x.tick.multiline=true
+      myData.axis.x.tick.multiline=false
       myData.axis.x.tick.outer = false;
       }
       let longLen = this.props.xdata.reduce((a,b) => a.length >= b.length?a:b);
@@ -570,18 +576,15 @@ export class C3ChartNew extends React.Component{
       if(longLen <= 5){
         myData.axis.x.height=70
         myData.axis.x.tick.width=50
-      }else if(longLen < 10){
-        myData.axis.x.height=90
-        myData.axis.x.tick.width=60
-      }else{
+      }else if(longLen <= 10){
         myData.axis.x.height=100
-        myData.axis.x.tick.width=90
+        myData.axis.x.tick.width=70
       }
 
       let xdata = this.props.xdata;
       myData.axis.x.tick.format = function(x) {
-        if (xdata[x] && xdata[x].length > 20) {
-         return xdata[x].substr(0,11) + "..."+xdata[x].substr(xdata[x].length-8)
+        if (xdata[x] && xdata[x].length > 10) {
+         return xdata[x].substr(0,8) + ".."
         } else {
           return xdata[x];
         } 
@@ -613,128 +616,8 @@ export class C3ChartNew extends React.Component{
     
   }
 
-  handleDocumentmodeTooltips(arr,target){
-    var shortListdata=""
-      for(var i=0;i<arr.length;i++){
-        for(var j=0;j<arr[i].length;j++){
-          for(var k=0;k<arr[i][j].cardData.length;k++){
-           if(arr[i][j].cardData[k].dataType=="html"){ 
-            if(arr[i][j].cardData[k].data.replace(/<[^>]*>?/gm, '').replace(/ /g,'').includes(target.replace(/ /g,''))){
-            shortListdata=arr[i][j].cardData.filter(item=>item.dataType=="c3Chart")[0].data.xdata      
-            }
-           }
-          }    
-        }
-      }
-      return shortListdata
-  } 
   render(){
     let that = this;
-    window.onmouseover = function(event){
-
-    var graphs=document.getElementsByClassName('c3-axis-y-label')
-     for(var i=0;i<graphs.length;i++){
-       graphs[i].classList.add("graph"+i)
-       var label = d3.select(".graph"+i);
-       if( label.text().length>32){
-        var word1=label.text().substring(28,"");
-        var word2=label.text().substring(28);
-        label.text("");
-        label.append("tspan").text(word1).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))-12).attr("x",graphs[i].getAttribute('x'));
-        label.append("tspan").text(word2).attr("dx", graphs[i].getAttribute('dx')).attr("dy", parseFloat(graphs[i].getAttribute('dy'))+59).attr("x",graphs[i].getAttribute('x'));
-       }
-       
-       if(graphs[i].innerHTML=="Residuals"){
-        d3.selectAll('.c3')[0][i].classList.add("residual")
-      }
-     }
-
-      if(event.target.tagName==="tspan" && event.target.parentElement!=null && event.target.parentElement.parentElement.getAttribute("class") === "tick" &&event.target.parentElement.parentElement.parentElement.getAttribute("class")==="c3-axis c3-axis-x"){ //isNaN(event.target.innerHTML)
-        let str = that.props.xdata
-        let stockData = store.getState().signals.signalAnalysis.listOfNodes;
-
-        if(this.location.pathname.includes('signaldocumentMode') && event.target.parentElement.children.length>1){
-          var selectedElement =""
-          for(let i=0;i<event.target.parentElement.children.length;i++){
-            selectedElement= selectedElement.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&"))
-          }
-          if(selectedElement.includes("...")){
-           let documentModeData=store.getState().signals.documentModeConfig;
-           var target=event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling.innerText
-           str= that.handleDocumentmodeTooltips(documentModeData,target)
-          }         
-        }
-          if(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.firstChild.innerText.includes("Influence of Key Features")){
-            str=store.getState().apps.modelSummary.data.model_summary.listOfCards[3].cardData[1].data.xdata
-          }
-        switch(event.target.parentElement.parentElement.parentElement.parentElement.parentElement.lastChild.innerHTML){
-          case "Articles by Stock": 
-            str = stockData[0].listOfCards[0].cardData[1].data.xdata
-            break;
-          case "Top Sources":
-            str = stockData[0].listOfCards[0].cardData[4].data.xdata
-            break;
-          case "Sentiment Score by Stocks":
-            str = stockData[0].listOfCards[0].cardData[5].data.xdata
-            break;
-          case "Sentiment Score by Source":
-              str = stockData[1].listOfNodes[0].listOfCards[0].cardData[1].data.xdata
-              break;
-          case "Sentiment Score by Concept":
-              str = stockData[1].listOfNodes[0].listOfCards[0].cardData[2].data.xdata
-              break;
-          case "Feature Importance":
-              str=store.getState().apps.modelSummary.data.model_summary.listOfCards[2].cardData[0].data.xdata
-        }    
-        let tooltip= "";
-        if(str != undefined){
-          str = str.map(i=>i.replace(/&amp/g, "&")) 
-          for(let i=0;i<event.target.parentElement.children.length;i++){
-            tooltip = tooltip.concat(event.target.parentElement.children[i].innerHTML.replace(/&amp/g, "&"))
-          }
-
-          if(tooltip.includes("...")){
-            var splitWords=tooltip.split('...')
-            for(let i=0;i<str.length;i++){
-              if(str[i].replace(/[^A-Z0-9\&\-]/ig, "").includes(splitWords[0].replace(/[^A-Z0-9\&\-]/ig, "")) && str[i].replace(/[^A-Z0-9\&\-]/ig, "").includes(splitWords[1].replace(/[^A-Z0-9\&\-]/ig, ""))){
-              tooltip = str[i]
-              }
-            }
-          }
-          else{
-            
-            tooltip =tooltip.includes('&lt')||tooltip.includes('&gt')? (tooltip.replace('&lt','<').replace('&gt', '>')).replace(';',''):tooltip   //.replace(/[^A-Z0-9\&\-]/ig, "")         
-          for(let i=0;i<str.length;i++){
-            if(str[i]==tooltip){
-            tooltip = str[i]
-            }
-          }
-        }       
-        }else{
-          if(event.target.parentElement.children.length>1){
-            let ar=[]
-            for(let i=0;i<(event.target.parentElement.children).length;i++){
-              ar.push((event.target.parentElement.children)[i].innerHTML.replace(/&amp/g, "&"))
-            }
-            tooltip = ar.join(" ")
-          }
-          else if(event.target.parentElement.children.length==1){
-            tooltip= event.target.parentElement.children[0].innerHTML.replace('&lt','<').replace(';',"").replace('&gt','>')
-          }
-        }
-        
-        var divi = d3.select("body").append("div").attr("class", "c3axistooltip").style("opacity", 0);
-        divi.transition().duration(200).style("opacity", .9);
-        divi.html(tooltip)
-          .style("left",(window.event.pageX) + "px")
-          .style("top", (window.event.pageY - 28) + "px"); 
-      }
-    }
-    window.onmouseout = function(){
-      if($(".c3axistooltip")[0]!=undefined){
-        $(".c3axistooltip").remove()
-      }
-    }
     if(store.getState().signals.viewChartFlag){
       return(
         <div className={this.props.classId}></div>

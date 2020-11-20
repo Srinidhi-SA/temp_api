@@ -1,0 +1,24 @@
+[
+  {
+    "model": "api.customapps",
+    "pk": 3,
+    "fields": {
+      "app_id": 2,
+      "name": "automated_prediction",
+      "slug": "automated-prediction-30vq9q5scd",
+      "displayName": "AUTOMATED PREDICTION",
+      "description": "To build machine learning models to predict the outcome of any target attribute.",
+      "tags": "Marketing,Operations",
+      "iconName": "icon_prediction.png",
+      "app_url": "apps/automated-prediction-30vq9q5scd/models",
+      "created_at": "2018-01-18T07:44:00.027Z",
+      "created_by": 1,
+      "status": "Active",
+      "live_status": "0",
+      "viewed": false,
+      "app_type": "CLASSIFICATION",
+      "rank": 0
+    }
+  }
+]
+

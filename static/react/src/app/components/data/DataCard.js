@@ -15,7 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,handleShare,refreshDatasets,resetSubsetting,getAllDataList,getAllUsersList, clearDataList} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName,openShareModalAction,closeShareModalAction} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -203,5 +203,7 @@ export class DataCard extends React.Component {
         
     }
     
-    
+    componentWillUnmount(){
+        this.props.dispatch(clearDataList())
+    }
 }

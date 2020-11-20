@@ -86,11 +86,14 @@ export class Card extends React.Component {
             switch (story.dataType) {
             case "html":
                 if(!story.hasOwnProperty("classTag"))story.classTag ="none";
-                return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
+                if(story.data!="" || story.data!=undefined)
+                    return (<CardHtml key={randomNum} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
+                else
+                    return ""
                 break;
             case "c3Chart":
                 let chartInfo=[]
-                if(!$.isEmptyObject(story.data)){
+                if(!$.isEmptyObject(story.data) && !$.isEmptyObject(story.data.chart_c3) ){
                    if(story.chartInfo){
                      chartInfo=story.chartInfo
                    }
@@ -118,6 +121,8 @@ export class Card extends React.Component {
                         let parentDivClass = "col-md-12";
                         return (<div className={parentDivClass}><div key={randomNum}><C3ChartNew chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }
+                }else{
+                    return ""
                 }
                 break;
             case "tree":
@@ -127,71 +132,86 @@ export class Card extends React.Component {
                 if(!story.tableWidth)story.tableWidth = 100;
                 var colClass= this.calculateWidth(story.tableWidth)
                 colClass = colClass;
-             return (<div className={colClass} key={randomNum}><CardTable classId={toggleTable} jsonData={story.data} type={story.dataType}/></div>);
+                if(story.data.tableData!=undefined || story.data.tableData.length!=0)
+                    return (<div className={colClass} key={randomNum}><CardTable classId={toggleTable} jsonData={story.data} type={story.dataType}/></div>);
+                else
+                    return ""
                 break;
             case "dropdown":
-                return (<PredictionDropDown key={randomNum} label={story.label} jsonData={story.data} type={story.dataType}/>);
+                if(story.data.length!=0 && story.data!=undefined)
+                    return (<PredictionDropDown key={randomNum} label={story.label} jsonData={story.data} type={story.dataType}/>);
+                else
+                    return ""
                 break;
             case "gauge":
                 return (<GaugeMeter key={randomNum} jsonData={story.data} type={story.dataType}/>);
                 break;
             case "dataBox":
-                return (<DataBox key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                if(story.data.length!=0 && story.data!=undefined)
+                    return (<DataBox key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                else
+                    return ""
                 break;
             case "wordCloud":
-                return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                if(story.data.length!=0 && story.data!=undefined)
+                    return (<WordCloud key={randomNum} jsonData={story.data} type={story.dataType}/>);
+                else
+                    return ""
                 break;
             case "toggle":
-                var varId = story.data.toggleon.data.tableData[0][0];
-                if(this.props.toggleValues[varId] == true){
-                    var toggleClass = "toggleOn hidden"
-                    var toggleClass1 = "toggleOff"
-                }
-                else{
-                    var toggleClass = "toggleOn"
-                    var toggleClass1 = "toggleOff hidden"
-                }
-                var tableData = [];
-                tableData.push(story.data.toggleon);
-                var toggleData =  this.renderCardData(tableData,toggleClass);
-                tableData = [];
-                tableData.push(story.data.toggleoff);
-                 var toggleData1 = this.renderCardData(tableData,toggleClass1);
-                var randomChk = randomNum+"_chk"
-                
-                if(this.props.toggleValues[varId] == true)
-                    var idchecked = true
-                else if(this.props.toggleValues[varId] == false)
-                    var idchecked = false
-                else
-                    var idchecked = false
-                var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-                                    <input type="checkbox" id={varId} name={varId} value={varId} defaultChecked={idchecked} onChange={this.handleCheckBoxEvent.bind(this)} />
-                                    <span><label for={varId}></label></span>
-                                </div>
-                return (<div key={varId}>{inputChk}{toggleData}{toggleData1}</div>);                    
+                if(!$.isEmptyObject(story.data) && story.data!=undefined){
+                    var varId = story.data.toggleon.data.tableData[0][0];
+                    if(this.props.toggleValues[varId] == true){
+                        var toggleClass = "toggleOn hidden"
+                        var toggleClass1 = "toggleOff"
+                    }
+                    else{
+                        var toggleClass = "toggleOn"
+                        var toggleClass1 = "toggleOff hidden"
+                    }
+                    var tableData = [];
+                    tableData.push(story.data.toggleon);
+                    var toggleData =  this.renderCardData(tableData,toggleClass);
+                    tableData = [];
+                    tableData.push(story.data.toggleoff);
+                    var toggleData1 = this.renderCardData(tableData,toggleClass1);                    
+                    if(this.props.toggleValues[varId] == true)
+                        var idchecked = true
+                    else if(this.props.toggleValues[varId] == false)
+                        var idchecked = false
+                    else
+                        var idchecked = false
+                    var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
+                                        <input type="checkbox" id={varId} name={varId} value={varId} defaultChecked={idchecked} onChange={this.handleCheckBoxEvent.bind(this)} />
+                                        <span><label for={varId}></label></span>
+                                    </div>
+                    return (<div key={varId}>{inputChk}{toggleData}{toggleData1}</div>);
+                }else
+                    return ""
                 break;
             case "kpi":
-            let boxData = story.data;
-            let divClass = "text-center";
-            if(story.widthPercent &&  story.widthPercent != 100){
-                        divClass="col-md-4 bgStockBox";
-            }
-            return(
-            <div key={i}className={divClass}>
-            
-                <h3 className="text-center xs-m-0">{boxData.value}
-                <br/>
-                <small>{boxData.text}</small>
-                </h3>
-                
-                
-            </div>
-			);
+                let boxData = story.data;
+                let divClass = "text-center";
+                if(story.widthPercent &&  story.widthPercent != 100){
+                    divClass="col-md-4 bgStockBox";
+                }
+                if(!$.isEmptyObject(story.data))
+                    return(
+                        <div key={i}className={divClass}>
+                            <h3 className="text-center xs-m-0">{boxData.value}<br/>
+                                <small>{boxData.text}</small>
+                            </h3>
+                        </div>
+                    );
+                else
+                    return ""
             break;
             case "button":
-            return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
-            break;
+                if(!$.isEmptyObject(story.data) && !$.isEmptyObject(story.data.chart_c3))
+                    return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
+                else
+                    return ""
+                break;
             case "parallelCoordinates":
             return(<D3ParallelChartt key={randomNum} data={story.data} hideColumns={story.hideColumns} hideaxes={story.ignoreList} id={this.props.id} evaluationMetricColName={story.evaluationMetricColName} columnOrder={story.columnOrder}/>);
             break;
