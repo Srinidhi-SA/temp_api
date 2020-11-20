@@ -322,6 +322,7 @@ class OCRImage(models.Model):
     analysis_list = models.TextField(max_length=3000000, default="[]", null=True)
     analysis = models.TextField(max_length=3000000, default="{}", null=True)
     metadata = models.TextField(max_length=3000000, default="{}", null=True)
+    custom_data = models.TextField(max_length=3000000, default="{}", null=True)
     flag = models.CharField(max_length=300, default="", null=True)
     classification = models.CharField(max_length=300, default="", null=True)
     final_result = models.TextField(max_length=3000000, default="{}", null=True)

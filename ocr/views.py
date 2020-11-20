@@ -999,8 +999,9 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
         object_details.update({'values': value})
+        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in json.loads(object_details['custom_data']).items()]
         desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
-                            'classification']
+                            'classification', 'custom_data']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
         mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
         size = cv2.imread(mask).shape
@@ -1216,6 +1217,33 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         data = request.data
         p1 = data['p1']
         p3 = data['p3']
+
+        try:
+            image_queryset = OCRImage.objects.get(slug=data['slug'])
+            custom_data = json.loads(image_queryset.custom_data)
+            analysis = json.loads(image_queryset.analysis)
+
+            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
+            size = cv2.imread(mask).shape
+            dynamic_shape = dynamic_cavas_size(size[:-1])
+            p1 = offset(p1, size, dynamic_shape)
+            p3 = offset(p3, size, dynamic_shape)
+            response = custom_field(analysis, [p1, p3])
+            response = {
+                "slug": data['slug'],
+                "message": "SUCCESS",
+                "data": response,
+                "labels_list": [key for key in custom_data]
+            }
+            return Response(response)
+        except Exception as e:
+            return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
+
+    @list_route(methods=['post'])
+    def save_word_custom(self, request, *args, **kwargs):
+        data = request.data
+        p1 = data['p1']
+        p3 = data['p3']
         type = 'Alpha'
         label = 'default_label'
         if 'type' in data:
@@ -1243,8 +1271,10 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             p3 = offset(p3, size, dynamic_shape)
             update_data = {'label': label, 'BoundingBox': [p1, p3], 'Type': type}
             response = custom_field(analysis, [p1, p3])
+            custom_data = json.loads(image_queryset.custom_data)
+            custom_data[label] = response
             metadata = update_meta(update_data, metadata)
-            data1 = {'metadata': json.dumps(metadata)}
+            data1 = {'metadata': json.dumps(metadata), 'custom_data': json.dumps(custom_data)}
             serializer = self.get_serializer(instance=image_queryset, data=data1, partial=True,
                                              context={"request": self.request})
             if serializer.is_valid():
@@ -1266,37 +1296,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 object_details = od.data
                 object_details['message'] = 'SUCCESS'
                 object_details['data'] = response
+                object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
                 return Response(object_details)
             return Response(serializer.errors)
         except Exception as e:
             return JsonResponse({'message': 'Failed to fetch any words!', 'error': str(e)})
-
-    @list_route(methods=['post'])
-    def update_image_custom(self, request, *args, **kwargs):
-        data = request.data
-        try:
-            image_queryset = OCRImage.objects.get(slug=data['slug'])
-            metadata = json.loads(image_queryset.metadata)
-            final_json = json.loads(image_queryset.final_result)
-            analysis = json.loads(image_queryset.analysis)
-            mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
-            gen_image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
-
-            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis, metadata)
-            data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
-                                           file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
-            serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
-                                             context={"request": self.request})
-
-            if serializer.is_valid():
-                serializer.save()
-                od = OCRImageExtractListSerializer(instance=image_queryset, context={'request': request})
-                object_details = od.data
-                object_details['message'] = 'SUCCESS'
-                return Response(object_details)
-            return Response(serializer.errors)
-        except Exception as e:
-            return JsonResponse({'message': 'Failed to update the image!', 'error': str(e)})
 
     @list_route(methods=['post'])
     def update_word(self, request, *args, **kwargs):
