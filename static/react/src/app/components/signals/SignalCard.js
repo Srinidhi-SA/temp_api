@@ -47,7 +47,10 @@ export class SignalCard extends React.Component {
     }
     getSignalAnalysis(status,itemSlug) {
       if(status==FAILED){
-        bootbox.alert(statusMessages("error",this.props.signalList.filter(i=>(i.slug===itemSlug))[0].completed_message,"small_mascot"));
+        bootbox.alert({
+          message:statusMessages("error",this.props.signalList.filter(i=>(i.slug===itemSlug))[0].completed_message,"failed_mascot"),
+          className:"fCard"
+        });
       }else{
         this.props.dispatch(emptySignalAnalysis());
       }

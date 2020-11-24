@@ -4,7 +4,9 @@ import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
 import renderHTML from 'react-render-html';
 import {API, STATIC_URL} from "./env";
-import {showLoading, hideLoading} from 'react-redux-loading-bar'
+import {showLoading, hideLoading} from 'react-redux-loading-bar';
+import { renderToString } from 'react-dom/server'
+import Scrollbars from "react-custom-scrollbars/lib/Scrollbars";
 
 function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
@@ -555,7 +557,13 @@ export function statusMessages(msg_type, msg, mascot_type) {
   }
   if (mascot_type == "without_mascot") {
     htmlString = '<div class="border border-danger"><h4 class="alert-heading">Error !</h4><p>' + msg + '</p></div>'
-  } else {
+  }else if(mascot_type ==="failed_mascot"){
+    let strng = renderToString(<Scrollbars autoHeight autoHeightMax={275} autoHide={false}
+      renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>} 
+      renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
+      {msg}</Scrollbars>)
+    htmlString = '<div class="row" style="display:flex"><div class="col-md-4" style="display: flex"><img src=' + imgsrc_url + ' class="img-responsive" style="margin:auto"/></div><div class="col-md-8">'+status_text+'<p>'+strng+'</p></div></div>'
+  }else {
     htmlString = '<div class="row"><div class="col-md-4"><img src=' + imgsrc_url + ' class="img-responsive" /></div><div class="col-md-8">' + status_text + '<p>' + msg + '</p></div></div>';
   }
   return htmlString

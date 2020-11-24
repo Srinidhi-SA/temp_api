@@ -23196,3 +23196,6 @@ body .p-multiselect.regParamFocus:hover {
 .templateScroll li a{
   padding-left: 10px;
 }
+.fCard button.close{
+  display: none !important
+}

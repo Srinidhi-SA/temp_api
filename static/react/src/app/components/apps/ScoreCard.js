@@ -53,7 +53,10 @@ export class ScoreCard extends React.Component {
     }
     getScoreSummary(slug,status,sharedSlug) {
         if(status==FAILED){
-            bootbox.alert(statusMessages("error","Unable to create Score. Please check your connection and try again.","small_mascot"));            
+            bootbox.alert({
+                message:statusMessages("error","Unable to create Score. Please check your connection and try again.","failed_mascot"),
+                className:"fCard"
+            });
         }else{
             this.props.dispatch(updateScoreSlug(slug,sharedSlug));
         }

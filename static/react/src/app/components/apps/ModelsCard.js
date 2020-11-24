@@ -52,7 +52,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         }
         getFailedMsg(status,itemSlug) {
             if(status==FAILED){
-                bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug==itemSlug))[0].completed_message,"small_mascot"));            
+                bootbox.alert({
+                    message:statusMessages("error",this.props.data.filter(i=>(i.slug==itemSlug))[0].completed_message,"failed_mascot"),
+                    className:"fCard"
+                });
             }
             else
                 return;
