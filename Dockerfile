@@ -11,7 +11,9 @@ RUN . myenv/bin/activate && apt-get install libmysqlclient-dev -y && apt install
 RUN apt-get install curl -y
 ADD code.tgz /home/mAdvisor/
 COPY startup.sh /home/mAdvisor/mAdvisor-api/
+COPY migrate.sh /home/mAdvisor/mAdvisor-api/
 RUN chmod +x /home/mAdvisor/mAdvisor-api/startup.sh
+RUN chmod +x /home/mAdvisor/mAdvisor-api/migrate.sh
 COPY apps.json /home/mAdvisor/mAdvisor-api/apps.json
 RUN chmod +x /home/mAdvisor/mAdvisor-api/apps.json
 RUN mkdir /home/mAdvisor/mAdvisor-api/server_log
