@@ -2,7 +2,6 @@ FROM ubuntu:16.04
 
 RUN mkdir /home/mAdvisor/
 WORKDIR /home/mAdvisor/
-
 ADD requirements.tgz /home/mAdvisor/
 RUN apt-get update
 RUN apt-get install python-pip virtualenv enchant vim telnet net-tools -y
