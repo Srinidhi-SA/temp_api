@@ -110,7 +110,7 @@ export class OverViewPage extends React.Component {
       this.props.dispatch(uploadStockAnalysisFlag(false))
       this.props.history.push("/apps-stock-advisor")
     }else
-      this.props.history.push("/signals");
+      window.location.pathname = "/signals"
   }
   gotoScoreData(){
     this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))

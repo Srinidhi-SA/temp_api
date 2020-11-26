@@ -55,7 +55,7 @@ export class SignalDocumentMode extends React.Component {
     if(this.props.match.url.indexOf("apps-regression") != -1)
     this.props.history.push("/apps-regression/scores")
     else
-    this.props.history.push("/signals");
+    window.location.pathname = "/signals"
   }
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
