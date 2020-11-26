@@ -184,7 +184,14 @@ export class AppsModelDetail extends React.Component {
 							return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 						}
 					}else{
-						return""
+						if(data.cardWidth == 100 || componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+							componentsWidth = data.cardWidth;
+							return (<div key={i} className={clearfixClass}></div>)
+						}
+						else{
+							componentsWidth = componentsWidth+data.cardWidth;
+							return (<div key={i} className={nonClearfixClass}></div>)
+						}
 					}
 				});
 			}
