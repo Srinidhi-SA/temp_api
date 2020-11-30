@@ -6,7 +6,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,getRoboDataset} from "../../actions/appActions";
+import {getListOfCards,getRoboDataset} from "../../actions/appActions";
 import {storeSignalMeta,hideDataPreview} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"

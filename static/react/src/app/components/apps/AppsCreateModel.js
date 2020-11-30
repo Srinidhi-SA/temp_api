@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModelSuccess,createModel,onModeSelection,getAllModelList,selectMetricAction,saveSelectedValuesForModel} from "../../actions/appActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModel,getAllModelList,selectMetricAction,saveSelectedValuesForModel} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering,dispatchDataPreviewAutoML,resetSelectedVariables} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
@@ -87,7 +87,6 @@ export class AppsCreateModel extends React.Component {
             this.props.dispatch(dataUpload())
         }
 	}
-// function triggerCreateModel(token, modelName, targetVariable, targetLevel, dispatch) {
 
 	submitAutoMlVal(mode){
 		let letters = /^[0-9a-zA-Z\-_\s]+$/;

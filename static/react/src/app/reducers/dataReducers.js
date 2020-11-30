@@ -877,15 +877,6 @@ export default function reducer(state = {
       }
     }
     break;
-
-    case "OUTLIER_UR":
-    {
-      return{
-        ...state,
-        olUpperRange : action.value
-      }
-    }
-
     case "DATACLEANSING_DATA_TYPE_CHANGE":
     {
        var newDataPreview = state.dataPreview

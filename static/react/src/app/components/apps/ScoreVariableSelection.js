@@ -5,7 +5,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
+import {createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,variableSlectionBack,SaveScoreName} from "../../actions/dataActions";
 import {statusMessages} from "../../helpers/helper";

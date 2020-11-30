@@ -20,7 +20,6 @@ import {
     updateScoreSlug,
     handleScoreRename,
     handleScoreDelete,
-    activateModelScoreTabs,
     storeScoreSearchElement,
     storeAppsScoreSortElements,
     getAppDetails,
@@ -231,7 +230,6 @@ export class AppsScoreList extends React.Component {
         }else
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/scores?page=' + eventKey + '')
             
-          //  this.props.dispatch(activateModelScoreTabs(2));
         this.props.dispatch(getAppsScoreList(eventKey));
     }
     clearSearchElement(e){

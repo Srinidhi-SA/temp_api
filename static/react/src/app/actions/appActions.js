@@ -1,11 +1,10 @@
-import { API, EMR, STATIC_URL } from "../helpers/env";
+import { API, STATIC_URL } from "../helpers/env";
 import { PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE, statusMessages } from "../helpers/helper";
 import store from "../store";
-import Notifications, { notify } from 'react-notify-toast';
+import { notify } from 'react-notify-toast';
 import {
   APPSLOADERPERVALUE,
   LOADERMAXPERVALUE,
-  DEFAULTINTERVAL,
   APPSDEFAULTINTERVAL,
   CUSTOMERDATA,
   HISTORIALDATA,
@@ -34,8 +33,6 @@ import Dialog from 'react-bootstrap-dialog';
 import React from "react";
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import { createcustomAnalysisDetails } from './signalActions';
-import { browserHistory } from 'react-router'
-import { AppsLoader } from "../components/common/AppsLoader";
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
@@ -45,13 +42,9 @@ export function getHeader(token) {
   return { 'Authorization': token, 'Content-Type': 'application/json' };
 }
 
-export function onModeSelection() {
-  return { type: "MODE_SELECTION" }
-}
 export function openModelPopup() {
   return { type: "APPS_MODEL_SHOW_POPUP" }
 }
-
 export function closeModelPopup() {
   return { type: "APPS_MODEL_HIDE_POPUP" }
 }
@@ -65,19 +58,17 @@ export function refreshAppsModelList(props) {
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       let modelLst = store.getState().apps.modelList.data
-        if(modelLst!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
+      if(modelLst!=undefined && modelLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsModelList(parseInt(pageNo)));
-    }
-      , APPSDEFAULTINTERVAL);
+    }, APPSDEFAULTINTERVAL);
   }
 }
-
 
 export function getAllModelList() {
   return (dispatch) => {
     return fetchAllModelList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
         if(response.status === 200){
-            dispatch(fetchAllModelSuccess(json))
+          dispatch(fetchAllModelSuccess(json))
         }else{
           dispatch(fetchAllModelError(json))
         }
@@ -90,7 +81,6 @@ function fetchAllModelList(token) {
       headers: getHeader(token)
   }).then( response => Promise.all([response, response.json()]));
 }
-
 function fetchAllModelError(json) {
   return {
       type: "MODEL_ALL_LIST_ERROR",
@@ -100,17 +90,12 @@ function fetchAllModelError(json) {
 export function fetchAllModelSuccess(doc){
   var data = ""
   if(doc.allModelList !=undefined && doc.allModelList[0]!= undefined){
-      data = doc.allModelList;
+    data = doc.allModelList;
   }
   return {
-      type: "MODEL_ALL_LIST",
-      data,
+      type: "MODEL_ALL_LIST",data,
   }
 }
-
-
-
-
 
 export function getAppsModelList(pageNo) {
   return (dispatch) => {
@@ -134,45 +119,38 @@ function fetchModelList(pageNo, token) {
     apps_model_sorttype = ""
   else if (apps_model_sorttype == 'desc')
     apps_model_sorttype = "-"
-
-    if (search_element != "" && search_element != null && filter_by_mode!=""&& filter_by_mode!=null) {
-     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-        method: 'get',
-        headers: getHeader(token)
-      }).then(response => Promise.all([response, response.json()]));
-    }
-    else if (search_element != "" && search_element != null) {
+  if (search_element != "" && search_element != null && filter_by_mode!=""&& filter_by_mode!=null) {
+    return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else if (search_element != "" && search_element != null) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-    } 
-    else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)&& filter_by_mode!=""&& filter_by_mode != null) {
+  }else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)&& filter_by_mode!=""&& filter_by_mode != null) {
       return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId +'&mode=' + filter_by_mode + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
         method: 'get',
         headers: getHeader(token)
       }).then(response => Promise.all([response, response.json()]));
-      }else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
+  }else if ((apps_model_sorton != "" && apps_model_sorton != null) && (apps_model_sorttype != null)) {
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&sorted_by=' + apps_model_sorton + '&ordering=' + apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-    } else if(filter_by_mode!=""&& filter_by_mode!=null){
+  }else if(filter_by_mode!=""&& filter_by_mode!=null){
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&mode=' + filter_by_mode + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-   
-    // return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  }
-  else{
+  }else{
     return fetch(API + '/api/trainer/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
 }
-
 function fetchModelListError(json) {
   return { type: "MODEL_LIST_ERROR", json }
 }
@@ -182,7 +160,6 @@ export function fetchModelListSuccess(doc) {
   var latestModels = doc.top_3
   return { type: "MODEL_LIST", data, latestModels, current_page }
 }
-
 function fetchAlgoListError(json) {
   return { type: "ALGO_LIST_ERROR", json }
 }
@@ -205,6 +182,7 @@ export function getAppsAlgoList(pageNo) {
     })
   }
 }
+
 export function clearAppsAlgoList(){
   return {
     type: "CLEAR_APPS_ALGO_LIST"
@@ -223,7 +201,6 @@ export function createDeploy(slug) {
     })
   }
 }
-
 function triggerCreateDeploy(token, slug, dispatch) {
   let deploy_details = store.getState().apps.deployData;
   var slug = slug;
@@ -236,14 +213,12 @@ function triggerCreateDeploy(token, slug, dispatch) {
     bootbox.alert("Unable to connect to server. Check your connection please try again.")
   });
 }
-
 function createDeploySuccess(slug, dispatch) {
   return { type: "CREATE_DEPLOY_SUCCESS", slug }
 }
 function createDeployError() {
   return { type: "CREATE_DEPLOY_ERROR" }
 }
-
 function fetchAlgoList(pageNo, token, filtername) {
   let search_element = store.getState().apps.algo_search_element;
   if ((search_element != "" && search_element != null) || (filtername)) {
@@ -252,23 +227,13 @@ function fetchAlgoList(pageNo, token, filtername) {
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
-  //   }else if (filtername) {
-  //     return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {  
-
-  //       method: 'get',
-  //       headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  //   }).then( response => Promise.all([response, response.json()]));
-
-  //  }
   else {
-    // return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE+ '', {
     return fetch(API + '/api/trainalgomapping/?app_id=' + store.getState().apps.currentAppId + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
 }
-
 
 export function refreshAppsAlgoList(props) {
   return (dispatch) => {
@@ -279,10 +244,8 @@ export function refreshAppsAlgoList(props) {
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.app_url + "/modelManagement")
-
         dispatch(getAppsAlgoList(parseInt(pageNo)));
-    }
-      , APPSDEFAULTINTERVAL);
+    }, APPSDEFAULTINTERVAL);
   }
 }
 
@@ -300,19 +263,12 @@ function deleteAlgo(slug, dialog, dispatch) {
     }
   })
 }
-
-
-
-
 function deleteAlgoAPI(slug) {
-  // return fetch(API + '/api/trainalgomapping/' + slug +'/clone/', {
-  // api/trainalgomapping/<some-slug>/clone/
   return fetch(API + '/api/trainalgomapping/' + slug + '/', {
     method: 'put',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({ deleted: true })
   }).then(response => Promise.all([response, response.json()]));
-
 }
 
 export function handleAlgoDelete(slug, dialog) {
@@ -321,14 +277,12 @@ export function handleAlgoDelete(slug, dialog) {
   }
 }
 
-
 export function getAllProjectList(pageNo,appId) {
   return (dispatch) => {
     return fetchAllProjectList(appId,getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(fetchAllProjectSuccess(json))
-      }
-      else {
+      }else {
         dispatch(fetchAllProjectError(json))
       }
     })
@@ -350,19 +304,15 @@ export function fetchAllProjectSuccess(doc) {
     data = doc;
   }
   return {
-    type: "PROJECT_ALL_LIST",
-    data,
-    slug
+    type: "PROJECT_ALL_LIST",data,slug
   }
 }
 
 function fetchAllProjectError(json) {
   return {
-    type: "PROJECT_ALL_LIST_ERROR",
-    json
+    type: "PROJECT_ALL_LIST_ERROR",json
   }
 }
-
 
 function deleteDeployment(slug, algoSlug, dialog, dispatch) {
   dispatch(showLoading());
@@ -418,12 +368,6 @@ export function handleDeploymentDeleteAction(slug, algoSlug, dialog) {
     showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT, renderHTML(statusMessages("warning", "Are you sure, you want to delete this deployment?", "small_mascot")), algoSlug)
   }
 }
-
-export function handleDeploymentViewAction(slug) {
-
-}
-
-
 export function handleAlgoClone(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, CLONEALGO, renderHTML(statusMessages("warning", "Are you sure, you want to clone this model?", "small_mascot")))
@@ -451,7 +395,6 @@ function cloneAlgoAPI(slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 
-
 export function getDeploymentList(errandId) {
   return (dispatch) => {
     return fetchDeploymentList(errandId, getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
@@ -463,8 +406,6 @@ export function getDeploymentList(errandId) {
     })
   }
 }
-
-
 function fetchDeploymentList(errandId, token) {
  return fetch(
        API + '/api/deploymodel/search/?deploytrainer=' + errandId, {
@@ -473,8 +414,6 @@ function fetchDeploymentList(errandId, token) {
     }).then(response => Promise.all([response, response.json()]));
 
 }
-
-
 
 function fetchDeploymentListError(json) {
   return { type: "DEPLOYMENT_LIST_ERROR", json }
@@ -492,12 +431,10 @@ export function updateTrainAndTest(trainValue) {
   return { type: "UPDATE_MODEL_RANGE", trainValue, testValue }
 }
 
-export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {//add a mode in analyst mode
- 
+export function createModel(modelName, targetVariable, targetLevel,datasetSlug,mode) {
   return (dispatch) => {
     dispatch(showCreateModalPopup());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor is creating model... "));
-
     return triggerCreateModel(getUserDetailsOrRestart.get().userToken, modelName, targetVariable, targetLevel,datasetSlug,mode, dispatch).then(([response, json]) => {
       if (response.status === 200) {
         if(json.status === false){
@@ -519,7 +456,6 @@ export function createModel(modelName, targetVariable, targetLevel,datasetSlug,m
 }
 
 function triggerCreateModel(token, modelName, targetVariable, targetLevel, datasetSlug,mode,dispatch) {
-  // let modeType = window.location.pathname.includes("analyst")? "analyst":"autoML";
   var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
@@ -580,18 +516,12 @@ function triggerCreateModel(token, modelName, targetVariable, targetLevel, datas
     }
   }
   else {
-    var details = {/*"measures":store.getState().datasets.selectedMeasures,
-                "dimension":store.getState().datasets.selectedDimensions,
-                "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
+    var details = {
       "trainValue": store.getState().apps.trainValue,
       "testValue": store.getState().apps.testValue,
       "targetLevel": targetLevel,
       "targetColumn":targetVariable,
       "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
-      /* "analysisVariable":targetVariable,
-                'customAnalysisDetails':customDetails["customAnalysisDetails"],
-                 'polarity':customDetails["polarity"],
-                 'uidColumn':customDetails["uidColumn"]*/
     }
   }
   return fetch(API + '/api/trainer/', {
@@ -672,7 +602,6 @@ export function createModelSuccessAnalysis(data) {
   }
 }
 
-
 export function refreshAppsScoreList(props) {
   return (dispatch) => {
     if (refreshAppsScoresInterval != null)
@@ -727,10 +656,7 @@ function fetchScoreList(pageNo, token) {
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
   }
-
 }
-
-
 
 function fetchScoreListError(json) {
   return { type: "SCORE_LIST_ERROR", json }
@@ -891,13 +817,7 @@ function triggerCreateScore(token, scoreName, targetVariable) {
   var datasetSlug = store.getState().datasets.dataPreview.slug;
   var app_id = store.getState().apps.currentAppId;
   var customDetails = createcustomAnalysisDetails();
-  var details = {/*"measures":store.getState().datasets.selectedMeasures,
-                "dimension":store.getState().datasets.selectedDimensions,
-                "timeDimension":store.getState().datasets.selectedTimeDimensions,
-                "analysisVariable":targetVariable,
-                'customAnalysisDetails':customDetails["customAnalysisDetails"],
-                'polarity':customDetails["polarity"],
-                'uidColumn':customDetails["uidColumn"],*/
+  var details = {
     "selectedModel": store.getState().apps.selectedAlgObj,
     "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
     "app_id": app_id
@@ -912,9 +832,6 @@ function triggerCreateScore(token, scoreName, targetVariable) {
 function createScoreSuccess(data, dispatch) {
   var slug = data.slug;
   appsInterval = setInterval(function () {
-    /* if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-                dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }*/
     dispatch(getAppsScoreSummary(data.slug));
     return { type: "CREATE_SCORE_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
@@ -982,7 +899,6 @@ export function getAppsScoreSummary(slug) {
             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }
-
       } else {
         dispatch(closeAppsLoaderValue());
         dispatch(updateScoreSummaryFlag(false));
@@ -1241,9 +1157,6 @@ function triggerDataUpload(token, insightName) {
 function dataUploadFilesSuccess(data, dispatch) {
   var slug = data.slug;
   appsInterval = setInterval(function () {
-    /* if (store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE) {
-       dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-     }*/
     dispatch(getRoboDataset(data.slug));
     return { type: "ROBO_DATA_UPLOAD_SUCCESS", slug }
   }, APPSDEFAULTINTERVAL);
@@ -1268,9 +1181,7 @@ export function getRoboDataset(slug) {
           dispatch(updateRoboAnalysisData(json, "/apps-robo"));
           dispatch(closeAppsLoaderValue());
           dispatch(showRoboDataUploadPreview(true));
-          //dispatch(clearDataPreview());
           dispatch(showDataPreview());
-          //dispatch(getAppsRoboList(1));
         } else if (json.status == FAILED) {
           bootbox.alert("Your robo insight could not created.Please try later.", function (result) {
             window.history.go(-2);
@@ -1294,9 +1205,6 @@ function fetchRoboDataset(token, slug) {
   }).then(response => Promise.all([response, response.json()]));
 }
 
-function fetchRoboSummaryError(json) {
-  return { type: "ROBO_SUMMARY_ERROR", json }
-}
 export function fetchRoboSummarySuccess(doc) {
   var data = doc;
   return { type: "ROBO_SUMMARY_SUCCESS", data }
@@ -1317,8 +1225,6 @@ export function updateRoboAnalysisData(roboData, urlPrefix) {
   var roboSlug = roboData.slug;
   return { type: "ROBO_DATA_ANALYSIS", roboData, urlPrefix, roboSlug }
 }
-
-// showDialogBox(slug, dialog, dispatch, DELETEDEPLOYMENT,algoSlug, renderHTML(statusMessages("warning","Are you sure, you want to delete this model?","small_mascot")))
 
 export function showDialogBox(slug, dialog, dispatch, title, msgText, algoSlug) {
   Dialog.setOptions({ defaultOkLabel: 'Yes', defaultCancelLabel: 'No' })
@@ -1491,7 +1397,6 @@ function renameModelAPI(slug, newName) {
 export function handleScoreDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESCORE, renderHTML(statusMessages("warning", "Are you sure, you want to delete score?", "small_mascot")))
-    //renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot"))
   }
 }
 function deleteScore(slug, dialog, dispatch) {
@@ -1724,7 +1629,6 @@ export function getAudioFile(slug) {
           dispatch(clearAudioFile());
         }
       } else {
-        //dispatch(closeAppsLoaderValue());
         dispatch(fetchAFSummaryError(json));
       }
     })
@@ -2055,8 +1959,6 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
-  // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
   appsInterval = setInterval(function () {
     dispatch(getStockDataSetPreview(slug, appsInterval));
     return { type: "STOCK_CRAWL_SUCCESS", slug }
@@ -2064,12 +1966,10 @@ export function crawlSuccess(json, dispatch) {
   return { type: "STOCK_CRAWL_SUCCESS", slug }
 }
 function triggerCrawlingAPI(domains, companies,analysisName,list) {
-
   var details = {
     "domains": domains,
     "stock_symbols": list,
     "analysis_name": analysisName,
-    // "stock_symbols": store.getState().apps.appsStockSymbolsInputs
 
   }
   return fetch(API + '/api/stockdataset/', {
@@ -2077,7 +1977,6 @@ function triggerCrawlingAPI(domains, companies,analysisName,list) {
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({ config: details })
   }).then(response => Promise.all([response, response.json()]));
-
 }
 
 export function hideDataPreviewRightPanels() {
@@ -2210,18 +2109,15 @@ function fetchConceptListError(json) {
 }
 
 export function getAppsList(token, pageNo) {
-
   return (dispatch) => {
     return fetchApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(fetchAppsSuccess(json))
-
       } else {
         dispatch(fetchAppsError(json))
       }
     })
   }
-
 }
 
 function fetchApps(token, pageNo) {
@@ -2268,7 +2164,6 @@ export function updateAppsFilterList(filter_list) {
 }
 
 export function getAppsFilteredList(token, pageNo) {
-
   return (dispatch) => {
     return fetchFilteredApps(token, pageNo).then(([response, json]) => {
       if (response.status === 200) {
@@ -2284,8 +2179,6 @@ export function getAppsFilteredList(token, pageNo) {
 
 function fetchFilteredApps(token, pageNo) {
   let filtered_list = store.getState().apps.app_filtered_keywords;
-  //let stringify_list="[\""+filtered_list.toString().replace(/,/g ,"\",\"")+"\"]"
-  //alert(stringify_list)
   return fetch(API + '/api/apps/?filter_fields=' + '[' + filtered_list + ']' + '&page_number=' + pageNo + '&page_size=' + APPSPERPAGE + '', {
     method: 'get',
     headers: getHeader(token)
@@ -2371,13 +2264,10 @@ export function getAppDetails(appSlug, pageNo) {
           dispatch(getAppsModelList(pageNo));
           dispatch(getAppsScoreList(pageNo));
           dispatch(getAppsAlgoList(pageNo));
-
         }
-
       }
     });
   }
-
 }
 
 function triggerAppDetailsAPI(appSlug) {
@@ -2411,10 +2301,6 @@ function triggerRegressionAppAlgorithmAPI(appType) {
   let selDatasetSlug = store.getState().datasets.selectedDataSet;
   let modeType = window.location.href.includes("analyst")? "analyst" : "autoML"
   let metricVal = store.getState().apps.metricSelected.name;
-  /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
-    method: 'get',
-    headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  }).then(response => Promise.all([response, response.json()]));*/
   return fetch(API + '/api/get_app_algorithm_config_list/?app_type=' + appType +'&metric=' +metricVal +'&mode=' +modeType+'&slug='+selDatasetSlug, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
@@ -2428,7 +2314,6 @@ export function parameterTuningVisited(flag) {
 }
 export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
-
   var newAlgorithm = $.each(AlgorithmCopy, function (key, val) {
     if (val.algorithmSlug == algSlug) {
       if (parSlug === undefined && parVal === undefined) {
@@ -2471,19 +2356,6 @@ export function updateAlgorithmData(algSlug, parSlug, parVal, type) {
                       dat.selected = false;
                   });
               }
-                
-              // $.each(allValues, function (i, dat) {
-              //   if (dat.name == parVal) {
-              //     if (type == "TuningParameter")
-              //       dat.selected = !dat.selected;
-              //     else
-              //       dat.selected = true;
-              //   }
-              //   else if (type == "NonTuningParameter" || type == "TuningOption")
-              //     dat.selected = false;
-              // }
-              // );
-              
             } else {
               val1.acceptedValue = parVal;
             }
@@ -2564,10 +2436,7 @@ export function updateCurrentAppByID(app_id, pageNo) {
           dispatch(getAppsModelList(pageNo));
           dispatch(getAppsScoreList(pageNo));
           dispatch(getAppsAlgoList(pageNo));
-
-
         }
-
       }
     });
   }
@@ -2686,20 +2555,17 @@ export function fetchAllStockAnalysisSuccess(doc){
       data = doc.allStockList;
   }
   return {
-      type: "ALL_STOCK_ANALYSIS_LIST",
-      data,
+      type: "ALL_STOCK_ANALYSIS_LIST",data,
   }
 }
 function fetchAllStockAnalysisError(json) {
   return {
-      type: "ALL_STOCK_ANALYSIS_LIST_ERROR",
-      json
+      type: "ALL_STOCK_ANALYSIS_LIST_ERROR",json
   }
 }
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning", "Are you sure, you want to delete analysis?", "small_mascot")))
-
   }
 }
 function deleteStockModel(slug, dialog, dispatch) {
@@ -2722,9 +2588,7 @@ function deleteStockModelAPI(slug) {
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({ deleted: true })
   }).then(response => Promise.all([response, response.json()]));
-
 }
-
 
 export function handleStockModelRename(slug, dialog, name) {
   const customBody = (
@@ -2768,7 +2632,6 @@ function renameStockModelAPI(slug, newName) {
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify({ name: newName })
   }).then(response => Promise.all([response, response.json()]));
-
 }
 export function crawlSuccessAnalysis(data) {
   return (dispatch) => {
@@ -2798,8 +2661,7 @@ export function refreshStockAppsList(props) {
       if(window.location.pathname == stockAppLocation && stockLst!=undefined && 
         stockLst.filter(i=> (i.status!="SUCCESS" && i.status!="FAILED" && i.completed_percentage!=100) ).length != 0 )
         dispatch(getAppsStockList(parseInt(pageNo)));
-    }
-      , APPSDEFAULTINTERVAL);
+    }, APPSDEFAULTINTERVAL);
   }
 }
 export function callStockAnalysisApi(slug) {
@@ -2822,47 +2684,22 @@ export function refreshRoboInsightsList(props) {
         pageNo = 1;
       if (window.location.pathname == "/apps-robo")
         dispatch(getAppsRoboList(parseInt(pageNo)));
-    }
-      , APPSDEFAULTINTERVAL);
+    }, APPSDEFAULTINTERVAL);
   }
 }
 
 export function getDeployPreview(pageNo, filtername) {
   return (dispatch) => {
-
     return fetchAlgoList(pageNo, getUserDetailsOrRestart.get().userToken, filtername).then(([response, json]) => {
-
       if (response.status === 200) {
         dispatch(fetchAlgoListSuccess(json, dispatch))
-      }
-      else {
+      }else {
         dispatch(fetchAlgoListError(json))
       }
     });
   }
 }
 
-function fetchDeployPreview(filtername, dispatch) {
-
-  return fetch(API + '/api/trainalgomapping/search/?trainer=' + filtername, {
-
-    method: 'get',
-    headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  }).then(response => Promise.all([response, response.json()])).catch(function (error) {
-
-    let msg = statusMessages("error", "Unable to connect to server. Check your connection please try again.", "small_mascot")
-    bootbox.alert(msg)
-  });
-}
-//get preview data
-
-function fetchDeployPreviewError(json) {
-  return { type: "DEPLOY_PREVIEW_ERROR", json }
-}
-export function fetchDeployPreviewSuccess(doc) {
-  var data = doc;
-  return { type: "DEPLOY_PREVIEW", data }
-}
 export function showCreateModalPopup() {
   return { type: "SHOW_CREATE_MODAL_LOADER" }
 }

@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import {isEmpty} from "../../helpers/helper";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
-import {getAppsAlgoList,refreshAppsAlgoList,handleDeploymentDeleteAction,createDeploy,viewDeployment} from "../../actions/appActions";
+import {handleDeploymentDeleteAction,createDeploy,viewDeployment} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog';
 import { DeployPopup } from "./DeployPopup";
 import {Button,Modal} from "react-bootstrap";
-import {openDeployModalAction, closeDeployModalAction,saveDeployValueAction,openViewModalAction,closeViewModalAction} from "../../actions/modelManagementActions";
+import {openDeployModalAction, closeDeployModalAction,saveDeployValueAction,closeViewModalAction} from "../../actions/modelManagementActions";
 
 @connect((store) => {
   return {

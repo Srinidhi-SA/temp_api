@@ -13,22 +13,10 @@ import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
 import { options } from "react-bootstrap-dialog";
 import { API, EMR, STATIC_URL } from "../../helpers/env";
 import {
-    missingValueTreatmentSelectedAction,
-    outlierRemovalSelectedAction,
-    variableSelectedAction,
-    checkedAllAction,
-    dataCleansingCheckUpdate,
     removeDuplicateAttributesAction,
     removeDuplicateObservationsAction,
-    dataCleansingDataTypeChange
   } from "../../actions/dataCleansingActions";
   import {
-    openBinsOrLevelsModalAction,
-    closeBinsOrLevelsModalAction,
-    openTransformColumnModalAction,
-    closeTransformColumnModalAction,
-    selectedBinsOrLevelsTabAction,
-    saveBinLevelTransformationValuesAction,
     saveTopLevelValuesAction,
   } from "../../actions/featureEngineeringActions";
 
