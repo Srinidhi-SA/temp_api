@@ -6,7 +6,7 @@ import { CREATEMODEL, CREATESCORE, CREATESIGNAL, isEmpty, MINROWINDATASET, showH
 import store from "../../store";
 import { DataValidation } from "./DataValidation";
 import { Button } from "react-bootstrap";
-import { getAllDataList, getDataList, getDataSetPreview, hideDataPreview, makeAllVariablesTrueOrFalse, saveSelectedColSlug } from "../../actions/dataActions";
+import { clearSubset, getAllDataList, getDataList, getDataSetPreview, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, saveSelectedColSlug, selDatetimeCol, selDimensionCol, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues } from "../../actions/dataActions";
 import { getAppDetails, hideDataPreviewRightPanels, saveSelectedValuesForModel } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 import { clearDataPreview, clearLoadingMsg, dataSubsetting } from "../../actions/dataUploadActions";
@@ -24,6 +24,7 @@ import { DataUploadLoader } from "../common/DataUploadLoader";
     allDataList:store.datasets.allDataSets,
     createSigLoaderFlag : store.datasets.createSigLoaderFlag,
     dataTransformSettings : store.datasets.dataTransformSettings,
+    updatedSubSetting: store.datasets.updatedSubSetting,
   };
 })
 
@@ -39,6 +40,7 @@ export class DataPreview extends React.Component {
   }
 
   componentWillMount() {
+    this.props.dispatch(clearSubset())
     this.props.dispatch(getAllDataList());
     const from = this.getValueOfFromParam();
     if (from === 'createSignal') {
@@ -250,6 +252,50 @@ export class DataPreview extends React.Component {
         $(".visualizeLoader")[0].style.display = ""
       }
       this.props.dispatch(saveSelectedColSlug(slug));
+      this.props.dispatch(setAlreadyUpdated(false));
+      let colData = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(i=>i.slug===slug)[0];
+    if(colData.columnType === "measure"){
+      colData.columnStats.map((stats) => {
+        if(stats.name == "min"){
+          this.props.dispatch(setMeasureColValues("min",stats.value));
+          this.props.dispatch(setMeasureColValues("curMin",stats.value));
+        }else if(stats.name == "max"){
+          this.props.dispatch(setMeasureColValues("max",stats.value));
+          this.props.dispatch(setMeasureColValues("curMax",stats.value));
+        }
+      });
+      this.props.dispatch(setMeasureColValues("textboxUpdated",false));
+      if(this.props.updatedSubSetting.measureColumnFilters.length>0 && this.props.updatedSubSetting.measureColumnFilters.filter(i=>i.colname===colData.name).length>0){
+        this.props.dispatch(selMeasureCol(colData.name));
+        this.props.dispatch(setAlreadyUpdated(true));
+      }
+    }else if(colData.columnType === "dimension"){
+      colData.columnStats.map((stats) => {
+        if(stats.name == "LevelCount"){
+          this.props.dispatch(setDimensionColValues("dimensionList",stats.value))
+          this.props.dispatch(setDimensionColValues("curDimensionList",Object.keys(stats.value)))
+          this.props.dispatch(setDimensionColValues("selectedDimensionList",Object.keys(stats.value)))
+        }
+      });
+      if(this.props.updatedSubSetting.dimensionColumnFilters.length>0 && this.props.updatedSubSetting.dimensionColumnFilters.filter(i=>i.colname===colData.name).length>0){
+        this.props.dispatch(selDimensionCol(colData.name));
+        this.props.dispatch(setAlreadyUpdated(true));
+      }
+    }else if(colData.columnType === "datetime"){
+      colData.columnStats.map((stats) => {
+        if(stats.name === "firstDate"){
+          this.props.dispatch(setDatetimeColValues("startDate",stats.value));
+          this.props.dispatch(setDatetimeColValues("curstartDate",stats.value));
+        }else if(stats.name == "lastDate"){
+          this.props.dispatch(setDatetimeColValues("endDate",stats.value));
+          this.props.dispatch(setDatetimeColValues("curendDate",stats.value)); 
+        }
+      });
+      if(this.props.updatedSubSetting.timeDimensionColumnFilters.length>0 && this.props.updatedSubSetting.timeDimensionColumnFilters.filter(i=>i.colname===colData.name).length>0){
+        this.props.dispatch(selDatetimeCol(colData.name));
+        this.props.dispatch(setAlreadyUpdated(true));
+      }
+    }
     }
   }
 

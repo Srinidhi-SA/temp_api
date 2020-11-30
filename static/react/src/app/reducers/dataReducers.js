@@ -96,7 +96,10 @@ export default function reducer(state = {
   scoreName:"",
   activeColSlug:"",
   paginationFlag:false,
-  
+  alreadyUpdated:false,
+  measureColSelected:{},
+  dimensionColSelected:{},
+  datetimeColSelected:{},
 }, action) {
 
   switch (action.type) {
@@ -1085,6 +1088,121 @@ export default function reducer(state = {
       return{
         ...state,
         paginationFlag:action.flag
+      }
+    }
+    break;
+    case "CLEAR_SUBSET":{
+      return{
+        ...state,
+        alreadyUpdated:false,
+        measureColSelected:{},
+        dimensionColSelected:{},
+        datetimeColSelected:{},
+        updatedSubSetting: {
+          "measureColumnFilters": [],
+          "dimensionColumnFilters": [],
+          "timeDimensionColumnFilters": []
+        },
+        activeColSlug:"",
+      }
+    }
+    break;
+    case "ALREADY_UPDATED":{
+      return{
+        ...state,
+        alreadyUpdated : action.flag
+      }
+    }
+    break;
+    case "CUR_MEASURE_COL":{
+      let curMeasureCol = state.measureColSelected
+      curMeasureCol[action.name] = action.value
+      return{
+        ...state,
+        measureColSelected : curMeasureCol
+      }
+    }
+    break;
+    case "CUR_DIMENSION_COL":{
+      let curDimensionCol = state.dimensionColSelected
+      curDimensionCol[action.name] = action.value
+      return{
+        ...state,
+        dimensionColSelected : curDimensionCol
+      }
+    }
+    break;
+    case "CUR_DATETIME_COL":{
+      let curDatetimeCol = state.datetimeColSelected
+      curDatetimeCol[action.name] = action.value
+      return{
+        ...state,
+        datetimeColSelected : curDatetimeCol
+      }
+    }
+    break;
+    case "SEL_MEASURE_COL":{
+      let cMin = state.updatedSubSetting.measureColumnFilters.filter(i=>i.colname===action.name)[0].lowerBound
+      let cMax = state.updatedSubSetting.measureColumnFilters.filter(i=>i.colname===action.name)[0].upperBound
+      let measure = state.measureColSelected
+      measure["curMin"] = cMin
+      measure["curMax"] = cMax
+      return{
+        ...state,
+        measureColSelected : measure
+      }
+    }
+    break;
+    case "SEL_DIMENSION_COL":{
+      let value = state.updatedSubSetting.dimensionColumnFilters.filter(i=>i.colname===action.name)[0].values
+      let dimension = state.dimensionColSelected
+      dimension["selectedDimensionList"] = value
+      dimension["curDimensionList"] = value
+      return{
+        ...state,
+        dimensionColSelected : dimension
+      }
+    }
+    break;
+    case "SEL_DATETIME_COL":{
+      let lB = state.updatedSubSetting.timeDimensionColumnFilters.filter(i=>i.colname===action.name)[0].lowerBound
+      let uB = state.updatedSubSetting.timeDimensionColumnFilters.filter(i=>i.colname===action.name)[0].upperBound
+      let datetime = state.datetimeColSelected
+      datetime["curstartDate"] = lB
+      datetime["curendDate"] = uB
+      return{
+        ...state,
+        datetimeColSelected : datetime
+      }
+    }
+    break;
+
+    case "SELECT_ALL_DIM_VAL":{
+      let curDim = state.dimensionColSelected
+      if(action.flag){
+        curDim["selectedDimensionList"] = Object.keys(curDim["dimensionList"]);
+      }else{
+        curDim["selectedDimensionList"] = [];
+      }
+      return{
+        ...state,
+        dimensionColSelected : curDim
+      }
+    }
+    break;
+    case "SELECT_DIM_VAL":{
+      let curDim = state.dimensionColSelected
+      if(!action.flag){
+        const index = curDim["selectedDimensionList"].indexOf(action.val);
+        if(index > -1){
+          curDim["selectedDimensionList"].splice(index, 1);
+        }
+      }else{
+          curDim["selectedDimensionList"].push(action.val)
+      }
+      return{
+        ...state,
+        dimensionColSelected : curDim
       }
     }
     break;
