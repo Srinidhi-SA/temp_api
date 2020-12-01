@@ -25,11 +25,6 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	case "DATA_SOURCE_LIST_ERROR":
-	{
-		throw new Error("Unable to fetch data source list!!");
-	}
-	break;
 	case "DATA_SOURCE_SELECTED_TYPE":
 	{
 		return {

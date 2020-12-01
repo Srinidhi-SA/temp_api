@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,setReplacementType,handleSaveEditValues,handleInputChange,handleInputChangeReplace, replaceValuesErrorAction} from "../../actions/dataActions";
+import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,handleSaveEditValues,handleInputChange,handleInputChangeReplace, replaceValuesErrorAction} from "../../actions/dataActions";
 import {REPLACE,REMOVE,	CURRENTVALUE,NEWVALUE} from "../../helpers/helper.js"
 
 

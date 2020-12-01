@@ -5,10 +5,8 @@ import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {hideDataPreview} from "../../actions/dataActions";
-import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import {isEmpty, DYNAMICLOADERINTERVAL, getUserDetailsOrRestart, handleJobProcessing} from "../../helpers/helper";
-import {clearCreateSignalInterval, clearSignalLoaderValues} from "../../actions/signalActions";
+import { DYNAMICLOADERINTERVAL, handleJobProcessing} from "../../helpers/helper";
+import {clearCreateSignalInterval} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 
 @connect((store) => {
@@ -256,11 +254,6 @@ export class CreateSignalLoader extends React.Component {
 							</div>
 							<div class="modal-steps" id="loadingMsgs2">
 							</div>
-								{/* <ul class="modal-steps"> */}
-									{/*	<li>----</li>*/}
-									{/* <li class="active">{store.getState().signals.loaderText}</li> */}
-									{/*	<li>----</li>*/}
-								{/* </ul> */}
 
 						</div>
 						<div className="col-sm-3 text-center">
@@ -271,15 +264,8 @@ export class CreateSignalLoader extends React.Component {
 					</div>
 
 
-                    {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body hidden">
-                      <progress className="prg_bar" value={store.getState().signals.createSignalLoaderValue} max={95}></progress>
-
-                      {/*<div className="progress-value">
-                        <h3>{store.getState().signals.createSignalLoaderValue}
-                          %</h3>
-                      </div>*/}
-
-                    </div>:""}
+                   
+										
                   </div>
                 </div>
               </div>

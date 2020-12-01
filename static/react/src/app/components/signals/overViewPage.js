@@ -13,7 +13,7 @@ import {connect} from "react-redux";
 import {isEmpty, subTreeSetting, getUserDetailsOrRestart} from "../../helpers/helper";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+import {getSignalAnalysis, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
 import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag, setLoaderFlagAction} from "../../actions/appActions";
@@ -21,8 +21,6 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 import { chartdate } from "../../actions/chartActions";
 
-//import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
-//let showSubTree=false;
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix, customerDataset_slug: store.apps.customerDataset_slug};
@@ -40,9 +38,6 @@ export class OverViewPage extends React.Component {
     }
   }
 
-  setSideListFlag(e) {
-    this.props.dispatch(setSideCardListFlag(e.target.className));
-  }
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
       if (this.props.match.url.indexOf("apps-robo") != -1) {
@@ -78,17 +73,9 @@ export class OverViewPage extends React.Component {
   componentWillUnmount = () => {            
     clearTimeout(this.setTime);    
     this.props.dispatch(setLoaderFlagAction(true))  
-  };
-  toggleSideList() {
-    $('.row-offcanvas').toggleClass('active');
-    if ($('.row-offcanvas-left').hasClass('active')) {
-      $('.sdbar_switch i').removeClass('sw_on');
-      $('.sdbar_switch i').addClass('sw_off');
-    } else {
-      $('.sdbar_switch i').addClass('sw_on');
-      $('.sdbar_switch i').removeClass('sw_off');
-    };
-  }
+}; 
+
+
   prevNext(path) {
     let currentSuffix = path.location.pathname;
     var delimiter = "/";

@@ -5,37 +5,24 @@ import store from "../../store";
 import {
   getList,
   emptySignalAnalysis,
-  handleDelete,
-  handleRename,
   storeSearchElement,
   storeSortElements,
-  fetchCreateSignalSuccess,
+  assignSignalData,
   triggerSignalAnalysis,
-  emptySignalData,
   refreshSignals,
   getAllSignalList
 } from "../../actions/signalActions";
-import {
-  Pagination,
-  Tooltip,
-  OverlayTrigger,
-  Popover,
-  Modal,
-  Button
-} from "react-bootstrap";
+import { Pagination } from "react-bootstrap";
 
-import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
-import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
-import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
-import {DetailOverlay} from "../common/DetailOverlay";
+import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty} from "../../helpers/helper"
 import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
-import {showLoading, hideLoading} from 'react-redux-loading-bar';
+import {showLoading} from 'react-redux-loading-bar';
 import {Share} from "../common/Share";
 import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
 import {clearDataPreview} from "../../actions/appActions";
@@ -69,7 +56,7 @@ export class Signals extends React.Component {
     this.props.dispatch(variableSlectionBack(false)); 
     if(getUserDetailsOrRestart.get().view_data_permission=="true")
     this.props.dispatch(getAllDataList());
-    this.props.dispatch(emptySignalData());
+    this.props.dispatch(assignSignalData(null));
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
@@ -81,7 +68,6 @@ export class Signals extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(refreshSignals(this.props));
-    this.props.dispatch(getAllSignalList());
     this.props.dispatch(getAllUsersList(this.props));
 }
 
@@ -134,7 +120,7 @@ export class Signals extends React.Component {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
       if(this.props.signal_sorton)
-      this.proopenCsLoaderModalps.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+      this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
       else
       this.props.history.push('/signals');
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
@@ -147,7 +133,7 @@ export class Signals extends React.Component {
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }else{
-        this.props.dispatch(storeSearchElement(e.target.value));
+      this.props.dispatch(storeSearchElement(e.target.value));
     }
   }
   clearSearchElement(e){
@@ -257,15 +243,9 @@ export class Signals extends React.Component {
       );
     } else {
       return (
-        <div><Breadcrumb path={[{
-            path: '/signals',
-            label: 'Signals'
-          }
-        ]}/>
           <div>
             <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
           </div>
-        </div>
       )
     }
     }

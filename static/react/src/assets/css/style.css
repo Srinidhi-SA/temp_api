@@ -22025,6 +22025,19 @@ div#replaceValues {
   background: url(../images/ice-unsorted.gif) no-repeat;
   background-position: 97%;
 }
+#fetable th.addSort {
+  background: url(../images/ice-unsorted.gif) no-repeat;
+  background-position: 97%;
+}
+#fetable th.addSort.asc {
+  background: url(../images/ice-asc.gif) no-repeat;
+  background-position: 97%;
+}
+
+#fetable th.addSort.desc {
+  background: url(../images/ice-desc.gif) no-repeat;
+  background-position: 97%;
+}
 .sorttable_img {
   display: none;
 }

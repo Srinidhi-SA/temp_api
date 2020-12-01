@@ -5,7 +5,7 @@ import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } f
 import store from "../../store";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 
@@ -215,7 +215,7 @@ export class DataVariableSelection extends React.Component {
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
                 if(store.getState().datasets.dataSetMeasures.length == 1 && store.getState().datasets.dataSetMeasures[0].targetColumn){
                     $(".measureAll").prop("disabled",true);
-                    var measureTemplate = <label>No measure variable present</label>
+                    var measureTemplate = <label id="noMeasures">No measure variable present</label>
                 }
                 else{
                     var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
@@ -229,12 +229,12 @@ export class DataVariableSelection extends React.Component {
                 }
             } else {
                 $(".measureAll").prop("disabled",true);
-                var measureTemplate = <label>No measure variable present</label>
+                var measureTemplate = <label id="noMeasures">No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
                 if(store.getState().datasets.dataSetDimensions.length == 1 && store.getState().datasets.dataSetDimensions[0].targetColumn){
                     $(".dimensionAll").prop("disabled",true);
-                    var dimensionTemplate = <label>No dimension variable present</label>
+                    var dimensionTemplate = <label id="noDimensions" >No dimension variable present</label>
                 }
                 else{
                     var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
@@ -249,7 +249,7 @@ export class DataVariableSelection extends React.Component {
                 }
             } else {
                 $(".dimensionAll").prop("disabled",true);
-                var dimensionTemplate = <label>No dimension variable present</label>
+                var dimensionTemplate = <label id="noDimensions" >No dimension variable present</label>
             }
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
