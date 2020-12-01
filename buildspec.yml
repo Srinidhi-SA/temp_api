@@ -15,7 +15,8 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo Build image for docker nginx
-      - pwd && ls -l
+      - pwd && ls -l && cd /codebuild/output/src333580431/src/nginx_docker && ./test.sh
+      - cd ..
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:latest 
   post_build:
