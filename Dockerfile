@@ -1,22 +1,33 @@
-FROM ubuntu:16.04
+# Nginx Dockerfile
+# Pull base image.
+FROM nginx
 
-RUN mkdir /home/mAdvisor/
-WORKDIR /home/mAdvisor/
-ADD requirements.tgz /home/mAdvisor/
-RUN apt-get update
-RUN apt-get install python-pip virtualenv enchant vim telnet net-tools -y
-RUN virtualenv --python=python2.7 myenv
-RUN . myenv/bin/activate && apt-get install libmysqlclient-dev -y && apt install postgresql-server-dev-all -y 
-RUN apt-get install curl -y
-ADD code.tgz /home/mAdvisor/
-COPY startup.sh /home/mAdvisor/mAdvisor-api/
-COPY migrate.sh /home/mAdvisor/mAdvisor-api/
-RUN chmod +x /home/mAdvisor/mAdvisor-api/startup.sh
-RUN chmod +x /home/mAdvisor/mAdvisor-api/migrate.sh
-COPY apps.json /home/mAdvisor/mAdvisor-api/apps.json
-RUN chmod +x /home/mAdvisor/mAdvisor-api/apps.json
-RUN mkdir /home/mAdvisor/mAdvisor-api/server_log
-WORKDIR /home/mAdvisor/mAdvisor-api/
+RUN groupadd -r marlabs && useradd -r -s /bin/false -g marlabs marlabs
 
-EXPOSE 8000 9015 8080 80
-CMD ["/home/mAdvisor/mAdvisor-api/startup.sh"]
+RUN apt-get update && apt-get install vim curl -yqq
+RUN rm -rf /etc/nginx/conf.d/default.conf 
+ADD static.tgz /home/
+ADD welcome.html /home/static/
+WORKDIR /home/static/react/
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+	apt-get install nodejs -y && \
+	rm -rf node_modules/ && \
+	node -v && \
+	apt-get install npm -y && \
+	npm install && \
+	npm run buildDev && \
+	cd /home/static/ && \
+	ln -s react/src/assets/ assets && \
+        ln -s react/src/userManual/ userManual 
+WORKDIR /etc/nginx
+#COPY nginx.conf /etc/nginx/conf.d/nginx.conf
+ADD conf.d/ /etc/nginx/conf.d/
+RUN mkdir /home/config/
+RUN mkdir /home/keys/
+RUN touch /var/run/nginx.pid && \
+  chown -R marlabs:marlabs /var/run/nginx.pid && \
+  chown -R marlabs:marlabs /var/cache/nginx
+#RUN chown -R marlabs:marlabs /home/config /home/static
+#RUN chown -R marlabs:marlabs /home/config
+
+EXPOSE 8081 80 443 8401 8400 8000
