@@ -3,9 +3,22 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import store from "../../store";
-import {openShareModalAction} from "../../actions/dataActions";
-import {SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
-import {emptySignalAnalysis,handleDelete,handleRename,triggerSignalAnalysis,} from "../../actions/signalActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview,openShareModalAction} from "../../actions/dataActions";
+import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
+import {
+    getList,
+    emptySignalAnalysis,
+    handleDelete,
+    handleRename,
+    storeSearchElement,
+    storeSortElements,
+    fetchCreateSignalSuccess,
+    triggerSignalAnalysis,
+    emptySignalData,
+    refreshSignals,
+    updateTargetTypForSelSignal,
+    clearSignalList
+  } from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
 var dateFormat = require('dateformat');
@@ -152,6 +165,7 @@ export class SignalCard extends React.Component {
               }
            </div>);
     }
-
-
+  componentWillUnmount(){
+    this.props.dispatch(clearSignalList());
+  }
 }

@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.auditLogMiddleware_modified.AuthenticationMiddlewareJWT',
     'auditlog.middleware.AuditlogMiddleware',
+    'django_currentuser.middleware.ThreadLocalUserMiddleware'
 
 ]
 

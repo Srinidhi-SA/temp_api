@@ -19,10 +19,12 @@ export class NormalTable extends React.Component {
    var rowComponents = generateNormalTableRows(data);
    return (
       <div className="table-style" style={{marginTop:(this.props.tableData.topHeader === "Model Comparison" || this.props.tableData.topHeader === "Distribution of Predicted Values")?"40px":null}}>
-      <table className={className}>
-          <thead><tr>{headerComponents}</tr></thead>
-          <tbody>{rowComponents}</tbody>
-      </table>
+        <Scrollbars autoHeight autoHeightMin={200} autoHeightMax={400}>
+          <table className={className}>
+            <thead><tr>{headerComponents}</tr></thead>
+            <tbody>{rowComponents}</tbody>
+          </table>
+        </Scrollbars>
       </div>
     );
   }

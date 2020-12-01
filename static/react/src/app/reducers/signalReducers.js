@@ -48,7 +48,12 @@ export default function reducer(state = {
         }
       }
       break;
-
+    case "CLEAR_SIGNAL_LIST":{
+      return{
+        ...state,
+        signalList:{}
+      }
+    }
     case "SIGNAL_LIST_ERROR":
       {
         throw new Error("Unable to fetch signal list!!");

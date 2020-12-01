@@ -25,7 +25,8 @@ import {
     storeAppsScoreSortElements,
     openAppsLoader,
     createScoreSuccessAnalysis,
-    showCreateModalPopup
+    showCreateModalPopup,
+    clearScoreList
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -167,5 +168,7 @@ export class ScoreCard extends React.Component {
 
                 </div>);
     }
-    
+    componentWillUnmount(){
+        this.props.dispatch(clearScoreList());
+    }
 }

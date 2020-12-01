@@ -9,7 +9,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -35,8 +35,6 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
     export class ModelsCard extends React.Component {
         constructor(props) {
             super(props);
-        }
-        componentWillMount(){
         }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
@@ -186,5 +184,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         </div>);
               
         }
-    
+        componentWillUnmount(){
+            this.props.dispatch(clearModelList())
+        }
     }

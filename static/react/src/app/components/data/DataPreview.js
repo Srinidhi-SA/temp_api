@@ -65,7 +65,7 @@ export class DataPreview extends React.Component {
     }else{
       this.props.dispatch(getDataList(1));
       if(this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
-        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        // this.props.dispatch(getDataSetPreview(this.props.match.params.slug)); //dataPreview call made again, be to tested again
       }
       if(this.props.match.path.includes("AppId")) {
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
@@ -287,6 +287,20 @@ export class DataPreview extends React.Component {
               </div>
             </div>
           </div>
+        );
+      }else if(dataPrev==="" || isEmpty(dataPrev.uiMetaData)){
+        return(
+        <div className="side-body">
+          <div className="page-head">
+            <div className="row">
+              <div className="col-md-8">
+                <h3 style={{"display": "inline"}}> Data Preview </h3>
+                <h4 style={{"display": "inline"}}>{this.props.dataPreview.name!=""?`(${this.props.dataPreview.name.replace(".csv","")})`:""}</h4>
+              </div>
+            </div>
+          </div>
+          <div className="main-content">No Data Preview available</div>
+        </div> 
         );
       }else{
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item,i)=>{
