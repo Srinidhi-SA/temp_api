@@ -2,35 +2,15 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
-import {
-    Pagination,
-    Tooltip,
-    OverlayTrigger,
-    Popover,
-    Modal,
-    Button
-  } from "react-bootstrap";
 import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview,openShareModalAction} from "../../actions/dataActions";
-import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
-import {
-    getList,
-    emptySignalAnalysis,
-    handleDelete,
-    handleRename,
-    storeSearchElement,
-    storeSortElements,
-    fetchCreateSignalSuccess,
-    triggerSignalAnalysis,
-    emptySignalData,
-    refreshSignals,
-    updateTargetTypForSelSignal
-  } from "../../actions/signalActions";
+import {openShareModalAction} from "../../actions/dataActions";
+import {SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
+import {emptySignalAnalysis,handleDelete,handleRename,triggerSignalAnalysis,} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
 var dateFormat = require('dateformat');
 import Dialog from 'react-bootstrap-dialog';
-import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions"
+import {openCsLoaderModal} from "../../actions/createSignalActions"
 
 @connect((store) => {
     return { login_response: store.login.login_response,
@@ -73,7 +53,6 @@ export class SignalCard extends React.Component {
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
-            var signalType=story.type
             if(story.status==FAILED){
             var signalLink = "/signals/";
             }else{
@@ -92,11 +71,7 @@ export class SignalCard extends React.Component {
                 percentageDetails =   <div class=""><font color="#ff6600">Failed</font></div>
             }
 
-              if (story.type == "dimension") {
-                  var imgLink = STATIC_URL + "assets/images/s_d_carIcon.png"
-              } else {
-                  var imgLink = STATIC_URL + "assets/images/s_m_carIcon.png"
-              }
+              var imgLink = story.type == "dimension"?STATIC_URL + "assets/images/s_d_carIcon.png":STATIC_URL + "assets/images/s_m_carIcon.png"
               iconDetails = <img src={imgLink} alt="LOADING"/>
               var permissionDetails = story.permission_details;
               var isDropDown = permissionDetails.remove_signal || permissionDetails.rename_signal;
@@ -125,7 +100,7 @@ export class SignalCard extends React.Component {
                 <Link to={story.status == INPROGRESS?"#":signalLink} id={story.slug} onClick={story.status== INPROGRESS?this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message):this.getSignalAnalysis.bind(this,story.status)}>
                     <div className="left_div">
                       <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                      <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
+                      <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
                     </Link>
 
@@ -152,7 +127,7 @@ export class SignalCard extends React.Component {
                               ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
-            {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"Signal")}>
+            {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"signals")}>
             <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
             <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
             </span>: ""}

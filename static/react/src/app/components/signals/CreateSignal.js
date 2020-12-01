@@ -2,10 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
-import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview, setCreateSignalLoaderFlag} from "../../actions/dataActions";
-import {isEmpty,ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
+import {ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
 

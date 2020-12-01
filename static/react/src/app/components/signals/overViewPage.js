@@ -15,7 +15,7 @@ import {isEmpty, subTreeSetting, getUserDetailsOrRestart} from "../../helpers/he
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
+import {getSignalAnalysis, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
 import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag, setLoaderFlagAction} from "../../actions/appActions";
@@ -24,8 +24,6 @@ import {Button} from "react-bootstrap";
 import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 import { chartdate } from "../../actions/chartActions";
 
-//import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
-//let showSubTree=false;
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix, customerDataset_slug: store.apps.customerDataset_slug};
@@ -45,10 +43,6 @@ export class OverViewPage extends React.Component {
 
   }
 
-  setSideListFlag(e) {
-    this.props.dispatch(setSideCardListFlag(e.target.className));
-  }
-  //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
       if (this.props.match.url.indexOf("apps-robo") != -1) {
@@ -65,29 +59,6 @@ export class OverViewPage extends React.Component {
 
   }
   componentDidMount() {
-    // var that = this;
-    // if (this.showSubTree) {
-    //   $(".sb_navigation").show();
-    //   this.showSubTree = false;
-    //   let classname = ".sb_navigation #myTab i.mAd_icons.ic_perf ~ span"
-    //   if (this.props.match.params.l1 == "Influncers")
-    //     ".sb_navigation #myTab i.mAd_icons.ic_measure ~ span"
-    //   $(classname).each(function() {
-    //     if ($(this).attr('id') == that.props.match.params.l2) {
-    //       $(this).parent().addClass('active');
-    //     } else {
-    //       $(this).parent().removeClass('active');
-    //     }
-    //   });
-    // } else {
-    //   $(".sb_navigation").hide();
-    // }
-
-    // if ($(".list-group").children().length == 1) {
-    //   $('.row-offcanvas-left').addClass('active');
-    //   $('.sdbar_switch i').removeClass('sw_on');
-    //   $('.sdbar_switch i').addClass('sw_off');
-    // }
      this.setTime = setTimeout(() => { 
       this.setState({ loading: false });       
     }, 0);  
@@ -111,17 +82,6 @@ export class OverViewPage extends React.Component {
     this.props.dispatch(setLoaderFlagAction(true))  
 }; 
 
-  toggleSideList() {
-    //alert($('.row-offcanvas').attr('class'));
-    $('.row-offcanvas').toggleClass('active');
-    if ($('.row-offcanvas-left').hasClass('active')) {
-      $('.sdbar_switch i').removeClass('sw_on');
-      $('.sdbar_switch i').addClass('sw_off');
-    } else {
-      $('.sdbar_switch i').addClass('sw_on');
-      $('.sdbar_switch i').removeClass('sw_off');
-    };
-  }
 
   prevNext(path) {
     let currentSuffix = path.location.pathname;

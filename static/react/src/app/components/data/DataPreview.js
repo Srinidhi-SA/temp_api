@@ -6,7 +6,7 @@ import { CREATEMODEL, CREATESCORE, CREATESIGNAL, isEmpty, MINROWINDATASET, showH
 import store from "../../store";
 import { DataValidation } from "./DataValidation";
 import { Button } from "react-bootstrap";
-import { getAllDataList, getDataList, getDataSetPreview, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, saveSelectedColSlug } from "../../actions/dataActions";
+import { getAllDataList, getDataList, getDataSetPreview, hideDataPreview, makeAllVariablesTrueOrFalse, saveSelectedColSlug,popupAlertBox } from "../../actions/dataActions";
 import { getAppDetails, hideDataPreviewRightPanels, saveSelectedValuesForModel } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 import { clearDataPreview, clearLoadingMsg, dataSubsetting } from "../../actions/dataUploadActions";
@@ -128,7 +128,6 @@ export class DataPreview extends React.Component {
   componentDidMount() {
     showHideSideTable(this.firstTimeSideTable);
     showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
-    // hideDataPreviewDropDown(this.props.curUrl); //causing error
   }
 
   componentWillUpdate() {

@@ -5,7 +5,7 @@ import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } f
 import store from "../../store";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,updateVariableSelectionArray,getTotalVariablesSelected,disableAdvancedAnalysisElements, updateSelectAllAnlysis, selectAllAnalysisList, setDefaultTimeDimensionVariable,variableSlectionBack} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 

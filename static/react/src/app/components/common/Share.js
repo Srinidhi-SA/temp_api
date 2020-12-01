@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { MultiSelect } from 'primereact/multiselect';
-import { Button, Modal ,Tab, Row, Col } from "react-bootstrap";
+import { Button, Modal} from "react-bootstrap";
 import {closeShareModalAction,handleShareItem} from "../../actions/dataActions";
 @connect((store) => {
   return {
