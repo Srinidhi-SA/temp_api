@@ -1,5 +1,7 @@
 version: 0.2
 
+run-as: codebuild-user
+
 phases:
   pre_build:
     commands:
