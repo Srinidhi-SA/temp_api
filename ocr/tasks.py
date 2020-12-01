@@ -36,13 +36,51 @@ def send_welcome_email(username=None):
     else:
         print("Please enable SEND_WELCOME_MAIL=True in order to send welcome email to users.")
 
+@task(name='send_info_email', queue=CONFIG_FILE_NAME)
+def send_info_email(username, supervisor):
+    if settings.SEND_INFO_MAIL:
+        from api.helper import get_outlook_auth
+        r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
+                             settings.OUTLOOK_DETAILS)
+        result = r.json()
+        access_token = result['access_token']
+        user = User.objects.get(username=supervisor)
+        print("~" * 90)
+        print("Sending Info mail to : {0}".format(supervisor))
+
+        info_mail('send', access_token=access_token, return_mail_id=user.email,
+                     subject='Marlabs-INFO', username=username, supervisor=supervisor)
+        print("~" * 90)
+    else:
+        print("Please enable SEND_INFO_MAIL=True in order to send info email to Admin.")
+
+
+def info_mail(action_type=None, access_token=None, return_mail_id=None, subject=None, username=None, supervisor=None):
+    if not access_token:
+        return HttpResponseRedirect(reverse('tutorial:home'))
+    else:
+        try:
+            htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br>User <b>{}</b> is successfully added to mAdvisor.
+            </br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
+                .format(supervisor, username)
+
+            messages = send_my_messages(access_token, return_mail_id, subject, htmlData)
+            if messages[:3] == '202':
+                print("Info mail sent to : {0}".format(supervisor))
+        except Exception as e:
+            print(e)
+            print("Some issue with mail sending module...")
 
 def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subject=None, username=None):
     if not access_token:
         return HttpResponseRedirect(reverse('tutorial:home'))
     else:
         try:
-            messages = send_my_messages(access_token, return_mail_id, subject, username)
+            htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br><b>Welcome to mAdvisor.
+            </b></br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
+                .format(username)
+
+            messages = send_my_messages(access_token, return_mail_id, subject, htmlData)
             if messages[:3] == '202':
                 print("Welcome mail sent.")
         except Exception as e:
@@ -50,14 +88,12 @@ def welcome_mail(action_type=None, access_token=None, return_mail_id=None, subje
             print("Some issue with mail sending module...")
 
 
-def send_my_messages(access_token, return_mail_id, subject, username):
+
+def send_my_messages(access_token, return_mail_id, subject, htmlData):
     '''
     Replies to the mail with attachments
     '''
     get_messages_url = 'https://graph.microsoft.com/v1.0/me/' + '/sendmail'
-    htmlData = """<!DOCTYPE html><html><body>Dear {},</br></br><b>Welcome to mAdvisor.
-    </b></br></br>Have a great day ahead.</br></br>Regards,</br>mAdvisor</body></html>""" \
-        .format(username)
 
     payload = {
 

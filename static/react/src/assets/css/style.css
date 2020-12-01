@@ -22433,7 +22433,7 @@ body .p-inputtext:enabled:focus:not(.p-error) {
   margin-left: -50px;
   text-align: center;
 }
-canvas {
+/* canvas {
   height: 100px;
   width: 100vw;
   margin-top: -50px;
@@ -22442,7 +22442,7 @@ canvas {
   top: 50%;
   left: 0;
   z-index: -1;
-}
+} */
 /* css for lex app */
 .dropzoneOcr {
   height: 200px;
@@ -22494,14 +22494,14 @@ canvas {
 .ocrTable > tbody > tr > td{
   vertical-align: middle;
 }
-.ocrCanvas{
+/* .ocrCanvas{
   width: auto;
   height: auto;
   position: relative;
   z-index: 1;
   top: 0px;
   margin-top: 0px;
-}
+} */
 
 #popoverOcr{
 width: 250px;
@@ -22762,7 +22762,7 @@ button[disabled], html .filter_input[disabled] {
   width: calc(100% - 48px);
   background-image: url(../images/Preloader_2.gif);
   background-repeat: no-repeat;
-  height: 830px;
+  height: 700px;
   position: absolute;
   z-index: 99;
   left: 0px;
@@ -23006,14 +23006,6 @@ min-width: 102px; }
     padding: 10px;
     margin: 10px 5px;
 }
-.c3axistooltip{
-  opacity:0;
-  position: absolute;
-  text-align: center;
-  padding: 2px;
-  background: #d7ebef;
-  color:black
-}
 .confidence li a{
   padding: 5px;
 }
@@ -23203,4 +23195,25 @@ body .p-multiselect.regParamFocus:hover {
 }
 .templateScroll li a{
   padding-left: 10px;
+}
+#imageTab .tab-content {
+  background: #eff8ff;
+  display: grid;
+  border: 1px solid #aadbff;
+}
+#imageTab ul.nav-tabs:first-child{
+  display: flex;
+  justify-content: center;
+  margin-bottom: -3px;
+}
+#imageTab ul.nav-tabs:first-child li.active a{
+  border-top: 2px solid #6a9d8d;
+  border-left: 1px solid #aadbff;
+  border-right: 1px solid #aadbff;
+  border-bottom: transparent;
+  font-weight: 600;
+  background: #eff8ff;
+}
+#labelDialog{
+  width: 300px;
 }

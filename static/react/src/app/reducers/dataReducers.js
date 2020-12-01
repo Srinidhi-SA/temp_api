@@ -110,6 +110,13 @@ export default function reducer(state = {
         }
       }
       break;  
+      case "CLEAR_DATA_LIST":{
+        return{
+          ...state,
+          dataList:{}
+        }
+      }
+      break;
       case "MODEL_EDIT_CONFIG":
       {
         return {

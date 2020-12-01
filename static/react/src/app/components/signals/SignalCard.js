@@ -24,7 +24,8 @@ import {
     triggerSignalAnalysis,
     emptySignalData,
     refreshSignals,
-    updateTargetTypForSelSignal
+    updateTargetTypForSelSignal,
+    clearSignalList
   } from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
@@ -177,6 +178,7 @@ export class SignalCard extends React.Component {
               }
            </div>);
     }
-
-
+  componentWillUnmount(){
+    this.props.dispatch(clearSignalList());
+  }
 }
