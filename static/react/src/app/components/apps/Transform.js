@@ -315,7 +315,7 @@ checkCount(){
                   </div>
                   <div className="row form-group">
                     <div className="col-sm-12 text-center">
-                      <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
+                      <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
                     </div>
                   </div>
               </form>
@@ -373,7 +373,7 @@ checkCount(){
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
                   </div>
                 </div>
               </form>
@@ -426,7 +426,7 @@ checkCount(){
                 </div>
                 <div className="row form-group">
                   <div className="col-sm-12 text-center">
-                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
+                    <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
                   </div>
                 </div>
               </form>

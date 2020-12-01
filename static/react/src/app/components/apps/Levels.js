@@ -190,7 +190,7 @@ export class Levels extends React.Component {
                 </div>
                 <div className="form-group">
                   <div className="content-section implementation multiselect-demo">
-                    <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} defaultValue={levelData.multiselectValue} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
+                    <MultiSelect value={level.multiselectValue!=""?level.multiselectValue:null} options={this.getMultiSelectOptions(idx)} defaultValue={levelData.multiselectValue} onChange={this.multiSelectOnChangeHandler.bind(this, idx)}
                       style={{ minWidth: '12em' }}  filter={true} placeholder="choose" />
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
             </div>
           </div>
 
@@ -258,7 +258,7 @@ export class Levels extends React.Component {
           </div>
           <div className="row form-group">
             <div className="col-sm-12 text-center">
-              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{'padding-top':'15px'}}></div>
+              <div className="text-danger visibilityHidden" id="fileErrorMsg" style={{paddingTop:'15px'}}></div>
             </div>
           </div>
         </Tab.Pane>
