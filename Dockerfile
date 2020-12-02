@@ -32,6 +32,7 @@ RUN apt-get install libmysqlclient-dev -y && apt install postgresql-server-dev-a
 #RUN . myenv/bin/activate &&
 RUN pip3 install -U setuptools
 WORKDIR /home/mAdvisor/
+RUN ls -al
 RUN pip3 install pyenchant && pip3 install -r requirements.txt
 
 
