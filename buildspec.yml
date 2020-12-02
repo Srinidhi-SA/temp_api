@@ -14,8 +14,8 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo Build image for docker nginx
-      - docker build -t madvisorapi:latest .
-      - docker tag madvisorapi:latest $REPOSITORY_URI:latest 
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:latest 
   post_build:
     commands:
       - echo Build completed on `date`
