@@ -2,7 +2,6 @@ FROM ubuntu:16.04
 
 RUN mkdir /home/mAdvisor/
 WORKDIR /home/mAdvisor/
-
 ADD requirements.tgz /home/mAdvisor/
 RUN apt-get update
 RUN apt-get install python-pip virtualenv enchant vim telnet net-tools -y
@@ -11,6 +10,7 @@ RUN . myenv/bin/activate && apt-get install libmysqlclient-dev -y && apt install
 RUN apt-get install curl -y
 ADD code.tgz /home/mAdvisor/
 COPY startup.sh /home/mAdvisor/mAdvisor-api/
+COPY migrate.sh /home/mAdvisor/mAdvisor-api/
 RUN chmod +x /home/mAdvisor/mAdvisor-api/startup.sh
 RUN chmod +x /home/mAdvisor/mAdvisor-api/migrate.sh
 COPY apps.json /home/mAdvisor/mAdvisor-api/apps.json

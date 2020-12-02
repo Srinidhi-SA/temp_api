@@ -4,8 +4,9 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import Dialog from 'react-bootstrap-dialog';
 import {handleColumnClick,updateColSlug} from "../../actions/dataActions";
-import {DATA_TYPE,isEmpty,UNIQUE_IDENTIFIER} from "../../helpers/helper";
+import {UNIQUE_IDENTIFIER} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
+import ReactTooltip from 'react-tooltip';
 
 @connect((store) => {
 	return {
@@ -64,7 +65,7 @@ export class DataValidation extends React.Component {
 						return (
 							(window.location.href.includes("/models/data") && (actionNames.actionName == "delete" || actionNames.actionName == "rename" || actionNames.actionName == "replace"))?
 							<li className="greyDisable" key={index}>
-								<a name={actionNames.actionName}>{actionNames.displayName}</a>
+								<a data-tip={`${actionNames.displayName} action is disabled while creating a model`} name={actionNames.actionName}>{actionNames.displayName}</a>
 							</li>
 							:
 							<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
@@ -98,6 +99,7 @@ export class DataValidation extends React.Component {
 					<ul  className="dropdown-menu scrollable-menu">
 
 					  <Dialog ref="dialog"/>
+            <ReactTooltip place="top" type="light" />
 					{settingsTemplate}</ul>
 
 			)

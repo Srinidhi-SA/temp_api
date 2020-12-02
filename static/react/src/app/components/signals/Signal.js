@@ -5,8 +5,6 @@ import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {MasterSummary} from "./MasterSummary";
 import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
-import {MainHeader} from "../common/MainHeader";
-import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL} from "../../helpers/env.js";
 import Notifications, {notify} from 'react-notify-toast';
 
@@ -18,8 +16,6 @@ import Notifications, {notify} from 'react-notify-toast';
           signal: store.signals.signalAnalysis,
           selectedSignal: store.signals.selectedSignal,
           signalList: store.signals.signalList.data
-          //selectedSignal: store.signals.signalAnalysis
-        // variableType:store.signals.variableType
       };
 })
 

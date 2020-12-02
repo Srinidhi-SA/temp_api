@@ -2,6 +2,7 @@ export default function reducer(state = {
   signalList: {},
   allSignalList:{},
   signalAnalysis:{},
+  signalAnalysisViewed:"",
   algoAnalysis:{},
   selectedAlgo:{},
   selectedSignal:{},
@@ -14,7 +15,6 @@ export default function reducer(state = {
   signal_search_element:"",
   signal_sorton:null,
   signal_sorttype:null,
-  sideCardListFlag:null,
   loaderText:"Submitting for analysis",
   signalLoadedText:[],
   advanceSettingsModal:false,
@@ -65,6 +65,7 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: action.signalAnalysis.data,
+          signalAnalysisViewed:action.signalAnalysis.viewed,
           selectedSignal: action.errandId,
           urlPrefix:"/signals",
           signalLoadedText:action.signalAnalysis.initial_messages,
@@ -259,16 +260,6 @@ export default function reducer(state = {
 		signal_sorttype:action.sorttype
       }
     }
-    break;
-
-	case "SET_SIDECARDLIST_FLAG":
-	{
-		return{
-			...state,
-			sideCardListFlag:action.sideCardListClass
-		}
-
-	}
     break;
 	case "ADVANCE_SETTINGS_MODAL":
 	{

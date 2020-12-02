@@ -20,23 +20,11 @@ export function getDataSourceList(){
 		})
 	}
 }
-function fetchDataSourceList(token) {
-	return fetch(API+'/api/datasource/get_config_list',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
-}
 function fetchDataSrcSuccess(dataSrcList){
 
 	return {
 		type: "DATA_SOURCE_LIST",
 		dataSrcList,
-	}
-}
-function fetchDataSrcError(json) {
-	return {
-		type: "DATA_SOURCE_LIST_ERROR",
-		json
 	}
 }
 export function fileUpload(file){

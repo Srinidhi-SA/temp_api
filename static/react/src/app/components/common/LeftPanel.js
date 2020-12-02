@@ -2,7 +2,7 @@ import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {updateAnalystModeSelectedFlag} from "../../actions/appActions"
-import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
+import {hideDataPreview, getDataList} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper";
 import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js";

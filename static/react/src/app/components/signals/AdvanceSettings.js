@@ -2,10 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {Modal,Button, Tooltip,
-    OverlayTrigger,} from "react-bootstrap";
+import {Modal,Button, Tooltip,OverlayTrigger,} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
-import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
+import {selectedAnalysisList,cancelAdvanceSettings,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -16,7 +15,6 @@ import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,sav
 		getVarText: store.signals.getVarText,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
 		dataSetPrevAnalysisList:store.datasets.dataSetPrevAnalysisList,
-		selectedDimensionSubLevels:store.datasets.selectedDimensionSubLevels,
 	};
 })
 

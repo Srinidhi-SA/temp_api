@@ -1,19 +1,15 @@
 import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
-import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
+import {closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected, paginationFlag} from './dataActions';
-// var API = "http://34.196.204.54:9000";
+import {updateStoreVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected, paginationFlag} from './dataActions';
 
-// @connect((store) => {
-//   return {signal: store.signals.signalAnalysis};
-// })
 var createSignalInterval = null;
 var refreshSignalInterval = null;
 
@@ -72,7 +68,7 @@ export function createSignal(metaData) {
 
 }
 
-function fetchCreateSignal(metaData,dispatch) {
+function fetchCreateSignal(metaData) {
  return fetch(API + '/api/signals/', {
     method: 'POST',
     headers: getHeader(getUserDetailsOrRestart.get().userToken),
@@ -118,19 +114,13 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
       dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, signalData.slug));
       if (store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE) {
         if (loading_message && loading_message.length > 0) {
-          //check if display is true
-          if (loading_message[loading_message.length - 1].display && loading_message[loading_message.length - 1].display == true) {
-            msg = loading_message[loading_message.length - 1].shortExplanation
-          }
           loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
-          //alert(msg + "  " + loaderVal)
         }
         if(loaderVal!=-1 && store.getState().signals.sigLoaderidxVal!=0){
           dispatch(updateSignalIndex(store.getState().signals.sigLoaderidxVal))
         }
         dispatch(updateSignalIndexValue(loading_message.length));
         dispatch(updateCsLoaderValue(loaderVal));
-        dispatch(updateCsLoaderMsg(msg));
       } else {
         dispatch(clearSignalLoaderValues())
         dispatch(clearLoadingMsg())
@@ -160,12 +150,6 @@ export function clearSignalLoaderValues() {
 export function clearCreateSignalInterval() {
   clearInterval(createSignalInterval);
 }
-export function emptySignalData() {
-  return (dispatch) => {
-    var signalData = null;
-    dispatch(assignSignalData(signalData));
-  }
-}
 export function assignSignalData(signalData) {
   return {type: "CREATE_SUCCESS", signalData}
 }
@@ -190,7 +174,7 @@ export function getList(token, pageNo) {
   }
 }
 
-function fetchPosts(token, pageNo,dispatch) {
+function fetchPosts(token, pageNo) {
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton = store.getState().signals.signal_sorton;
   let signal_sorttype = store.getState().signals.signal_sorttype;
@@ -198,30 +182,10 @@ function fetchPosts(token, pageNo,dispatch) {
     signal_sorttype = ""
   else if (signal_sorttype == 'desc')
     signal_sorttype = "-"
-  if (search_element != "" && search_element != null) {
-    if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
       return fetch(API + '/api/signals/?name=' + search_element + '&sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
         method: 'get',
         headers: getHeader(token)
       }).then(response => Promise.all([response, response.json()]));
-    } else {
-      return fetch(API + '/api/signals/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-        method: 'get',
-        headers: getHeader(token)
-      }).then(response => Promise.all([response, response.json()]));
-    }
-  } else if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
-    return fetch(API + '/api/signals/?sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-      method: 'get',
-      headers: getHeader(token)
-    }).then(response => Promise.all([response, response.json()]));
-  } else {
-    return fetch(API + '/api/signals/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-      method: 'get',
-      headers: getHeader(token)
-    }).then(response => Promise.all([response, response.json()]));
-  }
-
 }
 
 export function refreshSignals(props) {
@@ -363,25 +327,7 @@ function updateSignalAnalysis(signalAnalysis,errandId){
 
 
 
-function fetchAlgosSuccess_analysis(algoAnalysis, errandId, dispatch) {
-  // if (algoAnalysis.status == SUCCESS)
-  //  {
-    // clearInterval(createSignalInterval);
-    // dispatch(closeCsLoaderModal())
-    // dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-    // dispatch(clearLoadingMsg());
-    // dispatch(updateTargetTypForSelSignal(algoAnalysis.type))
-  // } 
-  // else if (algoAnalysis.status == FAILED || algoAnalysis.status == false) {
-  //   //bootbox.alert("Your signal could not be created. Please try later.")
-  //   bootbox.alert(statusMessages("error","The Algo could not be created. Please check the dataset and try again.","small_mascot"))
-  //   clearInterval(createSignalInterval);
-  //   dispatch(closeCsLoaderModal())
-  //   dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-  //   dispatch(clearLoadingMsg())
-  // } else if (algoAnalysis.status == "INPROGRESS") {
-  //   dispatch(dispatchSignalLoadingMsg(algoAnalysis));
-  // }
+function fetchAlgosSuccess_analysis(algoAnalysis, errandId) {
   return {type: "ALGO_ANALYSIS", algoAnalysis, errandId}
 }
 
@@ -413,9 +359,6 @@ export function setPossibleAnalysisList(varType,varText,varSlug) {
 
 export function updateAdvanceSettings(event){
    var variableSelection = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
-   var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-   var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-   var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
    var selOption = event.target.childNodes[event.target.selectedIndex];
    var varType = selOption.getAttribute("data-dataType");
    var varText = selOption.text;
@@ -426,8 +369,6 @@ export function updateAdvanceSettings(event){
                 dispatch(updateTargetAnalysisList(json));
                 dispatch(setPossibleAnalysisList(varType,varText,varSlug));
                 dispatch(updateSelectAllAnlysis(false));
-                //clear all analysis once target variable is changed
-                 //dispatch(selectAllAnalysisList(false));
             }
         })
     }
@@ -486,8 +427,6 @@ export function hideTargetVariable(event,jobType){
     var varType = colData.filter(i=>i.name==varText)[0].actualColumnType;
     var varSlug = selOption.getAttribute("name");
     var prevVarSlug = store.getState().signals.selVarSlug;
-    var prevVarType = store.getState().signals.getVarType;
-    var prevSetVarAs = null;
 
     dispatch(clearMeasureSearchIfTargetIsSelected(""))
     dispatch(clearDimensionSearchIfTargetIsSelected(""))
@@ -550,7 +489,7 @@ function checkIfDataTypeChanges(varSlug) {
   }
   return isVarTypeChanged;
 }
-function updateSetVarAs(colSlug,evt){
+function updateSetVarAs(colSlug){
     return (dispatch) => {
         var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
         var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
@@ -575,14 +514,14 @@ function updateSetVarAs(colSlug,evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
 }
-export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
+export function updateCategoricalVariables(colSlug) {
   return (dispatch) => {
         dispatch(updateSetVarAs(colSlug));
 
   }
 }
 
-export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
+export function changeSelectedVariableType(colSlug, colName, evt) {
   var varType = "dimension";
   var varText = colName;
   var varSlug = colSlug;
@@ -606,15 +545,11 @@ export function createcustomAnalysisDetails() {
   var columnSettings = {}
   var uidColumn = {}
   for (var i = 0; i < transformSettings.length; i++) {
-    //  if(transformSettings[i].slug == store.getState().signals.selVarSlug){
     for (var j = 0; j < transformSettings[i].columnSetting.length; j++) {
       if (transformSettings[i].columnSetting[j].actionName == SET_VARIABLE) {
         for (var k = 0; k < transformSettings[i].columnSetting[j].listOfActions.length; k++) {
           if (transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric") {
             if (transformSettings[i].columnSetting[j].listOfActions[k].status) {
-              // customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
-              //     "colSlug":store.getState().signals.selVarSlug,
-              //     "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
               customAnalysisDetails.push({"colName": transformSettings[i].name, "colSlug": transformSettings[i].slug, "treatAs": transformSettings[i].columnSetting[j].listOfActions[k].name})
             }
           }
@@ -631,7 +566,6 @@ export function createcustomAnalysisDetails() {
         uidColumn.colName = transformSettings[i].name;
       }
     }
-    //}
   }
   return columnSettings = {
     "customAnalysisDetails": customAnalysisDetails,
@@ -687,7 +621,6 @@ function deleteSignal(slug, dialog, dispatch) {
       dispatch(getList(getUserDetailsOrRestart.get().userToken, store.getState().signals.signalList.current_page));
       dispatch(hideLoading());
     } else {
-      //dialog.showAlert("The card could not be deleted. Please try again later.");
       bootbox.alert(statusMessages("error","The card could not be deleted. Please try again later.","without_mascot"))
       dispatch(hideLoading());
     }
@@ -712,11 +645,7 @@ export function storeSortElements(sorton, sorttype) {
   return {type: "SORT_SIGNAL", sorton, sorttype}
 }
 
-export function setSideCardListFlag(sideCardListClass) {
-  return {type: "SET_SIDECARDLIST_FLAG", sideCardListClass}
-}
 //for allSignalList
-
 export function getAllSignalList() {
   return (dispatch) => {
     return fetchAllSignalList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{

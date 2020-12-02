@@ -35,8 +35,6 @@ export default function reducer(state = {
   dataLoaderText: "Preparing data for loading",
   dataSetAnalysisList: {},
   dataSetPrevAnalysisList:{},
-  selectedDimensionSubLevels: null,
- // selectedTrendSub: [],
   dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
@@ -294,14 +292,6 @@ export default function reducer(state = {
       }
       break;
 
-    case "UNSELECT_All_ANALYSIS_TYPE":
-      {
-        return {
-          ...state,
-          selectedAnalysis: action.unselectAll
-        }
-      }
-      break;
 
     case "SHOW_DATA_PREVIEW":
       {
@@ -543,14 +533,6 @@ export default function reducer(state = {
       }
     }
     break;
-    case "SELECTED_DIMENSION_SUBLEVELS":
-      {
-        return {
-          ...state,
-          selectedDimensionSubLevels: action.SubLevels
-        }
-      }
-      break;
     case "UNSELECTED_TREND_SUB_LIST":
       {
         return {
@@ -560,14 +542,6 @@ export default function reducer(state = {
       }
       break;
 
-    case "SELECTED_DIMENSION_SUB_LEVEL":
-      {
-        return {
-          ...state,
-          dimensionSubLevel: action.dimensionSubLevel
-        }
-      }
-      break;
     case "UPDATE_SUBSETTING":
       {
         return {
@@ -622,14 +596,6 @@ export default function reducer(state = {
         dULoaderValue:-1,
         dataLoaderText:"Preparing data for loading"
       }
-    }
-    break;
-    case "UPDATE_DATA_TRANSFORM_SETTINGS":
-    {
-    	return{
-    		...state,
-    		dataTransformSettings:action.transformSettings
-    	}
     }
     break;
     case "UPDATE_VARIABLES_TYPES_MODAL":

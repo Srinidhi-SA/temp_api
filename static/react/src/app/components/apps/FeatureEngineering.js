@@ -44,6 +44,7 @@ export class FeatureEngineering extends React.Component {
     super(props);
     this.buttons = {};
     this.state = {
+      filterElement:""
     };
     this.state.topLevelRadioButton = "false";
     this.prevState = this.state;
@@ -269,23 +270,17 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentDidMount() {
-    $("#sdataType").change(function () {
-      $("#fetable tbody tr").hide();
-      $("#fetable tbody tr." + $(this).val()).show('fast');
-    });
 
-    $('#search').on('keyup', function () {
-      var value = $(this).val();
-      var patt = new RegExp(value, "i");
-      $('#fetable').find('tr').each(function () {
-        if (!($(this).find('td').text().search(patt) >= 0)) {
-          $(this).not('.myHead').hide();
-        }
-        if (($(this).find('td').text().search(patt) >= 0)) {
-          $(this).show();
-        }
-      });
-    });
+    var selectElements = document.getElementsByTagName("select");
+    var i,j;
+  for (i = 0; i < selectElements.length; i++) {
+    for(j=0;j<selectElements[i].options.length;j++){
+      if(selectElements[i].options[j].selected)
+       selectElements[i].options[j].style.display = 'none';
+      else
+       selectElements[i].options[j].style.display = 'inline';
+    }
+  }
     const from = this.getValueOfFromParam();
     if (from === 'algorithm_selection') {
     }
@@ -650,26 +645,138 @@ export class FeatureEngineering extends React.Component {
     return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType != item.actualColumnType))
   }
 
-  feTableSorter() {
-    $(function () {
-      $('#fetable').tablesorter({
-        theme: 'ice',
-        headers: {
-          3: { sorter: false },
-          2: { sorter: false }
-        }
-      });
-    });
-  }
 
   handleBack=()=>{
     const appId = this.props.match.params.AppId;
     const slug = this.props.match.params.slug;
     this.props.history.replace(`/apps/${appId}/analyst/models/data/${slug}/createModel/dataCleansing?from=feature_Engineering`);
   }
+  filterFeTable(e){
+    var table = document.getElementById("fetable");
+    var tr = table.getElementsByTagName("tr");
+     document.getElementById("search").value=""
+
+    for(var i=0;i<tr.length-1;i++){
+     tr[i].style.display = ""
+    }
+    if(tr[tr.length-1].children[0].className=="searchErr")
+    document.getElementById("fetable").deleteRow(tr.length-1)
+
+    var select = document.getElementById('sdataTypeFe');
+    this.setState({filterElement:e.target.value})
+    var selectedOption = e.target.value
+     
+    for(var i=0;i<select.options.length;i++){
+     if(select.options[i].value==selectedOption)
+       select.options[i].style.display='none'
+       else
+       select.options[i].style.display='inline'
+    }
+  }
+
+  addRow() {
+  var htmlContent = '<tr class="noData"><td class="searchErr" colspan="4">"No data found for your selection"</td></tr>'
+  var tableRef = document.getElementById('fetable').getElementsByTagName('tbody')[0];
+  var newRow = tableRef.insertRow(tableRef.rows.length);
+  newRow.innerHTML = htmlContent;
+  }
+
+ searchTable() {
+  var  filter, table, tr, td, i, txtValue, matchFound=false, hasError=false;
+  filter = document.getElementById("search").value.toUpperCase();
+  table = document.getElementById("fetable");
+  tr = table.getElementsByTagName("tr");
+
+  if(filter!=""){   // if value is not empty calling for loop and handle table rows using style.display
+  for (i = 1; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        if(!tr[i].firstChild.innerText.includes("No data found")){
+        tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+  }else{ //value is empty show all the rows by making dispaly="" for all the rows
+    for (i = 0; i < tr.length; i++) {
+      tr[i].style.display = "";
+  } 
+  }
+
+  for(i=1;i<=tr.length-1;i++){  //check weather the search result found and has an error row
+    if(tr[i].style.display=="" && !tr[i].firstChild.innerText.includes("No data found")){
+    matchFound=true
+    }
+    if(tr[i].firstChild.innerText.includes("No data found")){
+    hasError=true
+    }
+  }
+
+if(!matchFound &&!hasError){ //using above flags, add and delete the error message row from the table 
+this.addRow()
+}
+else if(hasError && matchFound){
+  if(tr[tr.length-1].firstChild.innerText.includes("No data found"))
+document.getElementById("fetable").deleteRow(tr.length-1)
+  
+}
+else{
+  if(matchFound && tr[tr.length-1].firstChild.innerText.includes("No data found") && !hasError)
+  document.getElementById("fetable").deleteRow(tr.length-1)
+}
+}
+
+  sortTable(n) {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("fetable");
+    switching = true;
+    dir = "asc"; 
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+
+        if (dir == "asc") {
+          if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (dir == "desc") {
+          if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount ++; 
+      } else {
+        if (switchcount == 0 && dir == "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+    if(dir=="asc"){
+      rows[0].childNodes[n].classList.add("asc")
+      rows[0].childNodes[n].classList.remove("desc")
+    }else{
+      rows[0].childNodes[n].classList.add("desc")
+      rows[0].childNodes[n].classList.remove("asc")
+    }
+
+  }
 
   render() {
-    this.feTableSorter();
     var feHtml = "";
     var SV = "";
     var binsOrLevelsPopup = "";
@@ -705,12 +812,16 @@ export class FeatureEngineering extends React.Component {
     // }
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, key) => {
-        if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1)
-          return null;
-        if (item.columnType == "measure")
+        if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1){
+        return null
+        }else{
+          if (item.columnType == "measure")
           numberOfSelectedMeasures += 1;
         else
           numberOfSelectedDimensions += 1;
+        }
+        if (removedVariables.indexOf(item.name) != -1 || unselectedvar.indexOf(item.slug) != -1 || considerItems.indexOf(item.name) != -1||(this.state.filterElement!="" && item.columnType!=this.state.filterElement))
+          return null;
         return (
           <tr key={key} className={('all ' + item.columnType)}>
             <td className="text-left"> {item.name}</td>
@@ -816,12 +927,12 @@ export class FeatureEngineering extends React.Component {
                 <div className="panel box-shadow ">
                   <div class="panel-body no-border xs-p-20">
                     <div class="row xs-mb-10">
-                      <div className="col-md-3">
+                      <div className="col-md-6">
                         <div class="form-inline" >
                           <div class="form-group">
-                            <label for="sdataType">Filter By: </label>
-                            <select id="sdataType" className="form-control cst-width">
-                              <option value="all">Data Type</option>
+                            <label for="sdataTypeFe">Filter By Datatype: </label>
+                            <select id="sdataTypeFe" onChange={this.filterFeTable.bind(this)} className="form-control cst-width">
+                              <option value="">All</option>
                               <option value="measure">Measure</option>
                               <option value="dimension">Dimension</option>
                               <option value="datetime">Datetime</option>
@@ -829,28 +940,28 @@ export class FeatureEngineering extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-3 col-md-offset-6">
+                      <div class="col-md-6">
                         <div class="form-inline" >
                           <div class="form-group pull-right">
-                            <input type="text" id="search" className="form-control" placeholder="Search..."></input>
+                            <input type="text" id="search" className="form-control" onKeyUp={this.searchTable.bind(this)} placeholder="Search..."></input>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="table-responsive noSwipe xs-pb-5">
+  <div className="table-responsive noSwipe xs-pb-5">
                       <Scrollbars style={{
                         height: 500
                       }}>
                         <table id="fetable" className="table table-striped table-bordered break-if-longText">
                           <thead>
                             <tr key="trKey" className="myHead">
-                              <th className="text-left"><b>Variable name</b></th>
-                              <th><b>Data type</b></th>
+                              <th className="text-left addSort" onClick={this.sortTable.bind(this,0)}><b>Variable name</b></th>
+                              <th className="addSort" onClick={this.sortTable.bind(this,1)}><b>Data type</b></th>
                               <th></th>
                               <th></th>
                             </tr>
-                          </thead>
-                          <tbody className="no-border-x">{feHtml}</tbody>
+                          </thead>                    
+                    <tbody className="no-border-x">{feHtml.filter(i=>i!=null).length>1 ? feHtml: (<tr><td className='text-center' colSpan={4}>"No data found for your selection"</td></tr>)}</tbody>
                         </table>
                       </Scrollbars>
                     </div>

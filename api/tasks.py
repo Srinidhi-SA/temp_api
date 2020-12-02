@@ -789,7 +789,7 @@ def trigger_outlook_periodic_job():
                         if 'train_dataset' in key:
                             input_file = value
                             data['Traindataset'] = input_file
-                            data['name'] = configkey
+                            data['name'] = input_file
                         if 'test_dataset' in key:
                             input_file = value
                             data['Testdataset'] = input_file
@@ -851,7 +851,7 @@ def trigger_metaData_autoML(data):
         train_file = open(settings.BASE_DIR + '/media/datasets/' + data['Traindataset'])
         train_f = File(train_file)
         train_dataset_config = dict()
-        train_dataset_config['name'] = data['name'] + '_Train'
+        train_dataset_config['name'] = data['name']
         train_dataset_config['input_file'] = train_f
         train_dataset_config['datasource_type'] = 'fileUpload'
         train_dataset_config['created_by'] = user_id.id
@@ -885,7 +885,7 @@ def trigger_metaData_autoML(data):
         ################################   Create config for model object that to be triggered after metadata job  ##################
         try:
             model_config = dict()
-            model_config['name'] = data['name'] + '_Trainer'
+            model_config['name'] = data['name'].split(".")[0] + '_Trainer'
             model_config['app_id'] = 2
             model_config['mode'] = "autoML"
             model_config['email'] = data['email']

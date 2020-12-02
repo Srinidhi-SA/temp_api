@@ -2,10 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
-import {MainHeader} from "../common/MainHeader";
-// import $ from "jquery";
-import Breadcrumb from 'react-breadcrumb';
-import renderHTML from 'react-render-html';
 import {Card} from "./Card";
 import {STATIC_URL} from "../../helpers/env.js"
 import {clearToggleValue} from "../../actions/signalActions";
@@ -36,7 +32,6 @@ export class MasterSummary extends React.Component {
     noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
     noOfTimeDimention = this.props.signal.listOfCards[0].cardData.noOfTimeDimensions;
     summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
-    var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml; //.toString();
 
     if (noOfDimention > 1) {
       dText = "Dimensions";

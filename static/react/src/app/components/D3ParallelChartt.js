@@ -8,7 +8,7 @@ import store from "../store";
 import {checkSaveSelectedModels} from "../actions/appActions";
 
 @connect((store) => {
-  return {sideCardListFlag: store.signals.sideCardListFlag,
+  return {
   selectedL1:store.signals.selectedL1,
   selected_signal_type:store.signals.selected_signal_type,
   selectedModelCount:store.apps.selectedModelCount,

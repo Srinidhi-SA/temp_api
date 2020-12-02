@@ -117,19 +117,44 @@ componentDidMount = () => {
         let letters = /^[0-9a-zA-Z\-_\s]+$/;
         let allModlLst = Object.values(this.props.allModelList)
         var creatModelName = $('#createModelName').val();
+        var selectedMeasuresCount=store.getState().datasets.CopyOfMeasures.filter(i=>(i.targetColumn==false && i.selected==true)).length
+        var selectedDimensionCount=store.getState().datasets.CopyOfDimension.filter(i=>(i.targetColumn==false && i.selected==true)).length
 
-        if ($('#createModelAnalysisList option:selected').val() == "") {
-            bootbox.alert("Please select a variable to analyze...");
+       if (document.getElementById("noOfFolds")!=null && document.getElementById("noOfFolds").innerText!="" ) {
+            document.getElementById("noOfFolds").innerText = "";
+        } 
+
+        if ($('#createModelAnalysisList option:selected').val() == "select" ) {
+            bootbox.alert(statusMessages("warning","Please select a variable to analyze.", "small_mascot"));
             return false;
         } else if ((this.props.currentAppDetails.app_id != 13 && this.props.targetLevelCounts != null) && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
-            bootbox.alert("Please select a sublevel value to analyze...");
+            bootbox.alert(statusMessages("warning","Please select a sub catagory value to analyze.", "small_mascot"));
             return false;
         } else if (this.props.currentAppDetails.app_id === 13 && this.state.targetCountVal != "" && ($("#createModelLevelCount").val() == null || $("#createModelLevelCount").val() == "")) {
-            bootbox.alert("Please select a sublevel value to analyze...");
+            bootbox.alert(statusMessages("warning","Please select a sublevel value to analyze.", "small_mascot"));
             return false;
-        }else if ($('#createModelAnalysisList option:selected').val() == "") {
-            bootbox.alert("Please select a variable to analyze...");
+        } else if (store.getState().datasets.CopyOfMeasures.length>0 && selectedMeasuresCount==0 && document.getElementById("noMeasures")==null){
+            bootbox.alert(statusMessages("warning","Please select atleast one measure to analyze.", "small_mascot"));
+            return false;       
+        } else if (store.getState().datasets.CopyOfDimension.length>0 && selectedDimensionCount==0 && document.getElementById("noDimensions")==null){
+            bootbox.alert(statusMessages("warning","Please select atleast one dimension to analyze.", "small_mascot"));
             return false;
+        } else if (document.getElementById("noOfFolds")!=null &&  ($('#noOffolds').val()==""||$('#noOffolds').val()=="NaN")) {
+            document.getElementById("noOfFolds").innerText = "Please enter a number";           
+            return false;
+        } else if (document.getElementById("noOfFolds")!=null && (parseFloat($('#noOffolds').val())>20 || parseFloat($('#noOffolds').val())<2)) {
+            document.getElementById("noOfFolds").innerText = "Value Should be between 2 to 20";  
+            return false;
+        } else if (document.getElementById("noOfFolds")!=null && ((parseFloat($('#noOffolds').val())^0 )!= parseFloat($('#noOffolds').val()))) {
+            document.getElementById("noOfFolds").innerText = "Decimals are not allowed";    
+            return false;
+        } else if ($('#selectEvaluation option:selected').val() == "") {
+            bootbox.alert(statusMessages("warning","Please select Evaluation Metric.", "small_mascot"));
+            return false;
+        } else if (creatModelName == "") {
+            bootbox.alert(statusMessages("warning", "Please enter the model name.", "small_mascot"));
+            $('#createModelName').val("").focus();
+            return false
         } else if (creatModelName != "" && creatModelName.trim() == "") {
             bootbox.alert(statusMessages("warning", "Please enter a valid model name.", "small_mascot"));
             $('#createModelName').val("").focus();
@@ -179,20 +204,6 @@ componentDidMount = () => {
         this.props.dispatch(updateCrossValidationValue(e.target.value));
         //this.setState({ crossvalidationvalue: e.target.value});
     }
-    noOfFolds(e){
-        let foldVal = parseFloat(e.target.value);
-        if(e.target.value == "" || e.target.value == "NaN"){
-            document.getElementById("noOfFolds").innerText = "Please enter a number";
-        }else if(foldVal>20 || foldVal <2){
-            document.getElementById("noOfFolds").innerText = "Value Should be between 2 to 20";
-        }else if((foldVal^0) != foldVal){
-            document.getElementById("noOfFolds").innerText = "Decimals are not allowed";
-        }else{
-            document.getElementById("noOfFolds").innerText = "";
-        }
-    }
-
-    
     componentWillReceiveProps(newProps){
         if(!isEmpty(newProps.modelEditconfig)&&newProps.modelEditconfig!="" && !isEmpty(newProps.dataPreview)&& newProps.editmodelFlag && this.state.perspective!=true){
             this.dispatchEditActions(newProps);
@@ -328,7 +339,7 @@ componentDidMount = () => {
                         <div class="form-group">
                             <label class="col-lg-4 control-label" for="noOffolds">No of Folds :</label>
                             <div class="col-lg-8">
-                                <input type="number" name="" class="form-control" required={true} id="noOffolds" onInput={this.noOfFolds.bind(this)} onChange={this.changecrossValidationValue.bind(this)} min={2} max={20} value={store.getState().apps.regression_crossvalidationvalue} />
+                                <input type="number" name="" class="form-control"  id="noOffolds"  onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue} />
                             <div className="text-danger" id="noOfFolds"></div>                            
                             </div>
                         </div> :
@@ -360,8 +371,8 @@ componentDidMount = () => {
                 metric = dataPrev.meta_data.uiMetaData.SKLEARN_REGRESSION_EVALUATION_METRICS;  
             }
         if (metric) {
-            metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={store.getState().apps.metricSelected.name} id="selectEvaluation" required={true}>
-                <option value="">--select--</option>
+            metricValues = <select className="form-control" onChange={this.setEvaluationMetric.bind(this)} defaultValue={store.getState().apps.metricSelected.name} id="selectEvaluation" >
+                <option value="" disabled>--Select--</option>
                 {metric.map((mItem, mIndex) => {
                     return (<option key={mItem.name} name={mItem.displayName} value={mItem.name}>{mItem.displayName}</option>)
                 })
@@ -434,7 +445,7 @@ componentDidMount = () => {
                                     <div class="col-md-4">
                                         <div class="form-group xs-ml-10 xs-mr-10">
                                             <div class="input-group xs-mb-15">
-                                                <input type="text" defaultValue={store.getState().apps.apps_regression_modelName} name="createModelName" required={true} id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
+                                                <input type="text" defaultValue={store.getState().apps.apps_regression_modelName} name="createModelName"  id="createModelName" autoComplete="off" className="form-control" placeholder="Create Model Name" /><span class="input-group-btn">
                                                     <button type="submit" id="variableSelectionProceed" class="btn btn-primary">{buttonName}</button></span>
                                             </div>
                                         </div>
