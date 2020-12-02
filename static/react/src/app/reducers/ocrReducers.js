@@ -97,6 +97,7 @@ export default function reducer(state = {
   userTablePagesize:12,
   reviewerTablePagesize:12,
   userDeleteFlag: false,
+  customImgPath: "",
 
 }, action) {
   switch (action.type) {
@@ -282,6 +283,7 @@ export default function reducer(state = {
           ...state,
           originalImgPath: action.data.imagefile ,
           ocrImgPath: action.data.generated_image,
+          customImgPath: action.data.generated_image,
           imageSlug: action.data.slug,
           imageTaskId: taskId,
           is_closed: close,
@@ -330,6 +332,14 @@ export default function reducer(state = {
           }
         }
         break;
+        case "UPDATE_CUSTOM_IMAGE":
+          {
+            return {
+              ...state,
+              customImgPath: action.data + "?" +new Date().getTime(),
+            }
+          }
+          break;
     case "OCR_FILES_SORT":
       {
         return {

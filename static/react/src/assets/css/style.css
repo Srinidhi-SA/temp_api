@@ -22717,6 +22717,18 @@ ul.ocrUploadTabs{
   background-position: center center;
   background-color: rgba(0,0,0,0.2);
 }
+.dialogLoader_ITE{
+  width: 100%;
+  background-image: url(../images/loader_ITE.gif);
+  background-repeat: no-repeat;
+  height: calc(100% - 26px);
+  position: absolute;
+  z-index: 99999;
+  left: 0px;
+  background-position: center center;
+  background-color: rgba(0,0,0,0.2);
+  top: 25px;
+}
 #select_confidence:focus{
   box-shadow: none !important;
 }
