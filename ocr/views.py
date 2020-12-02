@@ -999,7 +999,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         values = list(json.loads(temp_obj.template_classification).keys())
         value = [i.upper() for i in values]
         object_details.update({'values': value})
-        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in json.loads(object_details['custom_data']).items()]
+        custom_data = json.loads(object_details['custom_data'])
+        if custom_data:
+            object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
+        else:
+            object_details['custom_data'] = [{"label_name": "default_label", "data": "default_data"}]
         desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
                             'classification', 'custom_data']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
@@ -1284,7 +1288,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             mask = 'ocr/ITE/database/{}_mask.png'.format(data['slug'])
             gen_image_path = 'ocr/ITE/database/{}_gen_image.png'.format(data['slug'])
 
-            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis, metadata)
+            gen_image, _, _, custom_words = ui_flag_custom(cv2.imread(mask), final_json, gen_image_path, analysis,
+                                                           metadata)
             data['generated_image'] = File(name='{}_gen_image.png'.format(data['slug']),
                                            file=open('ocr/ITE/database/{}_gen_image.png'.format(data['slug']), 'rb'))
             serializer = self.get_serializer(instance=image_queryset, data=data, partial=True,
@@ -1296,7 +1301,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 object_details = od.data
                 object_details['message'] = 'SUCCESS'
                 object_details['data'] = response
-                object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
+                object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in
+                                                 custom_data.items()]
                 return Response(object_details)
             return Response(serializer.errors)
         except Exception as e:
