@@ -5,7 +5,7 @@ import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "../signals/Card";
 import {STATIC_URL} from "../../helpers/env.js";
-import {getStockAnalysis,updateStockSlug} from "../../actions/appActions";
+import {getStockAnalysis} from "../../actions/appActions";
 import {isEmpty, subTreeSetting} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
 

@@ -3,14 +3,8 @@ import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
 import {
-  openBinsOrLevelsModalAction,
-  closeBinsOrLevelsModalAction,
-  openTransformColumnModalAction,
-  closeTransformColumnModalAction,
-  selectedBinsOrLevelsTabAction,
   binningOptionsOnChangeAction,
   saveBinValuesAction,
-  saveBinLevelTransformationValuesAction,
 } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {

@@ -58,14 +58,6 @@ export function removeDuplicateObservationsAction(duplicate_observation_removal,
 	}
 }
 
-  export function outlierRangeAction(name,value,dispatch){
-    return{
-      type: "OUTLIER_UR",
-      name,
-      value
-    }
-  }
-
 export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
     return {
         type: "DATACLEANSING_DATA_TYPE_CHANGE",

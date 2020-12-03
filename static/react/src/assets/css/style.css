@@ -23221,6 +23221,9 @@ body .p-multiselect.regParamFocus:hover {
 .templateScroll li a{
   padding-left: 10px;
 }
+.fCard button.close{
+  display: none !important
+}
 #imageTab .tab-content {
   background: #eff8ff;
   display: grid;

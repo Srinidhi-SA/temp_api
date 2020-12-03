@@ -7,8 +7,8 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsAlgoList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsAlgoList,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
+import {getAppsModelList,updateModelSlug,
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList,getAllModelList,storeAppsModelFilterElement, clearAppsAlgoList} from "../../actions/appActions";
 import {paginationFlag, updateSelectedVariablesAction} from "../../actions/dataActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
@@ -56,17 +56,12 @@ var dateFormat = require('dateformat');
             if(store.getState().apps.currentAppId == ""){
                 this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
             }
-            //removing getAppsAlgoList call as we have it in ModelManagement component and making algoList empty
-            // else{
-            //     this.props.dispatch(getAppsAlgoList(pageNo));
-            // }
             this.props.dispatch(clearAppsAlgoList())
            this.props.dispatch(updateModelSummaryFlag(false));
            this.props.dispatch(updateSelectedVariablesAction(false));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
-            // this.props.dispatch(refreshAppsAlgoList(this.props));
            this.props.dispatch(getAllModelList(store.getState().apps.currentAppId));
            this.props.dispatch(storeModelSearchElement(""));
             this.props.dispatch(storeAppsModelSortElements("",""));

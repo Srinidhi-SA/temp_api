@@ -163,7 +163,6 @@ export default function reducer(state = {
 
     case "MODEL_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
     }
     break;
@@ -175,28 +174,11 @@ export default function reducer(state = {
         }
       }
       break;
-      case "MODEL_ALL_LIST_ERROR":
-      {
-        throw new Error("Unable to fetch model list!!");
-      }
-      break;
-    case "DEPLOY_PREVIEW":
+    case "MODEL_ALL_LIST_ERROR":
     {
-        return {
-            ...state,
-            filter: action.data,
-        }
-    }
-    break;
-
-    case "DEPLOY_PREVIEW_ERROR":
-    {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
     }
     break;
-
-    // case "MODEL_LIST2":
     case "ALGO_LIST":
     {
         return {
@@ -218,14 +200,12 @@ export default function reducer(state = {
 
     case "ALGO_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
     }
     break;
 
     case "DEPLOYMENT_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model list!!");
     }
     break;
@@ -235,7 +215,6 @@ export default function reducer(state = {
         return {
             ...state,
             deploymentList: action.data,
-            // latestDeployments:action.latestDeployments,
             current_page:action.current_page,
         }
     }
@@ -293,20 +272,8 @@ export default function reducer(state = {
     break;
 
     case "VIEW_DEPLOY_ERROR":
-    {   
-        //alert(action.json.non_field_errors);
-        throw new Error("Unable to fetch Deployment Details");
-    }
-    break;
-
-    case "SUMMARY_SELECTED_LIST":
     {
-      return {
-        ...state,
-        summarySelected: action.summarySelected,
-        // latestDatasets:action.latestDatasets,
-        // current_page: action.current_page
-      }
+        throw new Error("Unable to fetch Deployment Details");
     }
     break;
     case "SEARCH_ALGORITHM":
@@ -332,16 +299,6 @@ export default function reducer(state = {
       return {
         ...state,
         deployShowModal: false
-      }
-    }
-    break;
-
-    case "SHOW_VIEW_MODAL":
-    {
-      return {
-        ...state,
-        viewDeploymentFlag: true,
-        // deployItem:action.selectedItem
       }
     }
     break;
@@ -398,7 +355,6 @@ export default function reducer(state = {
     break;
     case "SCORE_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch score list!!");
     }
     break;
@@ -444,7 +400,6 @@ export default function reducer(state = {
     break;
     case "MODEL_SUMMARY_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch model summary!!");
     }
     break;
@@ -479,7 +434,6 @@ export default function reducer(state = {
     break;
     case "SCORE_SUMMARY_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch score summary!!");
     }
     break;
@@ -494,7 +448,6 @@ export default function reducer(state = {
     break;
     case "SELECTED_APP_DETAILS":
     {
-
         return {
             ...state,
             currentAppId: action.appId,
@@ -513,7 +466,6 @@ export default function reducer(state = {
       break;
     case "OPEN_APPS_LOADER_MODAL":
     {
-
         return {
             ...state,
             appsLoaderPerValue:action.value,
@@ -580,7 +532,6 @@ export default function reducer(state = {
     break;
     case "CREATE_MODEL_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to create model!");
     }
     break;
@@ -609,12 +560,6 @@ export default function reducer(state = {
         }
     }
     break;
-    case "CREATE_SCORE_ERROR":
-    {
-        //alert(action.json.non_field_errors);
-        throw new Error("Unable to create score!");
-    }
-    break;
     case "UPDATE_SCORE_FLAG":
     {
         return {
@@ -636,7 +581,6 @@ export default function reducer(state = {
 
     case "ROBO_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch robo list!!");
     }
     break;
@@ -693,7 +637,6 @@ export default function reducer(state = {
 
     case "ROBO_DATA_UPLOAD_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to upload robo data files!!");
     }
     break;
@@ -719,7 +662,6 @@ export default function reducer(state = {
     break;
     case "ROBO_SUMMARY_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch robo summary!!");
     }
     break;
@@ -868,7 +810,6 @@ export default function reducer(state = {
 
     case "AUDIO_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch audio list!!");
     }
     break;
@@ -889,7 +830,8 @@ export default function reducer(state = {
             robo_sorttype:action.roboSorttype
         }
     }
-    break;	case "SORT_APPS_MODEL":
+    break;	
+    case "SORT_APPS_MODEL":
     {
         return{
             ...state,
@@ -968,10 +910,7 @@ export default function reducer(state = {
     
     case "DELETE_LAYER_TENSORFLOW":
     { 
-        // var curTfData =state.tensorFlowInputs.filter(i=>i.layerId!=action.deleteId)
         var curTfData =state.tensorFlowInputs.filter(i=>i!=null).filter(j=>j.layerId!=action.deleteId)
-
-        // curTfData.splice(curTfData.indexOf(`'${action.deleteId-1}'`), 1 );
         var delPanel = state.panels;
         delPanel.pop(action.deleteId)
         return{
@@ -1023,7 +962,6 @@ export default function reducer(state = {
 
     case "STOCK_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch stock list!!");
     }
     break;
@@ -1045,13 +983,6 @@ export default function reducer(state = {
         }
     }
     break;
-    case "CRAWL_ERROR":
-    {
-        //alert(action.json.non_field_errors);
-        throw new Error("Unable to crawl data!!");
-    }
-    break;
-
     case "STOCK_CRAWL_SUCCESS":
     {
         return{
@@ -1085,7 +1016,6 @@ export default function reducer(state = {
         }
     }
     break;
-
     case "APPS_LIST":
     {
         return {
@@ -1099,7 +1029,6 @@ export default function reducer(state = {
 
     case "APPS_LIST_ERROR":
     {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch apps list data!!");
     }
     break;

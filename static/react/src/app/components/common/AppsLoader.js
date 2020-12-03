@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables,getHeader, fetchModelSummary,getAppDetails, clearModelLoaderValues, showCreateModalPopup,} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,getAppsModelList,clearAppsIntervel,updateModelSummaryFlag,getHeader, showCreateModalPopup,} from "../../actions/appActions";
 import {hideDataPreview, getDataSetPreview} from "../../actions/dataActions";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';

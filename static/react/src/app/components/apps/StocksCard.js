@@ -6,8 +6,8 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi, showCreateModalPopup} from "../../actions/appActions";
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS,FAILED, statusMessages} from "../../helpers/helper.js"
+import {getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi, showCreateModalPopup} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -31,10 +31,16 @@ export class StocksCard extends React.Component {
     constructor(props) {
         super(props);
     }
-    getPreviewData(e) {
-        this.props.dispatch(updateStockSlug(e.target.id))
-        this.props.dispatch(getStockAnalysis(e.target.id))
-        this.props.loadfunc();
+    getPreviewData(status,e) {
+        if(status==FAILED){
+            bootbox.alert({message:statusMessages("error","Stock analysis could not be created.","failed_mascot"),
+                className:"fCard"
+            });
+        }else{
+            this.props.dispatch(updateStockSlug(e.target.id))
+            this.props.dispatch(getStockAnalysis(e.target.id))
+            this.props.loadfunc();
+        }
     }
     handleDelete(slug){
         this.props.dispatch(handleStockDelete(slug,this.dialog));
@@ -53,7 +59,7 @@ export class StocksCard extends React.Component {
                 const stockAnalysisList = this.props.data;
       
             const stockTemplateList = stockAnalysisList.map((data, i) => {
-                var stockLink = <a class="cursor" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>;
+                var stockLink = <a class="cursor" id={data.slug} onClick={this.getPreviewData.bind(this,data.status)}>{data.name}</a>;
                 var percentageDetails = "";
                 if(data.status == INPROGRESS){
                     percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
