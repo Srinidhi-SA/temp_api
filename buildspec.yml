@@ -19,6 +19,7 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - echo Writing image definitions file...
+      - printf '[{"name":"madvisorapi","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
