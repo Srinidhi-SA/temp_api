@@ -254,7 +254,4 @@ export class AppsModelDetail extends React.Component {
 			);
 		}
 	}
-	componentWillUnmount(){
-		this.props.dispatch(clearModelSummary())
-	}
 }

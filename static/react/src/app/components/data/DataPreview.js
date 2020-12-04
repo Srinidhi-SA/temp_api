@@ -6,7 +6,7 @@ import { CREATEMODEL, CREATESCORE, CREATESIGNAL, isEmpty, MINROWINDATASET, showH
 import store from "../../store";
 import { DataValidation } from "./DataValidation";
 import { Button } from "react-bootstrap";
-import { clearSubset, getAllDataList, getDataList, getDataSetPreview, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, saveSelectedColSlug, selDatetimeCol, selDimensionCol, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues } from "../../actions/dataActions";
+import { clearSubset, getAllDataList, getDataList, getDataSetPreview, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, popupAlertBox, saveSelectedColSlug, selDatetimeCol, selDimensionCol, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues } from "../../actions/dataActions";
 import { getAppDetails, hideDataPreviewRightPanels, saveSelectedValuesForModel } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 import { clearDataPreview, clearLoadingMsg, dataSubsetting } from "../../actions/dataUploadActions";
@@ -67,7 +67,7 @@ export class DataPreview extends React.Component {
     }else{
       this.props.dispatch(getDataList(1));
       if(this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
-        // this.props.dispatch(getDataSetPreview(this.props.match.params.slug)); //dataPreview call made again, be to tested again
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug)); //Called on refreshing data preview
       }
       if(this.props.match.path.includes("AppId")) {
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
