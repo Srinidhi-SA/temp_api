@@ -14,16 +14,7 @@ import {
     Popover
 } from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
-import {
-    getAppsScoreList,
-    getAppsScoreSummary,
-    updateScoreSlug,
-    handleScoreRename,
-    handleScoreDelete,
-    activateModelScoreTabs,
-    storeScoreSearchElement,
-    storeAppsScoreSortElements
-} from "../../actions/appActions";
+import {getAppsScoreSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"

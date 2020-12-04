@@ -5,14 +5,6 @@ import { MultiSelect } from 'primereact/multiselect';
 import dateFormat from 'dateformat';
 import DatePicker from 'react-bootstrap-date-picker';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
-import {
-  openBinsOrLevelsModalAction,
-  closeBinsOrLevelsModalAction,
-  openTransformColumnModalAction,
-  closeTransformColumnModalAction,
-  selectedBinsOrLevelsTabAction,
-} from "../../actions/dataActions";
-import { saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {

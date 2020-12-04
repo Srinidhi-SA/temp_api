@@ -32,24 +32,3 @@ services:
        timeout: 5s
        retries: 10
     restart: always
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - NGINX_PORT=80
-    restart: always
-    volumes:
-      - ./static/:/home/static/
-      - ./conf.d/nginx.conf:/etc/nginx/conf.d/nginx.conf
-  app:
-    image: api:latest 
-    volumes:
-      - "${PWD}/apps.sh:/home/mAdvisor/mAdvisor-api/startup.sh"
-    environment:
-      HOST_MACHINE_IP: "192.168.57.47"
-    depends_on:
-      api:
-        condition: service_healthy
-    restart: always

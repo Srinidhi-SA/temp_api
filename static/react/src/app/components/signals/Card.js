@@ -132,7 +132,7 @@ export class Card extends React.Component {
                 if(!story.tableWidth)story.tableWidth = 100;
                 var colClass= this.calculateWidth(story.tableWidth)
                 colClass = colClass;
-                if(story.data.tableData!=undefined || story.data.tableData.length!=0)
+                if(story.data.tableData!=undefined && story.data.tableData.length!=0)
                     return (<div className={colClass} key={randomNum}><CardTable classId={toggleTable} jsonData={story.data} type={story.dataType}/></div>);
                 else
                     return ""

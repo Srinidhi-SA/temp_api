@@ -56,7 +56,10 @@ export class DataCard extends React.Component {
     
     getPreviewData(status,dataSlug) {
         if(status==FAILED){
-            bootbox.alert(statusMessages("error",this.props.data.filter(i=>(i.slug===dataSlug))[0].completed_message,"small_mascot"));            
+            bootbox.alert({
+                message:statusMessages("error",this.props.data.filter(i=>(i.slug===dataSlug))[0].completed_message,"failed_mascot"),
+                className:"fCard"
+            });
         }else{
             var that = this;
             this.selectedData = dataSlug //e.target.id;

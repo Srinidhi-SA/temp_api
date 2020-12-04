@@ -58,6 +58,13 @@ export function updateOcrImage(data) {
 	}
 }
 
+export function updateCustomImage(data) {
+	return {
+		type: "UPDATE_CUSTOM_IMAGE",
+		data
+	}
+}
+
 export function getOcrProjectsList(pageNo) {
 	return (dispatch) => {
 		return fetchProjects(pageNo, getUserDetailsOrRestart.get().userToken, dispatch).then(([response, json]) => {

@@ -6,7 +6,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
-import {clearDataPreview,updateRoboUploadTab,updateRoboAnalysisData,getRoboDataset} from "../../actions/appActions";
+import {clearDataPreview,updateRoboUploadTab,getRoboDataset} from "../../actions/appActions";
 import {RoboDUTabsContent} from "./RoboDUTabsContent";
 import {RoboDUHistorialData} from "./RoboDUHistorialData";
 import {RoboDUExternalData} from "./RoboDUExternalData";
@@ -46,7 +46,6 @@ export class RoboDataUploadPreview extends React.Component {
 				  this.props.history.push("/apps-robo-list/"+this.props.match.params.roboSlug+"/"+this.props.match.params.tabName+"/data/"+this.props.match.params.slug)  
 		   }
 	  }
-	 // this.props.dispatch(updateRoboAnalysisData(store.getState().apps.roboSummary.data,"/apps-robo"));
   }
 
   handleTabSelect(key){

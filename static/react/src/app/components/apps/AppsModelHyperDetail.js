@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag,sendSelectedAlgorithms,clearSelectedModelsCount,clearModelSummary} from "../../actions/appActions";
+import {getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,sendSelectedAlgorithms,clearSelectedModelsCount,clearModelSummary} from "../../actions/appActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";

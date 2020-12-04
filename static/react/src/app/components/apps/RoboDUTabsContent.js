@@ -7,7 +7,6 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
