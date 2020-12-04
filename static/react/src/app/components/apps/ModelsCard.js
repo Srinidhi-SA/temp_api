@@ -9,7 +9,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,updateModelSlug,
-    handleModelDelete,handleModelRename,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList} from "../../actions/appActions";
+    handleModelDelete,handleModelRename,openAppsLoader,createModelSuccessAnalysis, showCreateModalPopup, clearModelList, clearModelSummary} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS, FAILED, statusMessages} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -188,6 +188,7 @@ import {getAppsModelList,updateModelSlug,
               
         }
         componentWillUnmount(){
-            this.props.dispatch(clearModelList())
+            this.props.dispatch(clearModelList());
+            this.props.dispatch(clearModelSummary());
         }
     }
