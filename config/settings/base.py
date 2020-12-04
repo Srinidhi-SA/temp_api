@@ -589,7 +589,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
 }
 # dev api http://34.196.204.54:9092
 THIS_SERVER_DETAILS = {
-    "host": env('THIS_SERVER_HOST'),"madvisordev.marlabsai.com" # shoudn't start with http://
+    "host": env('THIS_SERVER_HOST'), #madvisordev.marlabsai.com" # shoudn't start with http://
     "port": env('THIS_SERVER_PORT'),
     "initail_domain": "/api"
 }
