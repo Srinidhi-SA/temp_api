@@ -1002,11 +1002,11 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         object_details.update({'values': value})
         custom_data = json.loads(object_details['custom_data'])
         generic_labels = {
-            '_name': '',
-            '_address': '',
-            '_contact': '',
-            '_amount': '',
-            '_quantity': ''
+            'name': '',
+            'address': '',
+            'contact': '',
+            'amount': '',
+            'quantity': ''
         }
         custom_data.update(generic_labels)
         object_details["labels_list"] = [key for key in custom_data]
