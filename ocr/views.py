@@ -22,6 +22,7 @@ import datetime
 import os
 import random
 import ast
+from typing import Dict
 
 import cv2
 import simplejson as json
@@ -1000,12 +1001,19 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         value = [i.upper() for i in values]
         object_details.update({'values': value})
         custom_data = json.loads(object_details['custom_data'])
-        if custom_data:
-            object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
-        else:
-            object_details['custom_data'] = [{"label_name": "default_label", "data": "default_data"}]
+        generic_labels = {
+            'name': '',
+            'address': '',
+            'contact': '',
+            'amount': '',
+            'quantity': ''
+        }
+        custom_data.update(generic_labels)
+        object_details["labels_list"] = [key for key in custom_data]
+        object_details["image_name"] = object_details['imagefile'].split('/')[-1]
+        object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
         desired_response = ['imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
-                            'classification', 'custom_data']
+                            'classification', 'custom_data', 'labels_list', 'image_name']
         object_details = {key: val for key, val in object_details.items() if key in desired_response}
         mask = 'ocr/ITE/database/{}_mask.png'.format(object_details['slug'])
         size = cv2.imread(mask).shape
