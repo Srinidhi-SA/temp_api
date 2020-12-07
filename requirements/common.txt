@@ -9,7 +9,7 @@ djangorestframework-jwt==1.11.0
 django-filter==1.0.4
 python-sjsclient==0.8.0
 pywebhdfs==0.4.1
-Fabric==1.13.2b
+Fabric==1.13.2
 Fabric3
 #watson-developer-cloud==0.26.1
 gunicorn==19.7.1
