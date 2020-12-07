@@ -12,6 +12,8 @@ RUN mkdir /home/mAdvisor/
 WORKDIR /home/mAdvisor/
 
 ADD requirements.tgz /home/mAdvisor/
+ADD requirements /home/mAdvisor/
+ADD requirements.txt /home/mAdvisor
 RUN apt-get update
 
 RUN apt-get install -y locales locales-all
