@@ -33,7 +33,7 @@ newsapi-python
 celery-once==2.0.0
 psycopg2
 django_celery_beat==1.4.0
-django-environ
+django-environ==0.4.5
 #ls
 boto3==1.16.30
 ibm-cloud-sdk-core==1.5.1
