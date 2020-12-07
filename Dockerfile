@@ -1,30 +1,23 @@
 FROM ubuntu:16.04
 
-
 RUN apt-get update \
   && apt-get install -y python3-pip python3-dev \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip
 
-
 RUN groupadd -r marlabs && useradd -r -s /bin/false -g marlabs marlabs
-
 
 RUN mkdir /home/mAdvisor/
 WORKDIR /home/mAdvisor/
 
-
-ADD requirements /home/mAdvisor/
-ADD requirements.txt /home/mAdvisor
+ADD requirements.tgz /home/mAdvisor/
 RUN apt-get update
-
 
 RUN apt-get install -y locales locales-all
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
-
 
 RUN apt-get install virtualenv enchant vim telnet net-tools iputils-ping -y
 #RUN virtualenv --python=python3 myenv
@@ -32,10 +25,7 @@ RUN apt-get install virtualenv enchant vim telnet net-tools iputils-ping -y
 RUN apt-get install libmysqlclient-dev -y && apt install postgresql-server-dev-all -y 
 #RUN . myenv/bin/activate &&
 RUN pip3 install -U setuptools
-WORKDIR /home/mAdvisor/
-RUN ls -al
 RUN pip3 install pyenchant && pip3 install -r requirements.txt
-
 
 RUN apt-get install curl -y
 ADD code.tgz /home/mAdvisor/
@@ -47,9 +37,7 @@ RUN mkdir /home/mAdvisor/mAdvisor-api/server_log
 RUN cd /home/mAdvisor/mAdvisor-api/static && \
     ln -s react/src/assets/ assets
 
-
 RUN chown -R marlabs:marlabs /home/mAdvisor/
-
 
 WORKDIR /home/mAdvisor/mAdvisor-api/
 EXPOSE 8000 9015 8080 80
@@ -61,15 +49,3 @@ COPY migrate.sh /home/mAdvisor/mAdvisor-api/
 RUN chmod +x /home/mAdvisor/mAdvisor-api/migrate.sh
 COPY celery_reload.sh /home/mAdvisor/mAdvisor-api/
 CMD ["/home/mAdvisor/mAdvisor-api/startup.sh"]
- 
-
-
-
-
-
-
-
-
-
-
-
