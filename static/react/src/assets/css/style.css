@@ -23225,6 +23225,7 @@ body .p-multiselect.regParamFocus:hover {
   background: #eff8ff;
   display: grid;
   border: 1px solid #aadbff;
+  padding: 30px 20px 30px 20px;
 }
 #imageTab ul.nav-tabs:first-child{
   display: flex;
@@ -23241,4 +23242,16 @@ body .p-multiselect.regParamFocus:hover {
 }
 #labelDialog{
   width: 300px;
+}
+.subTab ul.nav-tabs:first-child{
+  display: block  !important;
+  margin-bottom: 0px !important;
+}
+.subTab ul.nav-tabs:first-child li.active a{
+  border: none !important;
+  border-bottom: 2px solid #02988c !important;
+}
+.subTab .tab-content{
+  padding: 20px !important;
+  border: none !important;
 }
