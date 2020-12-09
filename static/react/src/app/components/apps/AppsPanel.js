@@ -20,7 +20,6 @@ import {
   updateAppsFilterList,
   getAppsFilteredList,
   clearDataPreview,
-  updateAnalystModeSelectedFlag,
 } from "../../actions/appActions";
 import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import { API } from "../../helpers/env";;

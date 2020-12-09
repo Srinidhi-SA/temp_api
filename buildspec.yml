@@ -1,5 +1,4 @@
 version: 0.2
-
 phases:
   pre_build:
     commands:
@@ -14,15 +13,16 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo Build image for docker nginx
-      - docker build -t madvisorapi:latest .
-      - docker tag madvisorapi:latest $REPOSITORY_URI:latest 
+      - sh test.sh
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:latest  
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
       - echo Writing image definitions file...
-      - printf '[{"name":"madvisorapi","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - docker push $REPOSITORY_URI:latest
+      - printf '[{"name":"madvisorapi","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json

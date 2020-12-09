@@ -1907,3 +1907,53 @@ export function clearDataList(){
         type:"CLEAR_DATA_LIST"
     }
 }
+export function clearSubset(){
+    return{
+        type:"CLEAR_SUBSET"
+    }
+}
+export function setAlreadyUpdated(flag){
+    return{
+        type:"ALREADY_UPDATED",flag
+    }
+}
+export function setMeasureColValues(name,value){
+    return{
+        type:"CUR_MEASURE_COL",name,value
+    }
+}
+export function setDimensionColValues(name,value){
+    return{
+        type:"CUR_DIMENSION_COL",name,value
+    }
+}
+export function setDatetimeColValues(name,value){
+    return{
+        type:"CUR_DATETIME_COL",name,value
+    }
+}
+export function selMeasureCol(name){
+    return{
+        type:"SEL_MEASURE_COL",name
+    }
+}
+export function selDimensionCol(name){
+    return{
+        type:"SEL_DIMENSION_COL",name
+    }
+}
+export function selDatetimeCol(name){
+    return{
+        type:"SEL_DATETIME_COL",name
+    }
+}
+export function selectAllDimValues(flag){
+    return{
+        type:"SELECT_ALL_DIM_VAL",flag
+    }
+}
+export function selectDimValues(val,flag){
+    return{
+        type:"SELECT_DIM_VAL",val,flag
+    }
+}

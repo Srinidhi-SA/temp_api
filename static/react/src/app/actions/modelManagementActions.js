@@ -1,9 +1,3 @@
-export function openModelSummaryAction(summarySelected) {
-  return {
-    type: "SUMMARY_SELECTED_LIST" ,
-    summarySelected
-  }
-}
 export function openDeployModalAction(selectedItem) {
   return {
     type: "DEPLOY_SHOW_MODAL" ,
@@ -28,14 +22,6 @@ export function saveDeployValueAction(colSlug,dataToSave){
     dataToSave
   }
 }
-
-export function openViewModalAction(viewSlug) {
-  return {
-    type: "SHOW_VIEW_MODAL" ,
-    viewSlug
-  }
-}
-
 export function closeViewModalAction() {
    return {
      type: "HIDE_VIEW_MODAL",

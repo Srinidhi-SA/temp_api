@@ -2,14 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
-import {
-  openBinsOrLevelsModalAction,
-  closeBinsOrLevelsModalAction,
-  openTransformColumnModalAction,
-  closeTransformColumnModalAction,
-  selectedBinsOrLevelsTabAction,
-} from "../../actions/dataActions";
-import {  saveEncodingValuesAction, saveBinLevelTransformationValuesAction } from "../../actions/featureEngineeringActions";
+import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {

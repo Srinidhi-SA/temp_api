@@ -28,7 +28,6 @@ import {
   getAppsScoreList,
   getAppsAlgoList,
   refreshAppsAlgoList,
-  updateSelectedApp,
   updateModelSummaryFlag,
   updateScoreSummaryFlag,
   parameterTuningVisited,

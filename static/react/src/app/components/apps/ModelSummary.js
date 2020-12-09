@@ -4,7 +4,7 @@ import store from "../../store"
 import {getDeploymentList} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
-import {openDeployModalAction, closeDeployModalAction, openModelSummaryAction} from "../../actions/modelManagementActions"
+import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
 import {getAlgoAnalysis} from "../../actions/signalActions";
 import {CardHtml} from "../../components/signals/CardHtml";

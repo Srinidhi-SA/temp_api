@@ -94,6 +94,13 @@ export class DecisionTree extends React.Component {
         .data(nodes, function (d) {
           return d.id || (d.id = ++i);
         });
+
+      // Stash the old positions for transition.
+      nodes.forEach(function (d) {
+
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
       // Enter the nodes.
       var nodeEnter = node.enter().append("g")
         .attr("class", "node")
@@ -203,12 +210,6 @@ export class DecisionTree extends React.Component {
         })
         .remove();
 
-      // Stash the old positions for transition.
-      nodes.forEach(function (d) {
-
-        d.x0 = d.x;
-        d.y0 = d.y;
-      });
     }
     function wrap(text, width) {
       text.each(function () {
