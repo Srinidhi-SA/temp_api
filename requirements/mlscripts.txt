@@ -6,7 +6,7 @@ py4j==0.10.7
 statsmodels==0.9.0
 scikit-learn==0.20.3
 argparse==1.4.0
-statistics==1.0.3.5
+statistics
 xgboost==0.82
 requests
 #Jinja2==2.10
