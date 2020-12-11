@@ -2,8 +2,8 @@
 
 sleep 7s
 #. ../myenv/bin/activate
-python3 manage.py makemigrations
-python3 manage.py migrate
+# python3 manage.py makemigrations
+# python3 manage.py migrate
 python3 manage.py loaddata all_apps.json
 
 

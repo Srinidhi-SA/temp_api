@@ -98,6 +98,8 @@ export default function reducer(state = {
   reviewerTablePagesize:12,
   userDeleteFlag: false,
   customImgPath: "",
+  customImageName:"",
+  labelsList:[],
 
 }, action) {
   switch (action.type) {
@@ -291,6 +293,8 @@ export default function reducer(state = {
           classification: classificationVal,
           ocrImgHeight: action.data.height,
           ocrImgWidth: action.data.width,
+          customImageName: action.data.image_name,
+          labelsList: action.data.labels_list,
         }
       }
       break;

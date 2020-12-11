@@ -4,3 +4,4 @@ echo "Makemigrations done!!!"
 python manage.py migrate
 echo "Migrate done!!!"
 echo "Exiting..."
+
