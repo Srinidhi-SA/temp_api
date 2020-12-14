@@ -129,10 +129,10 @@ filterRevList(filtertBy, filterOn,reset) {
         )
       }
       )
-        : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
+        : (<tr><td className='text-center' colSpan={8}>"No data found for your selection"</td></tr>)
       )
-        : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
-    )
+        : (<tr><td colSpan={8}><img src={STATIC_URL + "assets/images/Preloader_2.gif"} /></td></tr>)
+        )
     return (
     <div>
       <div class="row">
