@@ -1,16 +1,14 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview, setCreateSignalLoaderFlag} from "../../actions/dataActions";
 import {ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
-
 @connect((store) => {
-	return {login_response: store.login.login_response,
+	return {
 		newSignalShowModal: store.signals.newSignalShowModal,
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
@@ -19,18 +17,12 @@ import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/create
 		signalList: store.signals.signalList};
 })
 
-//var selectedData = null;
 export class CreateSignal extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.props.dispatch(closeCreateSignalModal());
-		// this.state={
-		// 	selectedData:null
-		// };
 		this.selectedData = {};
 		this.flag=false;
-
 	}
 	componentWillMount(){
 		if(getUserDetailsOrRestart.get().view_data_permission=="true")
@@ -49,7 +41,7 @@ export class CreateSignal extends React.Component {
 		this.props.dispatch(closeCreateSignalModal())
 	}
 
-	getPreviewData(e){
+	getPreviewData(){
 		var that = this;
 		if(!this.flag){
 			that.selectedData['name']= $('#signal_Dataset option:selected').val();
@@ -93,9 +85,8 @@ export class CreateSignal extends React.Component {
 	            if(dataSets){
 				        	defaultOption=dataSets.map(item=>item.slug)[0]
 	                renderSelectBox =dataSets.map((dataSet, i) => { 
-	                        return(<option key={dataSet.slug}  value={dataSet.slug}>{dataSet.name}</option>);
+	                    return(<option key={dataSet.slug}  value={dataSet.slug}>{dataSet.name}</option>);
 	                });
-
 	            }else if (getUserDetailsOrRestart.get().view_data_permission=="false") {
 	            	renderSelectBox = "You don't have access to view datasets,Please contact admin for permissions!"
 	            }
@@ -105,41 +96,34 @@ export class CreateSignal extends React.Component {
 	        }
 
 		return (
-				<div class="col-md-3 xs-mb-15 list-boxes" title={title}>
-				<div class={cls} onClick={this.openSignalModal.bind(this)}>
+		<div class="col-md-3 xs-mb-15 list-boxes" title={title}>
+			<div class={cls} onClick={this.openSignalModal.bind(this)}>
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-
-				 <h2 class="text-center"><i class="fa fa-pencil-square-o fa-2x"></i> Create Signal </h2> 
-				 
-				
+					<h2 class="text-center"><i class="fa fa-pencil-square-o fa-2x"></i> Create Signal </h2> 	
 				</div>
-				</div>
-				<div id="newSignal"  role="dialog" className="modal fade modal-colored-header">
-				<Modal show={store.getState().signals.newSignalShowModal} onHide={this.closeSignalModal.bind(this)} dialogClassName="modal-colored-header">
+			</div>
+			<div id="newSignal"  role="dialog" className="modal fade modal-colored-header">
+			<Modal show={store.getState().signals.newSignalShowModal} onHide={this.closeSignalModal.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
-				<h3 className="modal-title">Create Signal</h3>
+					<h3 className="modal-title">Create Signal</h3>
 				</Modal.Header>
 				<Modal.Body>
-				<div class="form-group">
-				<label className="pb-2">Select an existing dataset</label>
-				<select id="signal_Dataset" name="selectbasic" defaultValue={defaultOption} class="form-control" onChange={this.checkSelection.bind(this)}>
-				{renderSelectBox}
-				</select>
-				</div>
-				<div id="errorMsgs" className="text-danger"></div>
+					<div class="form-group">
+						<label className="pb-2">Select an existing dataset</label>
+						<select id="signal_Dataset" name="selectbasic" defaultValue={defaultOption} class="form-control" onChange={this.checkSelection.bind(this)}>
+						{renderSelectBox}
+						</select>
+					</div>
+					<div id="errorMsgs" className="text-danger"></div>
 				</Modal.Body>
 				<Modal.Footer>
-
-				<Button id="createSignalClose"  onClick={this.closeSignalModal.bind(this)}>Close</Button>
-				<Button id="createSignalCreate" bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
-
+					<Button id="createSignalClose"  onClick={this.closeSignalModal.bind(this)}>Close</Button>
+					<Button id="createSignalCreate" bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
 				</Modal.Footer>
-				</Modal>
-				</div>
-				</div>
-
+			</Modal>
+			</div>
+		</div>
 		)
 	}
-
 }

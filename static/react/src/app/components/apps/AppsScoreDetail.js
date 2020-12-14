@@ -3,11 +3,10 @@ import {connect} from "react-redux";
 import store from "../../store";
 import {Card} from "../signals/Card";
 import {getListOfCards,getAppsScoreSummary,updateScoreSlug,getAppDetails,updateScoreSummaryFlag, clearScoreSummary} from "../../actions/appActions";
-import {Button} from "react-bootstrap";
-import {STATIC_URL,EMR} from "../../helpers/env.js";
+import {STATIC_URL} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
 import {API} from "../../helpers/env";
-import {Link,Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 
 @connect((store) => {
@@ -54,20 +53,33 @@ export class AppsScoreDetail extends React.Component {
 			if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
 				var listOfCardList = scoreSummary.data.listOfCards;
 				var componentsWidth = 0;
+				var skipIndex=[]
 				var cardDataList = listOfCardList.map((data, i) => {
+
+					if(skipIndex.includes(i)){ 
+						return null;
+				}
 					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 					var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 					if(data.centerAlign){
 						var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix cardKpi ov_card_boxes";
 						var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" cardKpi ov_card_boxes";
 					}
-					var cardDataArray = data.cardData;
-						var isHideData = $.grep(cardDataArray,function(val,key){
-							return(val.dataType == "html" && val.classTag == "hidden");
-						});
+					var getList=store.getState().apps.scoreSummary.data.listOfCards;
+					var cardDataArray = data.cardData;				
 						if(data.cardWidth == 100){
 							componentsWidth = 0;
-							return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
+							return (<div class="row"><div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div></div>)
+						}
+						else if(i<getList.length-1 && data.cardWidth==50 && getList[i+1].cardWidth==50){
+							componentsWidth = 0;
+							var hasSubchart=(data.cardData[0].data.chart_c3.subchart!=null && data.cardData[0].data.chart_c3.subchart.show)||(getList[i+1].cardData[0].data.chart_c3.subchart!=null && getList[i+1].cardData[0].data.chart_c3.subchart.show)
+              var customClasss=hasSubchart?"row multi hasSubchart":"row multi";
+							skipIndex.push(i+1); //adding i+1 to skipIndex array to skip the next itteration
+							
+							return (<div class={customClasss}><div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>
+							<div className={nonClearfixClass}><Card cardData={getList[i+1].cardData} cardWidth={getList[i+1].cardWidth}/></div>
+							</div>)
 						}
 						else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 							componentsWidth = data.cardWidth;
@@ -76,7 +88,7 @@ export class AppsScoreDetail extends React.Component {
 						else{
 							componentsWidth = componentsWidth+data.cardWidth;
 							return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-						}
+						}			
 				});
 			}else{
 				var listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
@@ -126,10 +138,7 @@ export class AppsScoreDetail extends React.Component {
 		}else{
 			return (
 				<div className="side-body">
-					<div className="page-head"></div>
-					<div className="main-content">
 						<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-					</div>
 				</div>
 			);
 		}

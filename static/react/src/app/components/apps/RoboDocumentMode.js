@@ -2,13 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
-import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
 import {getListOfCards,getRoboDataset} from "../../actions/appActions";
-import {storeSignalMeta,hideDataPreview} from "../../actions/dataActions";
-import CircularProgressbar from 'react-circular-progressbar';
+import {hideDataPreview} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 
@@ -94,11 +91,7 @@ export class RoboDocumentMode extends React.Component {
 		return (
 	
 		      <div className="side-body">
-		        <div className="page-head">
-		        </div>
-		        <div className="main-content">
 		          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-		        </div>
 		      </div>
 		    );
 	}

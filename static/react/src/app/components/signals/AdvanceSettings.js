@@ -1,34 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button, Tooltip,OverlayTrigger,} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
 import {selectedAnalysisList,cancelAdvanceSettings,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 
-
 @connect((store) => {
-	return {login_response: store.login.login_response,
+	return {
 		advanceSettingsModal:store.signals.advanceSettingsModal,
 		dataPreview: store.datasets.dataPreview,
 		getVarType: store.signals.getVarType,
-		getVarText: store.signals.getVarText,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
-		dataSetPrevAnalysisList:store.datasets.dataSetPrevAnalysisList,
 	};
 })
 
 export class AdvanceSettings extends React.Component {
 	constructor(props){
 		super(props);
-		this.openAdvanceSettingsModal = this.openAdvanceSettingsModal.bind(this);
-		this.dimensionSubLevel =null;
-
 	}
 
-	openAdvanceSettingsModal(){
-		this.props.dispatch(advanceSettingsModal(true));
-	}
 	closeAdvanceSettingsModal(){
 		this.props.dispatch(cancelAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
@@ -56,7 +46,6 @@ export class AdvanceSettings extends React.Component {
 	}
 	handleSubLevelAnalysis(evt){
 		if(!(evt.target.childNodes[0].disabled)){
-			var id =  evt.target.childNodes[0].id;
 			this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
 		}
 	}
@@ -239,7 +228,7 @@ export class AdvanceSettings extends React.Component {
 
 	render() {
 		let dataPrev = store.getState().datasets.dataPreview;
-		let renderModalAnalysisList = null, renderSubList=null;
+		let renderModalAnalysisList = null;
 		if(dataPrev){
 			let possibleAnalysisList = store.getState().datasets.dataSetAnalysisList;
 			let trendSettings = null;

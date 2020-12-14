@@ -1,14 +1,11 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-import {Redirect} from 'react-router';
 import store from "../../store";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails,fetchScoreSummaryCSVSuccess} from "../../actions/appActions";
+import {getScoreSummaryInCSV,getAppDetails,fetchScoreSummaryCSVSuccess} from "../../actions/appActions";
 import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
-import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, scoreCSVData: store.apps.scoreSummaryCSVData,
@@ -20,17 +17,13 @@ export class DataPreviewLeftPanel extends React.Component {
 		super(props);
     }
      componentWillUnmount(){
-     this.props.dispatch(fetchScoreSummaryCSVSuccess([]))
+       this.props.dispatch(fetchScoreSummaryCSVSuccess([]))
      }
 	 componentWillMount(){
-	     this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
-	 }
-	 emptyScoreCSVData(){
-	     this.props.dispatch(emptyScoreCSVData())
+	    this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+	    this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
 	 }
 	render() {
-         var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
          var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
 		var scoreSlug=(store.getState().apps.scoreSlug!=null||store.getState().apps.scoreSlug!=undefined)?store.getState().apps.scoreSlug:this.props.match.params.slug; 		
 
@@ -68,7 +61,6 @@ export class DataPreviewLeftPanel extends React.Component {
 		    
 		    return(
 		            <div className="side-body">
-                    {/* <!-- Page Title and Breadcrumbs -->*/}
 					<div className="page-head">
 					<div className="row">
 					<div className="col-md-8">
@@ -78,8 +70,6 @@ export class DataPreviewLeftPanel extends React.Component {
 					</div>
 
 
-                    { /*<!-- /.Page Title and Breadcrumbs -->*/ }
-                    { /*<!-- Page Content Area -->*/}
                     <div className="main-content">
                     <div className="row">
                     <div className="col-md-12">
@@ -122,13 +112,9 @@ export class DataPreviewLeftPanel extends React.Component {
 
             );
 		}else{
-		    return (
+		    return ( 
 	                 <div className="side-body">
-	                    <div className="page-head">
-	                    </div>
-	                    <div className="main-content">
 	                      <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-	                    </div>
 	                  </div>
 	                );
 		}

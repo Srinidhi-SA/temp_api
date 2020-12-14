@@ -1,10 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Button} from "react-bootstrap";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {clearSubset, selDatetimeCol, selDimensionCol, selectAllDimValues, selectDimValues, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues, updateSubSetting} from "../../actions/dataActions";
-import {showHideSubsetting, decimalPlaces} from "../../helpers/helper.js"
+import {decimalPlaces} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
 import dateFormat from 'dateformat';
 import DatePicker from 'react-bootstrap-date-picker';
@@ -148,13 +147,13 @@ export class SubSetting extends React.Component {
     $("#saveButton").addClass('btn-primary')
     $("#saveButton").removeAttr('disabled')
   }
-  handleStartDateChange(value, formattedValue){
+  handleStartDateChange(formattedValue){
     this.props.dispatch(setDatetimeColValues("curstartDate",formattedValue));
     $("#saveButton").removeClass('btn-alt4')
     $("#saveButton").addClass('btn-primary')
     $("#saveButton").removeAttr('disabled')
   }
-  handleEndDateChange(value, formattedValue){
+  handleEndDateChange(formattedValue){
     this.props.dispatch(setDatetimeColValues("curendDate",formattedValue));
     $("#saveButton").removeClass('btn-alt4')
     $("#saveButton").addClass('btn-primary')
@@ -163,7 +162,7 @@ export class SubSetting extends React.Component {
   forceUpdateHandler(){
     this.forceUpdate();
   }
-  saveSubSetting(e){
+  saveSubSetting(){
     switch(this.props.item.columnType){
       case "measure":{
         if(this.props.alreadyUpdated === true){

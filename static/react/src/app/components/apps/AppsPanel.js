@@ -1,9 +1,7 @@
 import React from "react";
 import store from "../../store";
 import {connect} from "react-redux";
-
-import {MainHeader} from "../common/MainHeader";
-import {Tabs, Tab, Pagination} from "react-bootstrap";
+import {Pagination} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {
   updateSelectedApp,
@@ -25,18 +23,7 @@ import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import { API } from "../../helpers/env";;
 import {
   SEARCHCHARLIMIT,
-  APPID1,
-  APPID2,
-  APPID3,
-  APPID4,
-  APPNAME1,
-  APPNAME2,
-  APPNAME3,
-  APPNAME4,
-  APPNAME5,
-  APPID5,
   getUserDetailsOrRestart,
-  isEmpty
 } from "../../helpers/helper.js"
 import {cookieObj} from '../../helpers/cookiesHandler';
 import { dashboardMetrics,selectedProjectDetails,saveDocumentPageFlag } from '../../actions/ocrActions';
@@ -45,8 +32,6 @@ import { dashboardMetrics,selectedProjectDetails,saveDocumentPageFlag } from '..
   return {
     login_response: store.login.login_response,
     modelList: store.apps.modelList,
-    // algoList: store.appsAlgoList,
-
     modelSummaryFlag: store.apps.modelSummaryFlag,
     modelSlug: store.apps.modelSlug,
     currentAppId: store.apps.currentAppId,
@@ -303,7 +288,6 @@ export class AppsPanel extends React.Component {
 
       }else{
         return(<div className="side-body">
-          <div className="page-head"></div>
         <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
       </div>)
       }
@@ -343,67 +327,15 @@ export class AppsPanel extends React.Component {
                         <i class="zmdi zmdi-sort-amount-desc"></i>
                         &nbsp;Name Descending</a>
                     </li>
-                    {/*  <li>
-                <a href="#" onClick={this.handleSorting.bind(this,'created_at','-')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                </li>*/}
                   </ul>
                 </div>
                     
                 <div class={this.props.app_filtered_keywords.length>0? "btn-group selected":"btn-group"}>
-
-                  {/*<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
-
-                <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                <li>
-                                <input type="text" class="form-control" />
-
-                              </li>
-                <li>
-
-				<div className="ma-checkbox inline">
-				<input type="checkbox" id="chk_mea0" name="0" class="" value="Finance" />
-				<label for="chk_mea0" class="radioLabels">Finance</label>
-				</div>
-
-				</li>
-				<li className="xs-pl-10">
-				<div className="ma-checkbox inline"><input type="checkbox" className="" />
-				<label>Marketing</label>
-				</div>
-				</li>
-				<li className="xs-pl-10">
-				<div className="ma-checkbox inline"><input type="checkbox" className="" />
-				<label>Sales</label>
-				</div>
-				</li>
-                <li className="xs-pl-10">
-				<div className="ma-checkbox inline"><input type="checkbox" className="" />
-				<label>Operations</label>
-				</div>
-				</li>*/}
                   <button type="button" title="Filter" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="zmdi zmdi-hc-lg zmdi-filter-list"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                    {/*<li>
-                      <input type="text" class="form-control"/>
-                    </li>*/}
-                    {/*<table id="filterList" className="tablesorter table table-condensed table-hover table-bordered">
-                      <thead></thead>
-                      <tbody>*/}
                     {filterListTemplate}
-                    {/*</tbody>
-                    </table>*/}
-
-                    {/*<li>
-                <label><input type="checkbox" /> Finance</label>
-                </li>
-                <li>
-                <a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                </li>
-                <li>
-                <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-                </li>*/}
                   </ul>
                 </div>
               </div>
@@ -413,35 +345,6 @@ export class AppsPanel extends React.Component {
 
         <div className="main-content">
           <div className="row">
-            {/* <div className="col-md-4">
-          <div className="app-block">
-                <Link className="app-link"  to= "/apps/lex">
-                  <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-                  <img src={STATIC_URL + "assets/images/app_lex1.png"} class="img-responsive" />
-                  </div>
-                  <div className="col-md-8 col-sm-9 col-xs-7">
-                    <h4>
-                      Lex
-                    </h4>
-                    <p>
-                    To extract sentiments, emotions and context from audio/voice
-                    </p>
-                  </div>
-                  <div class="clearfix"></div>
-                </Link>
-
-                <div className="card-footer">
-                  <ul className="app_labels">
-                  <li><a href="#"><i class="fa fa-tag"></i>Marketing</a></li>
-                  <li><a href="#"><i class="fa fa-tag"></i>Customer Service</a></li>
-                  </ul>
-
-                  <div id="myPopover" className="pop_box hide">
-                    <p>Info</p>
-                  </div>
-                </div>
-              </div>
-              </div> */}
             {appListTemplate}
             <div className="clearfix"></div>
           </div>

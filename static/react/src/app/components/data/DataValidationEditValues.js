@@ -1,7 +1,6 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,handleSaveEditValues,handleInputChange,handleInputChangeReplace, replaceValuesErrorAction} from "../../actions/dataActions";
@@ -30,9 +29,6 @@ export class DataValidationEditValues extends React.Component {
 		this.columnData = null;
 	}
 	
-  showPopup(){
-	  this.props.dispatch(updateVLPopup(true))
-  }
   hidePopup(){
 	  this.props.dispatch(updateVLPopup(false))
   }
@@ -116,7 +112,7 @@ export class DataValidationEditValues extends React.Component {
 		}
 	}
 	
-  renderReplaceList(colSlug,colName,colData,replaceType){
+  renderReplaceList(colData,replaceType){
 	  let optionList = null;
 	  let list = colData.map((actionNames,index)=>{
 		  if(actionNames.actionName == REPLACE){
@@ -148,7 +144,7 @@ export class DataValidationEditValues extends React.Component {
 	const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
 		if(that.columnData != null){
 			replaceTypeList  = (function(){
-				var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+				var optionValues = that.renderReplaceList(that.columnData.columnSetting,data.replaceType);
 					return optionValues;
 			})();
 		}
@@ -171,7 +167,7 @@ export class DataValidationEditValues extends React.Component {
 	const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
 		if(that.columnData != null){
 			replaceTypeList  = (function(){
-				var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+				var optionValues = that.renderReplaceList(that.columnData.columnSetting,data.replaceType);
 				return optionValues;
 			})();
 		}

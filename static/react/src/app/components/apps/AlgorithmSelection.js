@@ -1,13 +1,8 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import store from "../../store";
-import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,parameterTuningVisited,saveRegressionAppAlgorithmData} from "../../actions/appActions";
+import {Button} from "react-bootstrap";
+import {getRegressionAppAlgorithmData,updateAlgorithmData,checkAtleastOneSelected,saveParameterTuning,parameterTuningVisited,saveRegressionAppAlgorithmData} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview} from "../../actions/dataActions";
-import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages} from "../../helpers/helper";
 
@@ -98,9 +93,6 @@ export class AlgorithmSelection extends React.Component {
                         </div>
                     );
                 });
-                // var buttonName = "Proceed";
-                // var pageTitle = ;
-            
         return(
                 <div className="side-body">
                     <div className="page-head">
@@ -133,29 +125,9 @@ export class AlgorithmSelection extends React.Component {
     else{
         return (
                  <div className="side-body">
-                    <div className="page-head">
-                    </div>
-                    <div className="main-content">
                       <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-                    </div>
                   </div>
                 );
     }
     }
-    // checkRangeValidation(){
-    //     var isGo = true;
-    //     $('.range-validate').each(function(){
-    //         if($(this)[0].innerHTML != "")
-    //         isGo =false;
-    //     });
-    //     return isGo;
-    // }
-    // checkMultiSelectValidation(){
-    //     var isGo = true;
-    //     $('.check-multiselect').each(function(){
-    //         if($(this)[0].innerHTML != "")
-    //         isGo =false;
-    //     });
-    //     return isGo;
-    // }
 }

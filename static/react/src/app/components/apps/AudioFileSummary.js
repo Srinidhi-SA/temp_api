@@ -1,13 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
 import store from "../../store";
-import {Button} from "react-bootstrap";
 import {} from "../../actions/appActions";
-import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env.js"
-import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty} from "../../helpers/helper";
 import {getAudioFile,getListOfCards,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {Card} from "../signals/Card";
 import {Link} from "react-router-dom";
@@ -122,13 +118,8 @@ export class AudioFileSummary extends React.Component {
 
 		else{
 			return (
-
 					<div className="side-body">
-					<div className="page-head">
-					</div>
-					<div className="main-content">
 					<img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-					</div>
 					</div>
 			);
 		}

@@ -1,12 +1,10 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
-import {Modal,Button,Tabs,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
+import {Button,Tabs,Tab,FormGroup} from "react-bootstrap";
 import {createModel,setDefaultAutomatic,updateAlgorithmData,saveParameterTuning,changeHyperParameterType, pytorchValidateFlag, setPyTorchSubParams,updateTensorFlowArray, modifyActiveAlgorithmTab} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
 import {statusMessages,FocusSelectErrorFields,FocusInputErrorFields} from "../../helpers/helper";
@@ -447,7 +445,6 @@ export class ModelAlgorithmSelection extends React.Component {
                     }
 
                 });
-            // }
 
         return(
                 <div className="side-body">
@@ -458,20 +455,7 @@ export class ModelAlgorithmSelection extends React.Component {
                     </div>
                     <div className="main-content">
                           <div className="panel panel-mAd">
-                                {/* {this.state.showParameterTuning == false ?
-                                <div>
-                                    <div className="panel-heading xs-ml-0 xs-mb-10">
-                                        Please use the following learning algorithms for prediction
-                                    </div>
-                                    <div className="panel-body no-border">
-									<div className="row algSelection xs-mb-20">
-                                     {pageData}
-									 </div>
-                                     </div>
-                                </div>:
 
-
-                            } */}
                                <Tabs id="algosel" defaultActiveKey={this.props.automaticAlgorithmData.filter(i=>i.selected)[0].algorithmSlug} activeKey={store.getState().apps.activeAlgorithmTab} onSelect={this.changeParameter.bind(this)} className="tab-container">
                                 {pageData}
                                 </Tabs>
@@ -490,11 +474,7 @@ export class ModelAlgorithmSelection extends React.Component {
     else{
         return (
                  <div className="side-body">
-                    <div className="page-head">
-                    </div>
-                    <div className="main-content">
                       <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-                    </div>
                   </div>
                 );
     }

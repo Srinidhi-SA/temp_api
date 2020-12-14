@@ -1,13 +1,7 @@
 export default function reducer(state = {
 		dataSourceList:{},
 		fileUpload:{},
-		selectedDataSrcType:"fileUpload",
-		db_host:null,
-		db_schema:null,
-		db_port:null,
-		db_username:null,
-		db_tablename:null,
-		db_password:null,
+		selectedDataSrcType:"fileUpload"
 }, action) {
 	if(window.location.href.includes("autoML")){
 	$("#left-tabs-example-tab-MySQL").css("cursor", "not-allowed");
@@ -38,54 +32,6 @@ export default function reducer(state = {
 		return {
 			...state,
 			fileUpload:action.files,
-		}
-	}
-	break;
-	case "DB_HOST_NAME":
-	{
-		return {
-			...state,
-			db_host:action.host,
-		}
-	}
-	break;
-	case "DB_PORT_NAME":
-	{
-		return {
-			...state,
-			db_port:action.port,
-		}
-	}
-	break;
-	case "DB_USER_NAME":
-	{
-		return {
-			...state,
-			db_username:action.username,
-		}
-	}
-	break;
-	case "DB_PASSWORD":
-	{
-		return {
-			...state,
-			db_password:action.password,
-		}
-	}
-	break;
-	case "DB_TABLENAME":
-	{
-		return {
-			...state,
-			db_tablename:action.tablename
-		}
-	}
-	break;
-	case "DB_SCHEMA":
-	{
-		return {
-			...state,
-			db_schema:action.schema,
 		}
 	}
 	break;

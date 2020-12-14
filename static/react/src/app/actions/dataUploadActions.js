@@ -1,8 +1,8 @@
 import {API} from "../helpers/env";
 import {DYNAMICLOADERINTERVAL} from "../helpers/helper";
 import store from "../store";
-import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
-import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup,hideDULoaderPopup} from "./dataActions";
+import { DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
+import { getDataSetPreview, updateDatasetName, openDULoaderPopup,hideDULoaderPopup} from "./dataActions";
 import {closeModelPopup} from "./appActions";
 
 export var dataPreviewInterval = null;
@@ -27,8 +27,6 @@ export function dataUpload() {
     }
     else{
         var elements = document.getElementById(store.getState().dataSource.selectedDataSrcType).elements;
-        //$("#MySQLdatasetname").tooltip({'trigger':'focus', 'title': 'Password tooltip'});
-       // var dataSrc = store.getState().dataSource.selectedDataSrcType;
         var flag = false;
         for(var i=0;i<elements.length;i++){
            
@@ -59,9 +57,6 @@ function uploadFileOrDB(dbDetails){
         dispatch(openDULoaderPopup());
 
         return triggerDataUpload(getUserDetailsOrRestart.get().userToken,dbDetails).then(([response, json]) => {
-
-          // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
-          // dispatch()
           if (response.status === 200) {
               dispatch(updateDatasetName(json[0].slug))
               dispatch(dataUploadSuccess(json[0], dispatch))
@@ -90,21 +85,6 @@ function triggerDataUpload(token,dbDetails) {
     }).then(response => Promise.all([response, response.json()]));
   } else {
 
-    var host = store.getState().dataSource.db_host;
-    var port = store.getState().dataSource.db_port;
-    var username = store.getState().dataSource.db_username;
-    var password = store.getState().dataSource.db_password;
-    var tablename = store.getState().dataSource.db_tablename;
-    var schema = store.getState().dataSource.db_schema;
-    var dataSourceDetails = {
-      "host": host,
-      "port": port,
-      "schema": schema,
-      "username": username,
-      "tablename": tablename,
-      "password": password,
-      "datasourceType": store.getState().dataSource.selectedDataSrcType
-    }
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeader(token),
@@ -146,7 +126,6 @@ function dataUploadSuccess(data, dispatch) {
           msg = loading_message[loading_message.length - 1].shortExplanation
         }
             loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
-            //alert(msg + "  " + loaderVal)
           }
           dispatch(dataUploadLoaderValue(loaderVal));
           dispatch(dataUploadLoaderMsg(msg));

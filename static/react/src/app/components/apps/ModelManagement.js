@@ -5,7 +5,6 @@ import store from "../../store"
 import {openDeployModalAction, closeDeployModalAction, storeAlgoSearchElement,saveDeployValueAction} from "../../actions/modelManagementActions"
 import {Button,Modal, Pagination} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import { Router, Route, IndexRoute } from 'react-router';
 import {isEmpty} from "../../helpers/helper";
 import Dialog from 'react-bootstrap-dialog';
 import {emptyAlgoAnalysis} from "../../actions/signalActions";
@@ -199,12 +198,9 @@ export class ModelManagement extends React.Component {
 
   render(){
     if(isEmpty(this.props.algoList)|| isEmpty(this.props.allProjects)){
-			return (
+      return (
         <div className="side-body">
-          <div className="page-head"></div>
-          <div className="main-content">
             <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-          </div>
         </div>
       );
     }else{
@@ -345,14 +341,10 @@ export class ModelManagement extends React.Component {
         let appName = this.props.currentAppDetails.displayName;
 
         return (
-          // <!-- Main Content starts with side-body -->
           <div class="side-body">
-            {/* <!-- Page Title and Breadcrumbs --> */}
             <div class="page-head">
               <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Model Management <br></br><small>{appName}</small></h3>
             </div>
-            {/* <!-- /.Page Title and Breadcrumbs --> */}
-            {/* <!-- Page Content Area --> */}
             {deployPopup}
             <div class="main-content">
               <div class="row">
@@ -388,7 +380,6 @@ export class ModelManagement extends React.Component {
                               <th><b>Action</b></th>
                             </tr>
                           </thead>
-                          {/* <tbody className="no-border-x"> {tablecontent} </tbody> */}
                         {tablecontent}                    
                       </table>
                       {NoDataMessage}
@@ -408,9 +399,7 @@ export class ModelManagement extends React.Component {
                   </div>
                 </div>
               </div>
-            {/* <!-- End Row --> */}
             </div>
-          {/* <!-- End Main Content --> */}
           </div>
         );
       }

@@ -1,25 +1,17 @@
 import React from "react";
-import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import store from "../../store";
-import { Modal, Button, Tab, Row, Col, Nav, NavItem, Form, FormGroup, FormControl } from "react-bootstrap";
+import { Button, Form, FormGroup } from "react-bootstrap";
 import { DataVariableSelection } from "../data/DataVariableSelection";
 import { updateTrainAndTest, createModel, updateSelectedVariable, showLevelCountsForTarget, updateTargetLevel, saveSelectedValuesForModel, updateRegressionTechnique, updateCrossValidationValue, getAppDetails, reSetRegressionVariables, selectMetricAction } from "../../actions/appActions";
 import { AppsLoader } from "../common/AppsLoader";
-import { getDataSetPreview, showAllVariables,makeAllVariablesTrueOrFalse,updateVariableSelectionArray,variableSlectionBack,saveLevelCountVal } from "../../actions/dataActions";
+import { getDataSetPreview, showAllVariables,updateVariableSelectionArray,variableSlectionBack,saveLevelCountVal } from "../../actions/dataActions";
 import { hideTargetVariable } from "../../actions/signalActions";
-import { SET_VARIABLE, statusMessages,isEmpty } from "../../helpers/helper";
-import { options } from "react-bootstrap-dialog";
-import { API, EMR, STATIC_URL } from "../../helpers/env";
-import {
-    removeDuplicateAttributesAction,
-    removeDuplicateObservationsAction,
-  } from "../../actions/dataCleansingActions";
-  import {
-    saveTopLevelValuesAction,
-  } from "../../actions/featureEngineeringActions";
-
+import { statusMessages,isEmpty } from "../../helpers/helper";
+import {  EMR, STATIC_URL } from "../../helpers/env";
+import { removeDuplicateAttributesAction,removeDuplicateObservationsAction } from "../../actions/dataCleansingActions";
+import {saveTopLevelValuesAction} from "../../actions/featureEngineeringActions";
 
 
 @connect((store) => {
@@ -70,7 +62,6 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(updateTrainAndTest(50));
         this.props.dispatch(updateTargetLevel(""));
-        // if(this.props.dataPreview != null&& !isEmpty(this.props.dataPreview)&&from === 'editModel'){
         if(this.props.dataPreview != null&& !isEmpty(this.props.dataPreview)&& this.props.editmodelFlag==true){
 
             ""
@@ -83,10 +74,6 @@ export class ModelVariableSelection extends React.Component {
         
 }
 
-componentDidMount = () => {
-
-    
-}
     getValueOfFromParam() {
         if(this.props.location === undefined){
         }
@@ -186,11 +173,9 @@ componentDidMount = () => {
 
     handleOptionChange(e) {
         this.props.dispatch(updateRegressionTechnique(e.target.value));
-        //this.setState({ selectedTechnique: e.target.value});
     }
     changecrossValidationValue(e) {
         this.props.dispatch(updateCrossValidationValue(e.target.value));
-        //this.setState({ crossvalidationvalue: e.target.value});
     }
     componentWillReceiveProps(newProps){
         if(!isEmpty(newProps.modelEditconfig)&&newProps.modelEditconfig!="" && !isEmpty(newProps.dataPreview)&& newProps.editmodelFlag && this.state.perspective!=true){
@@ -245,10 +230,7 @@ componentDidMount = () => {
         if((this.props.editmodelFlag && (this.props.dataPreview===null || Object.keys(this.props.dataPreview).length ===0))||this.props.dataPreview==null ){
             return (
               <div className="side-body">
-                <div className="page-head"></div>
-                <div className="main-content">
                   <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-                </div>
               </div>
             );
           }
@@ -399,14 +381,12 @@ componentDidMount = () => {
                                     <div className="col-lg-4"> {renderSelectBox}</div>
                                     <div className="clearfix"></div>
 
-                                    {/*<!-- /.col-lg-4 -->*/}
 
                                     {(this.props.targetLevelCounts != "") ? (<div className="xs-mt-20 xs-mb-20">
 
                                         <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
                                         <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
 
-                                        {/*<!-- /.col-lg-4 -->*/}
                                     </div>) : (<div></div>)
 
                                     }

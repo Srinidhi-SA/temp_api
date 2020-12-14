@@ -1191,7 +1191,6 @@ export function handleSelectAll(evt){
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
-        var targetVariableType = store.getState().signals.getVarType;
         if(varType == "measure"){
             dataSetMeasures  = updateSelectedKey(dataSetMeasures,evt.target.checked);
             meaFlag = evt.target.checked;
