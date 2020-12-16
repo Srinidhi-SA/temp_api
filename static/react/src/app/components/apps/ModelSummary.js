@@ -5,7 +5,7 @@ import {getDeploymentList} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env.js"
 import {openDeployModalAction, closeDeployModalAction} from "../../actions/modelManagementActions"
-import {isEmpty, subTreeSetting,getUserDetailsOrRestart, SUCCESS,INPROGRESS} from "../../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {getAlgoAnalysis} from "../../actions/signalActions";
 import {CardHtml} from "../../components/signals/CardHtml";
 import {CardTable} from "../common/CardTable";
@@ -126,16 +126,12 @@ export class ModelSummary extends React.Component {
     if(isEmpty(this.props.algoAnalysis)){
     return (
       <div className="side-body">
-      <div className="page-head"></div>
-      <div className="main-content">
         <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-      </div>
       </div>
     );
     }else if(isEmpty(this.props.algoAnalysis.data)){
     return (
       <div className="side-body">
-      <div className="page-head"></div>
       <div className="main-content">
         <h1>There is no data</h1>
       </div>
@@ -279,7 +275,6 @@ export class ModelSummary extends React.Component {
     }
 
     return (
-      // <!-- Main Content starts with side-body -->
       <div class="side-body">
         <div class="main-content">
           <div class="page-head">

@@ -1,11 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
-import store from "../../store";
-import {getSignalAnalysis,handleDecisionTreeTable} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
-import HeatMap from '../../helpers/heatmap';
-import $ from "jquery";
 import {predictionLabelClick} from "../../helpers/helper";
 
 @connect((store) => {

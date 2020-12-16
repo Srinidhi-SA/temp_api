@@ -1,8 +1,6 @@
 import React from "react";
 import {Redirect, Link, NavLink} from "react-router-dom";
 import {
-  resTree,
-  searchTree,
   getFirstCard,
   fetchCard,
   fetchNodeFromTree,
@@ -163,7 +161,6 @@ export class OverViewPage extends React.Component {
         }
         
         let urlSplit = this.props.location.pathname.split("/");
-        let selectedSignal = storyName;
         let tabList = null;
         let varList = null;
         let cardList = null;
@@ -332,7 +329,6 @@ export class OverViewPage extends React.Component {
                             {cardList}
                           </ul>
                         </div>
-                        {/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
                         {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) ?
                           <button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
                             <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
@@ -348,11 +344,9 @@ export class OverViewPage extends React.Component {
                           }} title="Document mode">
                           <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
                         </Link>
-                        {/*<Link className="continue" to={that.urlPrefix}>*/}
                         <button type="button" className="btn btn-default" onClick={this.closeDocumentMode.bind(this)}>
                           <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                         </button>
-                        {/*</Link>*/}
                       </div>
                     </div>
                   </h3>

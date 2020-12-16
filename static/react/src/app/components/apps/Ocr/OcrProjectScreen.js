@@ -152,8 +152,8 @@ export class OcrProjectScreen extends React.Component {
          )
             : (<tr><td className='text-center' colSpan={6}>"No data found for your selection"</td></tr>)
          )
-            : (<img id="loading" style={{ position: 'relative', left: '500px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
-      )
+     : (<tr><td colSpan={6}><img src={STATIC_URL + "assets/images/Preloader_2.gif"} /></td></tr>)
+            )
       return (
          <div>
             <OcrCreateProject />

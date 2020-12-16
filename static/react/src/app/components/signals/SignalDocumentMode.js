@@ -9,7 +9,6 @@ import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
 import {getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 
-
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
 })
@@ -98,11 +97,6 @@ export class SignalDocumentMode extends React.Component {
           <div>
             <div className="side-body" id="side-body">
               <div className="page-head">
-                <div class="row">
-                  <div class="col-md-12">
-                  </div>
-                </div>
-                <div class="clearfix"></div>
               </div>
               <div className="main-content">
                 <div className="row">
@@ -151,8 +145,6 @@ export class SignalDocumentMode extends React.Component {
         <div className="side-body">
           <div className="page-head">
             <div class="row">
-              <div class="col-md-12">
-              </div>
               <div class="col-md-8">
                 <h2>{this.props.signal.name}</h2>
               </div>

@@ -226,8 +226,8 @@ export class RevDocTable extends React.Component {
       )
         : (<tr><td className='text-center' colSpan={9}>"No data found for your selection"</td></tr>)
       )
-        : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
-    )
+        : (<tr><td colSpan={8}><img src={STATIC_URL + "assets/images/Preloader_2.gif"} /></td></tr>)
+        )
     let templateOptions= (this.props.OcrRevwrDocsList!=""?
     this.props.OcrRevwrDocsList.values.map((item,index)=>{
       return(

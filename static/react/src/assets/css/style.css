@@ -23245,6 +23245,12 @@ body .p-multiselect.regParamFocus:hover {
 }
 #labelDialog{
   width: 300px;
+}.row.multi .col-md-12{
+  margin-bottom: 1px
+}
+.row.multi.hasSubchart .col-md-12{
+  margin-bottom: 33px;
+  max-height: 407px;
 }
 .subTab ul.nav-tabs:first-child{
   display: block  !important;

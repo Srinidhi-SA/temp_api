@@ -1,24 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
-import store from "../../store";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview,openShareModalAction} from "../../actions/dataActions";
-import {isEmpty, SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
-import {
-    getList,
-    emptySignalAnalysis,
-    handleDelete,
-    handleRename,
-    storeSearchElement,
-    storeSortElements,
-    fetchCreateSignalSuccess,
-    triggerSignalAnalysis,
-    emptySignalData,
-    refreshSignals,
-    updateTargetTypForSelSignal,
-    clearSignalList
-  } from "../../actions/signalActions";
+import {Link} from "react-router-dom";
+import {openShareModalAction} from "../../actions/dataActions";
+import {SUCCESS,FAILED,INPROGRESS,getUserDetailsOrRestart, statusMessages} from "../../helpers/helper";
+import { emptySignalAnalysis,handleDelete,handleRename,triggerSignalAnalysis,clearSignalList} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
 var dateFormat = require('dateformat');
@@ -26,12 +11,11 @@ import Dialog from 'react-bootstrap-dialog';
 import {openCsLoaderModal} from "../../actions/createSignalActions"
 
 @connect((store) => {
-    return { login_response: store.login.login_response,
+    return {
         signalList: store.signals.signalList.data,
-        latestSignals:store.signals.latestSignals};
+      };
 })
 
-//var selectedData = null;
 export class SignalCard extends React.Component {
     constructor(props) {
         super(props);
@@ -54,7 +38,7 @@ export class SignalCard extends React.Component {
       handleRename(slug, name) {
         this.props.dispatch(handleRename(slug, this.dialog, name));
       }
-      openLoaderScreen(slug, percentage, message, e) {
+      openLoaderScreen(slug, percentage, message) {
           var signalData = {};
           signalData.slug = slug
           this.props.dispatch(openCsLoaderModal());
@@ -79,13 +63,12 @@ export class SignalCard extends React.Component {
             completed_percent=99
               if(story.status == INPROGRESS){
                   percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
-             
               }else if(story.status == SUCCESS){
                   story.completed_percentage = 100;
                   percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
               }else if(story.status == FAILED){
                 percentageDetails =   <div class=""><font color="#ff6600">Failed</font></div>
-            }
+              }
 
               var imgLink = story.type == "dimension"?STATIC_URL + "assets/images/s_d_carIcon.png":STATIC_URL + "assets/images/s_m_carIcon.png"
               iconDetails = <img src={imgLink} alt="LOADING"/>
@@ -103,26 +86,23 @@ export class SignalCard extends React.Component {
                         <h5 className="title newCardTitle pull-left">
                           <span>{story.name}</span>
                         </h5>
-						<div className="pull-right">{iconDetails}</div>
-                    <div className="clearfix"></div>
-					            <div className="clearfix"></div>
+						            <div className="pull-right">{iconDetails}</div>
+                        <div className="clearfix"></div>
+					             <div className="clearfix"></div>
                            {percentageDetails}
                       </div>
-
                     </div>
                   </div>
-                  </Link>
+                </Link>
                   <div className="card-footer">
                 <Link to={story.status == INPROGRESS?"#":signalLink} id={story.slug} onClick={story.status== INPROGRESS?this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message):this.getSignalAnalysis.bind(this,story.status)}>
-                    <div className="left_div">
-                      <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                      <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
-                    </div>
-                    </Link>
+                  <div className="left_div">
+                    <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
+                    <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
+                  </div>
+                </Link>
 
-					{
-
-                            isDropDown == true ? <div class="btn-toolbar pull-right">
+					{isDropDown == true ? <div class="btn-toolbar pull-right">
                       <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                       </a>
@@ -136,23 +116,22 @@ export class SignalCard extends React.Component {
                             <i className="fa fa-pencil"></i>&nbsp;&nbsp;Rename</a>
                         </span>:""}
 						
-					{permissionDetails.remove_signal == true ?
+					    {permissionDetails.remove_signal == true ?
                         <span onClick={this.handleDelete.bind(this, story.slug)}>
                           <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
                               ? "Stop"
                               : "Delete"}</a>
                         </span> :""}
-            {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"signals")}>
-            <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
-            <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
-            </span>: ""}
+              {story.status == "SUCCESS"? <span  className="shareButtonCenter"onClick={this.openShareModal.bind(this,story.name,story.slug,"signals")}>
+              <a className="dropdown-item btn-primary" href="#shareCard" data-toggle="modal">
+              <i className="fa fa-share-alt"></i>&nbsp;&nbsp;{"Share"}</a>
+              </span>: ""}
 						<div className="clearfix"></div>
 						</li>
 					 
 						 </ul>
-                          </div>:<div class="btn-toolbar pull-right"></div>
-                        }
+            </div>:<div class="btn-toolbar pull-right"></div>}
 
                       </div>
                 </div>

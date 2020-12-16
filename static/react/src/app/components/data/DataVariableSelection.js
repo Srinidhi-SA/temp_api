@@ -1,7 +1,7 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from "react-redux";
-import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } from "react-bootstrap";
+import { Popover, OverlayTrigger } from "react-bootstrap";
 import store from "../../store";
 import $ from "jquery";
 
@@ -45,11 +45,7 @@ export class DataVariableSelection extends React.Component {
         this.measures = [];
         this.dimensions = [];
         this.datetime = [];
-        this.measureChkBoxList = [];
-        this.dimensionChkBoxList = [];
         this.dimensionDateTime = [];
-        this.dateTimeChkBoxList = [];
-        this.selectedTimeDimension = "";
         this.possibleAnalysisList = {};
     }
     handleCheckboxEvents( e ) {
@@ -299,7 +295,6 @@ export class DataVariableSelection extends React.Component {
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
 
 											 <div class="btn-toolbar pull-right">
-                                             {/*   <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />*/}
 
 											<div class="input-group">
 											<div className="search-wrapper">
@@ -341,7 +336,7 @@ export class DataVariableSelection extends React.Component {
                                 </div>
                             </div>
 
-                        </div>{/*<!-- /.col-lg-4 -->*/}
+                        </div>
                         <div className="col-md-4">
                             <div className="panel panel-primary-p2 cst-panel-shadow">
 
@@ -349,7 +344,6 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
 
                                 <div className="panel-body">
-                                    {/*  <!-- Row for select all-->*/}
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
 

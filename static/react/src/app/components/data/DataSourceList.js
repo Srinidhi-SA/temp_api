@@ -11,7 +11,7 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {FILEUPLOAD, MYSQL, INPUT, PASSWORD, bytesToSize,statusMessages} from "../../helpers/helper";
+import {FILEUPLOAD, bytesToSize} from "../../helpers/helper";
 
 import {getDataSourceList, saveFileToStore, updateSelectedDataSrc, updateDbDetails} from "../../actions/dataSourceListActions";
 import {getAllDataList} from "../../actions/dataActions";
@@ -21,11 +21,6 @@ import { Scrollbars } from 'react-custom-scrollbars';
     login_response: store.login.login_response,
     dataSrcList: store.dataSource.dataSourceList,
     fileUpload: store.dataSource.fileUpload,
-    db_host: store.dataSource.db_host,
-    db_schema: store.dataSource.db_host,
-    db_username: store.dataSource.db_host,
-    db_port: store.dataSource.db_port,
-    db_password: store.dataSource.db_host,
     selectedDataset: store.datasets.selectedDataSet,
     allDataList:store.datasets.allDataSets,
     datasets:store.datasets.dataList.data,
@@ -53,10 +48,6 @@ export class DataSourceList extends React.Component {
     var duplicateFlag="";
     var duplicateName="";
     if (files.length > 0) {
-      // if(this.props.datasets.length>0){
-      //   var datasetList = this.props.datasets.map(i=>i.name.toLowerCase());
-      //   duplicateName = files.map(i=> datasetList.includes(i.name.toLowerCase().split('.').slice(0, -1).join('.'))).includes(true);
-      // }
       if(this.props.allDataList!=""){
         var alldatasetList = this.props.allDataList.data.map(i=>i.name.toLowerCase());
         for (var i=0;i<files.length;i++){
@@ -76,7 +67,6 @@ export class DataSourceList extends React.Component {
               "name": "",
               "size": ""
             };
-            // this.props.dispatch(saveFileToStore(files))
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html(`Dataset with ${duplicateName} name already exists`);
           }
@@ -101,7 +91,7 @@ export class DataSourceList extends React.Component {
     this.props.dispatch(updateSelectedDataSrc(key))
   }
   handleInputChange(event) {
-    updateDbDetails(event);
+    $("#"+event.target.id).css("border-color","#e0e0e0");
   }
   deleteFile(item){
     var deletedFiles= store.getState().dataSource.fileUpload.filter(i=>i!=item);
@@ -116,12 +106,7 @@ export class DataSourceList extends React.Component {
   }
   render() {
     const dataSrcList = store.getState().dataSource.dataSourceList.conf;
-    var fileName = store.getState().dataSource.fileUpload;
-    val => ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb'][Math.floor(Math.log2(val) / 10)]
 
-    var fileSize = store.getState().dataSource.fileUpload.size;
-    if (store.getState().dataSource.fileUpload.size)
-      fileSize = bytesToSize(store.getState().dataSource.fileUpload.size);
     if (dataSrcList) {
       const navTabs = dataSrcList.map((data, i) => {
         return (

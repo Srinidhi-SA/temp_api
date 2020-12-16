@@ -478,8 +478,8 @@ export class OcrTable extends React.Component {
       )
         : (<tr><td className='text-center' colSpan={11}>"No data found for your selection"</td></tr>)
       )
-        : (<img id="loading" style={{ position: 'relative', left: '600px' }} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
-    )
+        : (<tr><td colSpan={11}><img src={STATIC_URL + "assets/images/Preloader_2.gif"} /></td></tr>)
+        )
 
     return (
       <div>
@@ -562,9 +562,9 @@ export class OcrTable extends React.Component {
                       <thead>
                         <tr>
                           {this.props.OcrDataList != '' ? this.props.OcrDataList.data.length != 0 ?
-                            <th>
-                              <Checkbox onChange={this.handleCheckAll.bind(this, this.props)} checked={this.state.checkAll}></Checkbox>
-                            </th> : "" : ""}
+                          <th>
+                          <Checkbox onChange={this.handleCheckAll.bind(this, this.props)} checked={this.state.checkAll}></Checkbox>
+                          </th>:null:null}
                           <th><i class="fa fa-file-text-o"></i></th>
                           <th>NAME</th>
                           <th class="dropdown" >
@@ -634,7 +634,7 @@ export class OcrTable extends React.Component {
                               <li><a class="cursor" onClick={this.filterOcrList.bind(this, '', 'assignee')} name='all'>All</a></li>
                               {getAssigneeOptions}
                             </ul>
-                          </th> : ''}
+                          </th> : null}
                           <th>Created By</th>
                           <th>Modified By</th>
                           <th>Last Modified</th>

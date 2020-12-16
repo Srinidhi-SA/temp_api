@@ -1,8 +1,5 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
-import {Redirect} from 'react-router';
-import store from "../../store";
 import { C3ChartNew } from "../C3ChartNew";
 
 @connect((store) => {
@@ -52,7 +49,6 @@ export class DataPreviewRightPanel extends React.Component {
 				</div>
 				<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 				<div className="panel-body" id="side-chart">
-				{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 				<C3ChartNew chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
 				<div className="clearfix"></div>
 				</div>

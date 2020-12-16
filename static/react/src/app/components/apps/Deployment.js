@@ -119,13 +119,9 @@ export class Deployment extends React.Component {
 
   render() {
     if(isEmpty(this.props.deploymentList)){
-			return ( 
+			return (
         <div className="side-body">
-          <div className="page-head">
-          </div>
-          <div className="main-content">
             <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-          </div>
         </div>
       );
 		}else{

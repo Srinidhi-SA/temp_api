@@ -18,7 +18,7 @@ var dateFormat = require('dateformat');
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty} from "../../helpers/helper"
 import {getAllDataList, hideDataPreview,getAllUsersList,setEditModelValues,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";
-import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
+import {openCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
@@ -29,7 +29,6 @@ import {clearDataPreview} from "../../actions/appActions";
 
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     signalList: store.signals.signalList.data,
     selectedSignal: store.signals.signalAnalysis,
     signal_search_element: store.signals.signal_search_element,
@@ -93,7 +92,7 @@ export class Signals extends React.Component {
         this.props.history.push('/signals?search='+e.target.value+'&sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
         else
         this.props.history.push('/signals?search=' + e.target.value + '')
-}
+      }
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }
@@ -108,7 +107,7 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
-  openLoaderScreen(slug, percentage, message, e) {
+  openLoaderScreen(slug, percentage, message) {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
@@ -136,7 +135,7 @@ export class Signals extends React.Component {
       this.props.dispatch(storeSearchElement(e.target.value));
     }
   }
-  clearSearchElement(e){
+  clearSearchElement(){
     this.props.dispatch(storeSearchElement(""));
     if(this.props.signal_sorton)
     this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
@@ -147,11 +146,11 @@ export class Signals extends React.Component {
   render() {
     document.body.className = "";
     if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
-    var viewed=store.getState().signals.signalAnalysisViewed;
-    if(!viewed && viewed!="") {  
-      let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
-      return (<Redirect to={_link}/>);
-    }
+      var viewed=store.getState().signals.signalAnalysisViewed;
+      if (!viewed && viewed!="") {  
+       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
+       return (<Redirect to={_link}/>);
+      }
     }
 
     var data = this.props.signalList;
@@ -167,11 +166,10 @@ export class Signals extends React.Component {
     storyList = <SignalCard data={data}/>;
 
       return (
-        <div className="side-body">
-
+      <div className="side-body">
         <LatestSignals props={this.props}/>
 
-            <div className="main-content">
+        <div className="main-content">
             <div class="row">
               <div class="col-md-12">
                 <div class="btn-toolbar pull-right">
@@ -210,12 +208,8 @@ export class Signals extends React.Component {
                     </ul>
                   </div>
                 </div>
-
-				</div>
-              </div>
-
-
-
+				      </div>
+            </div>
               {
                 store.getState().datasets.paginationFlag &&
                 <div className="paginationFlg">
@@ -229,7 +223,6 @@ export class Signals extends React.Component {
                   <div className="clearfix"></div>
                 </div>
               }
-
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">
                 {paginationTag}
@@ -237,16 +230,15 @@ export class Signals extends React.Component {
             </div>
           <CreateSignalLoader history={this.props.history}/>
           <Share usersList={this.props.userList}/>
-
         </div>
-                </div>
+      </div>
       );
     } else {
       return (
-          <div>
-            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
-          </div>
+        <div className="side-body">
+          <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+        </div>
       )
     }
-    }
+  }
 }
