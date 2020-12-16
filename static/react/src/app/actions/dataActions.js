@@ -140,7 +140,7 @@ export function getDataSetPreview(slug,interval) {
                     setTimeout(function() {
                     window.location.pathname="/signals";
                     },2000);
-                }else if(Object.keys(json.meta_data.scriptMetaData).length === 0 || json.meta_data.uiMetaData === null || json.meta_data.uiMetaData.columnDataUI===undefined){
+                }else if(json.status==="SUCCESS" && (Object.keys(json.meta_data.scriptMetaData).length === 0 || json.meta_data.uiMetaData === null || json.meta_data.uiMetaData.columnDataUI===undefined)){
                     bootbox.dialog({
                         message:"Sorry, Unable to fetch data preview",
                         buttons: {
