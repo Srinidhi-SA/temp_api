@@ -64,7 +64,6 @@ export class OcrCreateProject extends React.Component {
     }).then(response => response.json()).then(json => {
       if (json.project_serializer_message === "SUCCESS") {
         this.closePopup()
-      // this.props.dispatch(getOcrProjectsList())
       this.props.dispatch(selectedProjectDetails(json.project_serializer_data.slug,json.project_serializer_data.name))
       this.props.dispatch(saveDocumentPageFlag(true));
       }
@@ -162,7 +161,7 @@ export class OcrCreateProject extends React.Component {
                     <div class="col-md-12">
                       <div class="form-group">
                         <label for="projectLead" class="form-label">Project Lead</label>
-                        <input className="form-control" id="projectLead" type="text" placeHolder="Lead Name" />
+                        <input className="form-control" id="projectLead" type="text" placeholder="Lead Name" />
                       </div>
                     </div>
                   </div>
