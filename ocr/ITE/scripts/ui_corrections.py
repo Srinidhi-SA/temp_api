@@ -458,17 +458,7 @@ class ui_corrections:
         #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
         height, width = mask.shape[:2]
         area = height * width
-        #        fontScale = 0.6
-        #        print (fontScale)
-        #        print(final_json_to_flag)
-        #        print('RESULT: ',sum([len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]))
-        # if ((len(final_json_to_flag["tables"]) == 0) or (sum(
-        #         [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
-        #     height, width) < 700:  # or plain_mask == True:
-        #     white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
-        #     mask = white_canvas.copy()
-        # else:
-        #     pass
+        font = cv2.FONT_HERSHEY_SIMPLEX
 
         if 'paragraphs' in final_json_to_flag:
             for k in final_json_to_flag["paragraphs"]:
@@ -479,18 +469,6 @@ class ui_corrections:
                         p2 = [p3[0], p1[1]]
                         p4 = [p1[0], p3[1]]
                         text = m['text']
-                        #                        print(text)
-                        #
-                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
-                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
-                        #
-                        #                        print('*'*10)
-                        #
-                        #                        if "º" in text:
-                        #                            print(text)
-                        # x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
-                        # if x:
-                        #                            print(text)
                         x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
                             words_with_special_characters.append(m)
@@ -541,15 +519,8 @@ class ui_corrections:
                         #                        print(text)
                         vertices = [p1, p2, p3, p4]
 
-                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
-                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
-                        #
-                        #                        print('*'*10)
-                        #                        if "º" in text:
-                        #                            print(text)
                         x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
-                            #                            print(text)
                             words_with_special_characters.append(m)
                         else:
                             heightoftext = p4[1] - p1[1]
@@ -562,11 +533,7 @@ class ui_corrections:
                             anchorXforcleaning = (anchorX, anchorY - 1 - textSize[0][1])
                             anchorYforcleaning = (anchorX + textSize[0][0], anchorY + 5)
                             cv2.rectangle(mask, anchorXforcleaning, anchorYforcleaning, (255, 255, 255), -1)
-                            # height, ratio = abs(
-                            #     p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                            # fontScale, font = self.get_optimal_params(
-                            #     height, ratio, area)
-                            #                        print('FONT : ',font)
+
                             if m['flag']:
                                 mask = self.highlight_word(
                                     mask, text, (anchorX, anchorY), fontScale, font)
