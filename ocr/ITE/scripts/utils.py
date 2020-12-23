@@ -3,6 +3,52 @@ import numpy as np
 import cv2
 
 
+def linesObjectContours(CONTOUR, height, width):
+    wholeline_indices_V = []
+    wholeline_indices_H = []
+    VERTICAL_THRESHOLD = int(height * 0.07)
+    HORIZONTAL_THRESHOLD = int(width * 0.10)
+    contourlist = CONTOUR.copy()
+    for idx in range(len(contourlist)):
+        eachobject = contourlist[idx]
+        x, y, w, h = cv2.boundingRect(eachobject)
+        if HORIZONTAL_THRESHOLD < w:
+            wholeline_indices_H.append(idx)
+            continue
+        if VERTICAL_THRESHOLD < h:
+            wholeline_indices_V.append(idx)
+    return wholeline_indices_H + wholeline_indices_V
+
+
+def contourLinePlot(CONTOUR, height, width, wholeline_indices):
+    blank_image = np.zeros((height, width), np.uint8)
+    for idx in wholeline_indices:
+        eachobject = CONTOUR[idx]
+        i = 0
+        j = 1
+        while i < len(eachobject):
+            currentpoint = eachobject[i][0]
+            if j == len(eachobject):
+                nextpoint = eachobject[0][0]
+            else:
+                nextpoint = eachobject[j][0]
+            horizontallinelen = abs(nextpoint[0] - currentpoint[0])
+            verticallinelen = abs(nextpoint[1] - currentpoint[1])
+            tan = verticallinelen / horizontallinelen
+            if abs(tan) > 0.03492077 and abs(tan) < 28.63625328:
+                i = i + 1
+                j = j + 1
+            elif horizontallinelen < 7 and verticallinelen < 7:
+                i = i + 1
+                j = j + 1
+            else:
+                blank_image = cv2.line(blank_image, (currentpoint[0], currentpoint[1]), (nextpoint[0], nextpoint[1]),
+                                       (255, 255, 255), 1)
+                i = i + 1
+                j = j + 1
+    return blank_image
+
+
 def optimal_params(bw, task='table', scalev=40, scaleh=20):
     if task == 'table':
 
