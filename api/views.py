@@ -54,11 +54,12 @@ from api.utils import \
     DatasetScoreDeploymentSerializer, \
     DatasetScoreDeploymentListSerializer, \
     TrainerNameListSerializer, \
-    ChangePasswordSerializer, UserListSerializer
+    ChangePasswordSerializer, UserListSerializer, \
+    OutlookTokenSerializer
 # RegressionSerlializer,
 # RegressionListSerializer
 from .models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps, \
-    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment, convert2native
+    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment, convert2native, OutlookToken
 from api.tasks import clean_up_on_delete, create_model_autoML
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
@@ -6933,3 +6934,19 @@ class UserView(viewsets.ModelViewSet):
             return JsonResponse({'allUsersList': UsersList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
+
+
+class OutlookTokenView(viewsets.ModelViewSet):
+    serializer_class = OutlookTokenSerializer
+    model = OutlookToken
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = OutlookToken.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+        ).select_related('created_by')
+        return queryset
+
+    def get_serializer_class(self):
+        return OutlookTokenSerializer

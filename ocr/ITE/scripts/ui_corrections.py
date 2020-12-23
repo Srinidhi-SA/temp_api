@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
-
+import sys
 import numpy as np
 from collections import OrderedDict
 import cv2
@@ -14,6 +14,19 @@ from shapely.geometry.polygon import Polygon
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "ocr/ITE/My_ProjectOCR_2427.json"
 if os.environ.get('DISPLAY', '') == '':
     mpl.use('Agg')
+
+"""Recursive dept expansion required for recursive functions i.e fonttunning()"""
+sys.setrecursionlimit(10 ** 9)
+
+
+def fonttunning(text, font, fontsize, width):
+    """Estimation of font size reduction by reducing 0.001 in each iteration until no overlap for OPENCV plots"""
+    textSize = cv2.getTextSize(text=text, fontFace=font, fontScale=fontsize, thickness=1)  # ((61, 22), 10)
+    if width < textSize[0][0]:
+        fontsize = fontsize - (textSize[0][0] - width) * 0.001
+        return fonttunning(text, font, fontsize, width)
+    else:
+        return fontsize
 
 
 class ui_corrections:
@@ -445,17 +458,7 @@ class ui_corrections:
         #        texted_image = self.adjust_gamma(texted_image, gamma=0.2)
         height, width = mask.shape[:2]
         area = height * width
-        #        fontScale = 0.6
-        #        print (fontScale)
-        #        print(final_json_to_flag)
-        #        print('RESULT: ',sum([len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]))
-        # if ((len(final_json_to_flag["tables"]) == 0) or (sum(
-        #         [len(final_json_to_flag["tables"][table]) for table in final_json_to_flag["tables"]]) == 0)) and min(
-        #     height, width) < 700:  # or plain_mask == True:
-        #     white_canvas = 255 * np.ones(mask.shape).astype(mask.dtype)
-        #     mask = white_canvas.copy()
-        # else:
-        #     pass
+        font = cv2.FONT_HERSHEY_SIMPLEX
 
         if 'paragraphs' in final_json_to_flag:
             for k in final_json_to_flag["paragraphs"]:
@@ -466,35 +469,32 @@ class ui_corrections:
                         p2 = [p3[0], p1[1]]
                         p4 = [p1[0], p3[1]]
                         text = m['text']
-                        #                        print(text)
-                        #
-                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
-                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
-                        #
-                        #                        print('*'*10)
-                        #
-                        #                        if "º" in text:
-                        #                            print(text)
-                        # x = re.search(re.compile('[!@#$%^&*(),.?":{}|<>º₹]'), text)
-                        # if x:
-                        #                            print(text)
                         x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
                             words_with_special_characters.append(m)
                         else:
-                            height, ratio = abs(
-                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                            fontScale, font = self.get_optimal_params(
-                                height, ratio, area)
+                            heightoftext = p4[1] - p1[1]
+                            widthoftext = p2[0] - p1[0]
+                            fontScale = (heightoftext / 4.5) * 0.1
+                            fontScale = fonttunning(text, font, fontScale, widthoftext)
+                            textSize = cv2.getTextSize(text=text, fontFace=font, fontScale=fontScale, thickness=1)
+                            anchorX = p4[0] + 3
+                            anchorY = int((p4[1] + p1[1]) * 0.5)
+                            anchorXforcleaning = (anchorX, anchorY - 1 - textSize[0][1])
+                            anchorYforcleaning = (anchorX + textSize[0][0], anchorY + 5)
+                            cv2.rectangle(mask, anchorXforcleaning, anchorYforcleaning, (255, 255, 255), -1)
+                            # height, ratio = abs(
+                            #     p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
+                            # fontScale, font = self.get_optimal_params(
+                            #     height, ratio, area)
                             #                        print('FONT : ',font)
                             if m['flag']:
                                 mask = self.highlight_word(
-                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                                    mask, text, (anchorX, anchorY), fontScale, font)
                             else:
                                 cv2.putText(mask,
                                             text,
-                                            (p4[0] + 3,
-                                             int((p4[1] + p1[1]) * 0.5)),
+                                            (anchorX, anchorY),
                                             font,
                                             fontScale,
                                             (0,
@@ -502,6 +502,8 @@ class ui_corrections:
                                              0),
                                             1,
                                             cv2.LINE_AA)
+
+
         else:
             pass
 
@@ -517,30 +519,28 @@ class ui_corrections:
                         #                        print(text)
                         vertices = [p1, p2, p3, p4]
 
-                        #                        print('WORD : ',text , ' BoundingBox Height : ',abs(p3[1]-p1[1]))
-                        #                        print('WORD : ',text , ' BoundingBox Width / len of word : ',abs(p3[0]-p1[0])/len(text))
-                        #
-                        #                        print('*'*10)
-                        #                        if "º" in text:
-                        #                            print(text)
                         x = re.findall(r'[^\x00-\x7F]', text)
                         if x:
-                            #                            print(text)
                             words_with_special_characters.append(m)
                         else:
-                            height, ratio = abs(
-                                p3[1] - p1[1]), abs(p3[0] - p1[0]) / len(text)
-                            fontScale, font = self.get_optimal_params(
-                                height, ratio, area)
-                            #                        print('FONT : ',font)
+                            heightoftext = p4[1] - p1[1]
+                            widthoftext = p2[0] - p1[0]
+                            fontScale = (heightoftext / 4.5) * 0.1
+                            fontScale = fonttunning(text, font, fontScale, widthoftext)
+                            textSize = cv2.getTextSize(text=text, fontFace=font, fontScale=fontScale, thickness=1)
+                            anchorX = p4[0] + 3
+                            anchorY = int((p4[1] + p1[1]) * 0.5)
+                            anchorXforcleaning = (anchorX, anchorY - 1 - textSize[0][1])
+                            anchorYforcleaning = (anchorX + textSize[0][0], anchorY + 5)
+                            cv2.rectangle(mask, anchorXforcleaning, anchorYforcleaning, (255, 255, 255), -1)
+
                             if m['flag']:
                                 mask = self.highlight_word(
-                                    mask, text, (p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), fontScale, font)
+                                    mask, text, (anchorX, anchorY), fontScale, font)
                             else:
                                 cv2.putText(mask,
                                             text,
-                                            (p4[0] + 3,
-                                             int((p4[1] + p1[1]) * 0.5)),
+                                            (anchorX, anchorY),
                                             font,
                                             fontScale,
                                             (0,
@@ -548,7 +548,6 @@ class ui_corrections:
                                              0),
                                             1,
                                             cv2.LINE_AA)
-        #            print("end of table")
         else:
             pass
 
@@ -557,45 +556,37 @@ class ui_corrections:
         if area < 1000 * 1000:
             pass
 
-
-
         else:
             mask = self.adjust_gamma(mask, gamma=0.4)
         if len(words_with_special_characters) > 0:
             img_pil = Image.fromarray(mask)
             draw = ImageDraw.Draw(img_pil)
             for except_word in words_with_special_characters:
+                # print(words_with_special_characters)
                 b, g, r, a = 0, 0, 0, 0
-                fontpath = "ocr/ITE/fonts/DejaVuSans.ttf"
-                font_custom = ImageFont.truetype(fontpath, 20)
+                fontpath = os.path.join(os.getcwd(), "ocr", "ITE", "fonts", "DejaVuSans.ttf")
                 p1 = except_word['boundingBox']["p1"]
                 p3 = except_word['boundingBox']["p3"]
                 p2 = [p3[0], p1[1]]
                 p4 = [p1[0], p3[1]]
-                heightofbox = p3[1] - p1[1]
+                heightofbox = p4[1] - p1[1]
+                widthofbox = p2[0] - p1[0]
                 if heightofbox != 0:
-                    font_size = int(heightofbox * .8)
+                    font_size = int(heightofbox * .65)
                 else:
                     font_size = 7
                 text = except_word['text']
                 font_custom = ImageFont.truetype(fontpath, font_size)
-                yanchor_cord = int(p1[1]) - int(heightofbox / 4)
+                # yanchor_cord = int(p1[1])-int(heightofbox/4)
                 if except_word['flag'] == True:
-                    draw.text((p1[0], yanchor_cord), text, fill=(0, 0, 0), font=font_custom,
-                              stroke_fill=(0, 255, 255, 255), stroke_width=5)
+                    draw.text((p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), text, fill=(0, 0, 0), font=font_custom,
+                              anchor="ls", stroke_fill=(0, 255, 255, 255), stroke_width=5)
                 else:
                     # draw.rectangle(((p1[0],p1[1]),(p3[0],p3[1])),fill=(0, 255, 255, 255))
-                    draw.text((p1[0], yanchor_cord), text, fill=(0, 0, 0), font=font_custom)
+                    draw.text((p4[0] + 3, int((p4[1] + p1[1]) * 0.5)), text, fill=(0, 0, 0), font=font_custom,
+                              anchor="ls")
                 # img_pil.show()
             mask = np.array(img_pil)
-        #     else:
-        #     pass
-        # mask = dynamic_cavas(mask)
-        #         text = except_word['text']
-        #         if except_word['flag'] == True:
-        #             draw.rectangle(((p1[0], p1[1]), (p3[0], p3[1])), fill=(0, 255, 255, 255))
-        #         draw.text((p1[0], p1[1]), text, fill=(0, 0, 0), font=font_custom)
-        #     mask = np.array(img_pil)
         else:
             pass
         mask = dynamic_cavas(mask)

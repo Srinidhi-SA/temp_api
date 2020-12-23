@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ocr.ITE.scripts.utils import optimal_params, extract_mask_clean, extract_mask_clean_vert
-from ocr.ITE.scripts.utils import extract_mask, extract_mask_horizontal
+from ocr.ITE.scripts.utils import extract_mask, extract_mask_horizontal, linesObjectContours, contourLinePlot
 import numpy as np
 import cv2
 from sklearn.cluster import DBSCAN
@@ -18,6 +18,11 @@ class BaseModule:
         self.image_name = image_name
 
     def extract_info(self, template, bwimage, domain_flag, image_shape):
+        height = bwimage.shape[0]
+        width = bwimage.shape[1]
+        CONTOUR, _ = cv2.findContours(bwimage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        wholeline_indices = linesObjectContours(CONTOUR, height, width)
+        genimage = contourLinePlot(CONTOUR, height, width, wholeline_indices)
         scalev, scaleh = optimal_params(bwimage, task='table')
         self.mask, horizontal, vertical = extract_mask(bwimage, scalev=scalev,
                                                        scaleh=scaleh)
@@ -65,7 +70,7 @@ class BaseModule:
         if max(self.mask.shape) <= 500:
             white_canvas = 0 * np.ones(self.mask.shape).astype(self.mask.dtype)
             self.mask2 = white_canvas.copy()
-            return self.final_json, self.mask2, self.metadata, template_obj.template
+            return self.final_json, self.mask2 + genimage, self.metadata, template_obj.template
 
         elif (len(tables) > 0) and (sum([len(tables[table]) for table in tables]) > 0):
 
@@ -78,7 +83,7 @@ class BaseModule:
                 bwimage, scalev=scalev, scaleh=scaleh)
         else:
             self.mask = extract_mask_clean(horizontal.copy()) + extract_mask_clean_vert(vertical.copy())
-        return self.final_json, self.mask, self.metadata, template_obj.template
+        return self.final_json, self.mask + genimage, self.metadata, template_obj.template
 
     #        page metadata for paragraphs to be done here
     #        pdf's with large size not working
