@@ -621,7 +621,7 @@ export class C3ChartNew extends React.Component{
       myData2.subchart.onbrush=function(d){ chart.zoom(d) }
       myData2['bindto'] = this.getSubChartElement().get(0);
       chart2 = c3.generate(myData2)
-      chart2.zoom([0,(this.props.xdata.length-1)/2])
+      chart2.zoom([0,(this.props.xdata.length-1)])
       chart2.element.getElementsByClassName("extent")[0].innerHTML = "<title id="+"c3BrushTip"+">Move grey section to zoom and view different part of the chart<title/>"  
       myData1.subchart.show = false
       myData1.size.height = 350

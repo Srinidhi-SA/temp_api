@@ -1956,3 +1956,11 @@ export function selectDimValues(val,flag){
         type:"SELECT_DIM_VAL",val,flag
     }
 }
+export function  getValueOfFromParam() {
+    if(window.location === undefined){
+
+    }else{
+      const params = new URLSearchParams(window.location.search);
+      return params.get('from');
+    }
+}

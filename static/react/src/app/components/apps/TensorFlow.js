@@ -11,7 +11,6 @@ import {statusMessages} from  "../../helpers/helper";
         algorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         tensorValidateFlag: store.datasets.tensorValidateFlag,
-        tensorFlowInputs:store.apps.tensorFlowInputs,
         datasetRow: store.datasets.dataPreview.meta_data.uiMetaData.metaDataUI[0].value,
         tfAlgorithmSlug: store.apps.regression_algorithm_data_manual.filter(i=>i.algorithmName=="Neural Network (TensorFlow)")[0].algorithmSlug,
         layerType:store.apps.layerType,
@@ -22,9 +21,10 @@ import {statusMessages} from  "../../helpers/helper";
 })
 
 export class TensorFlow extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+
+  constructor(props) {
+      super(props);
+  }
 
   componentWillMount(){
     if(this.props.editmodelFlag && this.props.panels.length ===0){
@@ -40,6 +40,7 @@ export class TensorFlow extends React.Component {
   componentDidMount(){
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,"batch_size",this.props.datasetRow-1,"NonTuningParameter"));
     }
+  
   changeTextboxValue(item,e){
       let name = item.name;
       let val = e.target.value === "--Select--"? null:e.target.value;
@@ -63,7 +64,6 @@ export class TensorFlow extends React.Component {
   }
   
   handleSelectBox(item,e){
-    // var categorical_crossentropy =this.props.algorithmData.filter(i=>i.algorithmName==="TensorFlow")[0].parameters.filter(i=>i.name==="loss")[0].defaultValue.filter(ind=>(ind.name==="categorical_crossentropy")).map(val=>val.selected)[0]
     var loss=$(".loss_tf").val()
     if(e.target.classList.value=="form-control layer_tf"||e.target.classList.value=="form-control optimizer_tf"){
       this.props.dispatch(updateAlgorithmData(this.props.tfAlgorithmSlug,item.name,e.target.value,"NonTuningParameter"));
@@ -91,8 +91,7 @@ export class TensorFlow extends React.Component {
       document.getElementById("loss_tf").innerText="Loss should not be sparse."
       document.getElementsByClassName("loss_tf")[0].classList.add("regParamFocus");
     }
-    else
-    {
+    else{
       document.getElementById("metrics_tf").innerText=""
       document.getElementById("loss_tf").innerText=""
       document.getElementsByClassName("metrics_tf")[0].classList.remove("regParamFocus");
@@ -105,74 +104,70 @@ export class TensorFlow extends React.Component {
       var arr = item.defaultValue.map(j=>{ return {name: j.displayName, sel: j.selected} })
       var selectedOption=arr.filter(i=>i.sel)[0].name
       var options = arr.map(k => {
-          return <option key={k.name} value={k.name}> {k.name}</option>
+        return <option key={k.name} value={k.name}> {k.name}</option>
       })
       return <select onChange={this.handleSelectBox.bind(this,item)} defaultValue={selectedOption} className={`form-control ${item.name}_tf`}> {options} </select>
   }
     
-    
   layerValidate=(slectedLayer,tfArray)=>{
-       if(tfArray.length>=2)
-       var prevLayer=tfArray[tfArray.length-1].layer;
-
+      if(tfArray.length>=2)
+        var prevLayer=tfArray[tfArray.length-1].layer;
       if(tfArray.length==0 && (slectedLayer=="Dropout"||slectedLayer=="Lambda")){
         bootbox.alert(statusMessages("warning", "First level must be Dense.", "small_mascot"));
         return false
       }
       else if(tfArray.length>=2 && (slectedLayer=="Dropout" && prevLayer=="Dropout"||slectedLayer=="Lambda" && prevLayer=="Lambda")){
-      bootbox.alert(statusMessages("warning", "Please select an alternate layer.", "small_mascot"));
-      return false
+        bootbox.alert(statusMessages("warning", "Please select an alternate layer.", "small_mascot"));
+        return false
       }
       else{
         this.addLayer(slectedLayer);
       }
   }
 
-   parameterValidate=()=>{
+  parameterValidate=()=>{
+    let unitLength= document.getElementsByClassName("units_tf").length
+    let rateLength= document.getElementsByClassName("rate_tf").length
+    var errMsgLen=document.getElementsByClassName("error").length
 
-   let unitLength= document.getElementsByClassName("units_tf").length
-   let rateLength= document.getElementsByClassName("rate_tf").length
-   var errMsgLen=document.getElementsByClassName("error").length
-
-        for(let i=0; i<unitLength; i++){
-          var unitFlag;
-          if(document.getElementsByClassName("units_tf")[i].value===""){
+      for(let i=0; i<unitLength; i++){
+        var unitFlag;
+        if(document.getElementsByClassName("units_tf")[i].value===""){
           document.getElementsByClassName("units_tf")[i].classList.add("regParamFocus");
           unitFlag = true;
-        }}
+        }
+      }
 
-        for(let i=0; i<rateLength; i++){
-          var rateFlag;
-          if(document.getElementsByClassName("rate_tf")[i].value===""){
-            rateFlag = true;
-            document.getElementsByClassName("rate_tf")[i].classList.add("regParamFocus");
-          }
+      for(let i=0; i<rateLength; i++){
+        var rateFlag;
+        if(document.getElementsByClassName("rate_tf")[i].value===""){
+          rateFlag = true;
+          document.getElementsByClassName("rate_tf")[i].classList.add("regParamFocus");
         }
-      
-        for(let i=0; i<errMsgLen; i++){
-            var errMsgFlag;
-            if(document.getElementsByClassName("error")[i].innerText!="")
-            errMsgFlag = true;
-        }
+      }
+        
+      for(let i=0; i<errMsgLen; i++){
+        var errMsgFlag;
+        if(document.getElementsByClassName("error")[i].innerText!="")
+          errMsgFlag = true;
+      }
 
     if (($(".activation_tf option:selected").text().includes("--Select--"))||($(".batch_normalization_tf option:selected").text().includes("--Select--"))||(unitFlag)||(rateFlag)){
-      
-       for(let i=0;i<$(".form-control.activation_tf").length;i++){
+      for(let i=0;i<$(".form-control.activation_tf").length;i++){
         if( $(".form-control.activation_tf")[i].value=="--Select--")
-        $(".form-control.activation_tf")[i].classList.add("regParamFocus")
-       }
-
-       for(let i=0;i<$(".form-control.batch_normalization_tf").length;i++){
+          $(".form-control.activation_tf")[i].classList.add("regParamFocus")
+      }
+      for(let i=0;i<$(".form-control.batch_normalization_tf").length;i++){
         if( $(".form-control.batch_normalization_tf")[i].value=="--Select--")
-        $(".form-control.batch_normalization_tf")[i].classList.add("regParamFocus")
-       }     
+          $(".form-control.batch_normalization_tf")[i].classList.add("regParamFocus")
+      }     
       this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please enter all the mandatory fields for TensorFlow Algorithm.", "small_mascot"));
+      bootbox.alert(statusMessages("warning", "Please enter all the mandatory fields for TensorFlow Algorithm.", "small_mascot"));
     }else if(errMsgFlag){
-       this.props.dispatch(tensorValidateFlag(false));
-       bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer in TensorFlow.", "small_mascot"));
+      this.props.dispatch(tensorValidateFlag(false));
+      bootbox.alert(statusMessages("warning", "Please resolve erros to add new layer in TensorFlow.", "small_mascot"));
     }else{
-       this.props.dispatch(tensorValidateFlag(true));
+      this.props.dispatch(tensorValidateFlag(true));
     }
      
   }
@@ -184,10 +179,8 @@ export class TensorFlow extends React.Component {
   }
 
   handleClick(){ 
-  // var slectedLayer=store.getState().apps.regression_algorithm_data_manual[5].parameters[0].defaultValue.filter(i=>i.selected===true)[0].displayName; //Don't erase, For feature reference.
-  var slectedLayer=document.getElementsByClassName('form-control layer_tf')[0].value //instead of picking slectedLayer from store config, using documentObject of selectBox.
-  var tfArray= store.getState().apps.tensorFlowInputs;
-  
+    var slectedLayer=document.getElementsByClassName('form-control layer_tf')[0].value //instead of picking slectedLayer from store config, using documentObject of selectBox.
+    var tfArray= store.getState().apps.tensorFlowInputs;
     if (tfArray.length>0) {
       this.parameterValidate();
     }
@@ -195,93 +188,87 @@ export class TensorFlow extends React.Component {
       this.layerValidate(slectedLayer,tfArray)
     }
   }
-   render() {
-    if(this.props.layerType==="Dense")
-    var data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters
-    else if(this.props.layerType==="Dropout")
-     data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters
-     var algorithmData=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters.filter(i=>i.name!="layer")
-      var rendercontent = algorithmData.map((item,index)=>{
-        if(item.paramType=="list"){
-              return (
-                <div key={item.name} className ="row mb-20">
-                <div className="form-group">
-                <label className="col-md-2">{item.displayName}</label>
-                <label className="col-md-4">{item.description}</label>
-                 <div className="col-md-6">
-                 <div className ="row">
-                 <div className="col-md-6">
-                  {this.getOptions(item)}
-                  <div id={`${item.name}_tf`} className="error"></div>
-                  </div>
-                  </div>
-                   </div>
-                </div>
-                </div>
-              )
-           }
-           else
-            return (
-              <div  key={item.name} className ="row mb-20">
-                <div class="form-group">
-                <label class="col-md-2 control-label read">{item.displayName}</label>
-                <label className="col-md-4">{item.description}</label>
-                <div className="col-md-6">
-                 <div className ="row">
-                 <div className="col-md-2">
-                 <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.acceptedValue!=""? item.acceptedValue:(item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue)}/>
-                  {/* <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.displayName ==="Batch Size"? this.props.datasetRow -1 : (item.acceptedValue!=""? item.acceptedValue: item.defaultValue)}/> previous terinary condition */}
-                   <div className="error"></div>
-                </div>
-                </div> 
-                </div>
-                </div>
-                </div>                
-              )
-      })
-     return (
-                <div className="col-md-12">
-                  <div className="row mb-20">
-                  <div class="form-group">
-                   <label class="col-md-2">Layer</label>
-                   <label className="col-md-4">A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.</label>
-                   <div className="col-md-6">
-                 <div className ="row">
-                   <div className="col-md-6">
-                    {this.getOptions(this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0])}
-                   </div>
-                   <div className="col-md-6" style={{textAlign:'center'}}>
-                   <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
-                      <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
-                      <span className="addLayerTxt">Add layer</span>
-                  </div>
-                  
-                   </div>
-                  
-                 </div>
-                 
-                 </div>
-                </div>
-                  </div>
-                  <div className='panel-wrapper'>
-                  {
-                    store.getState().apps.panels.map((panelId) => {
-                      let tenFlwInp = store.getState().apps.tensorFlowInputs;
-                      if( (tenFlwInp.length != 0) && (panelId <= tenFlwInp.length)){
-                        data = (tenFlwInp[panelId-1].layer === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
-                        var layrTyp = tenFlwInp[panelId-1].layer
-                      }else{
-                        data = (this.props.layerType === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
-                        var layrTyp = this.props.layerType
-                      }
-                      return (<Layer key={panelId} id={panelId} parameters={data} layerType={layrTyp} />);
-                    })
-                  }
-                  </div>
-                  <div id="layerArea"></div>
-                    {rendercontent}
-                </div>
-     );
 
-    }
+  render() {
+    if(this.props.layerType==="Dense")
+      var data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters
+    else if(this.props.layerType==="Dropout")
+      data=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters
+    var algorithmData=this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters.filter(i=>i.name!="layer")
+    var rendercontent = algorithmData.map((item,index)=>{
+      if(item.paramType=="list"){
+        return (
+          <div key={item.name} className ="row mb-20">
+            <div className="form-group">
+              <label className="col-md-2">{item.displayName}</label>
+              <label className="col-md-4">{item.description}</label>
+              <div className="col-md-6">
+                <div className ="row">
+                  <div className="col-md-6">
+                    {this.getOptions(item)}
+                    <div id={`${item.name}_tf`} className="error"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }else
+        return (
+          <div  key={item.name} className ="row mb-20">
+            <div class="form-group">
+              <label class="col-md-2 control-label read">{item.displayName}</label>
+              <label className="col-md-4">{item.description}</label>
+              <div className="col-md-6">
+                <div className ="row">
+                  <div className="col-md-2">
+                    <input type="number" className= {`form-control ${item.name}_tf`} onChange={this.changeTextboxValue.bind(this,item)} defaultValue={item.acceptedValue!=""? item.acceptedValue:(item.displayName ==="Batch Size"? this.props.datasetRow -1 : item.defaultValue)}/>
+                    <div className="error"></div>
+                  </div>
+                </div> 
+              </div>
+            </div>
+          </div>
+        )
+    })
+    return (
+      <div className="col-md-12">
+        <div className="row mb-20">
+          <div class="form-group">
+            <label class="col-md-2">Layer</label>
+            <label className="col-md-4">A layer is a class implementing common Neural Networks Operations, such as convolution, batch norm, etc.</label>
+            <div className="col-md-6">
+              <div className ="row">
+                <div className="col-md-6">
+                  {this.getOptions(this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0])}
+                </div>
+                <div className="col-md-6" style={{textAlign:'center'}}>
+                  <div style={{cursor:'pointer',display:'inline-block'}} onClick={this.handleClick.bind(this,)}>
+                    <span className="addLayer"> <i className="fa fa-plus" style={{color: '#fff'}}></i></span>
+                    <span className="addLayerTxt">Add layer</span>
+                  </div>            
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='panel-wrapper'>
+          {store.getState().apps.panels.map((panelId) => {
+              let tenFlwInp = store.getState().apps.tensorFlowInputs;
+              if( (tenFlwInp.length != 0) && (panelId <= tenFlwInp.length)){
+                data = (tenFlwInp[panelId-1].layer === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
+                var layrTyp = tenFlwInp[panelId-1].layer
+              }else{
+                data = (this.props.layerType === "Dense")? this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[0].parameters : this.props.manualAlgorithmData.filter(i=>i.algorithmName === "Neural Network (TensorFlow)")[0].parameters[0].defaultValue[1].parameters;
+                var layrTyp = this.props.layerType
+              }
+              return (<Layer key={panelId} id={panelId} parameters={data} layerType={layrTyp} />);
+            })
+          }
+        </div>
+        <div id="layerArea"></div>
+        {rendercontent}
+      </div>
+    );
+  }
 }

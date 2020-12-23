@@ -6,7 +6,7 @@ import { CREATEMODEL, CREATESCORE, CREATESIGNAL, isEmpty, MINROWINDATASET, showH
 import store from "../../store";
 import { DataValidation } from "./DataValidation";
 import { Button } from "react-bootstrap";
-import { clearSubset, getAllDataList, getDataList, getDataSetPreview, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, popupAlertBox, saveSelectedColSlug, selDatetimeCol, selDimensionCol, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues } from "../../actions/dataActions";
+import { clearSubset, getAllDataList, getDataList, getDataSetPreview, getValueOfFromParam, hideDataPreview, hideDataPreviewDropDown, makeAllVariablesTrueOrFalse, popupAlertBox, saveSelectedColSlug, selDatetimeCol, selDimensionCol, selMeasureCol, setAlreadyUpdated, setDatetimeColValues, setDimensionColValues, setMeasureColValues } from "../../actions/dataActions";
 import { getAppDetails, hideDataPreviewRightPanels, saveSelectedValuesForModel } from "../../actions/appActions";
 import { fromVariableSelectionPage, resetSelectedTargetVariable } from "../../actions/signalActions";
 import { clearDataPreview, clearLoadingMsg, dataSubsetting } from "../../actions/dataUploadActions";
@@ -42,7 +42,7 @@ export class DataPreview extends React.Component {
   componentWillMount() {
     this.props.dispatch(clearSubset())
     this.props.dispatch(getAllDataList());
-    const from = this.getValueOfFromParam();
+    const from = getValueOfFromParam();
     if (from === 'createSignal') {
       if (this.props.match.path.includes("slug")&& this.props.match.path.includes("data")) {
         this.buttons['close'] = {
@@ -152,15 +152,6 @@ export class DataPreview extends React.Component {
     }
     if(this.props.match.path.includes("apps-stock-advisor")){
       hideDataPreviewRightPanels();
-    }
-  }
-
-  getValueOfFromParam() {
-    if(this.props.location === undefined){
-
-    }else{
-      const params = new URLSearchParams(this.props.location.search);
-      return params.get('from');
     }
   }
 
@@ -617,7 +608,7 @@ export class DataPreview extends React.Component {
                   </div>
                 </div>
               </div>
-            <DataValidationEditValues/> {/* column rename dialog */}
+            <DataValidationEditValues/>
             <DataUploadLoader/>
           </div>
         );
