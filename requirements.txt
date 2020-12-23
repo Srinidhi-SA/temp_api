@@ -1,2 +1,2 @@
--r development.txt
--r ite.txt
+-r requirements/development.txt
+-r requirements/ite.txt
