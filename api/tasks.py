@@ -40,7 +40,9 @@ def xsum(numbers):
 
 import subprocess
 import re
-from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo, DatasetScoreDeployment, CustomApps
+import requests
+from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo, DatasetScoreDeployment, CustomApps, \
+    OutlookToken
 
 
 @task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
@@ -1375,3 +1377,42 @@ def get_model_summary_pdf(app_slug, model_slug):
     save_as_pdf(driver, path, {'landscape': False})
     return path
 '''
+
+
+@periodic_task(run_every=(crontab(0, 0, day_of_month='1')), name="trigger_outlook_token", ignore_result=False,
+               queue=CONFIG_FILE_NAME)
+def trigger_outlook_token():
+
+    outlook_data = settings.OUTLOOK_DETAILS
+    token = OutlookToken.objects.first()
+
+    post_data_auth_code = {
+        'grant_type': 'authorization_code',
+        'code': token.access_token,
+        'redirect_uri': outlook_data['redirect_uri'],
+        'scope': settings.OUTLOOK_SCOPES,
+        'client_id': outlook_data['client_id'],
+        'client_secret': outlook_data['client_secret']
+    }
+    post_data_refresh_token = {'grant_type': 'refresh_token',
+                               'redirect_uri': outlook_data['redirect_uri'],
+                               'scope': 'https://graph.microsoft.com/.default',
+                               'refresh_token': token.refresh_token,
+                               'client_id': outlook_data['client_id'],
+                               'client_secret': outlook_data['client_secret']
+                               }
+
+    if token.refresh_token is not None:
+        r = requests.post(settings.OUTLOOK_TOKEN_URL, data=post_data_refresh_token)
+        result = r.json()
+        outlook_token = OutlookToken(refresh_token=result['refresh_token'], access_token=result['access_token'])
+        outlook_token.save()
+    else:
+        r = requests.post(settings.OUTLOOK_TOKEN_URL, data=post_data_auth_code)
+        result = r.json()
+        outlook_token = OutlookToken(refresh_token=result['refresh_token'], access_token=result['access_token'])
+        outlook_token.save()
+    return result
+
+
+
