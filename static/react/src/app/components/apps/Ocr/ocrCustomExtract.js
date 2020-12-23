@@ -103,8 +103,6 @@ export class OcrCustomExtract extends React.Component {
       this.state.rect.w = (e.clientX - canvasrect.left) - this.state.rect.startX;
       this.state.rect.h = (e.clientY - canvasrect.top) - this.state.rect.startY;
       ctx.strokeStyle = '#2a93ff';
-      // ctx.fillStyle = 'yellow';
-      // ctx.fill();
       ctx.strokeRect(this.state.rect.startX, this.state.rect.startY, this.state.rect.w, this.state.rect.h);
     }
   }
@@ -190,27 +188,14 @@ export class OcrCustomExtract extends React.Component {
                     </div>
                   </div>
                   <div className="col-sm-12">
-                    {/* <div class="form-group">
-                    <label for="projectType" class="form-label">Create or Select Label</label>
-                    <select id="projectType" class="form-control">
-                      <option>Name</option>
-                      <option>Address</option>
-                      <option>Contact</option>
-                      <option>Age</option>
-                    </select>
-                  </div> */}
                     <label for="labels">Create or Select Label</label>
                     <input class="form-control" list="labels" name="customLabel" id="customLabel" onInput={(e) => this.setState({ labelValue: e.target.value })} />
                     <datalist id="labels">
                       {
                         this.props.labelsList != undefined && this.props.labelsList.map((i) =>
-                          <option>{i}</option>
+                          <option key={i}>{i}</option>
                         )
                       }
-                      {/* <option>Name</option>
-                      <option>Address</option>
-                      <option>Contact</option>
-                      <option>Age</option> */}
                     </datalist>
                   </div>
                   <div className="col-sm-12" style={{ marginTop: 20 }}>
@@ -223,7 +208,7 @@ export class OcrCustomExtract extends React.Component {
           </div>
           <div className="col-sm-5">
             <div style={{ fontSize: 13, fontWeight: 600 }}>{this.props.customImageName}</div>
-            <Tabs defaultActiveKey="label" className="subTab" style={{ marginTop: 25 }}>
+            <Tabs defaultActiveKey="label" id="customTab" className="subTab" style={{ marginTop: 25 }}>
               <Tab eventKey="label" title="Labels">
                 <div>There is no label added yet.<br></br> Please make a selection on the image and add respective labels.</div>
               </Tab>

@@ -138,7 +138,7 @@ export class OcrCreateProject extends React.Component {
                     <div class="col-md-12">
                       <div class="form-group">
                         <label for="projectName" class="form-label">Project Name <span class="text-danger">*</span></label>
-                        <input className="form-control" id="projectName" type="text" defaultValue={name} />
+                        <input className="form-control" id="projectName" type="text" placeholder="Project Name" defaultValue={name} />
                       </div>
                     </div>
                   </div>
