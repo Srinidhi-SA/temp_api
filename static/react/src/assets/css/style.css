@@ -23264,3 +23264,6 @@ body .p-multiselect.regParamFocus:hover {
   padding: 20px !important;
   border: none !important;
 }
+.summaryCardHeight{
+  height: 77px;
+}

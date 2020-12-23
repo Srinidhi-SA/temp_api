@@ -3,11 +3,10 @@ import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Card} from "./Card";
-import {STATIC_URL,API} from "../../helpers/env.js";
+import {STATIC_URL} from "../../helpers/env.js";
 import {getSignalAnalysis,saveDocmodeConfig} from "../../actions/signalActions";
 import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
-import {getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -19,12 +18,7 @@ export class SignalDocumentMode extends React.Component {
   }
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
-      if (this.props.match.url.indexOf("apps-regression") != -1) {
-        this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
-      }
-      else {
         this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
-      }
     }
   }
 
@@ -50,18 +44,10 @@ export class SignalDocumentMode extends React.Component {
 
   closeDocumentMode(){
     this.props.dispatch(hideDataPreview());
-    if(this.props.match.url.indexOf("apps-regression") != -1)
-    this.props.history.push("/apps-regression/scores")
-    else
     window.location.pathname = "/signals"
-  }
-  gotoScoreData(){
-      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
   render() {
     let regression_app=false
-    if(this.props.match.url.indexOf("apps-regression") != -1)
-    regression_app=true
 
     let cardList = [];
     if (!isEmpty(this.props.signal)) {
@@ -88,10 +74,6 @@ export class SignalDocumentMode extends React.Component {
       })
       let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
       let cardModeLink = "/signals/" + this.props.match.params.slug + "/" + firstOverviewSlug;
-      if(regression_app){
-      var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
-      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/analyst/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
-      }
       if (objs) {
         return (
           <div>
@@ -125,11 +107,6 @@ export class SignalDocumentMode extends React.Component {
 
                       <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
-                        <div className="col-md-12 text-right">
-                        {(regression_app)?<div>
-                        <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10">View Scored Data</Link>
-                        <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download Score</a></div>:""}
-                       </div>
                       </div>
                     </div>
                   </div>

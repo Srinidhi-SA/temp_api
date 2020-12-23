@@ -53,11 +53,7 @@ export class SignalCard extends React.Component {
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
-            if(story.status==FAILED){
-            var signalLink = "/signals/";
-            }else{
-            var signalLink = "/signals/" + story.slug;
-            }
+            var signalLink = story.status==FAILED? "/signals/" : "/signals/" + story.slug;
             var completed_percent = story.completed_percentage
             if(completed_percent>99)
             completed_percent=99
@@ -87,7 +83,6 @@ export class SignalCard extends React.Component {
                           <span>{story.name}</span>
                         </h5>
 						            <div className="pull-right">{iconDetails}</div>
-                        <div className="clearfix"></div>
 					             <div className="clearfix"></div>
                            {percentageDetails}
                       </div>
@@ -143,7 +138,7 @@ export class SignalCard extends React.Component {
            {
               (storyListDetails.length>0)
               ?(storyListDetails)
-              :(<div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+              :(<div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div>)
               }
            </div>);
     }
