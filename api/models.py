@@ -5636,3 +5636,20 @@ class DatasetScoreDeployment(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(DatasetScoreDeployment, self).save(*args, **kwargs)
+
+
+
+
+class OutlookToken(models.Model):
+    refresh_token = models.CharField(max_length=5000, null=True)
+    access_token = models.CharField(max_length=5000, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta(object):
+        ordering = ['-created_at']
+        # Uncomment line below for permission details
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.refresh_token, self.created_at]])

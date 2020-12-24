@@ -256,7 +256,6 @@ export class RevDocTable extends React.Component {
             <div className="table-responsive noSwipe xs-pb-10" style={{minHeight:250,background:'#fff',overflow:'inherit'}}>
           {/* if total_data_count_wf <=1 then only render table else show panel box */}
             {this.props.OcrRevwrDocsList != '' ? 
-            // this.props.OcrRevwrDocsList.total_data_count>= 1 ?
              (
             <Scrollbars style={{ width: 'calc(100% - 1px)', height:390 }}>
             <table id="reviewDocumentTable" className="tablesorter table table-condensed table-hover cst_table ocrTable">
@@ -264,7 +263,7 @@ export class RevDocTable extends React.Component {
               <tr>
                 <th>NAME</th>
                 <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+                  <a href="#" data-toggle="dropdown"  class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                     <span>STATUS</span> <b class="caret"></b>
                   </a>
                   <ul class="dropdown-menu scrollable-menu">
@@ -301,17 +300,6 @@ export class RevDocTable extends React.Component {
                             <button className="btn btn-primary filterCheckBtn"  onClick={this.filterRevDocrList.bind(this, '', 'fields','')}><i class="fa fa-check"></i></button>
                          </ul>
                         </th>
-                {/* <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Fields" aria-expanded="true">
-                    <span>Fields</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'fields')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="delete" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="rename" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 3, 'fields')} name="replace" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th> */}
                        <th class="dropdown" >
                           <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
                             <span>ACCURACY</span> <b class="caret"></b>
@@ -327,17 +315,6 @@ export class RevDocTable extends React.Component {
                             <button className="btn btn-primary filterCheckBtn" onClick={this.filterRevDocrList.bind(this, '', 'confidence','')}><i class="fa fa-check"></i></button>
                           </ul>
                         </th>
-                {/* <th class="dropdown" >
-                  <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Confidence Level" aria-expanded="true">
-                    <span>ACCURACY</span> <b class="caret"></b>
-                  </a>
-                  <ul class="dropdown-menu scrollable-menu">
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, '', 'confidence')} name="all" data-toggle="modal" data-target="#modal_equal">All</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'E', 'confidence')} name="equal" data-toggle="modal" data-target="#modal_equal">Equal</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'G', 'confidence')} name="greater" data-toggle="modal" data-target="#modal_equal">Greater than</a></li>
-                    <li><a class="cursor" onClick={this.filterRevDocrList.bind(this, 'L', 'confidence')} name="less" data-toggle="modal" data-target="#modal_equal">Less than</a></li>
-                  </ul>
-                </th> */}
                 <th>Created</th>
                 <th>Modified</th>
                 <th>Modified By</th>
@@ -349,8 +326,6 @@ export class RevDocTable extends React.Component {
              </tbody>
             </table>
             </Scrollbars>)
-          //   :
-          //  (<div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
             : (<img id="loading" style= {{paddingTop:0}} src={STATIC_URL + "assets/images/Preloader_2.gif"} />)
           }
           {paginationTag}

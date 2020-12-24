@@ -334,7 +334,6 @@ export class OcrTable extends React.Component {
       }).then(response => response.text()).then(json => {
         var blob = new Blob([json], { type: 'text/csv;charset=utf-8;' });
         var url = URL.createObjectURL(blob);
-        // var dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
         var dlAnchorElem = document.getElementById('downloadAnchorElem');
         dlAnchorElem.setAttribute("href", url);
         dlAnchorElem.setAttribute("download", `${this.state.exportName}.csv`);
@@ -465,7 +464,7 @@ export class OcrTable extends React.Component {
             <td>{item.classification}</td>
             <td>{item.fields}</td>
             <td>{item.confidence}</td>
-            {store.getState().ocr.tabActive == 'active' ? <td>{item.assignee}</td> : ''}
+            {store.getState().ocr.tabActive == 'active' && <td>{item.assignee}</td>}
             <td>{item.created_by}</td>
             <td>{item.modified_by}</td>
             <td>{new Date(item.modified_at).toLocaleString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}</td>
@@ -504,23 +503,11 @@ export class OcrTable extends React.Component {
                 <ReactTooltip place="top" type="light" />
                 <Button onClick={this.handleRecognise} title="Recognize" style={{ textTransform: 'none' }} className="xs-ml-5 xs-mr-5 btn-color" data-tip="Select documents and click here to run ITE operation" >Recognize</Button>
 
-                {/* <button class="btn btn-default btn-rounded" id="exportBtn" onClick={this.handleExport}><i class="fa fa-paper-plane"></i> Export</button> */}
-                {/* <div class="form-group pull-right ocr_highlightblock" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
-                  
-				  <label class="control-label xs-mb-0" for="select_export" onClick={this.handleExport}  style={{ cursor: 'pointer' }}><i class="fa fa-paper-plane"></i> Export to</label>
-                  <select class="form-control inline-block 1-100" id="select_export"  style={{ cursor: 'pointer' }} onChange={(e) => this.setState({ exportType: e.target.value }, this.handleExport)}>
-
-                    <option value="json">JSON</option>
-                    <option value="xml">XML</option>
-                    <option value="csv">CSV</option>
-                  </select>
-                </div> */}
-
                 <ReactTooltip place="left" type="light" id="exportTip" />
                 <ul className="export" >
                   <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                      <span data-for="exportTip" style={{ paddingRight: 10 }} place="left" data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
+                      <span data-for="exportTip" style={{ paddingRight: 10 }} data-tip='Select documents from the list below and click here to export. Documents with status "Ready to Export" only can be exported'>
                         <i class="fa fa-paper-plane"></i>  Export
                       </span>
                       <b class="caret"></b>
@@ -568,7 +555,7 @@ export class OcrTable extends React.Component {
                           <th><i class="fa fa-file-text-o"></i></th>
                           <th>NAME</th>
                           <th class="dropdown" >
-                            <a href="#" data-toggle="dropdown" disable class="dropdown-toggle cursor" title="Status" aria-expanded="true">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle cursor" title="Status" aria-expanded="true">
                               <span>STATUS</span> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu scrollable-menu dropdownScroll">

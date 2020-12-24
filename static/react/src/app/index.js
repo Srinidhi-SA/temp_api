@@ -38,7 +38,6 @@ import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
 import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection";
 import {AlgorithmSelection} from "./components/apps/AlgorithmSelection";
-import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
 import {APPS_ALLOWED} from "./helpers/env.js";
@@ -425,15 +424,6 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/autoML/modelManagement" component={ModelManagement}/>
             <Route exact path="/apps/:AppId/autoML/modelManagement/:slug" component={ModelSummary}/> 
             <Route exact path="/apps/:AppId/analyst/modelManagement/:slug" component={ModelSummary}/> 
-            <Route exact path="/apps-regression" component={RegressionAppList}/>
-            <Route exact path="/apps-regression-score" component={RegressionAppList}/>
-            <Route exact path="/apps-regression/scores" component={RegressionAppList}/>
-            <Route exact path="/apps-regression/models" component={RegressionAppList}/>
-            <Route exact path="/apps-regression-score/:slug" component={OverViewPage}/>
-            <Route exact path="/apps-regression-score/:slug/:l1" component={OverViewPage}/>
-            <Route exact path="/apps-regression-score/:slug/:l1/:l2/:l3" component={OverViewPage}/>
-            <Route exact path="/apps-regression-score/:slug/:l1/:l2" component={OverViewPage}/>
-            <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
             <Route exact path="/datamgmt" component={KyloMenuList}/>
             <Route exact path="/datamgmt/selected_menu/:kylo_url" component={SampleFrame}/>
         </Main>

@@ -21,17 +21,32 @@ export class MasterSummary extends React.Component {
   }
   render() {
     let heading = this.props.signal.name;
-    var noOfDimention, noOfMeasures, noOfTimeDimention, summary, mText, dText, tText
+    var summary, mText, dText, tText,cardData,count
+    cardData = this.props.signal.listOfCards[0].cardData
+		count = [cardData.noOfDimensions,cardData.noOfMeasures,cardData.noOfTimeDimensions]
+		summary = cardData.summaryHtml;
+    dText = count[0] > 1 ? "Dimensions" : "Dimension";
+  	mText = count[1] > 1 ? "Measures" : "Measure";
+    tText = count[2] > 1 ? "Time Dimensions": "Time Dimension";
 
-    noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
-    noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
-    noOfTimeDimention = this.props.signal.listOfCards[0].cardData.noOfTimeDimensions;
-    summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
-    dText = noOfDimention > 1 ? "Dimensions" : "Dimension";
-  	mText =noOfMeasures > 1 ? "Measures" : "Measure";
-    tText =noOfTimeDimention > 1 ? "Time Dimensions": "Time Dimension";
-
-    let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
+		let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
+		
+		var texts=[dText,mText,tText]
+		var images=['s_d_carIcon.png','s_m_carIcon.png','s_timeDimension.png']
+	  var renderBoxContent=count.map((item,i)=>
+			 <div key={i} className="col-md-4 wow bounceIn" data-wow-offset="20" data-wow-iteration="20">
+				<div className="box-shadow xs-p-10 summaryCardHeight">
+					<div className="col-xs-9">
+						<h4 class="xs-mt-15">
+							<img src={STATIC_URL + "assets/images/"+images[i]} /> {texts[i]}
+						</h4>
+					</div>
+						<h2 style={{marginLeft:'225px'}}> 							
+						{item}
+						</h2>
+				</div>
+			</div>
+		)
 
     const overViewLink = "/signals/" + this.props.signalId + "/" + firstOverviewSlug;
     return (
@@ -50,64 +65,20 @@ export class MasterSummary extends React.Component {
 						</div>
 						<div class="col-md-9">
 							<div class="row xs-mt-30">					
-								<div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">
-									<div className="box-shadow xs-p-10">							
-										<div className="col-xs-8">
-											<h4 class="xs-mt-15">
-											<img src={STATIC_URL + "assets/images/s_d_carIcon.png"}/> {dText}									 
-											</h4>
-										</div>
-										<div className="col-xs-4">
-												<h2 className="text-right"> 							
-												{noOfDimention}
-												</h2>
-										</div>
-										<div className="clearfix"></div>
-									</div>
-								</div>
-								<div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
-									<div className="box-shadow xs-p-10">		 
-										<div className="col-xs-8">
-											<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_m_carIcon.png"}/> {mText}</h4>
-										</div>
-										<div className="col-xs-4">
-												<h2 className="text-right"> 							
-												{noOfMeasures}
-												</h2>
-										</div>
-									<div className="clearfix"></div>
-									</div>
-								</div>
-								<div className="col-md-4 wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">							
-									<div className="box-shadow xs-p-10">
-										<div className="col-xs-9"> 
-											<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_timeDimension.png"}/> {tText}</h4>
-										</div>
-										<div className="col-xs-3">
-												<h2 className="text-right"> 							
-												{noOfTimeDimention}
-												</h2>
-										</div>
-									<div className="clearfix"></div>
-									</div>
-								</div>
+								{renderBoxContent}
 							</div>
 									
 							<div class="row wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">					
-								<div className="col-md-12">
-									<div className="xs-pt-50">
+								<div className="col-md-12 xs-pt-50">
 									<Card cardData={summary}/>
-									</div>
 								</div>
 							</div>
 									
 							<div class="row wow bounceIn" data-wow-offset="20"  data-wow-iteration="20">					
-								<div className="col-md-12">
-									<div className="xs-pt-50 text-right">
+								<div className="col-md-12 xs-pt-50 text-right">
 									<Link to={overViewLink} className="btn btn-primary btn-md xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10">
 											<i className="fa fa-file-text-o"></i>  View Summary
 										</Link>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -115,5 +86,5 @@ export class MasterSummary extends React.Component {
 				</div>
 			</div>
     );
-  }
+	}
 }

@@ -1560,25 +1560,26 @@ def check_email_id(email=None):
 
 
 def get_mails_from_outlook():
-    ###############################################################################################################
-    r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN, settings.OUTLOOK_DETAILS)
-    ###############################################################################################################
+    # ###############################################################################################################
+    # r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN, settings.OUTLOOK_DETAILS)
+    # ###############################################################################################################
+    from api.models import OutlookToken
+    token = OutlookToken.objects.first()
     try:
-        result = r.json()
-        refresh_token = result['refresh_token']
-        access_token = result['access_token']
+        # result = r.json()
+        # refresh_token = result['refresh_token']
+        # access_token = result['access_token']
 
-        print("Access token received.")
+        print("Access token received.", token.access_token)
         ### Trigger mail receive action  ###
-        result_message = get_outlook_mails(access_token)
+        result_message = get_outlook_mails(token.access_token)
         if 'status' in result_message:
             print("result message not found.")
             return {'status': 'FAILED', 'err': result_message['err']}
         else:
             print("got result message")
             return result_message
-    except Exception:
-        err = "Error retrieving token: {0} - {1}".format(r.status_code, r.text)
+    except Exception as err:
         return {'status': 'FAILED', 'err': err}
 
 def get_outlook_auth(auth_code, refresh_token, outlook_data):

@@ -16,7 +16,7 @@ from sjsclient import client
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
 from .models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps, \
-    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment
+    TrainAlgorithmMapping, ModelDeployment, DatasetScoreDeployment, OutlookToken
 
 from django.conf import settings
 import subprocess
@@ -1511,3 +1511,13 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
         fields = ("username", "id", "email")
+
+
+class OutlookTokenSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super(OutlookTokenSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta(object):
+        model = OutlookToken
+        fields = ("id", "token")

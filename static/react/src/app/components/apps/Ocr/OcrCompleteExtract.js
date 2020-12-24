@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from "react-bootstrap";
 import { saveImagePageFlag, updateOcrImage, clearImageDetails, closeFlag, setProjectTabLoaderFlag, tabActiveVal } from '../../../actions/ocrActions';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
@@ -228,9 +227,6 @@ export class OcrCompleteExtract extends React.Component {
         document.getElementById("loader").classList.remove("loader_ITE")
         document.getElementById("ocrText").value = this.state.text;
       });
-    // .catch(function (error) {
-    //   bootbox.alert("coordinates are not correct")
-    // });
   }
 
   updateText = () => {
@@ -248,7 +244,6 @@ export class OcrCompleteExtract extends React.Component {
             document.getElementById("loader").classList.remove("loader_ITE");
             document.getElementById("successMsg").innerText = "Updated successfully.";
           }, 2000);
-          //document.getElementById("popoverOcr").style.display = 'none';
         }
       });
 
@@ -359,7 +354,7 @@ export class OcrCompleteExtract extends React.Component {
             <div style={{ backgroundColor: '#fff', padding: 15 }}>
               <div className="ocrImgTitle">Original</div>
               <Scrollbars style={{ height: 700 }} id="originalImgDiv" onScroll={this.imageScroll}>
-                <img style={{ height: `${this.props.ocrImgHeight}`, width: `${this.props.ocrImgWidth}` }}
+                <img style={{ height: `${this.props.ocrImgHeight}px`, width: `${this.props.ocrImgWidth}px` }}
                   src={this.props.originalImgPath}
                   id="originalOcrImg"
                   onLoad={(e) => this.handleImageLoad(e)}
@@ -388,7 +383,7 @@ export class OcrCompleteExtract extends React.Component {
               </ul>
               <div id="confidence_loader"></div>
               <Scrollbars id="ocrScroll" style={{ height: 700 }} onScroll={this.imageScroll}>
-                <img style={{ height: `${this.props.ocrImgHeight}`, width: `${this.props.ocrImgWidth}` }}
+                <img style={{ height: `${this.props.ocrImgHeight}px`, width: `${this.props.ocrImgWidth}px` }}
                   id="ocrImg"
                   onClick={this.handleCoords}
                   src={this.props.ocrImgPath}
@@ -407,13 +402,6 @@ export class OcrCompleteExtract extends React.Component {
                     </div>
                     <div className="col-sm-2" style={{ paddingLeft: 0 }}>
                       <button onClick={this.updateText} ><i class="fa fa-check"></i></button>
-                      {/* <button className="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style={{ marginLeft: 2 }}>
-                      <i class="fa fa-sort-down" style={{ fontSize: 15 }}></i>
-                    </button>
-                    <ul class="dropdown-menu" style={{ left: -110 }}>
-                      <li><a href="javascript::" class="btn btn-block" onClick={this.notClear}><i class="fa fa-ban"></i> Not Clear</a></li>
-                      <li><a class="btn btn-block"><i class="fa fa-external-link"></i> Properties</a></li>
-                    </ul> */}
                     </div>
                     <div className="col-sm-12" id="successMsg" style={{ paddingTop: 5, color: '#ff8c00' }}></div>
                   </div>
@@ -438,7 +426,7 @@ export class OcrCompleteExtract extends React.Component {
               <i class="fa fa-times-circle" style={{ fontSize: 15, color: '#7a7a7a' }}></i> Close
             </button>
           </div>
-          <div class="modal fade" id="modal_badscan" tabindex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
+          <div class="modal fade" id="modal_badscan" tabIndex="-1" role="dialog" aria-labelledby="modal_badscan_modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header">
