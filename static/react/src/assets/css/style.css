@@ -23264,3 +23264,13 @@ body .p-multiselect.regParamFocus:hover {
   padding: 20px !important;
   border: none !important;
 }
+.featureEnggFormLabel label{
+  width:34%;
+  padding-left: 0px;
+  float: left;
+  margin: 5px 0 0 0;
+}
+.featureEnggFormLabel input,.featureEnggFormLabel select{
+  width:66%;
+  margin-bottom: 20px;
+}

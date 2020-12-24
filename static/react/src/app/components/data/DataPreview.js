@@ -318,10 +318,8 @@ export class DataPreview extends React.Component {
         return(
           <div>
             <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
-            <div>
-              <div className="text-center text-muted">
-                <h3>Please wait while loading...</h3>
-              </div>
+            <div className="text-center text-muted">
+              <h3>Please wait while loading...</h3>
             </div>
           </div>
         );
