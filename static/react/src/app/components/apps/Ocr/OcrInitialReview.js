@@ -125,7 +125,7 @@ export class OcrInitialReview extends React.Component {
                     <div className="form-group">
                         <div className="checkbox checbox-switch switch-success">
                             <label>
-                                <input type="checkbox" name="iRToggleFlag" checked={this.props.iRToggleFlag} onChange={this.saveInitialReviwerToggleVal.bind(this)}/>
+                                <input type="checkbox" name="iRToggleFlag" defaultChecked={this.props.iRToggleFlag} onChange={this.saveInitialReviwerToggleVal.bind(this)}/>
                                 <span></span>
                                 Enable automatic reviewer assignment<br/>
                                 <small>when enabled, documents that enter workflow will be assigned to reviewers according to your choices below</small>
@@ -151,7 +151,7 @@ export class OcrInitialReview extends React.Component {
                             </div>
                         }
                         <div className="ma-radio">
-                            <input type="radio" name="activeiR" value="select" id="assigniRDocsToSelect" onClick={this.saveIRConfig.bind(this)} checked={!(this.props.activeiR === "all")}/>
+                            <input type="radio" name="activeiR" value="select" id="assigniRDocsToSelect" onClick={this.saveIRConfig.bind(this)} defaultChecked={!(this.props.activeiR === "all")}/>
                             <label for="assigniRDocsToSelect">Distribute documents randomnly and evenly over selected reviewers</label>
                         </div>
                         {this.props.activeiR === "select" &&

@@ -25,7 +25,7 @@ export class OcrMain extends React.Component {
           {Object.keys(this.props.dashboardMetrics).length != 0?
           <div class="container-fluid">
             {/* inroduction modal starts*/}
-            <div class="modal fade" id="ocr_Instructions_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
+            <div class="modal fade" id="ocr_Instructions_modal" tabIndex="-1" data-backdrop="static" role="dialog" aria-labelledby="ocr_Instructions_modalTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div id="ocrInstructions" class="carousel slide" data-ride="carousel">

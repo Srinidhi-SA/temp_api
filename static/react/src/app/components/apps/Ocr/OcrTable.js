@@ -93,16 +93,21 @@ export class OcrTable extends React.Component {
     this.setState({ filterVal: mode })
   }
 
-  disableInputs(mode, reset) {
-    let idList = ''
-    mode[0] == "C" ? idList = ['CEQL', 'CGTE', 'CLTE'] : idList = ['FEQL', 'FGTE', 'FLTE']
-
-    let disableIds = reset != 'reset' ? idList.filter(i => i != mode) : idList
-
-    if (document.getElementById(mode).value.trim() != '')
+  disableInputs(mode, reset,filterOn=null) {
+    if(reset=="reset"){ //clear entered value and enable all fields on reset(All)
+      var selectedFieldIds = filterOn=='confidence'? ['CEQL','CGTE','CLTE']:['FEQL','FGTE','FLTE'];
+      selectedFieldIds.map(i=>document.getElementById(i).value='')
+      selectedFieldIds.map(i=>$(`#${i}`).attr('disabled', false))
+      
+    }else{//disable other two inputs while entering value
+      let idList = mode[0] == "C" ? ['CEQL', 'CGTE', 'CLTE'] : ['FEQL', 'FGTE', 'FLTE']  
+      let disableIds = idList.filter(i => i != mode)
+      
+      if (document.getElementById(mode).value.trim() != '')
       disableIds.map(i => $(`#${i}`).attr('disabled', true))
-    else
+      else
       disableIds.map(i => $(`#${i}`).attr('disabled', false))
+    }
   }
 
   filterOcrList(filtertBy, filterOn, reset) {
@@ -129,8 +134,7 @@ export class OcrTable extends React.Component {
     }
     this.props.dispatch(getOcrUploadedFiles())
     if (reset == 'reset') {
-      document.getElementById(this.state.filterVal).value = ''
-      this.disableInputs(this.state.filterVal, 'reset')
+      this.disableInputs(this.state.filterVal, 'reset',filterOn)
     }
   }
 

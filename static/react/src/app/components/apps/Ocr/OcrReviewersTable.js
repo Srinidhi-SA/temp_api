@@ -78,8 +78,10 @@ filterRevList(filtertBy, filterOn,reset) {
   }
   this.props.dispatch(getOcrReviewersList())
   if(reset=='reset'){
-    document.getElementById(this.state.filterVal).value=''
+    if(this.state.filterVal!=""){
+      document.getElementById(this.state.filterVal).value=""
     this.disableInputs(this.state.filterVal,'reset')
+    }
   }
 }
   render() {
