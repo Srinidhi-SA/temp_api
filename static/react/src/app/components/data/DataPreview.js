@@ -73,21 +73,21 @@ export class DataPreview extends React.Component {
         this.props.dispatch(getAppDetails(this.props.match.params.AppId));
       }
       if(this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")) {
+        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['close'] = {
-          url: "/apps",
+          url: "/apps/"+this.props.match.params.AppId+modeSelected+"/models",
           text: "Close"
         };
-        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['create'] = {
           url: "/apps/" + this.props.match.params.AppId + modeSelected+ "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
           text: CREATESCORE
         };
       }else if(this.props.match.path.includes("models") && this.props.match.path.includes("slug")){
+        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['close'] = {
-          url: "/apps",
+          url: "/apps/"+this.props.match.params.AppId+modeSelected+"/models",
           text: "Close"
         };
-        let modeSelected =  window.location.pathname.includes("analyst")?"/analyst":"/autoML"
         this.buttons['create'] = {
           url: "/apps/" + this.props.match.params.AppId + modeSelected+"/models/data/" + this.props.match.params.slug + "/createModel",
           text: CREATEMODEL

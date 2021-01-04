@@ -5,11 +5,12 @@ import {getUserDetailsOrRestart,statusMessages} from "../../helpers/helper";
 import {Redirect} from "react-router-dom";
 import {Modal,Button} from "react-bootstrap";
 import store from "../../store";
-import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModel,getAllModelList,selectMetricAction,saveSelectedValuesForModel} from "../../actions/appActions";
+import {closeModelPopup,openModelPopup,updateSelectedVariable,getRegressionAppAlgorithmData,createModel,getAllModelList,selectMetricAction,saveSelectedValuesForModel, clearDataPreview} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering,dispatchDataPreviewAutoML,resetSelectedVariables} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {dataUpload} from "../../actions/dataUploadActions";
 import {ACCESSDENIED} from "../../helpers/helper";
+import Link from "react-router-dom/Link";
 
 @connect((store) => {
 	return {
@@ -42,6 +43,7 @@ export class AppsCreateModel extends React.Component {
 	}
 
 	componentWillMount() {
+		this.props.dispatch(clearDataPreview())
 		this.props.dispatch(getAllDataList());
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		this.props.dispatch(closeModelPopup());
@@ -255,7 +257,7 @@ export class AppsCreateModel extends React.Component {
 							{
 								window.location.href.includes("autoML")?
 								<Button bsStyle="primary" id="modalCreateButtonAutoML" onClick={this.submitAutoMlVal.bind(this,"autoML")}>Create Model</Button>	:
-								<Button bsStyle="primary" id="modalCreateButton" disabled={hideCreate} onClick={this.getDataSetPreview.bind(this)}>Create</Button>
+								<Link className="btn btn-primary" id="modalCreateButton" disabled={hideCreate} onClick={this.getDataSetPreview.bind(this)} to={this.props.match.url+"/data/"+store.getState().datasets.selectedDataSet}>Create</Link>
 							}
 						</Modal.Footer>
 					</Modal>

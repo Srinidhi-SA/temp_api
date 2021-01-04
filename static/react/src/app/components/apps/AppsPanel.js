@@ -210,7 +210,7 @@ export class AppsPanel extends React.Component {
              <div className="app-block">
                <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
                {(data.app_id == 2 || data.app_id == 13) ? 
-               data.app_url.replace("/models","") + "/modeSelection" : 
+                data.app_url.replace("/models","") : 
                (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
                data.app_url.concat("project"):
                ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL2"))?         
