@@ -19,6 +19,7 @@ from .serializers import TaskSerializer, \
     ReviewRequestSerializer, \
     OCRRulesSerializer
 from api.datasets.helper import convert_to_string
+from api.exceptions import *
 
 
 # Create your views here.
@@ -350,5 +351,15 @@ class ReviewRequestView(viewsets.ModelViewSet):
                         ocr_image.assignee = None
                         ocr_image.save()
                     return JsonResponse({'message': 'Deleted'})
+                elif userGroup == "Superuser":
+                    instance = self.get_task_from_all()
+                    instance.delete()
+                    ocr_image= OCRImage.objects.get(slug=data['image_slug'])
+                    ocr_image.l1_assignee = None
+                    ocr_image.assignee = None
+                    ocr_image.save()
+                    return JsonResponse({'message': 'Deleted'})
+                else:
+                    return update_failed_exception("You are not allowed for this operation.")
         except FileNotFoundError:
             return creation_failed_exception("File Doesn't exist.")

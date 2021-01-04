@@ -10,7 +10,7 @@ pdf2image==1.14.0
 scipy==1.2.1
 sklearn
 pyqt5==5.14.1
-#json2xml==3.3.2
+json2xml==3.6.0
 django-singleton-model==0.2.3
 Shapely==1.7.0
 django-celery-results==1.2.1

@@ -85,24 +85,27 @@ export class RevDocTable extends React.Component {
     this.setState({filterVal:mode})
   }
  
-  disableInputs(mode,reset){
-     let  idList=''
-     mode[0]=="C"? idList= ['CEQL','CGTE','CLTE']:idList= ['FEQL','FGTE','FLTE']
-     
-     let disableIds=reset!='reset'?idList.filter(i=>i!=mode):idList
- 
-     if(document.getElementById(mode).value.trim()!='')
-     disableIds.map(i=>$(`#${i}`).attr('disabled', true))
-     else
-     disableIds.map(i=>$(`#${i}`).attr('disabled', false))
-  }
+  disableInputs(mode,reset,filterOn=null){
+    if(reset=="reset"){ //clear entered value and enable all fields on reset(All)
+      var selectedFieldIds = filterOn=='confidence'? ['CEQL','CGTE','CLTE']:['FEQL','FGTE','FLTE'];
+      selectedFieldIds.map(i=>document.getElementById(i).value='')
+      selectedFieldIds.map(i=>$(`#${i}`).attr('disabled', false))
+      
+    }else{ //disable  other two fields on entering value
+      let idList = mode[0]=="C"? ['CEQL','CGTE','CLTE']:['FEQL','FGTE','FLTE'];
+      let disableIds=idList.filter(i=>i!=mode)
+       if(document.getElementById(mode).value.trim()!='')
+       disableIds.map(i=>$(`#${i}`).attr('disabled', true))
+       else
+       disableIds.map(i=>$(`#${i}`).attr('disabled', false))
+    }
+}
 
   filterRevDocrList(filtertBy, filterOn,reset ) {
     var filterByVal=''
     if(reset!='reset'){
       filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?$(`#${this.state.filterVal}`).val().trim()!=''?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val().trim()):"":filtertBy;
     }
-    // filterByVal = (filterOn==('confidence')||(filterOn=='fields'))?(this.state.filterVal.slice(1,4)+$(`#${this.state.filterVal}`).val()):filtertBy
     switch (filterOn) {
       case 'status':
       this.props.dispatch(ocrRdFilterStatus(filterByVal))
@@ -119,8 +122,7 @@ export class RevDocTable extends React.Component {
     }
     this.props.dispatch(getRevrDocsList())
     if(reset=='reset'){
-      document.getElementById(this.state.filterVal).value=''
-      this.disableInputs(this.state.filterVal,'reset')
+      this.disableInputs(this.state.filterVal,'reset',filterOn)
     }
   }
 
