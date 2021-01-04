@@ -50,20 +50,17 @@ export function getDataList(pageNo) {
 }
 
 function fetchDataList(pageNo,token) {
-
 	let search_element = store.getState().datasets.data_search_element;
 	let data_sorton =  store.getState().datasets.data_sorton;
-	let data_sorttype = store.getState().datasets.data_sorttype;
+    let data_sorttype = store.getState().datasets.data_sorttype;
 	if(data_sorttype=='asc')
 		data_sorttype = ""
-			else if(data_sorttype=='desc')
-				data_sorttype="-"
-							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-								method: 'get',
-								headers: getHeader(token)
-							}).then( response => Promise.all([response, response.json()]));
-                       
-
+    else if(data_sorttype=='desc')
+        data_sorttype="-"
+    return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+        method: 'get',
+        headers: getHeader(token)
+    }).then( response => Promise.all([response, response.json()]));
 }
 
 function fetchDataError(json) {
@@ -1037,7 +1034,7 @@ function renameDatasetAPI(slug,newName){
     }).then( response => Promise.all([response, response.json()]));
 }
 
-export function storeSearchElement(search_element){
+export function storeDataSearchElement(search_element){
     return {
         type: "SEARCH_DATA",
         search_element
@@ -1045,7 +1042,7 @@ export function storeSearchElement(search_element){
 }
 
 
-export function storeSortElements(sorton,sorttype){
+export function storeDataSortElements(sorton,sorttype){
     return {
         type: "SORT_DATA",
         sorton,

@@ -160,6 +160,7 @@ export class ScoreCard extends React.Component {
     );
   }
   componentWillUnmount(){
-    this.props.dispatch(clearScoreList());
+    if(!store.getState().datasets.paginationFlag)
+      this.props.dispatch(clearScoreList());
   }
 }

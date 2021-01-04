@@ -41,7 +41,16 @@ export class AppsScoreList extends React.Component {
       this.props.dispatch(updateAnalystModeSelectedFlag(false));
     } 
     var pageNo = 1;
-    if(this.props.history.location.search.indexOf("page") != -1){
+    if(this.props.history.location.search!=""){
+      let urlParams = new URLSearchParams(this.props.history.location.search);
+      pageNo = (urlParams.get("page")!="")?urlParams.get("page"):pageNo
+      let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
+      let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
+      let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
+      this.props.dispatch(storeScoreSearchElement(searchELem));
+      this.props.dispatch(storeAppsScoreSortElements(sortELem,sortType));
+      this.props.dispatch(getAppsScoreList(pageNo));
+    }else if(this.props.history.location.search.indexOf("page") != -1){
       pageNo = this.props.history.location.search.split("page=")[1];
     }
     if(store.getState().apps.currentAppId == ""){
@@ -66,8 +75,13 @@ export class AppsScoreList extends React.Component {
   _handleKeyPress = (e) => {
     var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
     if (e.key === 'Enter') {
-      if(e.target.value != "" && e.target.value != null)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/scores?search=' + e.target.value + '')
+      if(e.target.value != "" && e.target.value != null){
+        if(this.props.apps_score_sorton!="" && this.props.apps_score_sorton!=null && this.props.apps_score_sorttype!=null){
+          this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores?search=' + e.target.value+''+'&sort=' + this.props.apps_score_sorton + '&type='+this.props.apps_score_sorttype)
+        }else{
+          this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected+'/scores?search=' + e.target.value + '')
+        }
+      }
       this.props.dispatch(storeScoreSearchElement(e.target.value));
       this.props.dispatch(getAppsScoreList(1));
     }
@@ -80,7 +94,11 @@ export class AppsScoreList extends React.Component {
       this.props.dispatch(getAppsScoreList(1));
       this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores'+ '')
     } else if (e.target.value.length > SEARCHCHARLIMIT) {
-      this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores?search=' + e.target.value+'')
+      if(this.props.apps_score_sorton!="" && this.props.apps_score_sorton!=null && this.props.apps_score_sorttype!=null){
+        this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores?search=' + e.target.value+''+'&sort=' + this.props.apps_score_sorton + '&type='+this.props.apps_score_sorttype)
+      }else{
+        this.props.history.push('/apps/' + this.props.match.params.AppId + modeSelected + '/scores?search=' + e.target.value+'')
+      }
       this.props.dispatch(storeScoreSearchElement(e.target.value));
       this.props.dispatch(getAppsScoreList(1));
     } else{
@@ -90,7 +108,11 @@ export class AppsScoreList extends React.Component {
     
   doSorting(sortOn, type){
     var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-    this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?sort=' + sortOn + '&type='+type);
+    if(this.props.score_search_element!=""){
+    this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?search='+this.props.score_search_element+'&sort=' + sortOn + '&type='+type);
+    }else{
+      this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?sort=' + sortOn + '&type='+type);
+    }
     this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
     this.props.dispatch(getAppsScoreList(1));
   }
@@ -100,7 +122,7 @@ export class AppsScoreList extends React.Component {
     var appsScoreList = null;
     if(scoreList) {
       const pages = store.getState().apps.scoreList.total_number_of_pages;
-      const current_page = store.getState().apps.current_page;
+      let current_page = store.getState().apps.current_page;
       let paginationTag = null
       if (pages > 1) {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
@@ -175,11 +197,13 @@ export class AppsScoreList extends React.Component {
   
   handleSelect(eventKey) {
     this.props.dispatch(paginationFlag(true))
-    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-    if (this.props.score_search_element) {
+    var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
+    if(this.props.score_search_element!="" && this.props.apps_score_sorton!="" && this.props.score_search_element!=null && this.props.apps_score_sorton!=null){
+      this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?search=' + this.props.score_search_element + '&sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+ '?page=' + eventKey + '')
+    }else if ((this.props.score_search_element!="" && this.props.score_search_element!=null) && (this.props.apps_score_sorton==="" || this.props.apps_score_sorton===null)) {
       this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
-    }else if(this.props.apps_score_sorton){
-      this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
+    }else if((this.props.score_search_element==="" || this.props.score_search_element===null) && (this.props.apps_score_sorton!=""&&this.props.apps_score_sorton!=null)){
+      this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/scores?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
     }else
       this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/scores?page=' + eventKey + '')
       this.props.dispatch(getAppsScoreList(eventKey));
@@ -189,9 +213,14 @@ export class AppsScoreList extends React.Component {
       var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
       this.props.dispatch(storeScoreSearchElement(""));
       if(this.props.apps_score_sorton)
-        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected +'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
+        this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected +'/scores?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
       else
         this.props.history.push('/apps/'+this.props.match.params.AppId+modeSelected +'/scores');
       this.props.dispatch(getAppsScoreList(1));
+    }
+
+    componentWillUnmount(){
+      this.props.dispatch(storeScoreSearchElement(""));
+      this.props.dispatch(storeAppsScoreSortElements("",""))
     }
 }

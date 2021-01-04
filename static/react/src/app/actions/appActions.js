@@ -640,12 +640,17 @@ function fetchScoreList(pageNo, token) {
   else if (apps_score_sorttype == 'desc')
     apps_score_sorttype = "-"
 
-  if (search_element != "" && search_element != null) {
+  if(search_element != "" && search_element != null && apps_score_sorton != "" && apps_score_sorton != null && apps_score_sorttype != null){
+    return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&sorted_by=' + apps_score_sorton + '&ordering=' + apps_score_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else if(search_element != "" && search_element != null && (apps_score_sorton === "" || apps_score_sorton === null) && apps_score_sorttype === null){
     return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((apps_score_sorton != "" && apps_score_sorton != null) && (apps_score_sorttype != null)) {
+  } else if((search_element === "" || search_element === null) && (apps_score_sorton != "" && apps_score_sorton != null) && (apps_score_sorttype != null)) {
     return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&sorted_by=' + apps_score_sorton + '&ordering=' + apps_score_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -1904,12 +1909,17 @@ function fetchStockList(pageNo, token) {
   else if (stock_apps_model_sorttype == 'desc')
     stock_apps_model_sorttype = "-"
 
-  if (search_element != "" && search_element != null) {
+  if(search_element != "" && search_element != null && stock_apps_model_sorton != "" && stock_apps_model_sorton != null && stock_apps_model_sorttype != null){
+    return fetch(API + '/api/stockdataset/?name=' + search_element + '&sorted_by=' + stock_apps_model_sorton + '&ordering=' + stock_apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else if(search_element != "" && search_element != null && (stock_apps_model_sorton === "" || stock_apps_model_sorton === null) && (stock_apps_model_sorttype === null)) {
     return fetch(API + '/api/stockdataset/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((stock_apps_model_sorton != "" && stock_apps_model_sorton != null) && (stock_apps_model_sorttype != null)) {
+  } else if((search_element === "" || search_element === null) && (stock_apps_model_sorton != "" && stock_apps_model_sorton != null) && (stock_apps_model_sorttype != null)) {
     return fetch(API + '/api/stockdataset/?sorted_by=' + stock_apps_model_sorton + '&ordering=' + stock_apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)

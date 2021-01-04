@@ -113,7 +113,7 @@ var dateFormat = require('dateformat');
         doSorting(sortOn, type){
             this.props.dispatch(storeModelSearchElement(""));
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-            if($(".mode_filter").val()){
+            if($(".mode_filter").val()!=""&& this.props.mode_filter_by != null){
              this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
             }
              else{
@@ -252,7 +252,7 @@ var dateFormat = require('dateformat');
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
-            }else if(this.props.mode_filter_by){
+            }else if(this.props.mode_filter_by!="" && this.props.mode_filter_by!=null){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?filllter=' + this.props.mode_filter_by +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?page='+eventKey+'')
@@ -263,12 +263,18 @@ var dateFormat = require('dateformat');
             this.props.dispatch(storeAppsModelSortElements("",""));
 
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
-            if(this.props.mode_filter_by)
+            if(this.props.mode_filter_by!="" && this.props.mode_filter_by!=null)
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+ this.props.mode_filter_by);
             else if(this.props.apps_model_sorton)
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort='+ this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
             else
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models');
             this.props.dispatch(getAppsModelList(1));
+        }
+
+        componentWillUnmount(){
+            this.props.dispatch(storeModelSearchElement(""));
+            this.props.dispatch(storeAppsModelSortElements("",""));
+            this.props.dispatch(storeAppsModelFilterElement(""))
         }
     }

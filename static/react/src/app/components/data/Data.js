@@ -1,11 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
-import {push} from "react-router-redux";
+import {Redirect} from "react-router-dom";
 import { Pagination } from "react-bootstrap";
 import store from "../../store";
 import {Share} from "../common/Share"
-import {getDataList,refreshDatasets,setEditModelValues,storeSignalMeta, storeSearchElement,storeSortElements,getAllUsersList,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag} from "../../actions/dataActions";
+import {getDataList,refreshDatasets,setEditModelValues,storeSignalMeta, storeDataSearchElement,storeDataSortElements,getAllUsersList,fetchModelEditAPISuccess,variableSlectionBack, paginationFlag, clearDataList} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -13,21 +12,14 @@ import Dialog from 'react-bootstrap-dialog';
 import {DataCard}  from "./DataCard";
 import {LatestDatasets} from "./LatestDatasets";
 
-
 @connect((store) => {
   return {
-    login_response: store.login.login_response,
     dataList: store.datasets.dataList,
     dataPreview: store.datasets.dataPreview,
     userList:store.datasets.allUserList,
-    signalMeta: store.datasets.signalMeta,
-    selectedDataSet: store.datasets.selectedDataSet,
-    dataPreviewFlag: store.datasets.dataPreviewFlag,
-    dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
     data_search_element: store.datasets.data_search_element,
-	data_sorton:store.datasets.data_sorton,
-	data_sorttype:store.datasets.data_sorttype,
-    dialogBox:store.datasets.dataDialogBox,
+	  data_sorton:store.datasets.data_sorton,
+	  data_sorttype:store.datasets.data_sorttype,
   };
 })
 
@@ -41,11 +33,21 @@ export class Data extends React.Component {
     this.props.dispatch(setEditModelValues("","",false));
     this.props.dispatch(fetchModelEditAPISuccess(""))
     this.props.dispatch(storeSignalMeta(null, this.props.match.url));
-    this.props.dispatch(variableSlectionBack(false))
-    if (this.props.history.location.search.indexOf("page") != -1) {
+    this.props.dispatch(variableSlectionBack(false));
+
+    if(this.props.history.location.search!=""){
+      let urlParams = new URLSearchParams(this.props.history.location.search);
+      pageNo = (urlParams.get("page")!="")?urlParams.get("page"):pageNo
+      let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
+      let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
+      let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
+      this.props.dispatch(storeDataSearchElement(searchELem));
+      this.props.dispatch(storeDataSortElements(sortELem,sortType));
+      this.props.dispatch(getDataList(pageNo));
+    }else if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getDataList(pageNo));
-    } else
+    }else
       this.props.dispatch(getDataList(pageNo));
     }
   componentDidMount(){
@@ -56,59 +58,64 @@ export class Data extends React.Component {
 
   _handleKeyPress = e => {
     if (e.key === 'Enter') {
-      console.log(e)
       if (e.target.value != "" && e.target.value != null)
         this.props.history.push('/data?search=' + e.target.value + '')
-
-      this.props.dispatch(storeSearchElement(e.target.value));
+      this.props.dispatch(storeDataSearchElement(e.target.value));
       this.props.dispatch(getDataList(1));
     }
   }
   onChangeOfSearchBox= e => {
     if(e.target.value==""||e.target.value==null){
-      this.props.dispatch(storeSearchElement(""));
-      this.props.history.push('/data');
+      if(this.props.data_sorton!="" && this.props.data_sorttype!=""){
+        this.props.history.push('/data?sort='+this.props.data_sorton + '&type='+this.props.data_sorttype)
+      }else{
+        this.props.history.push('/data');
+      }
+      this.props.dispatch(storeDataSearchElement(""));
       this.props.dispatch(getDataList(1));
     }else if (e.target.value.length > SEARCHCHARLIMIT) {
-      this.props.history.push('/data?search=' + e.target.value + '')
-      this.props.dispatch(storeSearchElement(e.target.value));
+      if(this.props.data_sorton!="" && this.props.data_sorttype!=""){
+        this.props.history.push('/data?search='+e.target.value+'&sort='+this.props.data_sorton + '&type='+this.props.data_sorttype)
+      }else{
+        this.props.history.push('/data?search=' + e.target.value + '')
+      }
+      this.props.dispatch(storeDataSearchElement(e.target.value));
       this.props.dispatch(getDataList(1));
     }else{
-      this.props.dispatch(storeSearchElement(e.target.value));
+      this.props.dispatch(storeDataSearchElement(e.target.value));
     }
   }
 
   doSorting=(sortOn, type)=>{
+    this.props.dispatch(storeDataSortElements(sortOn,type));
     if(this.props.data_search_element)
-    this.props.history.push('/data?search='+this.props.data_search_element+'&sort='+sortOn + '&type='+type)
+      this.props.history.push('/data?search='+this.props.data_search_element+'&sort='+sortOn + '&type='+type)
 	  else
-    this.props.history.push('/data?sort=' + sortOn + '&type='+type);
-
-	 this.props.dispatch(storeSortElements(sortOn,type));
-	 this.props.dispatch(getDataList(1));
+      this.props.history.push('/data?sort=' + sortOn + '&type='+type);
+  	this.props.dispatch(getDataList(1));
   }
 
   clearSearchElement= () =>{
-    this.props.dispatch(storeSearchElement(""));
-    if(this.props.data_sorton)
-    this.props.history.push('/data?sort=' + this.props.data_sorton + '&type=' + this.props.data_sorttype)
+    this.props.dispatch(storeDataSearchElement(""));
+    if(this.props.data_sorton != "" && this.props.data_sorttype!="")
+      this.props.history.push('/data?sort=' + this.props.data_sorton + '&type=' + this.props.data_sorttype)
     else
-    this.props.history.push('/data');
+      this.props.history.push('/data');
     this.props.dispatch(getDataList(1));
   }
 
   handleSelect= eventKey =>{
     this.props.dispatch(paginationFlag(true));
-		if (this.props.data_search_element){
+		if(this.props.data_search_element){
       if(this.props.data_sorton)
-      this.props.history.push('/data?search=' + this.props.data_search_element +'&sort='+this.props.data_sorton+ '&page=' + eventKey + '');
+        this.props.history.push('/data?search=' + this.props.data_search_element +'&sort='+this.props.data_sorton +'&type='+this.props.data_sorttype+ '&page=' + eventKey + '');
       else
-      this.props.history.push('/data?search=' + this.props.data_search_element + '&page=' + eventKey + '');
-    } else if(this.props.data_sorton){
+        this.props.history.push('/data?search=' + this.props.data_search_element + '&page=' + eventKey + '');
+    }else if(this.props.data_sorton!="" && this.props.data_sorttype!=undefined){
 	    this.props.history.push('/data?sort=' + this.props.data_sorton +'&type='+this.props.data_sorttype+'&page=' + eventKey + '');
-	  }else
+	  }else{
       this.props.history.push('/data?page=' + eventKey + '');
-
+    }
     this.props.dispatch(getDataList(eventKey));
   }
 
@@ -126,9 +133,8 @@ export class Data extends React.Component {
       const current_page = store.getState().datasets.dataList.current_page;
       let paginationTag = null;
       let dataList = <DataCard data={dataSets} match={this.props.match}/>;
-      if (pages > 1) {
+      if(pages>=1)
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
-      }
       return (
         <div className="side-body">
         <LatestDatasets props={this.props}/>
@@ -200,5 +206,9 @@ export class Data extends React.Component {
     }
   }
 
- 
+  componentWillUnmount(){
+    this.props.dispatch(storeDataSearchElement(""));
+    this.props.dispatch(storeDataSortElements("",""));
+    this.props.dispatch(clearDataList())
+  }
 }
