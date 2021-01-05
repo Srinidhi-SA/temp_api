@@ -41,7 +41,16 @@ var dateFormat = require('dateformat');
         }
         componentWillMount() {
             var pageNo = 1;
-            if(this.props.history.location.search.indexOf("page") != -1){
+            if(this.props.history.location.search!=""){
+                let urlParams = new URLSearchParams(this.props.history.location.search);
+                pageNo = (urlParams.get("page")!="")?urlParams.get("page"):pageNo
+                let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
+                let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
+                let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
+                this.props.dispatch(storeModelSearchElement(searchELem));
+                this.props.dispatch(storeAppsModelSortElements(sortELem,sortType));
+                this.props.dispatch(getAppsModelList(pageNo));
+            }else if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
             }
             if(store.getState().apps.currentAppId == ""){
@@ -49,16 +58,9 @@ var dateFormat = require('dateformat');
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
-            var pageNo = 1; //if removing,getting error in mm map because mm is dependent on this page
-            if(this.props.history.location.search.indexOf("page") != -1){
-                pageNo = this.props.history.location.search.split("page=")[1];
-            }
-            if(store.getState().apps.currentAppId == ""){
-                this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
-            }
             this.props.dispatch(clearAppsAlgoList())
-           this.props.dispatch(updateModelSummaryFlag(false));
-           this.props.dispatch(updateSelectedVariablesAction(false));
+            this.props.dispatch(updateModelSummaryFlag(false));
+            this.props.dispatch(updateSelectedVariablesAction(false));
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
@@ -96,7 +98,7 @@ var dateFormat = require('dateformat');
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
                 if($(".mode_filter").val()!=""&& $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/&search=' + e.target.value + '')
                 }
                 else{
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + e.target.value + '')
@@ -178,7 +180,7 @@ var dateFormat = require('dateformat');
                         {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
-                        <input type="text" name="model_insights" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
+                        <input type="text" name="model_insights" defaultValue={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
                         <span className="zmdi zmdi-search form-control-feedback"></span>
                         <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                         </div>
@@ -249,7 +251,7 @@ var dateFormat = require('dateformat');
             this.props.dispatch(paginationFlag(true))
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML'
             if (this.props.model_search_element) {
-                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?search=' + this.props.model_search_element+'&page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else if(this.props.mode_filter_by!="" && this.props.mode_filter_by!=null){
