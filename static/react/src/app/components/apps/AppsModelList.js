@@ -95,7 +95,7 @@ var dateFormat = require('dateformat');
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
-                if($(".mode_filter").val()!=""&& this.props.mode_filter_by != null){
+                if($(".mode_filter").val()!=""&& $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode='+$(".mode_filter").val()+'/search=' + e.target.value + '')
                 }
                 else{
@@ -113,8 +113,8 @@ var dateFormat = require('dateformat');
         doSorting(sortOn, type){
             this.props.dispatch(storeModelSearchElement(""));
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
-            if($(".mode_filter").val()!=""&& this.props.mode_filter_by != null){
-             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
+            if($(".mode_filter").val()!=""&& $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
+                this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val() + '/models?sort=' + sortOn + '&type='+type);
             }
              else{
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?sort=' + sortOn + '&type='+type);
@@ -127,10 +127,10 @@ var dateFormat = require('dateformat');
             var modeSelected= store.getState().apps.analystModeSelectedFlag?'/analyst' :'/autoML';
             
             this.props.dispatch(storeAppsModelFilterElement($(".mode_filter").val()));
-            if(this.props.model_search_element && $(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
+            if(this.props.model_search_element && $(".mode_filter").val()!="" && $(".mode_filter").val()!=null &&this.props.mode_filter_by != null){
                 this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/models?mode=' + $(".mode_filter").val() +'/models?search=' + this.props.model_search_element + '')
             }
-            else if($(".mode_filter").val()!=""&&this.props.mode_filter_by != null){
+            else if($(".mode_filter").val()!="" && $(".mode_filter").val()!=null && this.props.mode_filter_by != null){
             this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected+'/models?mode=' + $(".mode_filter").val());
             }
             else if($(".mode_filter").val()==""&& this.props.model_search_element){

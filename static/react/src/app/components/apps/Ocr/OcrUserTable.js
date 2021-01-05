@@ -233,7 +233,7 @@ export class OcrUserTable extends React.Component{
                         </div>
                         <div className="pull-right searchOcrUser">
                             <input type="text" id="searchOcrUser" title="Search User..." className="form-control btn-rounded" placeholder="Search User..." onKeyUp={this.handleSearchElement.bind(this)} />
-                            <button className="close-icon"  style={{paddingTop: "0px", marginLeft:"59%"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
+                            <button className="close-icon"  style={{paddingTop: "0px"}}  onClick={this.clearSearchVal.bind(this)}type="reset"></button>
                         </div>
                     </div>
                 </div>

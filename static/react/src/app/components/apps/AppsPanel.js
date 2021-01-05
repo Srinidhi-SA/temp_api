@@ -53,19 +53,24 @@ export class AppsPanel extends React.Component {
     var pageNo = 1;
     if(this.props.history.location.search!=""){
       let urlParams = new URLSearchParams(this.props.history.location.search);
-      pageNo = (urlParams.get("page")!="")?urlParams.get("page"):pageNo
-      let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
-      let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
-      let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
-      this.props.dispatch(appsStoreSearchEle(searchELem));
-      this.props.dispatch(appsStoreSortElements(sortELem,sortType));
-      this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,pageNo));
-    }else if (this.props.history.location.search.indexOf("page") != -1) {
-      pageNo = this.props.history.location.search.split("page=")[1];
+      pageNo = (urlParams.get("pageNo")!="")?urlParams.get("pageNo"):pageNo
+      if(urlParams.get('filterApplied')!=null){
+        let lst = urlParams.get('filterApplied').split(",");
+        this.props.dispatch(updateAppsFilterList(lst));
+        this.props.dispatch(getAppsFilteredList(getUserDetailsOrRestart.get().userToken,pageNo))
+      }else{
+        let searchELem = (urlParams.get('search')!=null)?urlParams.get('search'):"";
+        let sortELem = (urlParams.get('sort')!=null)?urlParams.get('sort'):"";
+        let sortType = (urlParams.get('type')!=null)?urlParams.get('type'):"";
+        this.props.dispatch(appsStoreSearchEle(searchELem));
+        this.props.dispatch(appsStoreSortElements(sortELem,sortType));
+        this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,pageNo));
+      }
+    }else if (this.props.history.location.search.indexOf("pageNo") != -1) {
+      pageNo = this.props.history.location.search.split("pageNo=")[1];
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
-    this.props.dispatch(updateAppsFilterList([]))
     this.props.dispatch(selectedProjectDetails('',''));
     this.props.dispatch(saveDocumentPageFlag(false));
   }
@@ -238,7 +243,7 @@ export class AppsPanel extends React.Component {
              <div className="app-block">
                <Link className="app-link" id={data.name} onClick={this.gotoAppsList.bind(this, data.app_id, data.name,data)} to= 
                {(data.app_id == 2 || data.app_id == 13) ? 
-                data.app_url.replace("/models","") : 
+                data.app_url.replace("/models","") +"/modeSelection": 
                (data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "Admin" || getUserDetailsOrRestart.get().userRole ==  "Superuser"))?
                data.app_url.concat("project"):
                ((data.displayName== "ITE" && (getUserDetailsOrRestart.get().userRole == "ReviewerL1" || getUserDetailsOrRestart.get().userRole ==  "ReviewerL2"))?         
