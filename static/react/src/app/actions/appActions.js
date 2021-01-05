@@ -645,7 +645,7 @@ function fetchScoreList(pageNo, token) {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  }else if(search_element != "" && search_element != null && (apps_score_sorton === "" || apps_score_sorton === null) && apps_score_sorttype === null){
+  }else if(search_element != "" && search_element != null && (apps_score_sorton === "" || apps_score_sorton === null)){
     return fetch(API + '/api/score/?app_id=' + store.getState().apps.currentAppId + '&name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -2134,12 +2134,17 @@ function fetchApps(token, pageNo) {
   let search_element = store.getState().apps.storeAppsSearchElement;
   let apps_sortBy = store.getState().apps.storeAppsSortByElement;
   let apps_sortType = store.getState().apps.storeAppsSortType;
-  if (search_element) {
+  if (search_element!="" && apps_sortBy!="" && search_element!=null && apps_sortBy!=null && apps_sortType != null) {
+    return fetch(API + '/api/apps/?app_name=' + search_element + '&sorted_by=' + apps_sortBy + '&ordering=' + apps_sortType + '&page_number=' + pageNo + '&page_size=' + APPSPERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  }else if (search_element!="" && search_element!=null && (apps_sortBy==="" || apps_sortBy===null)){
     return fetch(API + '/api/apps/?app_name=' + search_element + '&page_number=' + pageNo + '&page_size=' + APPSPERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
     }).then(response => Promise.all([response, response.json()]));
-  } else if ((apps_sortBy != "" && apps_sortBy != null) && (apps_sortType != null)) {
+  } else if((search_element==="" || search_element===null) && (apps_sortBy != "" && apps_sortBy != null) && (apps_sortType != null)) {
     return fetch(API + '/api/apps/?sorted_by=' + apps_sortBy + '&ordering=' + apps_sortType + '&page_number=' + pageNo + '&page_size=' + APPSPERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
